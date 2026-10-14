@@ -2,11 +2,13 @@ import type { Locale } from "@/lib/locale/config";
 import enCommon from "./en/common.json";
 import enFeedback from "./en/feedback.json";
 import enNavigation from "./en/navigation.json";
+import enSettings from "./en/settings.json";
 import enShell from "./en/shell.json";
 import enUi from "./en/ui.json";
 import faCommon from "./fa/common.json";
 import faFeedback from "./fa/feedback.json";
 import faNavigation from "./fa/navigation.json";
+import faSettings from "./fa/settings.json";
 import faShell from "./fa/shell.json";
 import faUi from "./fa/ui.json";
 
@@ -25,6 +27,7 @@ const en = {
   Feedback: enFeedback,
   Navigation: enNavigation,
   Shell: enShell,
+  Settings: enSettings,
 };
 
 export type ClientMessages = typeof en;
@@ -35,6 +38,7 @@ const fa: ClientMessages = {
   Feedback: faFeedback,
   Navigation: faNavigation,
   Shell: faShell,
+  Settings: faSettings,
 };
 
 export const clientMessages: Record<Locale, ClientMessages> = { en, fa };

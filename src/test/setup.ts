@@ -6,6 +6,7 @@ afterEach(() => {
   cleanup();
   window.localStorage.clear();
   document.cookie = "mp-preferences=; Max-Age=0; Path=/";
+  document.cookie = "mp-planner=; Max-Age=0; Path=/";
 });
 
 // The App Router is not mounted in unit tests; preference actions call refresh().

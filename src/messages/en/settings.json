@@ -1,0 +1,21 @@
+{
+  "modules": {
+    "overview": "Overview",
+    "myday": "My Day",
+    "tasks": "Tasks",
+    "calendar": "Calendar",
+    "goals": "Goals",
+    "habits": "Habits",
+    "finance": "Finance",
+    "journal": "Journal",
+    "insights": "Insights",
+    "inbox": "Inbox",
+    "braindump": "Brain Dump",
+    "settings": "Settings"
+  },
+  "hiddenModule": {
+    "title": "{module} is hidden",
+    "description": "You hid {module} in Settings. Your data is still here.",
+    "turnOn": "Turn {module} on"
+  }
+}

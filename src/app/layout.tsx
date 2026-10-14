@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Urbanist, Vazirmatn } from "next/font/google";
 import { getTranslations } from "next-intl/server";
+import { getRequestPlannerSettings } from "@/features/planner-settings/request-planner-settings";
 import { getRequestPreferences } from "@/features/preferences/request-preferences";
 import { Providers } from "./providers";
 import "@/styles/globals.css";
@@ -43,7 +44,8 @@ export const viewport: Viewport = {
 };
 
 export default async function RootLayout({ children }: LayoutProps<"/">) {
-  const preferences = await getRequestPreferences();
+  // Planner settings ride along, so the rail and hidden-module pages are right on the first byte.
+  const [preferences, plannerSettings] = await Promise.all([getRequestPreferences(), getRequestPlannerSettings()]);
 
   return (
     // suppressHydrationWarning: next-themes sets data-theme before hydration.
@@ -54,7 +56,9 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
       className={`${urbanist.variable} ${vazirmatn.variable}`}
     >
       <body>
-        <Providers preferences={preferences}>{children}</Providers>
+        <Providers preferences={preferences} plannerSettings={plannerSettings}>
+          {children}
+        </Providers>
       </body>
     </html>
   );

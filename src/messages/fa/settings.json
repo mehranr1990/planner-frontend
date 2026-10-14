@@ -1,0 +1,21 @@
+{
+  "modules": {
+    "overview": "نمای کلی",
+    "myday": "روز من",
+    "tasks": "کارها",
+    "calendar": "تقویم",
+    "goals": "اهداف",
+    "habits": "عادت‌ها",
+    "finance": "مالی",
+    "journal": "دفتر روزانه",
+    "insights": "بینش‌ها",
+    "inbox": "صندوق ورودی",
+    "braindump": "ذهن‌ریزی",
+    "settings": "تنظیمات"
+  },
+  "hiddenModule": {
+    "title": "{module} پنهان است",
+    "description": "{module} را در تنظیمات پنهان کرده‌اید. داده‌هایتان همچنان محفوظ است.",
+    "turnOn": "روشن کردن {module}"
+  }
+}

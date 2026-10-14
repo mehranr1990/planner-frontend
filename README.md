@@ -28,7 +28,8 @@ If the Playwright browser download is blocked, use an installed browser: `PLAYWR
 - `src/components/shell/` — app shell frame and composition (top bar islands, schedule island, palette, menus, mobile chrome)
 - `src/features/navigation/` — declarative context + nav config; active state derived from the URL
 - `src/app/(app)/` — shell route group; context overview pages are Step 3 placeholders
-- `src/fixtures/` — clearly marked sample data (shell schedule, workspaces)
+- `src/fixtures/` — clearly marked sample data (shell schedule, workspaces; `personal/` = tasks, time blocks and Inbox for the sample day Tue 13 Oct 2026 · 21 Mehr 1405)
+- `src/data/` — the data seam. `domain.ts` holds minimal types (Task, TimeBlock, InboxItem; days as `YYYY-MM-DD`, instants as ISO strings with offset); `repositories.ts` holds Promise-based interfaces whose adapters own filtering and ordering; `mock/` implements them over deep-cloned `src/fixtures/personal` data (deterministic, optional latency); `provider.tsx` (`DataProvider` / `useRepositories`) is the single swap point for a typed API client or an offline store later; `queries.ts` exposes the React Query hooks (`useTasks`, `useTask`, `useBlocks`, `useInboxCount`) over the key factories in `query-keys.ts`. UI never reads fixtures directly.
 - `src/features/` — domain UI (`preferences`, `styleguide`; product modules arrive in later steps). Display preferences live in the `mp-preferences` cookie and are resolved on the server (`request-preferences.ts`); theme stays in next-themes' localStorage.
 - `src/lib/` — pure utilities: dates (Jalali/Gregorian, Iranian week), digits, money, direction
 - `src/messages/` — next-intl catalogues (`en`, `fa`); `src/i18n/request.ts` resolves the locale from the cookie (no locale routing)
