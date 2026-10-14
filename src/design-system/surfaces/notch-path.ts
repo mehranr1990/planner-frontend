@@ -3,7 +3,8 @@ import type { Direction } from "@/lib/locale/direction";
 /*
  * Geometry for the notched card (design guide §4). Pure, so the Step 2
  * <NotchedCard> only adds measuring (ResizeObserver) and clip-path wiring.
- * The notch sits top-right in LTR and top-left in RTL.
+ * The notch sits top-right in LTR and top-left in RTL. Defaults are the
+ * desktop preset (64×64 notch, 28px fillet; see notchPresets in tokens/radii).
  */
 
 export interface NotchGeometry {
@@ -13,7 +14,7 @@ export interface NotchGeometry {
   radius?: number;
   notchWidth?: number;
   notchHeight?: number;
-  /** Concave fillet radius where the notch meets the card. */
+  /** Concave fillet radius where the notch meets the card (default 28). */
   fillet?: number;
   direction?: Direction;
 }
@@ -56,7 +57,7 @@ export function canNotch({
   radius: C = 32,
   notchWidth: nw = 64,
   notchHeight: nh = 64,
-  fillet: f = 30,
+  fillet: f = 28,
 }: NotchGeometry): boolean {
   return f * 2 <= Math.min(nw, nh) && W - nw - f >= C && nh + f <= H - C;
 }
@@ -72,7 +73,7 @@ export function notchPath(geometry: NotchGeometry): string {
     radius: C = 32,
     notchWidth: nw = 64,
     notchHeight: nh = 64,
-    fillet: f = 30,
+    fillet: f = 28,
     direction = "ltr",
   } = geometry;
 

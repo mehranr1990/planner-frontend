@@ -6,6 +6,7 @@ import type { Scope } from "@/design-system/tokens/colors";
 import { BdiSection } from "./sections/bdi-section";
 import { BordersSection } from "./sections/borders-section";
 import { ContextSection } from "./sections/context-section";
+import { DatavizSection } from "./sections/dataviz-section";
 import { DatesSection } from "./sections/dates-section";
 import { FocusSection } from "./sections/focus-section";
 import { IconsSection } from "./sections/icons-section";
@@ -33,6 +34,7 @@ function StyleguideViewContent() {
       <ContextSection scope={scope} onScopeChange={setScope} />
       <NeutralsSection />
       <StatusSection />
+      <DatavizSection />
       <SurfacesSection />
       <ShadowsSection />
       <RadiiSection />

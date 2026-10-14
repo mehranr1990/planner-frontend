@@ -18,12 +18,13 @@ import {
 import type { CalendarSystem } from "./format";
 import { getGregorianParts } from "./gregorian";
 import { getJalaliParts, type CalendarParts } from "./jalali";
-import { WEEK_STARTS_ON, isWeekend, type Weekday } from "./week";
+import { IRAN_WEEK, isWeekend, type WeekConfig, type Weekday } from "./week";
 
 /*
  * Pure month-grid math for the date picker, on either calendar. Dates are
  * plain local-midnight JS Dates; only the month boundaries differ between
- * Jalali and Gregorian. Weeks are Saturday-first (see week.ts).
+ * Jalali and Gregorian. Weeks follow a WeekConfig, Saturday-first by default
+ * (see week.ts).
  */
 
 export interface MonthGridDay {
@@ -74,25 +75,33 @@ export function isJalaliLeapYear(year: number): boolean {
   return isJalaliLeapYearDate(newJalaliDate(year, 0, 1));
 }
 
-/** Columns before day 1 in a Saturday-first week (Saturday = 0 … Friday = 6). */
-export function weekColumn(date: Date): number {
-  return (date.getDay() - WEEK_STARTS_ON + 7) % 7;
+/**
+ * Column of `date` in its week, counted from the first day of the week
+ * (default Saturday = 0 … Friday = 6).
+ */
+export function weekColumn(
+  date: Date,
+  { weekStartsOn = IRAN_WEEK.weekStartsOn }: { weekStartsOn?: Weekday } = {},
+): number {
+  return (date.getDay() - weekStartsOn + 7) % 7;
 }
 
 export interface MonthGridOptions {
   /** Always return 6 weeks so the picker height never jumps. Default false. */
   fixedWeeks?: boolean;
+  /** First day of the week and weekend days. Default IRAN_WEEK. */
+  week?: WeekConfig;
 }
 
-/** The month containing `date`, as Saturday-first weeks of seven days. */
+/** The month containing `date`, as weeks of seven days (Saturday-first by default). */
 export function getMonthGrid(
   date: Date,
   calendar: CalendarSystem,
-  { fixedWeeks = false }: MonthGridOptions = {},
+  { fixedWeeks = false, week: weekConfig = IRAN_WEEK }: MonthGridOptions = {},
 ): MonthGrid {
   const first = startOfCalendarMonth(date, calendar);
   const length = getDaysInCalendarMonth(first, calendar);
-  const leading = weekColumn(first);
+  const leading = weekColumn(first, weekConfig);
   const weekCount = fixedWeeks ? 6 : Math.ceil((leading + length) / 7);
   const gridStart = addDays(first, -leading);
 
@@ -104,7 +113,7 @@ export function getMonthGrid(
         dayOfMonth: getCalendarParts(day, calendar).day,
         inMonth: isSameCalendarMonth(day, first, calendar),
         weekday: day.getDay() as Weekday,
-        isWeekend: isWeekend(day),
+        isWeekend: isWeekend(day, weekConfig),
       };
     }),
   );

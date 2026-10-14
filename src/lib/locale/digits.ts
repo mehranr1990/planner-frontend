@@ -1,3 +1,5 @@
+import { intlLocale, type Locale } from "./config";
+
 /** `latn` = 0–9, `fa` = Extended Arabic-Indic ۰–۹ (Persian). */
 export type DigitSystem = "latn" | "fa";
 
@@ -43,6 +45,39 @@ export function formatNumber(
   options?: Intl.NumberFormatOptions,
 ): string {
   return numberFormatter(system, options).format(value);
+}
+
+export interface CompactNumberOptions {
+  /** Picks the magnitude word: "B" / "میلیارد". */
+  locale: Locale;
+  /** Picks the digits, independently of the language. */
+  digits: DigitSystem;
+  maximumFractionDigits?: number;
+}
+
+const compactCache = new Map<string, Intl.NumberFormat>();
+
+/**
+ * Short form for charts and tight tiles: 1_864_000_000 → "1.86B",
+ * "۱٫۸۶ میلیارد", "1.86 میلیارد" or "۱٫۸۶B". The word follows the UI language,
+ * the digits follow the digit setting.
+ */
+export function formatCompactNumber(
+  value: number,
+  { locale, digits, maximumFractionDigits = 2 }: CompactNumberOptions,
+): string {
+  const numberingSystem = digits === "fa" ? "arabext" : "latn";
+  const key = `${locale}|${numberingSystem}|${maximumFractionDigits}`;
+  let formatter = compactCache.get(key);
+  if (!formatter) {
+    formatter = new Intl.NumberFormat(intlLocale[locale], {
+      notation: "compact",
+      maximumFractionDigits,
+      numberingSystem,
+    });
+    compactCache.set(key, formatter);
+  }
+  return formatter.format(value);
 }
 
 /** `ratio` is 0–1: 0.45 → "45%" / "۴۵٪". */

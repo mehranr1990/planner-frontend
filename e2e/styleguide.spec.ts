@@ -133,6 +133,8 @@ test("mirroring follows direction, not language", async ({ page }) => {
 
 test("preferences persist across reloads via the cookie", async ({ page, context }) => {
   const errors = collectErrors(page);
+  // Start from English: the test switches to Persian (the no-cookie default).
+  await setPreferencesCookie(context, ENGLISH);
   await openStyleguide(page);
   await page.getByRole("radio", { name: "فارسی" }).click();
   await expect(page.locator("html")).toHaveAttribute("dir", "rtl");
@@ -165,12 +167,15 @@ test.describe("first render comes from the server (JavaScript disabled)", () => 
     await expect(page.getByRole("heading", { level: 1 })).toHaveText("برنامه‌ریز مهران");
   });
 
-  test("no cookie: English, LTR, Latin digits", async ({ page }) => {
+  test("no cookie: Persian, RTL, Persian digits, Jalali", async ({ page }) => {
+    // Persian is the first-run default (product decision #8).
     await page.goto("/styleguide");
-    await expect(page.locator("html")).toHaveAttribute("lang", "en");
-    await expect(page.locator("html")).toHaveAttribute("dir", "ltr");
-    await expect(page.getByRole("heading", { level: 1 })).toHaveText("Foundations");
-    await expect(page.getByText("Tue, 13 Oct 2026").first()).toBeVisible();
+    const html = page.locator("html");
+    await expect(html).toHaveAttribute("lang", "fa");
+    await expect(html).toHaveAttribute("dir", "rtl");
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText("پایه‌ها");
+    await expect(page.getByText("سه‌شنبه ۲۱ مهر ۱۴۰۵").first()).toBeVisible();
+    await expect(page.getByText("۲٬۰۰۰٬۰۰۰ تومان").first()).toBeVisible();
   });
 
   test("independent combination: Persian text, LTR layout, Latin digits, Gregorian, Rial", async ({ page }) => {
@@ -228,6 +233,7 @@ test("hydrates every preference combination with matching output", async ({ brow
 });
 
 test("a change in one tab reaches server-rendered output in another", async ({ context }) => {
+  await setPreferencesCookie(context, ENGLISH);
   const home = await context.newPage();
   await home.goto("/");
   await waitForHydration(home);
@@ -264,6 +270,7 @@ test("keyboard focus is visible", async ({ page }) => {
 });
 
 test("touch targets are at least 48px", async ({ page }) => {
+  await seed(page, "light", "ltr");
   await page.setViewportSize({ width: 390, height: 900 });
   await openStyleguide(page);
   const sizes = await page

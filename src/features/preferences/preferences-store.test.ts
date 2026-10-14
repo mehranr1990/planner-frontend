@@ -15,6 +15,12 @@ import {
 
 const persian: Preferences = { locale: "fa", direction: "rtl", digits: "fa", currency: "rial", calendar: "jalali" };
 
+describe("defaultPreferences", () => {
+  it("is Persian, RTL, Persian digits, Toman and Jalali on first run", () => {
+    expect(defaultPreferences).toEqual({ locale: "fa", direction: "rtl", digits: "fa", currency: "toman", calendar: "jalali" });
+  });
+});
+
 describe("parsePreferences", () => {
   it("falls back to defaults for non-objects", () => {
     expect(parsePreferences(null)).toEqual(defaultPreferences);
@@ -22,11 +28,12 @@ describe("parsePreferences", () => {
     expect(parsePreferences(42)).toEqual(defaultPreferences);
   });
 
-  it("keeps valid fields and replaces invalid ones", () => {
-    expect(parsePreferences({ ...persian, direction: "sideways", locale: "de" })).toEqual({
-      ...persian,
-      direction: "ltr",
-      locale: "en",
+  it("keeps valid fields and replaces invalid ones with the (Persian) defaults", () => {
+    const english: Preferences = { locale: "en", direction: "ltr", digits: "latn", currency: "rial", calendar: "gregorian" };
+    expect(parsePreferences({ ...english, direction: "sideways", locale: "de" })).toEqual({
+      ...english,
+      direction: "rtl",
+      locale: "fa",
     });
   });
 

@@ -1,5 +1,6 @@
 /*
- * Colour token metadata. Primitive values live in design/tokens.css,
+ * Colour token metadata. Primitive values live in design/tokens.css (plus
+ * src/styles/design-extensions.css for board-only colours),
  * semantic aliases in src/styles/tokens.css. This file names the tokens,
  * documents their role and pairs each with its Tailwind class (written out in
  * full so Tailwind can see it).
@@ -85,3 +86,39 @@ export const statusTokens: Record<StatusTone, { soft: string; text: string }> = 
   info: { soft: "bg-info-soft", text: "text-info-text" },
   neutral: { soft: "bg-hairline", text: "text-fg-secondary" },
 };
+
+/*
+ * Board-only primitives (src/styles/design-extensions.css) and their
+ * semantic aliases (src/styles/tokens.css).
+ */
+
+export const deepCardTokens: readonly ColorToken[] = [
+  { name: "Deep card", cssVar: "--deep-card", swatch: "bg-deep-card", role: "Signature insight card fill" },
+  { name: "On deep card", cssVar: "--on-deep-card", swatch: "bg-on-deep-card", role: "Headings on the deep card" },
+  { name: "On deep card muted", cssVar: "--on-deep-card-muted", swatch: "bg-on-deep-card-muted", role: "Body copy on the deep card" },
+];
+
+export interface VizToken {
+  name: string;
+  cssVar: `--${string}`;
+  swatch: string;
+  hue: string;
+}
+
+/** Finance categories — frozen DataViz palette (supersedes P13 prose). */
+export const vizCategoryTokens: readonly VizToken[] = [
+  { name: "Housing", cssVar: "--viz-housing", swatch: "bg-viz-housing", hue: "Green" },
+  { name: "Food", cssVar: "--viz-food", swatch: "bg-viz-food", hue: "Coral" },
+  { name: "Transport", cssVar: "--viz-transport", swatch: "bg-viz-transport", hue: "Blue" },
+  { name: "Lifestyle", cssVar: "--viz-lifestyle", swatch: "bg-viz-lifestyle", hue: "Amber" },
+  { name: "Work", cssVar: "--viz-work", swatch: "bg-viz-work", hue: "Violet" },
+  { name: "Health", cssVar: "--viz-health", swatch: "bg-viz-health", hue: "Pink" },
+  { name: "Other", cssVar: "--viz-other", swatch: "bg-viz-other", hue: "Neutral" },
+];
+
+/** Layered-area series (DataVizAdd). */
+export const vizSeriesTokens: readonly VizToken[] = [
+  { name: "Mood", cssVar: "--viz-mood", swatch: "bg-viz-mood", hue: "Green" },
+  { name: "Energy", cssVar: "--viz-energy", swatch: "bg-viz-energy", hue: "Amber" },
+  { name: "Focus", cssVar: "--viz-focus", swatch: "bg-viz-focus", hue: "Blue" },
+];

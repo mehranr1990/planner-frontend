@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
-import { neutralTokens } from "@/design-system/tokens/colors";
+import { deepCardTokens, neutralTokens, vizCategoryTokens, vizSeriesTokens } from "@/design-system/tokens/colors";
 import { radiusTokens } from "@/design-system/tokens/radii";
 import { shadowTokens } from "@/design-system/tokens/shadows";
 import { duration, easing } from "@/design-system/tokens/motion";
@@ -15,6 +15,7 @@ const stripComments = (css: string) => css.replace(/\/\*[\s\S]*?\*\//g, "");
 const read = (path: string) => stripComments(readFileSync(resolve(__dirname, path), "utf8"));
 
 const designCss = read("../../design/tokens.css");
+const extensionsCss = read("design-extensions.css");
 const appCss = read("tokens.css");
 const globalsCss = read("globals.css");
 const appStyles = [globalsCss, appCss, read("typography.css"), read("utilities.css")];
@@ -53,14 +54,27 @@ function rootLevelDeclarations(css: string): Set<string> {
 }
 const consumed = (css: string) => [...css.matchAll(/var\((--[\w-]+)/g)].map((match) => match[1]!);
 
-const available = new Set([...declared(designCss), ...appStyles.flatMap(declared), ...NEXT_FONT_VARIABLES]);
+const available = new Set([
+  ...declared(designCss),
+  ...declared(extensionsCss),
+  ...appStyles.flatMap(declared),
+  ...NEXT_FONT_VARIABLES,
+]);
+
+/** Dark-themed primitives from both layer 1 files. */
+const themedPrimitives = new Set([
+  ...declarations(designCss, '[data-theme="dark"]').keys(),
+  ...declarations(extensionsCss, '[data-theme="dark"]').keys(),
+]);
 
 describe("design tokens contract", () => {
   it("imports the design package tokens before the app layer", () => {
     const designImport = globalsCss.indexOf('@import "../../design/tokens.css"');
+    const extensionsImport = globalsCss.indexOf('@import "./design-extensions.css"');
     const appImport = globalsCss.indexOf('@import "./tokens.css"');
     expect(designImport).toBeGreaterThan(-1);
-    expect(appImport).toBeGreaterThan(designImport);
+    expect(extensionsImport).toBeGreaterThan(designImport);
+    expect(appImport).toBeGreaterThan(extensionsImport);
   });
 
   it("declares every custom property the app consumes", () => {
@@ -69,7 +83,14 @@ describe("design tokens contract", () => {
   });
 
   it("documents only tokens that exist", () => {
-    const documented = [...neutralTokens, ...radiusTokens, ...shadowTokens].map((token) => token.cssVar);
+    const documented = [
+      ...neutralTokens,
+      ...deepCardTokens,
+      ...vizCategoryTokens,
+      ...vizSeriesTokens,
+      ...radiusTokens,
+      ...shadowTokens,
+    ].map((token) => token.cssVar);
     expect(documented.filter((name) => !available.has(name))).toEqual([]);
   });
 
@@ -82,8 +103,7 @@ describe("design tokens contract", () => {
 
   it("never overrides a themed design primitive at :root level in the app layer", () => {
     // A later :root declaration would beat the design's [data-theme="dark"] block.
-    const themed = declarations(designCss, '[data-theme="dark"]');
-    const overrides = [...rootLevelDeclarations(appCss)].filter((name) => themed.has(name));
+    const overrides = [...rootLevelDeclarations(appCss)].filter((name) => themedPrimitives.has(name));
     expect(overrides).toEqual([]);
   });
 
@@ -108,6 +128,53 @@ describe("design tokens contract", () => {
 
   it("gives weekend label text the AA-safe danger text tone", () => {
     expect(appCss).toMatch(/--weekend-text:\s*var\(--danger-text\)/);
+  });
+});
+
+describe("design extensions (layer 1b)", () => {
+  const rules = [...extensionsCss.matchAll(/([^{}]+)\{([^{}]*)\}/g)].map((rule) => ({
+    selector: rule[1]!.trim(),
+    body: rule[2]!,
+  }));
+  const light = declarations(extensionsCss, ":root");
+  const dark = declarations(extensionsCss, '[data-theme="dark"]');
+
+  it("has exactly a :root and a dark block", () => {
+    expect(rules.map((rule) => rule.selector)).toEqual([":root", '[data-theme="dark"]']);
+  });
+
+  it("only declares custom properties with literal hex colours", () => {
+    for (const { body } of rules) {
+      const statements = body.split(";").map((statement) => statement.trim()).filter(Boolean);
+      expect(statements.length).toBeGreaterThan(0);
+      for (const statement of statements) {
+        expect(statement, statement).toMatch(/^--[\w-]+\s*:\s*#[0-9a-f]{3}(?:[0-9a-f]{3})?$/i);
+      }
+    }
+  });
+
+  it("never redeclares a design/tokens.css name", () => {
+    const design = new Set(declared(designCss));
+    expect(declared(extensionsCss).filter((name) => design.has(name))).toEqual([]);
+  });
+
+  it("themes every primitive except the always-white --on-deep-card", () => {
+    expect([...light.keys()].filter((name) => name !== "--on-deep-card").sort()).toEqual([...dark.keys()].sort());
+    expect(light.has("--on-deep-card")).toBe(true);
+  });
+
+  it("maps every DataViz category and series alias to a declared primitive", () => {
+    // Merge every app-layer :root block; the aliases sit in Layer 2, not the overrides block.
+    const aliases = new Map<string, string>();
+    for (const rule of appCss.matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
+      if (!rule[1]!.split(",").some((selector) => selector.trim() === ":root")) continue;
+      for (const match of rule[2]!.matchAll(/(--[\w-]+)\s*:\s*([^;]+);/g)) aliases.set(match[1]!, match[2]!.trim());
+    }
+    for (const { cssVar } of [...vizCategoryTokens, ...vizSeriesTokens]) {
+      const target = aliases.get(cssVar)?.match(/^var\((--viz-[\w-]+)\)$/)?.[1];
+      expect(target, cssVar).toBeDefined();
+      expect(light.has(target!), `${cssVar} → ${target}`).toBe(true);
+    }
   });
 });
 

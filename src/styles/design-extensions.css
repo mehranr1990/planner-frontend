@@ -1,0 +1,41 @@
+/*
+ * Layer 1b · primitives from the final design package that
+ * design/tokens.css does not declare.
+ *
+ * design/ is read-only, so colours the package defines only on its boards are
+ * lifted here, each with its source. Imported in globals.css right after
+ * design/tokens.css and before ./tokens.css. Never redeclare a name from
+ * design/tokens.css here; src/styles/tokens.test.ts enforces that, and that
+ * every light name has a dark counterpart (except --on-deep-card).
+ */
+
+:root {
+  /* Deep (signature) card — P01PersonalOverview Insight card, CLAUDE.md §2.7 */
+  --deep-card: #0E6B57;           /* board paints #0E6B58; snapped to --personal-deep */
+  --on-deep-card: #FFFFFF;        /* P01PersonalOverview Insight heading */
+  --on-deep-card-muted: #BFE9DB;  /* P01PersonalOverview Insight body copy */
+
+  /* DataViz categorical palette — DataVizAdd / DataVizPersonal (frozen) */
+  --viz-green: #1BAF7A;           /* DataVizAdd */
+  --viz-coral: #EB6834;           /* DataVizAdd */
+  --viz-blue: #4F86C6;            /* DataVizAdd */
+  --viz-amber: #EDA100;           /* DataVizAdd */
+  --viz-violet: #7A62D6;          /* DataVizAdd */
+  --viz-pink: #D46A9A;            /* DataVizAdd */
+  --viz-neutral: #A9A9A1;         /* DataVizAdd */
+}
+
+[data-theme="dark"] {
+  /* P01PersonalOverviewDark Insight card; its heading stays white (--on-deep-card) */
+  --deep-card: #173A31;           /* P01PersonalOverviewDark */
+  --on-deep-card-muted: #9FD9C5;  /* P01PersonalOverviewDark */
+
+  /* DataVizAddDark */
+  --viz-green: #199E70;           /* DataVizAddDark */
+  --viz-coral: #D95926;           /* DataVizAddDark */
+  --viz-blue: #4F7FC0;            /* DataVizAddDark */
+  --viz-amber: #C98500;           /* DataVizAddDark */
+  --viz-violet: #8370D9;          /* DataVizAddDark */
+  --viz-pink: #C9608E;            /* DataVizAddDark */
+  --viz-neutral: #6E746E;         /* DataVizAddDark */
+}

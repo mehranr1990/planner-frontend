@@ -116,7 +116,7 @@ type RootElement = "div" | "article" | "section" | "aside" | "li";
 
 export type NotchedCardProps = Omit<HTMLAttributes<HTMLElement>, "children"> &
   VariantProps<typeof surfaceVariants> & {
-    /** Notch geometry: default 64×64 (52px button), compact 60×60 (48px), double 112×60 (two 48px). */
+    /** Notch geometry: default 64×64 (54px button), compact 60×60 (48px), double 112×60 (two 48px). */
     preset?: NotchPreset;
     /** One or two buttons placed in the notch corner (see NotchedCardButton). */
     action?: ReactNode;
@@ -217,7 +217,7 @@ export function NotchedCardHeader({ className, ...props }: ComponentPropsWithout
 
 export type NotchedCardButtonProps = Omit<IconButtonProps, "size">;
 
-/** Round icon button sized for the notch preset it sits in (52px or 48px). */
+/** Round icon button sized for the notch preset it sits in (54px default, 48px for the deprecated presets). */
 export function NotchedCardButton({ variant = "outline", className, ...props }: NotchedCardButtonProps) {
   return <IconButton variant={variant} className={cn("size-(--notch-button)", className)} {...props} />;
 }

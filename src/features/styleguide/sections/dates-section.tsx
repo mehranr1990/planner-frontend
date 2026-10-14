@@ -13,8 +13,11 @@ import {
   getWeekDays,
   type CalendarSystem,
   type DateFormatOptions,
+  type WeekDay,
 } from "@/lib/dates/format";
-import { SAMPLE_DATE, SAMPLE_DURATION_MINUTES, SAMPLE_RANGE } from "../samples";
+import { formatDateParam } from "@/lib/dates/date-param";
+import { nextWorkingDay } from "@/lib/dates/week";
+import { SAMPLE_DATE, SAMPLE_DURATION_MINUTES, SAMPLE_HALF_DAY, SAMPLE_RANGE } from "../samples";
 import { StyleguideSection } from "../styleguide-section";
 
 type RowKey = "full" | "short" | "monthYear" | "range" | "time" | "duration";
@@ -34,6 +37,34 @@ function formatRow(row: RowKey, options: DateFormatOptions): string {
   }
 }
 
+type DayLabel = "workday" | "halfDay" | "weekend";
+
+/** Full work day, half day (Thursday) or weekend; a day the week leaves out has none. */
+function dayLabel(day: WeekDay): DayLabel | null {
+  if (day.isWeekend) return "weekend";
+  if (day.isHalfDay) return "halfDay";
+  return day.isWorkday ? "workday" : null;
+}
+
+/*
+ * The day marker differs in shape as well as colour: a filled dot for a work
+ * day, a ring for a half day, a red dot for the weekend.
+ */
+function DayMarker({ kind, onAccent = false }: { kind: DayLabel | null; onAccent?: boolean }) {
+  return (
+    <span
+      aria-hidden
+      className={cn(
+        "size-1.5 rounded-pill",
+        kind === "workday" && (onAccent ? "bg-on-accent" : "bg-scope-dot"),
+        kind === "halfDay" && (onAccent ? "border border-on-accent" : "border border-scope-dot"),
+        kind === "weekend" && "bg-weekend",
+        kind === null && "bg-transparent",
+      )}
+    />
+  );
+}
+
 function WeekStrip({ options }: { options: DateFormatOptions }) {
   const t = useTranslations("Styleguide.dates");
   const days = getWeekDays(SAMPLE_DATE, options);
@@ -44,6 +75,7 @@ function WeekStrip({ options }: { options: DateFormatOptions }) {
       <ol className="grid grid-cols-7 gap-1.5">
         {days.map((day) => {
           const today = isSameDay(day.date, SAMPLE_DATE);
+          const kind = dayLabel(day);
           return (
             <li
               key={day.date.toISOString()}
@@ -62,16 +94,10 @@ function WeekStrip({ options }: { options: DateFormatOptions }) {
               <span aria-hidden className="tabular text-base font-semibold">
                 {day.dayOfMonth}
               </span>
-              <span
-                aria-hidden
-                className={cn(
-                  "size-1.5 rounded-pill",
-                  day.isWorkday ? (today ? "bg-on-accent" : "bg-scope-dot") : day.isWeekend ? "bg-weekend" : "bg-transparent",
-                )}
-              />
+              <DayMarker kind={kind} onAccent={today} />
               <span className="sr-only">
                 {day.label} {day.dayOfMonth}
-                {day.isWorkday ? `, ${t("workday")}` : day.isWeekend ? `, ${t("weekend")}` : ""}
+                {kind ? `, ${t(kind)}` : ""}
                 {today ? `, ${t("today")}` : ""}
               </span>
             </li>
@@ -83,12 +109,41 @@ function WeekStrip({ options }: { options: DateFormatOptions }) {
           <span aria-hidden className="size-1.5 rounded-pill bg-scope-dot" />
           {t("workday")}
         </span>
+        <span className="flex items-center gap-1.5">
+          <DayMarker kind="halfDay" />
+          {t("halfDay")}
+        </span>
         <span className="flex items-center gap-1.5 text-weekend-text">
-          <span aria-hidden className="size-1.5 rounded-pill bg-weekend" />
+          <DayMarker kind="weekend" />
           {t("weekend")}
         </span>
       </p>
     </div>
+  );
+}
+
+/** Scheduling rules that read the week config and the URL date format. */
+function DateRules({ options }: { options: DateFormatOptions }) {
+  const t = useTranslations("Styleguide.dates");
+  const next = nextWorkingDay(SAMPLE_HALF_DAY);
+
+  return (
+    <dl className="flex flex-col divide-y divide-line">
+      <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 py-2.5">
+        <dt className="text-xs font-semibold text-fg-muted">
+          {t("nextWorkingDay", { from: formatDate(SAMPLE_HALF_DAY, "weekday", options) })}
+        </dt>
+        <dd className="text-sm font-semibold">{next ? formatDate(next, "full", options) : "—"}</dd>
+      </div>
+      <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 py-2.5">
+        <dt className="text-xs font-semibold text-fg-muted">{t("urlParam")}</dt>
+        <dd>
+          <code dir="ltr" className="text-sm font-semibold">
+            ?date={formatDateParam(SAMPLE_DATE)}
+          </code>
+        </dd>
+      </div>
+    </dl>
   );
 }
 
@@ -140,6 +195,7 @@ export function DatesSection() {
         </dl>
       </div>
       <WeekStrip options={{ calendar, locale, digits }} />
+      <DateRules options={{ calendar, locale, digits }} />
     </StyleguideSection>
   );
 }

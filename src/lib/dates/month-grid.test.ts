@@ -14,6 +14,7 @@ import {
   startOfCalendarMonth,
   weekColumn,
 } from "./month-grid";
+import type { WeekConfig } from "./week";
 
 const jalali = (y: number, m: number, d: number) => createCalendarDate("jalali", y, m, d);
 
@@ -82,6 +83,16 @@ describe("getMonthGrid", () => {
     expect(days.filter((day) => day.inMonth)).toHaveLength(30);
   });
 
+  it("follows a custom week config (Monday first, Saturday and Sunday off)", () => {
+    const europe: WeekConfig = { weekStartsOn: 1, workDays: [1, 2, 3, 4, 5], halfDays: [], weekendDays: [6, 0] };
+    const grid = getMonthGrid(new Date(2026, 9, 13), "gregorian", { week: europe });
+    // 1 Oct 2026 is a Thursday: three leading days in a Monday-first week.
+    expect(grid[0]!.findIndex((day) => day.inMonth)).toBe(3);
+    expect(grid[0]!.map((day) => day.weekday)).toEqual([1, 2, 3, 4, 5, 6, 0]);
+    expect(grid[0]!.map((day) => day.isWeekend)).toEqual([false, false, false, false, false, true, true]);
+    expect(grid).toHaveLength(5);
+  });
+
   it("pads to six weeks when fixedWeeks is set", () => {
     expect(getMonthGrid(jalali(1405, 7, 1), "jalali", { fixedWeeks: true })).toHaveLength(6);
   });
@@ -120,6 +131,11 @@ describe("month arithmetic", () => {
   it("knows the Saturday-first column", () => {
     expect(weekColumn(new Date(2026, 9, 10))).toBe(0); // Saturday
     expect(weekColumn(new Date(2026, 9, 16))).toBe(6); // Friday
+  });
+
+  it("counts columns from a custom first day", () => {
+    expect(weekColumn(new Date(2026, 9, 12), { weekStartsOn: 1 })).toBe(0); // Monday
+    expect(weekColumn(new Date(2026, 9, 11), { weekStartsOn: 1 })).toBe(6); // Sunday
   });
 });
 

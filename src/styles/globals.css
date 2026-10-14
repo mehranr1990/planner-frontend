@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "../../design/tokens.css"; /* layer 1: design primitives */
+@import "./design-extensions.css"; /* layer 1b: package primitives tokens.css lacks */
 @import "./tokens.css"; /* app overrides + layer 2 semantic */
 @import "./typography.css";
 @import "./utilities.css";
@@ -82,6 +83,21 @@
   --color-weekend-text: var(--weekend-text);
   --color-focus-ring: var(--focus-ring);
 
+  --color-deep-card: var(--deep-card);
+  --color-on-deep-card: var(--on-deep-card);
+  --color-on-deep-card-muted: var(--on-deep-card-muted);
+
+  --color-viz-housing: var(--viz-housing);
+  --color-viz-food: var(--viz-food);
+  --color-viz-transport: var(--viz-transport);
+  --color-viz-lifestyle: var(--viz-lifestyle);
+  --color-viz-work: var(--viz-work);
+  --color-viz-health: var(--viz-health);
+  --color-viz-other: var(--viz-other);
+  --color-viz-mood: var(--viz-mood);
+  --color-viz-energy: var(--viz-energy);
+  --color-viz-focus: var(--viz-focus);
+
   --font-*: initial;
   --font-sans: var(--font-latin);
   --font-mono: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
@@ -130,6 +146,12 @@
   --radius-tile: var(--radius-tile);
   --radius-row: var(--radius-row);
   --radius-input: var(--radius-input);
+  --radius-signature: var(--radius-signature);
+  --radius-product: var(--radius-product);
+  --radius-utility: var(--radius-utility);
+  --radius-metric: var(--radius-metric);
+  --radius-field: var(--radius-field);
+  --radius-folder-tab: var(--radius-folder-tab);
   --shadow-island: var(--shadow-island);
   --shadow-elevated: var(--shadow-elevated);
   --ease-standard: var(--ease-standard);

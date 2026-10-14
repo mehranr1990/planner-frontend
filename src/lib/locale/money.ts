@@ -1,5 +1,5 @@
 import type { Locale } from "./config";
-import { formatNumber, type DigitSystem } from "./digits";
+import { formatCompactNumber, formatNumber, type DigitSystem } from "./digits";
 
 export type Currency = "toman" | "rial";
 
@@ -41,4 +41,22 @@ export function formatMoney(amountToman: number, options: MoneyFormatOptions): s
     maximumFractionDigits: isRial ? 0 : 1,
   });
   return `${number} ${currencyLabel(options.currency, options.locale)}`;
+}
+
+export interface CompactMoneyFormatOptions extends MoneyFormatOptions {
+  /** Append the currency label. Default false (chart axes and tiles). */
+  unit?: boolean;
+}
+
+/**
+ * Compact money for charts: 186_400_000 Toman in Rial → "1.86B" or
+ * "۱٫۸۶ میلیارد ریال" with the unit. Same Rial ×10 rule as formatMoney.
+ */
+export function formatCompactMoney(
+  amountToman: number,
+  { unit = false, ...options }: CompactMoneyFormatOptions,
+): string {
+  const amount = options.currency === "rial" ? tomanToRial(amountToman) : amountToman;
+  const number = formatCompactNumber(amount, options);
+  return unit ? `${number} ${currencyLabel(options.currency, options.locale)}` : number;
 }

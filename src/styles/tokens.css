@@ -4,6 +4,7 @@
  * Layer 1 (primitives) is design/tokens.css itself, imported
  * just before this file in globals.css: the design package is the single
  * source of truth for colour, shape and shadow values, light and dark.
+ * Layer 1b (design-extensions.css) adds the package's board-only colours.
  * This file holds only app overrides (fonts, motion) and Layer 2 (semantic),
  * which components consume through the Tailwind theme. No raw colours here.
  * src/styles/tokens.test.ts checks the contract between the two files.
@@ -87,6 +88,32 @@
   --radius-input: var(--r-input);
   --radius-control: var(--r-pill);
   --radius-island: var(--r-pill);
+
+  /* Card families — P00CardsTabs board, CLAUDE.md §2.4 / §4 */
+  --radius-signature: var(--r-card);  /* 32: signature (notched) cards */
+  --radius-product: var(--r-card-sm); /* 28: boards' .card; P00 demo 24, spec 24–28 */
+  --radius-utility: 20px;             /* utility cards, KPI .soft tiles */
+  --radius-metric: 20px;              /* metric tiles */
+  --radius-field: 16px;               /* rows and fields inside utility cards */
+  --radius-folder-tab: 24px;          /* folder tab top corners */
+  --folder-fillet: 20px;              /* concave fillet joining tab and panel */
+
+  /*
+   * DataViz categories (frozen DataViz boards win). P13Finance's prose
+   * ("Housing coral…") is superseded by the DataVizAdd/DataVizPersonal data.
+   */
+  --viz-housing: var(--viz-green);
+  --viz-food: var(--viz-coral);
+  --viz-transport: var(--viz-blue);
+  --viz-lifestyle: var(--viz-amber);
+  --viz-work: var(--viz-violet);
+  --viz-health: var(--viz-pink);
+  --viz-other: var(--viz-neutral);
+
+  /* DataViz layered-area series — DataVizAdd */
+  --viz-mood: var(--viz-green);
+  --viz-energy: var(--viz-amber);
+  --viz-focus: var(--viz-blue);
 
   /* Stacking: shell chrome < overlays < toasts < tooltips. */
   --z-shell: 20;

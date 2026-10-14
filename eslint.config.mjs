@@ -16,7 +16,7 @@ const eslintConfig = defineConfig([
     "test-results/**",
     "playwright-report/**",
     // Design package: reference boards, not production code
-    "mehran-planner-design/**",
+    "design/**",
   ]),
 ]);
 

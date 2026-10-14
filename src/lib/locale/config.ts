@@ -2,7 +2,8 @@ export const locales = ["en", "fa"] as const;
 
 export type Locale = (typeof locales)[number];
 
-export const defaultLocale: Locale = "en";
+/** First-run language: Persian (RTL, Jalali, Persian digits follow from it). */
+export const defaultLocale: Locale = "fa";
 
 /** BCP 47 tags handed to Intl APIs. */
 export const intlLocale: Record<Locale, string> = {

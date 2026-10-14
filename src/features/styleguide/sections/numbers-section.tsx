@@ -4,8 +4,8 @@ import { useTranslations } from "next-intl";
 import { Progress } from "@/design-system/feedback/progress";
 import { usePreferences } from "@/features/preferences/use-preferences";
 import { convertDigits, formatNumber, formatPercent } from "@/lib/locale/digits";
-import { formatMoney } from "@/lib/locale/money";
-import { SAMPLE_AMOUNT_TOMAN, SAMPLE_NUMBER, SAMPLE_PROGRESS } from "../samples";
+import { formatCompactMoney, formatMoney } from "@/lib/locale/money";
+import { SAMPLE_AMOUNT_TOMAN, SAMPLE_COMPACT_TOMAN, SAMPLE_NUMBER, SAMPLE_PROGRESS } from "../samples";
 import { StyleguideSection } from "../styleguide-section";
 
 function Sample({ label, value, lang }: { label: string; value: string; lang?: string }) {
@@ -36,6 +36,15 @@ export function NumbersSection() {
       }),
     },
     { key: "selected", value: formatMoney(SAMPLE_AMOUNT_TOMAN, { currency, digits, locale }) },
+    // Chart labels (DataViz boards): the word follows the language, the digits the setting.
+    {
+      key: "compactToman",
+      value: formatCompactMoney(SAMPLE_COMPACT_TOMAN, { currency: "toman", digits, locale, unit: true }),
+    },
+    {
+      key: "compactRial",
+      value: formatCompactMoney(SAMPLE_COMPACT_TOMAN, { currency: "rial", digits, locale, unit: true }),
+    },
   ] as const;
 
   return (

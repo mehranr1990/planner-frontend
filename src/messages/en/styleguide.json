@@ -51,6 +51,27 @@
     "neutral": "Draft",
     "weekend": "Friday · weekend label"
   },
+  "dataviz": {
+    "title": "Deep card & data colours",
+    "description": "Tokens only: the deep signature card (graphite-mint in dark) and the frozen DataViz palette. Chart components arrive with the first screen that uses them.",
+    "deepCard": "Deep card",
+    "deepCardTitle": "Your best focus is 09–12 on Sat–Mon.",
+    "deepCardBody": "Insight · last 4 weeks",
+    "categories": "Finance categories",
+    "series": "Check-in series",
+    "names": {
+      "housing": "Housing",
+      "food": "Food",
+      "transport": "Transport",
+      "lifestyle": "Lifestyle",
+      "work": "Work",
+      "health": "Health",
+      "other": "Other",
+      "mood": "Mood",
+      "energy": "Energy",
+      "focus": "Focus"
+    }
+  },
   "surfaces": {
     "title": "Surfaces & depth",
     "description": "Canvas → surface → raised → subtle. Islands float with a soft shadow in light and a lighter surface in dark.",
@@ -67,8 +88,18 @@
   },
   "radii": {
     "title": "Radii & notch",
-    "description": "Cards 28–32, controls are capsules. The notch geometry is ready for the Step 2 NotchedCard and mirrors in RTL.",
-    "notch": "Notch geometry · 64 × 64, fillet 30"
+    "description": "Signature cards 32, product cards 28, utility cards 20, fields 16; controls are capsules. The notch geometry follows P00 and mirrors in RTL.",
+    "notch": "Desktop notch · {width} × {height}, fillet {fillet}, button {button}",
+    "presets": "Notch presets",
+    "preset": "Preset",
+    "notchSize": "Notch",
+    "fillet": "Fillet",
+    "button": "Button",
+    "presetNames": {
+      "default": "Desktop",
+      "mobile": "Mobile",
+      "focus": "Focus"
+    }
   },
   "shadows": {
     "title": "Shadows",
@@ -113,7 +144,7 @@
   },
   "dates": {
     "title": "Calendar & dates",
-    "description": "Jalali by default in Persian, Gregorian on request. The week starts Saturday, work days run Saturday–Wednesday, Friday is the weekend.",
+    "description": "Jalali by default, Gregorian on request. The week starts Saturday; Saturday–Wednesday are work days, Thursday is a half day, Friday is the weekend.",
     "jalali": "Jalali",
     "gregorian": "Gregorian",
     "full": "Full date",
@@ -126,7 +157,10 @@
     "workday": "Work day",
     "weekend": "Weekend",
     "today": "Today",
-    "calendarLabel": "Calendar"
+    "calendarLabel": "Calendar",
+    "halfDay": "Half day",
+    "nextWorkingDay": "Next working day after {from}",
+    "urlParam": "URL date parameter"
   },
   "numbers": {
     "title": "Digits & money",
@@ -141,7 +175,9 @@
     "toman": "Toman",
     "rial": "Rial",
     "selected": "Selected",
-    "progress": "Progress"
+    "progress": "Progress",
+    "compactToman": "Compact · Toman",
+    "compactRial": "Compact · Rial"
   },
   "bdi": {
     "title": "Mixed text",
@@ -493,7 +529,7 @@
       "title": "Notched cards",
       "description": "Signature surfaces only: hero, health, focus, nav and insight (Rationale). The circular action sits in a real cut-out of the card, top-left in RTL. Shown on the canvas so the notch is visible.",
       "sampleAction": "Sample action",
-      "defaultPreset": "Default · 64 × 64 notch, one 52px button",
+      "defaultPreset": "Default · 64 × 64 notch, one 54px button",
       "doublePreset": "Double · 112 × 60 notch, two 48px buttons, live (volt)",
       "compactPreset": "Compact · 60 × 60 notch, one 48px button, scope deep",
       "lead": {
@@ -833,7 +869,7 @@
       },
       "notches": {
         "title": "Notches",
-        "allowed": "Signature surfaces only — hero, health, focus, nav, insight — with the presets 64×64 (52px button), 60×60 (48px) and 112×60 (two 48px). The action sits in the cut-out, top-left in RTL. A top-centre notch holding people (S5, MobileFlow) is approved but not built yet.",
+        "allowed": "Signature surfaces only — hero, health, focus, nav, insight — with the presets 64×64 (54px button), 60×60 (48px) and 112×60 (two 48px). The action sits in the cut-out, top-left in RTL. A top-centre notch holding people (S5, MobileFlow) is approved but not built yet.",
         "notAllowed": "Utility surfaces (“No notches here.”), a floating button beside a plain card posing as a notch, and more than one or two signature surfaces per screen."
       },
       "statusChips": {

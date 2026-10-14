@@ -4,7 +4,7 @@ import type { Locale } from "@/lib/locale/config";
 import { convertDigits, type DigitSystem } from "@/lib/locale/digits";
 import { formatGregorian } from "./gregorian";
 import { formatJalali } from "./jalali";
-import { getWeekDates, isWeekend, isWorkday } from "./week";
+import { IRAN_WEEK, getWeekDates, isHalfDay, isWeekend, isWorkday, type WeekConfig } from "./week";
 
 export type CalendarSystem = "jalali" | "gregorian";
 
@@ -90,17 +90,24 @@ export interface WeekDay {
   narrow: string;
   dayOfMonth: string;
   isWeekend: boolean;
+  /** A full work day (Thursday in Iran is a half day, not a workday). */
   isWorkday: boolean;
+  isHalfDay: boolean;
 }
 
-/** Saturday-first week around `date`, labelled for the given calendar. */
-export function getWeekDays(date: Date, options: DateFormatOptions): WeekDay[] {
-  return getWeekDates(date).map((day) => ({
+/** The week around `date` (Saturday-first by default), labelled for the given calendar. */
+export function getWeekDays(
+  date: Date,
+  options: DateFormatOptions,
+  week: WeekConfig = IRAN_WEEK,
+): WeekDay[] {
+  return getWeekDates(date, week).map((day) => ({
     date: day,
     label: formatDate(day, "weekday", options),
     narrow: formatDate(day, "weekdayNarrow", options),
     dayOfMonth: formatDate(day, "day", options),
-    isWeekend: isWeekend(day),
-    isWorkday: isWorkday(day),
+    isWeekend: isWeekend(day, week),
+    isWorkday: isWorkday(day, week),
+    isHalfDay: isHalfDay(day, week),
   }));
 }

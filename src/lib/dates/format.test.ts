@@ -9,7 +9,7 @@ import {
 } from "./format";
 import { getGregorianParts } from "./gregorian";
 import { formatJalali, getJalaliParts } from "./jalali";
-import { getWeekDates, isWeekend, isWorkday } from "./week";
+import { getWeekDates, isWeekend, isWorkday, type WeekConfig } from "./week";
 
 // Tue 13 Oct 2026, 14:35 = 21 Mehr 1405 (the date used across the boards).
 const DATE = new Date(2026, 9, 13, 14, 35);
@@ -118,5 +118,19 @@ describe("Iranian week", () => {
     expect(days[0]!.label).toBe("شنبه");
     expect(days[6]!.isWeekend).toBe(true);
     expect(getWeekDays(DATE, enGregorian)[0]!.narrow).toBe("Sa");
+  });
+
+  it("flags Thursday as a half day, not a workday", () => {
+    const days = getWeekDays(DATE, faJalali);
+    expect(days.map((day) => day.isHalfDay)).toEqual([false, false, false, false, false, true, false]);
+    expect(days.map((day) => day.isWorkday)).toEqual([true, true, true, true, true, false, false]);
+  });
+
+  it("follows a custom week config", () => {
+    const europe: WeekConfig = { weekStartsOn: 1, workDays: [1, 2, 3, 4, 5], halfDays: [], weekendDays: [6, 0] };
+    const days = getWeekDays(DATE, enGregorian, europe);
+    expect(days[0]!.label).toBe("Monday");
+    expect(days.map((day) => day.isWeekend)).toEqual([false, false, false, false, false, true, true]);
+    expect(days.some((day) => day.isHalfDay)).toBe(false);
   });
 });

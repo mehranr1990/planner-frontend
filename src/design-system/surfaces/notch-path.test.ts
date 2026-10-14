@@ -1,8 +1,9 @@
 import { describe, expect, it } from "vitest";
+import { notchPresets } from "@/design-system/tokens/radii";
 import { canNotch, notchPath } from "./notch-path";
 
 /** The reference implementation from design CLAUDE.md §4, whitespace-normalised. */
-function designNotchPath(W: number, H: number, C = 32, nw = 64, nh = 64, f = 30) {
+function designNotchPath(W: number, H: number, C = 32, nw = 64, nh = 64, f = 28) {
   return `M ${C} 0
     L ${W - nw - f} 0
     A ${f} ${f} 0 0 1 ${W - nw} ${f}
@@ -35,7 +36,7 @@ describe("notchPath", () => {
     expect(rtl.slice(0, 3)).toEqual(["M", "368", "0"]);
     // First arc: sweep flag 1 → 0, end x 336 → 64.
     const arc = rtl.indexOf("A");
-    expect(rtl.slice(arc, arc + 8)).toEqual(["A", "30", "30", "0", "0", "0", "64", "30"]);
+    expect(rtl.slice(arc, arc + 8)).toEqual(["A", "28", "28", "0", "0", "0", "64", "28"]);
   });
 
   it("falls back to a rounded rectangle when the box is too small", () => {
@@ -46,5 +47,10 @@ describe("notchPath", () => {
 
   it("rejects fillets too large for the notch", () => {
     expect(canNotch({ width: 400, height: 240, notchWidth: 50, notchHeight: 50, fillet: 30 })).toBe(false);
+  });
+
+  it.each(Object.entries(notchPresets))("fits the %s preset on a typical card", (_, preset) => {
+    const { notchWidth, notchHeight, fillet } = preset;
+    expect(canNotch({ width: 360, height: 220, notchWidth, notchHeight, fillet })).toBe(true);
   });
 });

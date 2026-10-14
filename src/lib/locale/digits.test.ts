@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   convertDigits,
+  formatCompactNumber,
   formatNumber,
   formatPercent,
   parseLocalizedNumber,
@@ -58,5 +59,35 @@ describe("parseLocalizedNumber", () => {
 
   it.each(["", "12a", "O", "1.2.3"])("rejects %j", (input) => {
     expect(parseLocalizedNumber(input)).toBeNull();
+  });
+});
+
+/** Drops Intl bidi marks and normalises minus signs and no-break spaces. */
+const plain = (text: string) => text.replace(/[‎‏؜]/g, "").replace(/−/g, "-").replace(/ /g, " ");
+
+describe("formatCompactNumber", () => {
+  it("keeps the word with the language and the digits with the digit setting", () => {
+    const value = 1_864_000_000;
+    expect(plain(formatCompactNumber(value, { locale: "en", digits: "latn" }))).toBe("1.86B");
+    expect(plain(formatCompactNumber(value, { locale: "en", digits: "fa" }))).toBe("۱٫۸۶B");
+    expect(plain(formatCompactNumber(value, { locale: "fa", digits: "latn" }))).toBe("1.86 میلیارد");
+    expect(plain(formatCompactNumber(value, { locale: "fa", digits: "fa" }))).toBe("۱٫۸۶ میلیارد");
+  });
+
+  it("matches the DataViz board samples", () => {
+    expect(formatCompactNumber(48_000_000, { locale: "en", digits: "latn" })).toBe("48M");
+    expect(formatCompactNumber(31_200_000, { locale: "en", digits: "latn" })).toBe("31.2M");
+    expect(plain(formatCompactNumber(48_000_000, { locale: "fa", digits: "fa" }))).toBe("۴۸ میلیون");
+  });
+
+  it("honours maximumFractionDigits and leaves small numbers whole", () => {
+    expect(formatCompactNumber(1_864_000_000, { locale: "en", digits: "latn", maximumFractionDigits: 1 })).toBe("1.9B");
+    expect(formatCompactNumber(950, { locale: "en", digits: "latn" })).toBe("950");
+    expect(formatCompactNumber(950, { locale: "fa", digits: "fa" })).toBe("۹۵۰");
+  });
+
+  it("keeps the sign of negative values", () => {
+    expect(plain(formatCompactNumber(-1_864_000_000, { locale: "en", digits: "latn" }))).toBe("-1.86B");
+    expect(plain(formatCompactNumber(-1_864_000_000, { locale: "fa", digits: "fa" }))).toBe("-۱٫۸۶ میلیارد");
   });
 });
