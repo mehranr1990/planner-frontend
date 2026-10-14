@@ -62,7 +62,7 @@ export function personalModuleHref(id: PersonalModuleId): string {
 
 /**
  * The module that owns a Personal pathname, nested routes included
- * (/personal/goals/42 → goals, /personal/tasks/new → tasks). Contextual
+ * (/personal/goals/42 → goals, /personal/tasks/create → tasks). Contextual
  * flows without a nav item (focus, shutdown, review) and paths outside
  * /personal return null.
  */

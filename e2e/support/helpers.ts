@@ -47,7 +47,7 @@ export const PERSONAL_ROUTES = [
   "/personal/my-day?date=1405-07-21&view=3days",
   "/personal/tasks",
   "/personal/tasks?view=board&group=horizon",
-  "/personal/tasks/new",
+  "/personal/tasks/create",
   `/personal/tasks/${SAMPLE_TASK}`,
   "/personal/calendar?view=month&cal=shamsi",
   "/personal/inbox?tab=triage",

@@ -20,11 +20,11 @@ import { formatNumber } from "@/lib/locale/digits";
 import { cn } from "@/lib/cn";
 import { NotificationsPopover } from "./notifications-popover";
 import { ProfileMenu } from "./profile-menu";
-import { useShell } from "./shell-provider";
+import { ShellContextSwitcher } from "./shell-context-switcher";
 
 /*
- * Personal mobile chrome (PM01): the header (account · Personal + name ·
- * bell — no context chips, no digits toggle), the More sheet (module grid +
+ * Personal mobile chrome (PM01): the header (account · Personal + name as the
+ * context switcher · bell — no context chips, no digits toggle), the More sheet (module grid +
  * contextual flows) and the centre "+" (tap = Universal Quick Add,
  * long-press = Voice capture).
  */
@@ -33,15 +33,11 @@ import { useShell } from "./shell-provider";
 const MORE_ITEMS: readonly NavItemId[] = ["goals", "habits", "finance", "journal", "insights", "inbox", "braindump", "settings"];
 
 export function PersonalMobileHeader() {
-  const t = useTranslations("Navigation");
-  const { profile } = useShell();
   return (
     <div className="flex min-w-0 items-center gap-3">
       <ProfileMenu align="start" />
-      <p data-slot="mobile-context" className="flex min-w-0 flex-1 flex-col leading-tight">
-        <span className="text-xs font-semibold text-fg-secondary">{t("contexts.personal.label")}</span>
-        <bdi className="truncate type-title text-fg">{profile.name}</bdi>
-      </p>
+      {/* The identity is the mobile context switcher (Personal · Projects · Teams · Companies). */}
+      <ShellContextSwitcher variant="header" />
       <NotificationsPopover triggerClassName="bg-surface shadow-island hover:bg-subtle" />
     </div>
   );

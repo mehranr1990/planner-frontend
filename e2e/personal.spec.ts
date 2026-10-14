@@ -144,13 +144,18 @@ test.describe("desktop @ 1440", () => {
     await expect(page.getByText("UI design · My Day screen")).toBeVisible();
   });
 
-  test("/personal/tasks/new is never swallowed by the task drawer", async ({ page }) => {
+  test("/personal/tasks/create is never swallowed by the task drawer (soft navigation, no reload)", async ({ page }) => {
     await open(page, "/personal/tasks");
-    // A client navigation (the route interception applies to these).
-    await page.evaluate(() => (window as unknown as { next: { router: { push(href: string): void } } }).next.router.push("/personal/tasks/new"));
-    await expect(page).toHaveURL(/\/personal\/tasks\/new$/);
+    // A client navigation (the route interception applies to these); the marker proves no page load happened.
+    await page.evaluate(() => {
+      const w = window as unknown as { __softNav?: boolean; next: { router: { push(href: string): void } } };
+      w.__softNav = true;
+      w.next.router.push("/personal/tasks/create");
+    });
+    await expect(page).toHaveURL(/\/personal\/tasks\/create$/);
     await expect(page.locator('[data-skeleton="taskNew"]')).toBeVisible();
     await expect(page.locator("[data-task-drawer]")).toHaveCount(0);
+    expect(await page.evaluate(() => (window as unknown as { __softNav?: boolean }).__softNav)).toBe(true);
   });
 
   test("top-bar + opens Universal Quick Add over the route; Escape removes only ?sheet and returns focus", async ({ page }) => {

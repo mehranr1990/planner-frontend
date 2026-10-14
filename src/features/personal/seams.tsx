@@ -9,6 +9,7 @@ import { useBlocks, useInboxCount, useTasks } from "@/data/queries";
 import type { TaskView } from "@/data/repositories";
 import { usePreferences } from "@/features/preferences/use-preferences";
 import { formatNumber } from "@/lib/locale/digits";
+import { taskDetailHref } from "./routes";
 
 /*
  * Seam probes for the skeleton pages: they read the route's search params and
@@ -59,7 +60,7 @@ export function TaskLinksProbe({ view = "today" }: { view?: TaskView }) {
           {tasks.data.map((task) => (
             <li key={task.id}>
               <Link
-                href={`/personal/tasks/${task.id}`}
+                href={taskDetailHref(task.id)}
                 className="inline-flex min-h-10 items-center rounded-row px-2 text-sm font-semibold text-fg hover:bg-subtle"
               >
                 <bdi dir="auto">{task.title}</bdi>

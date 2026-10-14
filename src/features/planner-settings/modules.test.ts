@@ -49,7 +49,7 @@ describe("moduleForPathname", () => {
     ["/personal/my-day?date=1405-07-21", "myday"],
     ["/personal/tasks", "tasks"],
     ["/personal/tasks/9", "tasks"],
-    ["/personal/tasks/new", "tasks"],
+    ["/personal/tasks/create", "tasks"],
     ["/personal/goals/42", "goals"],
     ["/personal/brain-dump", "braindump"],
     ["/personal/insights#habits", "insights"],
