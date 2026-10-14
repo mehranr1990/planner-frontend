@@ -35,6 +35,8 @@ export const notchPresets = {
   mobile: { notchWidth: 56, notchHeight: 56, fillet: 24, button: 46 },
   /** Focus Clock / timer hero card. */
   focus: { notchWidth: 72, notchHeight: 72, fillet: 30, button: 56 },
+  /** Two related actions (Stop + Open): the Cards board double notch, 112×60 / f28 with two 48px buttons. */
+  double: { notchWidth: 112, notchHeight: 60, fillet: 28, button: 48 },
 } as const;
 
 export type NotchPresetName = keyof typeof notchPresets;

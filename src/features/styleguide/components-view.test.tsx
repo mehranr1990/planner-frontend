@@ -82,7 +82,7 @@ describe("ComponentsView", { timeout: 30_000 }, () => {
     }
   });
 
-  it("documents the P00 signature cards: one volt card, an empty notch, one action each", () => {
+  it("documents the signature cards: one volt card, never an empty notch, one or two actions", () => {
     const { container } = renderWithProviders(<ComponentsView />);
     const cards = screen.getByRole("region", { name: "Signature cards" });
     // Volt marks live state only: one volt area on the whole page.
@@ -94,8 +94,11 @@ describe("ComponentsView", { timeout: 30_000 }, () => {
     expect(now).toHaveTextContent("2:00 pm – 4:00 pm · 35m left");
 
     const insight = within(cards).getByRole("article", { name: "Insight" });
-    expect(insight).toHaveAttribute("data-empty-notch");
-    expect(within(insight).queryByRole("button")).not.toBeInTheDocument();
+    // The Insight card holds its two real P01 actions in the double notch.
+    expect(insight).toHaveAttribute("data-notch-actions", "2");
+    expect(within(insight).getByRole("button", { name: "Stop showing this insight" })).toBeInTheDocument();
+    expect(within(insight).getByRole("button", { name: "See pattern" })).toBeInTheDocument();
+    expect(container.querySelector("[data-empty-notch]")).toBeNull();
 
     const goal = within(cards).getByRole("article", { name: "Selected goal: Launch Planner v1" });
     expect(within(goal).getByRole("button", { name: "Open goal" })).toBeInTheDocument();
@@ -107,8 +110,10 @@ describe("ComponentsView", { timeout: 30_000 }, () => {
       expect(cards.querySelector(`[data-preset="${preset}"]`)).not.toBeNull();
     }
     expect(within(cards).getByText("64 × 64 notch · 28 fillet · 54 button")).toBeInTheDocument();
-    // The retired multi-button presets are gone from the page.
-    expect(container.querySelector("[data-preset=compact], [data-preset=double]")).toBeNull();
+    // The compact preset stays retired; the double notch appears only where two real actions exist.
+    expect(container.querySelector("[data-preset=compact]")).toBeNull();
+    expect(cards.querySelectorAll("[data-preset=double]")).toHaveLength(1);
+    expect(insight).toHaveAttribute("data-preset", "double");
   });
 
   it("shows product, utility and metric geometry without notches", () => {

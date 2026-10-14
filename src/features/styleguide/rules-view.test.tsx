@@ -78,12 +78,13 @@ describe("RulesView", { timeout: 30_000 }, () => {
     expect(within(patterns).getByRole("heading", { name: "Tab families" })).toBeInTheDocument();
   });
 
-  it("states the P00 notch rules: density, one action or an empty notch, never on rows", () => {
+  it("states the notch rules: density, one or two actions and never empty, never on rows", () => {
     renderWithProviders(<RulesView />);
     const notches = screen.getByRole("article", { name: "Notches" });
     expect(within(notches).getByText(/At most 3 signature cards per desktop viewport, 1–2 on mobile, only one volt/)).toBeInTheDocument();
     expect(within(notches).getByText(/^Task rows, list and table rows, board cards/)).toBeInTheDocument();
-    expect(within(notches).getByText(/retired compact and double presets/)).toBeInTheDocument();
+    expect(within(notches).getByText(/A notch must always contain one or two circular contextual action buttons/)).toBeInTheDocument();
+    expect(within(notches).getByText(/An empty notch/)).toBeInTheDocument();
   });
 
   it("lists resolved decisions instead of open questions, and the superseded boards as history", () => {

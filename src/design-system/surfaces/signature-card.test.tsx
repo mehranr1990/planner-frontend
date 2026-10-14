@@ -1,9 +1,10 @@
 import { act, screen } from "@testing-library/react";
-import { ArrowUpRight, Play } from "lucide-react";
+import { ArrowUpRight, Play, Square } from "lucide-react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { notchPresets } from "@/design-system/tokens/radii";
 import { renderWithProviders } from "@/test/render";
 import { notchPath } from "./notch-path";
+
 import {
   SIGNATURE_DESKTOP_QUERY,
   SignatureCard,
@@ -11,6 +12,9 @@ import {
   SignatureCardHeader,
   notchMask,
 } from "./signature-card";
+
+/** A notch is never empty: cards under test carry one action. */
+const ACTION = <SignatureCardAction label="Open" icon={ArrowUpRight} />;
 
 type Callback = (entries: Array<Partial<ResizeObserverEntry>>) => void;
 
@@ -86,7 +90,7 @@ const mobile = notchPresets.mobile;
 
 describe("SignatureCard geometry", () => {
   it("applies the notch path after the ResizeObserver measures the surface", () => {
-    const { container } = renderWithProviders(<SignatureCard preset="desktop">Body</SignatureCard>);
+    const { container } = renderWithProviders(<SignatureCard action={ACTION} preset="desktop">Body</SignatureCard>);
     const surface = surfaceOf(container);
     // Before measuring, the CSS mask carries the shape (no clip-path yet).
     expect(surface.style.clipPath).toBe("");
@@ -103,7 +107,7 @@ describe("SignatureCard geometry", () => {
 
   it.each(["desktop", "mobile", "focus"] as const)("exposes the %s preset numbers as CSS variables", (preset) => {
     renderWithProviders(
-      <SignatureCard data-testid="card" preset={preset}>
+      <SignatureCard action={ACTION} data-testid="card" preset={preset}>
         x
       </SignatureCard>,
     );
@@ -122,7 +126,7 @@ describe("SignatureCard geometry", () => {
 
   it("auto: ships both breakpoint sets for the first paint, switched by CSS", () => {
     mockViewport(false);
-    renderWithProviders(<SignatureCard data-testid="card">x</SignatureCard>);
+    renderWithProviders(<SignatureCard action={ACTION} data-testid="card">x</SignatureCard>);
     const root = screen.getByTestId("card");
     expect(root.dataset.preset).toBe("auto");
     // No fixed value inline: the breakpoint classes pick the -sm or -lg set.
@@ -146,7 +150,7 @@ describe("SignatureCard geometry", () => {
 
   it("auto: re-applies the clip path when the lg breakpoint changes", () => {
     const viewport = mockViewport(false);
-    const { container, unmount } = renderWithProviders(<SignatureCard>x</SignatureCard>);
+    const { container, unmount } = renderWithProviders(<SignatureCard action={ACTION}>x</SignatureCard>);
     const surface = surfaceOf(container);
     resize(surface, 400, 240);
     expect(surface.dataset.notchPreset).toBe("mobile");
@@ -163,9 +167,9 @@ describe("SignatureCard geometry", () => {
   it("mirrors the path from the element's computed direction, including nested dir", () => {
     const { container } = renderWithProviders(
       <div dir="rtl">
-        <SignatureCard preset="desktop">RTL</SignatureCard>
+        <SignatureCard action={ACTION} preset="desktop">RTL</SignatureCard>
         <div dir="ltr">
-          <SignatureCard preset="desktop">LTR island</SignatureCard>
+          <SignatureCard action={ACTION} preset="desktop">LTR island</SignatureCard>
         </div>
       </div>,
     );
@@ -181,7 +185,7 @@ describe("SignatureCard geometry", () => {
   it("re-applies the path when a dir attribute changes", async () => {
     const { container } = renderWithProviders(
       <div data-testid="host" dir="ltr">
-        <SignatureCard preset="desktop">Body</SignatureCard>
+        <SignatureCard action={ACTION} preset="desktop">Body</SignatureCard>
       </div>,
     );
     const surface = surfaceOf(container);
@@ -198,7 +202,7 @@ describe("SignatureCard geometry", () => {
   it('side="start" mirrors the other way: top-left in LTR, top-right in RTL', () => {
     const { container } = renderWithProviders(
       <>
-        <SignatureCard data-testid="ltr" preset="desktop" side="start">
+        <SignatureCard action={ACTION} data-testid="ltr" preset="desktop" side="start">
           a
         </SignatureCard>
         <div dir="rtl">
@@ -237,7 +241,7 @@ describe("SignatureCard notch content", () => {
     const article = screen.getByRole("article", { name: "Lead" });
     expect(surfaceOf(container)).not.toContainElement(button);
     expect(article).toContainElement(button);
-    expect(article).not.toHaveAttribute("data-empty-notch");
+    expect(article).toHaveAttribute("data-notch-actions", "1");
     const slot = container.querySelector('[data-slot="notch-action"]')!;
     expect(slot.className).toContain("end-0");
     expect(slot.className).toContain("top-0");
@@ -248,14 +252,32 @@ describe("SignatureCard notch content", () => {
     expect(button.className).not.toContain("bg-secondary ");
   });
 
-  it("marks an empty notch as negative space", () => {
+  it("takes the double notch for two related actions: 112×60 / f28, two 48px circles", () => {
     const { container } = renderWithProviders(
-      <SignatureCard data-testid="insight" tone="deep">
+      <SignatureCard
+        data-testid="insight"
+        tone="deep"
+        action={[
+          <SignatureCardAction key="open" variant="neutral" label="See pattern" icon={ArrowUpRight} />,
+          <SignatureCardAction key="stop" variant="danger" label="Stop showing this insight" icon={Square} />,
+        ]}
+      >
         Insight
       </SignatureCard>,
     );
-    expect(screen.getByTestId("insight")).toHaveAttribute("data-empty-notch");
-    expect(container.querySelector('[data-slot="notch-action"]')).toBeNull();
+    const card = screen.getByTestId("insight");
+    expect(card).toHaveAttribute("data-notch-actions", "2");
+    expect(card).toHaveAttribute("data-preset", "double");
+    expect(card.style.getPropertyValue("--notch-w")).toBe("112px");
+    expect(card.style.getPropertyValue("--notch-h")).toBe("60px");
+    expect(card.style.getPropertyValue("--notch-button")).toBe("48px");
+    const slot = container.querySelector('[data-slot="notch-action"]')!;
+    expect(slot.querySelectorAll("button")).toHaveLength(2);
+    // Stop is the destructive (red) action; both stay circles sized by the notch.
+    const stop = screen.getByRole("button", { name: "Stop showing this insight" });
+    expect(stop.className).toContain("bg-destructive");
+    expect(stop.className).toContain("size-(--notch-button)");
+    expect(notchPresets.double).toEqual({ notchWidth: 112, notchHeight: 60, fillet: 28, button: 48 });
   });
 
   it("warns when more than one action is passed", () => {
@@ -272,7 +294,7 @@ describe("SignatureCard notch content", () => {
         x
       </SignatureCard>,
     );
-    expect(error).toHaveBeenCalledWith(expect.stringContaining("at most one action"));
+    expect(error).toHaveBeenCalledWith(expect.stringContaining("one or two actions"));
     error.mockRestore();
   });
 
@@ -290,7 +312,7 @@ describe("SignatureCard notch content", () => {
 
   it("header reserves the notch on the notch side", () => {
     renderWithProviders(
-      <SignatureCard preset="desktop">
+      <SignatureCard action={ACTION} preset="desktop">
         <SignatureCardHeader data-testid="header">Title</SignatureCardHeader>
       </SignatureCard>,
     );
@@ -308,7 +330,7 @@ describe("SignatureCard tones and padding", () => {
     ["volt", "bg-volt", "text-on-volt"],
     ["scope-soft", "bg-scope-soft", "text-fg"],
   ] as const)("tone %s paints %s", (tone, background, text) => {
-    const { container } = renderWithProviders(<SignatureCard tone={tone}>x</SignatureCard>);
+    const { container } = renderWithProviders(<SignatureCard action={ACTION} tone={tone}>x</SignatureCard>);
     const surface = surfaceOf(container);
     expect(surface.className).toContain(background);
     expect(surface.className).toContain(text);
@@ -318,7 +340,7 @@ describe("SignatureCard tones and padding", () => {
     // The class is theme-independent: --deep-card resolves to #173A31 in dark (design-extensions.css).
     const { container } = renderWithProviders(
       <div className="dark">
-        <SignatureCard tone="deep">x</SignatureCard>
+        <SignatureCard action={ACTION} tone="deep">x</SignatureCard>
       </div>,
     );
     const surface = surfaceOf(container);
@@ -329,8 +351,8 @@ describe("SignatureCard tones and padding", () => {
   it("defaults to the board's 22px padding with a compact option", () => {
     const { container } = renderWithProviders(
       <>
-        <SignatureCard>a</SignatureCard>
-        <SignatureCard padding="compact">b</SignatureCard>
+        <SignatureCard action={ACTION}>a</SignatureCard>
+        <SignatureCard action={ACTION} padding="compact">b</SignatureCard>
       </>,
     );
     const [standard, compact] = Array.from(container.querySelectorAll<HTMLElement>('[data-slot="signature-surface"]'));
@@ -340,7 +362,7 @@ describe("SignatureCard tones and padding", () => {
   });
 
   it("keeps the rounded-rectangle fallback while too small to notch", () => {
-    const { container } = renderWithProviders(<SignatureCard preset="desktop">x</SignatureCard>);
+    const { container } = renderWithProviders(<SignatureCard action={ACTION} preset="desktop">x</SignatureCard>);
     const surface = surfaceOf(container);
     resize(surface, 100, 100);
     expect(surface.style.clipPath).toBe(`path("${notchPath({ width: 100, height: 100 })}")`);

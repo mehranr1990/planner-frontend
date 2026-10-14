@@ -30,7 +30,11 @@ describe("NotchedCard (deprecated shim)", () => {
   });
 
   it("maps scope-deep to the deep card tone", () => {
-    const { container } = renderWithProviders(<NotchedCard tone="scope-deep">x</NotchedCard>);
+    const { container } = renderWithProviders(
+      <NotchedCard tone="scope-deep" action={<NotchedCardButton label="Open" />}>
+        x
+      </NotchedCard>,
+    );
     const surface = container.querySelector<HTMLElement>('[data-slot="signature-surface"]')!;
     expect(surface.className).toContain("bg-deep-card");
     expect(surface.className).not.toContain("scope-deep");

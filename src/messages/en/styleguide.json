@@ -98,7 +98,8 @@
     "presetNames": {
       "desktop": "Desktop",
       "mobile": "Mobile",
-      "focus": "Focus"
+      "focus": "Focus",
+      "double": "Double (two actions)"
     }
   },
   "shadows": {
@@ -666,10 +667,10 @@
     },
     "cards": {
       "title": "Signature cards",
-      "description": "Card geometry A (P00): a standalone, important object with a sculpted top inline-end corner that holds ONE circular primary action or stays empty. Shown on the canvas so the cut-out is visible; in RTL it moves to the top-left.",
+      "description": "Card geometry A (P00): a standalone, important object with a sculpted top inline-end corner. The notch always holds one circular contextual action, or two closely related ones in the double notch — never empty. Shown on the canvas so the cut-out is visible; in RTL it moves to the top-left.",
       "sampleAction": "Sample action",
       "actionCaption": "A · Action in notch: one primary action, the only volt area on this page",
-      "emptyCaption": "A · Empty notch: negative space as identity",
+      "doubleCaption": "A · Double-action notch: Stop + Open, two real actions",
       "navigationCaption": "A · Navigation action: a neutral circle",
       "now": {
         "label": "Now: UI design",
@@ -681,7 +682,9 @@
       "insight": {
         "label": "Insight",
         "kicker": "Insight",
-        "body": "Your best focus is {from}–{to} on Sat–Mon."
+        "body": "Your best focus is {from}–{to} on Sat–Mon.",
+        "stop": "Stop showing this insight",
+        "open": "See pattern"
       },
       "goal": {
         "label": "Selected goal: Launch Planner v1",
@@ -710,8 +713,8 @@
       },
       "rules": {
         "title": "Signature rules",
-        "oneAction": "Exactly one action, always circular, always the card’s primary. Secondary actions live inside the card.",
-        "emptyNotch": "Leave the notch empty on one card per view when it creates hierarchy (Insight, Weekly Story, Goal summary).",
+        "oneAction": "A notch is never empty: one circular contextual action (Open, Start, Complete, Stop, Edit, View details).",
+        "twoActions": "Two actions only when the card genuinely has two closely related ones (Stop + Open, Mute + Open, Dismiss + Open): the double notch, 112×60 with two 48px buttons. Never invent a second action.",
         "density": "At most 3 signature cards per desktop viewport and 1–2 on mobile. Only one may be volt.",
         "never": "Never notch rows, list items, board cards, form sections, filter panels, settings groups, KPI tiles, toasts or sheets."
       }
@@ -922,7 +925,7 @@
           "source": "P00CardsTabs · B · Product card · P18"
         },
         "signature": {
-          "summary": "One important object: a sculpted corner holding one circular primary action, or left empty.",
+          "summary": "One important object: a sculpted corner holding one or two circular contextual actions.",
           "where": "Today hero, Now card, Insight, Timeline, Focus timer, Balance summary, Weekly Story and the other cards of “Where in Personal”. At most 3 per desktop viewport, 1–2 on mobile, only one volt.",
           "source": "P00CardsTabs · A · Where in Personal"
         },
@@ -942,7 +945,7 @@
       "retiring": "Retiring"
     },
     "componentNotes": {
-      "signatureCard": "Sculpted top corner (top-left in RTL), 32px radius. Presets: desktop 64×64 / f28 with a 54px button, mobile 56×56 / f24 with 46px, Focus 72×72 / f30 with 56px. One circular primary action or an empty notch.",
+      "signatureCard": "Sculpted top corner (top-left in RTL), 32px radius. Presets: desktop 64×64 / f28 with a 54px button, mobile 56×56 / f24 with 46px, Focus 72×72 / f30 with 56px; double notch 112×60 / f28 with two 48px buttons. Always one or two circular actions, never empty.",
       "productCard": "28px radius, no notch, optional scope tint. The standard surface.",
       "utilityCard": "20px radius, subtle or white, 18px padding, no shadow. Fields are 48px rows with a 16px radius.",
       "metricTile": "KPI family: one shared 20px geometry, never a notch per tile. Danger tiles name their state.",
@@ -1005,8 +1008,8 @@
       },
       "notches": {
         "title": "Notches",
-        "allowed": "Signature cards only, with the desktop (64×64, 28px fillets, 54px button), mobile (56×56, 24px, 46px) and Focus (72×72, 30px, 56px) presets. Exactly one circular action, always the card’s primary (Start focus, Open, Expand, Add), or an empty notch — encouraged on one card per view (Insight, Weekly Story, Goal summary). At most 3 signature cards per desktop viewport, 1–2 on mobile, only one volt. The corner mirrors to top-left in RTL; in dark it reads by surface contrast, with no outline.",
-        "notAllowed": "Task rows, list and table rows, board cards, inputs and form sections, filter panels, settings groups, KPI tiles, chart tiles in a grid, toasts and sheets. A menu of icons in the notch, an icon stuffed into every cut-out, and the retired compact and double presets."
+        "allowed": "Signature cards only, with the desktop (64×64, 28px fillets, 54px button), mobile (56×56, 24px, 46px) and Focus (72×72, 30px, 56px) presets. A notch must always contain one or two circular contextual action buttons: one for a single clear action (Start focus, Open, Complete, Stop, Edit), two in the double notch (112×60, 48px buttons) only when both are real, closely related actions (Stop + Open, Mute + Open). At most 3 signature cards per desktop viewport, 1–2 on mobile, only one volt. The corner mirrors to top-left in RTL; in dark it reads by surface contrast, with no outline.",
+        "notAllowed": "Task rows, list and table rows, board cards, inputs and form sections, filter panels, settings groups, KPI tiles, chart tiles in a grid, toasts and sheets. An empty notch, a menu of icons in the notch, an invented second action, and the retired compact preset."
       },
       "tabs": {
         "title": "Tab families",
@@ -1054,7 +1057,7 @@
         },
         "retiredPresets": {
           "title": "Old notch presets",
-          "decision": "The compact (60×60) and double (112×60) presets of the S-boards are retired."
+          "decision": "Empty notches are not allowed: every notch holds one action, or two real related actions in the double notch (112×60, 48px buttons). The compact (60×60) preset of the S-boards stays retired."
         },
         "productRadius": {
           "title": "Product card radius",

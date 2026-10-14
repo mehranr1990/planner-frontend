@@ -11,8 +11,8 @@ import { StyleguideSection } from "../styleguide-section";
 
 const PREVIEW = { width: 320, height: 150 };
 
-/** Every preset; the multi-button compact and double were retired in Wave 1B (one action per signature card). */
-const PRESETS: readonly NotchPresetName[] = ["desktop", "mobile", "focus"];
+/** Every preset: one action (desktop, mobile, focus) or two related actions (double). Notches are never empty. */
+const PRESETS: readonly NotchPresetName[] = ["desktop", "mobile", "focus", "double"];
 
 /** Static preview of one preset's notch geometry; SignatureCard measures its own size. */
 function NotchPreview({ preset, label }: { preset: NotchPresetName; label: string }) {

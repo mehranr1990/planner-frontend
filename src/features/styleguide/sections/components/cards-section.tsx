@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowUpRight, Pause, Play } from "lucide-react";
+import { ArrowUpRight, Pause, Play, Square } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { toast } from "@/components/ui/toast";
 import { SignatureCard, SignatureCardAction, SignatureCardHeader } from "@/design-system/surfaces/signature-card";
@@ -19,9 +19,10 @@ const BETA_DATE = new Date(2026, 10, 11);
 /** preset="auto" switches at Tailwind lg (SIGNATURE_DESKTOP_QUERY). */
 const AUTO_BREAKPOINT = 1024;
 
-const PRESETS: readonly NotchPresetName[] = ["desktop", "mobile", "focus"];
+/** Single-action presets; the double notch is shown by the Insight card (two actions). */
+const PRESETS = ["desktop", "mobile", "focus"] as const satisfies readonly NotchPresetName[];
 
-const RULES = ["oneAction", "emptyNotch", "density", "never"] as const;
+const RULES = ["oneAction", "twoActions", "density", "never"] as const;
 
 /**
  * SIGNATURE cards (P00 "Card geometry · A"): the three board demos, then the
@@ -78,6 +79,25 @@ export function CardsSection() {
             aria-label={t("insight.label")}
             tone="deep"
             contentClassName="flex min-h-57.5 flex-col"
+            // P01 Insight: Dismiss and See pattern are its two real actions.
+            action={[
+              <SignatureCardAction
+                key="open"
+                variant="neutral"
+                icon={ArrowUpRight}
+                mirror
+                label={t("insight.open")}
+                onClick={sampleAction}
+              />,
+              <SignatureCardAction
+                key="stop"
+                variant="danger"
+                icon={Square}
+                iconClassName="fill-current"
+                label={t("insight.stop")}
+                onClick={sampleAction}
+              />,
+            ]}
           >
             <SignatureCardHeader>
               <span className="type-label text-on-deep-card-muted">{t("insight.kicker")}</span>
@@ -86,7 +106,7 @@ export function CardsSection() {
               {t("insight.body", { from: n("09"), to: n("12") })}
             </h3>
           </SignatureCard>
-          <StateCaption>{t("emptyCaption")}</StateCaption>
+          <StateCaption>{t("doubleCaption")}</StateCaption>
         </div>
 
         <div className="flex min-w-0 flex-col gap-2 md:col-span-2 xl:col-span-1">
@@ -144,7 +164,7 @@ export function CardsSection() {
 }
 
 /** One fixed preset: the active numbers come from notchPresets, so the caption cannot drift. */
-function PresetDemo({ preset, onAction }: { preset: NotchPresetName; onAction: () => void }) {
+function PresetDemo({ preset, onAction }: { preset: (typeof PRESETS)[number]; onAction: () => void }) {
   const t = useTranslations("Styleguide.components.cards.presets");
   const { digits } = usePreferences();
   const { notchWidth, notchHeight, fillet, button } = notchPresets[preset];

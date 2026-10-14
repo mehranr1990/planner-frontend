@@ -56,12 +56,15 @@ describe("notchPath", () => {
 });
 
 describe("notchPresets", () => {
-  it("holds exactly the desktop, mobile and focus geometry from P00 / design §4", () => {
+  it("holds the desktop, mobile and focus geometry from P00 / design §4, plus the Cards double notch", () => {
     expect(notchPresets).toEqual({
       desktop: { notchWidth: 64, notchHeight: 64, fillet: 28, button: 54 },
       mobile: { notchWidth: 56, notchHeight: 56, fillet: 24, button: 46 },
       focus: { notchWidth: 72, notchHeight: 72, fillet: 30, button: 56 },
+      double: { notchWidth: 112, notchHeight: 60, fillet: 28, button: 48 },
     });
+    // Two 48px circles and the 8px gap fit the double notch width.
+    expect(2 * notchPresets.double.button + 8).toBeLessThanOrEqual(notchPresets.double.notchWidth);
   });
 
   it("fits the action button inside every notch", () => {

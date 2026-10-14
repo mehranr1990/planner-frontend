@@ -20,8 +20,10 @@ import { notchPath } from "./notch-path";
 
 /*
  * Signature card (P00 "Card geometry · A", design guide §4): a 32px card with
- * a sculpted top inline-end corner that holds ONE circular primary action or
- * stays empty as negative space. Use it for a standalone, important object
+ * a sculpted top inline-end corner. A notch is never empty: it holds one
+ * circular contextual action, or two when the card genuinely has two closely
+ * related ones (Stop + Open, Mute + Open) — then it takes the double notch
+ * (112×60, two 48px buttons). Use it for a standalone, important object
  * only (≤3 per desktop viewport, 1–2 on mobile); repeated or dense content is
  * a ProductCard / UtilityCard, and families (KPIs, rows) never notch per item.
  *
@@ -45,7 +47,8 @@ import { notchPath } from "./notch-path";
  * (per breakpoint for "auto"), so the header and the action follow them.
  */
 
-export type SignatureCardPreset = NotchPresetName | "auto";
+/** The double notch is chosen by passing two actions, never by preset. */
+export type SignatureCardPreset = Exclude<NotchPresetName, "double"> | "auto";
 export type SignatureCardSide = "end" | "start";
 
 /** preset="auto" is the mobile notch below this query and the desktop notch from it (Tailwind lg, 1024px). */
@@ -169,10 +172,12 @@ export type SignatureCardProps = Omit<HTMLAttributes<HTMLElement>, "children"> &
     /** Corner that holds the notch: "end" (top-right LTR, top-left RTL) or "start". */
     side?: SignatureCardSide;
     /**
-     * At most ONE element, the card's primary action (see SignatureCardAction).
-     * Omit it to leave the notch empty: negative space is part of the identity.
+     * Required: a notch always holds a circular contextual action (see
+     * SignatureCardAction). One element, or a pair of two real, closely
+     * related actions (secondary first, primary at the corner), which switches
+     * the card to the double notch. Never invent a second action to fill it.
      */
-    action?: ReactElement;
+    action: ReactElement | readonly [ReactElement, ReactElement];
     /** Semantic element for the root. */
     as?: RootElement;
     /** Classes for the clipped surface (layout of the card's content). */
@@ -180,8 +185,12 @@ export type SignatureCardProps = Omit<HTMLAttributes<HTMLElement>, "children"> &
     children?: ReactNode;
   };
 
+function isActionPair(action: SignatureCardProps["action"]): action is readonly [ReactElement, ReactElement] {
+  return Array.isArray(action);
+}
+
 export function SignatureCard({
-  preset = "auto",
+  preset: requestedPreset = "auto",
   side = "end",
   tone,
   padding,
@@ -194,9 +203,12 @@ export function SignatureCard({
   ...props
 }: SignatureCardProps) {
   const surfaceRef = useRef<HTMLDivElement>(null);
+  const actions: readonly ReactElement[] = isActionPair(action) ? action : [action];
+  // Two actions take the double notch at every width.
+  const preset: SignatureCardPreset | "double" = actions.length === 2 ? "double" : requestedPreset;
 
-  if (process.env.NODE_ENV !== "production" && action?.type === Fragment) {
-    console.error("SignatureCard holds at most one action; secondary actions belong inside the card.");
+  if (process.env.NODE_ENV !== "production" && actions.some((element) => element?.type === Fragment)) {
+    console.error("SignatureCard holds one or two actions, each a single button; others belong inside the card.");
   }
 
   useLayoutEffect(() => {
@@ -251,7 +263,7 @@ export function SignatureCard({
       style={vars}
       data-preset={preset}
       data-side={side}
-      data-empty-notch={action ? undefined : ""}
+      data-notch-actions={actions.length}
       {...props}
     >
       <div
@@ -261,11 +273,9 @@ export function SignatureCard({
       >
         {children}
       </div>
-      {action ? (
-        <div data-slot="notch-action" className={cn("absolute top-0 flex", side === "end" ? "end-0" : "start-0")}>
-          {action}
-        </div>
-      ) : null}
+      <div data-slot="notch-action" className={cn("absolute top-0 flex gap-2", side === "end" ? "end-0" : "start-0")}>
+        {actions}
+      </div>
     </Root>
   );
 }
@@ -292,6 +302,8 @@ const actionVariants = {
   primary: "",
   /** Navigation (Open, Expand): the page canvas grey, ink glyph. */
   neutral: "bg-canvas text-fg hover:bg-secondary-hover active:bg-secondary-pressed",
+  /** Stop / Dismiss: the destructive fill (red in light, red on a dark tint in dark). */
+  danger: "",
 } as const;
 
 export type SignatureCardActionProps = Omit<IconButtonProps, "size" | "variant" | "label"> & {
@@ -303,8 +315,8 @@ export type SignatureCardActionProps = Omit<IconButtonProps, "size" | "variant" 
 };
 
 /**
- * The one circular action in the notch, sized by the active preset
- * (--notch-button: 54 desktop, 46 mobile, 56 focus). Its hit area extends 4px
+ * A circular action in the notch, sized by the active preset
+ * (--notch-button: 54 desktop, 46 mobile, 56 focus, 48 in the double notch). Its hit area extends 4px
  * past the circle so the 46px mobile button still meets the 48px target.
  */
 export function SignatureCardAction({
@@ -319,7 +331,7 @@ export function SignatureCardAction({
   return (
     <IconButton
       {...props}
-      variant={variant === "primary" ? "primary" : "secondary"}
+      variant={variant === "primary" ? "primary" : variant === "danger" ? "destructive" : "secondary"}
       className={cn("size-(--notch-button) after:absolute after:-inset-1", actionVariants[variant], className)}
     >
       {icon ? <Icon icon={icon} mirror={mirror} size={20} className={iconClassName} /> : children}
