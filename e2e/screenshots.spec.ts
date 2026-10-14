@@ -2,7 +2,7 @@ import { expect, test, type Page } from "@playwright/test";
 import { open, seedMode, SHOTS, type ModeName } from "./support/helpers";
 
 /*
- * Step 2 reference screenshots (e2e/screenshots/step2). Full page for routes;
+ * Step 3 (Wave 1 · 1C) reference screenshots (e2e/screenshots/1c). Full page for routes;
  * viewport for open overlays, where the fixed shell is what matters.
  */
 
@@ -16,6 +16,11 @@ async function shoot(page: Page, name: string, fullPage = true) {
 const pages: { route: string; slug: string; mode: ModeName; widths: number[] }[] = [
   { route: "/personal", slug: "personal", mode: "light-ltr-en", widths: [1440, 1024, 768, 390] },
   { route: "/personal", slug: "personal", mode: "dark-rtl-fa", widths: [1440, 1024, 768, 390] },
+  { route: "/personal/my-day", slug: "personal-my-day", mode: "light-ltr-en", widths: [1440, 390] },
+  { route: "/personal/my-day", slug: "personal-my-day", mode: "dark-rtl-fa", widths: [1440, 390] },
+  { route: "/personal/tasks", slug: "personal-tasks", mode: "dark-rtl-fa", widths: [1440, 390] },
+  { route: "/personal/settings", slug: "personal-settings", mode: "light-ltr-en", widths: [1440] },
+  { route: "/personal/focus", slug: "personal-focus", mode: "dark-rtl-fa", widths: [1440, 390] },
   { route: "/projects", slug: "projects", mode: "light-ltr-en", widths: [1440] },
   { route: "/styleguide/components", slug: "styleguide-components", mode: "light-ltr-en", widths: [1440, 390] },
   { route: "/styleguide/navigation", slug: "styleguide-navigation", mode: "light-ltr-en", widths: [1440, 390] },
@@ -80,9 +85,16 @@ test.describe("shell overlays", () => {
           await expect(page.getByRole("dialog")).toBeVisible();
           await shoot(page, `overlay-quick-add-${mode}-${width}`, false);
         } else {
-          await page.getByRole("button", { name: fa ? "دستیار" : "Assistant", exact: true }).click();
+          // Personal "+" → Universal Quick Add (centred sheet, ?sheet=quick-add).
+          await page.getByRole("banner").getByRole("button", { name: fa ? "افزودن سریع" : "Quick add" }).click();
           await expect(page.getByRole("dialog")).toBeVisible();
-          await shoot(page, `overlay-assistant-${mode}-${width}`, false);
+          await shoot(page, `overlay-quick-add-${mode}-${width}`, false);
+          await page.keyboard.press("Escape");
+          // The task drawer over the tasks list (P06).
+          await open(page, "/personal/tasks");
+          await page.locator('[data-probe="tasks"] a').first().click();
+          await expect(page.locator("[data-task-drawer]")).toBeVisible();
+          await shoot(page, `overlay-task-drawer-${mode}-${width}`, false);
         }
       });
     }

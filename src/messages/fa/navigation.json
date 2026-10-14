@@ -59,7 +59,8 @@
     "collapseShort": "جمع کردن"
   },
   "badges": {
-    "inbox": "{count} مورد برای بررسی"
+    "inbox": "{count} مورد برای بررسی",
+    "withCount": "{label}، {count}"
   },
   "switcher": {
     "title": "حوزه",

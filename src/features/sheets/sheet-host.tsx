@@ -12,7 +12,7 @@ import { isModuleVisible } from "@/features/planner-settings/planner-settings";
 import { usePlannerSettings } from "@/features/planner-settings/use-planner-settings";
 import { usePreferences } from "@/features/preferences/use-preferences";
 import { convertDigits } from "@/lib/locale/digits";
-import { isSheetId, SHEET_PARAM, sheetHref, type SheetId } from "./sheet-params";
+import { consumeOpenedSheet, isSheetId, SHEET_PARAM, sheetHref, type SheetId } from "./sheet-params";
 
 /*
  * The global sheet host (P00PersonalIA Routes · P18): `?sheet=<id>` on any
@@ -63,7 +63,9 @@ function OpenSheet({ id }: { id: SheetId }) {
   const opener = useRef<Element | null>(typeof document === "undefined" ? null : document.activeElement);
 
   const close = useCallback(() => {
-    router.replace(sheetHref(pathname, window.location.search, null), { scroll: false });
+    // Opened here: Back consumes the entry. Arrived with the URL: drop the parameter.
+    if (consumeOpenedSheet()) router.back();
+    else router.replace(sheetHref(pathname, window.location.search, null), { scroll: false });
   }, [router, pathname]);
 
   const onCloseAutoFocus = useCallback((event: Event) => {

@@ -1,6 +1,6 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Page } from "@playwright/test";
-import { MODES, open, seedMode, type ModeName } from "./support/helpers";
+import { hideModules, MODES, open, openSheetRoute, PERSONAL_ROUTES, seedMode, type ModeName } from "./support/helpers";
 
 /*
  * axe (wcag2a, wcag2aa, wcag21aa) on the shell and styleguide routes in
@@ -42,7 +42,7 @@ for (const mode of Object.keys(MODES) as ModeName[]) {
       await seedMode(page, mode);
     });
 
-    for (const route of ROUTES) {
+    for (const route of [...ROUTES, ...PERSONAL_ROUTES.filter((route) => route !== "/personal")]) {
       test(`${route}`, async ({ page }) => {
         await open(page, route);
         const findings = await scan(page, `${mode}${route.replaceAll("/", "_")}`);
@@ -86,6 +86,30 @@ for (const mode of Object.keys(MODES) as ModeName[]) {
       await page.locator('nav[data-scope] button[aria-haspopup="dialog"]').last().click();
       await expect(page.getByRole("dialog")).toBeVisible();
       const findings = await scan(page, `${mode}_personal_390_more-sheet`);
+      expect(brief(findings)).toEqual([]);
+    });
+
+    for (const sheet of ["quick-add", "habit", "note"] as const) {
+      test(`/personal/tasks with ?sheet=${sheet} open`, async ({ page }) => {
+        await openSheetRoute(page, `/personal/tasks?sheet=${sheet}`);
+        await expect(page.locator(`[data-sheet="${sheet}"]`)).toBeVisible();
+        const findings = await scan(page, `${mode}_personal_sheet-${sheet}`);
+        expect(brief(findings)).toEqual([]);
+      });
+    }
+
+    test("/personal/tasks with the task drawer open", async ({ page }) => {
+      await open(page, "/personal/tasks");
+      await page.locator('[data-probe="tasks"] a').first().click();
+      await expect(page.locator("[data-task-drawer]")).toBeVisible();
+      const findings = await scan(page, `${mode}_personal_task-drawer`);
+      expect(brief(findings)).toEqual([]);
+    });
+
+    test("/personal/finance hidden (Module hidden · Turn on)", async ({ page, context }) => {
+      await hideModules(context, ["finance"]);
+      await open(page, "/personal/finance");
+      const findings = await scan(page, `${mode}_personal_finance-hidden`);
       expect(brief(findings)).toEqual([]);
     });
 

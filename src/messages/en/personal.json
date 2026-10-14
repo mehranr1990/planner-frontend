@@ -9,25 +9,97 @@
     "sample": "Sample data"
   },
   "pages": {
-    "overview": { "title": "Overview", "purpose": "What about today, in 5–10 seconds.", "states": "Morning · Live block · Free gap · Evening → Daily shutdown · First run" },
-    "myday": { "title": "My Day", "purpose": "Plan and run today on one timeline.", "states": "Empty day · Overloaded · Partially planned · Current and completed blocks · Drag · Reschedule" },
-    "tasks": { "title": "Tasks", "purpose": "Every task, as a list or a horizon board.", "states": "All done today · No tasks · No filter result · Completed · Upcoming · Complete + undo" },
-    "taskNew": { "title": "New task", "purpose": "The full form behind Quick Add (Tab · Add details).", "states": "Details · More options · Schedule · Done" },
-    "taskDetail": { "title": "Task detail", "purpose": "One task, over the page it was opened from.", "states": "Completed · Recurring completed · Dependency warning · Delete confirm · Loading" },
-    "calendar": { "title": "Calendar", "purpose": "Week, month and agenda, Shamsi or Gregorian.", "states": "Week · Month · Agenda · Selected event · Empty week" },
-    "inbox": { "title": "Inbox", "purpose": "Captures waiting for a decision.", "states": "Inbox zero · Snooze · After convert · Process finished · Transcription error" },
-    "braindump": { "title": "Brain Dump", "purpose": "One free page per day.", "states": "Empty page · Convert line · Clear page" },
-    "focus": { "title": "Focus", "purpose": "One task, one timer; the shell steps back.", "states": "Paused · Long break · Session complete · Focus settings · No task chosen" },
-    "shutdown": { "title": "Daily shutdown", "purpose": "Route what is left, arrange tomorrow, reflect.", "states": "Trigger · Nothing to route · Tomorrow overloaded · Undo · Finished · Repeat move" },
-    "goals": { "title": "Goals", "purpose": "Where each goal is on its journey.", "states": "Empty · Simple goal · Delayed · Completed" },
-    "habits": { "title": "Habits", "purpose": "Track, understand, continue.", "states": "Empty · Sparse · Cell states · Completion" },
-    "finance": { "title": "Finance", "purpose": "Balance, budgets and where the money goes.", "states": "Empty · Sparse · Rial · Locked" },
-    "journal": { "title": "Journal", "purpose": "Writing first; mood and energy alongside.", "states": "Empty · Sparse trend · Locked · Check-in only" },
-    "insights": { "title": "Insights", "purpose": "Patterns from your own data, with opt-in actions.", "states": "No data · Partial data · Loading · Error per tab" },
-    "review": { "title": "Weekly review", "purpose": "Wins, carry-over, goals, plan, reflect.", "states": "Steps 1–5 · Too early · Trigger" },
-    "settings": { "title": "Settings", "purpose": "Defaults, modules and privacy on one page.", "states": "Hidden module deep link · Delete account · Saved" }
+    "overview": {
+      "title": "Overview",
+      "purpose": "What about today, in 5–10 seconds.",
+      "states": "Morning · Live block · Free gap · Evening → Daily shutdown · First run"
+    },
+    "myday": {
+      "title": "My Day",
+      "purpose": "Plan and run today on one timeline.",
+      "states": "Empty day · Overloaded · Partially planned · Current and completed blocks · Drag · Reschedule"
+    },
+    "tasks": {
+      "title": "Tasks",
+      "purpose": "Every task, as a list or a horizon board.",
+      "states": "All done today · No tasks · No filter result · Completed · Upcoming · Complete + undo"
+    },
+    "taskNew": {
+      "title": "New task",
+      "purpose": "The full form behind Quick Add (Tab · Add details).",
+      "states": "Details · More options · Schedule · Done"
+    },
+    "taskDetail": {
+      "title": "Task detail",
+      "purpose": "One task, over the page it was opened from.",
+      "states": "Completed · Recurring completed · Dependency warning · Delete confirm · Loading"
+    },
+    "calendar": {
+      "title": "Calendar",
+      "purpose": "Week, month and agenda, Shamsi or Gregorian.",
+      "states": "Week · Month · Agenda · Selected event · Empty week"
+    },
+    "inbox": {
+      "title": "Inbox",
+      "purpose": "Captures waiting for a decision.",
+      "states": "Inbox zero · Snooze · After convert · Process finished · Transcription error"
+    },
+    "braindump": {
+      "title": "Brain Dump",
+      "purpose": "One free page per day.",
+      "states": "Empty page · Convert line · Clear page"
+    },
+    "focus": {
+      "title": "Focus",
+      "purpose": "One task, one timer; the shell steps back.",
+      "states": "Paused · Long break · Session complete · Focus settings · No task chosen"
+    },
+    "shutdown": {
+      "title": "Daily shutdown",
+      "purpose": "Route what is left, arrange tomorrow, reflect.",
+      "states": "Trigger · Nothing to route · Tomorrow overloaded · Undo · Finished · Repeat move"
+    },
+    "goals": {
+      "title": "Goals",
+      "purpose": "Where each goal is on its journey.",
+      "states": "Empty · Simple goal · Delayed · Completed"
+    },
+    "habits": {
+      "title": "Habits",
+      "purpose": "Track, understand, continue.",
+      "states": "Empty · Sparse · Cell states · Completion"
+    },
+    "finance": {
+      "title": "Finance",
+      "purpose": "Balance, budgets and where the money goes.",
+      "states": "Empty · Sparse · Rial · Locked"
+    },
+    "journal": {
+      "title": "Journal",
+      "purpose": "Writing first; mood and energy alongside.",
+      "states": "Empty · Sparse trend · Locked · Check-in only"
+    },
+    "insights": {
+      "title": "Insights",
+      "purpose": "Patterns from your own data, with opt-in actions.",
+      "states": "No data · Partial data · Loading · Error per tab"
+    },
+    "review": {
+      "title": "Weekly review",
+      "purpose": "Wins, carry-over, goals, plan, reflect.",
+      "states": "Steps 1–5 · Too early · Trigger"
+    },
+    "settings": {
+      "title": "Settings",
+      "purpose": "Defaults, modules and privacy on one page.",
+      "states": "Hidden module deep link · Delete account · Saved"
+    }
   },
-  "today": { "label": "Today", "overview": "Overview", "plan": "Plan" },
+  "today": {
+    "label": "Today",
+    "overview": "Overview",
+    "plan": "Plan"
+  },
   "seams": {
     "tasks": "Today’s tasks",
     "blocks": "{count} blocks on the timeline",
@@ -35,15 +107,32 @@
     "loading": "Loading…",
     "error": "The sample data could not be loaded."
   },
-  "taskDetail": { "notFound": "This task does not exist.", "status": { "open": "Open", "done": "Done" } },
-  "focus": { "leave": "Leave focus", "cycle": "Cycle 1 of 4", "pause": "Pause", "task": "Task", "noTask": "No task chosen", "landmark": "Focus" },
+  "taskDetail": {
+    "notFound": "This task does not exist.",
+    "status": {
+      "open": "Open",
+      "done": "Done"
+    }
+  },
+  "focus": {
+    "leave": "Leave focus",
+    "cycle": "Cycle {current} of {total}",
+    "pause": "Pause",
+    "task": "Task",
+    "noTask": "No task chosen",
+    "landmark": "Focus"
+  },
   "settings": {
     "modules": "Modules",
     "modulesNote": "All modules are on by default. Hiding one removes it from the rail, More, Overview, Quick Add and search. Its data is kept.",
     "coreNote": "Overview, My Day, Tasks, Calendar, Inbox and Settings are core and cannot be hidden.",
     "defaults": "Current defaults",
     "rollover": "Unfinished tasks at day end",
-    "rolloverValue": { "ask": "Ask me (Daily shutdown)", "move-to-tomorrow": "Move to tomorrow automatically", "keep": "Keep where they are" },
+    "rolloverValue": {
+      "ask": "Ask me (Daily shutdown)",
+      "move-to-tomorrow": "Move to tomorrow automatically",
+      "keep": "Keep where they are"
+    },
     "weeklyReview": "Weekly review",
     "focus": "Focus · Pomodoro",
     "focusValue": "{focus} min focus · {short} min short break · {long} min long break · {cycles} cycles",
@@ -52,13 +141,37 @@
     "weekValue": "Starts {start} · weekend {weekend}"
   },
   "sheets": {
-    "quick-add": { "title": "Universal Quick Add", "note": "One line, parsed live. The parser arrives in step {step}." },
-    "expense": { "title": "Add expense", "note": "Amount keypad first. Arrives in step {step}." },
-    "habit": { "title": "New habit", "note": "Name, frequency, target, reminder. Arrives in step {step}." },
-    "goal": { "title": "New goal", "note": "Title, target, deadline, optional milestones. Arrives in step {step}." },
-    "mood": { "title": "Mood check-in", "note": "Five moods, three energy levels. Arrives in step {step}." },
-    "reschedule": { "title": "Reschedule", "note": "Later today, tomorrow, next working day… Arrives in step {step}." },
-    "note": { "title": "Quick note", "note": "Save as a note, or send to Inbox or Brain Dump. Arrives in step {step}." },
-    "voice": { "title": "Voice capture", "note": "Record, transcribe, convert. Arrives in step {step}." }
+    "quick-add": {
+      "title": "Universal Quick Add",
+      "note": "One line, parsed live. The parser arrives in step {step}."
+    },
+    "expense": {
+      "title": "Add expense",
+      "note": "Amount keypad first. Arrives in step {step}."
+    },
+    "habit": {
+      "title": "New habit",
+      "note": "Name, frequency, target, reminder. Arrives in step {step}."
+    },
+    "goal": {
+      "title": "New goal",
+      "note": "Title, target, deadline, optional milestones. Arrives in step {step}."
+    },
+    "mood": {
+      "title": "Mood check-in",
+      "note": "Five moods, three energy levels. Arrives in step {step}."
+    },
+    "reschedule": {
+      "title": "Reschedule",
+      "note": "Later today, tomorrow, next working day… Arrives in step {step}."
+    },
+    "note": {
+      "title": "Quick note",
+      "note": "Save as a note, or send to Inbox or Brain Dump. Arrives in step {step}."
+    },
+    "voice": {
+      "title": "Voice capture",
+      "note": "Record, transcribe, convert. Arrives in step {step}."
+    }
   }
 }

@@ -49,12 +49,14 @@ export function PersonalMobileHeader() {
 
 function MoreTile({ item, onNavigate }: { item: NavItem; onNavigate: () => void }) {
   const t = useTranslations("Navigation");
+  const tBadges = useTranslations("Navigation.badges");
   const badge = useNavBadge(item);
   return (
     <li>
       <Link
         href={item.href}
         onClick={onNavigate}
+        aria-label={badge ? tBadges("withCount", { label: t(item.labelKey), count: badge.label }) : undefined}
         className="flex min-h-22 w-full flex-col items-center justify-center gap-1.5 rounded-tile px-1 py-3 text-center transition-colors hover:bg-subtle"
       >
         <span className="relative grid size-11 place-items-center rounded-full bg-subtle text-fg">
@@ -71,7 +73,6 @@ function MoreTile({ item, onNavigate }: { item: NavItem; onNavigate: () => void 
         </span>
         <span className="max-w-full truncate text-xs font-semibold text-fg">
           {t(item.labelKey)}
-          {badge ? <span className="sr-only">, {badge.label}</span> : null}
         </span>
       </Link>
     </li>
@@ -196,7 +197,8 @@ export function usePersonalFab() {
     onContextMenu: (event: MouseEvent) => {
       event.preventDefault();
       clear();
-      longPressed.current = false;
+      // A touch long-press already opened Voice (Android follows it with contextmenu).
+      if (longPressed.current) return;
       openSheet("voice");
     },
     onKeyDown: (event: KeyboardEvent) => {

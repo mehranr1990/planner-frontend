@@ -2,9 +2,11 @@ import { expect, test, type Page } from "@playwright/test";
 import { collectErrors, cssVar, open, PERSIAN, seed } from "./support/helpers";
 
 /*
- * Application shell (Step 2): desktop top bar, rail, context switcher,
- * command palette, account menu, notifications, quick create, assistant;
- * mobile header, chips, bottom bar and its sheets.
+ * Application shell: desktop top bar, rail, context switcher, command
+ * palette, account menu, notifications; mobile header, chips, bottom bar.
+ * Behaviour that now exists only outside Personal (expandable rail, quick
+ * create menu, assistant, digits toggle) is checked on Projects; the
+ * Personal shell has its own spec (personal.spec.ts).
  */
 
 const SHELL_ROOT = '[data-slot="scope-boundary"]';
@@ -38,7 +40,8 @@ for (const width of [1440, 1024] as const) {
       await expect(banner.getByRole("region", { name: "Today's schedule" })).toBeVisible();
       const actions = banner.getByRole("group", { name: "Quick actions" });
       await expect(actions).toBeVisible();
-      for (const name of ["Search and commands", "Quick create", "Notifications", "Account menu"]) {
+      // Personal "+" is Universal Quick Add (P18 H).
+      for (const name of ["Search and commands", "Quick add", "Notifications", "Account menu"]) {
         await expect(actions.getByRole("button", { name })).toBeVisible();
       }
       // The search label shows from xl (1280); below it the button keeps its name.
@@ -68,7 +71,6 @@ for (const width of [1440, 1024] as const) {
       await open(page, "/personal");
       expect(await shellScope(page)).toBe("personal");
       const primaryBefore = await cssVar(page, SHELL_ROOT, "--primary");
-      const ctaBefore = await page.getByRole("button", { name: "Plan my day" }).evaluate((el) => getComputedStyle(el).backgroundColor);
 
       const trigger = page.getByRole("button", { name: /Switch context/ });
       await trigger.click();
@@ -92,8 +94,6 @@ for (const width of [1440, 1024] as const) {
 
       const primaryAfter = await cssVar(page, SHELL_ROOT, "--primary");
       expect(primaryAfter).not.toBe(primaryBefore);
-      const ctaAfter = await page.getByRole("button", { name: "New task" }).evaluate((el) => getComputedStyle(el).backgroundColor);
-      expect(ctaAfter).not.toBe(ctaBefore);
 
       // Re-opening shows the chosen workspace as current.
       await trigger.click();
@@ -104,9 +104,9 @@ for (const width of [1440, 1024] as const) {
       expect(errors).toEqual([]);
     });
 
-    test("rail expands and collapses; planned items are disabled, not links", async ({ page }) => {
-      await open(page, "/personal");
-      const rail = page.getByRole("navigation", { name: "Personal navigation" });
+    test("rail expands and collapses; planned items are disabled, not links (Projects)", async ({ page }) => {
+      await open(page, "/projects");
+      const rail = page.getByRole("navigation", { name: "Projects navigation" });
       const toggle = rail.getByRole("button", { name: "Expand navigation" });
       await expect(toggle).toHaveAttribute("aria-expanded", "false");
       const collapsedWidth = (await rail.boundingBox())!.width;
@@ -124,14 +124,14 @@ for (const width of [1440, 1024] as const) {
       // Exactly one link (the overview); every planned item is an aria-disabled button.
       await expect(rail.getByRole("link")).toHaveCount(1);
       await expect(rail.getByRole("link", { name: "Overview" })).toHaveAttribute("aria-current", "page");
-      for (const name of ["My Day", "Tasks", "Calendar", "Goals", "Habits", "Finance", "Journal", "Insights"]) {
+      for (const name of ["Tasks", "Board", "Timeline", "Gantt", "Case flow", "Docs", "Analytics"]) {
         const item = rail.getByRole("button", { name, exact: true });
         await expect(item).toHaveAttribute("aria-disabled", "true");
         expect(await item.evaluate((el) => el.tagName)).toBe("BUTTON");
       }
       // Clicking a planned item goes nowhere.
       await rail.getByRole("button", { name: "Tasks", exact: true }).click({ force: true });
-      await expect(page).toHaveURL(/\/personal$/);
+      await expect(page).toHaveURL(/\/projects$/);
     });
 
     test("Ctrl+K palette: filter, Enter navigates", async ({ page }) => {
@@ -185,10 +185,10 @@ for (const width of [1440, 1024] as const) {
       await expect(palette).toBeHidden();
       await expect(searchButton).toBeFocused();
 
-      // Arrow keys move the active option; Enter on a planned entry does nothing.
+      // Enter on a planned entry does nothing.
       await page.keyboard.press("Control+k");
       await expect(input).toBeFocused();
-      await page.keyboard.press("ArrowDown");
+      await input.fill("gantt");
       const activeId = await input.getAttribute("aria-activedescendant");
       await expect(page.locator(`[id="${activeId}"]`)).toHaveAttribute("aria-disabled", "true");
       await page.keyboard.press("Enter");
@@ -237,7 +237,7 @@ for (const width of [1440, 1024] as const) {
       await page.getByRole("menuitemradio", { name: "Persian ۱۲۳" }).click();
       await closeMenus(page);
       await expect(page.getByRole("region", { name: "Today's schedule" }).locator("time").first()).toContainText("۱۳");
-      await expect(page.locator("main h1")).toHaveText("Personal overview");
+      await expect(page.locator("main h1")).toHaveText("Overview");
       expect(errors).toEqual([]);
     });
 
@@ -251,7 +251,7 @@ for (const width of [1440, 1024] as const) {
       await expect(html).toHaveAttribute("lang", "fa");
       await expect(html).toHaveAttribute("dir", "rtl");
       // The modal menu hides the page from the accessibility tree, so query the DOM.
-      await expect(page.locator("main h1")).toHaveText("نمای کلی شخصی");
+      await expect(page.locator("main h1")).toHaveText("نمای کلی");
       // The open menu re-renders in Persian too.
       await expect(page.getByRole("menuitem", { name: /^زبان/ })).toBeVisible();
       await closeMenus(page);
@@ -272,8 +272,8 @@ for (const width of [1440, 1024] as const) {
       await expect(bell).toBeFocused();
     });
 
-    test("quick create menu items are disabled; Escape returns focus", async ({ page }) => {
-      await open(page, "/personal");
+    test("quick create menu items are disabled; Escape returns focus (Projects)", async ({ page }) => {
+      await open(page, "/projects");
       const plus = page.getByRole("button", { name: "Quick create" });
       await plus.click();
       const menu = page.getByRole("menu");
@@ -287,8 +287,8 @@ for (const width of [1440, 1024] as const) {
       await expect(plus).toBeFocused();
     });
 
-    test("assistant launcher opens its unavailable panel and closes", async ({ page }) => {
-      await open(page, "/personal");
+    test("assistant launcher opens its unavailable panel and closes (Projects)", async ({ page }) => {
+      await open(page, "/projects");
       const fab = page.getByRole("button", { name: "Assistant" });
       await expect(fab).toBeVisible();
       await fab.click();
@@ -366,8 +366,8 @@ for (const width of [390, 768] as const) {
       await expect(page.locator(SHELL_ROOT)).toHaveAttribute("data-scope", "team");
     });
 
-    test("FAB opens the Quick add sheet; Escape closes it and restores focus", async ({ page }) => {
-      await open(page, "/personal");
+    test("FAB opens the Quick add sheet; Escape closes it and restores focus (Projects)", async ({ page }) => {
+      await open(page, "/projects");
       const fab = page.getByRole("navigation", { name: "Primary" }).getByRole("button", { name: "Quick add" });
       await fab.click();
       const sheet = page.getByRole("dialog", { name: "Quick add" });
@@ -407,10 +407,10 @@ for (const width of [390, 768] as const) {
       await expect(companies).toBeHidden();
     });
 
-    test("More → Assistant opens the assistant sheet", async ({ page }) => {
-      await open(page, "/personal");
+    test("More → Assistant opens the assistant sheet (Projects)", async ({ page }) => {
+      await open(page, "/projects");
       await page.getByRole("navigation", { name: "Primary" }).getByRole("button", { name: "More" }).click();
-      await page.getByRole("dialog", { name: "Personal pages" }).getByRole("button", { name: /Assistant/ }).click();
+      await page.getByRole("dialog", { name: "Projects pages" }).getByRole("button", { name: /Assistant/ }).click();
       const assistant = page.getByRole("dialog", { name: "Assistant" });
       await expect(assistant).toBeVisible();
       await expect(assistant.getByText("The assistant arrives in a later step")).toBeVisible();
@@ -425,7 +425,7 @@ for (const width of [390, 768] as const) {
       await expect(page.locator("html")).toHaveAttribute("dir", "rtl");
       const nav = page.getByRole("navigation", { name: "اصلی" });
       await expect(nav).toBeVisible();
-      const overview = await nav.getByRole("link", { name: "نمای کلی" }).boundingBox();
+      const overview = await nav.getByRole("link", { name: "امروز" }).boundingBox();
       const fab = await nav.getByRole("button", { name: "افزودن سریع" }).boundingBox();
       const more = await nav.getByRole("button", { name: "بیشتر" }).boundingBox();
       expect(overview!.x, "first item on the right").toBeGreaterThan(fab!.x);

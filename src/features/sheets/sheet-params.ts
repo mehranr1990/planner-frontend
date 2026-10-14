@@ -32,12 +32,43 @@ export function sheetHref(pathname: string, search: string, id: SheetId | null):
   return query ? `${pathname}?${query}` : pathname;
 }
 
+/*
+ * A sheet opened in this tab is a history entry: closing goes Back, so the
+ * entry is consumed and Back never "does nothing". A sheet that arrived with
+ * the URL (shared link, reload) has no entry to go back to and is closed by
+ * replacing the URL. The marker remembers which URL the opener pushed.
+ */
+const OPENED_KEY = "mp-sheet-opened";
+
+function rememberOpened(href: string) {
+  try {
+    window.sessionStorage.setItem(OPENED_KEY, href);
+  } catch {
+    // Storage unavailable: closing falls back to replace.
+  }
+}
+
+/** True (once) when the current URL is the sheet this tab pushed. */
+export function consumeOpenedSheet(): boolean {
+  try {
+    const href = window.sessionStorage.getItem(OPENED_KEY);
+    window.sessionStorage.removeItem(OPENED_KEY);
+    return href === window.location.pathname + window.location.search;
+  } catch {
+    return false;
+  }
+}
+
 /** Opens a sheet over the current route (push, so Back closes it). */
 export function useOpenSheet(): (id: SheetId) => void {
   const router = useRouter();
   const pathname = usePathname();
   return useCallback(
-    (id: SheetId) => router.push(sheetHref(pathname, window.location.search, id), { scroll: false }),
+    (id: SheetId) => {
+      const href = sheetHref(pathname, window.location.search, id);
+      rememberOpened(href);
+      router.push(href, { scroll: false });
+    },
     [router, pathname],
   );
 }

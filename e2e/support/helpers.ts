@@ -24,6 +24,66 @@ export const MODES = {
 } as const satisfies Record<string, { theme: Theme; preferences: Preferences }>;
 export type ModeName = keyof typeof MODES;
 
+/** Theme × direction matrix for the Personal routes (Step 3 integration pass). */
+export const ALL_MODES = {
+  ...MODES,
+  "dark-ltr-en": { theme: "dark", preferences: ENGLISH },
+  "light-rtl-fa": { theme: "light", preferences: PERSIAN },
+} as const satisfies Record<string, { theme: Theme; preferences: Preferences }>;
+export type AnyModeName = keyof typeof ALL_MODES;
+
+export async function seedAnyMode(page: Page, mode: AnyModeName) {
+  await seed(page, ALL_MODES[mode].theme, ALL_MODES[mode].preferences);
+}
+
+/** The sample week's review (week = Jalali date of its Saturday). */
+export const REVIEW_WEEK = "/personal/review/1405-07-18";
+export const SAMPLE_TASK = "t-ui-design";
+
+/** Every Personal route of P00PersonalIA, with representative params. */
+export const PERSONAL_ROUTES = [
+  "/personal",
+  "/personal/my-day",
+  "/personal/my-day?date=1405-07-21&view=3days",
+  "/personal/tasks",
+  "/personal/tasks?view=board&group=horizon",
+  "/personal/tasks/new",
+  `/personal/tasks/${SAMPLE_TASK}`,
+  "/personal/calendar?view=month&cal=shamsi",
+  "/personal/inbox?tab=triage",
+  "/personal/brain-dump",
+  `/personal/focus?task=${SAMPLE_TASK}`,
+  "/personal/shutdown?step=route",
+  "/personal/goals",
+  "/personal/goals/g-launch?tab=journey",
+  "/personal/habits",
+  "/personal/finance?tab=trends",
+  "/personal/journal",
+  "/personal/journal/1405-07-21",
+  "/personal/insights?tab=focus",
+  REVIEW_WEEK,
+  "/personal/settings",
+] as const;
+
+/** One URL per global sheet (P18), on a Personal route. */
+export const SHEET_ROUTES = ["quick-add", "expense", "habit", "goal", "mood", "reschedule", "note", "voice"].map(
+  (id) => `/personal/tasks?sheet=${id}`,
+);
+
+/** Planner settings cookie (mp-planner) hiding the given optional modules. */
+export async function hideModules(context: BrowserContext, hidden: readonly string[]) {
+  const modules = Object.fromEntries(
+    ["goals", "habits", "finance", "journal", "insights", "braindump"].map((id) => [id, !hidden.includes(id)]),
+  );
+  await context.addCookies([
+    {
+      name: "mp-planner",
+      value: encodeURIComponent(JSON.stringify({ version: 1, modules })),
+      url: test.info().project.use.baseURL!,
+    },
+  ]);
+}
+
 export const ROUTES = ["/personal", "/projects", "/teams", "/companies", "/styleguide", "/styleguide/components", "/styleguide/navigation"] as const;
 
 export async function setPreferencesCookie(context: BrowserContext, preferences: Preferences) {
@@ -77,6 +137,18 @@ export async function open(page: Page, path: string) {
   await waitForHydration(page);
 }
 
+/**
+ * Navigate to a ?sheet= URL. A modal sheet aria-hides the page, so the page
+ * heading leaves the accessibility tree: wait on DOM selectors instead.
+ */
+export async function openSheetRoute(page: Page, path: string) {
+  await page.goto(path);
+  await page.locator("main h1").first().waitFor({ state: "attached" });
+  await page.evaluate(() => document.fonts.ready);
+  await waitForHydration(page, "main h1");
+  await page.locator("[data-sheet]").first().waitFor();
+}
+
 export async function horizontalOverflow(page: Page): Promise<number> {
   return page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
 }
@@ -101,6 +173,6 @@ export async function activeElementInfo(page: Page) {
   });
 }
 
-export const SHOTS = "e2e/screenshots/step2";
+export const SHOTS = "e2e/screenshots/1c";
 
 export { expect };

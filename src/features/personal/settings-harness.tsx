@@ -57,7 +57,12 @@ export function SettingsDefaults() {
   const n = (value: number | string) => convertDigits(value, digits);
   const rows = [
     [t("rollover"), t(`rolloverValue.${settings.planning.rollover}`)],
-    [t("weeklyReview"), `${weekday(settings.weeklyReview.weekday)} · ${n(settings.weeklyReview.time)}`],
+    [
+      t("weeklyReview"),
+      <>
+        {weekday(settings.weeklyReview.weekday)} · <span dir="ltr">{n(settings.weeklyReview.time)}</span>
+      </>,
+    ],
     [
       t("focus"),
       t("focusValue", {
@@ -67,7 +72,12 @@ export function SettingsDefaults() {
         cycles: n(settings.focus.cyclesBeforeLongBreak),
       }),
     ],
-    [t("workHours"), `${n(settings.workHours.start)} – ${n(settings.workHours.end)}`],
+    [
+      t("workHours"),
+      <span key="hours" dir="ltr">
+        {n(settings.workHours.start)} – {n(settings.workHours.end)}
+      </span>,
+    ],
     [
       t("week"),
       t("weekValue", {
@@ -84,7 +94,7 @@ export function SettingsDefaults() {
       </h2>
       <dl className="flex flex-col divide-y divide-line">
         {rows.map(([label, value]) => (
-          <div key={label} className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 py-2.5">
+          <div key={String(label)} className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 py-2.5">
             <dt className="text-sm font-semibold text-fg-secondary">{label}</dt>
             <dd className="text-sm text-fg">{value}</dd>
           </div>

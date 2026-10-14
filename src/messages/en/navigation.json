@@ -59,7 +59,8 @@
     "collapseShort": "Collapse"
   },
   "badges": {
-    "inbox": "{count} to triage"
+    "inbox": "{count} to triage",
+    "withCount": "{label}, {count}"
   },
   "switcher": {
     "title": "Context",

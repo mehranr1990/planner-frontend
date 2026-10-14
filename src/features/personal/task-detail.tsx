@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { useCallback, useRef } from "react";
 import { useTranslations } from "next-intl";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { useTask } from "@/data/queries";
@@ -47,6 +48,15 @@ export function TaskDetailDrawer({ id }: { id: string }) {
   const t = useTranslations("Personal");
   const router = useRouter();
   const task = useTask(id);
+  // The task link that opened the drawer still has focus when it mounts; Radix
+  // can only return focus to its own Trigger, and this drawer has none.
+  const opener = useRef<Element | null>(typeof document === "undefined" ? null : document.activeElement);
+  const onCloseAutoFocus = useCallback((event: Event) => {
+    event.preventDefault();
+    const target = opener.current;
+    if (target instanceof HTMLElement && target.isConnected && target !== document.body) target.focus();
+    else document.getElementById("main-content")?.focus();
+  }, []);
   return (
     <Sheet
       defaultOpen
@@ -62,6 +72,7 @@ export function TaskDetailDrawer({ id }: { id: string }) {
         description={t("pages.taskDetail.purpose")}
         data-scope="personal"
         data-task-drawer=""
+        onCloseAutoFocus={onCloseAutoFocus}
       >
         <TaskDetailBody id={id} />
       </SheetContent>

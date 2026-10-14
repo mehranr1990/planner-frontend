@@ -94,6 +94,8 @@ function PaletteBody({ onNavigate }: { onNavigate: () => void }) {
   const router = useRouter();
   const settings = usePlannerSettings();
   const openSheet = useOpenSheet();
+  // The sheet host lives in the Personal layout: offer Quick add there only.
+  const inPersonal = useShellScope() === "personal";
   const baseId = useId();
   const listboxId = `${baseId}-listbox`;
   const [query, setQuery] = useState("");
@@ -114,7 +116,7 @@ function PaletteBody({ onNavigate }: { onNavigate: () => void }) {
           label: tNav(item.labelKey),
           available: item.status === "available",
         }));
-        if (personal) {
+        if (personal && inPersonal) {
           // ⌘K → + : Universal Quick Add (P18 H).
           entries.unshift({
             key: "personal-quick-add",
@@ -127,7 +129,7 @@ function PaletteBody({ onNavigate }: { onNavigate: () => void }) {
         }
         return { context: context.id, label: tNav(context.labelKey), entries };
       }),
-    [tNav, t, settings, openSheet],
+    [tNav, t, settings, openSheet, inPersonal],
   );
 
   const normalized = query.trim().toLocaleLowerCase();

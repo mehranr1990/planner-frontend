@@ -43,7 +43,7 @@ export function FocusSkeleton() {
           {t("focus.leave")}
         </Link>
         <span className="inline-flex min-h-9 items-center rounded-pill bg-surface px-4 text-sm font-semibold text-fg-secondary shadow-island">
-          {t("focus.cycle")}
+          {t("focus.cycle", { current: convertDigits(1, digits), total: convertDigits(settings.focus.cyclesBeforeLongBreak, digits) })}
         </span>
       </div>
 

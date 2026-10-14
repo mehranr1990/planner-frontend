@@ -114,7 +114,6 @@ export function NavLink({
   const text = (
     <span className={cn(layout === "row" ? "min-w-0 flex-1 truncate text-start" : "max-w-full truncate", compact && "sr-only")}>
       {label}
-      {badge ? <span className="sr-only">, {badge.label}</span> : null}
     </span>
   );
 
@@ -146,6 +145,8 @@ export function NavLink({
     element = (
       <Link
         href={item.href}
+        // With a count, the name carries it ("Inbox, 6 to triage"); the badge itself is aria-hidden.
+        aria-label={badge ? t("badges.withCount", { label, count: badge.label }) : undefined}
         aria-current={active ? "page" : undefined}
         data-status="available"
         className={classes}

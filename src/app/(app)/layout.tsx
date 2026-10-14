@@ -7,11 +7,12 @@ import { getSampleShellData, isSampleData } from "@/fixtures/shell";
  * The application shell around every context route. A Server Component: the
  * shell's interactive parts are client islands inside ShellFrame.
  *
- * Cache Components: the client islands read usePathname(). Every route in
- * this group is static (no dynamic params), so the pathname is known while
- * prerendering and no <Suspense> boundary is needed (see the usePathname
- * docs). Add one around the pathname-reading islands if a route with
- * unknown dynamic params joins this group.
+ * Cache Components: the client islands read usePathname(). The group now
+ * has dynamic Personal routes (tasks/[id], goals/[[...id]], journal/…,
+ * review/[week]); that works because the root layout blocks on the request
+ * (`instant = false`), so nothing is prerendered with an unknown pathname.
+ * If the root ever becomes instant, wrap the pathname-reading islands in
+ * <Suspense> (see the usePathname docs).
  *
  * SAMPLE DATA: workspaces, profile and schedule come from src/fixtures/shell.ts,
  * in the request's UI language (a preference change refreshes this layout).
