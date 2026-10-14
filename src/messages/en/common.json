@@ -1,0 +1,21 @@
+{
+  "close": "Close",
+  "cancel": "Cancel",
+  "confirm": "Confirm",
+  "save": "Save",
+  "delete": "Delete",
+  "retry": "Retry",
+  "loading": "Loading…",
+  "clear": "Clear",
+  "search": "Search",
+  "open": "Open",
+  "more": "More",
+  "back": "Back",
+  "next": "Next",
+  "previous": "Previous",
+  "required": "Required",
+  "optional": "Optional",
+  "comingSoon": "Coming soon",
+  "unavailable": "Not available yet",
+  "sample": "Sample data"
+}

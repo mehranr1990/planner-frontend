@@ -1,0 +1,34 @@
+{
+  "toast": {
+    "label": "Notification",
+    "region": "Notifications ({hotkey})",
+    "tone": {
+      "success": "Success",
+      "info": "Information",
+      "warning": "Warning",
+      "danger": "Error",
+      "neutral": "Notice"
+    }
+  },
+  "empty": {
+    "title": "Nothing here yet",
+    "description": "When something is added, it will show up here."
+  },
+  "noResults": {
+    "title": "No results",
+    "titleWithQuery": "No results for “{query}”",
+    "description": "Try a different search or clear the filters."
+  },
+  "error": {
+    "title": "Couldn’t load this.",
+    "description": "Check your connection and try again."
+  },
+  "unavailable": {
+    "title": "Not available yet",
+    "description": "This section arrives in a later step."
+  },
+  "avatarGroup": {
+    "label": "{count, plural, one {{formatted} person} other {{formatted} people}}",
+    "more": "{formatted} more"
+  }
+}

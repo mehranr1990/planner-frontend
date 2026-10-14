@@ -1,0 +1,68 @@
+{
+  "contexts": {
+    "personal": {
+      "label": "Personal",
+      "description": "Your day, tasks, habits, goals and money",
+      "add": "Personal space only"
+    },
+    "project": {
+      "label": "Projects",
+      "description": "Boards, milestones, flows and deliverables",
+      "add": "New project"
+    },
+    "team": {
+      "label": "Teams",
+      "description": "Members, workload, check-ins and shared files",
+      "add": "New team"
+    },
+    "company": {
+      "label": "Companies",
+      "description": "Departments, portfolio, goals and approvals",
+      "add": "Add company"
+    }
+  },
+  "items": {
+    "overview": "Overview",
+    "myday": "My Day",
+    "tasks": "Tasks",
+    "calendar": "Calendar",
+    "goals": "Goals",
+    "habits": "Habits",
+    "finance": "Finance",
+    "journal": "Journal",
+    "insights": "Insights",
+    "board": "Board",
+    "timeline": "Timeline",
+    "gantt": "Gantt",
+    "flow": "Case flow",
+    "docs": "Docs",
+    "analytics": "Analytics",
+    "work": "Work",
+    "people": "People",
+    "checkins": "Check-ins",
+    "activity": "Activity",
+    "files": "Files",
+    "departments": "Departments",
+    "projects": "Projects",
+    "assets": "Assets",
+    "approvals": "Approvals",
+    "reports": "Reports"
+  },
+  "rail": {
+    "landmark": "{context} navigation",
+    "expand": "Expand navigation",
+    "collapse": "Collapse navigation",
+    "collapseShort": "Collapse"
+  },
+  "switcher": {
+    "title": "Context",
+    "label": "Switch context",
+    "workspaces": "{context} workspaces",
+    "activeWorkspace": "{workspace} · active",
+    "workspaceCount": "{count, plural, one {{formatted} workspace} other {{formatted} workspaces}}"
+  },
+  "breadcrumbs": "Breadcrumb",
+  "chips": "Contexts",
+  "bottomNav": "Primary",
+  "moreLabel": "All {context} pages"
+}

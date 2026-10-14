@@ -1,0 +1,862 @@
+{
+  "overline": "Mehran Planner · Foundations",
+  "title": "Foundations",
+  "intro": "Tokens, type, locale and motion: the base every screen is built on. Switch theme, direction, language, digits and currency to see each rule hold.",
+  "controls": {
+    "label": "Preview settings",
+    "theme": "Theme",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System",
+    "direction": "Direction",
+    "language": "Language",
+    "digits": "Digits",
+    "latinDigits": "English digits",
+    "persianDigits": "Persian digits",
+    "currency": "Currency",
+    "toman": "Toman",
+    "rial": "Rial"
+  },
+  "nav": "Sections",
+  "sweep": {
+    "title": "The sweep",
+    "description": "One hue per context, from me to company. Volt marks only what is happening now.",
+    "now": "Now",
+    "voltUsage": "Live block, now-dot, active task. One volt element per view."
+  },
+  "context": {
+    "title": "Context colours",
+    "description": "The active context drives the primary colour. Text on an accent always uses on-accent.",
+    "active": "Active context",
+    "personal": "Personal",
+    "project": "Projects",
+    "team": "Teams",
+    "company": "Companies",
+    "primary": "Primary",
+    "secondary": "Secondary",
+    "outline": "Outline",
+    "destructive": "Delete"
+  },
+  "neutrals": {
+    "title": "Neutrals",
+    "description": "Graphite, never black. In dark, surfaces step up in lightness instead of casting shadows."
+  },
+  "status": {
+    "title": "Status",
+    "description": "Status pairs colour with an icon and a label, never colour alone.",
+    "danger": "Overdue",
+    "warning": "At risk",
+    "success": "Done",
+    "info": "Synced",
+    "neutral": "Draft",
+    "weekend": "Friday · weekend label"
+  },
+  "surfaces": {
+    "title": "Surfaces & depth",
+    "description": "Canvas → surface → raised → subtle. Islands float with a soft shadow in light and a lighter surface in dark.",
+    "canvas": "Canvas",
+    "surface": "Surface",
+    "raised": "Raised",
+    "subtle": "Subtle",
+    "island": "Floating island",
+    "elevated": "Elevated overlay"
+  },
+  "borders": {
+    "title": "Borders",
+    "description": "Three steps, from dividers to outline controls."
+  },
+  "radii": {
+    "title": "Radii & notch",
+    "description": "Cards 28–32, controls are capsules. The notch geometry is ready for the Step 2 NotchedCard and mirrors in RTL.",
+    "notch": "Notch geometry · 64 × 64, fillet 30"
+  },
+  "shadows": {
+    "title": "Shadows",
+    "description": "Only islands and overlays cast shadows. Focus is a ring, not a shadow."
+  },
+  "typography": {
+    "title": "Typography",
+    "description": "Urbanist for Latin, Vazirmatn for Persian. Persian gets taller lines and no tracking, caps or italics.",
+    "latin": "Latin · Urbanist",
+    "persian": "Persian · Vazirmatn"
+  },
+  "spacing": {
+    "title": "Spacing",
+    "description": "Named steps on a 4px grid. 48px is the minimum touch target."
+  },
+  "icons": {
+    "title": "Icons · mirror or keep",
+    "description": "Direction-bearing icons flip in RTL; objects, symbols and axes never do. Switch direction to check.",
+    "mirror": "Mirrors in RTL",
+    "keep": "Never mirrors",
+    "next": "Next / previous",
+    "back": "Back and continue",
+    "undo": "Undo",
+    "send": "Send message",
+    "indent": "Indent list",
+    "panel": "Close side panel",
+    "play": "Play media",
+    "clock": "Clock",
+    "check": "Confirm",
+    "search": "Search",
+    "add": "Add",
+    "chart": "Chart axis",
+    "shortcut": "Keyboard shortcuts stay LTR"
+  },
+  "focus": {
+    "title": "Focus states",
+    "description": "Tab through these controls. The ring is a 3px halo with an edge so it reads on any surface.",
+    "forced": "Focus preview",
+    "link": "Real link",
+    "notifications": "Notifications",
+    "settings": "Settings"
+  },
+  "dates": {
+    "title": "Calendar & dates",
+    "description": "Jalali by default in Persian, Gregorian on request. The week starts Saturday, work days run Saturday–Wednesday, Friday is the weekend.",
+    "jalali": "Jalali",
+    "gregorian": "Gregorian",
+    "full": "Full date",
+    "short": "Short date",
+    "monthYear": "Month",
+    "range": "Range",
+    "time": "Time",
+    "duration": "Duration",
+    "week": "Week · Saturday first",
+    "workday": "Work day",
+    "weekend": "Weekend",
+    "today": "Today",
+    "calendarLabel": "Calendar"
+  },
+  "numbers": {
+    "title": "Digits & money",
+    "description": "Digits follow the user's setting, not the language. Money is stored in Toman; Rial = Toman × 10.",
+    "number": "Number",
+    "decimal": "Decimal",
+    "percent": "Percent",
+    "invoice": "Invoice",
+    "invoiceText": "Invoice #{id} · {current} of {total}",
+    "persianDigits": "Persian digits",
+    "englishDigits": "English digits",
+    "toman": "Toman",
+    "rial": "Rial",
+    "selected": "Selected",
+    "progress": "Progress"
+  },
+  "bdi": {
+    "title": "Mixed text",
+    "description": "Wrap Latin names, times and codes inside Persian sentences in {tag} so punctuation stays put.",
+    "without": "Without isolation",
+    "with": "With {tag}"
+  },
+  "motion": {
+    "title": "Motion tokens",
+    "description": "Durations, easings and springs shared by CSS and Motion. Everything collapses to instant under reduced motion.",
+    "play": "Play",
+    "reset": "Reset",
+    "reducedOn": "Reduced motion is on: transitions are instant.",
+    "reducedOff": "Reduced motion is off."
+  },
+  "pages": {
+    "label": "Styleguide pages",
+    "foundations": "Foundations",
+    "components": "Components",
+    "navigation": "Navigation",
+    "rules": "Rules"
+  },
+  "preview": {
+    "scope": "Preview context"
+  },
+  "componentsPage": {
+    "overline": "Mehran Planner · Components",
+    "title": "Components",
+    "intro": "Every base component in every state, built from the tokens on the Foundations page. Change the preview settings to check light and dark, both directions, both languages and both digit sets.",
+    "scopeHint": "The primary colour follows the active context. Utility boards show Projects blue."
+  },
+  "components": {
+    "fields": {
+      "title": "Text fields",
+      "description": "48px inputs with a 1.5px outline. Focus is a ring plus the scope colour, never colour alone.",
+      "taskName": "Task name",
+      "taskPlaceholder": "e.g. Review expenses",
+      "default": "Default",
+      "project": "Project",
+      "focus": "Focus (preview)",
+      "amount": "Amount",
+      "amountError": "Numbers only. “O” isn’t a digit.",
+      "invalid": "Invalid with message",
+      "workspace": "Workspace",
+      "disabled": "Disabled",
+      "reference": "Invoice reference",
+      "readOnly": "Read-only",
+      "handle": "Workspace handle",
+      "loading": "Loading (checking availability)",
+      "notes": "Notes",
+      "notesPlaceholder": "Add details…",
+      "unit": "Currency: {unit}"
+    },
+    "select": {
+      "title": "Select & multi-select",
+      "description": "A listbox with colour dots that always sit next to a label, toggle chips for many values, and the search capsule.",
+      "priority": "Priority",
+      "priorities": {
+        "urgent": "Urgent",
+        "high": "High",
+        "normal": "Normal",
+        "low": "Low"
+      },
+      "labels": "Labels · multi-select",
+      "labelNames": {
+        "ui": "UI",
+        "dashboard": "Dashboard",
+        "research": "Research",
+        "bug": "Bug",
+        "copy": "Copy"
+      },
+      "selected": "Selected labels",
+      "noneSelected": "No labels selected.",
+      "search": "Search field",
+      "searchLabel": "Filter tasks",
+      "searchPlaceholder": "Filter tasks…",
+      "searchHint": "Press ⌘K or Ctrl+K to focus it. Escape clears the text."
+    },
+    "controls": {
+      "title": "Controls",
+      "description": "Switches for settings that apply at once, checkboxes for choices in a list, segmented for views, a range for amounts.",
+      "switches": "Switches",
+      "reminders": "Reminders",
+      "weeklyEmail": "Weekly review email",
+      "syncContacts": "Sync contacts",
+      "adminOnly": "Admins only",
+      "checkboxes": "Checkboxes",
+      "showWeekends": "Show weekends",
+      "hideCompleted": "Hide completed",
+      "locked": "Share with workspace",
+      "lockedReason": "Locked by workspace policy",
+      "notifyAll": "Notify me about everything",
+      "notify": {
+        "mentions": "Mentions",
+        "dueDates": "Due dates",
+        "comments": "Comments"
+      },
+      "segmented": "Segmented",
+      "day": "Day",
+      "week": "Week",
+      "month": "Month",
+      "capacity": "Daily capacity",
+      "hours": "{value} h"
+    },
+    "choices": {
+      "title": "Radio group",
+      "description": "One choice from a short list. Each option can carry a second line.",
+      "repeat": "Repeat",
+      "options": {
+        "never": {
+          "label": "Never",
+          "description": "One-off"
+        },
+        "daily": {
+          "label": "Every day",
+          "description": "Including the weekend"
+        },
+        "workweek": {
+          "label": "Work week",
+          "description": "Saturday to Wednesday"
+        },
+        "weekly": {
+          "label": "Weekly",
+          "description": "Same weekday"
+        },
+        "custom": {
+          "label": "Custom…",
+          "description": "Pick days or an interval"
+        }
+      },
+      "summary": "Summary"
+    },
+    "datePicker": {
+      "title": "Date picker",
+      "description": "Starts in your calendar setting; switch between Jalali and Gregorian. Saturday starts the week and Friday is the weekend.",
+      "dateSet": "Date set",
+      "bare": "Calendar on its own: neighbouring days shown, only the next three weeks selectable."
+    },
+    "toasts": {
+      "title": "Toasts & alerts",
+      "description": "Toasts confirm what just happened and can offer Undo. Inline alerts stay with the content they describe.",
+      "toasts": "Toasts",
+      "alerts": "Inline alerts",
+      "tones": {
+        "success": "Success",
+        "info": "Info",
+        "warning": "Warning",
+        "danger": "Error",
+        "neutral": "Neutral"
+      },
+      "samples": {
+        "success": {
+          "title": "Task completed"
+        },
+        "info": {
+          "title": "Synced with Google Calendar",
+          "description": "Your events are up to date."
+        },
+        "warning": {
+          "title": "Over capacity",
+          "description": "Today has 9h planned for 8h of capacity."
+        },
+        "danger": {
+          "title": "Couldn’t save expense",
+          "description": "You’re offline. We’ll retry when you reconnect."
+        },
+        "neutral": {
+          "title": "Draft saved",
+          "description": "You can pick it up later."
+        }
+      },
+      "undo": "Undo",
+      "undoAlt": "Reopen the task from the task list.",
+      "undone": "Task reopened",
+      "retryNow": "Retry now",
+      "retrying": "Retrying…",
+      "tooltip": "Tooltip",
+      "tooltipText": "Energy = how demanding a block is",
+      "tooltipLabel": "What is energy?",
+      "tooltipHint": "Hover or focus the button."
+    },
+    "buttons": {
+      "title": "Button states",
+      "description": "Primary takes the active context’s deep colour, one primary per view. Hover, pressed and focus are static previews.",
+      "matrix": "Button variants by state",
+      "states": {
+        "default": "Default",
+        "hover": "Hover",
+        "pressed": "Pressed",
+        "focus": "Focus",
+        "disabled": "Disabled",
+        "loading": "Loading"
+      },
+      "variants": {
+        "primary": "Primary",
+        "secondary": "Secondary",
+        "outline": "Outline",
+        "destructive": "Destructive",
+        "ghost": "Ghost"
+      },
+      "saving": "Saving",
+      "sizes": "Sizes",
+      "small": "Small",
+      "medium": "Medium",
+      "large": "Large",
+      "withIcons": "With icons",
+      "create": "Create",
+      "continue": "Continue",
+      "iconButtons": "Icon buttons · 40 / 48 / 52",
+      "iconSmall": "Notifications, small",
+      "iconMedium": "Notifications, medium",
+      "iconLarge": "Notifications, large",
+      "iconLoading": "Notifications, loading"
+    },
+    "states": {
+      "title": "Loading · empty · error",
+      "description": "Skeletons mirror the real layout. Empty states suggest a next step; errors offer a retry.",
+      "loadingLabel": "Loading the board",
+      "loadingCaption": "The shimmer stops when reduced motion is on.",
+      "emptyTitle": "Nothing left for today",
+      "emptyDescription": "Pull something from Unscheduled or enjoy the evening.",
+      "emptyAction": "Open Unscheduled",
+      "comingSoon": "Unscheduled arrives in a later step.",
+      "errorTitle": "Couldn’t load the board.",
+      "errorDescription": "Check your connection.",
+      "errorRetried": "{count, plural, one {Retried {formatted} time. Still a sample.} other {Retried {formatted} times. Still a sample.}}"
+    },
+    "indicators": {
+      "title": "More states",
+      "description": "No results, not yet available, skeleton anatomy and spinners.",
+      "query": "invoice",
+      "skeleton": "Skeleton",
+      "spinner": "Spinner",
+      "spinnerLabel": "Loading",
+      "spinnerHint": "Labelled when it stands alone; decorative inside a busy control."
+    },
+    "overlays": {
+      "title": "Dialogs & sheets",
+      "description": "Focus moves in and returns to the trigger; Escape and the scrim close. Sheets mirror with the direction.",
+      "dialog": "Dialog",
+      "dialogDescription": "A short task that needs the user’s attention.",
+      "openDialog": "Rename block",
+      "dialogTitle": "Rename block",
+      "dialogBody": "The new name shows on the schedule and in reminders.",
+      "blockName": "Block name",
+      "blockValue": "Deep work",
+      "saved": "Block renamed",
+      "confirm": "Destructive confirm",
+      "confirmDescription": "Confirm stays busy until the async action settles.",
+      "openConfirm": "Delete “Checkout flow”",
+      "confirmTitle": "Delete “Checkout flow”?",
+      "confirmBody": "6 subtasks and 7 comments go with it. You can undo for 10 seconds.",
+      "deleted": "“Checkout flow” deleted",
+      "undo": "Undo",
+      "undoAlt": "Restore it from Recently deleted.",
+      "restored": "“Checkout flow” restored",
+      "endSheet": "Side sheet",
+      "endSheetDescription": "Slides in from the inline end: right in LTR, left in RTL.",
+      "openEndSheet": "Open details",
+      "endSheetTitle": "Block details",
+      "endSheetBody": "Sample content in a scrolling body with a pinned footer.",
+      "endSheetRows": {
+        "one": "Starts at 14:00, lasts 2 hours",
+        "two": "Context: Projects · Website Redesign",
+        "three": "Reminder 10 minutes before"
+      },
+      "bottomSheet": "Bottom sheet",
+      "bottomSheetDescription": "The mobile quick-add sheet with a grab handle.",
+      "quickAdd": "Quick add",
+      "quickAddBody": "What would you like to add?"
+    },
+    "form": {
+      "title": "Form validation",
+      "description": "React Hook Form with a Zod schema. Errors appear after submit, link from the summary to each field, and clear as you fix them.",
+      "formLabel": "Sample expense form",
+      "fields": {
+        "title": "Title",
+        "amount": "Amount",
+        "priority": "Priority",
+        "notes": "Notes"
+      },
+      "placeholders": {
+        "title": "e.g. Team lunch",
+        "amount": "e.g. 450,000"
+      },
+      "priorities": {
+        "urgent": "Urgent",
+        "high": "High",
+        "normal": "Normal",
+        "low": "Low"
+      },
+      "errors": {
+        "title": "Enter a title of at least 3 characters.",
+        "amountRequired": "Enter an amount.",
+        "amount": "Enter a number greater than zero.",
+        "priority": "Choose a priority.",
+        "notes": "Keep notes to 140 characters."
+      },
+      "notesHint": "Up to {max} characters.",
+      "reset": "Reset",
+      "submit": "Save expense",
+      "saving": "Saving",
+      "saved": "Sample expense saved"
+    },
+    "menus": {
+      "title": "Menus & popovers",
+      "description": "Menus hold actions and options; arrow keys move, typing jumps. Popovers hold short, non-modal content.",
+      "menu": "Dropdown menu",
+      "viewOptions": "View options",
+      "sortBy": "Sort by",
+      "sort": {
+        "due": "Due date",
+        "priority": "Priority",
+        "created": "Date created"
+      },
+      "show": "Show",
+      "weekends": "Weekends",
+      "completed": "Completed tasks",
+      "duplicate": "Duplicate view",
+      "duplicated": "View duplicated",
+      "export": "Export",
+      "delete": "Delete view",
+      "deleteSample": "Delete is a sample action here.",
+      "current": "Sorted by {sort} · weekends {weekends} · completed {completed}",
+      "on": "on",
+      "off": "off",
+      "popover": "Popover",
+      "energy": "About energy",
+      "energyTitle": "Energy",
+      "energyBody": "How demanding a block is: low, medium or high. Planning mixes them so the day stays doable.",
+      "gotIt": "Got it"
+    },
+    "dataDisplay": {
+      "title": "Badges, avatars & dividers",
+      "description": "Counts and dots carry a spoken label. Avatars show initials on a scope tint when there is no photo.",
+      "badges": "Badges",
+      "notifications": "Notifications",
+      "unread": "{count, plural, one {{formatted} unread notification} other {{formatted} unread notifications}}",
+      "newActivity": "New activity",
+      "avatars": "Avatars & group",
+      "separator": "Separator",
+      "above": "Above the line",
+      "first": "Today",
+      "second": "Tomorrow",
+      "scrollArea": "Scroll area",
+      "row": "Sample row {number}"
+    },
+    "cards": {
+      "title": "Notched cards",
+      "description": "Signature surfaces only: hero, health, focus, nav and insight (Rationale). The circular action sits in a real cut-out of the card, top-left in RTL. Shown on the canvas so the notch is visible.",
+      "sampleAction": "Sample action",
+      "defaultPreset": "Default · 64 × 64 notch, one 52px button",
+      "doublePreset": "Double · 112 × 60 notch, two 48px buttons, live (volt)",
+      "compactPreset": "Compact · 60 × 60 notch, one 48px button, scope deep",
+      "lead": {
+        "label": "Lead: Jane Doe",
+        "open": "Open lead",
+        "role": "Marketing Director at Euroly",
+        "source": "Source",
+        "email": "Email",
+        "hot": "Hot client"
+      },
+      "live": {
+        "label": "Live: client video call",
+        "remind": "Remind me",
+        "open": "Open event",
+        "now": "Now",
+        "soon": "in 4 min",
+        "title": "Client video call",
+        "meta": "{person} · {start} – {end}",
+        "scheduled": "Call scheduled",
+        "join": "Join call"
+      },
+      "timer": {
+        "label": "Timer",
+        "stop": "Stop timer",
+        "title": "Timer",
+        "running": "Running"
+      }
+    },
+    "ringCard": {
+      "title": "Ring card",
+      "description": "Specialized visualization: the focus summary from the Cards board. A ring is used only where a screen design draws one.",
+      "cardTitle": "Monthly focus",
+      "subtitle": "Goal {goal} h · {month}",
+      "unit": "Hours",
+      "ringLabel": "Focus hours this month",
+      "valueText": "{value} of {goal} hours",
+      "totalHours": "total hours",
+      "earned": "earned · Toman",
+      "months": {
+        "jul": "Jul",
+        "aug": "Aug",
+        "sep": "Sep",
+        "oct": "Oct"
+      },
+      "periodsLabel": "Month",
+      "history": "History",
+      "details": "Details",
+      "tabsLabel": "Monthly focus views",
+      "detailsBody": "Details would break the hours down by context. This is sample content."
+    },
+    "folderTabs": {
+      "title": "Folder tabs",
+      "description": "Product surface: the active tab merges into the card with two concave fillets. Used where the boards design it (Cards, S4, S5, S6).",
+      "label": "Project sections",
+      "tabs": {
+        "overview": "Overview",
+        "tasks": "Tasks",
+        "files": "Files",
+        "activity": "Activity"
+      },
+      "progress": "Progress",
+      "openTasks": "Open tasks",
+      "blocked": "Blocked",
+      "tasksBody": "18 open tasks would be listed here.",
+      "filesBody": "2 files would be listed here.",
+      "activityEmpty": "No activity to show in the styleguide."
+    },
+    "progress": {
+      "title": "Progress",
+      "description": "The default progress patterns: linear, segmented, numeric and compact inline. Rings are not a default (see Rules).",
+      "linear": {
+        "title": "Linear",
+        "label": "Subtasks",
+        "source": "S3 subtasks · S1 and S4 tiles · S10 budgets"
+      },
+      "segmented": {
+        "title": "Segmented",
+        "partsLabel": "Today progress",
+        "stepsLabel": "Habits today",
+        "source": "Shell hero bar · Main · Cards lead dashes · S1 habits · S4 milestones"
+      },
+      "numeric": {
+        "title": "Numeric",
+        "percent": "Progress",
+        "ratio": "Goals on track",
+        "amount": "Key result",
+        "source": "Cards folder tab · S6 tiles · S11 key results"
+      },
+      "inline": {
+        "title": "Compact inline",
+        "subtasks": "Subtasks",
+        "capacity": "Capacity",
+        "capacityValue": "{free}h free of {total}h",
+        "source": "Task card footers (Dashboard, S4, MobileTasks) · S2 capacity"
+      },
+      "specializedNote": "Circular rings are a specialized visualization. Use one only where a screen design draws it: the RingCard focus summary, goal progress (S1, S11), project health (S4), company health (S6) or habit completion (S9)."
+    },
+    "tabs": {
+      "title": "Tabs & view switchers",
+      "description": "Several approved tab patterns. The screen design picks one; no single tab style is used everywhere.",
+      "segmented": {
+        "title": "Segmented view switcher",
+        "label": "Planning range",
+        "source": "Utility Day/Week/Month · S3 detail tabs · S8 Task/Event/Reminder"
+      },
+      "range": {
+        "day": "Day",
+        "week": "Week",
+        "month": "Month"
+      },
+      "rangePanels": {
+        "day": "One day at a time: blocks, tasks and habits for today.",
+        "week": "The week from Saturday to Friday, with the work week highlighted.",
+        "month": "The whole month at a glance, in your calendar."
+      },
+      "compact": {
+        "title": "Compact tabs",
+        "label": "Project views",
+        "panel": "The {view} view would appear here.",
+        "source": "S4 project views (white island, active in the scope tint)"
+      },
+      "views": {
+        "overview": "Overview",
+        "board": "Board",
+        "timeline": "Timeline",
+        "docs": "Docs"
+      },
+      "filled": {
+        "title": "Filled pill tabs",
+        "label": "Calendar view",
+        "source": "S7 Week/Month/Agenda · S13 ranges · mobile status tabs"
+      },
+      "calendarViews": {
+        "week": "Week",
+        "month": "Month",
+        "agenda": "Agenda"
+      },
+      "folder": {
+        "title": "Folder tabs",
+        "body": "The active tab merges into its card. Used only on the cards designed with it.",
+        "link": "See Folder tabs",
+        "source": "Cards · S4 · S5 · S6 · DarkTokens · FaRules · MobileFaTasks"
+      },
+      "internalNote": "Component-internal tabs, such as the History / Details tabs of the RingCard, belong to that component and are not a general pattern."
+    },
+    "productCard": {
+      "title": "Product card",
+      "description": "A plain sculpted card with no notch. The notch is kept for signature surfaces; a product card puts its primary action at the bottom.",
+      "caption": "Cards board · task card “Revamp Sidebar”",
+      "label": "Task: Revamp sidebar",
+      "urgent": "Urgent",
+      "due": "Due Sep 14",
+      "cardTitle": "Revamp sidebar",
+      "cardBody": "Redesign navigation with better spacing for easier access.",
+      "comments": "Comments",
+      "links": "Links",
+      "subtasks": "Subtasks done"
+    }
+  },
+  "navigationPage": {
+    "overline": "Mehran Planner · Navigation",
+    "title": "Navigation & shell",
+    "intro": "The rail, context switcher, mobile bar and top-bar islands, previewed in frames so nothing is pinned to this page. The live shell puts them together.",
+    "scopeHint": "Pick a context to retint every preview and swap its navigation.",
+    "rail": {
+      "title": "Floating rail",
+      "description": "Icon-only and expandable. Planned pages are disabled with “Coming soon”. It sits on the right in RTL.",
+      "collapsed": "Collapsed · 64px",
+      "expanded": "Expanded · 232px"
+    },
+    "switcher": {
+      "title": "Context switcher",
+      "description": "The top-bar pill and its panel, shown open. Choosing a workspace switches the preview context.",
+      "caption": "Trigger and panel with sample workspaces"
+    },
+    "mobile": {
+      "title": "Mobile navigation",
+      "description": "Context chips scroll inside themselves; the bottom bar has a notched quick-add button and opens all pages from More.",
+      "caption": "Phone frame · 390px",
+      "quickAdd": "Quick add",
+      "moreTitle": "All {context} pages"
+    },
+    "pageHeader": {
+      "title": "Breadcrumbs & page header",
+      "description": "Ancestors truncate first on narrow widths; separators mirror in RTL. The header keeps its action at the inline end.",
+      "current": "Overview",
+      "breadcrumbsCaption": "Breadcrumbs with the context dot",
+      "breadcrumbsLabel": "Breadcrumb sample",
+      "headerCaption": "Page header",
+      "headerBreadcrumbsLabel": "Page header breadcrumb",
+      "action": "New block"
+    },
+    "navList": {
+      "title": "Context page list",
+      "description": "Every page of the context, used by the More sheet and the command palette.",
+      "caption": "Pages of the preview context"
+    },
+    "schedule": {
+      "title": "Schedule island",
+      "description": "The current block lifts in white with its elapsed share filled; the volt dot marks now. Narrow tracks drop upcoming blocks.",
+      "wide": "Full width",
+      "narrow": "Narrow track",
+      "narrowLabel": "Today’s schedule, narrow"
+    },
+    "topBar": {
+      "title": "Top bar",
+      "description": "The real shell islands with sample data: home, context switcher, schedule and actions (search ⌘K, quick create, notifications, account). As in the app outside a context, they show Personal; choosing a workspace opens its context.",
+      "caption": "Desktop top bar · scrolls inside the frame on small screens",
+      "home": "Planner home",
+      "scheduleLabel": "Today’s schedule, top bar",
+      "assistantCaption": "Assistant button (fixed at the bottom inline end in the app)",
+      "assistant": "Assistant"
+    },
+    "liveShell": {
+      "title": "Live application shell",
+      "description": "See every part working together, with real routes, at full size.",
+      "link": "Open the live application shell"
+    }
+  },
+  "meta": {
+    "foundations": {
+      "title": "Styleguide",
+      "description": "Mehran Planner foundations: tokens, themes, RTL, locale formatting and motion."
+    },
+    "components": {
+      "title": "Components · Styleguide",
+      "description": "Mehran Planner base components: fields, controls, buttons, overlays, feedback and surfaces in every state."
+    },
+    "navigation": {
+      "title": "Navigation & shell · Styleguide",
+      "description": "Mehran Planner navigation and shell parts: rail, context switcher, mobile bar, breadcrumbs and top bar."
+    },
+    "rules": {
+      "title": "Rules",
+      "description": "Mehran Planner design-system tiers, component classification and pattern rules, with board evidence."
+    }
+  },
+  "tiers": {
+    "utility": {
+      "name": "Utility",
+      "description": "Flat, compact, dense. Forms, tables, filters.",
+      "where": "Settings, forms, tables, filters, task lists, activity feeds, approvals and expense rows. Never notched.",
+      "source": "Rationale · 03 Hierarchy"
+    },
+    "product": {
+      "name": "Product",
+      "description": "Plain sculpted card, scope tint as cue.",
+      "where": "Content cards: tag row → title → meta → footer. The primary action sits at the bottom.",
+      "source": "Rationale · 03 Hierarchy, 04"
+    },
+    "signature": {
+      "name": "Signature",
+      "description": "Notch, accent, motion. One or two per screen.",
+      "where": "Today progress, project health, journey, executive hero, insights, context switcher, schedule bar, focus timer. Large type only here.",
+      "source": "Rationale · 01, 03"
+    },
+    "specialized": {
+      "name": "Specialized visualization",
+      "description": "Exists only where a specific screen design draws it.",
+      "where": "Rings and charts. Never a default; colour and size follow that screen.",
+      "source": "Board audit (this page)"
+    }
+  },
+  "rulesPage": {
+    "overline": "Mehran Planner · Rules",
+    "title": "Rules",
+    "intro": "Approved reusable patterns, each traced to a board. Nothing here is extrapolated from a single screen: when a pattern exists only on one screen, it is marked screen-specific.",
+    "tiers": {
+      "title": "Tiers",
+      "description": "Every component belongs to one tier. The first three are defined on the Rationale board."
+    },
+    "classification": {
+      "title": "Component classification",
+      "description": "Every component built so far, with its tier.",
+      "component": "Component",
+      "tier": "Tier",
+      "notes": "Notes"
+    },
+    "componentNotes": {
+      "statusChip": "Priority, due, status and scope chips. Always labelled, never colour alone.",
+      "progress": "Default progress. Also compact inline (size sm).",
+      "segmentedProgress": "Default progress: proportional parts or n-of-m dashes.",
+      "segmented": "Neutral: segmented view switcher. Accent: filled pill tabs.",
+      "tabs": "Capsule: view switcher with panels. Compact: compact tabs (S4).",
+      "rail": "Shell navigation chrome; flat, no notch.",
+      "productCard": "Plain sculpted card; primary action at the bottom.",
+      "folderTabs": "Only on cards designed with folder tabs.",
+      "notchedCard": "Signature surfaces only; never on utility.",
+      "switcher": "Named signature surface (Rationale).",
+      "schedule": "Named signature surface (schedule bar).",
+      "mobileNav": "Notched centre button: the “nav” signature surface.",
+      "assistant": "Notched chat panel per CLAUDE.md §5.",
+      "progressRing": "Only where a screen design draws a ring; colour and size set by that screen.",
+      "ringCard": "The Cards-board focus summary and the S6 company health card."
+    },
+    "patterns": {
+      "title": "Pattern audit",
+      "description": "Where each pattern is allowed, where it is not, and whether it is universal or screen-specific.",
+      "allowed": "Allowed",
+      "notAllowed": "Not allowed",
+      "evidence": "Evidence",
+      "scopes": {
+        "universal": "Universal",
+        "screenSpecific": "Screen-specific",
+        "signatureOnly": "Signature only",
+        "notApproved": "Not approved"
+      },
+      "progress": {
+        "title": "Progress",
+        "allowed": "Linear bars, segmented bars (proportional parts or n-of-m dashes), numeric values (72%, 6/9, 37M / 60M) and compact inline bars with a count, in any card, row or tile.",
+        "notAllowed": "A ring, gauge or arc as the default way to show progress. New progress styles or global fill rules that no board defines."
+      },
+      "rings": {
+        "title": "Rings",
+        "allowed": "Only where a screen design draws one: the RingCard focus summary (Cards), the day ring and goal rings (S1, S11), project health (S4), company health (S6) and habit completion (S9). Colour, size and stroke follow that screen.",
+        "notAllowed": "Anywhere else, as a replacement for linear progress, or with an assumed global colour, start point or fill rule."
+      },
+      "gauges": {
+        "title": "Gauges",
+        "allowed": "None. No board contains a gauge or arc.",
+        "notAllowed": "Any gauge or arc until a screen design introduces one."
+      },
+      "charts": {
+        "title": "Charts",
+        "allowed": "The chart a screen design specifies: grouped bars (S4, S6), daily bars with an average line (S10), the mood line chart (S12), focus bars and heatmaps (S13, S9), stacked share bars (S13), mood and energy bars (S14), the Gantt timeline (S4). Series use scope base colours; axes never mirror.",
+        "notAllowed": "Donut, area or sparkline charts (none designed), one generic chart reused across screens, and charts in utility rows."
+      },
+      "tabs": {
+        "title": "Tabs",
+        "allowed": "Segmented view switcher, compact tabs, filled pill tabs, folder tabs merged into a card, and component-internal tabs such as the RingCard tabs — each where the screen design uses it.",
+        "notAllowed": "Forcing one tab style everywhere, underline tabs (none designed), and folder tabs on utility surfaces."
+      },
+      "cardGeometry": {
+        "title": "Card geometry",
+        "allowed": "Cards of 28–32px radius on the canvas, tiles of 16–22px, rows and fields of 18px, capsule controls. Product cards are plain (tag row → title → meta → footer). Dashed zones for add and drop targets and empty states.",
+        "notAllowed": "Black surfaces, other radii, and floods of scope colour (tints are cues)."
+      },
+      "notches": {
+        "title": "Notches",
+        "allowed": "Signature surfaces only — hero, health, focus, nav, insight — with the presets 64×64 (52px button), 60×60 (48px) and 112×60 (two 48px). The action sits in the cut-out, top-left in RTL. A top-centre notch holding people (S5, MobileFlow) is approved but not built yet.",
+        "notAllowed": "Utility surfaces (“No notches here.”), a floating button beside a plain card posing as a notch, and more than one or two signature surfaces per screen."
+      },
+      "statusChips": {
+        "title": "Status chips",
+        "allowed": "Priority (urgent in red soft, high in amber soft, low in grey), due tags (outlined capsule), status pills (soft tint with a dot or text), scope chips (soft tint, dot, deep text) and delta chips. Always labelled.",
+        "notAllowed": "Colour as the only signal, volt on anything but live/now, and scope colours used to mean a non-scope category."
+      },
+      "contextColours": {
+        "title": "Context colours",
+        "allowed": "Soft for selected backgrounds, event fills and tinted cards; deep for primary actions, text on soft and bar fills; dot for markers, legends, chart series and segmented bases. The active context sets the primary colour. Volt marks live/now only, one element per view.",
+        "notAllowed": "Floods of scope colour, colour as the only signal, volt as decoration, and black surfaces."
+      }
+    },
+    "openQuestions": {
+      "title": "Open questions in the design package",
+      "description": "Contradictions found during the audit. They are recorded here and are not treated as rules.",
+      "items": {
+        "blackSurfaces": "Dashboard, CaseFlow, Rationale and Main show black surfaces, but CLAUDE.md says “No black surfaces.” CLAUDE.md wins; those surfaces are not reproduced.",
+        "volt": "S1, S2, S14 and several mobile boards show more than one volt element in a view, against “One volt element per view.” The rule is kept; each screen will be checked when built.",
+        "nowPill": "The Now pill is deep green on MobileHome but deep blue on MobileFaHome.",
+        "parseChips": "The “Understood as” chips on S8 use scope colours for token types that are not scopes (date, tag, duration).",
+        "dashboard": "The Dashboard board is not in the CLAUDE.md board index, so it is not used as a reference."
+      }
+    }
+  }
+}

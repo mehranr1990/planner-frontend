@@ -1,0 +1,11 @@
+{
+  "overline": "Foundation · Step 1",
+  "title": "Mehran Planner",
+  "body": "The frontend foundation is in place: tokens, themes, RTL, locale utilities and motion. Product screens arrive in later steps.",
+  "styleguide": "Open the styleguide",
+  "shell": "Open the application shell",
+  "meta": {
+    "title": "Mehran Planner",
+    "description": "Personal, project, team and company planning in one calm workspace."
+  }
+}

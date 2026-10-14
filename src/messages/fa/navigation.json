@@ -1,0 +1,68 @@
+{
+  "contexts": {
+    "personal": {
+      "label": "شخصی",
+      "description": "روز، کارها، عادت‌ها، هدف‌ها و دخل‌وخرج شما",
+      "add": "فقط فضای شخصی"
+    },
+    "project": {
+      "label": "پروژه‌ها",
+      "description": "بوردها، نقاط عطف، جریان‌ها و خروجی‌ها",
+      "add": "پروژه‌ی جدید"
+    },
+    "team": {
+      "label": "تیم‌ها",
+      "description": "اعضا، حجم کار، گزارش‌های وضعیت و فایل‌های مشترک",
+      "add": "تیم جدید"
+    },
+    "company": {
+      "label": "شرکت‌ها",
+      "description": "واحدها، سبد پروژه‌ها، هدف‌ها و تأییدها",
+      "add": "افزودن شرکت"
+    }
+  },
+  "items": {
+    "overview": "نمای کلی",
+    "myday": "روز من",
+    "tasks": "کارها",
+    "calendar": "تقویم",
+    "goals": "هدف‌ها",
+    "habits": "عادت‌ها",
+    "finance": "مالی",
+    "journal": "روزنوشت",
+    "insights": "بینش‌ها",
+    "board": "بورد",
+    "timeline": "خط زمانی",
+    "gantt": "گانت",
+    "flow": "جریان پرونده",
+    "docs": "اسناد",
+    "analytics": "تحلیل‌ها",
+    "work": "کارهای تیم",
+    "people": "افراد",
+    "checkins": "گزارش وضعیت",
+    "activity": "فعالیت‌ها",
+    "files": "فایل‌ها",
+    "departments": "واحدها",
+    "projects": "پروژه‌ها",
+    "assets": "دارایی‌ها",
+    "approvals": "تأییدها",
+    "reports": "گزارش‌ها"
+  },
+  "rail": {
+    "landmark": "ناوبری {context}",
+    "expand": "باز کردن ناوبری",
+    "collapse": "جمع کردن ناوبری",
+    "collapseShort": "جمع کردن"
+  },
+  "switcher": {
+    "title": "حوزه",
+    "label": "تغییر حوزه",
+    "workspaces": "فضاهای کاری {context}",
+    "activeWorkspace": "{workspace} · فعال",
+    "workspaceCount": "{formatted} فضای کاری"
+  },
+  "breadcrumbs": "مسیر صفحه",
+  "chips": "حوزه‌ها",
+  "bottomNav": "اصلی",
+  "moreLabel": "همه‌ی صفحه‌های {context}"
+}

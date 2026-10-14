@@ -1,0 +1,15 @@
+{
+  "remove": "Remove {label}",
+  "selectPlaceholder": "Select…",
+  "errorSummaryTitle": "Please fix the following",
+  "previousMonth": "Previous month",
+  "nextMonth": "Next month",
+  "calendarSystem": "Calendar",
+  "jalali": "Jalali",
+  "gregorian": "Gregorian",
+  "setDate": "Set date",
+  "noDateSelected": "No date selected",
+  "today": "Today",
+  "weekend": "Weekend",
+  "selectedDate": "Selected date"
+}

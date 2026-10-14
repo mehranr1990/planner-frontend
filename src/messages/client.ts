@@ -1,0 +1,40 @@
+import type { Locale } from "@/lib/locale/config";
+import enCommon from "./en/common.json";
+import enFeedback from "./en/feedback.json";
+import enNavigation from "./en/navigation.json";
+import enShell from "./en/shell.json";
+import enUi from "./en/ui.json";
+import faCommon from "./fa/common.json";
+import faFeedback from "./fa/feedback.json";
+import faNavigation from "./fa/navigation.json";
+import faShell from "./fa/shell.json";
+import faUi from "./fa/ui.json";
+
+/*
+ * The namespaces client components read outside the styleguide. The root
+ * client provider ships these for both locales (so switching language is
+ * instant) and nothing else: Home is rendered on the server only, and the
+ * styleguide supplies its own namespace (see ./styleguide.ts).
+ *
+ * Reading a new namespace with useTranslations in a client component outside
+ * the styleguide? Add it here; messages.test.ts checks this list against the source.
+ */
+const en = {
+  Common: enCommon,
+  UI: enUi,
+  Feedback: enFeedback,
+  Navigation: enNavigation,
+  Shell: enShell,
+};
+
+export type ClientMessages = typeof en;
+
+const fa: ClientMessages = {
+  Common: faCommon,
+  UI: faUi,
+  Feedback: faFeedback,
+  Navigation: faNavigation,
+  Shell: faShell,
+};
+
+export const clientMessages: Record<Locale, ClientMessages> = { en, fa };

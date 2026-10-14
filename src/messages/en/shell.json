@@ -1,0 +1,167 @@
+{
+  "skipToContent": "Skip to content",
+  "home": "Planner home",
+  "today": "Today",
+  "schedule": "Today's schedule",
+  "now": "Now {time}",
+  "done": "done",
+  "timeRange": "{start} – {end}",
+  "assistant": "Assistant",
+  "actions": "Quick actions",
+  "search": {
+    "button": "Search",
+    "label": "Search and commands",
+    "shortcutMac": "⌘K",
+    "shortcutOther": "Ctrl K"
+  },
+  "palette": {
+    "title": "Search and commands",
+    "inputLabel": "Search pages",
+    "placeholder": "Search pages and contexts…",
+    "results": "Pages",
+    "hintNavigate": "↑↓ to move",
+    "hintOpen": "↵ to open",
+    "hintClose": "Esc to close",
+    "resultCount": "{count, plural, =0 {No pages found} one {{formatted} page found} other {{formatted} pages found}}"
+  },
+  "quickCreate": {
+    "label": "Quick create",
+    "title": "Create",
+    "items": {
+      "task": "Task",
+      "event": "Event",
+      "expense": "Expense",
+      "mood": "Mood",
+      "habit": "Habit",
+      "note": "Note"
+    }
+  },
+  "quickAdd": {
+    "title": "Quick add",
+    "description": "Capturing from here arrives in a later step."
+  },
+  "notifications": {
+    "label": "Notifications",
+    "title": "Notifications",
+    "emptyTitle": "You’re all caught up",
+    "emptyDescription": "Notifications arrive in a later step."
+  },
+  "account": {
+    "trigger": "Account menu",
+    "menu": "Account",
+    "settings": "Settings",
+    "theme": "Theme",
+    "language": "Language",
+    "direction": "Direction",
+    "digits": "Digits",
+    "currency": "Currency",
+    "calendar": "Calendar",
+    "options": {
+      "theme": {
+        "light": "Light",
+        "dark": "Dark",
+        "system": "System"
+      },
+      "language": {
+        "en": "English",
+        "fa": "فارسی"
+      },
+      "direction": {
+        "ltr": "Left to right",
+        "rtl": "Right to left"
+      },
+      "digits": {
+        "latn": "English 123",
+        "fa": "Persian ۱۲۳"
+      },
+      "currency": {
+        "toman": "Toman",
+        "rial": "Rial"
+      },
+      "calendar": {
+        "jalali": "Jalali",
+        "gregorian": "Gregorian"
+      }
+    }
+  },
+  "mobile": {
+    "moreTitle": "{context} pages",
+    "assistantHint": "Arrives in a later step",
+    "digitsToggle": "Persian digits ۱۲۳"
+  },
+  "assistantPanel": {
+    "title": "Assistant",
+    "unavailableTitle": "The assistant arrives in a later step",
+    "unavailableDescription": "For now, plan from the pages in the navigation."
+  },
+  "pages": {
+    "personal": {
+      "title": "Personal overview",
+      "cta": "Plan my day"
+    },
+    "project": {
+      "title": "Projects overview",
+      "cta": "New task"
+    },
+    "team": {
+      "title": "Teams overview",
+      "cta": "Check in"
+    },
+    "company": {
+      "title": "Companies overview",
+      "cta": "Review approvals"
+    }
+  },
+  "placeholder": {
+    "region": "Overview layout placeholder",
+    "badge": "Placeholder · Step 3",
+    "hero": "Signature",
+    "product": "Product",
+    "utility": "Utility",
+    "openHero": "Open, coming soon",
+    "personal": {
+      "hero": "Today progress",
+      "heroNote": "One sculpted surface: day ring, tasks, habits, focus time and mood. Animates as the day fills.",
+      "p1Title": "Timeline",
+      "p1Note": "Calendar and time blocks, current activity.",
+      "p2Title": "Goals",
+      "p2Note": "A few active goals with rings and the next action.",
+      "p3Title": "Habits & mood",
+      "p3Note": "Streaks, quick check-in, recent trend.",
+      "utility": "Compact task list (due · overdue · unscheduled) and expenses in Toman or Rial."
+    },
+    "project": {
+      "hero": "Project health",
+      "heroNote": "Progress, milestones, time and budget used, blockers, and why the health is what it is.",
+      "p1Title": "Journey",
+      "p1Note": "Planning → Design → Build → Launch.",
+      "p2Title": "Milestones",
+      "p2Note": "Progress and the next milestone.",
+      "p3Title": "Current tasks",
+      "p3Note": "Active, important work only.",
+      "utility": "Risks list and budget table (estimated vs actual)."
+    },
+    "team": {
+      "hero": "People & workload",
+      "heroNote": "People cluster with availability, plus capacity bars. No productivity ranking.",
+      "p1Title": "Active work",
+      "p1Note": "Current team priorities.",
+      "p2Title": "Team calendar",
+      "p2Note": "Shared schedule.",
+      "p3Title": "Check-ins",
+      "p3Note": "Open decisions and recent check-ins.",
+      "utility": "Meaningful activity feed and shared files."
+    },
+    "company": {
+      "hero": "Executive hero",
+      "heroNote": "Company health, projects, teams, people, goals and one key risk — composed, not a KPI row.",
+      "p1Title": "Departments",
+      "p1Note": "Progress, health, capacity.",
+      "p2Title": "Portfolio",
+      "p2Note": "Cross-project progress.",
+      "p3Title": "Company goals",
+      "p3Note": "Strategic objectives.",
+      "utility": "Approvals queue, resource capacity and budget."
+    }
+  }
+}

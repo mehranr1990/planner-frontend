@@ -1,0 +1,15 @@
+{
+  "remove": "حذف {label}",
+  "selectPlaceholder": "انتخاب کنید…",
+  "errorSummaryTitle": "لطفاً این موارد را اصلاح کنید",
+  "previousMonth": "ماه قبل",
+  "nextMonth": "ماه بعد",
+  "calendarSystem": "تقویم",
+  "jalali": "شمسی",
+  "gregorian": "میلادی",
+  "setDate": "ثبت تاریخ",
+  "noDateSelected": "تاریخی انتخاب نشده",
+  "today": "امروز",
+  "weekend": "تعطیل",
+  "selectedDate": "تاریخ انتخاب‌شده"
+}

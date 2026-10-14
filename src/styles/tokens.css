@@ -1,0 +1,151 @@
+/*
+ * Mehran Planner — design tokens.
+ *
+ * Layer 1 (primitives) is mehran-planner-design/tokens.css itself, imported
+ * just before this file in globals.css: the design package is the single
+ * source of truth for colour, shape and shadow values, light and dark.
+ * This file holds only app overrides (fonts, motion) and Layer 2 (semantic),
+ * which components consume through the Tailwind theme. No raw colours here.
+ * src/styles/tokens.test.ts checks the contract between the two files.
+ *
+ * Theme: light on :root, dark on [data-theme="dark"] (set by next-themes).
+ * Scope: [data-scope="personal|project|team|company"] retints the primary.
+ */
+
+/* ── App overrides ────────────────────────────────────────────────────── */
+
+/*
+ * Never redefine a themed primitive here: a :root override would beat the
+ * design file's [data-theme="dark"] block. To swap the Persian font (e.g.
+ * IRANSans), edit --font-fa below, not the design file.
+ */
+:root {
+  /* next/font variables first, then the design's named families */
+  --font-latin: var(--font-urbanist), 'Urbanist', system-ui, sans-serif;
+  --font-fa: var(--font-vazirmatn), 'Vazirmatn', var(--font-urbanist), system-ui, sans-serif;
+
+  /* Motion — keep in sync with src/design-system/tokens/motion.ts */
+  --motion-instant: 100ms;
+  --motion-fast: 160ms;
+  --motion-standard: 240ms;
+  --motion-slow: 400ms;
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --ease-emphasized: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ── Layer 2 · semantic ───────────────────────────────────────────────── */
+
+:root {
+  /* Surfaces — in dark, elevation means a lighter surface, not a shadow */
+  --surface-raised: var(--raised);
+  --surface-subtle: var(--subtle);
+  --surface-elevated: var(--surface);
+
+  /* Text */
+  --text-primary: var(--text-1);
+  --text-secondary: var(--text-2);
+  --text-muted: var(--text-3);
+
+  /* Borders */
+  --border-subtle: var(--line);
+  --border-soft: var(--hairline);
+  --border-default: var(--border);
+
+  /* Status aliases — success/info reuse scope hues, no new colours */
+  --success-text: var(--personal-deep);
+  --success-soft: var(--personal-soft);
+  --info-text: var(--project-deep);
+  --info-soft: var(--project-soft);
+
+  /*
+   * Friday/weekend label text. The --weekend primitive (dots, markers) only
+   * reaches 3.5–4.3:1 on surfaces; the danger text tone clears AA for small
+   * text in both themes (≥5.6:1 light, ≥6.1:1 dark).
+   */
+  --weekend-text: var(--danger-text);
+
+  /* Destructive action fill: solid red in light, red-on-dark-tint in dark */
+  --destructive: var(--danger-text);
+  --on-destructive: var(--on-accent);
+
+  /* Secondary action fill */
+  --secondary: var(--hairline);
+  --secondary-hover: color-mix(in oklab, var(--hairline), var(--text-1) 7%);
+  --secondary-pressed: color-mix(in oklab, var(--hairline), var(--text-1) 14%);
+
+  /* Focus: design halo + an inner edge so the ring clears 3:1 on white */
+  --focus-ring-edge: var(--project-deep);
+
+  /* Elevation */
+  --shadow-elevated: var(--shadow-overlay);
+
+  /* Shape */
+  --radius-card: var(--r-card);
+  --radius-card-sm: var(--r-card-sm);
+  --radius-tile: var(--r-tile);
+  --radius-row: var(--r-row);
+  --radius-input: var(--r-input);
+  --radius-control: var(--r-pill);
+  --radius-island: var(--r-pill);
+
+  /* Stacking: shell chrome < overlays < toasts < tooltips. */
+  --z-shell: 20;
+  --z-rail: 30;
+  --z-overlay: 50;
+  --z-toast: 60;
+  --z-tooltip: 70;
+
+  /* Mobile safe areas (needs viewport-fit=cover, set in the root layout). */
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+
+  /* Side sheets enter from inline-end; RTL flips the travel direction. */
+  --sheet-offset: 100%;
+}
+
+[dir="rtl"] {
+  --sheet-offset: -100%;
+}
+
+[data-theme="dark"] {
+  --surface-elevated: var(--raised);
+  --destructive: var(--danger-soft);
+  --on-destructive: var(--danger-text);
+}
+
+/*
+ * Active scope. Custom properties resolve where they are declared, so the
+ * derived hover/pressed tones are re-declared on every [data-scope] element.
+ */
+:root,
+[data-scope="personal"] {
+  --scope-soft: var(--personal-soft);
+  --scope-deep: var(--personal-deep);
+  --scope-dot: var(--personal-dot);
+}
+
+[data-scope="project"] {
+  --scope-soft: var(--project-soft);
+  --scope-deep: var(--project-deep);
+  --scope-dot: var(--project-dot);
+}
+
+[data-scope="team"] {
+  --scope-soft: var(--team-soft);
+  --scope-deep: var(--team-deep);
+  --scope-dot: var(--team-dot);
+}
+
+[data-scope="company"] {
+  --scope-soft: var(--company-soft);
+  --scope-deep: var(--company-deep);
+  --scope-dot: var(--company-dot);
+}
+
+:root,
+[data-scope] {
+  --primary: var(--scope-deep);
+  --primary-hover: color-mix(in oklab, var(--scope-deep), var(--text-1) 14%);
+  --primary-pressed: color-mix(in oklab, var(--scope-deep), var(--text-1) 28%);
+  --destructive-hover: color-mix(in oklab, var(--destructive), var(--text-1) 12%);
+}
