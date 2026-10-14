@@ -15,6 +15,7 @@ import { FolderTabsSection } from "./sections/components/folder-tabs-section";
 import { FormSection } from "./sections/components/form-section";
 import { IndicatorsSection } from "./sections/components/indicators-section";
 import { MenusSection } from "./sections/components/menus-section";
+import { MetricTilesSection } from "./sections/components/metric-tiles-section";
 import { OverlaysSection } from "./sections/components/overlays-section";
 import { ProductCardSection } from "./sections/components/product-card-section";
 import { ProgressSection } from "./sections/components/progress-section";
@@ -23,13 +24,14 @@ import { SelectSection } from "./sections/components/select-section";
 import { StatesSection } from "./sections/components/states-section";
 import { TabsSection } from "./sections/components/tabs-section";
 import { ToastsSection } from "./sections/components/toasts-section";
+import { UtilityCardSection } from "./sections/components/utility-card-section";
 import { StyleguideMessages } from "./styleguide-messages";
 import { StyleguideShell } from "./styleguide-shell";
 
 /** /styleguide/components: every Step 2 base component and its states. */
 function ComponentsViewContent() {
   const t = useTranslations("Styleguide");
-  const [scope, setScope] = useState<Scope>("project");
+  const [scope, setScope] = useState<Scope>("personal");
 
   return (
     <StyleguideShell
@@ -43,9 +45,10 @@ function ComponentsViewContent() {
       {/*
         Rows of the 12-column grid (lg+), paired so neighbours are of similar
         height: fields · select · controls | date picker (8) · toasts | buttons |
-        states · overlays (8) | choices · form (8) | menus | indicators · data
-        display | progress | tabs | notched cards (signature) | product card ·
-        folder tabs | ring card (specialized). Every section carries its tier.
+        states · form (8) | choices · menus (8) | indicators · data display |
+        progress | overlays (dialogs, tooltip, P18 containers) | tab families |
+        folder tabs (7) · ring card (5) | signature cards | product card ·
+        utility card | metric tiles. Every section carries its tier.
       */}
       <FieldsSection />
       <SelectSection />
@@ -54,18 +57,20 @@ function ComponentsViewContent() {
       <ToastsSection />
       <ButtonsSection />
       <StatesSection />
-      <OverlaysSection />
-      <ChoicesSection />
       <FormSection />
+      <ChoicesSection />
       <MenusSection />
       <IndicatorsSection />
       <DataDisplaySection />
       <ProgressSection />
+      <OverlaysSection />
       <TabsSection />
-      <CardsSection />
-      <ProductCardSection />
       <FolderTabsSection />
       <RingCardSection />
+      <CardsSection />
+      <ProductCardSection />
+      <UtilityCardSection />
+      <MetricTilesSection />
     </StyleguideShell>
   );
 }

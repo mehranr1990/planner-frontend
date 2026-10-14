@@ -55,7 +55,7 @@ export function AssistantLauncher() {
           }
         >
           <NotchedCard
-            preset="compact"
+            preset="mobile"
             radius="card-sm"
             tone="elevated"
             action={

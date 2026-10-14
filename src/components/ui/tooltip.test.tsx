@@ -26,4 +26,21 @@ describe("Tooltip", () => {
     await user.keyboard("{Escape}");
     expect(screen.queryByRole("tooltip")).not.toBeInTheDocument();
   });
+
+  it("is a surface island with a hairline shadow, never an ink fill", async () => {
+    const user = userEvent.setup();
+    renderWithProviders(
+      <Tooltip content="Mood 4.2">
+        <button type="button">Point</button>
+      </Tooltip>,
+    );
+    await user.tab();
+    await screen.findByRole("tooltip");
+    const content = document.querySelector("[data-side]");
+    expect(content).toHaveClass("bg-surface", "text-fg", "shadow-tooltip", "rounded-field");
+    expect(content?.className).not.toMatch(/bg-fg|text-surface/);
+
+    await user.keyboard("{Escape}");
+    expect(screen.queryByRole("tooltip")).not.toBeInTheDocument();
+  });
 });

@@ -54,3 +54,19 @@ describe("notchPath", () => {
     expect(canNotch({ width: 360, height: 220, notchWidth, notchHeight, fillet })).toBe(true);
   });
 });
+
+describe("notchPresets", () => {
+  it("holds exactly the desktop, mobile and focus geometry from P00 / design §4", () => {
+    expect(notchPresets).toEqual({
+      desktop: { notchWidth: 64, notchHeight: 64, fillet: 28, button: 54 },
+      mobile: { notchWidth: 56, notchHeight: 56, fillet: 24, button: 46 },
+      focus: { notchWidth: 72, notchHeight: 72, fillet: 30, button: 56 },
+    });
+  });
+
+  it("fits the action button inside every notch", () => {
+    for (const { notchWidth, notchHeight, button } of Object.values(notchPresets)) {
+      expect(button).toBeLessThanOrEqual(Math.min(notchWidth, notchHeight));
+    }
+  });
+});

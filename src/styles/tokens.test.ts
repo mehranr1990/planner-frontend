@@ -126,6 +126,12 @@ describe("design tokens contract", () => {
     }
   });
 
+  it("composes the overlay tokens from primitives", () => {
+    expect(appCss).toMatch(/--overlay-scrim:\s*var\(--scrim\);/);
+    expect(appCss).toMatch(/--shadow-tooltip:\s*0 0 0 1px var\(--hairline\), 0 10px 24px var\(--tip-shadow-tint\);/);
+    expect(globalsCss).toMatch(/--color-scrim:\s*var\(--overlay-scrim\);/);
+  });
+
   it("gives weekend label text the AA-safe danger text tone", () => {
     expect(appCss).toMatch(/--weekend-text:\s*var\(--danger-text\)/);
   });
@@ -144,13 +150,23 @@ describe("design extensions (layer 1b)", () => {
   });
 
   it("only declares custom properties with literal hex colours", () => {
+    // Boards' rgba() values are written as 8-digit hex (#RRGGBBAA).
     for (const { body } of rules) {
       const statements = body.split(";").map((statement) => statement.trim()).filter(Boolean);
       expect(statements.length).toBeGreaterThan(0);
       for (const statement of statements) {
-        expect(statement, statement).toMatch(/^--[\w-]+\s*:\s*#[0-9a-f]{3}(?:[0-9a-f]{3})?$/i);
+        expect(statement, statement).toMatch(/^--[\w-]+\s*:\s*#(?:[0-9a-f]{3,4}|[0-9a-f]{6}|[0-9a-f]{8})$/i);
       }
     }
+  });
+
+  it("keeps the boards' scrim and tooltip shadow alphas", () => {
+    // P18/P06 .scrim: rgba(14,14,12,0.28) light, rgba(0,0,0,0.55) dark.
+    expect(light.get("--scrim")?.toUpperCase()).toBe("#0E0E0C47");
+    expect(dark.get("--scrim")?.toUpperCase()).toBe("#0000008C");
+    // DataViz .tip: rgba(14,14,12,0.10) light, rgba(0,0,0,0.40) dark.
+    expect(light.get("--tip-shadow-tint")?.toUpperCase()).toBe("#0E0E0C1A");
+    expect(dark.get("--tip-shadow-tint")?.toUpperCase()).toBe("#00000066");
   });
 
   it("never redeclares a design/tokens.css name", () => {

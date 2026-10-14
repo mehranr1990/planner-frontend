@@ -4,9 +4,9 @@ import { useTranslations } from "next-intl";
 import { cn } from "@/lib/cn";
 
 /*
- * Design-system tiers. SIGNATURE / PRODUCT / UTILITY come verbatim from the
- * Rationale board ("03 Hierarchy"); SPECIALIZED VISUALIZATION marks patterns
- * that exist only where a specific screen design calls for them.
+ * Design-system tiers. SIGNATURE / PRODUCT / UTILITY are the three card
+ * levels of P00CardsTabs; SPECIALIZED VISUALIZATION marks patterns that exist
+ * only where a final board draws them (Today ring, Habit RingCard, DataViz).
  */
 export const tiers = ["utility", "product", "signature", "specialized"] as const;
 

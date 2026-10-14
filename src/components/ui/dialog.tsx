@@ -17,9 +17,13 @@ export const Dialog = DialogPrimitive.Root;
 export const DialogTrigger = DialogPrimitive.Trigger;
 export const DialogClose = DialogPrimitive.Close;
 
-/** Scrim shared by Dialog, AlertDialog and Sheet. */
+/**
+ * Scrim shared by Dialog, AlertDialog and Sheet: 28% ink in light, 55% black
+ * in dark (P18/P06 .scrim). A themed token, not a tint of the text colour,
+ * which would turn into a light wash in dark mode.
+ */
 export const overlayClassName = cn(
-  "fixed inset-0 z-(--z-overlay) bg-fg/30",
+  "fixed inset-0 z-(--z-overlay) bg-scrim",
   "data-[state=open]:animate-overlay-in data-[state=closed]:animate-overlay-out",
 );
 

@@ -16,7 +16,9 @@ interface TooltipProps {
 }
 
 /**
- * Inverse-ink tooltip; opens on hover and keyboard focus and stacks above
+ * Tooltip island (DataViz .tip): white in light, graphite surface in dark,
+ * hairline ring + soft shadow, 16px radius. Never an ink fill: the product has
+ * no black surfaces. Opens on hover and keyboard focus and stacks above
  * overlays and toasts (z-tooltip). Supplementary text only: never the sole
  * label of a control.
  */
@@ -31,7 +33,7 @@ export function Tooltip({ content, children, side = "top", align = "center", cla
           sideOffset={8}
           collisionPadding={16}
           className={cn(
-            "z-(--z-tooltip) max-w-64 rounded-row bg-fg px-3 py-2 text-xs font-semibold text-surface",
+            "z-(--z-tooltip) max-w-64 rounded-field bg-surface px-3 py-2.5 text-xs font-semibold text-fg shadow-tooltip",
             "origin-(--radix-tooltip-content-transform-origin)",
             "data-[state=delayed-open]:animate-pop-in data-[state=instant-open]:animate-pop-in data-[state=closed]:animate-pop-out",
             className,

@@ -23,6 +23,10 @@
   --viz-violet: #7A62D6;          /* DataVizAdd */
   --viz-pink: #D46A9A;            /* DataVizAdd */
   --viz-neutral: #A9A9A1;         /* DataVizAdd */
+
+  /* Overlays — 8-digit hex for the boards' rgba() values */
+  --scrim: #0E0E0C47;             /* P18SupportingFlows / P06TaskDetail .scrim rgba(14,14,12,0.28) */
+  --tip-shadow-tint: #0E0E0C1A;   /* DataVizPersonal / DataVizAdd .tip rgba(14,14,12,0.10) */
 }
 
 [data-theme="dark"] {
@@ -38,4 +42,8 @@
   --viz-violet: #8370D9;          /* DataVizAddDark */
   --viz-pink: #C9608E;            /* DataVizAddDark */
   --viz-neutral: #6E746E;         /* DataVizAddDark */
+
+  /* Overlays */
+  --scrim: #0000008C;             /* P18SupportingFlowsDark / P06TaskDetailDark rgba(0,0,0,0.55) */
+  --tip-shadow-tint: #00000066;   /* DataVizPersonalDark / DataVizAddDark .tip rgba(0,0,0,0.40) */
 }

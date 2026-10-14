@@ -1,26 +1,54 @@
 "use client";
 
-import { PanelRight, PanelBottom, SquarePen, Trash2 } from "lucide-react";
+import {
+  CircleHelp,
+  NotebookPen,
+  PanelBottom,
+  PanelRight,
+  ReceiptText,
+  Repeat,
+  SquareCheck,
+  SquarePen,
+  Trash2,
+} from "lucide-react";
 import { useTranslations } from "next-intl";
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import { quickCreateItems } from "@/components/shell/quick-create";
 import { ConfirmDialog } from "@/components/ui/alert-dialog";
-import { Button } from "@/components/ui/button";
+import { Button, IconButton } from "@/components/ui/button";
 import { Dialog, DialogClose, DialogContent, DialogFooter, DialogTrigger } from "@/components/ui/dialog";
 import { Field, FieldLabel } from "@/components/ui/field";
+import {
+  FloatingPanel,
+  FloatingPanelClose,
+  FloatingPanelContent,
+  FloatingPanelTrigger,
+} from "@/components/ui/floating-panel";
 import { Icon } from "@/components/ui/icon";
 import { Input } from "@/components/ui/input";
+import { Segmented } from "@/components/ui/segmented";
 import { Sheet, SheetClose, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/components/ui/toast";
+import { Tooltip } from "@/components/ui/tooltip";
+import { usePreferences } from "@/features/preferences/use-preferences";
+import { formatTime } from "@/lib/dates/format";
 import { cn } from "@/lib/cn";
+import { formatNumber } from "@/lib/locale/digits";
 import { SAMPLE_LATENCY_MS, wait } from "../../component-samples";
 import { StyleguideSection } from "../../styleguide-section";
+
+const frequencyIds = ["daily", "weekdays", "custom"] as const;
+const detailRows = ["context", "status", "reminder"] as const;
+const RULES = ["popoverRule", "geometryRule", "mobileRule"] as const;
+/** Task detail sample reminder (P06). */
+const DETAIL_REMINDER = new Date(2026, 9, 15, 10, 0);
 
 function Demo({ title, description, children }: { title: string; description: string; children: ReactNode }) {
   return (
     <div className="flex min-w-0 flex-col items-start gap-3 rounded-tile bg-subtle p-4">
       <div className="flex flex-col gap-1">
-        <h3 className="text-sm font-bold">{title}</h3>
+        <h4 className="text-sm font-bold">{title}</h4>
         <p className="type-caption text-fg-muted">{description}</p>
       </div>
       {children}
@@ -28,11 +56,27 @@ function Demo({ title, description, children }: { title: string; description: st
   );
 }
 
-/** Dialog, destructive confirm with an async action, end sheet and bottom sheet. */
+function Group({ title, children }: { title: string; children: ReactNode }) {
+  return (
+    <div className="flex flex-col gap-3">
+      <h3 className="type-label text-fg-secondary">{title}</h3>
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">{children}</div>
+    </div>
+  );
+}
+
+/**
+ * Dialogs, the tooltip island and the P18 containers: drawer (420), detail
+ * drawer (520), centred sheet, bottom sheet and floating panel. Panel
+ * content is illustrative only; the real flows are built with their screens.
+ */
 export function OverlaysSection() {
   const t = useTranslations("Styleguide.components.overlays");
   const tCommon = useTranslations("Common");
   const tShell = useTranslations("Shell.quickCreate");
+  const preferences = usePreferences();
+  const { digits } = preferences;
+  const [frequency, setFrequency] = useState<(typeof frequencyIds)[number]>("daily");
 
   const confirmDelete = async () => {
     await wait(SAMPLE_LATENCY_MS);
@@ -47,9 +91,15 @@ export function OverlaysSection() {
     });
   };
 
+  const cancel = (
+    <SheetClose asChild>
+      <Button variant="secondary">{tCommon("cancel")}</Button>
+    </SheetClose>
+  );
+
   return (
-    <StyleguideSection tier="utility" id="overlays" span="twoThirds" title={t("title")} description={t("description")}>
-      <div className="grid gap-3 sm:grid-cols-2">
+    <StyleguideSection tier="utility" id="overlays" title={t("title")} description={t("description")}>
+      <Group title={t("dialogsTitle")}>
         <Demo title={t("dialog")} description={t("dialogDescription")}>
           <Dialog>
             <DialogTrigger asChild>
@@ -90,30 +140,143 @@ export function OverlaysSection() {
           />
         </Demo>
 
-        <Demo title={t("endSheet")} description={t("endSheetDescription")}>
+        <Demo title={t("tooltip")} description={t("tooltipDescription")}>
+          <div className="flex flex-wrap items-center gap-3">
+            <Tooltip content={t("tooltipText")}>
+              <IconButton icon={CircleHelp} label={t("tooltipLabel")} size="sm" />
+            </Tooltip>
+            {/*
+              Static specimen so the island reads in screenshots: the same
+              tokens as Tooltip (surface, shadow-tooltip, 16px radius, 10/12
+              padding). Hidden from assistive tech: the live one is above.
+            */}
+            <span
+              aria-hidden="true"
+              className="max-w-64 rounded-field bg-surface px-3 py-2.5 text-xs font-semibold text-fg shadow-tooltip"
+            >
+              {t("tooltipText")}
+            </span>
+          </div>
+        </Demo>
+      </Group>
+
+      <Group title={t("containersTitle")}>
+        <Demo title={t("drawer")} description={t("drawerRule")}>
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button variant="secondary">
+                <Icon icon={Repeat} size={18} />
+                {t("openDrawer")}
+              </Button>
+            </SheetTrigger>
+            <SheetContent
+              side="end"
+              size="drawer"
+              title={t("drawerTitle")}
+              description={t("drawerBody")}
+              footer={
+                <>
+                  {cancel}
+                  <SheetClose asChild>
+                    <Button onClick={() => toast({ tone: "success", title: t("habitCreated") })}>
+                      {t("createHabit")}
+                    </Button>
+                  </SheetClose>
+                </>
+              }
+            >
+              <div className="flex flex-col gap-5">
+                <Field>
+                  <FieldLabel>{t("habitName")}</FieldLabel>
+                  <Input defaultValue={t("habitValue", { count: formatNumber(20, digits) })} />
+                </Field>
+                <div className="flex flex-col gap-2">
+                  <span className="text-sm font-semibold">{t("frequency")}</span>
+                  <Segmented
+                    label={t("frequency")}
+                    variant="neutral"
+                    className="self-start"
+                    value={frequency}
+                    onValueChange={setFrequency}
+                    options={frequencyIds.map((id) => ({ value: id, label: t(`frequencies.${id}`) }))}
+                  />
+                </div>
+              </div>
+            </SheetContent>
+          </Sheet>
+        </Demo>
+
+        <Demo title={t("detail")} description={t("detailRule")}>
           <Sheet>
             <SheetTrigger asChild>
               <Button variant="secondary">
                 <Icon icon={PanelRight} mirror size={18} />
-                {t("openEndSheet")}
+                {t("openDetail")}
               </Button>
             </SheetTrigger>
             <SheetContent
-              title={t("endSheetTitle")}
-              description={t("endSheetBody")}
+              side="end"
+              size="detail"
+              title={t("detailTitle")}
+              description={t("detailBody")}
               footer={
-                <SheetClose asChild>
-                  <Button>{tCommon("close")}</Button>
-                </SheetClose>
+                <>
+                  <SheetClose asChild>
+                    <Button variant="secondary">{tCommon("close")}</Button>
+                  </SheetClose>
+                  <SheetClose asChild>
+                    <Button onClick={() => toast({ tone: "neutral", title: tCommon("comingSoon") })}>
+                      <Icon icon={SquareCheck} size={18} />
+                      {t("complete")}
+                    </Button>
+                  </SheetClose>
+                </>
               }
             >
               <ul className="flex flex-col gap-2">
-                {(["one", "two", "three"] as const).map((key) => (
-                  <li key={key} className="rounded-row bg-subtle px-4 py-3 text-sm">
-                    {t(`endSheetRows.${key}`)}
+                {detailRows.map((row) => (
+                  <li key={row} className="rounded-field bg-subtle px-4 py-3 text-sm">
+                    {t(`detailRows.${row}`, { time: formatTime(DETAIL_REMINDER, preferences) })}
                   </li>
                 ))}
               </ul>
+            </SheetContent>
+          </Sheet>
+        </Demo>
+
+        <Demo title={t("center")} description={t("centerRule")}>
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button variant="secondary">
+                <Icon icon={ReceiptText} size={18} />
+                {t("openCenter")}
+              </Button>
+            </SheetTrigger>
+            <SheetContent
+              side="center"
+              title={t("centerTitle")}
+              description={t("centerBody")}
+              footer={
+                <>
+                  {cancel}
+                  <SheetClose asChild>
+                    <Button onClick={() => toast({ tone: "success", title: t("expenseSaved") })}>
+                      {tCommon("save")}
+                    </Button>
+                  </SheetClose>
+                </>
+              }
+            >
+              <div className="grid gap-4 sm:grid-cols-2">
+                <Field>
+                  <FieldLabel>{t("amount")}</FieldLabel>
+                  <Input inputMode="decimal" defaultValue={formatNumber(185_000, digits)} />
+                </Field>
+                <Field>
+                  <FieldLabel>{t("expenseTitle")}</FieldLabel>
+                  <Input defaultValue={t("expenseValue")} />
+                </Field>
+              </div>
             </SheetContent>
           </Sheet>
         </Demo>
@@ -153,7 +316,40 @@ export function OverlaysSection() {
             </SheetContent>
           </Sheet>
         </Demo>
-      </div>
+
+        <Demo title={t("floating")} description={t("floatingRule")}>
+          <FloatingPanel>
+            <FloatingPanelTrigger asChild>
+              <Button variant="secondary">
+                <Icon icon={NotebookPen} size={18} />
+                {t("openFloating")}
+              </Button>
+            </FloatingPanelTrigger>
+            <FloatingPanelContent
+              title={t("floatingTitle")}
+              footer={
+                <FloatingPanelClose asChild>
+                  <Button onClick={() => toast({ tone: "success", title: t("noteSaved") })}>{t("saveNote")}</Button>
+                </FloatingPanelClose>
+              }
+            >
+              <Field>
+                <FieldLabel>{t("noteLabel")}</FieldLabel>
+                <Textarea rows={4} placeholder={t("notePlaceholder")} />
+              </Field>
+            </FloatingPanelContent>
+          </FloatingPanel>
+        </Demo>
+
+        <div className="flex min-w-0 flex-col gap-2 rounded-tile border border-dashed border-outline p-4">
+          <h4 className="text-sm font-bold">{t("rulesTitle")}</h4>
+          <ul className="flex flex-col gap-1.5 type-caption text-fg-secondary">
+            {RULES.map((rule) => (
+              <li key={rule}>{t(rule)}</li>
+            ))}
+          </ul>
+        </div>
+      </Group>
     </StyleguideSection>
   );
 }

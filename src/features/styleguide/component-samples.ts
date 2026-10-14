@@ -28,18 +28,19 @@ export const samplePeople: readonly AvatarGroupPerson[] = [
   { name: "Mina Rahimi", initials: "MR", tone: "neutral" },
 ];
 
-/** Ring card history (Cards board · Monthly focus): hours per month, goal 200. */
-export const ringGoalHours = 200;
+/** Habit ring card (P00 D′ · "Read 30 pages"): completion % per Jalali month. */
+export const ringPages = 30;
 export const ringPeriods = [
-  { id: "jul", hours: 104 },
-  { id: "aug", hours: 122 },
-  { id: "sep", hours: 140 },
-  { id: "oct", hours: 160 },
+  { id: "tir", completion: 84 },
+  { id: "mordad", completion: 90 },
+  { id: "shahrivar", completion: 76 },
+  { id: "mehr", completion: 88 },
 ] as const;
 export type RingPeriodId = (typeof ringPeriods)[number]["id"];
 
-export const ringTotalHours = 45;
-export const ringEarnedToman = 1_700_000;
+/** Habit details: reminder at 20:00, best streak in days. */
+export const ringReminder = new Date(2026, 9, 14, 20, 0);
+export const ringBestStreak = 21;
 
 /** Rows for the ScrollArea sample. */
 export const scrollRowCount = 12;

@@ -36,7 +36,7 @@ export function MenusSection() {
   const [showCompleted, setShowCompleted] = useState(false);
 
   return (
-    <StyleguideSection tier="utility" id="menus" title={t("title")} description={t("description")}>
+    <StyleguideSection tier="utility" id="menus" span="twoThirds" title={t("title")} description={t("description")}>
       <div className="grid gap-6 sm:grid-cols-2">
         <DemoGroup title={t("menu")}>
           <DropdownMenu>

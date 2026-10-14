@@ -96,7 +96,7 @@
     "fillet": "Fillet",
     "button": "Button",
     "presetNames": {
-      "default": "Desktop",
+      "desktop": "Desktop",
       "mobile": "Mobile",
       "focus": "Focus"
     }
@@ -416,7 +416,9 @@
     },
     "overlays": {
       "title": "Dialogs & sheets",
-      "description": "Focus moves in and returns to the trigger; Escape and the scrim close. Sheets mirror with the direction.",
+      "description": "Focus moves in and returns to the trigger; Escape closes. On desktop each container follows the P18 rule; on mobile every one of them becomes a bottom sheet.",
+      "dialogsTitle": "Dialogs and tooltip",
+      "containersTitle": "Containers · P18 container rule",
       "dialog": "Dialog",
       "dialogDescription": "A short task that needs the user’s attention.",
       "openDialog": "Rename block",
@@ -434,20 +436,61 @@
       "undo": "Undo",
       "undoAlt": "Restore it from Recently deleted.",
       "restored": "“Checkout flow” restored",
-      "endSheet": "Side sheet",
-      "endSheetDescription": "Slides in from the inline end: right in LTR, left in RTL.",
-      "openEndSheet": "Open details",
-      "endSheetTitle": "Block details",
-      "endSheetBody": "Sample content in a scrolling body with a pinned footer.",
-      "endSheetRows": {
-        "one": "Starts at 14:00, lasts 2 hours",
-        "two": "Context: Projects · Website Redesign",
-        "three": "Reminder 10 minutes before"
+      "tooltip": "Tooltip island",
+      "tooltipDescription": "White in light, graphite in dark, with a hairline ring and a soft shadow; never an ink fill. Hover or focus the button.",
+      "tooltipLabel": "What is energy?",
+      "tooltipText": "Energy = how demanding a block is",
+      "drawer": "Drawer · 420px",
+      "drawerRule": "Multi-field create and edit (Habit, Goal), from the inline end.",
+      "openDrawer": "New habit",
+      "drawerTitle": "New habit",
+      "drawerBody": "Illustrative fields only; the real flow comes later.",
+      "habitName": "Habit",
+      "habitValue": "Read {count} pages",
+      "frequency": "Frequency",
+      "frequencies": {
+        "daily": "Daily",
+        "weekdays": "Weekdays",
+        "custom": "Custom"
       },
+      "createHabit": "Create habit",
+      "habitCreated": "Habit created (sample)",
+      "detail": "Detail drawer · 520px",
+      "detailRule": "One object’s detail over the current page (Task detail), with a 28% scrim.",
+      "openDetail": "Task detail",
+      "detailTitle": "Task detail",
+      "detailBody": "Illustrative content in a scrolling body with a pinned footer.",
+      "detailRows": {
+        "context": "Context · Personal",
+        "status": "Status · In progress",
+        "reminder": "Reminder · {time}"
+      },
+      "complete": "Mark complete",
+      "center": "Centred sheet",
+      "centerRule": "Add expense and Quick Add.",
+      "openCenter": "Add expense",
+      "centerTitle": "Add expense",
+      "centerBody": "Illustrative fields only.",
+      "amount": "Amount",
+      "expenseTitle": "Title",
+      "expenseValue": "Lunch",
+      "expenseSaved": "Expense saved (sample)",
       "bottomSheet": "Bottom sheet",
-      "bottomSheetDescription": "The mobile quick-add sheet with a grab handle.",
+      "bottomSheetDescription": "The mobile container for everything above: grab handle, rounded top, safe area.",
       "quickAdd": "Quick add",
-      "quickAddBody": "What would you like to add?"
+      "quickAddBody": "What would you like to add?",
+      "floating": "Floating panel · ⌘⇧N",
+      "floatingRule": "Quick note and Voice. Non-modal on desktop: no scrim, the page stays usable.",
+      "openFloating": "Quick note",
+      "floatingTitle": "Quick note",
+      "noteLabel": "Note",
+      "notePlaceholder": "Write anything…",
+      "saveNote": "Save note",
+      "noteSaved": "Note saved (sample)",
+      "rulesTitle": "Container rule",
+      "popoverRule": "One-decision flows (Mood, Reschedule) use a popover; see Menus & popovers.",
+      "geometryRule": "Panels are product surfaces: 32px radius, no notch.",
+      "mobileRule": "Mobile: all of them become bottom sheets."
     },
     "form": {
       "title": "Form validation",
@@ -525,78 +568,6 @@
       "scrollArea": "Scroll area",
       "row": "Sample row {number}"
     },
-    "cards": {
-      "title": "Notched cards",
-      "description": "Signature surfaces only: hero, health, focus, nav and insight (Rationale). The circular action sits in a real cut-out of the card, top-left in RTL. Shown on the canvas so the notch is visible.",
-      "sampleAction": "Sample action",
-      "defaultPreset": "Default · 64 × 64 notch, one 54px button",
-      "doublePreset": "Double · 112 × 60 notch, two 48px buttons, live (volt)",
-      "compactPreset": "Compact · 60 × 60 notch, one 48px button, scope deep",
-      "lead": {
-        "label": "Lead: Jane Doe",
-        "open": "Open lead",
-        "role": "Marketing Director at Euroly",
-        "source": "Source",
-        "email": "Email",
-        "hot": "Hot client"
-      },
-      "live": {
-        "label": "Live: client video call",
-        "remind": "Remind me",
-        "open": "Open event",
-        "now": "Now",
-        "soon": "in 4 min",
-        "title": "Client video call",
-        "meta": "{person} · {start} – {end}",
-        "scheduled": "Call scheduled",
-        "join": "Join call"
-      },
-      "timer": {
-        "label": "Timer",
-        "stop": "Stop timer",
-        "title": "Timer",
-        "running": "Running"
-      }
-    },
-    "ringCard": {
-      "title": "Ring card",
-      "description": "Specialized visualization: the focus summary from the Cards board. A ring is used only where a screen design draws one.",
-      "cardTitle": "Monthly focus",
-      "subtitle": "Goal {goal} h · {month}",
-      "unit": "Hours",
-      "ringLabel": "Focus hours this month",
-      "valueText": "{value} of {goal} hours",
-      "totalHours": "total hours",
-      "earned": "earned · Toman",
-      "months": {
-        "jul": "Jul",
-        "aug": "Aug",
-        "sep": "Sep",
-        "oct": "Oct"
-      },
-      "periodsLabel": "Month",
-      "history": "History",
-      "details": "Details",
-      "tabsLabel": "Monthly focus views",
-      "detailsBody": "Details would break the hours down by context. This is sample content."
-    },
-    "folderTabs": {
-      "title": "Folder tabs",
-      "description": "Product surface: the active tab merges into the card with two concave fillets. Used where the boards design it (Cards, S4, S5, S6).",
-      "label": "Project sections",
-      "tabs": {
-        "overview": "Overview",
-        "tasks": "Tasks",
-        "files": "Files",
-        "activity": "Activity"
-      },
-      "progress": "Progress",
-      "openTasks": "Open tasks",
-      "blocked": "Blocked",
-      "tasksBody": "18 open tasks would be listed here.",
-      "filesBody": "2 files would be listed here.",
-      "activityEmpty": "No activity to show in the styleguide."
-    },
     "progress": {
       "title": "Progress",
       "description": "The default progress patterns: linear, segmented, numeric and compact inline. Rings are not a default (see Rules).",
@@ -628,65 +599,202 @@
       "specializedNote": "Circular rings are a specialized visualization. Use one only where a screen design draws it: the RingCard focus summary, goal progress (S1, S11), project health (S4), company health (S6) or habit completion (S9)."
     },
     "tabs": {
-      "title": "Tabs & view switchers",
-      "description": "Several approved tab patterns. The screen design picks one; no single tab style is used everywhere.",
+      "title": "Tab families",
+      "description": "Four tab families, each with one job. Pick one with the selection rule; global destinations are navigation, never tabs.",
+      "use": "Use for: {use}",
       "segmented": {
-        "title": "Segmented view switcher",
-        "label": "Planning range",
-        "source": "Utility Day/Week/Month · S3 detail tabs · S8 Task/Event/Reminder"
+        "title": "A · Segmented switcher",
+        "use": "a view mode",
+        "rangeLabel": "Planning range",
+        "layoutLabel": "Layout",
+        "calendarLabel": "Calendar"
       },
       "range": {
         "day": "Day",
         "week": "Week",
         "month": "Month"
       },
-      "rangePanels": {
-        "day": "One day at a time: blocks, tasks and habits for today.",
-        "week": "The week from Saturday to Friday, with the work week highlighted.",
-        "month": "The whole month at a glance, in your calendar."
+      "layout": {
+        "list": "List",
+        "board": "Board"
       },
-      "compact": {
-        "title": "Compact tabs",
-        "label": "Project views",
-        "panel": "The {view} view would appear here.",
-        "source": "S4 project views (white island, active in the scope tint)"
+      "calendar": {
+        "shamsi": "Shamsi",
+        "gregorian": "Gregorian"
       },
-      "views": {
-        "overview": "Overview",
-        "board": "Board",
-        "timeline": "Timeline",
-        "docs": "Docs"
+      "pills": {
+        "title": "B · Compact pill tabs",
+        "use": "a local filter or secondary mode",
+        "label": "Task filter",
+        "today": "Today",
+        "overdue": "Overdue",
+        "thisWeek": "This week",
+        "mobileNote": "From 1024px the active pill is white with an ink outline; on mobile it takes the soft scope tint (mint in Personal)."
       },
       "filled": {
-        "title": "Filled pill tabs",
-        "label": "Calendar view",
-        "source": "S7 Week/Month/Agenda · S13 ranges · mobile status tabs"
-      },
-      "calendarViews": {
-        "week": "Week",
-        "month": "Month",
-        "agenda": "Agenda"
+        "title": "C · Filled pill tabs",
+        "use": "an active mode that needs emphasis",
+        "label": "Focus mode",
+        "focus": "Focus",
+        "shortBreak": "Short break",
+        "longBreak": "Long break"
       },
       "folder": {
-        "title": "Folder tabs",
-        "body": "The active tab merges into its card. Used only on the cards designed with it.",
-        "link": "See Folder tabs",
-        "source": "Cards · S4 · S5 · S6 · DarkTokens · FaRules · MobileFaTasks"
+        "title": "D · Folder tabs",
+        "use": "sections of ONE object",
+        "body": "The active tab merges into its card. Top tabs for an object’s sections, bottom tabs for 2–3 views of a compact object.",
+        "link": "See Folder tabs and Ring card"
       },
-      "internalNote": "Component-internal tabs, such as the History / Details tabs of the RingCard, belong to that component and are not a general pattern."
+      "rule": {
+        "title": "Selection rule",
+        "viewMode": "View mode → Segmented switcher",
+        "local": "Small local option → Compact pills",
+        "emphasis": "Mode needing emphasis → Filled pills",
+        "object": "Sections of one object → Folder tabs",
+        "global": "Global destination → Navigation (rail or bottom nav), never tabs",
+        "wizard": "Wizard steps → Stepper"
+      },
+      "avoid": {
+        "title": "Do not use folder tabs for",
+        "nav": "Global navigation",
+        "range": "Day / Week / Month",
+        "layout": "List / Board",
+        "binary": "Binary toggles",
+        "filters": "Dense filter sets",
+        "wizard": "Wizard steps"
+      }
+    },
+    "cards": {
+      "title": "Signature cards",
+      "description": "Card geometry A (P00): a standalone, important object with a sculpted top inline-end corner that holds ONE circular primary action or stays empty. Shown on the canvas so the cut-out is visible; in RTL it moves to the top-left.",
+      "sampleAction": "Sample action",
+      "actionCaption": "A · Action in notch: one primary action, the only volt area on this page",
+      "emptyCaption": "A · Empty notch: negative space as identity",
+      "navigationCaption": "A · Navigation action: a neutral circle",
+      "now": {
+        "label": "Now: UI design",
+        "chip": "Now",
+        "title": "UI design · My Day",
+        "meta": "{start} – {end} · {remaining} left",
+        "start": "Start focus"
+      },
+      "insight": {
+        "label": "Insight",
+        "kicker": "Insight",
+        "body": "Your best focus is {from}–{to} on Sat–Mon."
+      },
+      "goal": {
+        "label": "Selected goal: Launch Planner v1",
+        "kicker": "Selected goal",
+        "title": "Launch Planner v1",
+        "meta": "{percent} · Beta on {date}",
+        "open": "Open goal"
+      },
+      "presets": {
+        "title": "Notch presets",
+        "auto": "The default preset is auto: the mobile notch below {breakpoint}px and the desktop notch from {breakpoint}px, switched in CSS before any script runs. In RTL the notch moves to the top-left by itself.",
+        "spec": "{width} × {height} notch · {fillet} fillet · {button} button",
+        "names": {
+          "desktop": "Desktop",
+          "mobile": "Mobile",
+          "focus": "Focus"
+        },
+        "uses": {
+          "desktop": "Signature cards from 1024px",
+          "mobile": "Signature cards below 1024px",
+          "focus": "Focus timer card (P09): the notch holds Pause"
+        },
+        "label": "{name} preset",
+        "open": "Open",
+        "pause": "Pause focus"
+      },
+      "rules": {
+        "title": "Signature rules",
+        "oneAction": "Exactly one action, always circular, always the card’s primary. Secondary actions live inside the card.",
+        "emptyNotch": "Leave the notch empty on one card per view when it creates hierarchy (Insight, Weekly Story, Goal summary).",
+        "density": "At most 3 signature cards per desktop viewport and 1–2 on mobile. Only one may be volt.",
+        "never": "Never notch rows, list items, board cards, form sections, filter panels, settings groups, KPI tiles, toasts or sheets."
+      }
     },
     "productCard": {
       "title": "Product card",
-      "description": "A plain sculpted card with no notch. The notch is kept for signature surfaces; a product card puts its primary action at the bottom.",
-      "caption": "Cards board · task card “Revamp Sidebar”",
-      "label": "Task: Revamp sidebar",
-      "urgent": "Urgent",
-      "due": "Due Sep 14",
-      "cardTitle": "Revamp sidebar",
-      "cardBody": "Redesign navigation with better spacing for easier access.",
-      "comments": "Comments",
-      "links": "Links",
-      "subtasks": "Subtasks done"
+      "description": "Card geometry B: the standard surface for repeated or moderately dense content. A soft 28px rectangle with 20px padding, optional scope tint, never a notch.",
+      "caption": "Soft rounded rectangle · no notch · may be scope-tinted",
+      "kicker": "Goal",
+      "cardTitle": "Run {target} this month",
+      "meta": "{percent} · {next} tomorrow",
+      "distance": "{value} km",
+      "progressLabel": "Progress"
+    },
+    "utilityCard": {
+      "title": "Utility card",
+      "description": "Card geometry C: filters, form groups, settings groups and empty-state boxes. 20px radius, subtle or white, no shadow, no decoration, never a notch.",
+      "caption": "Quiet, compact, simple geometry",
+      "label": "View options",
+      "kicker": "View options",
+      "filter": "Filter · Area",
+      "groupBy": "Group by · Time of day"
+    },
+    "metricTiles": {
+      "title": "Metric tiles",
+      "description": "A related family shares one clean geometry: subtle tiles with a 20px radius and no notch on any item. The group reflows by its own width: four across, or 2 × 2.",
+      "caption": "Related family · one geometry, no individual notches",
+      "label": "This week",
+      "focusHours": "Focus hours",
+      "focusHint": "+{hours} vs last week",
+      "tasksCompleted": "Tasks completed",
+      "tasksHint": "of {total} planned",
+      "onTime": "On-time rate",
+      "onTimeHint": "+{points} pts",
+      "mood": "Average mood",
+      "moodValue": "Good",
+      "moodHint": "steady"
+    },
+    "folderTabs": {
+      "title": "Folder tabs",
+      "description": "D · Sections of ONE object. The active tab is 56px tall with a 24px top radius and joins the panel through two 20px concave fillets; inactive tabs are 44px outlined capsules with a muted count, never a coloured badge. Below 1024px the row becomes compact pills.",
+      "label": "Goal sections",
+      "tabs": {
+        "overview": "Overview",
+        "tasks": "Tasks",
+        "files": "Files",
+        "activity": "Activity"
+      },
+      "summaryLabel": "Goal summary",
+      "progress": "Progress",
+      "openTasks": "Open tasks",
+      "blocked": "Blocked",
+      "tasksBody": "The goal’s {count} open tasks would be listed here.",
+      "filesBody": "The goal’s {count} files would be listed here.",
+      "activityEmpty": "No activity to show in the styleguide."
+    },
+    "ringCard": {
+      "title": "Ring card",
+      "description": "D′ · The same folder geometry flipped below the card: equal-width uppercase tabs for 2–3 views of one compact object. Rings are reserved for Today progress and this habit card.",
+      "cardTitle": "Read {count} pages",
+      "subtitle": "Completion · {month}",
+      "unit": "done",
+      "ringLabel": "Completion this month",
+      "valueText": "{value} of days done",
+      "months": {
+        "tir": "Tir",
+        "mordad": "Mordad",
+        "shahrivar": "Shahrivar",
+        "mehr": "Mehr"
+      },
+      "periodsLabel": "Month",
+      "history": "History",
+      "details": "Details",
+      "tabsLabel": "Habit views",
+      "detailRows": {
+        "frequency": "Frequency",
+        "daily": "Daily",
+        "target": "Target",
+        "pages": "{count} pages",
+        "reminder": "Reminder",
+        "bestStreak": "Best streak",
+        "days": "{count} days"
+      }
     }
   },
   "navigationPage": {
@@ -796,34 +904,65 @@
   "rulesPage": {
     "overline": "Mehran Planner · Rules",
     "title": "Rules",
-    "intro": "Approved reusable patterns, each traced to a board. Nothing here is extrapolated from a single screen: when a pattern exists only on one screen, it is marked screen-specific.",
+    "intro": "The approved, reusable patterns of the final P00 system, each traced to a final board. The superseded S-boards are history only, and nothing here is extrapolated from a single screen: a pattern that exists only on some screens is marked screen-specific.",
     "tiers": {
       "title": "Tiers",
-      "description": "Every component belongs to one tier. The first three are defined on the Rationale board."
+      "description": "Every component belongs to one tier. Signature, Product and Utility are the three card levels of P00CardsTabs; specialized visualizations exist only where a final board draws them.",
+      "items": {
+        "utility": {
+          "summary": "Quiet, compact, simple geometry.",
+          "where": "Filters, form groups, settings groups, KPI tiles and empty-state containers. 16–20px radius, subtle or white, no decoration. Never notched.",
+          "source": "P00CardsTabs · C · Utility card"
+        },
+        "product": {
+          "summary": "Soft rounded rectangle, no notch, may be scope-tinted.",
+          "where": "The standard surface for moderate content: 28px radius, optional scope tint. Sheets, drawers and floating panels are product surfaces too (32px, no notch).",
+          "source": "P00CardsTabs · B · Product card · P18"
+        },
+        "signature": {
+          "summary": "One important object: a sculpted corner holding one circular primary action, or left empty.",
+          "where": "Today hero, Now card, Insight, Timeline, Focus timer, Balance summary, Weekly Story and the other cards of “Where in Personal”. At most 3 per desktop viewport, 1–2 on mobile, only one volt.",
+          "source": "P00CardsTabs · A · Where in Personal"
+        },
+        "specialized": {
+          "summary": "Exists only where a final board draws it.",
+          "where": "The Today ring (P01), the Habit RingCard (P12) and the frozen DataViz language. Never a default; colour and size follow that board.",
+          "source": "CLAUDE.md §2.6 · P99 UX audit · DataViz*"
+        }
+      }
     },
     "classification": {
       "title": "Component classification",
-      "description": "Every component built so far, with its tier.",
+      "description": "Every component built so far, with its tier. Rows marked retiring are still in the code but must not be used in new work.",
       "component": "Component",
       "tier": "Tier",
-      "notes": "Notes"
+      "notes": "Notes",
+      "retiring": "Retiring"
     },
     "componentNotes": {
+      "signatureCard": "Sculpted top corner (top-left in RTL), 32px radius. Presets: desktop 64×64 / f28 with a 54px button, mobile 56×56 / f24 with 46px, Focus 72×72 / f30 with 56px. One circular primary action or an empty notch.",
+      "productCard": "28px radius, no notch, optional scope tint. The standard surface.",
+      "utilityCard": "20px radius, subtle or white, 18px padding, no shadow. Fields are 48px rows with a 16px radius.",
+      "metricTile": "KPI family: one shared 20px geometry, never a notch per tile. Danger tiles name their state.",
+      "folderTabs": "Sections of ONE object. Variants top and bottom-even; on mobile the top tabs become pills above the panel.",
+      "progressRing": "Only the Today ring (P01 Overview) and the Habit RingCard (P12).",
+      "ringCard": "Habit detail only (P12): ring with History · Details bottom tabs.",
+      "progress": "Default progress: number + linear bar. Also compact inline (size sm).",
+      "segmentedProgress": "Default progress for proportional parts or n-of-m steps.",
+      "segmented": "View mode: Day/Week/Month, List/Board, Shamsi/Gregorian.",
+      "tabs": "Compact pills for local filters (outlined on desktop, soft mint on mobile); filled pills for a mode needing emphasis (Focus / Break).",
+      "tooltip": "White island (the card surface in dark) with a hairline ring and 16px radius. Never black.",
+      "sheet": "End drawer (420px) and detail drawer (520px), centred sheet and bottom sheet; every one is a bottom sheet on mobile. 32px radius, no notch.",
+      "floatingPanel": "Non-modal panel at the bottom inline-end for Quick note and Voice; a bottom sheet on mobile.",
+      "dialog": "Modal confirmation, such as “Delete task?” (P06). Flows use the P18 containers instead.",
+      "toast": "White surface, mint icon and Undo (P99). Never notched.",
       "statusChip": "Priority, due, status and scope chips. Always labelled, never colour alone.",
-      "progress": "Default progress. Also compact inline (size sm).",
-      "segmentedProgress": "Default progress: proportional parts or n-of-m dashes.",
-      "segmented": "Neutral: segmented view switcher. Accent: filled pill tabs.",
-      "tabs": "Capsule: view switcher with panels. Compact: compact tabs (S4).",
-      "rail": "Shell navigation chrome; flat, no notch.",
-      "productCard": "Plain sculpted card; primary action at the bottom.",
-      "folderTabs": "Only on cards designed with folder tabs.",
-      "notchedCard": "Signature surfaces only; never on utility.",
-      "switcher": "Named signature surface (Rationale).",
-      "schedule": "Named signature surface (schedule bar).",
-      "mobileNav": "Notched centre button: the “nav” signature surface.",
-      "assistant": "Notched chat panel per CLAUDE.md §5.",
-      "progressRing": "Only where a screen design draws a ring; colour and size set by that screen.",
-      "ringCard": "The Cards-board focus summary and the S6 company health card."
+      "switcher": "Top-bar shell island (P00PersonalIA). Reviewed with the shell in 1C.",
+      "schedule": "Top-bar shell island; its now-dot is volt. Reviewed with the shell in 1C.",
+      "mobileNav": "Today · Tasks · + · Calendar · More (PM01). Global destinations are navigation, never tabs.",
+      "rail": "Shell navigation: three groups + Settings. Flat, no notch.",
+      "notchedCard": "Compatibility wrapper around SignatureCard; use SignatureCard.",
+      "assistant": "AI is out of scope: the floating Assistant is removed from every P board."
     },
     "patterns": {
       "title": "Pattern audit",
@@ -839,59 +978,124 @@
       },
       "progress": {
         "title": "Progress",
-        "allowed": "Linear bars, segmented bars (proportional parts or n-of-m dashes), numeric values (72%, 6/9, 37M / 60M) and compact inline bars with a count, in any card, row or tile.",
-        "notAllowed": "A ring, gauge or arc as the default way to show progress. New progress styles or global fill rules that no board defines."
+        "allowed": "A number with a linear bar (72%, 6/9, 37M / 60M) in any card, row or tile; segmented bars for proportional parts or n-of-m steps; compact inline bars with a count.",
+        "notAllowed": "A ring, gauge or arc as the default way to show progress, and progress styles no final board defines."
       },
       "rings": {
         "title": "Rings",
-        "allowed": "Only where a screen design draws one: the RingCard focus summary (Cards), the day ring and goal rings (S1, S11), project health (S4), company health (S6) and habit completion (S9). Colour, size and stroke follow that screen.",
-        "notAllowed": "Anywhere else, as a replacement for linear progress, or with an assumed global colour, start point or fill rule."
+        "allowed": "Only the Today progress ring on Overview (P01) and the Habit RingCard with History · Details bottom tabs (P12).",
+        "notAllowed": "Any other ring (the S11 goal ring is removed), or a ring in place of a linear bar."
       },
       "gauges": {
         "title": "Gauges",
-        "allowed": "None. No board contains a gauge or arc.",
-        "notAllowed": "Any gauge or arc until a screen design introduces one."
+        "allowed": "None. No final board draws a gauge.",
+        "notAllowed": "Any gauge or arc."
       },
-      "charts": {
-        "title": "Charts",
-        "allowed": "The chart a screen design specifies: grouped bars (S4, S6), daily bars with an average line (S10), the mood line chart (S12), focus bars and heatmaps (S13, S9), stacked share bars (S13), mood and energy bars (S14), the Gantt timeline (S4). Series use scope base colours; axes never mirror.",
-        "notAllowed": "Donut, area or sparkline charts (none designed), one generic chart reused across screens, and charts in utility rows."
-      },
-      "tabs": {
-        "title": "Tabs",
-        "allowed": "Segmented view switcher, compact tabs, filled pill tabs, folder tabs merged into a card, and component-internal tabs such as the RingCard tabs — each where the screen design uses it.",
-        "notAllowed": "Forcing one tab style everywhere, underline tabs (none designed), and folder tabs on utility surfaces."
+      "dataViz": {
+        "title": "Data visualization",
+        "allowed": "Only the frozen DataViz language, each where its screen uses it: Goal Milestone Path (P11), Habit Field and Streak Ribbon (P12), Budget River and Budget Flow on separate Finance tabs (P13), Mood Terrain (P14), Focus Clock, Context Ribbon and Layered Area (P15), Weekly Story and Carry-over Flow (P16, P10). RTL follows the DataViz rules.",
+        "notAllowed": "River and Flow together, Terrain outside Journal, Layered Area outside Insights, one generic chart reused across screens, new chart colours, and CSS-flipping a chart."
       },
       "cardGeometry": {
         "title": "Card geometry",
-        "allowed": "Cards of 28–32px radius on the canvas, tiles of 16–22px, rows and fields of 18px, capsule controls. Product cards are plain (tag row → title → meta → footer). Dashed zones for add and drop targets and empty states.",
-        "notAllowed": "Black surfaces, other radii, and floods of scope colour (tints are cues)."
+        "allowed": "Three levels. Signature: 32px radius with a sculpted corner. Product: 28px, no notch, optional scope tint. Utility: 16–20px, subtle or white, no decoration. A related family (KPI tiles, metric groups, people, rows) shares one clean geometry. One important object may be signature; repeated or dense content is product or utility.",
+        "notAllowed": "Other radii, a notch on each item of a family, decoration on utility cards, and floods of scope colour."
       },
       "notches": {
         "title": "Notches",
-        "allowed": "Signature surfaces only — hero, health, focus, nav, insight — with the presets 64×64 (54px button), 60×60 (48px) and 112×60 (two 48px). The action sits in the cut-out, top-left in RTL. A top-centre notch holding people (S5, MobileFlow) is approved but not built yet.",
-        "notAllowed": "Utility surfaces (“No notches here.”), a floating button beside a plain card posing as a notch, and more than one or two signature surfaces per screen."
+        "allowed": "Signature cards only, with the desktop (64×64, 28px fillets, 54px button), mobile (56×56, 24px, 46px) and Focus (72×72, 30px, 56px) presets. Exactly one circular action, always the card’s primary (Start focus, Open, Expand, Add), or an empty notch — encouraged on one card per view (Insight, Weekly Story, Goal summary). At most 3 signature cards per desktop viewport, 1–2 on mobile, only one volt. The corner mirrors to top-left in RTL; in dark it reads by surface contrast, with no outline.",
+        "notAllowed": "Task rows, list and table rows, board cards, inputs and form sections, filter panels, settings groups, KPI tiles, chart tiles in a grid, toasts and sheets. A menu of icons in the notch, an icon stuffed into every cut-out, and the retired compact and double presets."
       },
-      "statusChips": {
-        "title": "Status chips",
-        "allowed": "Priority (urgent in red soft, high in amber soft, low in grey), due tags (outlined capsule), status pills (soft tint with a dot or text), scope chips (soft tint, dot, deep text) and delta chips. Always labelled.",
-        "notAllowed": "Colour as the only signal, volt on anything but live/now, and scope colours used to mean a non-scope category."
+      "tabs": {
+        "title": "Tab families",
+        "allowed": "Pick by meaning. View mode → Segmented (Day/Week/Month, List/Board, Shamsi/Gregorian). Small local filter → compact pills. Mode needing emphasis → filled pills (Focus / Short break / Long break). Sections of one object → folder tabs. 2–3 views of a compact object → bottom tabs (RingCard). Wizards → stepper.",
+        "notAllowed": "Choosing a family by taste, tabs for global destinations (they are navigation: rail and bottom nav), and underline tabs."
       },
-      "contextColours": {
-        "title": "Context colours",
-        "allowed": "Soft for selected backgrounds, event fills and tinted cards; deep for primary actions, text on soft and bar fills; dot for markers, legends, chart series and segmented bases. The active context sets the primary colour. Volt marks live/now only, one element per view.",
-        "notAllowed": "Floods of scope colour, colour as the only signal, volt as decoration, and black surfaces."
+      "folderTabs": {
+        "title": "Folder tabs",
+        "allowed": "Sections of one object: Task detail, Goal detail, Habit detail (bottom tabs), Finance, Insights, Journal and the spec cards of every P-board. Active tab 56px tall with a 24px top radius and 20px concave fillets; inactive tabs 44px outlined capsules; optional muted count. Fillets mirror in RTL; on mobile the tabs become pills above the panel.",
+        "notAllowed": "Global navigation, Day/Week/Month, List/Board, binary toggles, dense filter sets, wizard steps, and coloured count badges."
+      },
+      "volt": {
+        "title": "Volt",
+        "allowed": "Live or now only: the Now card, a running timer, the now-dot and Start focus (it begins a live session). One volt area per viewport. Text on volt uses on-accent.",
+        "notAllowed": "Success or completion (Complete is mint), a paused timer (it turns soft mint), decoration, and a second volt area in the viewport."
+      },
+      "surfaces": {
+        "title": "Surfaces & dark",
+        "allowed": "Ink only for text and line icons. Light deep cards use #0E6B57. Dark: graphite canvas #121412, surfaces step lighter (#1C1F1C), deep cards #173A31, volt #B4F58C. Tooltips and toasts are surface islands.",
+        "notAllowed": "Black surfaces of any kind (cards, tooltips, toasts, pills), and outlines to separate a notch in dark."
+      },
+      "status": {
+        "title": "Status & accessibility",
+        "allowed": "Colour always paired with a label, icon or shape: priority, due, status and scope chips carry text; danger tiles and blocked tasks name their state. Real buttons and links, ARIA states, a visible focus ring, 48px hit areas and a reduced-motion fallback.",
+        "notAllowed": "Colour as the only signal, volt as a status, and scope colours for categories that are not scopes."
+      },
+      "scopeColours": {
+        "title": "Scope colours",
+        "allowed": "Personal green, Projects blue, Teams indigo, Companies purple, each as soft, deep and dot: soft for selected backgrounds and tints, deep for primary actions and text on soft (Personal #0E6B57), dot for markers, legends and chart series. The active scope sets the primary.",
+        "notAllowed": "Floods of scope colour, a scope colour meaning a non-scope category, and hues outside the token set."
+      },
+      "containers": {
+        "title": "Sheets & panels",
+        "allowed": "Desktop: drawer (420px) for multi-field create and edit, detail drawer (520px) for Task detail, popover for one-decision flows (Mood, Reschedule), centred sheet for Add expense and Quick Add, floating panel for Quick note and Voice. Mobile: all are bottom sheets. Edit opens the same component pre-filled; every save closes it, shows a toast with Undo and highlights the item.",
+        "notAllowed": "Full pages for these flows (only Task create keeps a page), and a notch on the sheet or panel itself (the Task detail drawer’s head card is the one signature, P06)."
       }
     },
-    "openQuestions": {
-      "title": "Open questions in the design package",
-      "description": "Contradictions found during the audit. They are recorded here and are not treated as rules.",
+    "resolved": {
+      "title": "Resolved decisions",
+      "description": "Points the package left open or contradictory, now decided. They are rules.",
       "items": {
-        "blackSurfaces": "Dashboard, CaseFlow, Rationale and Main show black surfaces, but CLAUDE.md says “No black surfaces.” CLAUDE.md wins; those surfaces are not reproduced.",
-        "volt": "S1, S2, S14 and several mobile boards show more than one volt element in a view, against “One volt element per view.” The rule is kept; each screen will be checked when built.",
-        "nowPill": "The Now pill is deep green on MobileHome but deep blue on MobileFaHome.",
-        "parseChips": "The “Understood as” chips on S8 use scope colours for token types that are not scopes (date, tag, duration).",
-        "dashboard": "The Dashboard board is not in the CLAUDE.md board index, so it is not used as a reference."
+        "notchSize": {
+          "title": "Notch size",
+          "decision": "Desktop notch 64×64 with 28px fillets and a 54px button, as P00 draws it."
+        },
+        "retiredPresets": {
+          "title": "Old notch presets",
+          "decision": "The compact (60×60) and double (112×60) presets of the S-boards are retired."
+        },
+        "productRadius": {
+          "title": "Product card radius",
+          "decision": "28px, the top of P00’s 24–28px range."
+        },
+        "lightDeepCard": {
+          "title": "Light deep card",
+          "decision": "#0E6B57 (Personal deep); dark deep cards stay #173A31."
+        },
+        "dataVizColours": {
+          "title": "Chart colours",
+          "decision": "Finance and every other chart keep the frozen DataViz colours."
+        },
+        "screenshotWins": {
+          "title": "Text versus screenshot",
+          "decision": "When P00 text and a final P-board screenshot disagree, the final screenshot wins."
+        },
+        "compactPills": {
+          "title": "Compact pills",
+          "decision": "Outlined on desktop, soft mint on mobile."
+        },
+        "thursday": {
+          "title": "Thursday",
+          "decision": "A half working day, labelled «نیمه‌تعطیل» in Persian. Friday is the weekend."
+        },
+        "persianDefault": {
+          "title": "Default language",
+          "decision": "Persian (RTL, Jalali, Toman) is the default; English is a Settings option."
+        }
+      }
+    },
+    "superseded": {
+      "title": "Superseded boards",
+      "description": "Kept for history only. They are not evidence for any rule on this page.",
+      "old": "Old board",
+      "final": "Final board",
+      "status": "Status",
+      "items": {
+        "personal": "Refined or redesigned for Personal.",
+        "mobile": "Superseded.",
+        "mobileFa": "Superseded for Personal; FaRules stays a foundation.",
+        "dataViz": "Superseded by the v2 and added visualizations.",
+        "laterPhases": "Projects, Teams and Companies phases; not used for Personal."
       }
     }
   }

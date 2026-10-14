@@ -82,6 +82,7 @@
   --color-weekend: var(--weekend);
   --color-weekend-text: var(--weekend-text);
   --color-focus-ring: var(--focus-ring);
+  --color-scrim: var(--overlay-scrim);
 
   --color-deep-card: var(--deep-card);
   --color-on-deep-card: var(--on-deep-card);
@@ -154,6 +155,7 @@
   --radius-folder-tab: var(--radius-folder-tab);
   --shadow-island: var(--shadow-island);
   --shadow-elevated: var(--shadow-elevated);
+  --shadow-tooltip: var(--shadow-tooltip);
   --ease-standard: var(--ease-standard);
   --ease-emphasized: var(--ease-emphasized);
   --font-fa: var(--font-fa);

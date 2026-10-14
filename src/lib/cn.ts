@@ -9,8 +9,8 @@ const twMerge = extendTailwindMerge<"type-scale">({
   extend: {
     theme: {
       text: ["body"],
-      radius: ["card", "card-sm", "tile", "row", "input", "pill"],
-      shadow: ["island", "elevated"],
+      radius: ["card", "card-sm", "tile", "row", "input", "pill", "signature", "product", "utility", "metric", "field", "folder-tab"],
+      shadow: ["island", "elevated", "tooltip"],
       spacing: ["gutter", "card", "card-lg", "section", "touch", "page"],
       ease: ["standard", "emphasized"],
     },

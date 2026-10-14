@@ -18,12 +18,14 @@ const SECTIONS = [
   "Menus & popovers",
   "More states",
   "Badges, avatars & dividers",
-  "Notched cards",
+  "Signature cards",
   "Ring card",
   "Folder tabs",
   "Progress",
-  "Tabs & view switchers",
+  "Tab families",
   "Product card",
+  "Utility card",
+  "Metric tiles",
 ];
 
 // A full page of components: role queries over it are slow on a loaded machine.
@@ -80,11 +82,126 @@ describe("ComponentsView", { timeout: 30_000 }, () => {
     }
   });
 
+  it("documents the P00 signature cards: one volt card, an empty notch, one action each", () => {
+    const { container } = renderWithProviders(<ComponentsView />);
+    const cards = screen.getByRole("region", { name: "Signature cards" });
+    // Volt marks live state only: one volt area on the whole page.
+    expect(container.querySelectorAll("[data-slot=signature-surface].bg-volt")).toHaveLength(1);
+
+    const now = within(cards).getByRole("article", { name: "Now: UI design" });
+    expect(within(now).getAllByRole("button")).toHaveLength(1);
+    expect(within(now).getByRole("button", { name: "Start focus" })).toBeInTheDocument();
+    expect(now).toHaveTextContent("2:00 pm – 4:00 pm · 35m left");
+
+    const insight = within(cards).getByRole("article", { name: "Insight" });
+    expect(insight).toHaveAttribute("data-empty-notch");
+    expect(within(insight).queryByRole("button")).not.toBeInTheDocument();
+
+    const goal = within(cards).getByRole("article", { name: "Selected goal: Launch Planner v1" });
+    expect(within(goal).getByRole("button", { name: "Open goal" })).toBeInTheDocument();
+    expect(goal).toHaveTextContent("64% · Beta on 11 Nov");
+
+    // The board demos use the auto preset; the preset row shows each fixed preset.
+    expect(now).toHaveAttribute("data-preset", "auto");
+    for (const preset of ["desktop", "mobile", "focus"]) {
+      expect(cards.querySelector(`[data-preset="${preset}"]`)).not.toBeNull();
+    }
+    expect(within(cards).getByText("64 × 64 notch · 28 fillet · 54 button")).toBeInTheDocument();
+    // The retired multi-button presets are gone from the page.
+    expect(container.querySelector("[data-preset=compact], [data-preset=double]")).toBeNull();
+  });
+
+  it("shows product, utility and metric geometry without notches", () => {
+    renderWithProviders(<ComponentsView />);
+    const product = screen.getByRole("region", { name: "Product card" });
+    expect(within(product).getByRole("article", { name: "Run 100 km this month" })).toHaveAttribute(
+      "data-slot",
+      "product-card",
+    );
+    expect(within(product).getByRole("progressbar", { name: "Progress" })).toHaveAttribute("aria-valuenow", "41");
+
+    const utility = screen.getByRole("region", { name: "Utility card" });
+    expect(within(utility).getByText("Filter · Area")).toHaveAttribute("data-slot", "utility-field");
+
+    const metrics = screen.getByRole("region", { name: "Metric tiles" });
+    const family = within(metrics).getByRole("list", { name: "This week" });
+    expect(within(family).getAllByRole("listitem")).toHaveLength(4);
+    expect(family).toHaveTextContent("21h");
+    expect(family).toHaveTextContent("+3h vs last week");
+    for (const region of [product, utility, metrics]) {
+      expect(region.querySelector("[data-slot=signature-surface]")).toBeNull();
+    }
+  });
+
+  it("demos the four tab families with their selection rule", async () => {
+    const user = userEvent.setup();
+    renderWithProviders(<ComponentsView />);
+    const tabs = screen.getByRole("region", { name: "Tab families" });
+    for (const name of ["Planning range", "Layout", "Calendar", "Task filter", "Focus mode"]) {
+      expect(within(tabs).getByRole("radiogroup", { name })).toBeInTheDocument();
+    }
+    expect(within(tabs).getByRole("radio", { name: "Overdue 1" })).toBeInTheDocument();
+    const shortBreak = within(tabs).getByRole("radio", { name: "Short break" });
+    await user.click(shortBreak);
+    expect(shortBreak).toHaveAttribute("aria-checked", "true");
+    expect(within(tabs).getByText("Do not use folder tabs for")).toBeInTheDocument();
+    expect(within(tabs).getByText("Wizard steps → Stepper")).toBeInTheDocument();
+  });
+
+  it("switches folder tabs and the ring card's bottom tabs", async () => {
+    const user = userEvent.setup();
+    renderWithProviders(<ComponentsView />);
+    const folder = screen.getByRole("region", { name: "Folder tabs" });
+    const tablist = within(folder).getByRole("tablist", { name: "Goal sections" });
+    expect(within(tablist).getByRole("tab", { name: "Overview 72%" })).toHaveAttribute("aria-selected", "true");
+    const summary = within(folder).getByRole("list", { name: "Goal summary" });
+    expect(summary.querySelector("[data-tone=danger]")).toHaveTextContent("Blocked2");
+    await user.click(within(tablist).getByRole("tab", { name: "Tasks 18" }));
+    expect(within(folder).getByText("The goal’s 18 open tasks would be listed here.")).toBeInTheDocument();
+
+    const ring = screen.getByRole("region", { name: "Ring card" });
+    expect(within(ring).getByRole("heading", { name: "Read 30 pages" })).toBeInTheDocument();
+    expect(within(ring).getByText("Completion · Mehr")).toBeInTheDocument();
+    expect(within(ring).getByRole("button", { name: "Next" })).toBeDisabled();
+    await user.click(within(ring).getByRole("button", { name: "Previous" }));
+    expect(within(ring).getByText("Completion · Shahrivar")).toBeInTheDocument();
+    await user.click(within(ring).getByRole("tab", { name: "Details" }));
+    const details = within(ring).getByRole("tabpanel", { name: "Details" });
+    expect(details).toHaveTextContent("FrequencyDaily");
+    expect(details).toHaveTextContent("Best streak21 days");
+  });
+
+  it("opens each P18 container from a real button", async () => {
+    const user = userEvent.setup();
+    renderWithProviders(<ComponentsView />);
+    const overlays = screen.getByRole("region", { name: "Dialogs & sheets" });
+    const cases = [
+      { trigger: "New habit", attributes: { "data-side": "end", "data-size": "drawer" } },
+      { trigger: "Task detail", attributes: { "data-side": "end", "data-size": "detail" } },
+      { trigger: "Add expense", attributes: { "data-side": "center", "data-mobile-side": "bottom" } },
+    ];
+    for (const { trigger, attributes } of cases) {
+      const button = within(overlays).getByRole("button", { name: trigger });
+      await user.click(button);
+      const panel = await screen.findByRole("dialog", { name: trigger });
+      for (const [name, value] of Object.entries(attributes)) expect(panel).toHaveAttribute(name, value);
+      await user.keyboard("{Escape}");
+      await waitFor(() => expect(screen.queryByRole("dialog", { name: trigger })).not.toBeInTheDocument());
+      expect(button).toHaveFocus();
+    }
+
+    await user.click(within(overlays).getByRole("button", { name: "Quick note" }));
+    const note = await screen.findByRole("dialog", { name: "Quick note" });
+    expect(note).toHaveAttribute("data-floating-panel");
+    expect(within(note).getByRole("textbox", { name: "Note" })).toBeInTheDocument();
+  });
+
   it("retints the previews with the preview context switch", async () => {
     const user = userEvent.setup();
     const { container } = renderWithProviders(<ComponentsView />);
     const root = container.querySelector("[data-scope]");
-    expect(root).toHaveAttribute("data-scope", "project");
+    // Personal phase: the previews start in the Personal scope.
+    expect(root).toHaveAttribute("data-scope", "personal");
     await user.click(screen.getByRole("radio", { name: "Teams" }));
     expect(root).toHaveAttribute("data-scope", "team");
   });
@@ -140,5 +257,13 @@ describe("ComponentsView", { timeout: 30_000 }, () => {
     });
     expect(screen.getByRole("heading", { level: 1, name: "کامپوننت‌ها" })).toBeInTheDocument();
     expect(screen.getByRole("region", { name: "حالت‌های دکمه" })).toBeInTheDocument();
+    expect(screen.getByRole("region", { name: "کارت‌های شاخص" })).toBeInTheDocument();
+    expect(screen.getByRole("region", { name: "خانواده‌های زبانه" })).toBeInTheDocument();
+    // Sample data follows the preferences: Persian digits and the Jalali calendar.
+    const ring = screen.getByRole("region", { name: "کارت حلقه‌ای" });
+    expect(within(ring).getByRole("heading", { name: "خواندن ۳۰ صفحه" })).toBeInTheDocument();
+    expect(within(ring).getByText("میزان انجام · مهر")).toBeInTheDocument();
+    const goal = screen.getByRole("article", { name: "هدف انتخاب‌شده: انتشار Planner v1" });
+    expect(goal).toHaveTextContent("۲۰ آبان");
   });
 });

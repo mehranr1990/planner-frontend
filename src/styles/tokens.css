@@ -79,6 +79,11 @@
 
   /* Elevation */
   --shadow-elevated: var(--shadow-overlay);
+  /* Tooltip island — DataVizPersonal/DataVizAdd .tip: hairline ring + soft tint */
+  --shadow-tooltip: 0 0 0 1px var(--hairline), 0 10px 24px var(--tip-shadow-tint);
+
+  /* Modal scrim — P18/P06 .scrim (28% ink in light, 55% black in dark) */
+  --overlay-scrim: var(--scrim);
 
   /* Shape */
   --radius-card: var(--r-card);
@@ -126,12 +131,16 @@
   --safe-top: env(safe-area-inset-top, 0px);
   --safe-bottom: env(safe-area-inset-bottom, 0px);
 
-  /* Side sheets enter from inline-end; RTL flips the travel direction. */
-  --sheet-offset: 100%;
+  /*
+   * Side sheets enter from inline-end; RTL flips the travel direction. The
+   * extra 1rem clears the floating drawer's inset (end-4) so it starts fully
+   * off-screen.
+   */
+  --sheet-offset: calc(100% + 1rem);
 }
 
 [dir="rtl"] {
-  --sheet-offset: -100%;
+  --sheet-offset: calc(-100% - 1rem);
 }
 
 [data-theme="dark"] {

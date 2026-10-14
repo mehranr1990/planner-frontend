@@ -1,82 +1,138 @@
 "use client";
 
+import { Kanban, List } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
+import { Icon } from "@/components/ui/icon";
+import { PillGroup } from "@/components/ui/pills";
 import { Segmented } from "@/components/ui/segmented";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DemoGroup, StateCaption } from "../../preview-frame";
 import { StyleguideSection } from "../../styleguide-section";
 
 const rangeIds = ["day", "week", "month"] as const;
-const viewIds = ["overview", "board", "timeline", "docs"] as const;
-const calendarIds = ["week", "month", "agenda"] as const;
+const layoutIds = ["list", "board"] as const;
+const calendarIds = ["shamsi", "gregorian"] as const;
+const filterIds = ["today", "overdue", "thisWeek"] as const;
+const modeIds = ["focus", "shortBreak", "longBreak"] as const;
+
+const RULES = ["viewMode", "local", "emphasis", "object", "global", "wizard"] as const;
+const AVOID = ["nav", "range", "layout", "binary", "filters", "wizard"] as const;
+
+function Family({ title, use, children }: { title: string; use: string; children: ReactNode }) {
+  const t = useTranslations("Styleguide.components.tabs");
+  return (
+    <DemoGroup title={title}>
+      <StateCaption>{t("use", { use })}</StateCaption>
+      {children}
+    </DemoGroup>
+  );
+}
 
 /**
- * Approved tab patterns, each from its board. No single tab style is used
- * everywhere: pick the one the screen design calls for.
+ * The four P00 tab families (P00CardsTabs "Tab families"), side by side with
+ * the selection rule. A–C are live here; D (folder tabs) and D′ (the ring
+ * card's bottom tabs) have their own sections below.
  */
 export function TabsSection() {
   const t = useTranslations("Styleguide.components.tabs");
-  const [range, setRange] = useState<(typeof rangeIds)[number]>("week");
-  const [calendarView, setCalendarView] = useState<(typeof calendarIds)[number]>("week");
+  const [range, setRange] = useState<(typeof rangeIds)[number]>("day");
+  const [layout, setLayout] = useState<(typeof layoutIds)[number]>("list");
+  const [calendar, setCalendar] = useState<(typeof calendarIds)[number]>("shamsi");
+  const [filter, setFilter] = useState<(typeof filterIds)[number]>("today");
+  const [mode, setMode] = useState<(typeof modeIds)[number]>("focus");
 
   return (
     <StyleguideSection id="tabs" tier="utility" title={t("title")} description={t("description")}>
-      <div className="grid gap-8 md:grid-cols-2">
-        <DemoGroup title={t("segmented.title")}>
+      <div className="grid gap-8 md:grid-cols-2 xl:grid-cols-4">
+        <Family title={t("segmented.title")} use={t("segmented.use")}>
           <Segmented
-            label={t("segmented.label")}
+            label={t("segmented.rangeLabel")}
             variant="neutral"
             className="self-start"
             value={range}
             onValueChange={setRange}
             options={rangeIds.map((id) => ({ value: id, label: t(`range.${id}`) }))}
           />
-          <p className="rounded-tile bg-subtle p-4 type-body text-fg-secondary">{t(`rangePanels.${range}`)}</p>
-          <StateCaption>{t("segmented.source")}</StateCaption>
-        </DemoGroup>
-
-        <DemoGroup title={t("compact.title")}>
-          <Tabs defaultValue="overview" className="flex flex-col gap-3">
-            <TabsList variant="compact" aria-label={t("compact.label")} className="self-start">
-              {viewIds.map((id) => (
-                <TabsTrigger key={id} value={id} variant="compact">
-                  {t(`views.${id}`)}
-                </TabsTrigger>
-              ))}
-            </TabsList>
-            {viewIds.map((id) => (
-              <TabsContent key={id} value={id} className="rounded-tile bg-subtle p-4 type-body text-fg-secondary">
-                {t("compact.panel", { view: t(`views.${id}`) })}
-              </TabsContent>
-            ))}
-          </Tabs>
-          <StateCaption>{t("compact.source")}</StateCaption>
-        </DemoGroup>
-
-        <DemoGroup title={t("filled.title")}>
           <Segmented
-            label={t("filled.label")}
-            variant="accent"
+            label={t("segmented.layoutLabel")}
             className="self-start"
-            value={calendarView}
-            onValueChange={setCalendarView}
-            options={calendarIds.map((id) => ({ value: id, label: t(`calendarViews.${id}`) }))}
+            value={layout}
+            onValueChange={setLayout}
+            options={layoutIds.map((id) => ({
+              value: id,
+              label: (
+                <>
+                  <Icon icon={id === "list" ? List : Kanban} size={16} />
+                  {t(`layout.${id}`)}
+                </>
+              ),
+            }))}
           />
-          <StateCaption>{t("filled.source")}</StateCaption>
-        </DemoGroup>
+          <Segmented
+            label={t("segmented.calendarLabel")}
+            variant="neutral"
+            className="self-start"
+            value={calendar}
+            onValueChange={setCalendar}
+            options={calendarIds.map((id) => ({ value: id, label: t(`calendar.${id}`) }))}
+          />
+        </Family>
 
-        <DemoGroup title={t("folder.title")}>
-          <p className="type-body text-fg-secondary">
-            {t("folder.body")}{" "}
-            <a href="#folder-tabs" className="font-semibold text-scope-deep underline underline-offset-4">
-              {t("folder.link")}
-            </a>
-          </p>
-          <StateCaption>{t("folder.source")}</StateCaption>
-        </DemoGroup>
+        <Family title={t("pills.title")} use={t("pills.use")}>
+          <PillGroup
+            label={t("pills.label")}
+            value={filter}
+            onValueChange={setFilter}
+            options={filterIds.map((id) => ({
+              value: id,
+              label: t(`pills.${id}`),
+              count: id === "overdue" ? 1 : undefined,
+            }))}
+          />
+          <StateCaption>{t("pills.mobileNote")}</StateCaption>
+        </Family>
+
+        <Family title={t("filled.title")} use={t("filled.use")}>
+          <PillGroup
+            label={t("filled.label")}
+            variant="filled"
+            value={mode}
+            onValueChange={setMode}
+            options={modeIds.map((id) => ({ value: id, label: t(`filled.${id}`) }))}
+          />
+        </Family>
+
+        <Family title={t("folder.title")} use={t("folder.use")}>
+          <p className="type-body text-fg-secondary">{t("folder.body")}</p>
+          <a
+            href="#folder-tabs"
+            className="self-start text-sm font-semibold text-scope-deep underline underline-offset-4"
+          >
+            {t("folder.link")}
+          </a>
+        </Family>
       </div>
-      <p className="rounded-tile border border-dashed border-outline p-4 type-caption text-fg-secondary">{t("internalNote")}</p>
+
+      <div className="grid gap-3 md:grid-cols-2">
+        <div className="flex flex-col gap-2 rounded-utility bg-subtle p-4.5">
+          <h3 className="type-label text-fg-secondary">{t("rule.title")}</h3>
+          <ul className="flex flex-col gap-1.5 type-caption text-fg-secondary">
+            {RULES.map((rule) => (
+              <li key={rule}>{t(`rule.${rule}`)}</li>
+            ))}
+          </ul>
+        </div>
+        <div className="flex flex-col gap-2 rounded-utility bg-subtle p-4.5">
+          <h3 className="type-label text-fg-secondary">{t("avoid.title")}</h3>
+          <ul className="flex flex-wrap gap-1.5">
+            {AVOID.map((item) => (
+              <li key={item} className="rounded-pill bg-surface px-3 py-1.5 text-xs font-semibold text-fg-secondary">
+                {t(`avoid.${item}`)}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
     </StyleguideSection>
   );
 }

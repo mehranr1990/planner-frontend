@@ -75,12 +75,21 @@ describe("RingCard", () => {
     const user = userEvent.setup();
     const onViewChange = vi.fn();
     renderWithProviders(<MonthlyFocus onViewChange={onViewChange} />);
+    // FolderTabsCard bottom-even: the active tab carries only its inner fillet.
     const history = screen.getByRole("tab", { name: "History" });
-    expect(history.className).toContain("after:start-full");
+    expect(history.querySelector('[data-fillet="end"]')).toHaveClass("start-full", "size-(--folder-fillet)");
+    expect(history.querySelector('[data-fillet="start"]')).toBeNull();
+    expect(screen.getByRole("tablist", { name: "Monthly focus view" })).toHaveClass("grid-flow-col", "auto-cols-fr");
     await user.click(screen.getByRole("tab", { name: "Details" }));
     expect(onViewChange).toHaveBeenCalledWith("details");
     expect(screen.getByRole("tabpanel")).toHaveTextContent("Deep work 92h");
-    expect(screen.getByRole("tab", { name: "Details" }).className).toContain("after:end-full");
+    const details = screen.getByRole("tab", { name: "Details" });
+    expect(details.querySelector('[data-fillet="start"]')).toHaveClass("end-full");
+    expect(details.querySelector('[data-fillet="end"]')).toBeNull();
+    // Details (end) is active: its corner is square, the start corner stays rounded.
+    const panel = screen.getByRole("tabpanel").parentElement!;
+    expect(panel).toHaveClass("rounded-es-card");
+    expect(panel.className).not.toMatch(/rounded-ee-card|rounded-b-card/);
     expect(screen.queryByRole("radiogroup", { name: "Period" })).not.toBeInTheDocument();
   });
 

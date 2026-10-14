@@ -2,7 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { notchPath } from "@/design-system/surfaces/notch-path";
-import { notchPresets, radiusTokens } from "@/design-system/tokens/radii";
+import { notchPresets, radiusTokens, type NotchPresetName } from "@/design-system/tokens/radii";
 import { usePreferences } from "@/features/preferences/use-preferences";
 import { cn } from "@/lib/cn";
 import { convertDigits } from "@/lib/locale/digits";
@@ -11,13 +11,11 @@ import { StyleguideSection } from "../styleguide-section";
 
 const PREVIEW = { width: 320, height: 150 };
 
-/** The live presets; compact and double are deprecated (one action per signature card). */
-const PRESETS = ["default", "mobile", "focus"] as const;
+/** Every preset; the multi-button compact and double were retired in Wave 1B (one action per signature card). */
+const PRESETS: readonly NotchPresetName[] = ["desktop", "mobile", "focus"];
 
-type Preset = (typeof PRESETS)[number];
-
-/** Static preview of the desktop notch geometry; NotchedCard measures its own size. */
-function NotchPreview({ preset, label }: { preset: Preset; label: string }) {
+/** Static preview of one preset's notch geometry; SignatureCard measures its own size. */
+function NotchPreview({ preset, label }: { preset: NotchPresetName; label: string }) {
   const { direction } = usePreferences();
   const { notchWidth, notchHeight, fillet, button } = notchPresets[preset];
   const path = notchPath({ ...PREVIEW, notchWidth, notchHeight, fillet, direction });
@@ -98,7 +96,7 @@ function NotchPresetTable() {
 export function RadiiSection() {
   const t = useTranslations("Styleguide.radii");
   const { digits } = usePreferences();
-  const { notchWidth, notchHeight, fillet, button } = notchPresets.default;
+  const { notchWidth, notchHeight, fillet, button } = notchPresets.desktop;
   const label = t("notch", {
     width: convertDigits(notchWidth, digits),
     height: convertDigits(notchHeight, digits),
@@ -123,7 +121,7 @@ export function RadiiSection() {
           </li>
         ))}
       </ul>
-      <NotchPreview preset="default" label={label} />
+      <NotchPreview preset="desktop" label={label} />
       <NotchPresetTable />
     </StyleguideSection>
   );

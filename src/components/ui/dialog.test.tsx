@@ -81,6 +81,15 @@ describe("Dialog", () => {
     await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
   });
 
+  it("dims the page with the themed scrim token, not a tint of the text colour", async () => {
+    const user = userEvent.setup();
+    renderWithProviders(<Example />);
+    await user.click(screen.getByRole("button", { name: "Open dialog" }));
+    const overlay = document.querySelector(".fixed.inset-0[data-state]");
+    expect(overlay).toHaveClass("bg-scrim");
+    expect(overlay?.className).not.toContain("bg-fg");
+  });
+
   it("locks page scroll while open", async () => {
     const user = userEvent.setup();
     renderWithProviders(<Example />);
