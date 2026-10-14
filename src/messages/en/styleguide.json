@@ -806,7 +806,9 @@
       "title": "Floating rail",
       "description": "Icon-only and expandable. Planned pages are disabled with “Coming soon”. It sits on the right in RTL.",
       "collapsed": "Collapsed · 64px",
-      "expanded": "Expanded · 232px"
+      "expanded": "Expanded · 232px",
+      "grouped": "Personal · icon-only, 3 groups + Settings",
+      "groupedNote": "Hidden modules leave the rail; a group that empties takes its separator with it."
     },
     "switcher": {
       "title": "Context switcher",

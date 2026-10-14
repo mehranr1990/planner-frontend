@@ -12,23 +12,32 @@ afterEach(() => {
 // The App Router is not mounted in unit tests; preference actions call refresh().
 export const routerRefresh = vi.fn();
 export const routerPush = vi.fn();
+export const routerReplace = vi.fn();
 let mockPathname = "/";
+let mockSearch = "";
 
 /** Sets what usePathname() returns in the current test (reset after each test). */
 export function setMockPathname(pathname: string) {
   mockPathname = pathname;
 }
 
+/** Sets what useSearchParams() returns, e.g. "sheet=quick-add" (reset after each test). */
+export function setMockSearch(search: string) {
+  mockSearch = search;
+}
+
 afterEach(() => {
   mockPathname = "/";
+  mockSearch = "";
   routerRefresh.mockClear();
   routerPush.mockClear();
+  routerReplace.mockClear();
 });
 
 vi.mock("next/navigation", () => ({
-  useRouter: () => ({ refresh: routerRefresh, push: routerPush, replace: vi.fn(), prefetch: vi.fn(), back: vi.fn() }),
+  useRouter: () => ({ refresh: routerRefresh, push: routerPush, replace: routerReplace, prefetch: vi.fn(), back: vi.fn() }),
   usePathname: () => mockPathname,
-  useSearchParams: () => new URLSearchParams(),
+  useSearchParams: () => new URLSearchParams(mockSearch),
 }));
 
 // jsdom lacks these browser APIs; next-themes, Radix and Motion expect them.

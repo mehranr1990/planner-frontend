@@ -2,12 +2,14 @@ import type { Locale } from "@/lib/locale/config";
 import enCommon from "./en/common.json";
 import enFeedback from "./en/feedback.json";
 import enNavigation from "./en/navigation.json";
+import enPersonal from "./en/personal.json";
 import enSettings from "./en/settings.json";
 import enShell from "./en/shell.json";
 import enUi from "./en/ui.json";
 import faCommon from "./fa/common.json";
 import faFeedback from "./fa/feedback.json";
 import faNavigation from "./fa/navigation.json";
+import faPersonal from "./fa/personal.json";
 import faSettings from "./fa/settings.json";
 import faShell from "./fa/shell.json";
 import faUi from "./fa/ui.json";
@@ -26,6 +28,7 @@ const en = {
   UI: enUi,
   Feedback: enFeedback,
   Navigation: enNavigation,
+  Personal: enPersonal,
   Shell: enShell,
   Settings: enSettings,
 };
@@ -37,6 +40,7 @@ const fa: ClientMessages = {
   UI: faUi,
   Feedback: faFeedback,
   Navigation: faNavigation,
+  Personal: faPersonal,
   Shell: faShell,
   Settings: faSettings,
 };

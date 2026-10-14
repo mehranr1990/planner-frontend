@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import { describe, expect, it } from "vitest";
 import { preventDocumentNavigation } from "@/components/navigation/test-utils";
 import { sampleNow, sampleProfile, sampleScheduleBlocks, sampleScheduleDate, sampleWorkspaces } from "@/fixtures/shell";
+import { DEFAULT_PLANNER_SETTINGS } from "@/features/planner-settings/planner-settings";
 import { renderWithProviders } from "@/test/render";
 import { routerPush, setMockPathname } from "@/test/setup";
 import { ShellFrame } from "./shell-frame";
@@ -61,7 +62,9 @@ describe("desktop top bar", () => {
     const actions = within(bar.getByRole("group", { name: "Quick actions" }));
     const search = actions.getByRole("button", { name: "Search and commands" });
     expect(search).toHaveAttribute("aria-keyshortcuts", "Meta+K Control+K");
-    expect(actions.getByRole("button", { name: "Quick create" })).toBeInTheDocument();
+    // Personal "+" is Universal Quick Add (P18 H), a sheet over the route.
+    expect(actions.getByRole("button", { name: "Quick add" })).toHaveAttribute("aria-haspopup", "dialog");
+    expect(actions.queryByRole("button", { name: "Quick create" })).not.toBeInTheDocument();
     expect(actions.getByRole("button", { name: "Notifications" })).toBeInTheDocument();
     expect(actions.getByRole("button", { name: "Account menu" })).toBeInTheDocument();
     expect(screen.getByRole("navigation", { name: "Personal navigation" })).toBeInTheDocument();
@@ -97,8 +100,17 @@ describe("desktop top bar", () => {
     expect(within(popover).getByRole("status")).toHaveTextContent("You’re all caught up");
   });
 
-  it("lists quick create entries, all disabled as coming soon", async () => {
+  it("Personal + opens Universal Quick Add through ?sheet=quick-add", async () => {
     const user = userEvent.setup();
+    setMockPathname("/personal/tasks");
+    const { topBar } = renderFrame();
+    await user.click(within(topBar()).getByRole("button", { name: "Quick add" }));
+    expect(routerPush).toHaveBeenCalledWith("/personal/tasks?sheet=quick-add", { scroll: false });
+  });
+
+  it("lists quick create entries, all disabled as coming soon (Projects)", async () => {
+    const user = userEvent.setup();
+    setMockPathname("/projects");
     const { topBar } = renderFrame();
     await user.click(within(topBar()).getByRole("button", { name: "Quick create" }));
     const menu = await screen.findByRole("menu");
@@ -114,8 +126,16 @@ describe("desktop top bar", () => {
     for (const item of items) expect(item).toHaveAttribute("aria-disabled", "true");
   });
 
-  it("opens the assistant panel with the later-step notice", async () => {
+  it("has no Assistant on Personal (AI is out of scope)", () => {
+    setMockPathname("/personal");
+    renderFrame();
+    expect(screen.queryByRole("button", { name: "Assistant" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("complementary", { name: "Assistant" })).not.toBeInTheDocument();
+  });
+
+  it("opens the assistant panel with the later-step notice (other contexts)", async () => {
     const user = userEvent.setup();
+    setMockPathname("/projects");
     renderFrame();
     await user.click(screen.getByRole("button", { name: "Assistant" }));
     const panel = await screen.findByRole("dialog", { name: "Assistant" });
@@ -127,7 +147,8 @@ describe("desktop top bar", () => {
 });
 
 describe("landmarks and sample data", () => {
-  it("keeps the floating assistant inside a complementary landmark", () => {
+  it("keeps the floating assistant inside a complementary landmark (other contexts)", () => {
+    setMockPathname("/projects");
     renderFrame();
     const aside = screen.getByRole("complementary", { name: "Assistant" });
     expect(within(aside).getByRole("button", { name: "Assistant" })).toBeInTheDocument();
@@ -197,8 +218,9 @@ describe("profile menu", () => {
     expect(trigger).toHaveFocus();
   });
 
-  it("keeps quick create non-modal too", async () => {
+  it("keeps quick create non-modal too (Projects)", async () => {
     const user = userEvent.setup();
+    setMockPathname("/projects");
     const { topBar } = renderFrame();
     const trigger = within(topBar()).getByRole("button", { name: "Quick create" });
     await user.click(trigger);
@@ -259,12 +281,14 @@ describe("command palette", () => {
     const input = within(dialog).getByRole("combobox", { name: "Search pages" });
     await waitFor(() => expect(input).toHaveFocus());
 
-    // Every context is listed; planned pages are disabled.
+    // Every context is listed; Personal pages are real, other contexts' planned pages are disabled.
     const listbox = within(dialog).getByRole("listbox");
     expect(within(listbox).getAllByRole("group")).toHaveLength(4);
-    const goals = within(listbox).getAllByRole("option", { name: /Goals/ })[0]!;
-    expect(goals).toHaveAttribute("aria-disabled", "true");
-    expect(goals).toHaveTextContent("Coming soon");
+    const personalGoals = within(listbox).getAllByRole("option", { name: /Goals/ })[0]!;
+    expect(personalGoals).not.toHaveAttribute("aria-disabled");
+    const board = within(listbox).getByRole("option", { name: /Board/ });
+    expect(board).toHaveAttribute("aria-disabled", "true");
+    expect(board).toHaveTextContent("Coming soon");
 
     await user.type(input, "teams");
     const options = within(dialog).getAllByRole("option");
@@ -284,14 +308,16 @@ describe("command palette", () => {
     await user.keyboard("{Control>}k{/Control}");
     const input = await screen.findByRole("combobox", { name: "Search pages" });
     const activeText = () => document.getElementById(input.getAttribute("aria-activedescendant")!)!.textContent;
-    expect(activeText()).toContain("Overview");
+    // Personal leads with the Quick add action (⌘K → +), then its pages.
+    expect(activeText()).toContain("Quick add");
     await user.keyboard("{ArrowDown}");
-    expect(activeText()).toContain("My Day");
-    await user.keyboard("{Enter}");
-    expect(routerPush).not.toHaveBeenCalled();
+    expect(activeText()).toContain("Overview");
     await user.keyboard("{ArrowUp}{ArrowUp}");
     // Wraps to the last page of the last context.
     expect(activeText()).toContain("Reports");
+    // A planned page ignores Enter.
+    await user.keyboard("{Enter}");
+    expect(routerPush).not.toHaveBeenCalled();
   });
 
   it("shows the no-results state and announces the count once, after typing pauses", async () => {
@@ -369,7 +395,7 @@ describe("mobile chrome", () => {
     expect(header.getByRole("navigation", { name: "Contexts" })).toBeInTheDocument();
   });
 
-  it("More opens the context's pages and closes on navigation", async () => {
+  it("Personal More: the PM01 module grid, Finish day and Weekly review, no Assistant", async () => {
     const user = userEvent.setup();
     setMockPathname("/personal");
     const { mobileNav } = renderFrame();
@@ -377,11 +403,58 @@ describe("mobile chrome", () => {
     await user.click(more);
     const sheet = await screen.findByRole("dialog", { name: "Personal pages" });
     expect(more).toHaveAttribute("aria-expanded", "true");
-    const list = within(sheet).getByRole("list", { name: "All Personal pages" });
-    expect(within(list).getAllByRole("listitem")).toHaveLength(9);
+    const grid = within(sheet).getByRole("list", { name: "Modules" });
+    expect(within(grid).getAllByRole("link").map((link) => link.getAttribute("href"))).toEqual([
+      "/personal/goals",
+      "/personal/habits",
+      "/personal/finance",
+      "/personal/journal",
+      "/personal/insights",
+      "/personal/inbox",
+      "/personal/brain-dump",
+      "/personal/settings",
+    ]);
+    expect(await within(grid).findByRole("link", { name: "Inbox, 6 to triage" })).toBeInTheDocument();
+    const flows = within(sheet).getByRole("list", { name: "Day and week" });
+    expect(within(flows).getByRole("link", { name: /Finish your day/ })).toHaveAttribute("href", "/personal/shutdown");
+    // The sample week starts on Saturday 18 Mehr 1405 (10 Oct); the review day is Thursday.
+    const review = within(flows).getByRole("link", { name: /Weekly review/ });
+    expect(review).toHaveAttribute("href", "/personal/review/1405-07-18");
+    expect(review).toHaveTextContent("Thursday");
+    expect(within(sheet).queryByRole("button", { name: /Assistant/ })).not.toBeInTheDocument();
+    await user.click(within(grid).getByRole("link", { name: "Goals" }));
+    await waitFor(() => expect(screen.queryByRole("dialog", { name: "Personal pages" })).not.toBeInTheDocument());
+  });
+
+  it("Personal More drops hidden modules", async () => {
+    const user = userEvent.setup();
+    setMockPathname("/personal");
+    const { mobileNav } = renderFrame({
+      plannerSettings: {
+        ...DEFAULT_PLANNER_SETTINGS,
+        modules: { ...DEFAULT_PLANNER_SETTINGS.modules, finance: false, braindump: false },
+      },
+    });
+    await user.click(within(mobileNav()).getByRole("button", { name: "More" }));
+    const sheet = await screen.findByRole("dialog", { name: "Personal pages" });
+    const grid = within(sheet).getByRole("list", { name: "Modules" });
+    expect(within(grid).queryByRole("link", { name: "Finance" })).not.toBeInTheDocument();
+    expect(within(grid).queryByRole("link", { name: "Brain Dump" })).not.toBeInTheDocument();
+    expect(within(grid).getAllByRole("link")).toHaveLength(6);
+  });
+
+  it("More opens the context's pages and closes on navigation (Projects)", async () => {
+    const user = userEvent.setup();
+    setMockPathname("/projects");
+    const { mobileNav } = renderFrame();
+    const more = within(mobileNav()).getByRole("button", { name: "More" });
+    await user.click(more);
+    const sheet = await screen.findByRole("dialog", { name: "Projects pages" });
+    const list = within(sheet).getByRole("list", { name: "All Projects pages" });
+    expect(within(list).getAllByRole("listitem")).toHaveLength(8);
     expect(within(sheet).getByRole("button", { name: /Assistant/ })).toBeInTheDocument();
     await user.click(within(list).getByRole("link", { name: "Overview" }));
-    await waitFor(() => expect(screen.queryByRole("dialog", { name: "Personal pages" })).not.toBeInTheDocument());
+    await waitFor(() => expect(screen.queryByRole("dialog", { name: "Projects pages" })).not.toBeInTheDocument());
   });
 
   it("closes an open sheet when the pathname changes", async () => {
@@ -399,18 +472,33 @@ describe("mobile chrome", () => {
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   });
 
-  it("opens the assistant sheet from More", async () => {
+  it("opens the assistant sheet from More (other contexts)", async () => {
     const user = userEvent.setup();
+    setMockPathname("/projects");
     const { mobileNav } = renderFrame();
     await user.click(within(mobileNav()).getByRole("button", { name: "More" }));
-    const sheet = await screen.findByRole("dialog", { name: "Personal pages" });
+    const sheet = await screen.findByRole("dialog", { name: "Projects pages" });
     await user.click(within(sheet).getByRole("button", { name: /Assistant/ }));
     const assistant = await screen.findByRole("dialog", { name: "Assistant" });
     expect(within(assistant).getByRole("status")).toHaveTextContent("The assistant arrives in a later step");
   });
 
-  it("the FAB opens Quick add with six disabled tiles", async () => {
+  it("Personal FAB: tap opens Quick Add, the context menu (long-press alternative) opens Voice", async () => {
     const user = userEvent.setup();
+    setMockPathname("/personal");
+    const { mobileNav } = renderFrame();
+    const fab = within(mobileNav()).getByRole("button", { name: "Quick add" });
+    expect(fab).toHaveAttribute("aria-haspopup", "dialog");
+    expect(fab).toHaveAccessibleDescription(/voice capture/);
+    await user.click(fab);
+    expect(routerPush).toHaveBeenLastCalledWith("/personal?sheet=quick-add", { scroll: false });
+    await user.pointer({ keys: "[MouseRight]", target: fab });
+    expect(routerPush).toHaveBeenLastCalledWith("/personal?sheet=voice", { scroll: false });
+  });
+
+  it("the FAB opens Quick add with six disabled tiles (other contexts)", async () => {
+    const user = userEvent.setup();
+    setMockPathname("/projects");
     const { mobileNav } = renderFrame();
     const fab = within(mobileNav()).getByRole("button", { name: "Quick add" });
     expect(fab).toHaveAttribute("aria-haspopup", "dialog");
@@ -424,8 +512,20 @@ describe("mobile chrome", () => {
     }
   });
 
-  it("toggles Persian digits from the header", async () => {
+  it("Personal header (PM01): account, Personal + name, bell; no chips, no digits toggle", () => {
+    setMockPathname("/personal");
+    const { mobileHeader } = renderFrame();
+    const header = within(mobileHeader());
+    expect(header.getByRole("button", { name: "Account menu" })).toBeInTheDocument();
+    expect(mobileHeader().querySelector('[data-slot="mobile-context"]')).toHaveTextContent("Personal");
+    expect(header.getByRole("button", { name: "Notifications" })).toBeInTheDocument();
+    expect(header.queryByRole("navigation", { name: "Contexts" })).not.toBeInTheDocument();
+    expect(header.queryByRole("button", { name: "Persian digits ۱۲۳" })).not.toBeInTheDocument();
+  });
+
+  it("toggles Persian digits from the header (other contexts)", async () => {
     const user = userEvent.setup();
+    setMockPathname("/projects");
     const { mobileHeader } = renderFrame();
     const toggle = within(mobileHeader()).getByRole("button", { name: "Persian digits ۱۲۳" });
     expect(toggle).toHaveAttribute("aria-pressed", "false");

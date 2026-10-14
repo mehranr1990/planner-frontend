@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { FloatingRail } from "@/components/navigation/floating-rail";
 import { AppShell } from "./app-shell";
-import { AssistantLauncher } from "./assistant-panel";
+import { NonPersonalAssistant } from "./non-personal-assistant";
 import { MobileHeader, MobileShellNav } from "./mobile-shell";
 import type { ScheduleBlock } from "./schedule";
 import { ScheduleIsland } from "./schedule-island";
@@ -18,7 +18,7 @@ import { TopBar } from "./top-bar";
  * props are serialisable data (sample data until Step 3).
  *
  *   desktop (lg+)  home · context switcher · schedule · actions
- *                  rail column │ page                       assistant ◢
+ *                  rail column │ page        (assistant ◢ outside Personal)
  *   mobile         account · context + workspace · bell, context chips
  *                  page
  *                  bottom bar (Quick add FAB, More)
@@ -50,7 +50,7 @@ export function ShellFrame({ workspaces, profile, schedule, sample = false, chil
           rail={<FloatingRail />}
           mobileHeader={<MobileHeader />}
           mobileNav={<MobileShellNav />}
-          floating={<AssistantLauncher />}
+          floating={<NonPersonalAssistant />}
         >
           {children}
         </AppShell>

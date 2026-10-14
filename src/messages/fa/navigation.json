@@ -31,6 +31,9 @@
     "finance": "مالی",
     "journal": "روزنوشت",
     "insights": "بینش‌ها",
+    "inbox": "صندوق ورودی",
+    "braindump": "ذهن‌ریزی",
+    "settings": "تنظیمات",
     "board": "بورد",
     "timeline": "خط زمانی",
     "gantt": "گانت",
@@ -46,13 +49,17 @@
     "projects": "پروژه‌ها",
     "assets": "دارایی‌ها",
     "approvals": "تأییدها",
-    "reports": "گزارش‌ها"
+    "reports": "گزارش‌ها",
+    "today": "امروز"
   },
   "rail": {
     "landmark": "ناوبری {context}",
     "expand": "باز کردن ناوبری",
     "collapse": "جمع کردن ناوبری",
     "collapseShort": "جمع کردن"
+  },
+  "badges": {
+    "inbox": "{count} مورد برای بررسی"
   },
   "switcher": {
     "title": "حوزه",

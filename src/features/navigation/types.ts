@@ -14,6 +14,9 @@ export const navItemIds = [
   "finance",
   "journal",
   "insights",
+  "inbox",
+  "braindump",
+  "settings",
   "board",
   "timeline",
   "gantt",
@@ -41,7 +44,7 @@ export type NavItemId = (typeof navItemIds)[number];
 export type NavItemStatus = "available" | "planned";
 
 /** Translation keys are relative to the "Navigation" namespace. */
-export type NavItemLabelKey = `items.${NavItemId}`;
+export type NavItemLabelKey = `items.${NavItemId | "today"}`;
 
 export interface NavItem {
   id: NavItemId;
@@ -54,6 +57,20 @@ export interface NavItem {
    * reached from the "More" sheet.
    */
   mobileOrder?: number;
+  /** Other routes that also make this item current (mobile "Today" covers My Day too). */
+  alsoActiveOn?: readonly string[];
+  /** A live count shown on the item (Personal Inbox: untriaged items, P07). */
+  badge?: "inbox";
+}
+
+/**
+ * Grouped rail (Personal, P00PersonalIA): icon-only groups separated by
+ * hairlines plus a footer pinned to the bottom. Contexts without one keep the
+ * flat, expandable rail.
+ */
+export interface RailLayout {
+  groups: readonly (readonly NavItemId[])[];
+  footer: readonly NavItemId[];
 }
 
 export interface AppContext {
@@ -68,6 +85,9 @@ export interface AppContext {
   canAddWorkspace: boolean;
   icon: LucideIcon;
   nav: readonly NavItem[];
+  rail?: RailLayout;
+  /** Bottom-bar items when they differ from the nav (Personal "Today"). */
+  mobileNav?: readonly NavItem[];
 }
 
 /** A workspace inside a context (a project, team or company). Names are data. */

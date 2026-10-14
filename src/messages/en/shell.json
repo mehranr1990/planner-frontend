@@ -22,7 +22,8 @@
     "hintNavigate": "↑↓ to move",
     "hintOpen": "↵ to open",
     "hintClose": "Esc to close",
-    "resultCount": "{count, plural, =0 {No pages found} one {{formatted} page found} other {{formatted} pages found}}"
+    "resultCount": "{count, plural, =0 {No pages found} one {{formatted} page found} other {{formatted} pages found}}",
+    "quickAdd": "Quick add"
   },
   "quickCreate": {
     "label": "Quick create",
@@ -88,6 +89,15 @@
     "moreTitle": "{context} pages",
     "assistantHint": "Arrives in a later step",
     "digitsToggle": "Persian digits ۱۲۳"
+  },
+  "more": {
+    "modules": "Modules",
+    "flows": "Day and week",
+    "finishDay": "Finish your day",
+    "unfinished": "{count} unfinished",
+    "weeklyReview": "Weekly review",
+    "hiddenNote": "Hidden modules disappear from this grid.",
+    "voiceHint": "Long-press or open the context menu for voice capture"
   },
   "assistantPanel": {
     "title": "Assistant",

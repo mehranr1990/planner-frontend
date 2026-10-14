@@ -1,15 +1,17 @@
 "use client";
 
-import { Search } from "lucide-react";
+import { Plus, Search } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { IconButton } from "@/components/ui/button";
 import { Icon } from "@/components/ui/icon";
+import { useOpenSheet } from "@/features/sheets/sheet-params";
 import { cn } from "@/lib/cn";
 import { NotificationsPopover } from "./notifications-popover";
 import { ProfileMenu } from "./profile-menu";
 import { QuickCreateMenu } from "./quick-create";
 import { useShell } from "./shell-provider";
 import { shellIslandClassName } from "./shell-island";
-import { useIsApplePlatform } from "./use-shell-ui";
+import { useIsApplePlatform, useShellScope } from "./use-shell-ui";
 
 /*
  * Top-bar actions island (CommandBar direction A): Search ⌘K · quick create ·
@@ -44,12 +46,20 @@ export function ShellSearchButton({ className }: { className?: string }) {
   );
 }
 
+/** Personal "+": opens Universal Quick Add over the current route (?sheet=quick-add, P18 H). */
+function PersonalQuickAddButton() {
+  const t = useTranslations("Shell.quickAdd");
+  const openSheet = useOpenSheet();
+  return <IconButton icon={Plus} label={t("title")} aria-haspopup="dialog" onClick={() => openSheet("quick-add")} />;
+}
+
 export function ShellActions({ className }: { className?: string }) {
   const t = useTranslations("Shell");
+  const scope = useShellScope();
   return (
     <div role="group" aria-label={t("actions")} className={cn(shellIslandClassName, className)}>
       <ShellSearchButton />
-      <QuickCreateMenu />
+      {scope === "personal" ? <PersonalQuickAddButton /> : <QuickCreateMenu />}
       <NotificationsPopover />
       <ProfileMenu />
     </div>

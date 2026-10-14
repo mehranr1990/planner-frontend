@@ -32,6 +32,7 @@ export function getContextFromPathname(pathname: string | null | undefined): App
 export function isNavItemActive(item: NavItem, pathname: string | null | undefined): boolean {
   const path = normalizePathname(pathname);
   const href = normalizePathname(item.href);
+  if (item.alsoActiveOn?.some((other) => isWithin(path, normalizePathname(other)))) return true;
   return item.id === "overview" ? path === href : isWithin(path, href);
 }
 
@@ -58,7 +59,7 @@ export function contextHref(id: ContextId): string {
 
 /** Bottom-bar items for a context, in slot order. */
 export function getMobileNavItems(context: AppContext): NavItem[] {
-  return context.nav
+  return (context.mobileNav ?? context.nav)
     .filter((item): item is NavItem & { mobileOrder: number } => item.mobileOrder !== undefined)
     .sort((a, b) => a.mobileOrder - b.mobileOrder);
 }

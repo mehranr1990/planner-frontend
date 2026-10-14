@@ -1,5 +1,6 @@
 "use client";
 
+import { Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useEffect, useId, useMemo, useState, type KeyboardEvent } from "react";
@@ -11,6 +12,10 @@ import { Icon } from "@/components/ui/icon";
 import { SearchField } from "@/components/ui/search-field";
 import { appContexts } from "@/features/navigation/contexts";
 import type { ContextId, NavItem } from "@/features/navigation/types";
+import { isOptionalModule } from "@/features/planner-settings/modules";
+import { isModuleVisible } from "@/features/planner-settings/planner-settings";
+import { usePlannerSettings } from "@/features/planner-settings/use-planner-settings";
+import { useOpenSheet } from "@/features/sheets/sheet-params";
 import { usePreferences } from "@/features/preferences/use-preferences";
 import { cn } from "@/lib/cn";
 import { formatNumber } from "@/lib/locale/digits";
@@ -34,9 +39,11 @@ const ANNOUNCE_DELAY_MS = 500;
 interface PaletteEntry {
   key: string;
   context: ContextId;
+  /** Destination; actions carry `run` instead and borrow the item for its icon. */
   item: NavItem;
   label: string;
   available: boolean;
+  run?: () => void;
 }
 
 interface PaletteGroup {
@@ -85,6 +92,8 @@ function PaletteBody({ onNavigate }: { onNavigate: () => void }) {
   const tCommon = useTranslations("Common");
   const { digits } = usePreferences();
   const router = useRouter();
+  const settings = usePlannerSettings();
+  const openSheet = useOpenSheet();
   const baseId = useId();
   const listboxId = `${baseId}-listbox`;
   const [query, setQuery] = useState("");
@@ -92,18 +101,33 @@ function PaletteBody({ onNavigate }: { onNavigate: () => void }) {
 
   const allGroups = useMemo<PaletteGroup[]>(
     () =>
-      appContexts.map((context) => ({
-        context: context.id,
-        label: tNav(context.labelKey),
-        entries: context.nav.map((item) => ({
+      appContexts.map((context) => {
+        const personal = context.id === "personal";
+        // P17: a hidden Personal module leaves search too.
+        const items = personal
+          ? context.nav.filter((item) => !isOptionalModule(item.id) || isModuleVisible(settings, item.id))
+          : context.nav;
+        const entries: PaletteEntry[] = items.map((item) => ({
           key: `${context.id}-${item.id}`,
           context: context.id,
           item,
           label: tNav(item.labelKey),
           available: item.status === "available",
-        })),
-      })),
-    [tNav],
+        }));
+        if (personal) {
+          // ⌘K → + : Universal Quick Add (P18 H).
+          entries.unshift({
+            key: "personal-quick-add",
+            context: context.id,
+            item: { ...context.nav[0]!, icon: Plus },
+            label: t("quickAdd"),
+            available: true,
+            run: () => openSheet("quick-add"),
+          });
+        }
+        return { context: context.id, label: tNav(context.labelKey), entries };
+      }),
+    [tNav, t, settings, openSheet],
   );
 
   const normalized = query.trim().toLocaleLowerCase();
@@ -141,8 +165,9 @@ function PaletteBody({ onNavigate }: { onNavigate: () => void }) {
 
   const choose = (entry: PaletteEntry | undefined) => {
     if (!entry?.available) return;
-    router.push(entry.item.href);
     onNavigate();
+    if (entry.run) entry.run();
+    else router.push(entry.item.href);
   };
 
   const onKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {

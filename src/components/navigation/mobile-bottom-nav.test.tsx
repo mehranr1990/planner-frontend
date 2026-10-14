@@ -13,21 +13,29 @@ function expectOrder(nav: HTMLElement, expected: ["link" | "button", string][]) 
 }
 
 describe("MobileBottomNav", () => {
-  it("renders two items, the FAB, one item and More, in that order", () => {
+  it("Personal (PM01): Today · Tasks · (+) · Calendar · More, all real links", () => {
     setMockPathname("/personal");
     renderWithProviders(<MobileBottomNav fabLabel="Quick add" />);
     const nav = screen.getByRole("navigation", { name: "Primary" });
     expectOrder(nav, [
-      ["link", "Overview"],
-      ["button", "Tasks"],
+      ["link", "Today"],
+      ["link", "Tasks"],
       ["button", "Quick add"],
-      ["button", "Calendar"],
+      ["link", "Calendar"],
       ["button", "More"],
     ]);
+    expect(within(nav).getByRole("link", { name: "Today" })).toHaveAttribute("href", "/personal");
   });
 
-  it("marks the active item and disables planned ones", () => {
-    setMockPathname("/personal");
+  it.each(["/personal", "/personal/my-day"])("keeps Today current on %s (Overview ⇄ Plan)", (path) => {
+    setMockPathname(path);
+    renderWithProviders(<MobileBottomNav fabLabel="Quick add" />);
+    expect(screen.getByRole("link", { name: "Today" })).toHaveAttribute("aria-current", "page");
+    expect(screen.getByRole("link", { name: "Tasks" })).not.toHaveAttribute("aria-current");
+  });
+
+  it("marks the active item and disables planned ones (Projects)", () => {
+    setMockPathname("/projects");
     renderWithProviders(<MobileBottomNav fabLabel="Quick add" />);
     expect(screen.getByRole("link", { name: "Overview" })).toHaveAttribute("aria-current", "page");
     const tasks = screen.getByRole("button", { name: "Tasks" });
@@ -76,10 +84,10 @@ describe("MobileBottomNav", () => {
     );
     const nav = screen.getByRole("navigation", { name: "اصلی" });
     expectOrder(nav, [
-      ["link", "نمای کلی"],
-      ["button", "کارها"],
+      ["link", "امروز"],
+      ["link", "کارها"],
       ["button", "افزودن سریع"],
-      ["button", "تقویم"],
+      ["link", "تقویم"],
       ["button", "بیشتر"],
     ]);
   });

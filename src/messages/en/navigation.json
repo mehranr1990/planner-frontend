@@ -31,6 +31,9 @@
     "finance": "Finance",
     "journal": "Journal",
     "insights": "Insights",
+    "inbox": "Inbox",
+    "braindump": "Brain Dump",
+    "settings": "Settings",
     "board": "Board",
     "timeline": "Timeline",
     "gantt": "Gantt",
@@ -46,13 +49,17 @@
     "projects": "Projects",
     "assets": "Assets",
     "approvals": "Approvals",
-    "reports": "Reports"
+    "reports": "Reports",
+    "today": "Today"
   },
   "rail": {
     "landmark": "{context} navigation",
     "expand": "Expand navigation",
     "collapse": "Collapse navigation",
     "collapseShort": "Collapse"
+  },
+  "badges": {
+    "inbox": "{count} to triage"
   },
   "switcher": {
     "title": "Context",

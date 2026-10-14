@@ -4,7 +4,6 @@ import { describe, expect, it, vi } from "vitest";
 import { messages } from "@/messages";
 import { renderWithProviders } from "@/test/render";
 import CompaniesPage, { generateMetadata as companiesMetadata } from "./companies/page";
-import PersonalPage, { generateMetadata as personalMetadata } from "./personal/page";
 import ProjectsPage, { generateMetadata as projectsMetadata } from "./projects/page";
 import TeamsPage, { generateMetadata as teamsMetadata } from "./teams/page";
 
@@ -16,12 +15,12 @@ vi.mock("next-intl/server", () => ({
 }));
 
 const pages = [
-  ["personal", PersonalPage, personalMetadata, "Personal overview", "Plan my day"],
   ["projects", ProjectsPage, projectsMetadata, "Projects overview", "New task"],
   ["teams", TeamsPage, teamsMetadata, "Teams overview", "Check in"],
   ["companies", CompaniesPage, companiesMetadata, "Companies overview", "Review approvals"],
 ] as const;
 
+// Personal routes are Step 3 skeletons (src/features/personal, tested there).
 describe("context overview routes", () => {
   it.each(pages)("/%s renders its overview", (_route, Page, _metadata, title, cta) => {
     renderWithProviders(<Page />);

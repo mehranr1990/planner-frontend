@@ -44,10 +44,8 @@ describe("NavigationView", { timeout: 30_000 }, () => {
     const actions = within(topBar).getByRole("group", { name: "Quick actions" });
     expect(within(actions).getByRole("button", { name: "Notifications" })).toBeInTheDocument();
 
-    await user.click(within(actions).getByRole("button", { name: "Quick create" }));
-    const menu = await screen.findByRole("menu");
-    expect(within(menu).getByRole("menuitem", { name: /Task/ })).toHaveAttribute("aria-disabled", "true");
-    await user.keyboard("{Escape}");
+    // Personal "+" is Universal Quick Add (a URL sheet), not the quick create menu.
+    expect(within(actions).getByRole("button", { name: "Quick add" })).toHaveAttribute("aria-haspopup", "dialog");
 
     await user.click(within(actions).getByRole("button", { name: "Search and commands" }));
     expect(await screen.findByRole("dialog", { name: "Search and commands" })).toBeInTheDocument();
@@ -60,9 +58,19 @@ describe("NavigationView", { timeout: 30_000 }, () => {
     expect(await screen.findAllByRole("dialog", { name: "Search and commands" })).toHaveLength(1);
   });
 
-  it("previews the rail collapsed and expanded", () => {
+  it("previews the grouped Personal rail, with no expand toggle", () => {
     renderWithProviders(<NavigationView />);
     const rails = screen.getAllByRole("navigation", { name: /^Personal navigation · / });
+    expect(rails).toHaveLength(1);
+    expect(rails[0]).toHaveAttribute("data-rail", "grouped");
+    expect(within(rails[0]!).queryByRole("button", { name: /navigation/ })).not.toBeInTheDocument();
+  });
+
+  it("previews the flat rail of other contexts collapsed and expanded", async () => {
+    const user = userEvent.setup();
+    renderWithProviders(<NavigationView />);
+    await user.click(screen.getAllByRole("radio", { name: "Teams" })[0]!);
+    const rails = screen.getAllByRole("navigation", { name: /^Teams navigation · / });
     expect(rails).toHaveLength(2);
     expect(within(rails[0]!).getByRole("button", { name: "Expand navigation" })).toHaveAttribute("aria-expanded", "false");
     expect(within(rails[1]!).getByRole("button", { name: "Collapse navigation" })).toHaveAttribute("aria-expanded", "true");

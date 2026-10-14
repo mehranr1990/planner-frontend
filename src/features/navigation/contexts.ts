@@ -13,13 +13,17 @@ import {
   FileText,
   Folder,
   FolderKanban,
+  House,
+  Inbox,
   Kanban,
   LayoutDashboard,
   Lightbulb,
   MessageSquareCheck,
   NotebookText,
+  PenLine,
   RefreshCw,
   Route,
+  Settings,
   SquareCheck,
   Sun,
   Target,
@@ -46,6 +50,9 @@ export const navItemIcons: Record<NavItemId, LucideIcon> = {
   finance: CreditCard,
   journal: NotebookText,
   insights: Lightbulb,
+  inbox: Inbox,
+  braindump: PenLine,
+  settings: Settings,
   board: Kanban,
   timeline: ChartNoAxesGantt,
   gantt: ChartGantt,
@@ -74,6 +81,9 @@ const segments: Record<Exclude<NavItemId, "overview">, string> = {
   finance: "finance",
   journal: "journal",
   insights: "insights",
+  inbox: "inbox",
+  braindump: "brain-dump",
+  settings: "settings",
   board: "board",
   timeline: "timeline",
   gantt: "gantt",
@@ -100,21 +110,42 @@ interface ContextSpec {
   nav: readonly NavItemId[];
   /** Bottom-bar items in slot order (the FAB sits after the second). */
   mobile: readonly [NavItemId, NavItemId, NavItemId];
+  /** Items with real routes; the rest render as "Coming soon". Defaults to the overview only. */
+  available?: "all" | "overview";
+  rail?: AppContext["rail"];
+  /** Replaces the bottom-bar items (built from `mobile` otherwise). */
+  mobileNav?: (basePath: string) => readonly NavItem[];
 }
 
-function navItem(id: NavItemId, basePath: string, mobile: readonly NavItemId[]): NavItem {
+function navItem(
+  id: NavItemId,
+  basePath: string,
+  mobile: readonly NavItemId[],
+  available: "all" | "overview" = "overview",
+): NavItem {
   const slot = mobile.indexOf(id);
   return {
     id,
     labelKey: `items.${id}`,
     icon: navItemIcons[id],
     href: id === "overview" ? basePath : `${basePath}/${segments[id]}`,
-    status: id === "overview" ? "available" : "planned",
+    status: available === "all" || id === "overview" ? "available" : "planned",
     ...(slot >= 0 ? { mobileOrder: slot + 1 } : {}),
+    ...(id === "inbox" ? { badge: "inbox" as const } : {}),
   };
 }
 
-function defineContext({ id, basePath, icon, canAddWorkspace, nav, mobile }: ContextSpec): AppContext {
+function defineContext({
+  id,
+  basePath,
+  icon,
+  canAddWorkspace,
+  nav,
+  mobile,
+  available,
+  rail,
+  mobileNav,
+}: ContextSpec): AppContext {
   return {
     id,
     basePath,
@@ -123,9 +154,32 @@ function defineContext({ id, basePath, icon, canAddWorkspace, nav, mobile }: Con
     addLabelKey: `contexts.${id}.add`,
     canAddWorkspace,
     icon,
-    nav: nav.map((itemId) => navItem(itemId, basePath, mobile)),
+    nav: nav.map((itemId) => navItem(itemId, basePath, mobile, available)),
+    ...(rail ? { rail } : {}),
+    ...(mobileNav ? { mobileNav: mobileNav(basePath) } : {}),
   };
 }
+
+/*
+ * Personal (P00PersonalIA · PM01). The rail is three icon-only groups plus
+ * Settings at the bottom; contextual flows (Focus, Daily shutdown, Weekly
+ * review, Task create/detail) have no nav item. The bottom bar is
+ * Today · Tasks · (+) · Calendar · More, where Today covers Overview and
+ * My Day (the pages switch between them).
+ */
+const personalMobileNav = (basePath: string): NavItem[] => [
+  {
+    id: "overview",
+    labelKey: "items.today",
+    icon: House,
+    href: basePath,
+    status: "available",
+    mobileOrder: 1,
+    alsoActiveOn: [`${basePath}/${segments.myday}`],
+  },
+  { ...navItem("tasks", basePath, [], "all"), mobileOrder: 2 },
+  { ...navItem("calendar", basePath, [], "all"), mobileOrder: 3 },
+];
 
 /** Contexts in display order: Personal, Projects, Teams, Companies. */
 export const appContexts: readonly AppContext[] = [
@@ -134,8 +188,31 @@ export const appContexts: readonly AppContext[] = [
     basePath: "/personal",
     icon: User,
     canAddWorkspace: false,
-    nav: ["overview", "myday", "tasks", "calendar", "goals", "habits", "finance", "journal", "insights"],
+    nav: [
+      "overview",
+      "myday",
+      "tasks",
+      "calendar",
+      "goals",
+      "habits",
+      "finance",
+      "journal",
+      "insights",
+      "inbox",
+      "braindump",
+      "settings",
+    ],
     mobile: ["overview", "tasks", "calendar"],
+    available: "all",
+    rail: {
+      groups: [
+        ["overview", "myday", "tasks", "calendar", "goals", "habits"],
+        ["finance", "journal", "insights"],
+        ["inbox", "braindump"],
+      ],
+      footer: ["settings"],
+    },
+    mobileNav: personalMobileNav,
   }),
   defineContext({
     id: "project",

@@ -12,6 +12,7 @@ import { usePreferenceActions, usePreferences } from "@/features/preferences/use
 import { cn } from "@/lib/cn";
 import { AssistantSheet } from "./assistant-panel";
 import { NotificationsPopover } from "./notifications-popover";
+import { PersonalMobileHeader, PersonalMoreContent, usePersonalFab } from "./personal-mobile";
 import { ProfileMenu } from "./profile-menu";
 import { QuickAddSheet } from "./quick-create";
 import { useActiveWorkspace } from "./shell-provider";
@@ -54,6 +55,13 @@ export function DigitsToggle({ className }: { className?: string }) {
 }
 
 export function MobileHeader() {
+  const scope = useShellScope();
+  // Personal (PM01): account · name · bell; no context chips, no digits toggle.
+  if (scope === "personal") return <PersonalMobileHeader />;
+  return <ContextMobileHeader />;
+}
+
+function ContextMobileHeader() {
   const t = useTranslations("Navigation");
   const scope = useShellScope();
   const context = getAppContext(scope);
@@ -75,6 +83,51 @@ export function MobileHeader() {
 }
 
 export function MobileShellNav() {
+  const scope = useShellScope();
+  return scope === "personal" ? <PersonalMobileNav /> : <ContextMobileNav />;
+}
+
+/**
+ * Personal bottom bar (PM01): Today · Tasks · (+) · Calendar · More. The
+ * centre button opens the URL-driven Quick Add sheet (long-press: Voice);
+ * More lists the remaining modules and the contextual flows. No Assistant.
+ */
+function PersonalMobileNav() {
+  const t = useTranslations("Shell");
+  const tNav = useTranslations("Navigation");
+  const [moreOpen, setMoreOpen] = useRouteScopedOpen();
+  const { capture, onCloseAutoFocus } = useReturnFocus();
+  const fab = usePersonalFab();
+
+  return (
+    <>
+      <MobileBottomNav
+        className="mx-auto max-w-md p-0"
+        fabLabel={t("quickAdd.title")}
+        fab={<button type="button" {...fab.props} className={fab.className} />}
+        onMoreClick={() => {
+          capture();
+          setMoreOpen(true);
+        }}
+        moreExpanded={moreOpen}
+      />
+      {fab.hint}
+
+      <Sheet open={moreOpen} onOpenChange={setMoreOpen}>
+        <SheetContent
+          side="bottom"
+          title={t("mobile.moreTitle", { context: tNav("contexts.personal.label") })}
+          data-scope="personal"
+          onCloseAutoFocus={onCloseAutoFocus}
+        >
+          <PersonalMoreContent onNavigate={() => setMoreOpen(false)} />
+        </SheetContent>
+      </Sheet>
+    </>
+  );
+}
+
+function ContextMobileNav() {
   const t = useTranslations("Shell");
   const tNav = useTranslations("Navigation");
   const scope = useShellScope();

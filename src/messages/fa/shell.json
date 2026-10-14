@@ -22,7 +22,8 @@
     "hintNavigate": "↑↓ برای جابه‌جایی",
     "hintOpen": "↵ برای باز کردن",
     "hintClose": "Esc برای بستن",
-    "resultCount": "{count, plural, =0 {صفحه‌ای پیدا نشد} other {{formatted} صفحه پیدا شد}}"
+    "resultCount": "{count, plural, =0 {صفحه‌ای پیدا نشد} other {{formatted} صفحه پیدا شد}}",
+    "quickAdd": "افزودن سریع"
   },
   "quickCreate": {
     "label": "ساخت سریع",
@@ -88,6 +89,15 @@
     "moreTitle": "صفحه‌های {context}",
     "assistantHint": "در مرحله‌های بعد اضافه می‌شود",
     "digitsToggle": "ارقام فارسی ۱۲۳"
+  },
+  "more": {
+    "modules": "بخش‌ها",
+    "flows": "روز و هفته",
+    "finishDay": "پایان روز",
+    "unfinished": "{count} کار نیمه‌تمام",
+    "weeklyReview": "مرور هفتگی",
+    "hiddenNote": "بخش‌های پنهان‌شده در این فهرست نمایش داده نمی‌شوند.",
+    "voiceHint": "برای ضبط صدا، دکمه را نگه دارید یا منوی زمینه را باز کنید"
   },
   "assistantPanel": {
     "title": "دستیار",

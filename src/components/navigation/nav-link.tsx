@@ -25,6 +25,11 @@ export interface NavLinkProps {
   onNavigate?: () => void;
   /** Tooltip side when `iconOnly` (physical; pass inline-end for the rail). */
   tooltipSide?: "top" | "right" | "bottom" | "left";
+  /**
+   * A live count on the icon (Inbox: untriaged items). `count` is the visible,
+   * already localised number; `label` is read after the name ("Inbox, 6 to triage").
+   */
+  badge?: { count: string; label: string };
   className?: string;
 }
 
@@ -45,6 +50,7 @@ export function NavLink({
   active: activeOverride,
   onNavigate,
   tooltipSide = "right",
+  badge,
   className,
 }: NavLinkProps) {
   const t = useTranslations("Navigation");
@@ -57,7 +63,18 @@ export function NavLink({
   const active = !planned && (activeOverride ?? isNavItemActive(item, pathname));
   const compact = layout === "row" && iconOnly;
 
-  const icon =
+  // Visual only: the count is announced through the name, never by colour.
+  const badgeMark = badge ? (
+    <span
+      aria-hidden="true"
+      data-slot="nav-badge"
+      className="absolute -end-1.5 -top-1.5 inline-flex h-4.5 min-w-4.5 items-center justify-center rounded-pill bg-primary px-1 text-[0.625rem] font-bold text-on-accent tabular ring-2 ring-surface"
+    >
+      {badge.count}
+    </span>
+  ) : null;
+
+  const glyph =
     layout === "tab" ? (
       <span
         className={cn(
@@ -73,6 +90,14 @@ export function NavLink({
         className={cn(active ? "text-scope-deep" : planned ? "text-icon-muted" : "text-fg-secondary")}
       />
     );
+  const icon = badgeMark ? (
+    <span className="relative inline-flex shrink-0">
+      {glyph}
+      {badgeMark}
+    </span>
+  ) : (
+    glyph
+  );
 
   const classes = cn(
     layout === "row"
@@ -89,6 +114,7 @@ export function NavLink({
   const text = (
     <span className={cn(layout === "row" ? "min-w-0 flex-1 truncate text-start" : "max-w-full truncate", compact && "sr-only")}>
       {label}
+      {badge ? <span className="sr-only">, {badge.label}</span> : null}
     </span>
   );
 
@@ -135,7 +161,10 @@ export function NavLink({
 
   if (!compact) return element;
   return (
-    <Tooltip side={tooltipSide} content={planned ? `${label} · ${tCommon("comingSoon")}` : label}>
+    <Tooltip
+      side={tooltipSide}
+      content={planned ? `${label} · ${tCommon("comingSoon")}` : badge ? `${label} · ${badge.label}` : label}
+    >
       {element}
     </Tooltip>
   );
