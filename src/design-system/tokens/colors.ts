@@ -1,5 +1,5 @@
 /*
- * Colour token metadata. Primitive values live in mehran-planner-design/tokens.css,
+ * Colour token metadata. Primitive values live in design/tokens.css,
  * semantic aliases in src/styles/tokens.css. This file names the tokens,
  * documents their role and pairs each with its Tailwind class (written out in
  * full so Tailwind can see it).

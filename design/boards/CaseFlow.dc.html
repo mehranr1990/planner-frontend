@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Case Flow Board</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#1A1A17}a:hover{color:#0E0E0C}
+</style>
+</helmet>
+<div style="width: 1440px; height: 760px; box-sizing: border-box; padding: 56px 72px; background: {{canvas}}; font-family: 'Urbanist', system-ui, sans-serif; color: #1A1A17">
+
+  <!-- Board panel with top-center notch -->
+  <section aria-label="New case management" style="position: relative; height: 648px; box-sizing: border-box; border-radius: 36px; background: #FFFFFF; padding: 0 28px 24px; display: flex; flex-direction: column">
+
+    <!-- notch: canvas-colored cut + two fillets -->
+    <div aria-hidden="true" style="position: absolute; top: 0; left: 50%; width: 520px; margin-left: -260px; height: 88px; background: {{canvas}}; border-radius: 0 0 44px 44px"></div>
+    <div aria-hidden="true" style="position: absolute; top: 0; left: calc(50% - 260px - 32px); width: 32px; height: 32px; background: radial-gradient(circle at 0 100%, transparent 31.5px, {{canvas}} 32px)"></div>
+    <div aria-hidden="true" style="position: absolute; top: 0; left: calc(50% + 260px); width: 32px; height: 32px; background: radial-gradient(circle at 100% 100%, transparent 31.5px, {{canvas}} 32px)"></div>
+
+    <!-- people in the notch -->
+    <div style="position: absolute; top: 6px; left: 50%; width: 480px; margin-left: -240px; display: flex; justify-content: center; gap: 6px">
+      <sc-for list="{{people}}" as="p" hint-placeholder-count="8">
+        <div style="position: relative; width: 52px; height: 64px; display: flex; justify-content: center">
+          <span style="width: 52px; height: 52px; border-radius: 50%; background: {{p.bg}}; color: {{p.fg}}; border: 3px solid #FFFFFF; box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700">{{p.init}}</span>
+          <span style="position: absolute; bottom: 0; left: 50%; margin-left: -11px; width: 22px; height: 22px; border-radius: 50%; background: {{p.badgeBg}}; color: {{p.badgeFg}}; border: 2px solid {{canvas}}; box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700">{{p.badge}}</span>
+        </div>
+      </sc-for>
+    </div>
+
+    <!-- top row -->
+    <div style="height: 88px; display: flex; align-items: center; justify-content: space-between">
+      <h2 style="margin: 0; font-size: 22px; font-weight: 600">New case management</h2>
+      <div style="display: flex; gap: 8px">
+        <button type="button" aria-label="Add case" style="width: 48px; height: 48px; border-radius: 50%; border: 1px solid #D3D3CC; background: transparent; display: inline-flex; align-items: center; justify-content: center; cursor: pointer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1A1A17" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></button>
+        <button type="button" aria-label="Share" style="width: 48px; height: 48px; border-radius: 50%; border: 1px solid #D3D3CC; background: transparent; display: inline-flex; align-items: center; justify-content: center; cursor: pointer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1A1A17" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V4M8 8l4-4 4 4M5 12v7h14v-7"></path></svg></button>
+        <button type="button" aria-label="Schedule" style="width: 48px; height: 48px; border-radius: 50%; border: 1px solid #D3D3CC; background: transparent; display: inline-flex; align-items: center; justify-content: center; cursor: pointer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1A1A17" stroke-width="1.8" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2"></rect><path d="M4 10h16M9 3v4M15 3v4"></path></svg></button>
+      </div>
+    </div>
+
+    <!-- columns + connectors -->
+    <div style="margin-top: 20px; display: grid; grid-template-columns: minmax(0, 1fr) 48px minmax(0, 1fr) 48px minmax(0, 1fr) 48px minmax(0, 1fr); row-gap: 16px">
+
+      <!-- Col 1: allocation -->
+      <div style="position: relative; height: 420px; box-sizing: border-box; padding: 14px; border-radius: 28px; background: #F8F8F6; box-shadow: inset 0 0 0 1px #EDEDEA; display: flex; flex-direction: column">
+        <div style="flex: 1; display: flex; flex-direction: column; justify-content: space-between; padding: 6px 6px 16px">
+          <div style="display: flex; align-items: center; gap: 10px"><span style="width: 52px; height: 52px; border-radius: 50%; background: #E0F0FF; color: #0F5BA8; display: inline-flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 700">HB</span><span style="flex: 1"></span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1A1A17" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Done"><path d="M2 12l4 4 8-8M10 16l8-8"></path></svg><button type="button" aria-label="Schedule" style="width: 44px; height: 44px; border-radius: 50%; border: 1px solid #D3D3CC; background: #FFFFFF; display: inline-flex; align-items: center; justify-content: center; cursor: pointer"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1A1A17" stroke-width="1.8" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2"></rect><path d="M4 10h16"></path></svg></button></div>
+          <span style="font-size: 14px; font-weight: 500">Allocate case to user</span>
+        </div>
+        <div aria-hidden="true" style="height: 0; border-top: 1.5px dashed #D3D3CC; margin: 0 6px"></div>
+        <div style="flex: 1; display: flex; flex-direction: column; justify-content: space-between; padding: 16px 6px 6px">
+          <div style="display: flex; align-items: center; gap: 10px"><span style="width: 52px; height: 52px; border-radius: 50%; background: #E0F0FF; color: #0F5BA8; display: inline-flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 700">HB</span><span style="flex: 1"></span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1A1A17" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Done"><path d="M2 12l4 4 8-8M10 16l8-8"></path></svg><button type="button" aria-label="Schedule" style="width: 44px; height: 44px; border-radius: 50%; border: 1px solid #D3D3CC; background: #FFFFFF; display: inline-flex; align-items: center; justify-content: center; cursor: pointer"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1A1A17" stroke-width="1.8" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2"></rect><path d="M4 10h16"></path></svg></button></div>
+          <span style="font-size: 14px; font-weight: 500; line-height: 1.35">Acknowledge case receipt to customer</span>
+        </div>
+        <span aria-hidden="true" style="position: absolute; right: -5px; top: 106px; width: 10px; height: 10px; border-radius: 50%; background: #5AB4FF; border: 2px solid #FFFFFF; box-sizing: border-box"></span>
+        <span aria-hidden="true" style="position: absolute; right: -5px; top: 302px; width: 10px; height: 10px; border-radius: 50%; background: #E5484D; border: 2px solid #FFFFFF; box-sizing: border-box"></span>
+      </div>
+
+      <svg aria-hidden="true" width="48" height="420" viewBox="0 0 48 420" fill="none" style="display: block">
+        <path d="M0 111 C24 111 24 50 48 50 M0 111 C24 111 24 130 48 130 M0 111 C24 111 24 210 48 210" stroke="#5AB4FF" stroke-width="1.6"></path>
+        <path d="M0 307 C24 307 24 290 48 290 M0 307 C24 307 24 370 48 370" stroke="#E5484D" stroke-width="1.6" stroke-dasharray="4 4"></path>
+      </svg>
+
+      <!-- Col 2: identification -->
+      <div style="position: relative; height: 420px; box-sizing: border-box; padding: 14px; border-radius: 28px; background: #F8F8F6; box-shadow: inset 0 0 0 1px #EDEDEA; display: flex; flex-direction: column; gap: 8px">
+        <sc-for list="{{colB}}" as="r" hint-placeholder-count="5">
+          <div style="height: 72px; display: flex; align-items: center; gap: 10px; padding: 0 6px">
+            <span style="flex: none; width: 46px; height: 46px; border-radius: 50%; background: {{r.bg}}; color: {{r.fg}}; display: inline-flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700">{{r.init}}</span>
+            <span style="flex: 1; min-width: 0; font-size: 13px; line-height: 1.3; font-weight: {{r.weight}}; color: {{r.color}}">{{r.label}}</span>
+            <sc-if value="{{r.done}}" hint-placeholder-val="{{ true }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1A1A17" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Done"><path d="M2 12l4 4 8-8M10 16l8-8"></path></svg></sc-if>
+            <sc-if value="{{r.pending}}" hint-placeholder-val="{{ false }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="#1A1A17" role="img" aria-label="Pending"><circle cx="5" cy="12" r="1.6"></circle><circle cx="12" cy="12" r="1.6"></circle><circle cx="19" cy="12" r="1.6"></circle></svg></sc-if>
+            <button type="button" aria-label="Schedule" style="flex: none; width: 44px; height: 44px; border-radius: 50%; border: 1px solid #D3D3CC; background: #FFFFFF; display: inline-flex; align-items: center; justify-content: center; cursor: pointer"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1A1A17" stroke-width="1.8" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2"></rect><path d="M4 10h16"></path></svg></button>
+          </div>
+        </sc-for>
+        <sc-for list="{{dotsB}}" as="d" hint-placeholder-count="10">
+          <span aria-hidden="true" style="position: absolute; left: {{d.l}}; right: {{d.r}}; top: {{d.top}}; width: 10px; height: 10px; border-radius: 50%; background: {{d.c}}; border: 2px solid #FFFFFF; box-sizing: border-box"></span>
+        </sc-for>
+      </div>
+
+      <svg aria-hidden="true" width="48" height="420" viewBox="0 0 48 420" fill="none" style="display: block">
+        <path d="M0 50 L48 50 M0 130 L48 130 M0 210 C24 210 24 130 48 130" stroke="#5AB4FF" stroke-width="1.6"></path>
+        <path d="M0 290 C24 290 24 210 48 210 M0 290 L48 290 M0 370 L48 370" stroke="#E5484D" stroke-width="1.6" stroke-dasharray="4 4"></path>
+      </svg>
+
+      <!-- Col 3: resolution -->
+      <div style="position: relative; height: 420px; box-sizing: border-box; padding: 14px; border-radius: 28px; background: #F8F8F6; box-shadow: inset 0 0 0 1px #EDEDEA; display: flex; flex-direction: column; gap: 8px">
+        <sc-for list="{{colC}}" as="r" hint-placeholder-count="5">
+          <div style="height: 72px; display: flex; align-items: center; gap: 10px; padding: 0 6px">
+            <sc-if value="{{r.empty}}" hint-placeholder-val="{{ true }}">
+              <button type="button" aria-label="Assign" style="flex: none; width: 46px; height: 46px; border-radius: 50%; border: 1px solid #E6E6E1; background: #FFFFFF; display: inline-flex; align-items: center; justify-content: center; cursor: pointer"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1A1A17" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></button>
+            </sc-if>
+            <sc-if value="{{r.person}}" hint-placeholder-val="{{ false }}">
+              <span style="flex: none; width: 46px; height: 46px; border-radius: 50%; background: {{r.bg}}; color: {{r.fg}}; display: inline-flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700">{{r.init}}</span>
+            </sc-if>
+            <span style="flex: 1; min-width: 0; font-size: 13px; line-height: 1.3; font-weight: {{r.weight}}; color: {{r.color}}">{{r.label}}</span>
+            <sc-if value="{{r.person}}" hint-placeholder-val="{{ false }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="#1A1A17" role="img" aria-label="Pending"><circle cx="5" cy="12" r="1.6"></circle><circle cx="12" cy="12" r="1.6"></circle><circle cx="19" cy="12" r="1.6"></circle></svg></sc-if>
+          </div>
+        </sc-for>
+        <sc-for list="{{dotsC}}" as="d" hint-placeholder-count="6">
+          <span aria-hidden="true" style="position: absolute; left: {{d.l}}; right: {{d.r}}; top: {{d.top}}; width: 10px; height: 10px; border-radius: 50%; background: {{d.c}}; border: 2px solid #FFFFFF; box-sizing: border-box"></span>
+        </sc-for>
+      </div>
+
+      <svg aria-hidden="true" width="48" height="420" viewBox="0 0 48 420" fill="none" style="display: block">
+        <path d="M0 210 C30 210 16 66 44 66" stroke="#0E0E0C" stroke-width="1.6"></path>
+        <path d="M38 61 L46 66 L38 71" stroke="#0E0E0C" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path>
+      </svg>
+
+      <!-- Col 4: new tasks -->
+      <div style="height: 420px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: repeat(3, minmax(0, 1fr)); gap: 12px">
+        <sc-for list="{{tiles}}" as="t" hint-placeholder-count="6">
+          <button type="button" style="border: 0; border-radius: 24px; background: {{t.bg}}; color: {{t.fg}}; box-shadow: {{t.ring}}; padding: 16px; text-align: left; font-family: inherit; font-size: 14px; font-weight: {{t.weight}}; line-height: 1.3; display: flex; align-items: flex-start; cursor: pointer">{{t.label}}</button>
+        </sc-for>
+      </div>
+
+      <!-- labels -->
+      <span style="text-align: center; font-size: 14px; font-weight: 600">Case allocation</span><span></span>
+      <span style="text-align: center; font-size: 14px; font-weight: 600">Issue identification</span><span></span>
+      <span style="text-align: center; font-size: 14px; font-weight: 600">Technical resolution</span><span></span>
+      <span style="text-align: center; font-size: 14px; font-weight: 600">New tasks</span>
+    </div>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"canvas":{"editor":"color","default":"#F1F1EE","options":["#F1F1EE","#E6E6E1","#E8ECF2"],"section":"Theme"},"$preview":{"width":1440,"height":760}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const SKY = '#5AB4FF', RED = '#E5484D';
+    const tint = { sky: ['#E0F0FF', '#0F5BA8'], peri: ['#ECECFF', '#4343C8'], mint: ['#DDFAF2', '#0E6B57'], orchid: ['#F4E9FF', '#7A2BC4'] };
+    const person = (init, t, badge, kind) => ({
+      init, bg: tint[t][0], fg: tint[t][1], badge,
+      badgeBg: kind === 'sky' ? SKY : kind === 'red' ? RED : '#FFFFFF',
+      badgeFg: kind === 'red' ? '#FFFFFF' : '#0E0E0C'
+    });
+    const row = (init, t, label, state) => ({
+      init, bg: tint[t][0], fg: tint[t][1], label,
+      done: state === 'done', pending: state !== 'done',
+      weight: state === 'done' ? 500 : 700,
+      color: state === 'done' ? '#5E5E58' : '#1A1A17'
+    });
+    const ys = [50, 130, 210, 290, 370];
+    const dot = (side, y, c) => ({ l: side === 'left' ? '-5px' : 'auto', r: side === 'right' ? '-5px' : 'auto', top: (y - 5) + 'px', c });
+    return {
+      canvas: this.props.canvas ?? '#F1F1EE',
+      people: [
+        person('HB', 'sky', '2', 'sky'), person('SP', 'peri', '3', 'sky'), person('KF', 'mint', '2', 'red'), person('AL', 'orchid', '1', 'red'),
+        person('JK', 'sky', '+', 'plus'), person('PT', 'peri', '1', 'red'), person('MF', 'mint', '+', 'plus'), person('WW', 'orchid', '+', 'plus')
+      ],
+      colB: [
+        row('SP', 'peri', 'Identify issue category', 'done'),
+        row('SP', 'peri', 'Identify issue severity', 'done'),
+        row('SP', 'peri', 'Identify issue impact', 'done'),
+        row('KF', 'mint', 'Allocate to resolution team', 'open'),
+        row('AL', 'orchid', 'Advise customer of resolution estimate', 'open')
+      ],
+      dotsB: ys.flatMap((y, i) => [dot('left', y, i < 3 ? SKY : RED), dot('right', y, i < 3 ? SKY : RED)]),
+      colC: [
+        { empty: true, person: false, label: 'Identify issue dependencies', weight: 500, color: '#6B6B64' },
+        { empty: true, person: false, label: 'Identify issue resolution', weight: 500, color: '#6B6B64' },
+        { empty: false, person: true, init: 'PT', bg: tint.peri[0], fg: tint.peri[1], label: 'Estimate resolution time', weight: 700, color: '#1A1A17' },
+        { empty: false, person: true, init: 'KF', bg: tint.mint[0], fg: tint.mint[1], label: 'Advise customer of resolution estimate', weight: 500, color: '#5E5E58' },
+        { empty: true, person: false, label: 'Advise customer issue resolved', weight: 500, color: '#6B6B64' }
+      ],
+      dotsC: [dot('left', 50, SKY), dot('left', 130, SKY), dot('left', 210, RED), dot('left', 290, RED), dot('left', 370, RED), dot('right', 210, '#0E0E0C')],
+      tiles: [
+        { label: 'Request processing', bg: '#0E0E0C', fg: '#FFFFFF', ring: 'none', weight: 700 },
+        { label: 'Problem resolution', bg: '#F8F8F6', fg: '#1A1A17', ring: 'inset 0 0 0 1px #EDEDEA', weight: 500 },
+        { label: 'Customer communication', bg: '#F8F8F6', fg: '#1A1A17', ring: 'inset 0 0 0 1px #EDEDEA', weight: 500 },
+        { label: 'Testing and verification', bg: '#F8F8F6', fg: '#1A1A17', ring: 'inset 0 0 0 1px #EDEDEA', weight: 500 },
+        { label: 'Customer notification', bg: '#F8F8F6', fg: '#1A1A17', ring: 'inset 0 0 0 1px #EDEDEA', weight: 500 },
+        { label: 'Customer satisfaction', bg: '#F8F8F6', fg: '#1A1A17', ring: 'inset 0 0 0 1px #EDEDEA', weight: 500 }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

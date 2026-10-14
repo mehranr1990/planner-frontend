@@ -1,0 +1,1006 @@
+{
+  "v": 3,
+  "attachments": {},
+  "boards": {
+    "Cards.dc.html": {
+      "h": 2000,
+      "is_interactive": true,
+      "title": "Component Library",
+      "w": 1440,
+      "x": 66,
+      "y": 1274
+    },
+    "CaseFlow.dc.html": {
+      "h": 760,
+      "title": "Case Flow · notched board",
+      "w": 1440,
+      "x": 1560,
+      "y": 2180
+    },
+    "CommandBar.dc.html": {
+      "h": 1040,
+      "title": "Command bar · 3 directions",
+      "w": 1440,
+      "x": 4680,
+      "y": 0
+    },
+    "DarkTokens.dc.html": {
+      "h": 1640,
+      "is_interactive": true,
+      "title": "Step 4 · Dark theme tokens",
+      "w": 1440,
+      "x": 7800,
+      "y": 0
+    },
+    "Dashboard.dc.html": {
+      "expand": "fill",
+      "h": 2060,
+      "is_interactive": true,
+      "title": "Dashboard · Project scope",
+      "w": 1440,
+      "x": 1560,
+      "y": 0
+    },
+    "DataVizPersonal.dc.html": {
+      "h": 8000,
+      "is_interactive": true,
+      "title": "Personal · Data visualization language",
+      "w": 1440,
+      "x": 11400,
+      "y": 0
+    },
+    "DataVizPersonalDark.dc.html": {
+      "h": 8000,
+      "is_interactive": true,
+      "title": "Personal · Data visualization · Dark",
+      "w": 1440,
+      "x": 12960,
+      "y": 0
+    },
+    "DataVizPersonalMobile.dc.html": {
+      "h": 2145,
+      "is_interactive": true,
+      "title": "Personal · Data visualization · Mobile",
+      "w": 1440,
+      "x": 14520,
+      "y": 0
+    },
+    "FaRules.dc.html": {
+      "h": 1700,
+      "is_interactive": true,
+      "title": "Step 3 · Persian & RTL rules",
+      "w": 1440,
+      "x": 0,
+      "y": 4720
+    },
+    "HabitStreakRibbon.dc.html": {
+      "h": 2777,
+      "is_interactive": true,
+      "title": "Habit Streak Ribbon · component",
+      "w": 1440,
+      "x": 14520,
+      "y": 2300
+    },
+    "Main.dc.html": {
+      "h": 1240,
+      "title": "Foundations · Spectrum Zoom",
+      "w": 1440,
+      "x": 0,
+      "y": 0
+    },
+    "MobileChat.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "title": "Mobile · Assistant",
+      "w": 390,
+      "x": 1410,
+      "y": 3600
+    },
+    "MobileFaCalendar.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "title": "موبایل · تقویم",
+      "w": 390,
+      "x": 470,
+      "y": 6540
+    },
+    "MobileFaCalendarDark.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "title": "موبایل · تقویم · تیره",
+      "w": 390,
+      "x": 9830,
+      "y": 0
+    },
+    "MobileFaHome.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "title": "موبایل · امروز",
+      "w": 390,
+      "x": 0,
+      "y": 6540
+    },
+    "MobileFaHomeDark.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "title": "موبایل · امروز · تیره",
+      "w": 390,
+      "x": 9360,
+      "y": 0
+    },
+    "MobileFaQuickAdd.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "title": "موبایل · افزودن سریع",
+      "w": 390,
+      "x": 940,
+      "y": 6540
+    },
+    "MobileFaQuickAddDark.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "title": "موبایل · افزودن سریع · تیره",
+      "w": 390,
+      "x": 10300,
+      "y": 0
+    },
+    "MobileFaTasks.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "title": "موبایل · کارها",
+      "w": 390,
+      "x": 1410,
+      "y": 6540
+    },
+    "MobileFaTasksDark.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "title": "موبایل · کارها · تیره",
+      "w": 390,
+      "x": 10770,
+      "y": 0
+    },
+    "MobileFlow.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "title": "Mobile · Case flow",
+      "w": 390,
+      "x": 940,
+      "y": 3600
+    },
+    "MobileHome.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "title": "Mobile · My Day",
+      "w": 390,
+      "x": 0,
+      "y": 3600
+    },
+    "MobileTasks.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "title": "Mobile · Tasks",
+      "w": 390,
+      "x": 470,
+      "y": 3600
+    },
+    "Rationale.dc.html": {
+      "h": 1500,
+      "title": "Phase 1 · Design rationale",
+      "w": 1440,
+      "x": 3120,
+      "y": 1020
+    },
+    "S10Finance.dc.html": {
+      "expand": "fill",
+      "h": 1320,
+      "is_interactive": true,
+      "title": "10 · Finance",
+      "w": 1440,
+      "x": 1560,
+      "y": 7760
+    },
+    "S11Goals.dc.html": {
+      "expand": "fill",
+      "h": 1240,
+      "is_interactive": true,
+      "title": "11 · Goals",
+      "w": 1440,
+      "x": 0,
+      "y": 9180
+    },
+    "S12Journal.dc.html": {
+      "expand": "fill",
+      "h": 1300,
+      "is_interactive": true,
+      "title": "12 · Journal",
+      "w": 1440,
+      "x": 1560,
+      "y": 9180
+    },
+    "S13Insights.dc.html": {
+      "expand": "fill",
+      "h": 1260,
+      "is_interactive": true,
+      "title": "13 · Insights",
+      "w": 1440,
+      "x": 0,
+      "y": 10600
+    },
+    "S14Weekly.dc.html": {
+      "expand": "fill",
+      "h": 1240,
+      "is_interactive": true,
+      "title": "14 · Weekly review",
+      "w": 1440,
+      "x": 1560,
+      "y": 10600
+    },
+    "S1Personal.dc.html": {
+      "expand": "fill",
+      "h": 1400,
+      "is_interactive": true,
+      "title": "01 · Personal Dashboard",
+      "w": 1440,
+      "x": 3120,
+      "y": 2860
+    },
+    "S2MyDay.dc.html": {
+      "expand": "fill",
+      "h": 1420,
+      "is_interactive": true,
+      "title": "02 · My Day",
+      "w": 1440,
+      "x": 4680,
+      "y": 2860
+    },
+    "S2MyDayDark.dc.html": {
+      "expand": "fill",
+      "h": 1420,
+      "is_interactive": true,
+      "title": "02 · My Day · Dark",
+      "w": 1440,
+      "x": 7800,
+      "y": 1780
+    },
+    "S3TaskDetail.dc.html": {
+      "expand": "fill",
+      "h": 1140,
+      "is_interactive": true,
+      "title": "03 · Task Detail",
+      "w": 1440,
+      "x": 3120,
+      "y": 4400
+    },
+    "S4Project.dc.html": {
+      "expand": "fill",
+      "h": 1500,
+      "is_interactive": true,
+      "title": "04 · Project Overview",
+      "w": 1440,
+      "x": 4680,
+      "y": 4400
+    },
+    "S5Team.dc.html": {
+      "expand": "fill",
+      "h": 1860,
+      "is_interactive": true,
+      "title": "05 · Team Overview",
+      "w": 1440,
+      "x": 3120,
+      "y": 6080
+    },
+    "S6Company.dc.html": {
+      "expand": "fill",
+      "h": 1500,
+      "is_interactive": true,
+      "title": "06 · Company Overview",
+      "w": 1440,
+      "x": 4680,
+      "y": 6080
+    },
+    "S7Calendar.dc.html": {
+      "expand": "fill",
+      "h": 1400,
+      "is_interactive": true,
+      "title": "07 · Calendar",
+      "w": 1440,
+      "x": 6240,
+      "y": 2860
+    },
+    "S7CalendarDark.dc.html": {
+      "expand": "fill",
+      "h": 1400,
+      "is_interactive": true,
+      "title": "07 · Calendar · Dark",
+      "w": 1440,
+      "x": 7800,
+      "y": 3340
+    },
+    "S8TaskCreate.dc.html": {
+      "expand": "fill",
+      "h": 1640,
+      "is_interactive": true,
+      "title": "08 · Task creation flow",
+      "w": 1440,
+      "x": 6240,
+      "y": 4400
+    },
+    "S8TaskCreateDark.dc.html": {
+      "expand": "fill",
+      "h": 1640,
+      "is_interactive": true,
+      "title": "08 · Task creation · Dark",
+      "w": 1440,
+      "x": 7800,
+      "y": 4880
+    },
+    "S9Habits.dc.html": {
+      "expand": "fill",
+      "h": 1240,
+      "is_interactive": true,
+      "title": "09 · Habits",
+      "w": 1440,
+      "x": 0,
+      "y": 7760
+    },
+    "Shell.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "is_interactive": true,
+      "title": "Phase 1 · Desktop shell",
+      "w": 1440,
+      "x": 3120,
+      "y": 0
+    },
+    "Utility.dc.html": {
+      "h": 2500,
+      "is_interactive": true,
+      "title": "Step 1 · Utility components & states",
+      "w": 1440,
+      "x": 6240,
+      "y": 0
+    },
+    "DataVizRefine.dc.html": {
+      "x": 16080,
+      "y": 0,
+      "w": 1440,
+      "h": 3887,
+      "title": "Data viz refinement 2 · Mood Terrain · Focus Clock · Carry-over",
+      "is_interactive": true
+    },
+    "DataVizRefineDark.dc.html": {
+      "x": 17640,
+      "y": 0,
+      "w": 1440,
+      "h": 3887,
+      "title": "Data viz refinement 2 · Dark",
+      "is_interactive": true
+    },
+    "DataVizAdd.dc.html": {
+      "x": 19200,
+      "y": 0,
+      "w": 1440,
+      "h": 4804,
+      "title": "Data viz additions · Goal Path · Budget Flow · Layered Area",
+      "is_interactive": true
+    },
+    "DataVizAddDark.dc.html": {
+      "x": 20760,
+      "y": 0,
+      "w": 1440,
+      "h": 4804,
+      "title": "Data viz additions · Dark",
+      "is_interactive": true
+    },
+    "P00CardsTabs.dc.html": {
+      "x": 0,
+      "y": 12400,
+      "w": 1440,
+      "h": 1300,
+      "title": "P00 · Card Geometry & Tab Families",
+      "is_interactive": true
+    },
+    "P00CardsTabsDark.dc.html": {
+      "x": 1560,
+      "y": 12400,
+      "w": 1440,
+      "h": 1300,
+      "title": "P00 · Card Geometry & Tab Families · Dark",
+      "is_interactive": true
+    },
+    "P00PersonalIA.dc.html": {
+      "x": 3120,
+      "y": 12400,
+      "w": 1440,
+      "h": 1240,
+      "title": "P00 · Personal IA & Flow Map",
+      "is_interactive": true
+    },
+    "P99Handoff.dc.html": {
+      "x": 4680,
+      "y": 12400,
+      "w": 1440,
+      "h": 1250,
+      "title": "P99 · Personal Handoff Index",
+      "is_interactive": true
+    },
+    "P01PersonalOverview.dc.html": {
+      "x": 0,
+      "y": 14200,
+      "w": 1440,
+      "h": 1650,
+      "title": "P01 · Personal Overview",
+      "is_interactive": true
+    },
+    "P02MyDay.dc.html": {
+      "x": 1560,
+      "y": 14200,
+      "w": 1440,
+      "h": 2250,
+      "title": "P02 · My Day",
+      "is_interactive": true
+    },
+    "P03TasksList.dc.html": {
+      "x": 3120,
+      "y": 14200,
+      "w": 1440,
+      "h": 2150,
+      "title": "P03 · Tasks · List",
+      "is_interactive": true
+    },
+    "P03TasksBoard.dc.html": {
+      "x": 4680,
+      "y": 14200,
+      "w": 1440,
+      "h": 1750,
+      "title": "P03 · Tasks · Board",
+      "is_interactive": true
+    },
+    "P04Calendar.dc.html": {
+      "x": 6240,
+      "y": 14200,
+      "w": 1440,
+      "h": 2050,
+      "title": "P04 · Calendar",
+      "is_interactive": true
+    },
+    "P05TaskCreate.dc.html": {
+      "x": 7800,
+      "y": 14200,
+      "w": 1440,
+      "h": 2150,
+      "title": "P05 · Task Create",
+      "is_interactive": true
+    },
+    "P06TaskDetail.dc.html": {
+      "x": 9360,
+      "y": 14200,
+      "w": 1440,
+      "h": 2100,
+      "title": "P06 · Task Detail",
+      "is_interactive": true
+    },
+    "P07Inbox.dc.html": {
+      "x": 10920,
+      "y": 14200,
+      "w": 1440,
+      "h": 1700,
+      "title": "P07 · Inbox",
+      "is_interactive": true
+    },
+    "P08BrainDump.dc.html": {
+      "x": 12480,
+      "y": 14200,
+      "w": 1440,
+      "h": 1700,
+      "title": "P08 · Brain Dump",
+      "is_interactive": true
+    },
+    "P09Focus.dc.html": {
+      "x": 14040,
+      "y": 14200,
+      "w": 1440,
+      "h": 1620,
+      "title": "P09 · Focus",
+      "is_interactive": true
+    },
+    "P09FocusBreak.dc.html": {
+      "x": 15600,
+      "y": 14200,
+      "w": 1440,
+      "h": 1000,
+      "title": "P09 · Focus · Break",
+      "is_interactive": true
+    },
+    "P10Shutdown.dc.html": {
+      "x": 17160,
+      "y": 14200,
+      "w": 1440,
+      "h": 1920,
+      "title": "P10 · Daily Shutdown",
+      "is_interactive": true
+    },
+    "P11Goals.dc.html": {
+      "x": 18720,
+      "y": 14200,
+      "w": 1440,
+      "h": 1540,
+      "title": "P11 · Goals",
+      "is_interactive": true
+    },
+    "P12Habits.dc.html": {
+      "x": 20280,
+      "y": 14200,
+      "w": 1440,
+      "h": 1600,
+      "title": "P12 · Habits",
+      "is_interactive": true
+    },
+    "P13Finance.dc.html": {
+      "x": 21840,
+      "y": 14200,
+      "w": 1440,
+      "h": 1750,
+      "title": "P13 · Finance",
+      "is_interactive": true
+    },
+    "P14Journal.dc.html": {
+      "x": 23400,
+      "y": 14200,
+      "w": 1440,
+      "h": 1550,
+      "title": "P14 · Journal",
+      "is_interactive": true
+    },
+    "P15Insights.dc.html": {
+      "x": 24960,
+      "y": 14200,
+      "w": 1440,
+      "h": 1750,
+      "title": "P15 · Insights",
+      "is_interactive": true
+    },
+    "P16WeeklyReview.dc.html": {
+      "x": 26520,
+      "y": 14200,
+      "w": 1440,
+      "h": 1950,
+      "title": "P16 · Weekly Review",
+      "is_interactive": true
+    },
+    "P17Settings.dc.html": {
+      "x": 28080,
+      "y": 14200,
+      "w": 1440,
+      "h": 2560,
+      "title": "P17 · Settings",
+      "is_interactive": true
+    },
+    "P18SupportingFlows.dc.html": {
+      "x": 29640,
+      "y": 14200,
+      "w": 1440,
+      "h": 1250,
+      "title": "P18 · Supporting Flows",
+      "is_interactive": true
+    },
+    "P01PersonalOverviewDark.dc.html": {
+      "x": 0,
+      "y": 17160,
+      "w": 1440,
+      "h": 1650,
+      "title": "P01 · Personal Overview · Dark",
+      "is_interactive": true
+    },
+    "P02MyDayDark.dc.html": {
+      "x": 1560,
+      "y": 17160,
+      "w": 1440,
+      "h": 2250,
+      "title": "P02 · My Day · Dark",
+      "is_interactive": true
+    },
+    "P03TasksListDark.dc.html": {
+      "x": 3120,
+      "y": 17160,
+      "w": 1440,
+      "h": 2150,
+      "title": "P03 · Tasks · List · Dark",
+      "is_interactive": true
+    },
+    "P03TasksBoardDark.dc.html": {
+      "x": 4680,
+      "y": 17160,
+      "w": 1440,
+      "h": 1750,
+      "title": "P03 · Tasks · Board · Dark",
+      "is_interactive": true
+    },
+    "P04CalendarDark.dc.html": {
+      "x": 6240,
+      "y": 17160,
+      "w": 1440,
+      "h": 2050,
+      "title": "P04 · Calendar · Dark",
+      "is_interactive": true
+    },
+    "P05TaskCreateDark.dc.html": {
+      "x": 7800,
+      "y": 17160,
+      "w": 1440,
+      "h": 2150,
+      "title": "P05 · Task Create · Dark",
+      "is_interactive": true
+    },
+    "P06TaskDetailDark.dc.html": {
+      "x": 9360,
+      "y": 17160,
+      "w": 1440,
+      "h": 2100,
+      "title": "P06 · Task Detail · Dark",
+      "is_interactive": true
+    },
+    "P07InboxDark.dc.html": {
+      "x": 10920,
+      "y": 17160,
+      "w": 1440,
+      "h": 1700,
+      "title": "P07 · Inbox · Dark",
+      "is_interactive": true
+    },
+    "P08BrainDumpDark.dc.html": {
+      "x": 12480,
+      "y": 17160,
+      "w": 1440,
+      "h": 1700,
+      "title": "P08 · Brain Dump · Dark",
+      "is_interactive": true
+    },
+    "P09FocusDark.dc.html": {
+      "x": 14040,
+      "y": 17160,
+      "w": 1440,
+      "h": 1620,
+      "title": "P09 · Focus · Dark",
+      "is_interactive": true
+    },
+    "P09FocusBreakDark.dc.html": {
+      "x": 15600,
+      "y": 17160,
+      "w": 1440,
+      "h": 1000,
+      "title": "P09 · Focus · Break · Dark",
+      "is_interactive": true
+    },
+    "P10ShutdownDark.dc.html": {
+      "x": 17160,
+      "y": 17160,
+      "w": 1440,
+      "h": 1920,
+      "title": "P10 · Daily Shutdown · Dark",
+      "is_interactive": true
+    },
+    "P11GoalsDark.dc.html": {
+      "x": 18720,
+      "y": 17160,
+      "w": 1440,
+      "h": 1540,
+      "title": "P11 · Goals · Dark",
+      "is_interactive": true
+    },
+    "P12HabitsDark.dc.html": {
+      "x": 20280,
+      "y": 17160,
+      "w": 1440,
+      "h": 1600,
+      "title": "P12 · Habits · Dark",
+      "is_interactive": true
+    },
+    "P13FinanceDark.dc.html": {
+      "x": 21840,
+      "y": 17160,
+      "w": 1440,
+      "h": 1750,
+      "title": "P13 · Finance · Dark",
+      "is_interactive": true
+    },
+    "P14JournalDark.dc.html": {
+      "x": 23400,
+      "y": 17160,
+      "w": 1440,
+      "h": 1550,
+      "title": "P14 · Journal · Dark",
+      "is_interactive": true
+    },
+    "P15InsightsDark.dc.html": {
+      "x": 24960,
+      "y": 17160,
+      "w": 1440,
+      "h": 1750,
+      "title": "P15 · Insights · Dark",
+      "is_interactive": true
+    },
+    "P16WeeklyReviewDark.dc.html": {
+      "x": 26520,
+      "y": 17160,
+      "w": 1440,
+      "h": 1950,
+      "title": "P16 · Weekly Review · Dark",
+      "is_interactive": true
+    },
+    "P17SettingsDark.dc.html": {
+      "x": 28080,
+      "y": 17160,
+      "w": 1440,
+      "h": 2560,
+      "title": "P17 · Settings · Dark",
+      "is_interactive": true
+    },
+    "P18SupportingFlowsDark.dc.html": {
+      "x": 29640,
+      "y": 17160,
+      "w": 1440,
+      "h": 1250,
+      "title": "P18 · Supporting Flows · Dark",
+      "is_interactive": true
+    },
+    "PM01MobileCore.dc.html": {
+      "x": 0,
+      "y": 20120,
+      "w": 1800,
+      "h": 2250,
+      "title": "PM01 · Mobile core",
+      "is_interactive": true
+    },
+    "PM01MobileCoreDark.dc.html": {
+      "x": 1920,
+      "y": 20120,
+      "w": 1800,
+      "h": 2250,
+      "title": "PM01 · Mobile core · Dark",
+      "is_interactive": true
+    },
+    "PM02MobileFlows.dc.html": {
+      "x": 3840,
+      "y": 20120,
+      "w": 1800,
+      "h": 1800,
+      "title": "PM02 · Mobile flows",
+      "is_interactive": true
+    },
+    "PM02MobileFlowsDark.dc.html": {
+      "x": 5760,
+      "y": 20120,
+      "w": 1800,
+      "h": 1800,
+      "title": "PM02 · Mobile flows · Dark",
+      "is_interactive": true
+    },
+    "PM03MobileModules.dc.html": {
+      "x": 7680,
+      "y": 20120,
+      "w": 2240,
+      "h": 2000,
+      "title": "PM03 · Mobile modules",
+      "is_interactive": true
+    },
+    "PM03MobileModulesDark.dc.html": {
+      "x": 10040,
+      "y": 20120,
+      "w": 2240,
+      "h": 2000,
+      "title": "PM03 · Mobile modules · Dark",
+      "is_interactive": true
+    },
+    "PM04MobileFa.dc.html": {
+      "x": 12400,
+      "y": 20120,
+      "w": 2240,
+      "h": 2060,
+      "title": "PM04 · Persian RTL validation",
+      "is_interactive": true
+    },
+    "PM04MobileFaDark.dc.html": {
+      "x": 14760,
+      "y": 20120,
+      "w": 2240,
+      "h": 2060,
+      "title": "PM04 · Persian RTL validation · Dark",
+      "is_interactive": true
+    }
+  },
+  "createdOnFiles": {
+    "at": "2026-10-12T09:00:00Z",
+    "v": 1
+  },
+  "designSystems": [],
+  "launch": {
+    "view": "canvas"
+  },
+  "notes": {
+    "dvTitle": {
+      "kind": "title1",
+      "maxW": 4560,
+      "text": "Personal · Data visualization language",
+      "w": 240,
+      "x": 11400,
+      "y": -200
+    },
+    "mobileTitle": {
+      "kind": "title1",
+      "maxW": 1800,
+      "text": "Mobile",
+      "w": 240,
+      "x": 0,
+      "y": 3340
+    },
+    "phase2Title": {
+      "kind": "title1",
+      "maxW": 3000,
+      "text": "Phase 2 · Core screens (desktop, light)",
+      "w": 240,
+      "x": 3120,
+      "y": 2600
+    },
+    "step3Title": {
+      "kind": "title1",
+      "maxW": 1800,
+      "text": "Step 3 · فارسی و راست‌به‌چپ (RTL)",
+      "w": 240,
+      "x": 0,
+      "y": 4560
+    },
+    "step4Title": {
+      "kind": "title1",
+      "maxW": 3400,
+      "text": "Step 4 · Dark theme",
+      "w": 240,
+      "x": 7800,
+      "y": -200
+    },
+    "step5Title": {
+      "kind": "title1",
+      "maxW": 3000,
+      "text": "Step 5 · Modules & weekly review",
+      "w": 240,
+      "x": 0,
+      "y": 7600
+    },
+    "finalTitle": {
+      "kind": "title1",
+      "maxW": 6000,
+      "text": "FINAL · Personal Planner · system, IA & handoff",
+      "w": 240,
+      "x": 0,
+      "y": 12200
+    },
+    "finalLight": {
+      "kind": "title1",
+      "maxW": 6000,
+      "text": "FINAL · Personal screens · desktop light (supersede S1–S14)",
+      "w": 240,
+      "x": 0,
+      "y": 14000
+    },
+    "finalDark": {
+      "kind": "title1",
+      "maxW": 6000,
+      "text": "FINAL · Personal screens · desktop dark",
+      "w": 240,
+      "x": 0,
+      "y": 16960
+    },
+    "finalMobile": {
+      "kind": "title1",
+      "maxW": 6000,
+      "text": "FINAL · Personal mobile (390) · light / dark · فارسی RTL",
+      "w": 240,
+      "x": 0,
+      "y": 19920
+    }
+  },
+  "order": [
+    "Main.dc.html",
+    "Cards.dc.html",
+    "Dashboard.dc.html",
+    "CaseFlow.dc.html",
+    "MobileHome.dc.html",
+    "MobileTasks.dc.html",
+    "MobileFlow.dc.html",
+    "MobileChat.dc.html",
+    "Shell.dc.html",
+    "Rationale.dc.html",
+    "CommandBar.dc.html",
+    "S1Personal.dc.html",
+    "S2MyDay.dc.html",
+    "S3TaskDetail.dc.html",
+    "S4Project.dc.html",
+    "S5Team.dc.html",
+    "S6Company.dc.html",
+    "Utility.dc.html",
+    "S7Calendar.dc.html",
+    "S8TaskCreate.dc.html",
+    "FaRules.dc.html",
+    "MobileFaHome.dc.html",
+    "MobileFaCalendar.dc.html",
+    "MobileFaQuickAdd.dc.html",
+    "MobileFaTasks.dc.html",
+    "DarkTokens.dc.html",
+    "S2MyDayDark.dc.html",
+    "S7CalendarDark.dc.html",
+    "S8TaskCreateDark.dc.html",
+    "MobileFaHomeDark.dc.html",
+    "MobileFaCalendarDark.dc.html",
+    "MobileFaQuickAddDark.dc.html",
+    "MobileFaTasksDark.dc.html",
+    "S9Habits.dc.html",
+    "S10Finance.dc.html",
+    "S11Goals.dc.html",
+    "S12Journal.dc.html",
+    "S13Insights.dc.html",
+    "S14Weekly.dc.html",
+    "DataVizPersonal.dc.html",
+    "DataVizPersonalDark.dc.html",
+    "DataVizPersonalMobile.dc.html",
+    "HabitStreakRibbon.dc.html",
+    "DataVizRefine.dc.html",
+    "DataVizRefineDark.dc.html",
+    "DataVizAdd.dc.html",
+    "DataVizAddDark.dc.html",
+    "P00CardsTabs.dc.html",
+    "P00CardsTabsDark.dc.html",
+    "P00PersonalIA.dc.html",
+    "P99Handoff.dc.html",
+    "P01PersonalOverview.dc.html",
+    "P02MyDay.dc.html",
+    "P03TasksList.dc.html",
+    "P03TasksBoard.dc.html",
+    "P04Calendar.dc.html",
+    "P05TaskCreate.dc.html",
+    "P06TaskDetail.dc.html",
+    "P07Inbox.dc.html",
+    "P08BrainDump.dc.html",
+    "P09Focus.dc.html",
+    "P09FocusBreak.dc.html",
+    "P10Shutdown.dc.html",
+    "P11Goals.dc.html",
+    "P12Habits.dc.html",
+    "P13Finance.dc.html",
+    "P14Journal.dc.html",
+    "P15Insights.dc.html",
+    "P16WeeklyReview.dc.html",
+    "P17Settings.dc.html",
+    "P18SupportingFlows.dc.html",
+    "P01PersonalOverviewDark.dc.html",
+    "P02MyDayDark.dc.html",
+    "P03TasksListDark.dc.html",
+    "P03TasksBoardDark.dc.html",
+    "P04CalendarDark.dc.html",
+    "P05TaskCreateDark.dc.html",
+    "P06TaskDetailDark.dc.html",
+    "P07InboxDark.dc.html",
+    "P08BrainDumpDark.dc.html",
+    "P09FocusDark.dc.html",
+    "P09FocusBreakDark.dc.html",
+    "P10ShutdownDark.dc.html",
+    "P11GoalsDark.dc.html",
+    "P12HabitsDark.dc.html",
+    "P13FinanceDark.dc.html",
+    "P14JournalDark.dc.html",
+    "P15InsightsDark.dc.html",
+    "P16WeeklyReviewDark.dc.html",
+    "P17SettingsDark.dc.html",
+    "P18SupportingFlowsDark.dc.html",
+    "PM01MobileCore.dc.html",
+    "PM01MobileCoreDark.dc.html",
+    "PM02MobileFlows.dc.html",
+    "PM02MobileFlowsDark.dc.html",
+    "PM03MobileModules.dc.html",
+    "PM03MobileModulesDark.dc.html",
+    "PM04MobileFa.dc.html",
+    "PM04MobileFaDark.dc.html"
+  ],
+  "pages": [],
+  "title": "Workspace Design System"
+}

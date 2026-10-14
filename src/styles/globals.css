@@ -1,5 +1,5 @@
 @import "tailwindcss";
-@import "../../mehran-planner-design/tokens.css"; /* layer 1: design primitives */
+@import "../../design/tokens.css"; /* layer 1: design primitives */
 @import "./tokens.css"; /* app overrides + layer 2 semantic */
 @import "./typography.css";
 @import "./utilities.css";

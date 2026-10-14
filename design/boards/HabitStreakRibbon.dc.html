@@ -1,0 +1,476 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Habit Streak Ribbon</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@300;400;500;600;700&amp;family=Vazirmatn:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F1F1EE}
+.sh{font-size:12px;font-weight:700;color:#6B6B64;letter-spacing:.02em}
+.card{box-sizing:border-box;padding:24px;border-radius:32px;background:#FFFFFF}
+.lbl{display:inline-flex;align-items:center;height:26px;padding:0 10px;border-radius:999px;background:#F1F1EE;font-size:11px;font-weight:700;color:#45453F}
+.row{display:grid;grid-template-columns:130px minmax(0,1fr);gap:12px;font-size:13px;line-height:1.5}
+.row b{font-size:12px;color:#6B6B64}
+</style>
+</helmet>
+<div style="width: 1440px; box-sizing: border-box; padding: 64px 56px 80px; background: #F1F1EE; font-family: 'Urbanist', 'Vazirmatn', system-ui, sans-serif; color: #1A1A17; display: flex; flex-direction: column; gap: 36px">
+
+  <header style="display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 40px; align-items: end">
+    <div style="display: flex; flex-direction: column; gap: 10px">
+      <div style="display: flex; gap: 8px"><span class="lbl" style="background: #FFFFFF">Product component</span><span class="lbl" style="background: #DDFAF2; color: #0E6B57">Specialized · Habits</span></div>
+      <h1 style="margin: 0; font-size: 52px; font-weight: 500; letter-spacing: -0.02em">Habit Streak Ribbon</h1>
+      <p style="margin: 0; max-width: 600px; font-size: 16px; line-height: 1.55; color: #5E5E58">A compact, one-habit view of the current week: how long the streak is, what today needs, and what’s coming. Soft connectors carry the streak node to node — it is not a progress bar, a timeline, a ring or a heatmap.</p>
+    </div>
+    <div class="card" style="display: flex; flex-direction: column; gap: 10px">
+      <span class="sh">USAGE</span>
+      <div class="row"><b>Use in</b><span>Personal Dashboard (habit widget) · Habits overview (one per habit, or the habit in focus) · Weekly Review → Goals & habits step, optional.</span></div>
+      <div class="row"><b>Never in</b><span>Tasks, projects, multi-habit comparison (that’s Habit Field), generic step indicators.</span></div>
+      <div class="row"><b>Week</b><span>7 visible days. Locale decides the order: Sat → Fri for Iran (Persian or English UI), Mon → Sun for other locales.</span></div>
+    </div>
+  </header>
+
+  <!-- Hero: desktop light -->
+  <section style="display: flex; flex-direction: column; gap: 14px">
+    <div style="display: flex; align-items: center; justify-content: space-between"><span class="sh">1 · DESKTOP · LIGHT</span>
+      <div style="display: inline-flex; gap: 2px; padding: 3px; border-radius: 999px; background: #E6E6E1"><sc-for list="{{cases}}" as="c" hint-placeholder-count="5"><button type="button" aria-pressed="{{c.on}}" onClick="{{ c.pick }}" style="height: 32px; padding: 0 12px; border: 0; border-radius: 999px; background: {{c.bg}}; font-family: inherit; font-size: 12px; font-weight: 700; color: {{c.fg}}; cursor: pointer">{{c.t}}</button></sc-for></div>
+    </div>
+    <div dir="{{hero.dir}}" role="group" aria-label="{{hero.aria}}" style="display: flex; align-items: center; gap: 14px; padding: 12px; border-radius: 30px; background: #FFFFFF; box-shadow: 0 1px 0 #E6E6E1, 0 12px 32px rgba(14,14,12,0.06); font-family: {{hero.font}}; color: #1A1A17">
+  <div style="flex: none; display: flex; align-items: center; gap: 12px; padding: 12px 18px 12px 12px; border-radius: 22px; background: #F8F8F6">
+    <span style="width: 42px; height: 42px; border-radius: 50%; background: {{hero.flameBg}}; display: inline-flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{hero.flame}}" stroke-width="1.9" stroke-linejoin="round" aria-hidden="true"><path d="M12 3c1 3 5 5 5 10a5 5 0 0 1-10 0c0-2 1-3.5 2-4.5c0 2 1 3 2 3c0-3-1-5 1-8.5z"></path></svg></span>
+    <span style="display: flex; flex-direction: column; line-height: 1.15"><span style="font-size: 28px; font-weight: 600">{{hero.streak}}</span><span style="font-size: 12px; font-weight: 600; color: #6B6B64; white-space: nowrap">{{hero.streakLabel}}</span></span>
+  </div>
+  <div style="position: relative; flex: 1; min-width: 0; height: 88px">
+    <svg viewBox="0 0 700 84" preserveAspectRatio="none" width="100%" height="84" aria-hidden="true" style="position: absolute; left: 0; top: 4px; overflow: visible">
+      <sc-for list="{{hero.conns}}" as="c" hint-placeholder-count="6"><path d="{{c.d}}" fill="none" stroke="{{c.c}}" stroke-width="{{c.w}}" stroke-dasharray="{{c.dash}}" stroke-opacity="{{c.op}}" stroke-linecap="round" vector-effect="non-scaling-stroke"></path></sc-for>
+    </svg>
+    <div style="position: relative; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); height: 100%">
+      <sc-for list="{{hero.nodes}}" as="n" hint-placeholder-count="7">
+        <div role="img" aria-label="{{n.aria}}" style="display: flex; flex-direction: column; align-items: center; gap: 2px">
+          <span style="margin-top: {{n.mt}}; width: {{n.size}}; height: {{n.size}}; box-sizing: border-box; border-radius: 50%; background: {{n.bg}}; border: {{n.border}}; box-shadow: {{n.ring}}; display: inline-flex; align-items: center; justify-content: center">
+            <sc-if value="{{n.check}}" hint-placeholder-val="{{ true }}"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg></sc-if>
+            <sc-if value="{{n.dot}}" hint-placeholder-val="{{ false }}"><span style="width: 12px; height: 12px; border-radius: 50%; background: #0E6B57"></span></sc-if>
+            <sc-if value="{{n.dash}}" hint-placeholder-val="{{ false }}"><span style="width: 11px; height: 2.5px; border-radius: 2px; background: #A9A9A1"></span></sc-if>
+            <sc-if value="{{n.moon}}" hint-placeholder-val="{{ false }}"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#8A8A82" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M20 14a8 8 0 1 1-10-10a6.5 6.5 0 0 0 10 10z"></path></svg></sc-if>
+          </span>
+          <span style="margin-top: 4px; font-size: 12px; font-weight: {{n.dayW}}; color: {{n.dayC}}">{{n.day}}</span>
+          <span style="font-size: 11px; font-weight: 600; color: #8A8A82">{{n.date}}</span>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+  <sc-if value="{{hero.showCta}}" hint-placeholder-val="{{ true }}"><a href="S9Habits.dc.html" style="flex: none; display: inline-flex; align-items: center; gap: 10px; height: 52px; padding: 0 6px 0 18px; border-radius: 999px; background: #F8F8F6; font-size: 13px; font-weight: 700; color: #1A1A17; text-decoration: none; white-space: nowrap" dir="{{hero.dir}}">{{hero.cta}}<span style="width: 40px; height: 40px; border-radius: 50%; background: #FFFFFF; display: inline-flex; align-items: center; justify-content: center"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#1A1A17" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="{{hero.chev}}"></path></svg></span></a></sc-if>
+</div>
+  </section>
+
+  <!-- Desktop dark -->
+  <section style="display: flex; flex-direction: column; gap: 14px; padding: 28px; border-radius: 36px; background: #121412">
+    <span class="sh" style="color: #969B94">2 · DESKTOP · DARK</span>
+    <div dir="{{heroD.dir}}" role="group" aria-label="{{heroD.aria}}" style="display: flex; align-items: center; gap: 14px; padding: 12px; border-radius: 30px; background: #1C1F1C; box-shadow: 0 0 0 1px #2C302C; font-family: {{heroD.font}}; color: #ECEEE9">
+  <div style="flex: none; display: flex; align-items: center; gap: 12px; padding: 12px 18px 12px 12px; border-radius: 22px; background: #222622">
+    <span style="width: 42px; height: 42px; border-radius: 50%; background: {{heroD.flameBg}}; display: inline-flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{heroD.flame}}" stroke-width="1.9" stroke-linejoin="round" aria-hidden="true"><path d="M12 3c1 3 5 5 5 10a5 5 0 0 1-10 0c0-2 1-3.5 2-4.5c0 2 1 3 2 3c0-3-1-5 1-8.5z"></path></svg></span>
+    <span style="display: flex; flex-direction: column; line-height: 1.15"><span style="font-size: 28px; font-weight: 600">{{heroD.streak}}</span><span style="font-size: 12px; font-weight: 600; color: #969B94; white-space: nowrap">{{heroD.streakLabel}}</span></span>
+  </div>
+  <div style="position: relative; flex: 1; min-width: 0; height: 88px">
+    <svg viewBox="0 0 700 84" preserveAspectRatio="none" width="100%" height="84" aria-hidden="true" style="position: absolute; left: 0; top: 4px; overflow: visible">
+      <sc-for list="{{heroD.conns}}" as="c" hint-placeholder-count="6"><path d="{{c.d}}" fill="none" stroke="{{c.c}}" stroke-width="{{c.w}}" stroke-dasharray="{{c.dash}}" stroke-opacity="{{c.op}}" stroke-linecap="round" vector-effect="non-scaling-stroke"></path></sc-for>
+    </svg>
+    <div style="position: relative; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); height: 100%">
+      <sc-for list="{{heroD.nodes}}" as="n" hint-placeholder-count="7">
+        <div role="img" aria-label="{{n.aria}}" style="display: flex; flex-direction: column; align-items: center; gap: 2px">
+          <span style="margin-top: {{n.mt}}; width: {{n.size}}; height: {{n.size}}; box-sizing: border-box; border-radius: 50%; background: {{n.bg}}; border: {{n.border}}; box-shadow: {{n.ring}}; display: inline-flex; align-items: center; justify-content: center">
+            <sc-if value="{{n.check}}" hint-placeholder-val="{{ true }}"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#0D1210" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg></sc-if>
+            <sc-if value="{{n.dot}}" hint-placeholder-val="{{ false }}"><span style="width: 12px; height: 12px; border-radius: 50%; background: #6FD4B8"></span></sc-if>
+            <sc-if value="{{n.dash}}" hint-placeholder-val="{{ false }}"><span style="width: 11px; height: 2.5px; border-radius: 2px; background: #A9A9A1"></span></sc-if>
+            <sc-if value="{{n.moon}}" hint-placeholder-val="{{ false }}"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#7D827B" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M20 14a8 8 0 1 1-10-10a6.5 6.5 0 0 0 10 10z"></path></svg></sc-if>
+          </span>
+          <span style="margin-top: 4px; font-size: 12px; font-weight: {{n.dayW}}; color: {{n.dayC}}">{{n.day}}</span>
+          <span style="font-size: 11px; font-weight: 600; color: #7D827B">{{n.date}}</span>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+  <sc-if value="{{heroD.showCta}}" hint-placeholder-val="{{ true }}"><a href="S9Habits.dc.html" style="flex: none; display: inline-flex; align-items: center; gap: 10px; height: 52px; padding: 0 6px 0 18px; border-radius: 999px; background: #222622; font-size: 13px; font-weight: 700; color: #ECEEE9; text-decoration: none; white-space: nowrap" dir="{{heroD.dir}}">{{heroD.cta}}<span style="width: 40px; height: 40px; border-radius: 50%; background: #1C1F1C; display: inline-flex; align-items: center; justify-content: center"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#ECEEE9" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="{{heroD.chev}}"></path></svg></span></a></sc-if>
+</div>
+  </section>
+
+  <!-- States -->
+  <section class="card" style="display: flex; flex-direction: column; gap: 18px">
+    <span class="sh">6 · STATES — EVERY SCENARIO</span>
+    <div style="display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 12px">
+      <sc-for list="{{nodeStates}}" as="n" hint-placeholder-count="6">
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 18px 10px; border-radius: 22px; background: #F8F8F6; text-align: center">
+          <span style="width: {{n.size}}; height: {{n.size}}; box-sizing: border-box; border-radius: 50%; background: {{n.bg}}; border: {{n.border}}; box-shadow: {{n.ring}}; display: inline-flex; align-items: center; justify-content: center">
+            <sc-if value="{{n.check}}" hint-placeholder-val="{{ true }}"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg></sc-if>
+            <sc-if value="{{n.dot}}" hint-placeholder-val="{{ false }}"><span style="width: 12px; height: 12px; border-radius: 50%; background: #0E6B57"></span></sc-if>
+            <sc-if value="{{n.dash}}" hint-placeholder-val="{{ false }}"><span style="width: 11px; height: 2.5px; border-radius: 2px; background: #A9A9A1"></span></sc-if>
+            <sc-if value="{{n.moon}}" hint-placeholder-val="{{ false }}"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#8A8A82" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M20 14a8 8 0 1 1-10-10a6.5 6.5 0 0 0 10 10z"></path></svg></sc-if>
+          </span>
+          <span style="font-size: 14px; font-weight: 700">{{n.t}}</span>
+          <span style="font-size: 12px; color: #5E5E58; line-height: 1.4">{{n.d}}</span>
+        </div>
+      </sc-for>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 12px">
+      <div style="display: grid; grid-template-columns: 180px minmax(0, 1fr); gap: 16px; align-items: center"><div style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 14px; font-weight: 700">All completed</span><span style="font-size: 12px; color: #6B6B64; line-height: 1.4">Every past day and today done.</span></div><div dir="{{scAll.dir}}" role="group" aria-label="{{scAll.aria}}" style="display: flex; align-items: center; gap: 14px; padding: 12px; border-radius: 30px; background: #FFFFFF; box-shadow: 0 1px 0 #E6E6E1, 0 12px 32px rgba(14,14,12,0.06); font-family: {{scAll.font}}; color: #1A1A17">
+  <div style="flex: none; display: flex; align-items: center; gap: 12px; padding: 12px 18px 12px 12px; border-radius: 22px; background: #F8F8F6">
+    <span style="width: 42px; height: 42px; border-radius: 50%; background: {{scAll.flameBg}}; display: inline-flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{scAll.flame}}" stroke-width="1.9" stroke-linejoin="round" aria-hidden="true"><path d="M12 3c1 3 5 5 5 10a5 5 0 0 1-10 0c0-2 1-3.5 2-4.5c0 2 1 3 2 3c0-3-1-5 1-8.5z"></path></svg></span>
+    <span style="display: flex; flex-direction: column; line-height: 1.15"><span style="font-size: 28px; font-weight: 600">{{scAll.streak}}</span><span style="font-size: 12px; font-weight: 600; color: #6B6B64; white-space: nowrap">{{scAll.streakLabel}}</span></span>
+  </div>
+  <div style="position: relative; flex: 1; min-width: 0; height: 88px">
+    <svg viewBox="0 0 700 84" preserveAspectRatio="none" width="100%" height="84" aria-hidden="true" style="position: absolute; left: 0; top: 4px; overflow: visible">
+      <sc-for list="{{scAll.conns}}" as="c" hint-placeholder-count="6"><path d="{{c.d}}" fill="none" stroke="{{c.c}}" stroke-width="{{c.w}}" stroke-dasharray="{{c.dash}}" stroke-opacity="{{c.op}}" stroke-linecap="round" vector-effect="non-scaling-stroke"></path></sc-for>
+    </svg>
+    <div style="position: relative; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); height: 100%">
+      <sc-for list="{{scAll.nodes}}" as="n" hint-placeholder-count="7">
+        <div role="img" aria-label="{{n.aria}}" style="display: flex; flex-direction: column; align-items: center; gap: 2px">
+          <span style="margin-top: {{n.mt}}; width: {{n.size}}; height: {{n.size}}; box-sizing: border-box; border-radius: 50%; background: {{n.bg}}; border: {{n.border}}; box-shadow: {{n.ring}}; display: inline-flex; align-items: center; justify-content: center">
+            <sc-if value="{{n.check}}" hint-placeholder-val="{{ true }}"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg></sc-if>
+            <sc-if value="{{n.dot}}" hint-placeholder-val="{{ false }}"><span style="width: 12px; height: 12px; border-radius: 50%; background: #0E6B57"></span></sc-if>
+            <sc-if value="{{n.dash}}" hint-placeholder-val="{{ false }}"><span style="width: 11px; height: 2.5px; border-radius: 2px; background: #A9A9A1"></span></sc-if>
+            <sc-if value="{{n.moon}}" hint-placeholder-val="{{ false }}"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#8A8A82" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M20 14a8 8 0 1 1-10-10a6.5 6.5 0 0 0 10 10z"></path></svg></sc-if>
+          </span>
+          <span style="margin-top: 4px; font-size: 12px; font-weight: {{n.dayW}}; color: {{n.dayC}}">{{n.day}}</span>
+          <span style="font-size: 11px; font-weight: 600; color: #8A8A82">{{n.date}}</span>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+  <sc-if value="{{scAll.showCta}}" hint-placeholder-val="{{ true }}"><a href="S9Habits.dc.html" style="flex: none; display: inline-flex; align-items: center; gap: 10px; height: 52px; padding: 0 6px 0 18px; border-radius: 999px; background: #F8F8F6; font-size: 13px; font-weight: 700; color: #1A1A17; text-decoration: none; white-space: nowrap" dir="{{scAll.dir}}">{{scAll.cta}}<span style="width: 40px; height: 40px; border-radius: 50%; background: #FFFFFF; display: inline-flex; align-items: center; justify-content: center"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#1A1A17" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="{{scAll.chev}}"></path></svg></span></a></sc-if>
+</div></div>
+<div style="display: grid; grid-template-columns: 180px minmax(0, 1fr); gap: 16px; align-items: center"><div style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 14px; font-weight: 700">Partial streak</span><span style="font-size: 12px; color: #6B6B64; line-height: 1.4">A miss earlier in the week; streak counts from after it.</span></div><div dir="{{scPartial.dir}}" role="group" aria-label="{{scPartial.aria}}" style="display: flex; align-items: center; gap: 14px; padding: 12px; border-radius: 30px; background: #FFFFFF; box-shadow: 0 1px 0 #E6E6E1, 0 12px 32px rgba(14,14,12,0.06); font-family: {{scPartial.font}}; color: #1A1A17">
+  <div style="flex: none; display: flex; align-items: center; gap: 12px; padding: 12px 18px 12px 12px; border-radius: 22px; background: #F8F8F6">
+    <span style="width: 42px; height: 42px; border-radius: 50%; background: {{scPartial.flameBg}}; display: inline-flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{scPartial.flame}}" stroke-width="1.9" stroke-linejoin="round" aria-hidden="true"><path d="M12 3c1 3 5 5 5 10a5 5 0 0 1-10 0c0-2 1-3.5 2-4.5c0 2 1 3 2 3c0-3-1-5 1-8.5z"></path></svg></span>
+    <span style="display: flex; flex-direction: column; line-height: 1.15"><span style="font-size: 28px; font-weight: 600">{{scPartial.streak}}</span><span style="font-size: 12px; font-weight: 600; color: #6B6B64; white-space: nowrap">{{scPartial.streakLabel}}</span></span>
+  </div>
+  <div style="position: relative; flex: 1; min-width: 0; height: 88px">
+    <svg viewBox="0 0 700 84" preserveAspectRatio="none" width="100%" height="84" aria-hidden="true" style="position: absolute; left: 0; top: 4px; overflow: visible">
+      <sc-for list="{{scPartial.conns}}" as="c" hint-placeholder-count="6"><path d="{{c.d}}" fill="none" stroke="{{c.c}}" stroke-width="{{c.w}}" stroke-dasharray="{{c.dash}}" stroke-opacity="{{c.op}}" stroke-linecap="round" vector-effect="non-scaling-stroke"></path></sc-for>
+    </svg>
+    <div style="position: relative; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); height: 100%">
+      <sc-for list="{{scPartial.nodes}}" as="n" hint-placeholder-count="7">
+        <div role="img" aria-label="{{n.aria}}" style="display: flex; flex-direction: column; align-items: center; gap: 2px">
+          <span style="margin-top: {{n.mt}}; width: {{n.size}}; height: {{n.size}}; box-sizing: border-box; border-radius: 50%; background: {{n.bg}}; border: {{n.border}}; box-shadow: {{n.ring}}; display: inline-flex; align-items: center; justify-content: center">
+            <sc-if value="{{n.check}}" hint-placeholder-val="{{ true }}"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg></sc-if>
+            <sc-if value="{{n.dot}}" hint-placeholder-val="{{ false }}"><span style="width: 12px; height: 12px; border-radius: 50%; background: #0E6B57"></span></sc-if>
+            <sc-if value="{{n.dash}}" hint-placeholder-val="{{ false }}"><span style="width: 11px; height: 2.5px; border-radius: 2px; background: #A9A9A1"></span></sc-if>
+            <sc-if value="{{n.moon}}" hint-placeholder-val="{{ false }}"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#8A8A82" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M20 14a8 8 0 1 1-10-10a6.5 6.5 0 0 0 10 10z"></path></svg></sc-if>
+          </span>
+          <span style="margin-top: 4px; font-size: 12px; font-weight: {{n.dayW}}; color: {{n.dayC}}">{{n.day}}</span>
+          <span style="font-size: 11px; font-weight: 600; color: #8A8A82">{{n.date}}</span>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+  <sc-if value="{{scPartial.showCta}}" hint-placeholder-val="{{ true }}"><a href="S9Habits.dc.html" style="flex: none; display: inline-flex; align-items: center; gap: 10px; height: 52px; padding: 0 6px 0 18px; border-radius: 999px; background: #F8F8F6; font-size: 13px; font-weight: 700; color: #1A1A17; text-decoration: none; white-space: nowrap" dir="{{scPartial.dir}}">{{scPartial.cta}}<span style="width: 40px; height: 40px; border-radius: 50%; background: #FFFFFF; display: inline-flex; align-items: center; justify-content: center"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#1A1A17" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="{{scPartial.chev}}"></path></svg></span></a></sc-if>
+</div></div>
+<div style="display: grid; grid-template-columns: 180px minmax(0, 1fr); gap: 16px; align-items: center"><div style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 14px; font-weight: 700">Today active</span><span style="font-size: 12px; color: #6B6B64; line-height: 1.4">Today is still open — node waits, nothing is red.</span></div><div dir="{{scToday.dir}}" role="group" aria-label="{{scToday.aria}}" style="display: flex; align-items: center; gap: 14px; padding: 12px; border-radius: 30px; background: #FFFFFF; box-shadow: 0 1px 0 #E6E6E1, 0 12px 32px rgba(14,14,12,0.06); font-family: {{scToday.font}}; color: #1A1A17">
+  <div style="flex: none; display: flex; align-items: center; gap: 12px; padding: 12px 18px 12px 12px; border-radius: 22px; background: #F8F8F6">
+    <span style="width: 42px; height: 42px; border-radius: 50%; background: {{scToday.flameBg}}; display: inline-flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{scToday.flame}}" stroke-width="1.9" stroke-linejoin="round" aria-hidden="true"><path d="M12 3c1 3 5 5 5 10a5 5 0 0 1-10 0c0-2 1-3.5 2-4.5c0 2 1 3 2 3c0-3-1-5 1-8.5z"></path></svg></span>
+    <span style="display: flex; flex-direction: column; line-height: 1.15"><span style="font-size: 28px; font-weight: 600">{{scToday.streak}}</span><span style="font-size: 12px; font-weight: 600; color: #6B6B64; white-space: nowrap">{{scToday.streakLabel}}</span></span>
+  </div>
+  <div style="position: relative; flex: 1; min-width: 0; height: 88px">
+    <svg viewBox="0 0 700 84" preserveAspectRatio="none" width="100%" height="84" aria-hidden="true" style="position: absolute; left: 0; top: 4px; overflow: visible">
+      <sc-for list="{{scToday.conns}}" as="c" hint-placeholder-count="6"><path d="{{c.d}}" fill="none" stroke="{{c.c}}" stroke-width="{{c.w}}" stroke-dasharray="{{c.dash}}" stroke-opacity="{{c.op}}" stroke-linecap="round" vector-effect="non-scaling-stroke"></path></sc-for>
+    </svg>
+    <div style="position: relative; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); height: 100%">
+      <sc-for list="{{scToday.nodes}}" as="n" hint-placeholder-count="7">
+        <div role="img" aria-label="{{n.aria}}" style="display: flex; flex-direction: column; align-items: center; gap: 2px">
+          <span style="margin-top: {{n.mt}}; width: {{n.size}}; height: {{n.size}}; box-sizing: border-box; border-radius: 50%; background: {{n.bg}}; border: {{n.border}}; box-shadow: {{n.ring}}; display: inline-flex; align-items: center; justify-content: center">
+            <sc-if value="{{n.check}}" hint-placeholder-val="{{ true }}"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg></sc-if>
+            <sc-if value="{{n.dot}}" hint-placeholder-val="{{ false }}"><span style="width: 12px; height: 12px; border-radius: 50%; background: #0E6B57"></span></sc-if>
+            <sc-if value="{{n.dash}}" hint-placeholder-val="{{ false }}"><span style="width: 11px; height: 2.5px; border-radius: 2px; background: #A9A9A1"></span></sc-if>
+            <sc-if value="{{n.moon}}" hint-placeholder-val="{{ false }}"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#8A8A82" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M20 14a8 8 0 1 1-10-10a6.5 6.5 0 0 0 10 10z"></path></svg></sc-if>
+          </span>
+          <span style="margin-top: 4px; font-size: 12px; font-weight: {{n.dayW}}; color: {{n.dayC}}">{{n.day}}</span>
+          <span style="font-size: 11px; font-weight: 600; color: #8A8A82">{{n.date}}</span>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+  <sc-if value="{{scToday.showCta}}" hint-placeholder-val="{{ true }}"><a href="S9Habits.dc.html" style="flex: none; display: inline-flex; align-items: center; gap: 10px; height: 52px; padding: 0 6px 0 18px; border-radius: 999px; background: #F8F8F6; font-size: 13px; font-weight: 700; color: #1A1A17; text-decoration: none; white-space: nowrap" dir="{{scToday.dir}}">{{scToday.cta}}<span style="width: 40px; height: 40px; border-radius: 50%; background: #FFFFFF; display: inline-flex; align-items: center; justify-content: center"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#1A1A17" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="{{scToday.chev}}"></path></svg></span></a></sc-if>
+</div></div>
+<div style="display: grid; grid-template-columns: 180px minmax(0, 1fr); gap: 16px; align-items: center"><div style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 14px; font-weight: 700">Missed day</span><span style="font-size: 12px; color: #6B6B64; line-height: 1.4">Yesterday missed → streak 0, calm “Start again today”.</span></div><div dir="{{scMissed.dir}}" role="group" aria-label="{{scMissed.aria}}" style="display: flex; align-items: center; gap: 14px; padding: 12px; border-radius: 30px; background: #FFFFFF; box-shadow: 0 1px 0 #E6E6E1, 0 12px 32px rgba(14,14,12,0.06); font-family: {{scMissed.font}}; color: #1A1A17">
+  <div style="flex: none; display: flex; align-items: center; gap: 12px; padding: 12px 18px 12px 12px; border-radius: 22px; background: #F8F8F6">
+    <span style="width: 42px; height: 42px; border-radius: 50%; background: {{scMissed.flameBg}}; display: inline-flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{scMissed.flame}}" stroke-width="1.9" stroke-linejoin="round" aria-hidden="true"><path d="M12 3c1 3 5 5 5 10a5 5 0 0 1-10 0c0-2 1-3.5 2-4.5c0 2 1 3 2 3c0-3-1-5 1-8.5z"></path></svg></span>
+    <span style="display: flex; flex-direction: column; line-height: 1.15"><span style="font-size: 28px; font-weight: 600">{{scMissed.streak}}</span><span style="font-size: 12px; font-weight: 600; color: #6B6B64; white-space: nowrap">{{scMissed.streakLabel}}</span></span>
+  </div>
+  <div style="position: relative; flex: 1; min-width: 0; height: 88px">
+    <svg viewBox="0 0 700 84" preserveAspectRatio="none" width="100%" height="84" aria-hidden="true" style="position: absolute; left: 0; top: 4px; overflow: visible">
+      <sc-for list="{{scMissed.conns}}" as="c" hint-placeholder-count="6"><path d="{{c.d}}" fill="none" stroke="{{c.c}}" stroke-width="{{c.w}}" stroke-dasharray="{{c.dash}}" stroke-opacity="{{c.op}}" stroke-linecap="round" vector-effect="non-scaling-stroke"></path></sc-for>
+    </svg>
+    <div style="position: relative; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); height: 100%">
+      <sc-for list="{{scMissed.nodes}}" as="n" hint-placeholder-count="7">
+        <div role="img" aria-label="{{n.aria}}" style="display: flex; flex-direction: column; align-items: center; gap: 2px">
+          <span style="margin-top: {{n.mt}}; width: {{n.size}}; height: {{n.size}}; box-sizing: border-box; border-radius: 50%; background: {{n.bg}}; border: {{n.border}}; box-shadow: {{n.ring}}; display: inline-flex; align-items: center; justify-content: center">
+            <sc-if value="{{n.check}}" hint-placeholder-val="{{ true }}"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg></sc-if>
+            <sc-if value="{{n.dot}}" hint-placeholder-val="{{ false }}"><span style="width: 12px; height: 12px; border-radius: 50%; background: #0E6B57"></span></sc-if>
+            <sc-if value="{{n.dash}}" hint-placeholder-val="{{ false }}"><span style="width: 11px; height: 2.5px; border-radius: 2px; background: #A9A9A1"></span></sc-if>
+            <sc-if value="{{n.moon}}" hint-placeholder-val="{{ false }}"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#8A8A82" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M20 14a8 8 0 1 1-10-10a6.5 6.5 0 0 0 10 10z"></path></svg></sc-if>
+          </span>
+          <span style="margin-top: 4px; font-size: 12px; font-weight: {{n.dayW}}; color: {{n.dayC}}">{{n.day}}</span>
+          <span style="font-size: 11px; font-weight: 600; color: #8A8A82">{{n.date}}</span>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+  <sc-if value="{{scMissed.showCta}}" hint-placeholder-val="{{ true }}"><a href="S9Habits.dc.html" style="flex: none; display: inline-flex; align-items: center; gap: 10px; height: 52px; padding: 0 6px 0 18px; border-radius: 999px; background: #F8F8F6; font-size: 13px; font-weight: 700; color: #1A1A17; text-decoration: none; white-space: nowrap" dir="{{scMissed.dir}}">{{scMissed.cta}}<span style="width: 40px; height: 40px; border-radius: 50%; background: #FFFFFF; display: inline-flex; align-items: center; justify-content: center"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#1A1A17" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="{{scMissed.chev}}"></path></svg></span></a></sc-if>
+</div></div>
+<div style="display: grid; grid-template-columns: 180px minmax(0, 1fr); gap: 16px; align-items: center"><div style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 14px; font-weight: 700">Rest day</span><span style="font-size: 12px; color: #6B6B64; line-height: 1.4">Planned rest keeps the ribbon connected.</span></div><div dir="{{scRest.dir}}" role="group" aria-label="{{scRest.aria}}" style="display: flex; align-items: center; gap: 14px; padding: 12px; border-radius: 30px; background: #FFFFFF; box-shadow: 0 1px 0 #E6E6E1, 0 12px 32px rgba(14,14,12,0.06); font-family: {{scRest.font}}; color: #1A1A17">
+  <div style="flex: none; display: flex; align-items: center; gap: 12px; padding: 12px 18px 12px 12px; border-radius: 22px; background: #F8F8F6">
+    <span style="width: 42px; height: 42px; border-radius: 50%; background: {{scRest.flameBg}}; display: inline-flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{scRest.flame}}" stroke-width="1.9" stroke-linejoin="round" aria-hidden="true"><path d="M12 3c1 3 5 5 5 10a5 5 0 0 1-10 0c0-2 1-3.5 2-4.5c0 2 1 3 2 3c0-3-1-5 1-8.5z"></path></svg></span>
+    <span style="display: flex; flex-direction: column; line-height: 1.15"><span style="font-size: 28px; font-weight: 600">{{scRest.streak}}</span><span style="font-size: 12px; font-weight: 600; color: #6B6B64; white-space: nowrap">{{scRest.streakLabel}}</span></span>
+  </div>
+  <div style="position: relative; flex: 1; min-width: 0; height: 88px">
+    <svg viewBox="0 0 700 84" preserveAspectRatio="none" width="100%" height="84" aria-hidden="true" style="position: absolute; left: 0; top: 4px; overflow: visible">
+      <sc-for list="{{scRest.conns}}" as="c" hint-placeholder-count="6"><path d="{{c.d}}" fill="none" stroke="{{c.c}}" stroke-width="{{c.w}}" stroke-dasharray="{{c.dash}}" stroke-opacity="{{c.op}}" stroke-linecap="round" vector-effect="non-scaling-stroke"></path></sc-for>
+    </svg>
+    <div style="position: relative; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); height: 100%">
+      <sc-for list="{{scRest.nodes}}" as="n" hint-placeholder-count="7">
+        <div role="img" aria-label="{{n.aria}}" style="display: flex; flex-direction: column; align-items: center; gap: 2px">
+          <span style="margin-top: {{n.mt}}; width: {{n.size}}; height: {{n.size}}; box-sizing: border-box; border-radius: 50%; background: {{n.bg}}; border: {{n.border}}; box-shadow: {{n.ring}}; display: inline-flex; align-items: center; justify-content: center">
+            <sc-if value="{{n.check}}" hint-placeholder-val="{{ true }}"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg></sc-if>
+            <sc-if value="{{n.dot}}" hint-placeholder-val="{{ false }}"><span style="width: 12px; height: 12px; border-radius: 50%; background: #0E6B57"></span></sc-if>
+            <sc-if value="{{n.dash}}" hint-placeholder-val="{{ false }}"><span style="width: 11px; height: 2.5px; border-radius: 2px; background: #A9A9A1"></span></sc-if>
+            <sc-if value="{{n.moon}}" hint-placeholder-val="{{ false }}"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#8A8A82" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M20 14a8 8 0 1 1-10-10a6.5 6.5 0 0 0 10 10z"></path></svg></sc-if>
+          </span>
+          <span style="margin-top: 4px; font-size: 12px; font-weight: {{n.dayW}}; color: {{n.dayC}}">{{n.day}}</span>
+          <span style="font-size: 11px; font-weight: 600; color: #8A8A82">{{n.date}}</span>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+  <sc-if value="{{scRest.showCta}}" hint-placeholder-val="{{ true }}"><a href="S9Habits.dc.html" style="flex: none; display: inline-flex; align-items: center; gap: 10px; height: 52px; padding: 0 6px 0 18px; border-radius: 999px; background: #F8F8F6; font-size: 13px; font-weight: 700; color: #1A1A17; text-decoration: none; white-space: nowrap" dir="{{scRest.dir}}">{{scRest.cta}}<span style="width: 40px; height: 40px; border-radius: 50%; background: #FFFFFF; display: inline-flex; align-items: center; justify-content: center"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#1A1A17" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="{{scRest.chev}}"></path></svg></span></a></sc-if>
+</div></div>
+    </div>
+  </section>
+
+  <!-- Mobile + RTL -->
+  <section style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; align-items: start">
+    <div style="display: flex; flex-direction: column; gap: 12px"><span class="sh">3 · MOBILE · LIGHT (390)</span>
+      <div style="width: 390px; box-sizing: border-box; padding: 16px; border-radius: 40px; background: #F1F1EE; box-shadow: 0 0 0 8px #FFFFFF, 0 24px 48px rgba(14,14,12,0.10); display: flex; flex-direction: column; gap: 12px">
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 4px 6px"><span style="font-size: 15px; font-weight: 700">Morning routine</span><span style="font-size: 12px; font-weight: 700; color: #0E6B57">Open ›</span></div>
+        <div dir="{{mob.dir}}" role="group" aria-label="{{mob.aria}}" style="display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: 30px; background: #FFFFFF; box-shadow: 0 1px 0 #E6E6E1, 0 12px 32px rgba(14,14,12,0.06); font-family: {{mob.font}}; color: #1A1A17">
+  <div style="flex: none; display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 10px 10px; border-radius: 22px; background: #F8F8F6">
+    <span style="width: 30px; height: 30px; border-radius: 50%; background: {{mob.flameBg}}; display: inline-flex; align-items: center; justify-content: center"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="{{mob.flame}}" stroke-width="1.9" stroke-linejoin="round" aria-hidden="true"><path d="M12 3c1 3 5 5 5 10a5 5 0 0 1-10 0c0-2 1-3.5 2-4.5c0 2 1 3 2 3c0-3-1-5 1-8.5z"></path></svg></span>
+    <span style="display: flex; flex-direction: column; align-items: center; line-height: 1.15"><span style="font-size: 20px; font-weight: 600">{{mob.streak}}</span><span style="font-size: 10px; font-weight: 600; color: #6B6B64; white-space: nowrap">{{mob.streakLabel}}</span></span>
+  </div>
+  <div style="position: relative; flex: 1; min-width: 0; height: 78px">
+    <svg viewBox="0 0 700 84" preserveAspectRatio="none" width="100%" height="84" aria-hidden="true" style="position: absolute; left: 0; top: 4px; overflow: visible">
+      <sc-for list="{{mob.conns}}" as="c" hint-placeholder-count="6"><path d="{{c.d}}" fill="none" stroke="{{c.c}}" stroke-width="{{c.w}}" stroke-dasharray="{{c.dash}}" stroke-opacity="{{c.op}}" stroke-linecap="round" vector-effect="non-scaling-stroke"></path></sc-for>
+    </svg>
+    <div style="position: relative; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); height: 100%">
+      <sc-for list="{{mob.nodes}}" as="n" hint-placeholder-count="7">
+        <div role="img" aria-label="{{n.aria}}" style="display: flex; flex-direction: column; align-items: center; gap: 2px">
+          <span style="margin-top: {{n.mt}}; width: {{n.size}}; height: {{n.size}}; box-sizing: border-box; border-radius: 50%; background: {{n.bg}}; border: {{n.border}}; box-shadow: {{n.ring}}; display: inline-flex; align-items: center; justify-content: center">
+            <sc-if value="{{n.check}}" hint-placeholder-val="{{ true }}"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg></sc-if>
+            <sc-if value="{{n.dot}}" hint-placeholder-val="{{ false }}"><span style="width: 12px; height: 12px; border-radius: 50%; background: #0E6B57"></span></sc-if>
+            <sc-if value="{{n.dash}}" hint-placeholder-val="{{ false }}"><span style="width: 11px; height: 2.5px; border-radius: 2px; background: #A9A9A1"></span></sc-if>
+            <sc-if value="{{n.moon}}" hint-placeholder-val="{{ false }}"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#8A8A82" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M20 14a8 8 0 1 1-10-10a6.5 6.5 0 0 0 10 10z"></path></svg></sc-if>
+          </span>
+          <span style="margin-top: 4px; font-size: 11px; font-weight: {{n.dayW}}; color: {{n.dayC}}">{{n.day}}</span>
+          <span style="font-size: 10px; font-weight: 600; color: #8A8A82">{{n.date}}</span>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+  <sc-if value="{{mob.showCta}}" hint-placeholder-val="{{ true }}"><a href="S9Habits.dc.html" style="flex: none; display: inline-flex; align-items: center; gap: 10px; height: 52px; padding: 0 6px 0 18px; border-radius: 999px; background: #F8F8F6; font-size: 13px; font-weight: 700; color: #1A1A17; text-decoration: none; white-space: nowrap" dir="{{mob.dir}}">{{mob.cta}}<span style="width: 40px; height: 40px; border-radius: 50%; background: #FFFFFF; display: inline-flex; align-items: center; justify-content: center"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#1A1A17" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="{{mob.chev}}"></path></svg></span></a></sc-if>
+</div>
+      </div>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 12px"><span class="sh">4 · MOBILE · DARK</span>
+      <div style="width: 390px; box-sizing: border-box; padding: 16px; border-radius: 40px; background: #121412; box-shadow: 0 0 0 8px #2C302C; display: flex; flex-direction: column; gap: 12px">
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 4px 6px"><span style="font-size: 15px; font-weight: 700; color: #ECEEE9">Morning routine</span><span style="font-size: 12px; font-weight: 700; color: #6FD4B8">Open ›</span></div>
+        <div dir="{{mobD.dir}}" role="group" aria-label="{{mobD.aria}}" style="display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: 30px; background: #1C1F1C; box-shadow: 0 0 0 1px #2C302C; font-family: {{mobD.font}}; color: #ECEEE9">
+  <div style="flex: none; display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 10px 10px; border-radius: 22px; background: #222622">
+    <span style="width: 30px; height: 30px; border-radius: 50%; background: {{mobD.flameBg}}; display: inline-flex; align-items: center; justify-content: center"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="{{mobD.flame}}" stroke-width="1.9" stroke-linejoin="round" aria-hidden="true"><path d="M12 3c1 3 5 5 5 10a5 5 0 0 1-10 0c0-2 1-3.5 2-4.5c0 2 1 3 2 3c0-3-1-5 1-8.5z"></path></svg></span>
+    <span style="display: flex; flex-direction: column; align-items: center; line-height: 1.15"><span style="font-size: 20px; font-weight: 600">{{mobD.streak}}</span><span style="font-size: 10px; font-weight: 600; color: #969B94; white-space: nowrap">{{mobD.streakLabel}}</span></span>
+  </div>
+  <div style="position: relative; flex: 1; min-width: 0; height: 78px">
+    <svg viewBox="0 0 700 84" preserveAspectRatio="none" width="100%" height="84" aria-hidden="true" style="position: absolute; left: 0; top: 4px; overflow: visible">
+      <sc-for list="{{mobD.conns}}" as="c" hint-placeholder-count="6"><path d="{{c.d}}" fill="none" stroke="{{c.c}}" stroke-width="{{c.w}}" stroke-dasharray="{{c.dash}}" stroke-opacity="{{c.op}}" stroke-linecap="round" vector-effect="non-scaling-stroke"></path></sc-for>
+    </svg>
+    <div style="position: relative; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); height: 100%">
+      <sc-for list="{{mobD.nodes}}" as="n" hint-placeholder-count="7">
+        <div role="img" aria-label="{{n.aria}}" style="display: flex; flex-direction: column; align-items: center; gap: 2px">
+          <span style="margin-top: {{n.mt}}; width: {{n.size}}; height: {{n.size}}; box-sizing: border-box; border-radius: 50%; background: {{n.bg}}; border: {{n.border}}; box-shadow: {{n.ring}}; display: inline-flex; align-items: center; justify-content: center">
+            <sc-if value="{{n.check}}" hint-placeholder-val="{{ true }}"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#0D1210" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg></sc-if>
+            <sc-if value="{{n.dot}}" hint-placeholder-val="{{ false }}"><span style="width: 12px; height: 12px; border-radius: 50%; background: #6FD4B8"></span></sc-if>
+            <sc-if value="{{n.dash}}" hint-placeholder-val="{{ false }}"><span style="width: 11px; height: 2.5px; border-radius: 2px; background: #A9A9A1"></span></sc-if>
+            <sc-if value="{{n.moon}}" hint-placeholder-val="{{ false }}"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#7D827B" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M20 14a8 8 0 1 1-10-10a6.5 6.5 0 0 0 10 10z"></path></svg></sc-if>
+          </span>
+          <span style="margin-top: 4px; font-size: 11px; font-weight: {{n.dayW}}; color: {{n.dayC}}">{{n.day}}</span>
+          <span style="font-size: 10px; font-weight: 600; color: #7D827B">{{n.date}}</span>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+  <sc-if value="{{mobD.showCta}}" hint-placeholder-val="{{ true }}"><a href="S9Habits.dc.html" style="flex: none; display: inline-flex; align-items: center; gap: 10px; height: 52px; padding: 0 6px 0 18px; border-radius: 999px; background: #222622; font-size: 13px; font-weight: 700; color: #ECEEE9; text-decoration: none; white-space: nowrap" dir="{{mobD.dir}}">{{mobD.cta}}<span style="width: 40px; height: 40px; border-radius: 50%; background: #1C1F1C; display: inline-flex; align-items: center; justify-content: center"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#ECEEE9" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="{{mobD.chev}}"></path></svg></span></a></sc-if>
+</div>
+      </div>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 12px"><span class="sh">5 · PERSIAN · RTL (MOBILE)</span>
+      <div dir="rtl" style="width: 390px; box-sizing: border-box; padding: 16px; border-radius: 40px; background: #F1F1EE; box-shadow: 0 0 0 8px #FFFFFF, 0 24px 48px rgba(14,14,12,0.10); display: flex; flex-direction: column; gap: 12px; font-family: 'Vazirmatn', sans-serif">
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 4px 6px"><span style="font-size: 15px; font-weight: 700">روتین صبح</span><span style="font-size: 12px; font-weight: 700; color: #0E6B57">‹ باز کردن</span></div>
+        <div dir="{{mobF.dir}}" role="group" aria-label="{{mobF.aria}}" style="display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: 30px; background: #FFFFFF; box-shadow: 0 1px 0 #E6E6E1, 0 12px 32px rgba(14,14,12,0.06); font-family: {{mobF.font}}; color: #1A1A17">
+  <div style="flex: none; display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 10px 10px; border-radius: 22px; background: #F8F8F6">
+    <span style="width: 30px; height: 30px; border-radius: 50%; background: {{mobF.flameBg}}; display: inline-flex; align-items: center; justify-content: center"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="{{mobF.flame}}" stroke-width="1.9" stroke-linejoin="round" aria-hidden="true"><path d="M12 3c1 3 5 5 5 10a5 5 0 0 1-10 0c0-2 1-3.5 2-4.5c0 2 1 3 2 3c0-3-1-5 1-8.5z"></path></svg></span>
+    <span style="display: flex; flex-direction: column; align-items: center; line-height: 1.15"><span style="font-size: 20px; font-weight: 600">{{mobF.streak}}</span><span style="font-size: 10px; font-weight: 600; color: #6B6B64; white-space: nowrap">{{mobF.streakLabel}}</span></span>
+  </div>
+  <div style="position: relative; flex: 1; min-width: 0; height: 78px">
+    <svg viewBox="0 0 700 84" preserveAspectRatio="none" width="100%" height="84" aria-hidden="true" style="position: absolute; left: 0; top: 4px; overflow: visible">
+      <sc-for list="{{mobF.conns}}" as="c" hint-placeholder-count="6"><path d="{{c.d}}" fill="none" stroke="{{c.c}}" stroke-width="{{c.w}}" stroke-dasharray="{{c.dash}}" stroke-opacity="{{c.op}}" stroke-linecap="round" vector-effect="non-scaling-stroke"></path></sc-for>
+    </svg>
+    <div style="position: relative; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); height: 100%">
+      <sc-for list="{{mobF.nodes}}" as="n" hint-placeholder-count="7">
+        <div role="img" aria-label="{{n.aria}}" style="display: flex; flex-direction: column; align-items: center; gap: 2px">
+          <span style="margin-top: {{n.mt}}; width: {{n.size}}; height: {{n.size}}; box-sizing: border-box; border-radius: 50%; background: {{n.bg}}; border: {{n.border}}; box-shadow: {{n.ring}}; display: inline-flex; align-items: center; justify-content: center">
+            <sc-if value="{{n.check}}" hint-placeholder-val="{{ true }}"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg></sc-if>
+            <sc-if value="{{n.dot}}" hint-placeholder-val="{{ false }}"><span style="width: 12px; height: 12px; border-radius: 50%; background: #0E6B57"></span></sc-if>
+            <sc-if value="{{n.dash}}" hint-placeholder-val="{{ false }}"><span style="width: 11px; height: 2.5px; border-radius: 2px; background: #A9A9A1"></span></sc-if>
+            <sc-if value="{{n.moon}}" hint-placeholder-val="{{ false }}"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#8A8A82" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M20 14a8 8 0 1 1-10-10a6.5 6.5 0 0 0 10 10z"></path></svg></sc-if>
+          </span>
+          <span style="margin-top: 4px; font-size: 11px; font-weight: {{n.dayW}}; color: {{n.dayC}}">{{n.day}}</span>
+          <span style="font-size: 10px; font-weight: 600; color: #8A8A82">{{n.date}}</span>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+  <sc-if value="{{mobF.showCta}}" hint-placeholder-val="{{ true }}"><a href="S9Habits.dc.html" style="flex: none; display: inline-flex; align-items: center; gap: 10px; height: 52px; padding: 0 6px 0 18px; border-radius: 999px; background: #F8F8F6; font-size: 13px; font-weight: 700; color: #1A1A17; text-decoration: none; white-space: nowrap" dir="{{mobF.dir}}">{{mobF.cta}}<span style="width: 40px; height: 40px; border-radius: 50%; background: #FFFFFF; display: inline-flex; align-items: center; justify-content: center"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#1A1A17" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="{{mobF.chev}}"></path></svg></span></a></sc-if>
+</div>
+      </div>
+    </div>
+  </section>
+
+  <section style="display: flex; flex-direction: column; gap: 14px">
+    <span class="sh">5 · PERSIAN · RTL (DESKTOP) — SATURDAY ON THE RIGHT, CTA ON THE LEFT</span>
+    <div dir="{{heroF.dir}}" role="group" aria-label="{{heroF.aria}}" style="display: flex; align-items: center; gap: 14px; padding: 12px; border-radius: 30px; background: #FFFFFF; box-shadow: 0 1px 0 #E6E6E1, 0 12px 32px rgba(14,14,12,0.06); font-family: {{heroF.font}}; color: #1A1A17">
+  <div style="flex: none; display: flex; align-items: center; gap: 12px; padding: 12px 18px 12px 12px; border-radius: 22px; background: #F8F8F6">
+    <span style="width: 42px; height: 42px; border-radius: 50%; background: {{heroF.flameBg}}; display: inline-flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{heroF.flame}}" stroke-width="1.9" stroke-linejoin="round" aria-hidden="true"><path d="M12 3c1 3 5 5 5 10a5 5 0 0 1-10 0c0-2 1-3.5 2-4.5c0 2 1 3 2 3c0-3-1-5 1-8.5z"></path></svg></span>
+    <span style="display: flex; flex-direction: column; line-height: 1.15"><span style="font-size: 28px; font-weight: 600">{{heroF.streak}}</span><span style="font-size: 12px; font-weight: 600; color: #6B6B64; white-space: nowrap">{{heroF.streakLabel}}</span></span>
+  </div>
+  <div style="position: relative; flex: 1; min-width: 0; height: 88px">
+    <svg viewBox="0 0 700 84" preserveAspectRatio="none" width="100%" height="84" aria-hidden="true" style="position: absolute; left: 0; top: 4px; overflow: visible">
+      <sc-for list="{{heroF.conns}}" as="c" hint-placeholder-count="6"><path d="{{c.d}}" fill="none" stroke="{{c.c}}" stroke-width="{{c.w}}" stroke-dasharray="{{c.dash}}" stroke-opacity="{{c.op}}" stroke-linecap="round" vector-effect="non-scaling-stroke"></path></sc-for>
+    </svg>
+    <div style="position: relative; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); height: 100%">
+      <sc-for list="{{heroF.nodes}}" as="n" hint-placeholder-count="7">
+        <div role="img" aria-label="{{n.aria}}" style="display: flex; flex-direction: column; align-items: center; gap: 2px">
+          <span style="margin-top: {{n.mt}}; width: {{n.size}}; height: {{n.size}}; box-sizing: border-box; border-radius: 50%; background: {{n.bg}}; border: {{n.border}}; box-shadow: {{n.ring}}; display: inline-flex; align-items: center; justify-content: center">
+            <sc-if value="{{n.check}}" hint-placeholder-val="{{ true }}"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg></sc-if>
+            <sc-if value="{{n.dot}}" hint-placeholder-val="{{ false }}"><span style="width: 12px; height: 12px; border-radius: 50%; background: #0E6B57"></span></sc-if>
+            <sc-if value="{{n.dash}}" hint-placeholder-val="{{ false }}"><span style="width: 11px; height: 2.5px; border-radius: 2px; background: #A9A9A1"></span></sc-if>
+            <sc-if value="{{n.moon}}" hint-placeholder-val="{{ false }}"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#8A8A82" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M20 14a8 8 0 1 1-10-10a6.5 6.5 0 0 0 10 10z"></path></svg></sc-if>
+          </span>
+          <span style="margin-top: 4px; font-size: 12px; font-weight: {{n.dayW}}; color: {{n.dayC}}">{{n.day}}</span>
+          <span style="font-size: 11px; font-weight: 600; color: #8A8A82">{{n.date}}</span>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+  <sc-if value="{{heroF.showCta}}" hint-placeholder-val="{{ true }}"><a href="S9Habits.dc.html" style="flex: none; display: inline-flex; align-items: center; gap: 10px; height: 52px; padding: 0 6px 0 18px; border-radius: 999px; background: #F8F8F6; font-size: 13px; font-weight: 700; color: #1A1A17; text-decoration: none; white-space: nowrap" dir="{{heroF.dir}}">{{heroF.cta}}<span style="width: 40px; height: 40px; border-radius: 50%; background: #FFFFFF; display: inline-flex; align-items: center; justify-content: center"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#1A1A17" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="{{heroF.chev}}"></path></svg></span></a></sc-if>
+</div>
+  </section>
+
+  <!-- Usage -->
+  <section style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; align-items: start">
+    <div class="card" style="display: flex; flex-direction: column; gap: 12px"><span class="sh">PERSONAL DASHBOARD · WIDGET</span><span style="font-size: 13px; color: #5E5E58; line-height: 1.5">One ribbon for the habit the user pinned (default: longest active streak). Full width of a dashboard column; CTA opens Habits.</span></div>
+    <div class="card" style="display: flex; flex-direction: column; gap: 12px"><span class="sh">HABITS OVERVIEW</span><span style="font-size: 13px; color: #5E5E58; line-height: 1.5">Above the Habit Field for the habit in focus, or as each row’s collapsed view on mobile. Never repeated for all habits at once on desktop — that’s Habit Field’s job.</span></div>
+    <div class="card" style="display: flex; flex-direction: column; gap: 12px"><span class="sh">WEEKLY REVIEW (OPTIONAL)</span><span style="font-size: 13px; color: #5E5E58; line-height: 1.5">In “Goals & habits”, for up to two highlighted habits. Read-only: no CTA, nodes not tappable.</span></div>
+  </section>
+
+  <section class="card" style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px">
+    <div style="display: flex; flex-direction: column; gap: 10px"><span class="sh">SPEC</span>
+      <sc-for list="{{spec}}" as="r" hint-placeholder-count="8"><div class="row"><b>{{r.k}}</b><span>{{r.v}}</span></div></sc-for>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 10px"><span class="sh">BEHAVIOUR</span>
+      <sc-for list="{{beh}}" as="r" hint-placeholder-count="8"><div class="row"><b>{{r.k}}</b><span>{{r.v}}</span></div></sc-for>
+    </div>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2700}}'>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { c: 'today' }; }
+  renderVals() {
+    const RIB = (() => {
+      const FA = '۰۱۲۳۴۵۶۷۸۹', fa = (s) => String(s).replace(/[0-9]/g, (d) => FA[d]);
+      const DN = ['Sat', 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri'], DNF = ['ش', 'ی', 'د', 'س', 'چ', 'پ', 'ج'];
+      const SC = {
+        all: { s: ['done', 'done', 'done', 'todayDone', 'future', 'future', 'rest'], n: 12, cta: ['Perfect week so far', 'هفته‌ی بی‌نقص تا اینجا'] },
+        partial: { s: ['done', 'missed', 'done', 'todayDone', 'future', 'future', 'rest'], n: 2, cta: ['Keep going', 'ادامه بده'] },
+        today: { s: ['done', 'done', 'done', 'today', 'future', 'future', 'rest'], n: 11, cta: ['Keep going', 'ادامه بده'] },
+        missed: { s: ['done', 'done', 'missed', 'today', 'future', 'future', 'rest'], n: 0, cta: ['Start again today', 'از امروز دوباره'] },
+        rest: { s: ['done', 'done', 'rest', 'todayDone', 'future', 'future', 'rest'], n: 10, cta: ['Rest days don’t break it', 'استراحت زنجیره را نمی‌شکند'] }
+      };
+      const DK = { '#0E6B57': '#6FD4B8', '#FFFFFF': '#1C1F1C', '#9ADFCB': '#2F7F6B', '#DDFAF2': '#1D4A40', '#F4F4F1': '#242824', '#D3D3CC': '#3A3F3A', '#B5B5AE': '#6E746E', '#C9C9C2': '#4A504A', '#45453F': '#C4C8C2', '#E5484D': '#F2555A', '#FFF3DC': '#3A2E12', '#C98500': '#F5B54A', '#F1F1EE': '#242824', '#A9A9A1': '#6E746E' };
+      function build(o) {
+        const dk = (v) => (o.dark ? String(v).replace(/#[0-9A-F]{6}/gi, (h) => DK[h.toUpperCase()] || h) : v);
+        const rtl = !!o.rtl, sc = SC[o.scenario || 'today'], compact = !!o.compact;
+        const W = 700, cy = 26, xs = (i) => { const x = (i + 0.5) / 7 * W; return rtl ? W - x : x; };
+        const isDone = (s) => s === 'done' || s === 'todayDone';
+        const conns = [];
+        for (let i = 0; i < 6; i++) {
+          const a = sc.s[i], b = sc.s[i + 1];
+          const x1 = xs(i), x2 = xs(i + 1), dx = (x2 - x1) / 3, w = i % 2 ? 7 : -7;
+          const d = `M${x1.toFixed(1)} ${cy} C${(x1 + dx).toFixed(1)} ${cy + w} ${(x2 - dx).toFixed(1)} ${cy - w} ${x2.toFixed(1)} ${cy}`;
+          const strong = (isDone(a) || a === 'rest') && (isDone(b) || b === 'today' || b === 'rest') && !(a === 'rest' && !isDone(sc.s[i - 1] || 'done'));
+          conns.push(strong ? { d, c: dk('#9ADFCB'), w: 9, dash: 'none', op: 0.75 } : { d, c: dk('#C9C9C2'), w: 2, dash: '1 7', op: 1 });
+        }
+        const nodes = sc.s.map((s, i) => {
+          const today = s === 'today' || s === 'todayDone';
+          const size = today ? 46 : compact ? 32 : 38;
+          const st = {
+            done: { bg: '#0E6B57', border: '0', ring: 'none', t: 'done', tf: 'انجام شد' },
+            todayDone: { bg: '#0E6B57', border: '0', ring: '0 0 0 4px #FFFFFF, 0 0 0 7px #9ADFCB', t: 'done today', tf: 'امروز انجام شد' },
+            today: { bg: '#FFFFFF', border: '3px solid #0E6B57', ring: '0 0 0 5px #DDFAF2', t: 'today, not yet', tf: 'امروز، هنوز نه' },
+            missed: { bg: '#F4F4F1', border: '2px solid #D3D3CC', ring: 'none', t: 'missed', tf: 'جا ماند' },
+            rest: { bg: '#FFFFFF', border: '2px dotted #B5B5AE', ring: 'none', t: 'rest day', tf: 'روز استراحت' },
+            future: { bg: '#FFFFFF', border: '2px dashed #D3D3CC', ring: 'none', t: 'upcoming', tf: 'پیش رو' }
+          }[s];
+          const date = 18 + i;
+          return {
+            size: size + 'px', mt: today ? '4px' : ((46 - size) / 2 + 4) + 'px', bg: dk(st.bg), border: dk(st.border), ring: dk(st.ring),
+            check: isDone(s), dot: s === 'today', dash: s === 'missed', moon: s === 'rest',
+            day: rtl ? DNF[i] : DN[i], date: rtl ? fa(date) : String(date), dayW: today ? 800 : 700, dayC: dk(today ? '#0E6B57' : i === 6 ? '#E5484D' : '#45453F'),
+            aria: (rtl ? DNF[i] + ' ' + fa(date) + ' مهر: ' + st.tf : DN[i] + ' ' + date + ' Mehr: ' + st.t)
+          };
+        });
+        return {
+          dir: rtl ? 'rtl' : 'ltr', font: rtl ? "'Vazirmatn', 'Urbanist', sans-serif" : "'Urbanist', 'Vazirmatn', sans-serif",
+          conns, nodes, streak: rtl ? fa(sc.n) : String(sc.n), streakLabel: rtl ? 'روز پیاپی' : 'day streak', cta: sc.cta[rtl ? 1 : 0],
+          chev: rtl ? 'M15 6l-6 6 6 6' : 'M9 6l6 6-6 6', showCta: !compact, flameBg: dk(sc.n ? '#FFF3DC' : '#F1F1EE'), flame: dk(sc.n ? '#C98500' : '#A9A9A1'),
+          aria: (rtl ? 'زنجیره‌ی عادت: ' + fa(sc.n) + ' روز پیاپی' : 'Habit streak: ' + sc.n + ' days')
+        };
+      }
+      return { build, SC };
+    })();
+
+    const st = this.state;
+    const C = [['all', 'All completed'], ['partial', 'Partial streak'], ['today', 'Today active'], ['missed', 'Missed day'], ['rest', 'Rest day']];
+    return {
+      cases: C.map(([id, t]) => ({ t, on: st.c === id ? 'true' : 'false', bg: st.c === id ? '#FFFFFF' : 'transparent', fg: st.c === id ? '#1A1A17' : '#5E5E58', pick: () => this.setState({ c: id }) })),
+      hero: RIB.build({ scenario: st.c }), heroD: RIB.build({ scenario: st.c, dark: true }), heroF: RIB.build({ scenario: st.c, rtl: true }),
+      mob: RIB.build({ scenario: st.c, compact: true }), mobD: RIB.build({ scenario: st.c, compact: true, dark: true }), mobF: RIB.build({ scenario: st.c, compact: true, rtl: true }),
+      nodeStates: [
+        { t: 'Completed', d: 'Filled mint, white check. Connected by a soft ribbon.', size: '38px', bg: '#0E6B57', border: '0', ring: 'none', check: true },
+        { t: 'Today · done', d: 'Larger node with a soft halo.', size: '46px', bg: '#0E6B57', border: '0', ring: '0 0 0 4px #FFFFFF, 0 0 0 7px #9ADFCB', check: true },
+        { t: 'Today · active', d: 'Larger, white with mint ring + dot. Not yet done — no judgement.', size: '46px', bg: '#FFFFFF', border: '3px solid #0E6B57', ring: '0 0 0 5px #DDFAF2', dot: true },
+        { t: 'Missed', d: 'Soft grey with a short dash. Ribbon breaks to a dotted line. No red.', size: '38px', bg: '#F4F4F1', border: '2px solid #D3D3CC', ring: 'none', dash: true },
+        { t: 'Rest / skipped', d: 'Dotted outline + moon. Doesn’t break the streak.', size: '38px', bg: '#FFFFFF', border: '2px dotted #B5B5AE', ring: 'none', moon: true },
+        { t: 'Future', d: 'Dashed outline, empty. Dotted connector.', size: '38px', bg: '#FFFFFF', border: '2px dashed #D3D3CC', ring: 'none' }
+      ],
+      scAll: RIB.build({ scenario: 'all' }), scPartial: RIB.build({ scenario: 'partial' }), scToday: RIB.build({ scenario: 'today' }), scMissed: RIB.build({ scenario: 'missed' }), scRest: RIB.build({ scenario: 'rest' }),
+      spec: [['Container', 'Surface, radius 30, padding 12 (10 mobile), island shadow; height 112 desktop / 104 mobile.'], ['Summary', 'Subtle tile (#F8F8F6), radius 22: flame icon 42 (amber tint) + streak number 28/600 + “day streak”.'], ['Nodes', '38px (32 mobile); today 46px. Day label 12/700, date 11/600 muted. Friday label red.'], ['Connector', 'Soft wave between node centres, 9px mint-tint stroke (#9ADFCB, 75%) for kept days; 2px dotted neutral for upcoming/missed.'], ['CTA', 'Capsule 52px “Keep going” + 40px chevron circle. Hidden on mobile (header link instead).'], ['Colour', 'Personal mint family only. Amber only for the streak flame. No red states.'], ['Dark', 'Surface #1C1F1C, node accent #6FD4B8 with ink check, connector #2F7F6B, missed #242824.'], ['Tokens', '--personal-deep, --personal-soft, --surface, --subtle, --border, --text-3.']].map(([k, v]) => ({ k, v })),
+      beh: [['Tap node', 'Shows that day’s time/note in the tooltip island; second tap opens the day in Habits.'], ['CTA', 'Opens the habit. Copy adapts: “Keep going” / “Perfect week so far” / “Start again today” / “Rest days don’t break it”.'], ['Motion', 'Connector draws node → node once (900ms), today settles last. Reduced motion: no draw.'], ['Streak rules', 'Rest days and skipped days don’t break the streak; a missed day resets it to 0 — shown calmly.'], ['RTL', 'Mirror: Saturday on the right, CTA and chevron flip to the left. Persian digits follow the setting.'], ['A11y', 'role=group with summary (“Morning routine: 11-day streak, today not done yet”); each node has an aria-label with day, date and state.'], ['Empty', 'New habit: summary shows 0 and nodes are future-only; CTA “Check in today”.'], ['Not', 'Not a ring, not a progress bar, not a heatmap, not a generic stepper.']].map(([k, v]) => ({ k, v }))
+    };
+  }
+}
+</script>
+</body>
+</html>

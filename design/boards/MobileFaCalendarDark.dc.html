@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>موبایل — تقویم · Dark</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700&amp;family=Urbanist:wght@500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#121412}
+a{color:#ECEEE9}a:hover{color:#ECEEE9}
+button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid #7DB6F0;outline-offset:2px}
+.ltr{direction:ltr;unicode-bidi:isolate}
+</style>
+</helmet>
+<div dir="rtl" style="position: relative; width: 390px; height: 844px; overflow: hidden; box-sizing: border-box; padding: 20px 16px 0; background: #121412; font-family: 'Vazirmatn', 'Urbanist', system-ui, sans-serif; color: #ECEEE9; display: flex; flex-direction: column; gap: 14px">
+
+  <header style="display: flex; align-items: center; gap: 10px">
+    <div style="flex: 1; display: flex; flex-direction: column; line-height: 1.45"><h1 style="margin: 0; font-size: 24px; font-weight: 700">{{monthTitle}}</h1><span style="font-size: 12px; font-weight: 600; color: #969B94">{{monthSub}}</span></div>
+    <div role="radiogroup" aria-label="نوع تقویم" style="display: inline-flex; gap: 2px; padding: 3px; border-radius: 999px; background: #1C1F1C">
+      <sc-for list="{{cals}}" as="c" hint-placeholder-count="2"><button type="button" role="radio" aria-checked="{{c.on}}" onClick="{{ c.pick }}" style="height: 36px; padding: 0 12px; border: 0; border-radius: 999px; background: {{c.bg}}; color: {{c.fg}}; font-family: inherit; font-size: 12px; font-weight: 700; cursor: pointer">{{c.label}}</button></sc-for>
+    </div>
+    <button type="button" onClick="{{ goToday }}" style="height: 42px; padding: 0 14px; border: 0; border-radius: 999px; background: #6FD4B8; color: #0D1210; font-family: inherit; font-size: 13px; font-weight: 700; cursor: pointer">امروز</button>
+  </header>
+
+  <!-- Week strip: Saturday at the right -->
+  <div role="tablist" aria-label="روزهای هفته" style="display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; padding: 6px; border-radius: 26px; background: #1C1F1C">
+    <sc-for list="{{week}}" as="d" hint-placeholder-count="7">
+      <button type="button" role="tab" aria-selected="{{d.sel}}" aria-label="{{d.aria}}" onClick="{{ d.pick }}" style="display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 8px 0 7px; border: 0; border-radius: 20px; background: {{d.bg}}; font-family: inherit; cursor: pointer">
+        <span style="font-size: 12px; font-weight: 700; color: {{d.nameFg}}">{{d.name}}</span>
+        <span style="font-size: 17px; font-weight: 700; color: {{d.numFg}}; line-height: 1.4">{{d.num}}</span>
+        <span style="display: flex; gap: 2px; height: 5px"><sc-for list="{{d.dots}}" as="x" hint-placeholder-count="2"><span style="width: 5px; height: 5px; border-radius: 50%; background: {{x.c}}"></span></sc-for></span>
+      </button>
+    </sc-for>
+  </div>
+
+  <!-- Day agenda (notch top-left) -->
+  <section aria-label="برنامه‌ی روز" style="position: relative; flex: 1; min-height: 0; box-sizing: border-box; padding: 18px 16px 100px; border-radius: 30px 30px 0 0; background: #1C1F1C; display: flex; flex-direction: column; gap: 10px; overflow: hidden">
+<div aria-hidden="true" style="position: absolute; top: 0; left: 0; width: 60px; height: 60px; background: #121412; border-bottom-right-radius: 26px"></div>
+<div aria-hidden="true" style="position: absolute; top: 0; left: 60px; width: 26px; height: 26px; background: radial-gradient(circle at 100% 100%, transparent 25.5px, #121412 26px)"></div>
+<div aria-hidden="true" style="position: absolute; top: 60px; left: 0; width: 26px; height: 26px; background: radial-gradient(circle at 100% 100%, transparent 25.5px, #121412 26px)"></div>
+    <a href="MobileFaQuickAdd.dc.html" aria-label="افزودن به این روز" style="position: absolute; top: 0; left: 0; width: 48px; height: 48px; border-radius: 50%; background: #6FD4B8; display: inline-flex; align-items: center; justify-content: center"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#0D1210" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></a>
+    <div style="display: flex; flex-direction: column; line-height: 1.5; padding-left: 64px"><h2 style="margin: 0; font-size: 17px; font-weight: 700">{{dayTitle}}</h2><span style="font-size: 12px; font-weight: 600; color: #969B94">{{daySub}}</span></div>
+    <sc-if value="{{isFriday}}" hint-placeholder-val="{{ false }}"><div role="note" style="padding: 10px 12px; border-radius: 16px; background: #3A2E12; color: #F5B54A; font-size: 13px; font-weight: 600">جمعه · آخر هفته. فقط برنامه‌های شخصی.</div></sc-if>
+    <sc-for list="{{items}}" as="e" hint-placeholder-count="5">
+      <div style="position: relative; display: flex; align-items: stretch; gap: 10px">
+        <div style="flex: none; width: 46px; display: flex; flex-direction: column; padding-top: 10px; line-height: 1.3"><span style="font-size: 13px; font-weight: 700">{{e.s}}</span><span style="font-size: 11px; font-weight: 600; color: #7D827B">{{e.e}}</span></div>
+        <div style="position: relative; flex: 1; min-width: 0; min-height: 56px; box-sizing: border-box; padding: 9px 12px; border-radius: 18px; background: {{e.bg}}; box-shadow: {{e.ring}}; overflow: hidden; display: flex; flex-direction: column; justify-content: center; gap: 2px">
+          <sc-if value="{{e.now}}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" style="position: absolute; top: 0; bottom: 0; right: 0; width: {{e.elapsed}}; background: {{e.fill}}; border-left: 2px solid {{e.deep}}"></span></sc-if>
+          <span style="position: relative; display: flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 700"><span style="flex: none; width: 7px; height: 7px; border-radius: 50%; background: {{e.dot}}"></span><span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap">{{e.t}}</span></span>
+          <span style="position: relative; font-size: 12px; font-weight: 600; color: #A5AAA3">{{e.meta}}</span>
+        </div>
+      </div>
+    </sc-for>
+    <div style="display: flex; gap: 10px">
+      <span style="flex: none; width: 46px"></span>
+      <div style="flex: 1; height: 44px; border-radius: 16px; border: 1.5px dashed #6E746E; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: #A5AAA3">{{freeSlot}}</div>
+    </div>
+  </section>
+
+  <nav aria-label="ناوبری اصلی" style="position: absolute; left: 16px; right: 16px; bottom: 16px; z-index: 5; height: 72px; box-sizing: border-box; padding: 0 8px; border-radius: 36px; background: #1C1F1C; box-shadow: 0 12px 32px rgba(0,0,0,0.24); display: flex; align-items: center">
+    <div aria-hidden="true" style="position: absolute; top: 0; left: 50%; width: 80px; margin-left: -40px; height: 48px; background: #121412; border-radius: 0 0 40px 40px"></div>
+    <div aria-hidden="true" style="position: absolute; top: 0; left: calc(50% - 60px); width: 20px; height: 20px; background: radial-gradient(circle at 0 100%, transparent 19.5px, #121412 20px)"></div>
+    <div aria-hidden="true" style="position: absolute; top: 0; left: calc(50% + 40px); width: 20px; height: 20px; background: radial-gradient(circle at 100% 100%, transparent 19.5px, #121412 20px)"></div>
+    <a href="MobileFaQuickAdd.dc.html" aria-label="افزودن سریع" style="position: absolute; top: -16px; left: 50%; margin-left: -30px; width: 60px; height: 60px; border-radius: 50%; background: #6FD4B8; display: inline-flex; align-items: center; justify-content: center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0D1210" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></a>
+    <a href="MobileFaHome.dc.html" style="flex: 1; height: 56px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #A5AAA3; font-size: 11px; font-weight: 600"><span style="width: 44px; height: 28px; border-radius: 999px; background: transparent; display: inline-flex; align-items: center; justify-content: center"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#A5AAA3" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 11l8-7 8 7v9H4z"></path></svg></span>امروز</a>
+    <a href="MobileFaTasks.dc.html" style="flex: 1; height: 56px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #A5AAA3; font-size: 11px; font-weight: 600"><span style="width: 44px; height: 28px; border-radius: 999px; background: transparent; display: inline-flex; align-items: center; justify-content: center"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#A5AAA3" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16v16H4zM8 12l3 3 5-6"></path></svg></span>کارها</a>
+    <span style="flex: none; width: 84px"></span>
+    <a href="MobileFaCalendar.dc.html" aria-current="page" style="flex: 1; height: 56px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #6FD4B8; font-size: 11px; font-weight: 700"><span style="width: 44px; height: 28px; border-radius: 999px; background: #1D4A40; display: inline-flex; align-items: center; justify-content: center"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#6FD4B8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16v15H4zM4 10h16M9 3v4M15 3v4"></path></svg></span>تقویم</a>
+    <a href="#" style="flex: 1; height: 56px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #A5AAA3; font-size: 11px; font-weight: 600"><span style="width: 44px; height: 28px; border-radius: 999px; background: transparent; display: inline-flex; align-items: center; justify-content: center"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#A5AAA3" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"></path></svg></span>دستیار</a>
+  </nav>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { day: 3, cal: 'jalali' }; }
+  renderVals() {
+    const fa = (s) => String(s).replace(/[0-9]/g, (d) => '۰۱۲۳۴۵۶۷۸۹'[d]);
+    const st = this.state, jal = st.cal === 'jalali';
+    const NM = ['ش', 'ی', 'د', 'س', 'چ', 'پ', 'ج'];
+    const FULL = ['شنبه', 'یکشنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنجشنبه', 'جمعه'];
+    const jd = [18, 19, 20, 21, 22, 23, 24], gd = [10, 11, 12, 13, 14, 15, 16];
+    const SC = { p: ['#1D4A40', '#6FD4B8', '#4FE3C1', 'شخصی'], j: ['#1B3A5C', '#7DB6F0', '#5AB4FF', 'Planner App'], t: ['#2C2E5E', '#A5A5F5', '#8B8BFF', 'تیم طراحی'], c: ['#3B2A55', '#C49DEB', '#C07BFF', 'Euroly'] };
+    const EV = {
+      0: [['09:00', '11:00', 'کار عمیق · پلنر', 'p'], ['15:00', '16:00', 'برنامه‌ریزی اسپرینت', 't']],
+      1: [['10:00', '11:00', 'تماس با مشتری', 'j'], ['13:00', '14:00', 'ناهار با سارا', 'p'], ['16:00', '18:00', 'آماده‌سازی جلسه‌ی هیئت‌مدیره', 'c']],
+      2: [['09:00', '10:30', 'بازبینی طراحی', 't'], ['11:00', '13:00', 'وایرفریم آنبوردینگ', 'j'], ['17:15', '18:15', 'باشگاه', 'p']],
+      3: [['09:00', '11:00', 'کار عمیق · پلنر', 'p', 'done'], ['11:00', '11:45', 'بازبینی طراحی', 't', 'done'], ['14:00', '16:00', 'طراحی رابط · صفحه‌ی امروز', 'j', 'now'], ['16:30', '17:00', 'تماس با مشتری', 'j'], ['17:15', '18:15', 'باشگاه', 'p']],
+      4: [['10:00', '11:00', 'مرور فصلی', 'c'], ['14:00', '15:30', 'جلسه‌ی یک‌به‌یک با کتی', 't']],
+      5: [['10:00', '12:00', 'صبحانه‌ی خانوادگی', 'p']],
+      6: [['09:00', '10:30', 'کوه‌پیمایی · دربند', 'p']]
+    };
+    const FREE = { 0: ['11:15', '15:00'], 1: ['11:15', '13:00'], 2: ['13:15', '17:00'], 3: ['17:00', '17:15'], 4: ['11:15', '14:00'], 5: ['12:15', '19:00'], 6: ['10:45', '19:00'] };
+    const dur = (a, b) => { const m = (x) => +x.slice(0, 2) * 60 + +x.slice(3); const d = m(b) - m(a); return d >= 60 ? fa(Math.floor(d / 60)) + ' ساعت' + (d % 60 ? ' و ' + fa(d % 60) + ' دقیقه' : '') : fa(d) + ' دقیقه'; };
+    const week = NM.map((nm, i) => {
+      const sel = i === st.day, today = i === 3, fri = i === 6;
+      return {
+        name: nm, num: fa(jal ? jd[i] : gd[i]), sel: sel ? 'true' : 'false', aria: FULL[i] + ' ' + fa(jd[i]) + ' مهر',
+        bg: sel ? '#6FD4B8' : today ? '#1D4A40' : 'transparent', nameFg: sel ? 'rgba(13,18,16,0.8)' : fri ? '#F2555A' : '#969B94', numFg: sel ? '#0D1210' : fri ? '#F2555A' : '#ECEEE9',
+        dots: (EV[i] || []).slice(0, 3).map((e) => ({ c: sel ? '#0D1210' : SC[e[3]][2] })), pick: () => this.setState({ day: i })
+      };
+    });
+    const items = (EV[st.day] || []).map(([s, e, t, k, flag]) => {
+      const c = SC[k], now = flag === 'now', done = flag === 'done';
+      return { s: fa(s), e: fa(e), t, now, bg: now ? '#1C1F1C' : done ? '#222622' : c[0], ring: now ? 'inset 0 0 0 2px ' + c[1] : 'none', fill: c[0], deep: c[1], dot: c[2], elapsed: '29%',
+        meta: c[3] + ' · ' + dur(s, e) + (done ? ' · انجام شد' : now ? ' · ' + fa(35) + ' دقیقه مانده' : '') };
+    });
+    const fr = FREE[st.day];
+    return {
+      monthTitle: jal ? 'مهر ' + fa(1405) : 'اکتبر ' + fa(2026), monthSub: jal ? 'سپتامبر – اکتبر ۲۰۲۶' : 'مهر – آبان ۱۴۰۵',
+      cals: [['jalali', 'شمسی'], ['greg', 'میلادی']].map(([id, label]) => ({ label, on: st.cal === id ? 'true' : 'false', bg: st.cal === id ? '#1D4A40' : 'transparent', fg: st.cal === id ? '#6FD4B8' : '#C4C8C2', pick: () => this.setState({ cal: id }) })),
+      goToday: () => this.setState({ day: 3 }),
+      week, items, isFriday: st.day === 6,
+      dayTitle: FULL[st.day] + ' ' + fa(jd[st.day]) + ' مهر' + (st.day === 3 ? ' · امروز' : ''),
+      daySub: fa(gd[st.day]) + ' اکتبر ۲۰۲۶ · ' + fa(items.length) + ' برنامه',
+      freeSlot: 'زمان آزاد · ' + fa(fr[0]) + ' تا ' + fa(fr[1])
+    };
+  }
+}
+</script>
+</body>
+</html>

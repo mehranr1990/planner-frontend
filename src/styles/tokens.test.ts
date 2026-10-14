@@ -7,14 +7,14 @@ import { shadowTokens } from "@/design-system/tokens/shadows";
 import { duration, easing } from "@/design-system/tokens/motion";
 
 /*
- * mehran-planner-design/tokens.css is imported directly (single source of
+ * design/tokens.css is imported directly (single source of
  * truth); these tests guard the contract between it and the app layers.
  */
 
 const stripComments = (css: string) => css.replace(/\/\*[\s\S]*?\*\//g, "");
 const read = (path: string) => stripComments(readFileSync(resolve(__dirname, path), "utf8"));
 
-const designCss = read("../../mehran-planner-design/tokens.css");
+const designCss = read("../../design/tokens.css");
 const appCss = read("tokens.css");
 const globalsCss = read("globals.css");
 const appStyles = [globalsCss, appCss, read("typography.css"), read("utilities.css")];
@@ -57,7 +57,7 @@ const available = new Set([...declared(designCss), ...appStyles.flatMap(declared
 
 describe("design tokens contract", () => {
   it("imports the design package tokens before the app layer", () => {
-    const designImport = globalsCss.indexOf('@import "../../mehran-planner-design/tokens.css"');
+    const designImport = globalsCss.indexOf('@import "../../design/tokens.css"');
     const appImport = globalsCss.indexOf('@import "./tokens.css"');
     expect(designImport).toBeGreaterThan(-1);
     expect(appImport).toBeGreaterThan(designImport);

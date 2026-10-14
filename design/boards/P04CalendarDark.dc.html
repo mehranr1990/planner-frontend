@@ -1,0 +1,531 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>P04 · Calendar · Dark</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@300;400;500;600;700&amp;family=Vazirmatn:wght@400;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#121412}
+a{color:inherit;text-decoration:none}
+.pg{min-height:100vh;box-sizing:border-box;padding:16px;background:#121412;font-family:'Urbanist','Vazirmatn',system-ui,sans-serif;color:#ECEEE9}
+.fa,.fa *{font-family:'Vazirmatn','Urbanist',system-ui,sans-serif}
+.wrap{max-width:1400px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+.body{display:flex;gap:20px;align-items:flex-start}
+.main{flex:1;min-width:0;display:flex;flex-direction:column;gap:18px}
+.card{background:#1C1F1C;border-radius:28px;padding:20px;box-sizing:border-box;position:relative}
+.soft{background:#222622;border-radius:20px}
+.sh{box-shadow:0 1px 0 #2C302C, 0 12px 32px rgba(0,0,0,0.24)}
+.line{box-shadow:inset 0 0 0 1px #2C302C}
+.h1{margin:0;font-size:52px;font-weight:500;letter-spacing:-0.02em;line-height:1.05}
+.h2{margin:0;font-size:19px;font-weight:600}
+.h3{margin:0;font-size:15px;font-weight:700}
+.kick{font-size:12px;font-weight:700;color:#969B94;letter-spacing:.02em}
+.mut{color:#969B94}.mut2{color:#7D827B}
+.sm{font-size:12px;font-weight:600}.xs{font-size:11px;font-weight:600}
+.b{font-weight:700}
+.big{font-size:34px;font-weight:600;line-height:1}
+.row{display:flex;align-items:center;gap:10px}
+.col{display:flex;flex-direction:column}
+.sp{justify-content:space-between}
+.wr{flex-wrap:wrap}
+.f1{flex:1;min-width:0}
+.g4{gap:4px}.g6{gap:6px}.g8{gap:8px}.g10{gap:10px}.g12{gap:12px}.g14{gap:14px}.g18{gap:18px}.g24{gap:24px}
+.ell{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chip{display:inline-flex;align-items:center;gap:6px;height:28px;padding:0 10px;border-radius:999px;font-size:12px;font-weight:700;background:#121412;color:#C4C8C2;white-space:nowrap;box-sizing:border-box}
+.chip.o{background:transparent;box-shadow:inset 0 0 0 1px #3A3F3A}
+.chip.m{background:#1D4A40;color:#6FD4B8}
+.chip.a{background:#3A2E12;color:#F5B54A}
+.chip.r{background:#42201F;color:#FF8589}
+.chip.p{background:#1B3A5C;color:#7DB6F0}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:44px;padding:0 18px;border:0;border-radius:999px;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;background:#121412;color:#ECEEE9;white-space:nowrap;box-sizing:border-box}
+.btn.pri{background:#6FD4B8;color:#0D1210}
+.btn.wh{background:#1C1F1C}
+.btn.o{background:transparent;box-shadow:inset 0 0 0 1px #3A3F3A}
+.btn.s{height:36px;padding:0 14px;font-size:13px}
+.btn.l{height:52px;padding:0 22px;font-size:15px}
+.ib{width:44px;height:44px;flex:none;border:0;border-radius:50%;background:#121412;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;box-sizing:border-box}
+.ib.wh{background:#1C1F1C}.ib.pri{background:#6FD4B8}.ib.s{width:36px;height:36px}.ib.l{width:56px;height:56px}
+.seg{display:inline-flex;gap:2px;padding:4px;border-radius:999px;background:#121412;box-sizing:border-box}
+.seg.wh{background:#1C1F1C}
+.seg>span{height:36px;padding:0 14px;border-radius:999px;display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:#A5AAA3;white-space:nowrap}
+.seg>span.on{background:#1C1F1C;color:#ECEEE9;font-weight:700;box-shadow:0 1px 4px rgba(0,0,0,0.40)}
+.seg.wh>span.on{background:#6FD4B8;color:#0D1210;box-shadow:none}
+.ck{width:22px;height:22px;flex:none;border-radius:50%;box-shadow:inset 0 0 0 1.8px #6E746E;box-sizing:border-box;display:inline-flex;align-items:center;justify-content:center}
+.ck.dn{background:#6FD4B8;box-shadow:none}
+.ck.sq{border-radius:7px}
+.ck.sel{border-radius:7px;background:#6FD4B8;box-shadow:none}
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block;flex:none}
+.bar{height:6px;border-radius:999px;background:#2A2E2A;overflow:hidden;position:relative}
+.bar>i{position:absolute;left:0;top:0;bottom:0;border-radius:999px;background:#6FD4B8}
+.trow{display:flex;align-items:center;gap:12px;min-height:52px;padding:6px 12px;border-radius:16px;box-sizing:border-box}
+.trow:hover{background:#222622}
+.trow.sel{background:#16231F;box-shadow:inset 0 0 0 1.5px #6FD4B8}
+.grp{display:flex;align-items:center;gap:8px;padding:14px 12px 6px;font-size:12px;font-weight:700;color:#969B94}
+.vlt{background:#B4F58C;color:#121A08}
+.ink{color:#ECEEE9}
+.kbd{font-size:11px;font-weight:700;padding:3px 7px;border-radius:8px;background:#121412;color:#C4C8C2}
+.field{height:48px;border-radius:16px;background:#222622;display:flex;align-items:center;gap:10px;padding:0 14px;font-size:14px;font-weight:600;box-sizing:border-box}
+.scrim{position:absolute;inset:0;background:rgba(0,0,0,0.55)}
+/* spec / documentation */
+.doc{max-width:1400px;margin:34px auto 0;display:flex;flex-direction:column;gap:18px}
+.dsec{background:#1C1F1C;border-radius:32px;padding:26px;box-sizing:border-box;display:flex;flex-direction:column;gap:16px}
+.dh{margin:0;font-size:28px;font-weight:500;letter-spacing:-0.01em}
+.num{display:inline-flex;align-items:center;justify-content:center;min-width:34px;height:34px;padding:0 10px;box-sizing:border-box;border-radius:999px;background:#121412;font-size:13px;font-weight:700}
+.cls{display:inline-flex;align-items:center;height:28px;padding:0 12px;border-radius:999px;font-size:12px;font-weight:700}
+.cls.u{background:#121412;color:#C4C8C2}.cls.p{background:#1C1F1C;color:#C4C8C2;box-shadow:inset 0 0 0 1px #3A3F3A}.cls.s{background:#1D4A40;color:#6FD4B8}.cls.v{background:#1B3A5C;color:#7DB6F0}
+.rules{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px}
+.rule{padding:14px 16px;border-radius:20px;background:#222622;display:flex;flex-direction:column;gap:4px;font-size:13px;line-height:1.45;color:#C4C8C2}
+.rule b{font-size:13px;color:#ECEEE9}
+.tile{display:flex;flex-direction:column;gap:10px}
+.tile>.cap{font-size:12px;font-weight:700;color:#969B94}
+.anno{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:#6FD4B8;color:#0D1210;font-size:11px;font-weight:700;flex:none}
+.tbl{display:grid;gap:0;font-size:13px;border-radius:18px;overflow:hidden;box-shadow:inset 0 0 0 1px #2C302C}
+.tbl>div{padding:10px 12px;border-bottom:1px solid #2A2E2A;line-height:1.4;color:#C4C8C2}
+.tbl>div.th{font-weight:700;color:#ECEEE9;background:#222622}
+.phone{position:relative;width:390px;height:844px;flex:none;overflow:hidden;box-sizing:border-box;border-radius:44px;background:#121412;box-shadow:0 0 0 10px #1C1F1C, 0 0 0 11px #2C302C, 0 30px 60px rgba(0,0,0,0.40)}
+.pin{position:absolute;inset:0;padding:54px 16px 120px;box-sizing:border-box;display:flex;flex-direction:column;gap:14px;overflow:hidden}
+.sbar{position:absolute;top:0;left:0;right:0;height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 30px;font-size:14px;font-weight:700;z-index:5}
+.bnav{position:absolute;left:12px;right:12px;bottom:18px;height:72px;border-radius:999px;background:#1C1F1C;box-shadow:0 1px 0 #2C302C, 0 16px 34px rgba(0,0,0,0.48);display:flex;align-items:center;justify-content:space-around;padding:0 6px;z-index:6}
+.bnav>a{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11px;font-weight:700;color:#969B94;min-width:56px}
+.bnav>a>span{width:44px;height:30px;border-radius:999px;display:inline-flex;align-items:center;justify-content:center}
+.bnav>a.on{color:#6FD4B8}.bnav>a.on>span{background:#1D4A40}
+.fab{width:62px;height:62px;border-radius:50%;background:#6FD4B8;display:inline-flex;align-items:center;justify-content:center;margin-top:-34px;box-shadow:0 0 0 6px #121412, 0 10px 24px rgba(14,95,77,0.35)}
+.sheet{position:absolute;left:0;right:0;bottom:0;background:#1C1F1C;border-radius:32px 32px 0 0;padding:10px 18px 28px;box-sizing:border-box;display:flex;flex-direction:column;gap:14px;z-index:8}
+.grab{width:44px;height:5px;border-radius:3px;background:#3A3F3A;align-self:center}
+.mlabel{font-size:13px;font-weight:700;color:#C4C8C2;text-align:center}
+.drag{box-shadow:0 18px 40px rgba(0,0,0,0.55), inset 0 0 0 1.5px #6FD4B8 !important;transform:rotate(-1.5deg);background:#1C1F1C !important}
+.ghost{border-radius:16px;box-shadow:inset 0 0 0 1.5px #6FD4B8;background:repeating-linear-gradient(135deg,#16231F 0 6px,#1C1F1C 6px 12px)}
+
+.ft{--ftbg:#1C1F1C;position:relative;display:flex;flex-direction:column;min-width:0}
+.ft>input{position:absolute;opacity:0;width:0;height:0;pointer-events:none}
+.ft-tabs{display:flex;align-items:flex-end;gap:10px;flex-wrap:wrap;position:relative;z-index:1}
+.ft-tabs>label{position:relative;display:inline-flex;align-items:center;gap:8px;height:44px;margin-bottom:8px;padding:0 18px;border-radius:999px;box-shadow:inset 0 0 0 1.5px #3A3F3A;font-size:14px;font-weight:600;color:#C4C8C2;cursor:pointer;white-space:nowrap;box-sizing:border-box;user-select:none}
+.ft-tabs>label em{font-style:normal;font-size:12px;font-weight:700;color:#969B94}
+.ft-tabs>label::before,.ft-tabs>label::after{content:'';position:absolute;bottom:0;width:20px;height:20px;display:none}
+.ft-tabs>label::before{right:100%;background:radial-gradient(circle at 0 0,transparent 19.5px,var(--ftbg) 20px)}
+.ft-tabs>label::after{left:100%;background:radial-gradient(circle at 100% 0,transparent 19.5px,var(--ftbg) 20px)}
+.ft-tabs>label:first-child::before{display:none!important}
+.ft-body{background:var(--ftbg);border-radius:32px;padding:24px;box-sizing:border-box;min-width:0}
+.ft-body>.ftp{display:none}
+.ft.bottom .ft-tabs{order:2;align-items:flex-start}
+.ft.bottom .ft-tabs>label{margin:8px 0 0}
+.ft.bottom .ft-tabs>label::before{top:0;bottom:auto;background:radial-gradient(circle at 0 100%,transparent 19.5px,var(--ftbg) 20px)}
+.ft.bottom .ft-tabs>label::after{top:0;bottom:auto;background:radial-gradient(circle at 100% 100%,transparent 19.5px,var(--ftbg) 20px)}
+.ft.even .ft-tabs{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:0}
+.ft.even .ft-tabs>label{justify-content:center;box-shadow:none;letter-spacing:.12em;font-size:12px;font-weight:700;text-transform:uppercase;height:56px;margin:0;color:#A5AAA3}
+[dir=rtl] .ft-tabs>label::before{right:auto;left:100%;background:radial-gradient(circle at 100% 0,transparent 19.5px,var(--ftbg) 20px)}
+[dir=rtl] .ft-tabs>label::after{left:auto;right:100%;background:radial-gradient(circle at 0 0,transparent 19.5px,var(--ftbg) 20px)}
+.ft.soft{--ftbg:#222622}
+.ft>input:nth-of-type(1):checked~.ft-tabs>label:nth-child(1){height:56px;margin-bottom:0;padding:0 26px;border-radius:24px 24px 0 0;background:var(--ftbg);box-shadow:none;font-weight:700;color:#ECEEE9}.ft>input:nth-of-type(1):checked~.ft-tabs>label:nth-child(1)::before,.ft>input:nth-of-type(1):checked~.ft-tabs>label:nth-child(1)::after{display:block}.ft>input:nth-of-type(1):checked~.ft-body>.ftp:nth-child(1){display:block}.ft.bottom>input:nth-of-type(1):checked~.ft-tabs>label:nth-child(1){border-radius:0 0 24px 24px;margin:0}.ft>input:nth-of-type(2):checked~.ft-tabs>label:nth-child(2){height:56px;margin-bottom:0;padding:0 26px;border-radius:24px 24px 0 0;background:var(--ftbg);box-shadow:none;font-weight:700;color:#ECEEE9}.ft>input:nth-of-type(2):checked~.ft-tabs>label:nth-child(2)::before,.ft>input:nth-of-type(2):checked~.ft-tabs>label:nth-child(2)::after{display:block}.ft>input:nth-of-type(2):checked~.ft-body>.ftp:nth-child(2){display:block}.ft.bottom>input:nth-of-type(2):checked~.ft-tabs>label:nth-child(2){border-radius:0 0 24px 24px;margin:0}.ft>input:nth-of-type(3):checked~.ft-tabs>label:nth-child(3){height:56px;margin-bottom:0;padding:0 26px;border-radius:24px 24px 0 0;background:var(--ftbg);box-shadow:none;font-weight:700;color:#ECEEE9}.ft>input:nth-of-type(3):checked~.ft-tabs>label:nth-child(3)::before,.ft>input:nth-of-type(3):checked~.ft-tabs>label:nth-child(3)::after{display:block}.ft>input:nth-of-type(3):checked~.ft-body>.ftp:nth-child(3){display:block}.ft.bottom>input:nth-of-type(3):checked~.ft-tabs>label:nth-child(3){border-radius:0 0 24px 24px;margin:0}.ft>input:nth-of-type(4):checked~.ft-tabs>label:nth-child(4){height:56px;margin-bottom:0;padding:0 26px;border-radius:24px 24px 0 0;background:var(--ftbg);box-shadow:none;font-weight:700;color:#ECEEE9}.ft>input:nth-of-type(4):checked~.ft-tabs>label:nth-child(4)::before,.ft>input:nth-of-type(4):checked~.ft-tabs>label:nth-child(4)::after{display:block}.ft>input:nth-of-type(4):checked~.ft-body>.ftp:nth-child(4){display:block}.ft.bottom>input:nth-of-type(4):checked~.ft-tabs>label:nth-child(4){border-radius:0 0 24px 24px;margin:0}.ft>input:nth-of-type(5):checked~.ft-tabs>label:nth-child(5){height:56px;margin-bottom:0;padding:0 26px;border-radius:24px 24px 0 0;background:var(--ftbg);box-shadow:none;font-weight:700;color:#ECEEE9}.ft>input:nth-of-type(5):checked~.ft-tabs>label:nth-child(5)::before,.ft>input:nth-of-type(5):checked~.ft-tabs>label:nth-child(5)::after{display:block}.ft>input:nth-of-type(5):checked~.ft-body>.ftp:nth-child(5){display:block}.ft.bottom>input:nth-of-type(5):checked~.ft-tabs>label:nth-child(5){border-radius:0 0 24px 24px;margin:0}.ft>input:nth-of-type(6):checked~.ft-tabs>label:nth-child(6){height:56px;margin-bottom:0;padding:0 26px;border-radius:24px 24px 0 0;background:var(--ftbg);box-shadow:none;font-weight:700;color:#ECEEE9}.ft>input:nth-of-type(6):checked~.ft-tabs>label:nth-child(6)::before,.ft>input:nth-of-type(6):checked~.ft-tabs>label:nth-child(6)::after{display:block}.ft>input:nth-of-type(6):checked~.ft-body>.ftp:nth-child(6){display:block}.ft.bottom>input:nth-of-type(6):checked~.ft-tabs>label:nth-child(6){border-radius:0 0 24px 24px;margin:0}.ft>input:nth-of-type(7):checked~.ft-tabs>label:nth-child(7){height:56px;margin-bottom:0;padding:0 26px;border-radius:24px 24px 0 0;background:var(--ftbg);box-shadow:none;font-weight:700;color:#ECEEE9}.ft>input:nth-of-type(7):checked~.ft-tabs>label:nth-child(7)::before,.ft>input:nth-of-type(7):checked~.ft-tabs>label:nth-child(7)::after{display:block}.ft>input:nth-of-type(7):checked~.ft-body>.ftp:nth-child(7){display:block}.ft.bottom>input:nth-of-type(7):checked~.ft-tabs>label:nth-child(7){border-radius:0 0 24px 24px;margin:0}.ft>input:nth-of-type(8):checked~.ft-tabs>label:nth-child(8){height:56px;margin-bottom:0;padding:0 26px;border-radius:24px 24px 0 0;background:var(--ftbg);box-shadow:none;font-weight:700;color:#ECEEE9}.ft>input:nth-of-type(8):checked~.ft-tabs>label:nth-child(8)::before,.ft>input:nth-of-type(8):checked~.ft-tabs>label:nth-child(8)::after{display:block}.ft>input:nth-of-type(8):checked~.ft-body>.ftp:nth-child(8){display:block}.ft.bottom>input:nth-of-type(8):checked~.ft-tabs>label:nth-child(8){border-radius:0 0 24px 24px;margin:0}.ft>input:nth-of-type(1):checked~.ft-body{border-top-left-radius:0}.ft.bottom>input:nth-of-type(1):checked~.ft-body{border-top-left-radius:32px;border-bottom-left-radius:0}[dir=rtl] .ft>input:nth-of-type(1):checked~.ft-body{border-top-left-radius:32px;border-top-right-radius:0}.ft.even>input:nth-of-type(1):checked~.ft-body{border-bottom-left-radius:0}.ft.even>input:nth-of-type(2):checked~.ft-body{border-bottom-right-radius:0}.ft.even.n3>input:nth-of-type(2):checked~.ft-body{border-bottom-right-radius:32px}.ft.even.n3>input:nth-of-type(3):checked~.ft-body{border-bottom-right-radius:0}.ft.even>input:checked~.ft-tabs>label{padding:0}.tip{position:absolute;transform:translateX(-50%);z-index:5;box-sizing:border-box;padding:10px 12px;border-radius:16px;background:#1C1F1C;box-shadow:0 0 0 1px #2C302C,0 10px 24px rgba(0,0,0,0.40);display:flex;flex-direction:column;gap:3px;white-space:nowrap;pointer-events:none}
+.tip small{font-size:11px;font-weight:700;color:#969B94}
+.tr{display:grid;grid-template-columns:14px 64px auto;align-items:center;gap:6px;font-size:13px;font-weight:600;color:#C4C8C2}
+.tr b{font-weight:700;color:#ECEEE9;text-align:end}
+.mv{transition:d .6s cubic-bezier(.3,.7,.2,1),opacity .3s,fill-opacity .3s,stroke-opacity .3s}
+.draw{stroke-dasharray:1600;stroke-dashoffset:1600;animation:draw 1.4s cubic-bezier(.3,.7,.2,1) .2s forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+.tip{position:absolute;transform:translateX(-50%);z-index:3;box-sizing:border-box;padding:9px 12px;border-radius:16px;background:#1C1F1C;box-shadow:0 0 0 1px #2C302C,0 10px 24px rgba(0,0,0,0.40);display:flex;flex-direction:column;gap:1px;white-space:nowrap;pointer-events:none}
+.tip small{font-size:11px;font-weight:600;color:#969B94}
+.tip strong{font-size:15px;font-weight:700;color:#ECEEE9}
+.tip em{font-style:normal;font-size:11px;font-weight:700;color:#F5B54A}
+.mv{transition:d .6s cubic-bezier(.3,.7,.2,1),opacity .3s,fill-opacity .3s}
+.oc{display:flex;flex-direction:column;align-items:flex-start;gap:4px;box-sizing:border-box;border:0;font-family:inherit;text-align:left;cursor:pointer}</style>
+<style>
+body{margin:0;background:#121412}
+a{color:#ECEEE9}a:hover{color:#ECEEE9}
+.rail-slot{align-self:stretch}
+.rail-sticky{position:sticky;top:16px;height:calc(100vh - 32px);max-height:100%;display:flex;align-items:center}
+.rail-sticky>nav{max-height:100%;overflow-y:auto}
+.cal-scroll{overflow-x:auto}
+.ev:hover{filter:brightness(0.98)}
+.ev:focus-visible,.chip:focus-visible,.seg:focus-visible{outline:2px solid #7DB6F0;outline-offset:2px}
+@media (max-width: 720px){.rail-sticky{position:static;height:auto}.rail-slot{width:100%!important}}
+</style>
+</helmet>
+<div style="min-height: 100vh; box-sizing: border-box; padding: 16px; background: #121412; font-family: 'Urbanist', 'Vazirmatn', system-ui, sans-serif; color: #ECEEE9">
+<div style="max-width: 1400px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px">
+  <!-- Command bar -->
+  <header style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px">
+    <a href="P01PersonalOverview.dc.html" aria-label="Planner home" style="flex: none; width: 56px; height: 56px; border-radius: 50%; background: #1C1F1C; box-shadow: 0 1px 0 #2C302C, 0 12px 32px rgba(0,0,0,0.24); display: inline-flex; align-items: center; justify-content: center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ECEEE9" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M5 19L19 5M9 5h10v10"></path></svg></a>
+    <button type="button" style="flex: none; display: inline-flex; align-items: center; gap: 12px; height: 56px; padding: 0 16px 0 8px; border: 0; border-radius: 999px; background: #1C1F1C; box-shadow: 0 1px 0 #2C302C, 0 12px 32px rgba(0,0,0,0.24); font-family: inherit; text-align: left; cursor: pointer"><span style="width: 40px; height: 40px; border-radius: 50%; background: #1D4A40; display: inline-flex; align-items: center; justify-content: center"><span style="width: 12px; height: 12px; border-radius: 50%; background: #4FE3C1; box-shadow: 0 0 0 3px #1C1F1C"></span></span><span style="display: flex; flex-direction: column; line-height: 1.15"><span style="font-size: 11px; font-weight: 600; color: #969B94">Personal</span><span style="font-size: 15px; font-weight: 700; color: #ECEEE9">Mehran</span></span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ECEEE9" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button>
+    <section aria-label="Your schedule" style="flex: 1 1 420px; min-width: 0; height: 56px; box-sizing: border-box; padding: 4px 4px 4px 18px; border-radius: 999px; background: #1C1F1C; box-shadow: 0 1px 0 #2C302C, 0 12px 32px rgba(0,0,0,0.24); display: flex; align-items: center; gap: 12px">
+      <span style="flex: none; display: flex; flex-direction: column; line-height: 1.1"><span style="font-size: 10px; font-weight: 600; color: #969B94">Today</span><span style="font-size: 13px; font-weight: 700">Tue 21 Mehr</span></span>
+      <div style="position: relative; flex: 1; min-width: 0; height: 48px; border-radius: 999px; background: #121412; overflow: hidden">
+        <span style="position: absolute; left: 1%; top: 6px; bottom: 6px; width: 16%; border-radius: 999px; background: repeating-linear-gradient(135deg, #2C302C 0 2px, #121412 2px 6px); display: flex; align-items: center; padding: 0 12px; box-sizing: border-box; font-size: 12px; font-weight: 600; color: #969B94; white-space: nowrap; overflow: hidden">Design review · done</span>
+        <div style="position: absolute; left: 19%; top: 4px; bottom: 4px; width: 38%; border-radius: 999px; background: #1C1F1C; box-shadow: 0 2px 10px rgba(0,0,0,0.32); overflow: hidden; display: flex; align-items: center; gap: 8px; padding: 0 12px 0 3px; box-sizing: border-box">
+          <span aria-hidden="true" style="position: absolute; left: 0; top: 0; bottom: 0; width: 29%; background: #1B3A5C"></span>
+          <span style="position: relative; flex: none; width: 34px; height: 34px; border-radius: 50%; background: #1B3A5C; border: 2px solid #1C1F1C; box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#7DB6F0" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"></path></svg></span>
+          <span style="position: relative; font-size: 13px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">UI design · My Day</span>
+          <span style="position: relative; margin-left: auto; flex: none; font-size: 11px; font-weight: 600; color: #969B94; white-space: nowrap">14:00 – 16:00</span>
+        </div>
+        <span aria-hidden="true" style="position: absolute; left: calc(19% + 38% * 0.29); top: 6px; bottom: 6px; width: 2px; margin-left: -1px; border-radius: 1px; background: #7DB6F0"></span>
+        <span role="img" aria-label="Now 14:35" style="position: absolute; left: calc(19% + 38% * 0.29); top: 3px; width: 10px; height: 10px; margin-left: -5px; border-radius: 50%; background: #B4F58C; box-shadow: 0 0 0 2px #7DB6F0, 0 0 12px 3px rgba(180,245,140,0.55)"></span>
+        <span style="position: absolute; left: 59%; top: 8px; bottom: 8px; width: 21%; border-radius: 999px; background: #1B3A5C; color: #7DB6F0; display: flex; align-items: center; padding: 0 12px; box-sizing: border-box; font-size: 12px; font-weight: 700; white-space: nowrap; overflow: hidden">16:30 · Client call</span>
+        <span style="position: absolute; left: 81.5%; top: 8px; bottom: 8px; width: 17.5%; border-radius: 999px; background: #1D4A40; color: #6FD4B8; display: flex; align-items: center; padding: 0 12px; box-sizing: border-box; font-size: 12px; font-weight: 700; white-space: nowrap; overflow: hidden">17:15 · Gym</span>
+      </div>
+    </section>
+    <div style="flex: none; display: flex; align-items: center; gap: 4px; height: 56px; box-sizing: border-box; padding: 4px; border-radius: 999px; background: #1C1F1C; box-shadow: 0 1px 0 #2C302C, 0 12px 32px rgba(0,0,0,0.24)">
+      <button type="button" aria-label="Search and commands" style="display: inline-flex; align-items: center; gap: 8px; height: 48px; padding: 0 8px 0 14px; border: 0; border-radius: 999px; background: #121412; font-family: inherit; font-size: 13px; font-weight: 600; color: #C4C8C2; cursor: pointer"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#ECEEE9" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-4-4"></path></svg>Search<span style="font-size: 11px; font-weight: 700; padding: 3px 7px; border-radius: 8px; background: #1C1F1C">⌘K</span></button>
+      <button type="button" aria-label="Quick create" style="width: 48px; height: 48px; border-radius: 50%; border: 0; background: #121412; display: inline-flex; align-items: center; justify-content: center; cursor: pointer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ECEEE9" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></button>
+      <button type="button" aria-label="Notifications, 3 unread" style="position: relative; width: 48px; height: 48px; border-radius: 50%; border: 0; background: #121412; display: inline-flex; align-items: center; justify-content: center; cursor: pointer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ECEEE9" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M6 16v-5a6 6 0 0 1 12 0v5l2 2H4z"></path><path d="M10 20a2 2 0 0 0 4 0"></path></svg><span style="position: absolute; top: 9px; right: 9px; min-width: 16px; height: 16px; padding: 0 4px; box-sizing: border-box; border-radius: 999px; background: #F2555A; color: #0D1210; font-size: 10px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center">3</span></button>
+      <span style="width: 48px; height: 48px; border-radius: 50%; background: #1D4A40; color: #6FD4B8; display: inline-flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700">MR</span>
+    </div>
+  </header>
+  <div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start">
+    <div style="flex: none; width: 64px; align-self: stretch"><nav aria-label="Personal navigation" class="sh" style="position: sticky; top: 16px; width: 64px; box-sizing: border-box; padding: 8px; border-radius: 34px; background: #1C1F1C; display: flex; flex-direction: column; gap: 2px"><a href="P01PersonalOverview.dc.html" aria-label="Overview" title="Overview" style="position: relative; display: flex; align-items: center; justify-content: center; width: 48px; height: 44px; border-radius: 999px; background: transparent"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C4C8C2" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h7v7H4zM13 4h7v4h-7zM13 10h7v10h-7zM4 13h7v7H4z"></path></svg></a><a href="P02MyDay.dc.html" aria-label="My Day" title="My Day" style="position: relative; display: flex; align-items: center; justify-content: center; width: 48px; height: 44px; border-radius: 999px; background: transparent"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C4C8C2" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v2M12 19v2M3 12h2M19 12h2M12 8a4 4 0 1 0 0 8a4 4 0 1 0 0-8z"></path></svg></a><a href="P03TasksList.dc.html" aria-label="Tasks" title="Tasks" style="position: relative; display: flex; align-items: center; justify-content: center; width: 48px; height: 44px; border-radius: 999px; background: transparent"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C4C8C2" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16v16H4zM8 12l3 3 5-6"></path></svg></a><a href="P04Calendar.dc.html" aria-label="Calendar" aria-current="page" title="Calendar" style="position: relative; display: flex; align-items: center; justify-content: center; width: 48px; height: 44px; border-radius: 999px; background: #1D4A40"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6FD4B8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16v15H4zM4 10h16M9 3v4M15 3v4"></path></svg></a><a href="P11Goals.dc.html" aria-label="Goals" title="Goals" style="position: relative; display: flex; align-items: center; justify-content: center; width: 48px; height: 44px; border-radius: 999px; background: transparent"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C4C8C2" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18zM12 8a4 4 0 1 0 0 8a4 4 0 1 0 0-8z"></path></svg></a><a href="P12Habits.dc.html" aria-label="Habits" title="Habits" style="position: relative; display: flex; align-items: center; justify-content: center; width: 48px; height: 44px; border-radius: 999px; background: transparent"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C4C8C2" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12a8 8 0 0 1 14-5.3M20 12a8 8 0 0 1-14 5.3M18 3v4h-4M6 21v-4h4"></path></svg></a><span aria-hidden="true" style="width: 24px; height: 1px; margin: 6px auto; background: #2C302C"></span><a href="P13Finance.dc.html" aria-label="Finance" title="Finance" style="position: relative; display: flex; align-items: center; justify-content: center; width: 48px; height: 44px; border-radius: 999px; background: transparent"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C4C8C2" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7h18v12H3zM3 11h18M7 15h3"></path></svg></a><a href="P14Journal.dc.html" aria-label="Journal" title="Journal" style="position: relative; display: flex; align-items: center; justify-content: center; width: 48px; height: 44px; border-radius: 999px; background: transparent"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C4C8C2" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12v18H6zM9 8h6M9 12h6"></path></svg></a><a href="P15Insights.dc.html" aria-label="Insights" title="Insights" style="position: relative; display: flex; align-items: center; justify-content: center; width: 48px; height: 44px; border-radius: 999px; background: transparent"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C4C8C2" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9V16h7v-2.1A6 6 0 0 0 12 3z"></path></svg></a><span aria-hidden="true" style="width: 24px; height: 1px; margin: 6px auto; background: #2C302C"></span><a href="P07Inbox.dc.html" aria-label="Inbox" title="Inbox" style="position: relative; display: flex; align-items: center; justify-content: center; width: 48px; height: 44px; border-radius: 999px; background: transparent"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C4C8C2" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 13l3-8h12l3 8v6H3zM3 13h5l1 3h6l1-3h5"></path></svg><span style="position: absolute; top: 7px; right: 7px; min-width: 16px; height: 16px; padding: 0 4px; box-sizing: border-box; border-radius: 999px; background: #6FD4B8; color: #0D1210; font-size: 10px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center">6</span></a><a href="P08BrainDump.dc.html" aria-label="Brain Dump" title="Brain Dump" style="position: relative; display: flex; align-items: center; justify-content: center; width: 48px; height: 44px; border-radius: 999px; background: transparent"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C4C8C2" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20l4-1L19 8l-3-3L5 16zM14 7l3 3M13 20h7"></path></svg></a><span aria-hidden="true" style="flex: 1; min-height: 14px"></span><a href="P17Settings.dc.html" aria-label="Settings" title="Settings" style="display: flex; align-items: center; justify-content: center; width: 48px; height: 44px; border-radius: 999px; background: #222622"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C4C8C2" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 9a3 3 0 1 0 0 6a3 3 0 1 0 0-6zM12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"></path></svg></a></nav></div>
+    <main style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 18px">
+      <!-- Page header -->
+      <div style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px; padding: 6px 4px 0">
+        <div style="display: flex; flex-direction: column; gap: 6px">
+          <span style="font-size: 14px; font-weight: 600; color: #969B94">{{rangeSub}}</span>
+          <h1 style="margin: 0; font-size: 40px; font-weight: 500; letter-spacing: -0.015em; line-height: 1.05">{{rangeTitle}}</h1>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px">
+          <div style="display: inline-flex; align-items: center; gap: 4px; height: 48px; padding: 4px; box-sizing: border-box; border-radius: 999px; background: #1C1F1C">
+            <button type="button" aria-label="Previous" style="width: 40px; height: 40px; border: 0; border-radius: 50%; background: #121412; display: inline-flex; align-items: center; justify-content: center; cursor: pointer"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#ECEEE9" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"></path></svg></button>
+            <button type="button" style="height: 40px; padding: 0 14px; border: 0; border-radius: 999px; background: transparent; font-family: inherit; font-size: 13px; font-weight: 700; color: #ECEEE9; cursor: pointer">Today</button>
+            <button type="button" aria-label="Next" style="width: 40px; height: 40px; border: 0; border-radius: 50%; background: #121412; display: inline-flex; align-items: center; justify-content: center; cursor: pointer"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#ECEEE9" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg></button>
+          </div>
+          <div role="radiogroup" aria-label="View" style="display: inline-flex; gap: 4px; height: 48px; padding: 4px; box-sizing: border-box; border-radius: 999px; background: #1C1F1C">
+            <sc-for list="{{views}}" as="v" hint-placeholder-count="3">
+              <button type="button" class="seg" role="radio" aria-checked="{{v.on}}" onClick="{{ v.pick }}" style="height: 40px; padding: 0 16px; border: 0; border-radius: 999px; background: {{v.bg}}; color: {{v.fg}}; font-family: inherit; font-size: 13px; font-weight: 700; cursor: pointer">{{v.label}}</button>
+            </sc-for>
+          </div>
+          <div role="radiogroup" aria-label="Calendar system" style="display: inline-flex; gap: 4px; height: 48px; padding: 4px; box-sizing: border-box; border-radius: 999px; background: #1C1F1C">
+            <sc-for list="{{cals}}" as="c" hint-placeholder-count="2">
+              <button type="button" class="seg" role="radio" aria-checked="{{c.on}}" onClick="{{ c.pick }}" style="height: 40px; padding: 0 14px; border: 0; border-radius: 999px; background: {{c.bg}}; color: {{c.fg}}; font-family: inherit; font-size: 13px; font-weight: 700; cursor: pointer">{{c.label}}</button>
+            </sc-for>
+          </div>
+          <a href="S8TaskCreate.dc.html" style="display: inline-flex; align-items: center; gap: 8px; height: 48px; padding: 0 20px 0 16px; border-radius: 999px; background: #7DB6F0; color: #0D1210; font-size: 14px; font-weight: 600; text-decoration: none"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0D1210" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>New</a>
+        </div>
+      </div>
+
+      <div style="display: flex; flex-wrap: wrap; gap: 18px; align-items: flex-start">
+        <!-- Calendar card (notched) -->
+        <section aria-label="Calendar" style="flex: 3 1 640px; min-width: 0; position: relative; box-sizing: border-box; padding: 20px 20px 22px; border-radius: 32px; background: #1C1F1C">
+          <div aria-hidden="true" style="position: absolute; top: 0; right: 0; width: 64px; height: 64px; background: #121412; border-bottom-left-radius: 30px"></div>
+          <div aria-hidden="true" style="position: absolute; top: 0; right: 64px; width: 30px; height: 30px; background: radial-gradient(circle at 0 100%, transparent 29.5px, #121412 30px)"></div>
+          <div aria-hidden="true" style="position: absolute; top: 64px; right: 0; width: 30px; height: 30px; background: radial-gradient(circle at 0 100%, transparent 29.5px, #121412 30px)"></div>
+          <a href="S8TaskCreate.dc.html" aria-label="Add event or task" style="position: absolute; top: 0; right: 0; width: 52px; height: 52px; border-radius: 50%; background: #7DB6F0; display: inline-flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0D1210" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></a>
+
+          <!-- Scope layers -->
+          <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 16px; padding-right: 70px">
+            <span style="font-size: 13px; font-weight: 600; color: #969B94; margin-right: 4px">Show</span>
+            <sc-for list="{{layers}}" as="l" hint-placeholder-count="4">
+              <button type="button" class="chip" aria-pressed="{{l.on}}" onClick="{{ l.toggle }}" style="display: inline-flex; align-items: center; gap: 8px; height: 36px; padding: 0 14px 0 10px; border: 0; border-radius: 999px; background: {{l.bg}}; box-shadow: {{l.ring}}; font-family: inherit; font-size: 13px; font-weight: 700; color: {{l.fg}}; cursor: pointer"><span style="width: 10px; height: 10px; border-radius: 50%; background: {{l.dot}}"></span>{{l.label}}<span style="font-size: 11px; font-weight: 700; color: #969B94">{{l.count}}</span></button>
+            </sc-for>
+          </div>
+
+          <!-- WEEK -->
+          <sc-if value="{{isWeek}}" hint-placeholder-val="{{ true }}">
+            <div class="cal-scroll">
+              <div style="min-width: 760px">
+                <div style="display: grid; grid-template-columns: 56px repeat(7, minmax(0, 1fr)); gap: 0 6px; align-items: end; padding-bottom: 8px">
+                  <span></span>
+                  <sc-for list="{{days}}" as="d" hint-placeholder-count="7">
+                    <div style="display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 8px 0; border-radius: 18px; background: {{d.headBg}}">
+                      <span style="font-size: 12px; font-weight: 700; color: {{d.nameFg}}">{{d.name}}</span>
+                      <span style="width: 36px; height: 36px; border-radius: 50%; background: {{d.numBg}}; color: {{d.numFg}}; display: inline-flex; align-items: center; justify-content: center; font-size: 17px; font-weight: 700">{{d.num}}</span>
+                      <span style="font-size: 11px; font-weight: 600; color: #969B94">{{d.alt}}</span>
+                    </div>
+                  </sc-for>
+                </div>
+                <!-- All-day row -->
+                <div style="display: grid; grid-template-columns: 56px repeat(7, minmax(0, 1fr)); gap: 0 6px; align-items: center; padding: 6px 0 10px; border-bottom: 1px solid #2A2E2A">
+                  <span style="font-size: 11px; font-weight: 700; color: #969B94">All day</span>
+                  <sc-for list="{{days}}" as="d" hint-placeholder-count="7">
+                    <div style="min-height: 28px; display: flex; flex-direction: column; gap: 4px">
+                      <sc-for list="{{d.allDay}}" as="a" hint-placeholder-count="1">
+                        <span style="height: 26px; padding: 0 10px; border-radius: 999px; background: {{a.bg}}; color: {{a.fg}}; font-size: 11px; font-weight: 700; display: flex; align-items: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{a.title}}</span>
+                      </sc-for>
+                    </div>
+                  </sc-for>
+                </div>
+                <!-- Time grid -->
+                <div style="position: relative; display: grid; grid-template-columns: 56px repeat(7, minmax(0, 1fr)); gap: 0 6px; height: 672px; margin-top: 12px">
+                  <div style="position: relative">
+                    <sc-for list="{{hours}}" as="h" hint-placeholder-count="12">
+                      <span style="position: absolute; left: 0; top: {{h.top}}; font-size: 11px; font-weight: 600; color: #969B94">{{h.label}}</span>
+                    </sc-for>
+                  </div>
+                  <sc-for list="{{days}}" as="d" hint-placeholder-count="7">
+                    <div style="position: relative; border-radius: 14px; background: {{d.colBg}}; background-image: repeating-linear-gradient(to bottom, #2A2E2A 0, #2A2E2A 1px, transparent 1px, transparent 56px)">
+                      <sc-for list="{{d.events}}" as="e" hint-placeholder-count="2">
+                        <button type="button" class="ev" onClick="{{ e.pick }}" aria-pressed="{{e.selected}}" aria-label="{{e.aria}}" style="position: absolute; left: 3px; right: 3px; top: {{e.top}}; height: {{e.height}}; box-sizing: border-box; padding: 7px 8px; border: 0; border-radius: 12px; background: {{e.bg}}; box-shadow: {{e.ring}}; font-family: inherit; text-align: left; overflow: hidden; cursor: pointer; display: flex; flex-direction: column; gap: 2px">
+                          <sc-if value="{{e.now}}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" style="position: absolute; left: 0; right: 0; top: 0; height: {{e.elapsed}}; background: {{e.fill}}; border-bottom: 2px solid {{e.deep}}"></span></sc-if>
+                          <span style="position: relative; display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; color: #ECEEE9; line-height: 1.2"><span style="flex: none; width: 7px; height: 7px; border-radius: 50%; background: {{e.dot}}"></span><span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap">{{e.title}}</span></span>
+                          <span style="position: relative; font-size: 11px; font-weight: 600; color: #A5AAA3; white-space: nowrap">{{e.time}}</span>
+                        </button>
+                      </sc-for>
+                      <sc-if value="{{d.today}}" hint-placeholder-val="{{ false }}">
+                        <span aria-hidden="true" style="position: absolute; z-index: 2; left: -4px; right: 0; top: {{nowTop}}; height: 2px; background: #7DB6F0"></span>
+                        <span role="img" aria-label="Now 14:35" style="position: absolute; z-index: 3; left: -7px; top: {{nowDot}}; width: 10px; height: 10px; border-radius: 50%; background: #B4F58C; box-shadow: 0 0 0 2px #7DB6F0, 0 0 12px 3px rgba(180,245,140,0.5)"></span>
+                      </sc-if>
+                    </div>
+                  </sc-for>
+                </div>
+              </div>
+            </div>
+          </sc-if>
+
+          <!-- MONTH -->
+          <sc-if value="{{isMonth}}" hint-placeholder-val="{{ false }}">
+            <div class="cal-scroll">
+              <div style="min-width: 760px">
+                <div style="display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px; padding-bottom: 8px">
+                  <sc-for list="{{weekNames}}" as="w" hint-placeholder-count="7">
+                    <span style="text-align: center; font-size: 12px; font-weight: 700; color: {{w.fg}}">{{w.name}}</span>
+                  </sc-for>
+                </div>
+                <div style="display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px">
+                  <sc-for list="{{monthCells}}" as="m" hint-placeholder-count="35">
+                    <div style="min-height: 112px; box-sizing: border-box; padding: 8px; border-radius: 16px; background: {{m.bg}}; box-shadow: {{m.ring}}; display: flex; flex-direction: column; gap: 4px">
+                      <div style="display: flex; align-items: center; justify-content: space-between"><span style="min-width: 26px; height: 26px; padding: 0 6px; box-sizing: border-box; border-radius: 999px; background: {{m.numBg}}; color: {{m.numFg}}; display: inline-flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700">{{m.num}}</span><span style="font-size: 10px; font-weight: 600; color: #7D827B">{{m.alt}}</span></div>
+                      <sc-for list="{{m.events}}" as="e" hint-placeholder-count="2">
+                        <span style="display: flex; align-items: center; gap: 5px; height: 22px; padding: 0 7px; border-radius: 8px; background: {{e.bg}}; font-size: 11px; font-weight: 700; white-space: nowrap; overflow: hidden"><span style="flex: none; width: 6px; height: 6px; border-radius: 50%; background: {{e.dot}}"></span><span style="overflow: hidden; text-overflow: ellipsis">{{e.title}}</span></span>
+                      </sc-for>
+                      <sc-if value="{{m.more}}" hint-placeholder-val="{{ false }}"><span style="font-size: 11px; font-weight: 700; color: #C4C8C2; padding-left: 4px">{{m.moreLabel}}</span></sc-if>
+                    </div>
+                  </sc-for>
+                </div>
+              </div>
+            </div>
+          </sc-if>
+
+          <!-- AGENDA -->
+          <sc-if value="{{isAgenda}}" hint-placeholder-val="{{ false }}">
+            <div style="display: flex; flex-direction: column; gap: 14px">
+              <sc-for list="{{agenda}}" as="g" hint-placeholder-count="5">
+                <div style="display: flex; gap: 16px; align-items: flex-start; padding: 14px; border-radius: 22px; background: {{g.bg}}">
+                  <div style="flex: none; width: 74px; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 12px; font-weight: 700; color: {{g.nameFg}}">{{g.name}}</span><span style="font-size: 26px; font-weight: 600; line-height: 1">{{g.num}}</span><span style="font-size: 11px; font-weight: 600; color: #969B94">{{g.alt}}</span></div>
+                  <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 8px">
+                    <sc-for list="{{g.events}}" as="e" hint-placeholder-count="3">
+                      <button type="button" class="ev" onClick="{{ e.pick }}" aria-pressed="{{e.selected}}" style="display: flex; align-items: center; gap: 12px; min-height: 48px; padding: 0 14px 0 12px; border: 0; border-radius: 16px; background: #1C1F1C; box-shadow: {{e.listRing}}; font-family: inherit; text-align: left; cursor: pointer">
+                        <span style="flex: none; width: 4px; height: 26px; border-radius: 2px; background: {{e.dot}}"></span>
+                        <span style="flex: none; width: 96px; font-size: 12px; font-weight: 700; color: #C4C8C2">{{e.time}}</span>
+                        <span style="flex: 1; min-width: 0; font-size: 14px; font-weight: 700; color: #ECEEE9; overflow: hidden; text-overflow: ellipsis; white-space: nowrap">{{e.title}}</span>
+                        <span style="flex: none; height: 26px; padding: 0 10px; border-radius: 999px; background: {{e.bg}}; color: {{e.deep}}; font-size: 11px; font-weight: 700; display: inline-flex; align-items: center">{{e.scopeLabel}}</span>
+                      </button>
+                    </sc-for>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+          </sc-if>
+        </section>
+
+        <!-- Side panel -->
+        <aside style="flex: 1 1 300px; min-width: 0; display: flex; flex-direction: column; gap: 16px">
+          <!-- Selected event (notched) -->
+          <article aria-label="Selected" style="position: relative; box-sizing: border-box; padding: 20px; border-radius: 30px; background: {{selBg}}; display: flex; flex-direction: column; gap: 14px">
+            <div aria-hidden="true" style="position: absolute; top: 0; right: 0; width: 112px; height: 60px; background: #121412; border-bottom-left-radius: 28px"></div>
+            <div aria-hidden="true" style="position: absolute; top: 0; right: 112px; width: 28px; height: 28px; background: radial-gradient(circle at 0 100%, transparent 27.5px, #121412 28px)"></div>
+            <div aria-hidden="true" style="position: absolute; top: 60px; right: 0; width: 28px; height: 28px; background: radial-gradient(circle at 0 100%, transparent 27.5px, #121412 28px)"></div>
+            <div style="position: absolute; top: 0; right: 0; display: flex; gap: 8px">
+              <button type="button" aria-label="Reschedule" style="width: 48px; height: 48px; border-radius: 50%; border: 1px solid #3A3F3A; background: transparent; display: inline-flex; align-items: center; justify-content: center; cursor: pointer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ECEEE9" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16v15H4zM4 10h16M9 3v4M15 3v4"></path></svg></button>
+              <a href="S3TaskDetail.dc.html" aria-label="Open" style="width: 48px; height: 48px; box-sizing: border-box; border-radius: 50%; border: 1px solid #3A3F3A; display: inline-flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ECEEE9" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"></path></svg></a>
+            </div>
+            <span style="align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 10px; border-radius: 999px; background: #1C1F1C; color: {{selDeep}}; font-size: 12px; font-weight: 700"><span style="width: 7px; height: 7px; border-radius: 50%; background: {{selDot}}"></span>{{selScope}}</span>
+            <div style="display: flex; flex-direction: column; gap: 6px; padding-right: 8px"><span style="font-size: 23px; font-weight: 600; line-height: 1.15">{{selTitle}}</span><span style="font-size: 13px; font-weight: 600; color: #C4C8C2">{{selWhen}}</span></div>
+            <div style="display: flex; flex-direction: column; gap: 8px; padding: 12px; border-radius: 20px; background: rgba(255,255,255,0.06)">
+              <div style="display: flex; justify-content: space-between; font-size: 13px"><span style="color: #A5AAA3; font-weight: 600">Workspace</span><span style="font-weight: 700">{{selWs}}</span></div>
+              <div style="display: flex; justify-content: space-between; font-size: 13px"><span style="color: #A5AAA3; font-weight: 600">Type</span><span style="font-weight: 700">{{selType}}</span></div>
+              <div style="display: flex; justify-content: space-between; font-size: 13px"><span style="color: #A5AAA3; font-weight: 600">Reminder</span><span style="font-weight: 700">10 min before</span></div>
+            </div>
+            <div style="display: flex; gap: 8px">
+              <button type="button" style="flex: 1; height: 46px; border: 0; border-radius: 999px; background: {{selDeep}}; color: #0D1210; font-family: inherit; font-size: 13px; font-weight: 700; cursor: pointer">Start focus</button>
+              <button type="button" style="flex: 1; height: 46px; border: 0; border-radius: 999px; background: #1C1F1C; color: #ECEEE9; font-family: inherit; font-size: 13px; font-weight: 700; cursor: pointer">Mark done</button>
+            </div>
+          </article>
+
+          <!-- Mini month -->
+          <section aria-label="Month" style="border-radius: 28px; background: #1C1F1C; padding: 18px; display: flex; flex-direction: column; gap: 10px">
+            <div style="display: flex; align-items: center; justify-content: space-between"><div style="display: flex; flex-direction: column; line-height: 1.2"><span style="font-size: 16px; font-weight: 700">{{miniTitle}}</span><span style="font-size: 12px; font-weight: 600; color: #969B94">{{miniSub}}</span></div><span style="font-size: 11px; font-weight: 700; padding: 5px 9px; border-radius: 999px; background: #1B3A5C; color: #7DB6F0">This week</span></div>
+            <div style="display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 2px">
+              <sc-for list="{{weekNames}}" as="w" hint-placeholder-count="7"><span style="text-align: center; font-size: 11px; font-weight: 700; color: {{w.fg}}; padding-bottom: 4px">{{w.short}}</span></sc-for>
+              <sc-for list="{{miniCells}}" as="c" hint-placeholder-count="35">
+                <span style="height: 32px; display: flex; align-items: center; justify-content: center; border-radius: {{c.radius}}; background: {{c.band}}"><span style="width: 30px; height: 30px; border-radius: 50%; background: {{c.bg}}; color: {{c.fg}}; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: {{c.weight}}">{{c.num}}</span></span>
+              </sc-for>
+            </div>
+          </section>
+
+          <!-- Unscheduled -->
+          <section aria-label="Unscheduled" style="border-radius: 28px; background: #1C1F1C; padding: 18px; display: flex; flex-direction: column; gap: 10px">
+            <div style="display: flex; align-items: center; justify-content: space-between"><h2 style="margin: 0; font-size: 17px; font-weight: 600">Unscheduled</h2><span style="font-size: 12px; font-weight: 600; color: #969B94">drag onto a day</span></div>
+            <sc-for list="{{unscheduled}}" as="u" hint-placeholder-count="4">
+              <div draggable="true" style="display: flex; align-items: center; gap: 10px; min-height: 50px; padding: 0 12px 0 6px; border-radius: 16px; box-shadow: inset 0 0 0 1px #2C302C; cursor: grab">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="#6E746E" aria-hidden="true"><circle cx="9" cy="6" r="1.6"></circle><circle cx="15" cy="6" r="1.6"></circle><circle cx="9" cy="12" r="1.6"></circle><circle cx="15" cy="12" r="1.6"></circle><circle cx="9" cy="18" r="1.6"></circle><circle cx="15" cy="18" r="1.6"></circle></svg>
+                <span style="width: 8px; height: 8px; border-radius: 50%; background: {{u.dot}}"></span>
+                <span style="flex: 1; font-size: 13px; font-weight: 600">{{u.title}}</span>
+                <span style="font-size: 12px; font-weight: 700; color: #C4C8C2">{{u.est}}</span>
+              </div>
+            </sc-for>
+          </section>
+        </aside>
+      </div>
+    </main>
+  </div>
+</div>
+</div>
+<div class="pg" style="min-height: 0; padding-top: 0"><div class="doc"><div class="row g10" style="padding: 0 6px"><span class="kick">SPECIFICATION · switch tabs to read each part</span></div><div class="ft "><input type="radio" name="ft3" id="ft3_0" checked><input type="radio" name="ft3" id="ft3_1"><div class="ft-tabs" role="tablist"><label for="ft3_0" role="tab">Month & Agenda views<em>2</em></label><label for="ft3_1" role="tab">Calendar rules · supersedes S7</label></div><div class="ft-body" style=""><div class="ftp" role="tabpanel"><div style="display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 18px; align-items: start"><div class="card" style="background: #1C1F1C; box-shadow: inset 0 0 0 1px #2C302C"><div class="col g10"><div class="row sp"><span class="h3">Mehr 1405 <span class="mut sm">· Sep–Oct 2026</span></span><div class="seg"><span>Week</span><span class="on">Month</span><span>Agenda</span></div></div><div style="display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px"><span class="xs b" style="padding: 6px 8px; color: #969B94">Sat</span><span class="xs b" style="padding: 6px 8px; color: #969B94">Sun</span><span class="xs b" style="padding: 6px 8px; color: #969B94">Mon</span><span class="xs b" style="padding: 6px 8px; color: #969B94">Tue</span><span class="xs b" style="padding: 6px 8px; color: #969B94">Wed</span><span class="xs b" style="padding: 6px 8px; color: #969B94">Thu</span><span class="xs b" style="padding: 6px 8px; color: #F2555A">Fri</span><div style="min-height: 92px; border-radius: 14px; background: #222622"></div><div style="min-height: 92px; border-radius: 14px; background: #222622"></div><div style="min-height: 92px; border-radius: 14px; background: #222622"></div><div style="min-height: 92px; border-radius: 14px; background: #222622"></div><div class="col g4" style="min-height: 92px; padding: 6px; border-radius: 14px; box-sizing: border-box; background: #1C1F1C; box-shadow: inset 0 0 0 1px #2A2E2A"><div class="row sp"><span style="width: 24px; height: 24px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; background: transparent; color: #ECEEE9">1</span><span class="xs mut2">23</span></div></div><div class="col g4" style="min-height: 92px; padding: 6px; border-radius: 14px; box-sizing: border-box; background: #1C1F1C; box-shadow: inset 0 0 0 1px #2A2E2A"><div class="row sp"><span style="width: 24px; height: 24px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; background: transparent; color: #ECEEE9">2</span><span class="xs mut2">24</span></div></div><div class="col g4" style="min-height: 92px; padding: 6px; border-radius: 14px; box-sizing: border-box; background: #16212E; box-shadow: inset 0 0 0 1px #2A2E2A"><div class="row sp"><span style="width: 24px; height: 24px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; background: transparent; color: #F2555A">3</span><span class="xs mut2">25</span></div><span class="ell" style="display: block; height: 20px; line-height: 20px; padding: 0 6px; border-radius: 7px; font-size: 11px; font-weight: 700; background: #121412; border-left: 3px solid #4FE3C1">Gym</span></div><div class="col g4" style="min-height: 92px; padding: 6px; border-radius: 14px; box-sizing: border-box; background: #1C1F1C; box-shadow: inset 0 0 0 1px #2A2E2A"><div class="row sp"><span style="width: 24px; height: 24px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; background: transparent; color: #ECEEE9">4</span><span class="xs mut2">26</span></div></div><div class="col g4" style="min-height: 92px; padding: 6px; border-radius: 14px; box-sizing: border-box; background: #1C1F1C; box-shadow: inset 0 0 0 1px #2A2E2A"><div class="row sp"><span style="width: 24px; height: 24px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; background: transparent; color: #ECEEE9">5</span><span class="xs mut2">27</span></div></div><div class="col g4" style="min-height: 92px; padding: 6px; border-radius: 14px; box-sizing: border-box; background: #1C1F1C; box-shadow: inset 0 0 0 1px #2A2E2A"><div class="row sp"><span style="width: 24px; height: 24px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; background: transparent; color: #ECEEE9">6</span><span class="xs mut2">28</span></div></div><div class="col g4" style="min-height: 92px; padding: 6px; border-radius: 14px; box-sizing: border-box; background: #1C1F1C; box-shadow: inset 0 0 0 1px #2A2E2A"><div class="row sp"><span style="width: 24px; height: 24px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; background: transparent; color: #ECEEE9">7</span><span class="xs mut2">29</span></div><span class="ell" style="display: block; height: 20px; line-height: 20px; padding: 0 6px; border-radius: 7px; font-size: 11px; font-weight: 700; background: #121412; border-left: 3px solid #C07BFF">Mehr payroll</span></div><div class="col g4" style="min-height: 92px; padding: 6px; border-radius: 14px; box-sizing: border-box; background: #1C1F1C; box-shadow: inset 0 0 0 1px #2A2E2A"><div class="row sp"><span style="width: 24px; height: 24px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; background: transparent; color: #ECEEE9">8</span><span class="xs mut2">30</span></div></div><div class="col g4" style="min-height: 92px; padding: 6px; border-radius: 14px; box-sizing: border-box; background: #1C1F1C; box-shadow: inset 0 0 0 1px #2A2E2A"><div class="row sp"><span style="width: 24px; height: 24px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; background: transparent; color: #ECEEE9">9</span><span class="xs mut2">1</span></div></div><div class="col g4" style="min-height: 92px; padding: 6px; border-radius: 14px; box-sizing: border-box; background: #16212E; box-shadow: inset 0 0 0 1px #2A2E2A"><div class="row sp"><span style="width: 24px; height: 24px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; background: transparent; color: #F2555A">10</span><span class="xs mut2">2</span></div></div><div class="col g4" style="min-height: 92px; padding: 6px; border-radius: 14px; box-sizing: border-box; background: #1C1F1C; box-shadow: inset 0 0 0 1px #2A2E2A"><div class="row sp"><span style="width: 24px; height: 24px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; background: transparent; color: #ECEEE9">11</span><span class="xs mut2">3</span></div></div><div class="col g4" style="min-height: 92px; padding: 6px; border-radius: 14px; box-sizing: border-box; background: #1C1F1C; box-shadow: inset 0 0 0 1px #2A2E2A"><div class="row sp"><span style="width: 24px; height: 24px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; background: transparent; color: #ECEEE9">12</span><span class="xs mut2">4</span></div><span class="ell" style="display: block; height: 20px; line-height: 20px; padding: 0 6px; border-radius: 7px; font-size: 11px; font-weight: 700; background: #121412; border-left: 3px solid #5AB4FF">Release v2.3</span><span class="ell" style="display: block; height: 20px; line-height: 20px; padding: 0 6px; border-radius: 7px; font-size: 11px; font-weight: 700; background: #121412; border-left: 3px solid #4FE3C1">Dentist</span></div><div class="col g4" style="min-height: 92px; padding: 6px; border-radius: 14px; box-sizing: border-box; background: #1C1F1C; box-shadow: inset 0 0 0 1px #2A2E2A"><div class="row sp"><span style="width: 24px; height: 24px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; background: transparent; color: #ECEEE9">13</span><span class="xs mut2">5</span></div></div><div class="col g4" style="min-height: 92px; padding: 6px; border-radius: 14px; box-sizing: border-box; background: #1C1F1C; box-shadow: inset 0 0 0 1px #2A2E2A"><div class="row sp"><span style="width: 24px; height: 24px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; background: transparent; color: #ECEEE9">14</span><span class="xs mut2">6</span></div></div><div class="col g4" style="min-height: 92px; padding: 6px; border-radius: 14px; box-sizing: border-box; background: #1C1F1C; box-shadow: inset 0 0 0 1px #2A2E2A"><div class="row sp"><span style="width: 24px; height: 24px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; background: transparent; color: #ECEEE9">15</span><span class="xs mut2">7</span></div><span class="ell" style="display: block; height: 20px; line-height: 20px; padding: 0 6px; border-radius: 7px; font-size: 11px; font-weight: 700; background: #121412; border-left: 3px solid #4FE3C1">Gym</span></div><div class="col g4" style="min-height: 92px; padding: 6px; border-radius: 14px; box-sizing: border-box; background: #1C1F1C; box-shadow: inset 0 0 0 1px #2A2E2A"><div class="row sp"><span style="width: 24px; height: 24px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; background: transparent; color: #ECEEE9">16</span><span class="xs mut2">8</span></div></div><div class="col g4" style="min-height: 92px; padding: 6px; border-radius: 14px; box-sizing: border-box; background: #16212E; box-shadow: inset 0 0 0 1px #2A2E2A"><div class="row sp"><span style="width: 24px; height: 24px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; background: transparent; color: #F2555A">17</span><span class="xs mut2">9</span></div></div><div class="col g4" style="min-height: 92px; padding: 6px; border-radius: 14px; box-sizing: border-box; background: #1C1F1C; box-shadow: inset 0 0 0 1px #2A2E2A"><div class="row sp"><span style="width: 24px; height: 24px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; background: transparent; color: #ECEEE9">18</span><span class="xs mut2">10</span></div><span class="ell" style="display: block; height: 20px; line-height: 20px; padding: 0 6px; border-radius: 7px; font-size: 11px; font-weight: 700; background: #121412; border-left: 3px solid #8B8BFF">Sprint planning</span></div><div class="col g4" style="min-height: 92px; padding: 6px; border-radius: 14px; box-sizing: border-box; background: #1C1F1C; box-shadow: inset 0 0 0 1px #2A2E2A"><div class="row sp"><span style="width: 24px; height: 24px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; background: transparent; color: #ECEEE9">19</span><span class="xs mut2">11</span></div></div><div class="col g4" style="min-height: 92px; padding: 6px; border-radius: 14px; box-sizing: border-box; background: #1C1F1C; box-shadow: inset 0 0 0 1px #2A2E2A"><div class="row sp"><span style="width: 24px; height: 24px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; background: transparent; color: #ECEEE9">20</span><span class="xs mut2">12</span></div></div><div class="col g4" style="min-height: 92px; padding: 6px; border-radius: 14px; box-sizing: border-box; background: #1C1F1C; box-shadow: inset 0 0 0 1px #6FD4B8"><div class="row sp"><span style="width: 24px; height: 24px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; background: #6FD4B8; color: #0D1210">21</span><span class="xs mut2">13</span></div><span class="ell" style="display: block; height: 20px; line-height: 20px; padding: 0 6px; border-radius: 7px; font-size: 11px; font-weight: 700; background: #121412; border-left: 3px solid #5AB4FF">UI design</span><span class="ell" style="display: block; height: 20px; line-height: 20px; padding: 0 6px; border-radius: 7px; font-size: 11px; font-weight: 700; background: #121412; border-left: 3px solid #4FE3C1">Gym</span><span class="ell" style="display: block; height: 20px; line-height: 20px; padding: 0 6px; border-radius: 7px; font-size: 11px; font-weight: 700; background: #121412; border-left: 3px solid #5AB4FF">+2</span></div><div class="col g4" style="min-height: 92px; padding: 6px; border-radius: 14px; box-sizing: border-box; background: #1C1F1C; box-shadow: inset 0 0 0 1px #2A2E2A"><div class="row sp"><span style="width: 24px; height: 24px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; background: transparent; color: #ECEEE9">22</span><span class="xs mut2">14</span></div><span class="ell" style="display: block; height: 20px; line-height: 20px; padding: 0 6px; border-radius: 7px; font-size: 11px; font-weight: 700; background: #121412; border-left: 3px solid #4FE3C1">Review expenses</span></div><div class="col g4" style="min-height: 92px; padding: 6px; border-radius: 14px; box-sizing: border-box; background: #1C1F1C; box-shadow: inset 0 0 0 1px #2A2E2A"><div class="row sp"><span style="width: 24px; height: 24px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; background: transparent; color: #ECEEE9">23</span><span class="xs mut2">15</span></div></div><div class="col g4" style="min-height: 92px; padding: 6px; border-radius: 14px; box-sizing: border-box; background: #16212E; box-shadow: inset 0 0 0 1px #2A2E2A"><div class="row sp"><span style="width: 24px; height: 24px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; background: transparent; color: #F2555A">24</span><span class="xs mut2">16</span></div></div><div class="col g4" style="min-height: 92px; padding: 6px; border-radius: 14px; box-sizing: border-box; background: #1C1F1C; box-shadow: inset 0 0 0 1px #2A2E2A"><div class="row sp"><span style="width: 24px; height: 24px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; background: transparent; color: #ECEEE9">25</span><span class="xs mut2">17</span></div></div><div class="col g4" style="min-height: 92px; padding: 6px; border-radius: 14px; box-sizing: border-box; background: #1C1F1C; box-shadow: inset 0 0 0 1px #2A2E2A"><div class="row sp"><span style="width: 24px; height: 24px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; background: transparent; color: #ECEEE9">26</span><span class="xs mut2">18</span></div><span class="ell" style="display: block; height: 20px; line-height: 20px; padding: 0 6px; border-radius: 7px; font-size: 11px; font-weight: 700; background: #121412; border-left: 3px solid #8B8BFF">Retro</span></div><div class="col g4" style="min-height: 92px; padding: 6px; border-radius: 14px; box-sizing: border-box; background: #1C1F1C; box-shadow: inset 0 0 0 1px #2A2E2A"><div class="row sp"><span style="width: 24px; height: 24px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; background: transparent; color: #ECEEE9">27</span><span class="xs mut2">19</span></div></div><div class="col g4" style="min-height: 92px; padding: 6px; border-radius: 14px; box-sizing: border-box; background: #1C1F1C; box-shadow: inset 0 0 0 1px #2A2E2A"><div class="row sp"><span style="width: 24px; height: 24px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; background: transparent; color: #ECEEE9">28</span><span class="xs mut2">20</span></div></div><div class="col g4" style="min-height: 92px; padding: 6px; border-radius: 14px; box-sizing: border-box; background: #1C1F1C; box-shadow: inset 0 0 0 1px #2A2E2A"><div class="row sp"><span style="width: 24px; height: 24px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; background: transparent; color: #ECEEE9">29</span><span class="xs mut2">21</span></div></div><div class="col g4" style="min-height: 92px; padding: 6px; border-radius: 14px; box-sizing: border-box; background: #1C1F1C; box-shadow: inset 0 0 0 1px #2A2E2A"><div class="row sp"><span style="width: 24px; height: 24px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; background: transparent; color: #ECEEE9">30</span><span class="xs mut2">22</span></div><span class="ell" style="display: block; height: 20px; line-height: 20px; padding: 0 6px; border-radius: 7px; font-size: 11px; font-weight: 700; background: #121412; border-left: 3px solid #4FE3C1">Rent</span></div><div style="min-height: 92px; border-radius: 14px; background: #222622"></div></div></div></div><div class="card" style="box-shadow: inset 0 0 0 1px #2C302C"><div class="col"><div class="row sp"><span class="h3">Agenda · next 14 days</span><div class="seg"><span>Week</span><span>Month</span><span class="on">Agenda</span></div></div><div class="row g8" style="padding: 14px 4px 6px"><span class="h3" style="color: #ECEEE9">Today · Tue 21 Mehr</span><span class="xs mut">13 Oct</span></div><div class="row g12" style="min-height: 56px; padding: 0 12px; border-radius: 16px; background: #222622; margin-bottom: 6px"><span class="col sm" style="width: 52px"><b>14:00</b><span class="mut2">16:00</span></span><span style="width: 4px; height: 34px; border-radius: 2px; background: #4FE3C1"></span><div class="col f1"><span style="font-size: 14px; font-weight: 600">UI design · My Day</span><span class="xs mut">Personal · task</span></div></div><div class="row g12" style="min-height: 56px; padding: 0 12px; border-radius: 16px; background: #222622; margin-bottom: 6px"><span class="col sm" style="width: 52px"><b>16:30</b><span class="mut2">17:00</span></span><span style="width: 4px; height: 34px; border-radius: 2px; background: #5AB4FF"></span><div class="col f1"><span style="font-size: 14px; font-weight: 600">Client call</span><span class="xs mut">Projects · Website redesign</span></div></div><div class="row g12" style="min-height: 56px; padding: 0 12px; border-radius: 16px; background: #222622; margin-bottom: 6px"><span class="col sm" style="width: 52px"><b>17:15</b><span class="mut2">18:15</span></span><span style="width: 4px; height: 34px; border-radius: 2px; background: #4FE3C1"></span><div class="col f1"><span style="font-size: 14px; font-weight: 600">Gym</span><span class="xs mut">Personal</span></div></div><div class="row g8" style="padding: 14px 4px 6px"><span class="h3" style="color: #ECEEE9">Wed 22 Mehr</span><span class="xs mut">14 Oct</span></div><div class="row g12" style="min-height: 56px; padding: 0 12px; border-radius: 16px; background: #222622; margin-bottom: 6px"><span class="col sm" style="width: 52px"><b>09:30</b><span class="mut2">10:00</span></span><span style="width: 4px; height: 34px; border-radius: 2px; background: #4FE3C1"></span><div class="col f1"><span style="font-size: 14px; font-weight: 600">Review October expenses</span><span class="xs mut">Personal · task</span></div></div><div class="row g12" style="min-height: 56px; padding: 0 12px; border-radius: 16px; background: #222622; margin-bottom: 6px"><span class="col sm" style="width: 52px"><b>11:00</b><span class="mut2">12:00</span></span><span style="width: 4px; height: 34px; border-radius: 2px; background: #C07BFF"></span><div class="col f1"><span style="font-size: 14px; font-weight: 600">Quarterly review</span><span class="xs mut">Companies · Araxitis</span></div></div><div class="row g8" style="padding: 14px 4px 6px"><span class="h3" style="color: #F2555A">Fri 24 Mehr · weekend</span><span class="xs mut">16 Oct</span></div><div class="row g12" style="min-height: 56px; padding: 0 12px; border-radius: 16px; background: #222622; margin-bottom: 6px"><span class="col sm" style="width: 52px"><b>09:00</b><span class="mut2">11:00</span></span><span style="width: 4px; height: 34px; border-radius: 2px; background: #4FE3C1"></span><div class="col f1"><span style="font-size: 14px; font-weight: 600">Hike · Darband</span><span class="xs mut">Personal</span></div></div></div></div></div></div><div class="ftp" role="tabpanel"><div class="rules"><div class="rule"><b>Preserved from S7</b><span>Week view grid, scope layer chips with counts, selected-event panel (notched, scope-tinted), mini month, Unscheduled tray, Shamsi/Gregorian switch, Friday weekend column tint.</span></div><div class="rule"><b>Refined</b><span>New Personal rail (11 + Settings). Assistant FAB removed. “+ New” opens Universal Quick Add pre-filled with the clicked slot. Event chips get ≥28px hit area; columns min 96px, below that the week view switches to 3-day.</span></div><div class="rule"><b>Month view</b><span>Day cells show max 2 chips + “+N”. Click day → Agenda for that day in the side panel; double-click → create. Jalali number large, Gregorian small (swaps with the setting).</span></div><div class="rule"><b>Agenda view</b><span>Chronological list for 14 days, weekend days in red, Personal tasks with time appear as rows with “task” meta and a checkbox on hover.</span></div><div class="rule"><b>Scope layers</b><span>Personal always on. Projects/Teams/Companies layers are read-only context here (from the shell) — editing opens their own module. Hidden layers persist per user.</span></div><div class="rule"><b>Unscheduled tray</b><span>Same list as My Day Unscheduled. Drag to a day (Month) sets date without time; to a slot (Week) sets date + time.</span></div><div class="rule"><b>Drag & drop</b><span>Personal events/tasks: move, resize (15m), drag to another day. Other scopes: drag disabled with tooltip “Managed in Projects”.</span></div><div class="rule"><b>Selected event</b><span>Panel actions: Start focus (task only), Mark done, Reschedule, Open detail. Esc closes.</span></div><div class="rule"><b>Empty</b><span>Week with no events shows faint “Free week · 40h free” in the grid and the Unscheduled tray emphasised.</span></div></div></div></div></div></div></div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2050}}'>
+class Component extends DCLogic {
+  assist(hello, ask) {
+    const open = !!(this.state && this.state.assistOpen);
+    return {
+      assistOpen: open, assistExpanded: open ? 'true' : 'false', assistLabel: open ? 'Close assistant' : 'Open assistant',
+      assistText: open ? 'Close' : 'Assistant', assistIcon: open ? 'M6 6l12 12M18 6L6 18' : 'M12 3v3M12 18v3M3 12h3M18 12h3M6 6l2 2M16 16l2 2M6 18l2-2M16 8l2-2',
+      assistHello: hello, assistAsk: ask,
+      toggleAssist: () => this.setState({ assistOpen: !open })
+    };
+  }
+  constructor(props) { super(props); this.state = { view: 'week', cal: 'jalali', sel: 't4', off: {} }; }
+  renderVals() {
+    const st = this.state;
+    const I = {
+      overview: 'M4 4h7v7H4zM13 4h7v4h-7zM13 10h7v10h-7zM4 13h7v7H4z', myday: 'M12 3v2M12 19v2M3 12h2M19 12h2M12 8a4 4 0 1 0 0 8a4 4 0 1 0 0-8z',
+      tasks: 'M4 4h16v16H4zM8 12l3 3 5-6', calendar: 'M4 5h16v15H4zM4 10h16M9 3v4M15 3v4', goals: 'M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18zM12 8a4 4 0 1 0 0 8a4 4 0 1 0 0-8z',
+      habits: 'M4 12a8 8 0 0 1 14-5.3M20 12a8 8 0 0 1-14 5.3M18 3v4h-4M6 21v-4h4', finance: 'M3 7h18v12H3zM3 11h18M7 15h3', journal: 'M6 3h12v18H6zM9 8h6M9 12h6', insights: 'M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9V16h7v-2.1A6 6 0 0 0 12 3z'
+    };
+    const rail = Object.keys(I).map((k) => ({ d: I[k], label: k, current: k === 'calendar' ? 'page' : 'false', bg: k === 'calendar' ? '#1B3A5C' : 'transparent', icon: k === 'calendar' ? '#7DB6F0' : '#C4C8C2' }));
+
+    const SC = {
+      personal: { label: 'Personal', soft: '#1D4A40', deep: '#6FD4B8', dot: '#4FE3C1', ws: 'Mehran' },
+      project: { label: 'Projects', soft: '#1B3A5C', deep: '#7DB6F0', dot: '#5AB4FF', ws: 'Planner App' },
+      team: { label: 'Teams', soft: '#2C2E5E', deep: '#A5A5F5', dot: '#8B8BFF', ws: 'Design Team' },
+      company: { label: 'Companies', soft: '#3B2A55', deep: '#C49DEB', dot: '#C07BFF', ws: 'Euroly' }
+    };
+    const off = st.off || {};
+    const jal = st.cal === 'jalali';
+    const DN = ['Saturday', 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+    const DS = ['Sat', 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
+    const jd = [18, 19, 20, 21, 22, 23, 24], gd = [10, 11, 12, 13, 14, 15, 16];
+    const TODAY = 3, START = 8, H = 56, NOW = 14 + 35 / 60;
+    const fmt = (h) => String(Math.floor(h)).padStart(2, '0') + ':' + String(Math.round((h % 1) * 60)).padStart(2, '0');
+
+    const EV = [
+      { id: 's1', d: 0, s: 9, e: 11, t: 'Deep work · Planner', sc: 'personal', type: 'Focus block' },
+      { id: 's2', d: 0, s: 15, e: 16, t: 'Sprint planning', sc: 'team', type: 'Meeting' },
+      { id: 'u1', d: 1, s: 10, e: 11, t: 'Client call · Website', sc: 'project', type: 'Meeting' },
+      { id: 'u2', d: 1, s: 13, e: 14, t: 'Lunch with Sara', sc: 'personal', type: 'Event' },
+      { id: 'u3', d: 1, s: 16, e: 18, t: 'Board deck prep', sc: 'company', type: 'Task' },
+      { id: 'm1', d: 2, s: 9, e: 10.5, t: 'Design review', sc: 'team', type: 'Meeting' },
+      { id: 'm2', d: 2, s: 11, e: 13, t: 'Wireframes · Onboarding', sc: 'project', type: 'Task' },
+      { id: 'm3', d: 2, s: 17.25, e: 18.25, t: 'Gym', sc: 'personal', type: 'Habit' },
+      { id: 't1', d: 3, s: 9, e: 11, t: 'Deep work · Planner', sc: 'personal', type: 'Focus block' },
+      { id: 't2', d: 3, s: 11, e: 11.75, t: 'Design review', sc: 'team', type: 'Meeting' },
+      { id: 't4', d: 3, s: 14, e: 16, t: 'UI design · My Day', sc: 'project', type: 'Task', now: true },
+      { id: 't5', d: 3, s: 16.5, e: 17, t: 'Client call', sc: 'project', type: 'Meeting' },
+      { id: 't6', d: 3, s: 17.25, e: 18.25, t: 'Gym', sc: 'personal', type: 'Habit' },
+      { id: 'w1', d: 4, s: 10, e: 11, t: 'Quarterly review', sc: 'company', type: 'Meeting' },
+      { id: 'w2', d: 4, s: 14, e: 15.5, t: '1:1 with Katy', sc: 'team', type: 'Meeting' },
+      { id: 'h1', d: 5, s: 10, e: 12, t: 'Family brunch', sc: 'personal', type: 'Event' },
+      { id: 'f1', d: 6, s: 9, e: 10.5, t: 'Hike · Darband', sc: 'personal', type: 'Event' }
+    ];
+    const ALLDAY = { 0: [['Mehr payroll', 'company']], 4: [['Release v2.3', 'project']] };
+    const vis = (sc) => !off[sc];
+    const selEv = EV.find((x) => x.id === st.sel) || EV[10];
+
+    const evView = (x) => {
+      const c = SC[x.sc], sel = x.id === st.sel, now = !!x.now;
+      return {
+        top: ((x.s - START) * H + 2) + 'px', height: ((x.e - x.s) * H - 4) + 'px', title: x.t, time: fmt(x.s) + '–' + fmt(x.e),
+        bg: now ? '#1C1F1C' : c.soft, dot: c.dot, deep: c.deep, fill: c.soft, now,
+        elapsed: now ? Math.round((NOW - x.s) / (x.e - x.s) * 100) + '%' : '0%',
+        ring: sel ? '0 0 0 2px ' + c.deep + ', 0 10px 22px rgba(0,0,0,0.40)' : now ? '0 0 0 1.5px ' + c.deep : 'none',
+        listRing: sel ? '0 0 0 2px ' + c.deep : 'inset 0 0 0 1px #2C302C',
+        selected: sel ? 'true' : 'false', aria: x.t + ', ' + fmt(x.s) + ' to ' + fmt(x.e), scopeLabel: c.label,
+        pick: () => this.setState({ sel: x.id })
+      };
+    };
+
+    const days = DN.map((n, i) => {
+      const today = i === TODAY, fri = i === 6;
+      return {
+        name: DS[i], num: jal ? jd[i] : gd[i], alt: jal ? gd[i] + ' Oct' : jd[i] + ' Mehr', today,
+        headBg: today ? '#1B3A5C' : 'transparent', nameFg: fri ? '#F2555A' : today ? '#7DB6F0' : '#969B94',
+        numBg: today ? '#7DB6F0' : 'transparent', numFg: today ? '#0D1210' : fri ? '#F2555A' : '#ECEEE9',
+        colBg: fri ? '#1F1A19' : today ? '#16212E' : 'transparent',
+        allDay: (ALLDAY[i] || []).filter((a) => vis(a[1])).map((a) => ({ title: a[0], bg: SC[a[1]].soft, fg: SC[a[1]].deep })),
+        events: EV.filter((x) => x.d === i && vis(x.sc)).map(evView)
+      };
+    });
+
+    const hours = Array.from({ length: 12 }, (_, i) => ({ top: (i * H - 6) + 'px', label: String(START + i).padStart(2, '0') + ':00' }));
+    const counts = {}; EV.forEach((x) => { counts[x.sc] = (counts[x.sc] || 0) + 1; });
+    const layers = Object.keys(SC).map((k) => {
+      const on = vis(k);
+      return { label: SC[k].label, count: counts[k] || 0, on: on ? 'true' : 'false', dot: on ? SC[k].dot : '#3A3F3A',
+        bg: on ? SC[k].soft : '#1C1F1C', fg: on ? '#ECEEE9' : '#7D827B', ring: on ? 'none' : 'inset 0 0 0 1px #3A3F3A',
+        toggle: () => this.setState({ off: Object.assign({}, off, { [k]: on }) }) };
+    });
+
+    const weekNames = DS.map((n, i) => ({ name: DN[i], short: n.slice(0, 2), fg: i === 6 ? '#F2555A' : '#969B94' }));
+
+    // Month grids (Sat-first). Mehr 1405 starts Wed (4), 30 days. Oct 2026 starts Thu (5), 31 days.
+    const M = jal ? { lead: 4, len: 30, prevLen: 31, today: 21, wk: [18, 24] } : { lead: 5, len: 31, prevLen: 30, today: 13, wk: [10, 16] };
+    const total = Math.ceil((M.lead + M.len) / 7) * 7;
+    const extra = jal ? { 3: [['Team offsite', 'team']], 9: [['Rent', 'personal']], 27: [['Invoice #214', 'project']], 30: [['Month close', 'company']] }
+                      : { 1: [['Rent', 'personal']], 19: [['Team offsite', 'team']], 22: [['Invoice #214', 'project']], 31: [['Month close', 'company']] };
+    const monthCells = [], miniCells = [];
+    for (let k = 0; k < total; k++) {
+      const dn = k - M.lead + 1, inM = dn >= 1 && dn <= M.len, col = k % 7;
+      const num = inM ? dn : dn < 1 ? M.prevLen + dn : dn - M.len;
+      const today = inM && dn === M.today, inWk = inM && dn >= M.wk[0] && dn <= M.wk[1];
+      let evs = [];
+      if (inM) {
+        if (inWk) { const di = dn - M.wk[0]; evs = EV.filter((x) => x.d === di && vis(x.sc)).map((x) => [x.t, x.sc]); }
+        evs = evs.concat((extra[dn] || []).filter((a) => vis(a[1])));
+      }
+      const altN = !inM ? '' : jal ? (dn <= 8 ? (22 + dn) + ' Sep' : (dn - 8) + ' Oct') : (dn <= 22 ? (dn + 8) + ' Meh' : (dn - 22) + ' Aba');
+      monthCells.push({
+        num, alt: inM ? altN : '', bg: !inM ? 'transparent' : today ? '#16212E' : col === 6 ? '#1F1A19' : '#222622',
+        ring: today ? 'inset 0 0 0 2px #7DB6F0' : !inM ? 'inset 0 0 0 1px #2A2E2A' : 'none',
+        numBg: today ? '#7DB6F0' : 'transparent', numFg: today ? '#0D1210' : !inM ? '#5A5F59' : col === 6 ? '#F2555A' : '#ECEEE9',
+        events: evs.slice(0, 2).map((a) => ({ title: a[0], bg: SC[a[1]].soft, dot: SC[a[1]].dot })),
+        more: evs.length > 2, moreLabel: '+' + (evs.length - 2) + ' more'
+      });
+      const first = col === 0 || dn === M.wk[0], last = col === 6 || dn === M.wk[1];
+      miniCells.push({
+        num: inM ? dn : '', bg: today ? '#7DB6F0' : 'transparent', fg: today ? '#0D1210' : col === 6 ? '#F2555A' : '#ECEEE9', weight: today ? 700 : 600,
+        band: inWk ? '#1B3A5C' : 'transparent', radius: inWk ? ((first ? '999px ' : '0 ') + (last ? '999px 999px ' : '0 0 ') + (first ? '999px' : '0')) : '0'
+      });
+    }
+
+    const agenda = days.filter((d) => d.events.length).map((d, i) => ({
+      name: DN[DS.indexOf(d.name)], num: d.num, alt: d.alt, bg: d.today ? '#16212E' : '#222622', nameFg: d.nameFg, events: d.events
+    }));
+
+    const c = SC[selEv.sc];
+    const V = [['week', 'Week'], ['month', 'Month'], ['agenda', 'Agenda']];
+    return {
+      ...this.assist('Wednesday has 3 free hours. Want me to place “Review October expenses” and “Prepare check-in notes” there?', 'Yes, place them'),
+      rail,
+      rangeTitle: st.view === 'month' ? (jal ? 'Mehr 1405' : 'October 2026') : (jal ? '18 – 24 Mehr' : '10 – 16 October'),
+      rangeSub: st.view === 'month' ? (jal ? 'Sep 23 – Oct 22, 2026' : 'Mehr – Aban 1405') : (jal ? 'Oct 10 – 16, 2026' : '18 – 24 Mehr 1405'),
+      views: V.map(([id, label]) => ({ label, on: st.view === id ? 'true' : 'false', bg: st.view === id ? '#7DB6F0' : 'transparent', fg: st.view === id ? '#0D1210' : '#C4C8C2', pick: () => this.setState({ view: id }) })),
+      cals: [['jalali', 'Shamsi'], ['greg', 'Gregorian']].map(([id, label]) => ({ label, on: st.cal === id ? 'true' : 'false', bg: st.cal === id ? '#1B3A5C' : 'transparent', fg: st.cal === id ? '#7DB6F0' : '#C4C8C2', pick: () => this.setState({ cal: id }) })),
+      isWeek: st.view === 'week', isMonth: st.view === 'month', isAgenda: st.view === 'agenda',
+      layers, days, hours, weekNames, monthCells, miniCells, agenda,
+      nowTop: ((NOW - START) * H) + 'px', nowDot: ((NOW - START) * H - 4) + 'px',
+      miniTitle: jal ? 'Mehr 1405' : 'October 2026', miniSub: jal ? 'September – October 2026' : 'Mehr – Aban 1405',
+      selBg: c.soft, selDeep: c.deep, selDot: c.dot, selScope: c.label, selTitle: selEv.t, selWs: c.ws, selType: selEv.type,
+      selWhen: DN[selEv.d] + ' ' + (jal ? jd[selEv.d] + ' Mehr' : gd[selEv.d] + ' Oct') + ' · ' + fmt(selEv.s) + ' – ' + fmt(selEv.e),
+      unscheduled: [
+        { title: 'Review October expenses', est: '30m', dot: '#4FE3C1' },
+        { title: 'Reply to Katy’s brief', est: '20m', dot: '#5AB4FF' },
+        { title: 'Prepare check-in notes', est: '45m', dot: '#8B8BFF' },
+        { title: 'Approve Q4 budget', est: '15m', dot: '#C07BFF' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

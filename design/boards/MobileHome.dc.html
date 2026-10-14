@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Mobile — My Day</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#1A1A17}a:hover{color:#1A1A17}
+</style>
+</helmet>
+<div style="position: relative; width: 390px; height: 844px; overflow: hidden; box-sizing: border-box; padding: 20px 16px 0; background: #F1F1EE; font-family: 'Urbanist', system-ui, sans-serif; color: #1A1A17; display: flex; flex-direction: column; gap: 16px">
+
+  <!-- Header -->
+  <header style="display: flex; align-items: center; gap: 12px">
+    <span style="width: 48px; height: 48px; border-radius: 50%; background: #DDFAF2; color: #0E6B57; border: 3px solid #FFFFFF; box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 700">MR</span>
+    <div style="flex: 1; display: flex; flex-direction: column; gap: 1px"><span style="font-size: 13px; font-weight: 500; color: #6B6B64">Good morning</span><h1 style="margin: 0; font-size: 22px; font-weight: 600">Mehran</h1></div>
+    <button type="button" aria-label="Notifications" style="position: relative; width: 48px; height: 48px; border-radius: 50%; border: 0; background: #FFFFFF; display: inline-flex; align-items: center; justify-content: center; cursor: pointer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1A1A17" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M6 16v-5a6 6 0 0 1 12 0v5l2 2H4z"></path><path d="M10 20a2 2 0 0 0 4 0"></path></svg><span style="position: absolute; top: 12px; right: 13px; width: 8px; height: 8px; border-radius: 50%; background: #E5484D; border: 2px solid #FFFFFF"></span></button>
+  </header>
+
+  <!-- Scope chips -->
+  <div role="tablist" aria-label="Scope" style="display: flex; gap: 8px; overflow-x: auto; margin: 0 -16px; padding: 0 16px">
+    <sc-for list="{{scopes}}" as="s" hint-placeholder-count="4">
+      <button type="button" role="tab" aria-selected="{{s.sel}}" onClick="{{ s.pick }}" style="flex: none; display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 16px; border: 0; border-radius: 999px; background: {{s.bg}}; color: {{s.fg}}; font-family: inherit; font-size: 13px; font-weight: 700; cursor: pointer"><span style="width: 8px; height: 8px; border-radius: 50%; background: {{s.base}}"></span>{{s.label}}</button>
+    </sc-for>
+  </div>
+
+  <!-- Schedule bar (mobile) -->
+  <section aria-label="Your schedule" style="display: flex; flex-direction: column; gap: 8px">
+    <div style="display: flex; align-items: baseline; justify-content: space-between"><h2 style="margin: 0; font-size: 15px; font-weight: 600">Your schedule</h2><span style="font-size: 12px; font-weight: 600; color: #6B6B64">Tue, 13 October</span></div>
+    <div style="height: 64px; box-sizing: border-box; padding: 6px; border-radius: 999px; background: #FFFFFF; box-shadow: 0 1px 0 #E6E6E1, 0 12px 32px rgba(14,14,12,0.06); display: flex; align-items: center; gap: 6px">
+      <button type="button" aria-label="Pick date" style="flex: none; width: 52px; height: 52px; border-radius: 50%; border: 0; background: #F1F1EE; display: inline-flex; align-items: center; justify-content: center; cursor: pointer"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1A1A17" stroke-width="1.8" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2"></rect><path d="M4 10h16M9 3v4M15 3v4"></path></svg></button>
+      <div style="position: relative; flex: 1; min-width: 0; height: 52px; border-radius: 999px; background: #F1F1EE; overflow: hidden">
+        <div style="position: absolute; left: 2px; top: 4px; bottom: 4px; width: 66%; border-radius: 999px; background: #FFFFFF; box-shadow: 0 2px 10px rgba(14,14,12,0.08); overflow: hidden; display: flex; align-items: center; gap: 6px; padding: 0 10px 0 3px; box-sizing: border-box">
+          <span aria-hidden="true" style="position: absolute; left: 0; top: 0; bottom: 0; width: 34%; background: #DDFAF2"></span>
+          <span style="position: relative; flex: none; display: flex"><span style="width: 36px; height: 36px; border-radius: 50%; background: #ECECFF; color: #4343C8; border: 2px solid #FFFFFF; box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700">PT</span><span style="width: 36px; height: 36px; margin-left: -8px; border-radius: 50%; background: #DDFAF2; color: #0E6B57; border: 2px solid #FFFFFF; box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700">JK</span></span>
+          <span style="position: relative; font-size: 12px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Client call</span>
+        </div>
+        <span aria-hidden="true" style="position: absolute; left: calc(2px + 66% * 0.34); top: 6px; bottom: 6px; width: 2px; margin-left: -1px; border-radius: 1px; background: #0E6B57"></span>
+        <span role="img" aria-label="Now 2:15" style="position: absolute; left: calc(2px + 66% * 0.34); top: 3px; width: 10px; height: 10px; margin-left: -5px; border-radius: 50%; background: #C8FF3D; box-shadow: 0 0 0 2px #0E6B57, 0 0 12px 3px rgba(200,255,61,0.55)"></span>
+        <span style="position: absolute; left: calc(66% + 6px); right: 4px; top: 8px; bottom: 8px; border-radius: 999px; background: #ECECFF; color: #4343C8; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; white-space: nowrap; overflow: hidden">3:00</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats -->
+  <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px">
+    <sc-for list="{{stats}}" as="s" hint-placeholder-count="3">
+      <div style="display: flex; align-items: flex-end; gap: 6px">
+        <span style="font-size: 38px; font-weight: 300; line-height: 0.85; letter-spacing: -0.02em">{{s.n}}</span>
+        <div style="display: flex; flex-direction: column; gap: 4px"><span style="align-self: flex-start; height: 18px; padding: 0 6px; border-radius: 6px; background: {{s.bg}}; color: {{s.fg}}; font-size: 10px; font-weight: 700; display: inline-flex; align-items: center">{{s.delta}}</span><span style="font-size: 13px; color: #5E5E58">{{s.label}}</span></div>
+      </div>
+    </sc-for>
+  </div>
+
+  <!-- Active task (volt, notched) -->
+  <article style="position: relative; height: 196px; box-sizing: border-box; padding: 18px; border-radius: 28px; background: #C8FF3D; display: flex; flex-direction: column; justify-content: space-between">
+    <div aria-hidden="true" style="position: absolute; top: 0; right: 0; width: 60px; height: 60px; background: #F1F1EE; border-bottom-left-radius: 28px"></div>
+    <div aria-hidden="true" style="position: absolute; top: 0; right: 60px; width: 28px; height: 28px; background: radial-gradient(circle at 0 100%, transparent 27.5px, #F1F1EE 28px)"></div>
+    <div aria-hidden="true" style="position: absolute; top: 60px; right: 0; width: 28px; height: 28px; background: radial-gradient(circle at 0 100%, transparent 27.5px, #F1F1EE 28px)"></div>
+    <a href="MobileTasks.dc.html" aria-label="Open task" style="position: absolute; top: 0; right: 0; width: 48px; height: 48px; box-sizing: border-box; border-radius: 50%; border: 1px solid #D3D3CC; display: inline-flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1A1A17" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"></path></svg></a>
+    <div style="display: flex; align-items: center; gap: 8px">
+      <span style="display: inline-flex; align-items: center; gap: 6px; height: 26px; padding: 0 10px; border-radius: 999px; background: #0E6B57; color: #C8FF3D; font-size: 11px; font-weight: 700"><span style="width: 6px; height: 6px; border-radius: 50%; background: #C8FF3D"></span>Now</span>
+      <span style="font-size: 12px; font-weight: 600; color: #2E3B08">ends 3:00 pm</span>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 4px">
+      <span style="font-size: 24px; font-weight: 600; line-height: 1.1">Client video call</span>
+      <span style="font-size: 13px; font-weight: 600; color: #2E3B08">Peter Thomas · Product Launch</span>
+    </div>
+    <div style="display: flex; align-items: center; gap: 8px">
+      <button type="button" style="flex: 1; min-width: 0; display: inline-flex; align-items: center; justify-content: space-between; height: 48px; padding: 0 14px 0 6px; border: 0; border-radius: 999px; background: rgba(255,255,255,0.6); font-family: inherit; font-size: 13px; font-weight: 600; color: #1A1A17; cursor: pointer"><span style="display: inline-flex; align-items: center; gap: 8px"><span style="width: 36px; height: 36px; border-radius: 50%; background: #FFFFFF; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700">PT</span>In call</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1A1A17" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button>
+      <button type="button" aria-label="Join call" style="width: 48px; height: 48px; border-radius: 50%; border: 0; background: #0E6B57; display: inline-flex; align-items: center; justify-content: center; cursor: pointer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="6" width="13" height="12" rx="2"></rect><path d="M16 10l5-3v10l-5-3"></path></svg></button>
+    </div>
+  </article>
+
+  <!-- Timer + notes -->
+  <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px">
+    <section aria-label="Timer" style="position: relative; height: 150px; box-sizing: border-box; padding: 16px; border-radius: 26px; background: #0E6B57; color: #FFFFFF; display: flex; flex-direction: column; justify-content: space-between">
+      <div aria-hidden="true" style="position: absolute; top: 0; right: 0; width: 58px; height: 58px; background: #F1F1EE; border-bottom-left-radius: 26px"></div>
+      <div aria-hidden="true" style="position: absolute; top: 0; right: 58px; width: 26px; height: 26px; background: radial-gradient(circle at 0 100%, transparent 25.5px, #F1F1EE 26px)"></div>
+      <div aria-hidden="true" style="position: absolute; top: 58px; right: 0; width: 26px; height: 26px; background: radial-gradient(circle at 0 100%, transparent 25.5px, #F1F1EE 26px)"></div>
+      <button type="button" onClick="{{ toggleTimer }}" aria-label="{{timerAction}}" style="position: absolute; top: 0; right: 0; width: 48px; height: 48px; border-radius: 50%; border: 0; background: {{timerBtn}}; display: inline-flex; align-items: center; justify-content: center; cursor: pointer">
+        <sc-if value="{{running}}" hint-placeholder-val="{{ true }}"><span style="width: 13px; height: 13px; border-radius: 3px; background: #E5484D"></span></sc-if>
+        <sc-if value="{{paused}}" hint-placeholder-val="{{ false }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="#C8FF3D" aria-hidden="true"><path d="M7 4l13 8-13 8z"></path></svg></sc-if>
+      </button>
+      <span style="font-size: 15px; font-weight: 600">Timer</span>
+      <div style="display: flex; flex-direction: column; gap: 4px"><span style="font-size: 38px; font-weight: 400; letter-spacing: -0.02em; line-height: 0.9; color: {{timerFg}}">20:10</span><span style="font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.75)">{{timerLabel}}</span></div>
+    </section>
+    <section aria-label="Notes" style="height: 150px; box-sizing: border-box; padding: 16px; border-radius: 26px; background: #DDFAF2; display: flex; flex-direction: column; justify-content: space-between">
+      <div style="display: flex; align-items: center; gap: 8px"><span style="width: 32px; height: 32px; border-radius: 50%; background: #FFFFFF; display: inline-flex; align-items: center; justify-content: center"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#0E6B57" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h9l4 4v14H6z"></path><path d="M9 11h7M9 15h5"></path></svg></span><span style="font-size: 15px; font-weight: 600">Notes</span></div>
+      <div style="display: flex; flex-direction: column; gap: 4px"><span style="font-size: 13px; font-weight: 600; line-height: 1.35">Revamp sidebar before Sep 14</span><span style="font-size: 11px; font-weight: 700; color: #0E6B57">Personal · Today</span></div>
+    </section>
+  </div>
+
+  <!-- Bottom nav with notched FAB -->
+  <nav aria-label="Primary" style="position: absolute; left: 16px; right: 16px; bottom: 16px; z-index: 5; height: 72px; box-sizing: border-box; padding: 0 8px; border-radius: 36px; background: #FFFFFF; box-shadow: 0 12px 32px rgba(14,14,12,0.06); display: flex; align-items: center">
+    <div aria-hidden="true" style="position: absolute; top: 0; left: 50%; width: 80px; margin-left: -40px; height: 48px; background: #F1F1EE; border-radius: 0 0 40px 40px"></div>
+    <div aria-hidden="true" style="position: absolute; top: 0; left: calc(50% - 60px); width: 20px; height: 20px; background: radial-gradient(circle at 0 100%, transparent 19.5px, #F1F1EE 20px)"></div>
+    <div aria-hidden="true" style="position: absolute; top: 0; left: calc(50% + 40px); width: 20px; height: 20px; background: radial-gradient(circle at 100% 100%, transparent 19.5px, #F1F1EE 20px)"></div>
+    <a href="#" aria-label="New task" style="position: absolute; top: -16px; left: 50%; margin-left: -30px; width: 60px; height: 60px; border-radius: 50%; background: #0E6B57; display: inline-flex; align-items: center; justify-content: center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#C8FF3D" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></a>
+    <a href="MobileHome.dc.html" aria-current="page" style="flex: 1; height: 56px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #0E6B57; font-size: 11px; font-weight: 700"><span style="width: 44px; height: 28px; border-radius: 999px; background: #DDFAF2; display: inline-flex; align-items: center; justify-content: center"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#0E6B57" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 11l8-7 8 7v9H4z"></path></svg></span>Today</a>
+    <a href="MobileTasks.dc.html" style="flex: 1; height: 56px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #5E5E58; font-size: 11px; font-weight: 600"><span style="width: 44px; height: 28px; border-radius: 999px; background: transparent; display: inline-flex; align-items: center; justify-content: center"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#5E5E58" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16v16H4zM8 12l3 3 5-6"></path></svg></span>Tasks</a>
+    <span style="flex: none; width: 84px"></span>
+    <a href="MobileFlow.dc.html" style="flex: 1; height: 56px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #5E5E58; font-size: 11px; font-weight: 600"><span style="width: 44px; height: 28px; border-radius: 999px; background: transparent; display: inline-flex; align-items: center; justify-content: center"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#5E5E58" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3.5a2.5 2.5 0 1 0 0 5a2.5 2.5 0 1 0 0-5zM18 15.5a2.5 2.5 0 1 0 0 5a2.5 2.5 0 1 0 0-5zM8.5 6H14a4 4 0 0 1 0 8h-4a4 4 0 0 0 0 8"></path></svg></span>Flow</a>
+    <a href="MobileChat.dc.html" style="flex: 1; height: 56px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #5E5E58; font-size: 11px; font-weight: 600"><span style="width: 44px; height: 28px; border-radius: 999px; background: transparent; display: inline-flex; align-items: center; justify-content: center"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#5E5E58" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"></path></svg></span>Assistant</a>
+  </nav>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { scope: 'personal', running: true };
+  }
+  renderVals() {
+    const S = [
+      ['personal', 'Personal', '#4FE3C1', '#DDFAF2', '#0E6B57'],
+      ['project', 'Project', '#5AB4FF', '#E0F0FF', '#0F5BA8'],
+      ['team', 'Team', '#8B8BFF', '#ECECFF', '#4343C8'],
+      ['company', 'Company', '#C07BFF', '#F4E9FF', '#7A2BC4']
+    ];
+    const running = this.state.running;
+    return {
+      scopes: S.map(([id, label, base, soft, deep]) => {
+        const on = id === this.state.scope;
+        return { label, base, sel: on ? 'true' : 'false', bg: on ? soft : '#FFFFFF', fg: on ? deep : '#45453F', pick: () => this.setState({ scope: id }) };
+      }),
+      stats: [
+        { n: 12, label: 'tasks', delta: '↑ 3', bg: '#DDFAF2', fg: '#0E6B57' },
+        { n: 7, label: 'done', delta: '↑ 2', bg: '#DDFAF2', fg: '#0E6B57' },
+        { n: 1, label: 'overdue', delta: '↑ 1', bg: '#FDE7E8', fg: '#B4232A' }
+      ],
+      running, paused: !running,
+      timerBtn: running ? '#0E6B57' : '#0E6B57',
+      timerFg: running ? '#C8FF3D' : 'rgba(255,255,255,0.6)',
+      timerLabel: running ? 'Focus · running' : 'Paused',
+      timerAction: running ? 'Stop timer' : 'Start timer',
+      toggleTimer: () => this.setState({ running: !running })
+    };
+  }
+}
+</script>
+</body>
+</html>

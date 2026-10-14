@@ -1,7 +1,7 @@
 /*
  * Mehran Planner — design tokens.
  *
- * Layer 1 (primitives) is mehran-planner-design/tokens.css itself, imported
+ * Layer 1 (primitives) is design/tokens.css itself, imported
  * just before this file in globals.css: the design package is the single
  * source of truth for colour, shape and shadow values, light and dark.
  * This file holds only app overrides (fonts, motion) and Layer 2 (semantic),

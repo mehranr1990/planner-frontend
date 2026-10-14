@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>موبایل — کارها · Dark</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700&amp;family=Urbanist:wght@500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#121412}
+a{color:#ECEEE9}a:hover{color:#ECEEE9}
+button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid #7DB6F0;outline-offset:2px}
+.ltr{direction:ltr;unicode-bidi:isolate}
+</style>
+</helmet>
+<div dir="rtl" style="position: relative; width: 390px; height: 844px; overflow: hidden; box-sizing: border-box; padding: 20px 16px 0; background: #121412; font-family: 'Vazirmatn', 'Urbanist', system-ui, sans-serif; color: #ECEEE9; display: flex; flex-direction: column; gap: 14px">
+
+  <header style="display: flex; align-items: center; gap: 10px">
+    <div style="flex: 1; display: flex; flex-direction: column; line-height: 1.45"><span style="font-size: 13px; font-weight: 600; color: #969B94">{{sub}}</span><h1 style="margin: 0; font-size: 26px; font-weight: 700">کارها</h1></div>
+    <button type="button" aria-label="جستجو" style="width: 48px; height: 48px; border-radius: 50%; border: 0; background: #1C1F1C; display: inline-flex; align-items: center; justify-content: center; cursor: pointer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ECEEE9" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-4-4"></path></svg></button>
+    <button type="button" aria-label="فیلتر" style="width: 48px; height: 48px; border-radius: 50%; border: 0; background: #1C1F1C; display: inline-flex; align-items: center; justify-content: center; cursor: pointer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ECEEE9" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M7 12h10M10 18h4"></path></svg></button>
+  </header>
+
+  <!-- Folder-tab card (RTL: first tab at the right) -->
+  <section aria-label="فهرست کارها" style="flex: 1; min-height: 0; display: flex; flex-direction: column">
+    <div role="tablist" aria-label="نما" style="display: flex; align-items: flex-end; gap: 6px; padding-bottom: 0">
+      <sc-for list="{{tabs}}" as="t" hint-placeholder-count="3">
+        <button type="button" role="tab" aria-selected="{{t.sel}}" onClick="{{ t.pick }}" style="position: relative; display: inline-flex; align-items: center; gap: 8px; height: {{t.h}}; padding: 0 16px; border: 0; border-radius: {{t.radius}}; background: {{t.bg}}; box-shadow: {{t.ring}}; margin-bottom: {{t.mb}}; font-family: inherit; font-size: 14px; font-weight: 700; color: {{t.fg}}; cursor: pointer">
+          {{t.label}}<span style="font-size: 12px; font-weight: 700; color: #7D827B">{{t.count}}</span>
+          <sc-if value="{{t.on}}" hint-placeholder-val="{{ false }}">
+            <span aria-hidden="true" style="position: absolute; bottom: 0; left: -18px; width: 18px; height: 18px; background: radial-gradient(circle at 0 0, transparent 17.5px, #1C1F1C 18px)"></span>
+            <sc-if value="{{t.rightFillet}}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" style="position: absolute; bottom: 0; right: -18px; width: 18px; height: 18px; background: radial-gradient(circle at 100% 0, transparent 17.5px, #1C1F1C 18px)"></span></sc-if>
+          </sc-if>
+        </button>
+      </sc-for>
+    </div>
+    <div style="flex: 1; min-height: 0; box-sizing: border-box; padding: 16px 14px 100px; border-radius: {{bodyR}}; background: #1C1F1C; display: flex; flex-direction: column; gap: 8px; overflow: hidden">
+      <sc-for list="{{groups}}" as="g" hint-placeholder-count="2">
+        <div style="display: flex; align-items: center; justify-content: space-between; padding: 6px 4px 2px"><span style="font-size: 13px; font-weight: 700; color: #C4C8C2">{{g.title}}</span><span style="font-size: 12px; font-weight: 600; color: #7D827B">{{g.meta}}</span></div>
+        <sc-for list="{{g.items}}" as="x" hint-placeholder-count="3">
+          <div style="display: flex; align-items: center; gap: 12px; min-height: 60px; padding: 0 12px; border-radius: 18px; background: #222622">
+            <button type="button" role="checkbox" aria-checked="{{x.done}}" aria-label="{{x.aria}}" onClick="{{ x.toggle }}" style="flex: none; width: 26px; height: 26px; box-sizing: border-box; border-radius: 9px; border: {{x.border}}; background: {{x.boxBg}}; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; padding: 0"><sc-if value="{{x.isDone}}" hint-placeholder-val="{{ false }}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0D1210" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg></sc-if></button>
+            <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; line-height: 1.5">
+              <span style="font-size: 14px; font-weight: 700; color: {{x.fg}}; text-decoration: {{x.strike}}; overflow: hidden; text-overflow: ellipsis; white-space: nowrap">{{x.t}}</span>
+              <span style="display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: #969B94"><span style="width: 7px; height: 7px; border-radius: 50%; background: {{x.dot}}"></span>{{x.meta}}</span>
+            </div>
+            <sc-if value="{{x.hasPrio}}" hint-placeholder-val="{{ false }}"><span style="flex: none; height: 24px; padding: 0 9px; border-radius: 999px; background: {{x.pBg}}; color: {{x.pFg}}; font-size: 11px; font-weight: 700; display: inline-flex; align-items: center">{{x.p}}</span></sc-if>
+          </div>
+        </sc-for>
+      </sc-for>
+    </div>
+  </section>
+
+  <nav aria-label="ناوبری اصلی" style="position: absolute; left: 16px; right: 16px; bottom: 16px; z-index: 5; height: 72px; box-sizing: border-box; padding: 0 8px; border-radius: 36px; background: #1C1F1C; box-shadow: 0 12px 32px rgba(0,0,0,0.24); display: flex; align-items: center">
+    <div aria-hidden="true" style="position: absolute; top: 0; left: 50%; width: 80px; margin-left: -40px; height: 48px; background: #121412; border-radius: 0 0 40px 40px"></div>
+    <div aria-hidden="true" style="position: absolute; top: 0; left: calc(50% - 60px); width: 20px; height: 20px; background: radial-gradient(circle at 0 100%, transparent 19.5px, #121412 20px)"></div>
+    <div aria-hidden="true" style="position: absolute; top: 0; left: calc(50% + 40px); width: 20px; height: 20px; background: radial-gradient(circle at 100% 100%, transparent 19.5px, #121412 20px)"></div>
+    <a href="MobileFaQuickAdd.dc.html" aria-label="افزودن سریع" style="position: absolute; top: -16px; left: 50%; margin-left: -30px; width: 60px; height: 60px; border-radius: 50%; background: #6FD4B8; display: inline-flex; align-items: center; justify-content: center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0D1210" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></a>
+    <a href="MobileFaHome.dc.html" style="flex: 1; height: 56px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #A5AAA3; font-size: 11px; font-weight: 600"><span style="width: 44px; height: 28px; border-radius: 999px; background: transparent; display: inline-flex; align-items: center; justify-content: center"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#A5AAA3" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 11l8-7 8 7v9H4z"></path></svg></span>امروز</a>
+    <a href="MobileFaTasks.dc.html" aria-current="page" style="flex: 1; height: 56px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #6FD4B8; font-size: 11px; font-weight: 700"><span style="width: 44px; height: 28px; border-radius: 999px; background: #1D4A40; display: inline-flex; align-items: center; justify-content: center"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#6FD4B8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16v16H4zM8 12l3 3 5-6"></path></svg></span>کارها</a>
+    <span style="flex: none; width: 84px"></span>
+    <a href="MobileFaCalendar.dc.html" style="flex: 1; height: 56px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #A5AAA3; font-size: 11px; font-weight: 600"><span style="width: 44px; height: 28px; border-radius: 999px; background: transparent; display: inline-flex; align-items: center; justify-content: center"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#A5AAA3" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16v15H4zM4 10h16M9 3v4M15 3v4"></path></svg></span>تقویم</a>
+    <a href="#" style="flex: 1; height: 56px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #A5AAA3; font-size: 11px; font-weight: 600"><span style="width: 44px; height: 28px; border-radius: 999px; background: transparent; display: inline-flex; align-items: center; justify-content: center"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#A5AAA3" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"></path></svg></span>دستیار</a>
+  </nav>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { tab: 'today', done: { a2: true } }; }
+  renderVals() {
+    const fa = (s) => String(s).replace(/[0-9]/g, (d) => '۰۱۲۳۴۵۶۷۸۹'[d]);
+    const st = this.state, done = st.done || {};
+    const SC = { p: ['#4FE3C1', 'شخصی'], j: ['#5AB4FF', 'Planner App'], t: ['#8B8BFF', 'تیم طراحی'], c: ['#C07BFF', 'Euroly'], f: ['#4FE3C1', 'مالی'] };
+    const PR = { h: ['مهم', '#3A2E12', '#F5B54A'], u: ['فوری', '#42201F', '#FF8589'] };
+    const D = {
+      today: [['صبح', [['a1', 'کار عمیق · پلنر', 'p', '۰۹:۰۰ · ۲ ساعت'], ['a2', 'بازبینی طراحی', 't', '۱۱:۰۰ · ۴۵ دقیقه']]],
+              ['بعدازظهر', [['a3', 'طراحی رابط · صفحه‌ی امروز', 'j', '۱۴:۰۰ · الان', 'h'], ['a4', 'پاسخ به بریف کتی', 'j', 'زمان‌بندی‌نشده · ۲۰ دقیقه', 'u'], ['a5', 'بررسی هزینه‌های مهر', 'f', 'زمان‌بندی‌نشده · ۳۰ دقیقه']]]],
+      next: [['فردا · چهارشنبه ۲۲ مهر', [['b1', 'مرور فصلی', 'c', '۱۰:۰۰ · ۱ ساعت', 'h'], ['b2', 'جلسه‌ی یک‌به‌یک با کتی', 't', '۱۴:۰۰ · ۱ ساعت و ۳۰ دقیقه']]],
+             ['این هفته', [['b3', 'وایرفریم آنبوردینگ', 'j', 'شنبه ۲۵ مهر'], ['b4', 'تأیید بودجه‌ی Q4', 'c', 'یکشنبه ۲۶ مهر', 'u'], ['b5', 'برنامه‌ی سفر آخر هفته', 'p', 'پنجشنبه']]]],
+      done: [['امروز', [['c1', 'روتین صبح', 'p', '۰۸:۰۰'], ['c2', 'ارسال فاکتور #۲۱۴', 'j', '۰۸:۴۰']]], ['دیروز', [['c3', 'آماده‌سازی جلسه‌ی هیئت‌مدیره', 'c', 'دوشنبه'], ['c4', 'باشگاه', 'p', 'دوشنبه ۱۷:۱۵']]]]
+    };
+    const T = [['today', 'امروز'], ['next', 'پیش‌رو'], ['done', 'انجام‌شده']];
+    const count = (k) => D[k].reduce((a, g) => a + g[1].length, 0);
+    const firstOn = st.tab === T[0][0];
+    const groups = D[st.tab].map(([title, list]) => ({
+      title, meta: fa(list.length) + ' کار',
+      items: list.map(([id, t, sc, meta, p]) => {
+        const isDone = st.tab === 'done' || !!done[id];
+        return { t, meta: SC[sc][1] + ' · ' + meta, dot: SC[sc][0], done: isDone ? 'true' : 'false', isDone, aria: 'انجام شد: ' + t,
+          border: isDone ? '0' : '2px solid #6E746E', boxBg: isDone ? '#6FD4B8' : '#1C1F1C', fg: isDone ? '#7D827B' : '#ECEEE9', strike: isDone ? 'line-through' : 'none',
+          hasPrio: !!p && !isDone, p: p ? PR[p][0] : '', pBg: p ? PR[p][1] : '', pFg: p ? PR[p][2] : '',
+          toggle: () => this.setState({ done: Object.assign({}, done, { [id]: !done[id] }) }) };
+      })
+    }));
+    const left = D.today.reduce((a, g) => a + g[1].filter((x) => !done[x[0]]).length, 0);
+    return {
+      sub: 'سه‌شنبه ' + fa(21) + ' مهر · ' + fa(left) + ' کار باقی‌مانده',
+      tabs: T.map(([id, label], i) => { const on = st.tab === id; return {
+        label, count: fa(count(id)), on, sel: on ? 'true' : 'false', rightFillet: i !== 0,
+        h: on ? '52px' : '42px', mb: on ? '0' : '6px', radius: on ? '22px 22px 0 0' : '999px',
+        bg: on ? '#1C1F1C' : 'transparent', ring: on ? 'none' : 'inset 0 0 0 1px #3A3F3A', fg: on ? '#ECEEE9' : '#A5AAA3',
+        pick: () => this.setState({ tab: id }) }; }),
+      bodyR: firstOn ? '28px 0 28px 28px' : '28px 28px 28px 28px', groups
+    };
+  }
+}
+</script>
+</body>
+</html>

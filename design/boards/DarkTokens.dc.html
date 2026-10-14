@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Dark theme tokens</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@300;400;500;600;700&amp;family=Vazirmatn:wght@400;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#121412}
+button:focus-visible{outline:2px solid #7DB6F0;outline-offset:2px}
+</style>
+</helmet>
+<div style="width: 1440px; min-height: 1640px; box-sizing: border-box; padding: 64px 72px; background: #121412; font-family: 'Urbanist', 'Vazirmatn', system-ui, sans-serif; color: #ECEEE9; display: flex; flex-direction: column; gap: 28px">
+
+  <header style="display: flex; align-items: flex-end; justify-content: space-between; gap: 24px">
+    <div style="display: flex; flex-direction: column; gap: 8px">
+      <span style="font-size: 14px; font-weight: 700; color: #6FD4B8">Step 4 · Dark theme</span>
+      <h1 style="margin: 0; font-size: 48px; font-weight: 500; letter-spacing: -0.015em; line-height: 1.05">Graphite, not black</h1>
+      <p style="margin: 0; max-width: 640px; font-size: 16px; line-height: 1.55; color: #A5AAA3">Same shapes, same notches. Surfaces step up in lightness instead of casting shadows, scope colours swap their deep tone for a bright one, and text on any accent becomes ink.</p>
+    </div>
+    <div role="radiogroup" aria-label="Theme" style="display: inline-flex; gap: 4px; padding: 4px; border-radius: 999px; background: #1C1F1C">
+      <sc-for list="{{themes}}" as="t" hint-placeholder-count="3"><button type="button" role="radio" aria-checked="{{t.on}}" onClick="{{ t.pick }}" style="height: 44px; padding: 0 18px; border: 0; border-radius: 999px; background: {{t.bg}}; color: {{t.fg}}; font-family: inherit; font-size: 14px; font-weight: 700; cursor: pointer">{{t.label}}</button></sc-for>
+    </div>
+  </header>
+
+  <div style="display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 20px">
+    <!-- Neutral ramp -->
+    <section aria-label="Neutrals" style="padding: 24px; border-radius: 32px; background: #1C1F1C; display: flex; flex-direction: column; gap: 10px">
+      <div style="display: flex; justify-content: space-between; align-items: baseline"><h2 style="margin: 0; font-size: 20px; font-weight: 600">Neutrals</h2><span style="font-size: 12px; font-weight: 700; color: #969B94">light → dark</span></div>
+      <sc-for list="{{neutrals}}" as="n" hint-placeholder-count="12">
+        <div style="display: flex; align-items: center; gap: 12px; height: 44px; padding: 0 8px; border-radius: 14px; background: #222622">
+          <span style="width: 130px; font-size: 13px; font-weight: 700">{{n.name}}</span>
+          <span style="display: inline-flex; align-items: center; gap: 6px"><span style="width: 28px; height: 28px; border-radius: 9px; background: {{n.l}}; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.12)"></span><span style="font-size: 11px; font-weight: 600; color: #969B94; width: 62px">{{n.l}}</span></span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6E746E" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
+          <span style="display: inline-flex; align-items: center; gap: 6px"><span style="width: 28px; height: 28px; border-radius: 9px; background: {{n.d}}; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.12)"></span><span style="font-size: 11px; font-weight: 600; color: #969B94; width: 62px">{{n.d}}</span></span>
+          <span style="flex: 1; font-size: 12px; font-weight: 600; color: #A5AAA3; text-align: right">{{n.use}}</span>
+        </div>
+      </sc-for>
+    </section>
+
+    <div style="display: flex; flex-direction: column; gap: 20px">
+      <!-- Scope accents -->
+      <section aria-label="Scope accents" style="padding: 24px; border-radius: 32px; background: #1C1F1C; display: flex; flex-direction: column; gap: 14px">
+        <h2 style="margin: 0; font-size: 20px; font-weight: 600">Scope colours</h2>
+        <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px">
+          <sc-for list="{{scopes}}" as="s" hint-placeholder-count="4">
+            <div style="display: flex; flex-direction: column; gap: 8px; padding: 12px; border-radius: 22px; background: {{s.soft}}">
+              <span style="font-size: 14px; font-weight: 700; color: {{s.accent}}">{{s.name}}</span>
+              <div style="display: flex; gap: 6px"><span style="flex: 1; height: 34px; border-radius: 10px; background: {{s.accent}}; color: #0D1210; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center">accent</span><span style="width: 34px; height: 34px; border-radius: 10px; background: {{s.dot}}"></span></div>
+              <span style="font-size: 11px; font-weight: 600; color: #A5AAA3; line-height: 1.5">soft {{s.soft}}<br>accent {{s.accent}}<br>was deep {{s.deep}}</span>
+            </div>
+          </sc-for>
+        </div>
+      </section>
+
+      <!-- Rules -->
+      <section aria-label="Rules" style="padding: 24px; border-radius: 32px; background: #1C1F1C; display: flex; flex-direction: column; gap: 10px">
+        <h2 style="margin: 0; font-size: 20px; font-weight: 600">Rules</h2>
+        <sc-for list="{{rules}}" as="r" hint-placeholder-count="7">
+          <div style="display: flex; gap: 12px; align-items: flex-start"><span style="flex: none; width: 26px; height: 26px; border-radius: 50%; background: #1D4A40; color: #6FD4B8; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700">{{r.n}}</span><span style="font-size: 14px; font-weight: 500; line-height: 1.5; color: #C4C8C2">{{r.t}}</span></div>
+        </sc-for>
+      </section>
+    </div>
+  </div>
+
+  <!-- Components in dark -->
+  <section aria-label="Components" style="display: flex; flex-direction: column; gap: 16px">
+    <h2 style="margin: 0; font-size: 24px; font-weight: 600">Components in dark</h2>
+    <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; align-items: start">
+      <!-- Volt now card -->
+      <article style="position: relative; min-height: 230px; box-sizing: border-box; padding: 22px; border-radius: 30px; background: #B4F58C; color: #10120F; display: flex; flex-direction: column; justify-content: space-between; gap: 12px">
+        <div aria-hidden="true" style="position: absolute; top: 0; right: 0; width: 60px; height: 60px; background: #121412; border-bottom-left-radius: 28px"></div>
+        <div aria-hidden="true" style="position: absolute; top: 0; right: 60px; width: 28px; height: 28px; background: radial-gradient(circle at 0 100%, transparent 27.5px, #121412 28px)"></div>
+        <div aria-hidden="true" style="position: absolute; top: 60px; right: 0; width: 28px; height: 28px; background: radial-gradient(circle at 0 100%, transparent 27.5px, #121412 28px)"></div>
+        <span style="position: absolute; top: 0; right: 0; width: 48px; height: 48px; box-sizing: border-box; border-radius: 50%; border: 1px solid #3A3F3A; display: inline-flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ECEEE9" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"></path></svg></span>
+        <span style="align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 10px; border-radius: 999px; background: #7DB6F0; color: #0D1210; font-size: 12px; font-weight: 700"><span style="width: 7px; height: 7px; border-radius: 50%; background: #0D1210"></span>Now</span>
+        <div style="display: flex; flex-direction: column; gap: 4px"><span style="font-size: 24px; font-weight: 600; line-height: 1.15">UI design · My Day</span><span style="font-size: 13px; font-weight: 600; color: #24400F">Planner App · 35m left</span></div>
+        <div style="display: flex; gap: 8px"><span style="flex: 1; height: 46px; border-radius: 999px; background: rgba(255,255,255,0.6); display: flex; align-items: center; padding: 0 16px; font-size: 13px; font-weight: 600">With Katy</span><span style="width: 46px; height: 46px; border-radius: 50%; background: #7DB6F0; display: inline-flex; align-items: center; justify-content: center"><svg width="15" height="15" viewBox="0 0 24 24" fill="#0D1210" aria-hidden="true"><path d="M7 4l13 8-13 8z"></path></svg></span></div>
+      </article>
+
+      <!-- Folder tab card -->
+      <div style="display: flex; flex-direction: column">
+        <div style="display: flex; align-items: flex-end; gap: 6px">
+          <span style="position: relative; display: inline-flex; align-items: center; gap: 8px; height: 52px; padding: 0 18px; border-radius: 22px 22px 0 0; background: #1C1F1C; font-size: 14px; font-weight: 700">In progress<span style="color: #7D827B; font-size: 12px">4</span><span aria-hidden="true" style="position: absolute; bottom: 0; right: -18px; width: 18px; height: 18px; background: radial-gradient(circle at 100% 0, transparent 17.5px, #1C1F1C 18px)"></span></span>
+          <span style="display: inline-flex; align-items: center; gap: 8px; height: 42px; margin-bottom: 6px; padding: 0 16px; border-radius: 999px; box-shadow: inset 0 0 0 1px #3A3F3A; font-size: 14px; font-weight: 700; color: #A5AAA3">Review<span style="color: #7D827B; font-size: 12px">2</span></span>
+        </div>
+        <div style="box-sizing: border-box; padding: 14px; border-radius: 0 28px 28px 28px; background: #1C1F1C; display: flex; flex-direction: column; gap: 8px">
+          <sc-for list="{{rows}}" as="r" hint-placeholder-count="3"><div style="display: flex; align-items: center; gap: 10px; height: 56px; padding: 0 12px; border-radius: 16px; background: #222622"><span style="width: 34px; height: 34px; border-radius: 50%; background: {{r.soft}}; color: {{r.accent}}; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700">{{r.ini}}</span><span style="flex: 1; display: flex; flex-direction: column"><span style="font-size: 14px; font-weight: 700">{{r.t}}</span><span style="font-size: 12px; color: #969B94">{{r.m}}</span></span><span style="height: 24px; padding: 0 9px; border-radius: 999px; background: {{r.soft}}; color: {{r.accent}}; font-size: 11px; font-weight: 700; display: inline-flex; align-items: center">{{r.tag}}</span></div></sc-for>
+        </div>
+      </div>
+
+      <!-- Controls -->
+      <div style="display: flex; flex-direction: column; gap: 14px; padding: 20px; border-radius: 30px; background: #1C1F1C">
+        <div style="display: flex; flex-wrap: wrap; gap: 8px">
+          <span style="height: 44px; padding: 0 18px; border-radius: 999px; background: #6FD4B8; color: #0D1210; font-size: 14px; font-weight: 700; display: inline-flex; align-items: center">Primary</span>
+          <span style="height: 44px; padding: 0 18px; border-radius: 999px; background: #2C302C; color: #ECEEE9; font-size: 14px; font-weight: 700; display: inline-flex; align-items: center">Secondary</span>
+          <span style="height: 44px; padding: 0 18px; border-radius: 999px; box-shadow: inset 0 0 0 1px #3A3F3A; color: #ECEEE9; font-size: 14px; font-weight: 700; display: inline-flex; align-items: center">Outline</span>
+          <span style="height: 44px; padding: 0 18px; border-radius: 999px; background: #42201F; color: #FF8589; font-size: 14px; font-weight: 700; display: inline-flex; align-items: center">Delete</span>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 6px"><span style="font-size: 12px; font-weight: 700; color: #A5AAA3">Title</span><span style="height: 50px; padding: 0 16px; border-radius: 16px; background: #242824; box-shadow: 0 0 0 3px #2B4766; display: flex; align-items: center; font-size: 15px; font-weight: 600">Review October expenses<span style="width: 2px; height: 18px; margin-left: 2px; background: #7DB6F0"></span></span></div>
+        <div style="display: flex; flex-direction: column; gap: 6px"><span style="font-size: 12px; font-weight: 700; color: #A5AAA3">Amount</span><span style="height: 50px; padding: 0 16px; border-radius: 16px; background: #242824; box-shadow: inset 0 0 0 1.5px #F2555A; display: flex; align-items: center; font-size: 15px; font-weight: 600">2,000,000,000</span><span style="font-size: 12px; font-weight: 600; color: #FF8589">More than this month’s budget</span></div>
+        <div style="display: flex; align-items: center; gap: 12px">
+          <button type="button" role="switch" aria-checked="{{sw}}" onClick="{{ toggleSw }}" style="position: relative; width: 48px; height: 28px; border: 0; padding: 0; border-radius: 999px; background: {{swTrack}}; cursor: pointer"><span style="position: absolute; top: 3px; left: {{swKnob}}; width: 22px; height: 22px; border-radius: 50%; background: {{swDot}}"></span></button>
+          <span style="font-size: 14px; font-weight: 600">Notifications</span>
+          <span style="flex: 1"></span>
+          <span style="display: inline-flex; gap: 6px"><span style="height: 32px; padding: 0 12px; border-radius: 999px; background: #1D4A40; color: #6FD4B8; font-size: 12px; font-weight: 700; display: inline-flex; align-items: center">Personal</span><span style="height: 32px; padding: 0 12px; border-radius: 999px; background: #3A2E12; color: #F5B54A; font-size: 12px; font-weight: 700; display: inline-flex; align-items: center">High</span></span>
+        </div>
+        <div role="status" style="display: flex; align-items: center; gap: 10px; height: 56px; padding: 0 8px 0 8px; border-radius: 999px; background: #2C302C; font-size: 14px; font-weight: 600"><span style="width: 40px; height: 40px; border-radius: 50%; background: #1D4A40; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6FD4B8" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg></span><span style="flex: 1">Task created · Wed 08:30</span><span style="height: 40px; padding: 0 14px; border-radius: 999px; background: #6FD4B8; color: #0D1210; font-size: 13px; font-weight: 700; display: inline-flex; align-items: center">View</span></div>
+      </div>
+    </div>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1640}}'>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { theme: 'dark', sw: true }; }
+  renderVals() {
+    const st = this.state;
+    const N = [
+      ['Canvas', '#F1F1EE', '#121412', 'page, notch cut-outs'], ['Surface', '#FFFFFF', '#1C1F1C', 'cards, islands, rail'], ['Raised', '#F4F4F1', '#242824', 'inputs, inner panels'],
+      ['Subtle', '#F8F8F6', '#222622', 'rows inside cards'], ['Line', '#EDEDEA', '#2A2E2A', 'grid lines, dividers'], ['Hairline', '#E6E6E1', '#2C302C', 'toasts, secondary btn'],
+      ['Border', '#D3D3CC', '#3A3F3A', 'outline buttons, chips'], ['Muted icon', '#A9A9A1', '#6E746E', 'drag handles'], ['Text 3', '#6B6B64', '#969B94', 'captions, meta'],
+      ['Text 2', '#45453F', '#C4C8C2', 'secondary labels'], ['Text 1', '#1A1A17', '#ECEEE9', 'body, titles'], ['On accent', '#FFFFFF', '#0D1210', 'text on accent / volt']
+    ];
+    const S = [['Personal', '#DDFAF2', '#1D4A40', '#0E6B57', '#6FD4B8', '#4FE3C1'], ['Projects', '#E0F0FF', '#1B3A5C', '#0F5BA8', '#7DB6F0', '#5AB4FF'], ['Teams', '#ECECFF', '#2C2E5E', '#4343C8', '#A5A5F5', '#8B8BFF'], ['Companies', '#F4E9FF', '#3B2A55', '#7A2BC4', '#C49DEB', '#C07BFF']];
+    const rules = [
+      'Canvas is graphite #121412 — never pure black.',
+      'Depth comes from lighter surfaces (canvas → surface → raised), not shadows. Shadows only on floating overlays.',
+      'Notches and fillets always cut to the canvas colour, so they read the same in both themes.',
+      'Scope “deep” becomes a bright accent. Accent is used for text, icons and primary buttons.',
+      'Anything sitting on an accent or on volt uses ink #0D1210 — never white.',
+      'On dark, volt becomes neon lime #B4F58C and remains the single “live / now” highlight.',
+      'Status colours are lifted: red #F2555A, warning #F5B54A, error text #FF8589.'
+    ];
+    return {
+      themes: [['light', 'Light'], ['dark', 'Dark'], ['system', 'System']].map(([id, label]) => ({ label, on: st.theme === id ? 'true' : 'false', bg: st.theme === id ? '#6FD4B8' : 'transparent', fg: st.theme === id ? '#0D1210' : '#A5AAA3', pick: () => this.setState({ theme: id }) })),
+      neutrals: N.map(([name, l, d, use]) => ({ name, l, d, use })),
+      scopes: S.map(([name, , soft, deep, accent, dot]) => ({ name, soft, deep, accent, dot })),
+      rules: rules.map((t, i) => ({ n: i + 1, t })),
+      rows: [['KF', 'Katy · Landing page', 'Planner App · 2 days', 'Project', '#1B3A5C', '#7DB6F0'], ['AR', 'Arash · Calendar API', 'Engineering · today', 'Team', '#2C2E5E', '#A5A5F5'], ['SA', 'Sara · Q4 budget', 'Euroly · tomorrow', 'Company', '#3B2A55', '#C49DEB']].map(([ini, t, m, tag, soft, accent]) => ({ ini, t, m, tag, soft, accent })),
+      sw: st.sw ? 'true' : 'false', swTrack: st.sw ? '#6FD4B8' : '#3A3F3A', swKnob: st.sw ? '23px' : '3px', swDot: st.sw ? '#0D1210' : '#969B94', toggleSw: () => this.setState({ sw: !st.sw })
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,470 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Data viz refinements · Dark</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@300;400;500;600;700&amp;family=Vazirmatn:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#121412}
+.fam{display:grid;grid-template-columns:360px minmax(0,1fr);gap:32px;align-items:start}
+.spec{display:flex;flex-direction:column;gap:14px;padding-top:6px}
+.num{display:inline-flex;align-items:center;justify-content:center;height:30px;padding:0 12px;border-radius:999px;background:#1C1F1C;font-size:12px;font-weight:700;color:#C4C8C2}
+.cls{align-self:flex-start;height:26px;padding:0 10px;border-radius:999px;font-size:11px;font-weight:700;display:inline-flex;align-items:center;background:#1D4A40;color:#6FD4B8}
+.q{margin:0;font-size:18px;font-weight:600;line-height:1.35}
+.row{display:grid;grid-template-columns:92px minmax(0,1fr);gap:10px;font-size:13px;line-height:1.5}
+.row b{font-weight:700;color:#969B94;font-size:12px}
+.card{position:relative;box-sizing:border-box;padding:22px;border-radius:32px;background:#1C1F1C}
+.tip{position:absolute;transform:translateX(-50%);z-index:3;box-sizing:border-box;padding:9px 12px;border-radius:16px;background:#1C1F1C;box-shadow:0 0 0 1px #2C302C,0 10px 24px rgba(0,0,0,0.40);display:flex;flex-direction:column;gap:1px;white-space:nowrap;pointer-events:none}
+.tip small{font-size:11px;font-weight:600;color:#969B94}
+.tip strong{font-size:15px;font-weight:700;color:#ECEEE9}
+.tip em{font-style:normal;font-size:11px;font-weight:700;color:#F5B54A}
+.seg{display:inline-flex;gap:2px;padding:3px;border-radius:999px;background:#121412}
+.seg button{height:32px;padding:0 12px;border:0;border-radius:999px;background:transparent;font-family:inherit;font-size:12px;font-weight:700;color:#A5AAA3;cursor:pointer}
+.seg button[aria-pressed="true"]{background:#1C1F1C;color:#ECEEE9;box-shadow:0 1px 2px rgba(0,0,0,0.32)}
+.sh{font-size:12px;font-weight:700;color:#969B94;letter-spacing:.02em}
+.was{display:flex;flex-direction:column;gap:6px;padding:12px 14px;border-radius:18px;background:#1C1F1C;font-size:13px;line-height:1.45}
+.was span{display:block}
+.mv{transition:d .6s cubic-bezier(.3,.7,.2,1),opacity .3s,fill-opacity .3s}
+@media (prefers-reduced-motion: reduce){.mv{transition:none}}
+.phone{width:390px;box-sizing:border-box;padding:18px 16px 24px;border-radius:44px;background:#121412;box-shadow:0 0 0 8px #1C1F1C,0 24px 48px rgba(0,0,0,0.40);display:flex;flex-direction:column;gap:12px}
+.pc{position:relative;box-sizing:border-box;padding:16px;border-radius:28px;background:#1C1F1C;display:flex;flex-direction:column;gap:10px}
+.oc{display:flex;flex-direction:column;align-items:flex-start;gap:4px;box-sizing:border-box;border:0;font-family:inherit;text-align:left;cursor:pointer}
+button:focus-visible{outline:2px solid #7DB6F0;outline-offset:2px}
+</style>
+</helmet>
+<div style="width: 1440px; box-sizing: border-box; padding: 64px 56px 80px; background: #121412; font-family: 'Urbanist', 'Vazirmatn', system-ui, sans-serif; color: #ECEEE9; display: flex; flex-direction: column; gap: 56px">
+
+  <header style="display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 40px; align-items: end">
+    <div style="display: flex; flex-direction: column; gap: 10px">
+      <span style="font-size: 14px; font-weight: 700; color: #6FD4B8">Personal · Data visualization · refinement 2</span>
+      <h1 style="margin: 0; font-size: 50px; font-weight: 500; letter-spacing: -0.02em; line-height: 1.05">Mood Terrain, Focus Clock<br>and Carry-over Flow, refined.</h1>
+      <p style="margin: 0; max-width: 640px; font-size: 15px; line-height: 1.55; color: #A5AAA3">Only these three patterns changed. Budget River, Milestone Path, Weekly Story, Habit Field, Habit Streak Ribbon and Context Ribbon are frozen as approved on the main board. These versions replace sections 03, 04 and 08 once approved.</p>
+    </div>
+    <div class="card" style="display: flex; flex-direction: column; gap: 10px">
+      <span class="sh">FROZEN — NOT TOUCHED</span>
+      <div style="display: flex; flex-wrap: wrap; gap: 6px"><sc-for list="{{frozen}}" as="f" hint-placeholder-count="6"><span style="height: 30px; padding: 0 12px; border-radius: 999px; background: #121412; font-size: 12px; font-weight: 700; color: #969B94; display: inline-flex; align-items: center; gap: 6px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#7D827B" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M7 11V8a5 5 0 0 1 10 0v3M5 11h14v10H5z"></path></svg>{{f.t}}</span></sc-for></div>
+    </div>
+  </header>
+
+  <!-- ================= MOOD TERRAIN v2 ================= -->
+  <section class="fam">
+    <div class="spec">
+      <div style="display: flex; gap: 8px"><span class="num">03 · v2</span><span class="cls">Specialized visualization</span></div>
+      <h2 style="margin: 0; font-size: 32px; font-weight: 500">Mood Terrain</h2>
+      <p class="q">“How did my mood and energy move together?”</p>
+      <div class="was"><span><b style="color: #6FD4B8">Elevation</b>= mood. The land rises on good days and dips toward the valley on low ones.</span><span><b style="color: #F5B54A">Soil layers</b>= energy. Under each day, one, two or three warm strata show Low, Medium or High.</span><span><b style="color: #969B94">Horizon</b>= “Okay”, your calm baseline.</span></div>
+      <sc-for list="{{specMt}}" as="r" hint-placeholder-count="6"><div class="row"><b>{{r.k}}</b><span>{{r.v}}</span></div></sc-for>
+    </div>
+    <div class="card" style="display: flex; flex-direction: column; gap: 14px">
+      <div style="display: flex; align-items: center; justify-content: space-between">
+        <div style="display: flex; align-items: center; gap: 14px"><span style="font-size: 18px; font-weight: 700">Mood & energy</span><span style="display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; color: #C4C8C2"><span style="width: 16px; height: 10px; border-radius: 5px 5px 2px 2px; background: #2A5C4E; border-top: 2px solid #199E70"></span>Mood = elevation</span><span style="display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; color: #C4C8C2"><span style="display: inline-flex; flex-direction: column; gap: 1px"><span style="width: 16px; height: 3px; border-radius: 2px; background: #C98500"></span><span style="width: 16px; height: 3px; border-radius: 2px; background: #C98500; opacity: .7"></span><span style="width: 16px; height: 3px; border-radius: 2px; background: #C98500; opacity: .45"></span></span>Energy = soil layers</span></div>
+        <div class="seg" role="group" aria-label="Range"><sc-for list="{{mtRanges}}" as="s" hint-placeholder-count="3"><button type="button" aria-pressed="{{s.on}}" onClick="{{ s.pick }}">{{s.t}}</button></sc-for></div>
+      </div>
+      <div style="position: relative">
+        <svg viewBox="0 0 {{mt.W}} {{mt.H}}" width="100%" style="display: block; overflow: visible" role="img" aria-label="Mood terrain. Elevation is mood, soil layers are energy. Selected {{mt.tipDate}}: mood {{mt.tipMood}}, energy {{mt.tipEn}}.">
+  <defs>
+    <linearGradient id="mtAsky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#199E70" stop-opacity="0.34"></stop><stop offset="0.55" stop-color="#199E70" stop-opacity="0.12"></stop><stop offset="1" stop-color="#199E70" stop-opacity="0.02"></stop></linearGradient>
+    <sc-for list="{{mt.strata}}" as="s" hint-placeholder-count="3"><linearGradient id="{{s.id}}" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="{{mt.W}}" y2="0"><sc-for list="{{s.stops}}" as="t" hint-placeholder-count="7"><stop offset="{{t.off}}" stop-color="#C98500" stop-opacity="{{t.op}}"></stop></sc-for></linearGradient></sc-for>
+    <clipPath id="mtAclip"><path d="{{mt.terrainD}}"></path></clipPath>
+  </defs>
+  <sc-for list="{{mt.levels}}" as="l" hint-placeholder-count="5"><text x="{{l.x}}" y="{{l.y}}" dy="4" text-anchor="{{l.anchor}}" font-size="11" font-weight="600" fill="#6E746E">{{l.t}}</text></sc-for>
+  <path class="mv" style="d: path('{{mt.terrainD}}')" fill="url(#mtAsky)"></path>
+  <g clip-path="url(#mtAclip)">
+    <sc-for list="{{mt.levels}}" as="l" hint-placeholder-count="5"><line x1="0" x2="{{mt.W}}" y1="{{l.y}}" y2="{{l.y}}" stroke="#0D1210" stroke-opacity="0.55" stroke-width="1"></line></sc-for>
+    <rect x="{{mt.colX}}" y="0" width="{{mt.colW}}" height="{{mt.H}}" rx="12" fill="#0D1210" fill-opacity="0.55"></rect>
+  </g>
+  <sc-for list="{{mt.strata}}" as="s" hint-placeholder-count="3"><path class="mv" style="d: path('{{s.d}}')" fill="url(#{{s.id}})"></path></sc-for>
+  <line x1="0" x2="{{mt.W}}" y1="{{mt.horizonY}}" y2="{{mt.horizonY}}" stroke="#6E746E" stroke-width="1" stroke-dasharray="1 5" stroke-linecap="round"></line>
+  <path class="mv" style="d: path('{{mt.surface}}')" fill="none" stroke="#199E70" stroke-width="2.2" stroke-linecap="round"></path>
+  <sc-for list="{{mt.anchors}}" as="a" hint-placeholder-count="7">
+    <circle cx="{{a.x}}" cy="{{a.y}}" r="{{a.r}}" fill="{{a.fill}}" stroke="{{a.stroke}}" stroke-width="{{a.sw}}"></circle>
+    <sc-for list="{{a.e}}" as="e" hint-placeholder-count="3"><circle cx="{{e.x}}" cy="{{mt.dotY}}" r="2.4" fill="{{e.c}}"></circle></sc-for>
+    <text x="{{a.x}}" y="{{mt.labY}}" text-anchor="middle" font-size="11" font-weight="{{a.fw}}" fill="{{a.lc}}">{{a.lab}}</text>
+  </sc-for>
+  <sc-for list="{{mt.hits}}" as="h" hint-placeholder-count="7"><rect x="{{h.x}}" y="0" width="{{h.w}}" height="{{mt.H}}" fill="transparent" style="cursor: pointer" onClick="{{ h.pick }}"></rect></sc-for>
+</svg>
+        <div class="tip" style="left: {{mt.selPct}}; top: {{mt.tipTop}}px"><small>{{mt.tipDate}}</small><strong>Mood · {{mt.tipMood}}</strong><em>Energy · {{mt.tipEn}}</em></div>
+      </div>
+      <div style="display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 18px; background: #222622; font-size: 13px; font-weight: 600"><span style="width: 32px; height: 32px; border-radius: 50%; background: #1D4A40; display: inline-flex; align-items: center; justify-content: center"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#6FD4B8" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9V16h7v-2.1A6 6 0 0 0 12 3z"></path></svg></span>Higher ground sat on deeper soil this week — your mood and energy rose together on focused-work days.</div>
+    </div>
+  </section>
+
+  <!-- ================= FOCUS CLOCK v2 ================= -->
+  <section class="fam">
+    <div class="spec">
+      <div style="display: flex; gap: 8px"><span class="num">04 · v2</span><span class="cls">Specialized visualization</span></div>
+      <h2 style="margin: 0; font-size: 32px; font-weight: 500">Focus Clock</h2>
+      <p class="q">“When do I focus best?”</p>
+      <div class="was"><span><b style="color: #6FD4B8">Wedge length</b>= typical focused minutes in that hour. Long wedges are visible at a glance — no reading of cells.</span><span><b style="color: #6FD4B8">Tone</b>= the same in three tiers (light · steady · deep) so hierarchy survives grey-scale.</span><span><b style="color: #6FD4B8">Best window</b>= a solid arc on the clock edge, part of the face.</span><span><b style="color: #969B94">Night</b>= 21:00–06:00 shaded, so the face reads as a day.</span></div>
+      <sc-for list="{{specFc}}" as="r" hint-placeholder-count="6"><div class="row"><b>{{r.k}}</b><span>{{r.v}}</span></div></sc-for>
+    </div>
+    <div class="card" style="display: grid; grid-template-columns: 440px minmax(0, 1fr); gap: 24px; align-items: center">
+      <div style="position: relative; width: 420px; height: 420px; margin: 10px">
+        <svg viewBox="0 0 420 420" width="420" height="420" style="display: block; overflow: visible" role="img" aria-label="Focus clock: 24 hours, wedge length is typical focus minutes. Best window {{fc.bestLabel}}.">
+  <path d="{{fc.night}}" fill="#2A2E2A"></path>
+  <path d="{{fc.guide}}" fill="none" stroke="#2C302C" stroke-width="1" stroke-dasharray="1 6" stroke-linecap="round"></path>
+  <sc-for list="{{fc.wedges}}" as="w" hint-placeholder-count="24"><path class="mv" style="d: path('{{w.d}}'); cursor: pointer" fill="{{w.c}}" stroke="{{w.stroke}}" stroke-width="{{w.sw}}" stroke-linejoin="round" onClick="{{ w.pick }}"></path></sc-for>
+  <path d="{{fc.bestArc}}" fill="none" stroke="#6FD4B8" stroke-width="5" stroke-linecap="round"></path>
+  <sc-for list="{{fc.dial}}" as="t" hint-placeholder-count="8"><line x1="{{t.tx1}}" y1="{{t.ty1}}" x2="{{t.tx2}}" y2="{{t.ty2}}" stroke="#6E746E" stroke-width="1.5" stroke-linecap="round"></line><text x="{{t.x}}" y="{{t.y}}" text-anchor="middle" font-size="{{t.fs}}" font-weight="{{t.fw}}" fill="{{t.c}}">{{t.t}}</text></sc-for>
+  <circle cx="210" cy="210" r="50" fill="#0D1210"></circle>
+  <text x="210" y="196" text-anchor="middle" font-size="11" font-weight="700" fill="#969B94">{{fc.cTop}}</text>
+  <text x="210" y="219" text-anchor="middle" font-size="19" font-weight="600" fill="#ECEEE9">{{fc.cMid}}</text>
+  <text x="210" y="236" text-anchor="middle" font-size="10" font-weight="600" fill="#969B94">{{fc.cBot}}</text>
+</svg>
+        <div style="position: absolute; left: {{fc.bxp}}; top: {{fc.byp}}; transform: translate(-50%, -50%); height: 28px; padding: 0 10px; border-radius: 999px; background: #6FD4B8; color: #0D1210; font-size: 11px; font-weight: 700; display: inline-flex; align-items: center; white-space: nowrap; pointer-events: none">Best · {{fc.bestLabel}}</div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 14px">
+        <div class="seg" role="group" aria-label="Days" style="align-self: flex-start"><sc-for list="{{fcModes}}" as="s" hint-placeholder-count="3"><button type="button" aria-pressed="{{s.on}}" onClick="{{ s.pick }}">{{s.t}}</button></sc-for></div>
+        <div style="display: flex; flex-direction: column; gap: 8px"><span class="sh">READS AS</span>
+          <sc-for list="{{fcTiers}}" as="t" hint-placeholder-count="4"><span style="display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 600; color: #C4C8C2"><svg width="34" height="16" viewBox="0 0 34 16" aria-hidden="true"><path d="{{t.d}}" fill="{{t.c}}"></path></svg>{{t.t}}</span></sc-for>
+          <span style="display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 600; color: #C4C8C2"><svg width="34" height="16" viewBox="0 0 34 16" aria-hidden="true"><path d="M3 12 A18 18 0 0 1 31 12" fill="none" stroke="#6FD4B8" stroke-width="4" stroke-linecap="round"></path></svg>Best window · protected suggestion</span>
+          <span style="display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 600; color: #C4C8C2"><span style="width: 34px; height: 6px; border-radius: 3px; background: #2A2E2A"></span>Night · 21:00–06:00</span>
+        </div>
+        <div style="padding: 14px; border-radius: 20px; background: #16231F; display: flex; flex-direction: column; gap: 6px"><span style="font-size: 15px; font-weight: 700">Your strongest window is {{fc.bestLabel}}, {{fcDays}}.</span><span style="font-size: 13px; font-weight: 600; color: #C4C8C2">Tap any hour to see its minutes · the centre shows the selected hour.</span><button type="button" style="align-self: flex-start; height: 38px; padding: 0 14px; border: 0; border-radius: 999px; background: #6FD4B8; color: #0D1210; font-family: inherit; font-size: 12px; font-weight: 700">Protect as focus block</button></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= CARRY-OVER FLOW v2 ================= -->
+  <section class="fam">
+    <div class="spec">
+      <div style="display: flex; gap: 8px"><span class="num">08 · v2</span><span class="cls">Specialized visualization</span></div>
+      <h2 style="margin: 0; font-size: 32px; font-weight: 500">Carry-over Flow</h2>
+      <p class="q">“What happened to the work I planned?”</p>
+      <div class="was"><span>Reads top → down: one total, a short split, outcome cards. Streams never cross; width = share of the total.</span><span>The number is the hero on every card; the stream only confirms the proportion.</span><span>The context decides the emphasis: <b>Tomorrow</b> in Daily Shutdown, <b>Completed</b> in Weekly Review.</span></div>
+      <sc-for list="{{specCf}}" as="r" hint-placeholder-count="6"><div class="row"><b>{{r.k}}</b><span>{{r.v}}</span></div></sc-for>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 16px">
+      <sc-for list="{{cfs}}" as="c" hint-placeholder-count="2">
+        <div class="card" style="display: flex; flex-direction: column; gap: 0">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px"><div style="display: flex; flex-direction: column"><span class="sh">{{c.ctx}}</span><span style="font-size: 18px; font-weight: 700">{{c.title}}</span></div><span style="font-size: 12px; font-weight: 600; color: #969B94">{{c.hint}}</span></div>
+          <div style="position: relative">
+            <svg viewBox="0 0 {{c.W}} {{c.H}}" width="100%" style="display: block" aria-hidden="true">
+              <sc-for list="{{c.flows}}" as="f" hint-placeholder-count="4"><path class="mv" d="{{f.d}}" fill="{{f.col}}" fill-opacity="{{f.op}}" style="cursor: pointer" onClick="{{ f.pick }}"></path></sc-for>
+            </svg>
+            <div style="position: absolute; left: 50%; top: 0; transform: translateX(-50%); width: {{c.srcW}}px; height: {{c.srcH}}px; box-sizing: border-box; border-radius: 22px; background: #1C1F1C; box-shadow: 0 0 0 1.5px #2C302C, 0 10px 24px rgba(0,0,0,0.24); display: flex; align-items: center; justify-content: center; gap: 10px"><span style="font-size: 32px; font-weight: 600; line-height: 1">{{c.total}}</span><span style="display: flex; flex-direction: column; line-height: 1.2"><span style="font-size: 13px; font-weight: 700">{{c.totalL}}</span><span style="font-size: 11px; font-weight: 600; color: #969B94">{{c.totalS}}</span></span></div>
+          </div>
+          <div role="group" aria-label="{{c.aria}}" style="display: grid; grid-template-columns: repeat({{c.n}}, minmax(0, 1fr)); gap: 10px">
+            <sc-for list="{{c.cards}}" as="o" hint-placeholder-count="4">
+              <button type="button" class="oc" onClick="{{ o.pick }}" aria-pressed="{{o.on}}" aria-label="{{o.aria}}" style="padding: 14px; border-radius: 22px; background: {{o.bg}}; box-shadow: {{o.ring}}; min-height: 128px; opacity: {{o.dim}}">
+                <span style="display: flex; align-items: center; justify-content: space-between; align-self: stretch"><span style="width: 30px; height: 30px; border-radius: 50%; background: {{o.col}}; display: inline-flex; align-items: center; justify-content: center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0D1210" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{o.icon}}"></path></svg></span><span style="font-size: 12px; font-weight: 700; color: #969B94">{{o.pct}}</span></span>
+                <span style="margin-top: 6px; font-size: 34px; font-weight: 600; line-height: 1; color: #ECEEE9">{{o.n}}</span>
+                <span style="font-size: 13px; font-weight: 700; color: #ECEEE9">{{o.t}}</span>
+                <sc-if value="{{o.hasCta}}" hint-placeholder-val="{{ false }}"><span style="margin-top: 6px; height: 30px; padding: 0 12px; border-radius: 999px; background: {{o.ctaBg}}; color: {{o.ctaFg}}; font-size: 12px; font-weight: 700; display: inline-flex; align-items: center">{{o.cta}}</span></sc-if>
+              </button>
+            </sc-for>
+          </div>
+          <sc-if value="{{c.hasSel}}" hint-placeholder-val="{{ false }}"><div style="margin-top: 12px; display: flex; flex-wrap: wrap; gap: 8px; padding: 12px; border-radius: 18px; background: #222622"><span style="width: 100%; font-size: 12px; font-weight: 700; color: #969B94">{{c.selT}}</span><sc-for list="{{c.tasks}}" as="t" hint-placeholder-count="3"><span style="height: 32px; padding: 0 12px; border-radius: 999px; background: #1C1F1C; font-size: 12px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px"><span style="width: 7px; height: 7px; border-radius: 50%; background: {{t.c}}"></span>{{t.t}}</span></sc-for></div></sc-if>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+
+  <!-- ================= MOBILE ================= -->
+  <section style="display: flex; flex-direction: column; gap: 20px">
+    <div style="display: flex; flex-direction: column; gap: 6px"><span class="sh">MOBILE · 390</span><h2 style="margin: 0; font-size: 30px; font-weight: 500">Mobile refinements</h2></div>
+    <div style="display: grid; grid-template-columns: repeat(3, 390px); justify-content: space-between; align-items: start">
+      <div class="phone">
+        <div class="pc">
+          <div style="display: flex; justify-content: space-between; align-items: center"><span class="sh">MOOD TERRAIN · 7 DAYS</span><span style="font-size: 11px; font-weight: 700; color: #969B94">swipe ‹ ›</span></div>
+          <div style="position: relative; margin-top: 34px">
+            <svg viewBox="0 0 {{mtm.W}} {{mtm.H}}" width="100%" style="display: block; overflow: visible" role="img" aria-label="Mood terrain. Elevation is mood, soil layers are energy. Selected {{mtm.tipDate}}: mood {{mtm.tipMood}}, energy {{mtm.tipEn}}.">
+  <defs>
+    <linearGradient id="mtMsky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#199E70" stop-opacity="0.34"></stop><stop offset="0.55" stop-color="#199E70" stop-opacity="0.12"></stop><stop offset="1" stop-color="#199E70" stop-opacity="0.02"></stop></linearGradient>
+    <sc-for list="{{mtm.strata}}" as="s" hint-placeholder-count="3"><linearGradient id="{{s.id}}" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="{{mtm.W}}" y2="0"><sc-for list="{{s.stops}}" as="t" hint-placeholder-count="7"><stop offset="{{t.off}}" stop-color="#C98500" stop-opacity="{{t.op}}"></stop></sc-for></linearGradient></sc-for>
+    <clipPath id="mtMclip"><path d="{{mtm.terrainD}}"></path></clipPath>
+  </defs>
+  <sc-for list="{{mtm.levels}}" as="l" hint-placeholder-count="5"><text x="{{l.x}}" y="{{l.y}}" dy="4" text-anchor="{{l.anchor}}" font-size="10" font-weight="600" fill="#6E746E">{{l.t}}</text></sc-for>
+  <path class="mv" style="d: path('{{mtm.terrainD}}')" fill="url(#mtMsky)"></path>
+  <g clip-path="url(#mtMclip)">
+    <sc-for list="{{mtm.levels}}" as="l" hint-placeholder-count="5"><line x1="0" x2="{{mtm.W}}" y1="{{l.y}}" y2="{{l.y}}" stroke="#0D1210" stroke-opacity="0.55" stroke-width="1"></line></sc-for>
+    <rect x="{{mtm.colX}}" y="0" width="{{mtm.colW}}" height="{{mtm.H}}" rx="12" fill="#0D1210" fill-opacity="0.55"></rect>
+  </g>
+  <sc-for list="{{mtm.strata}}" as="s" hint-placeholder-count="3"><path class="mv" style="d: path('{{s.d}}')" fill="url(#{{s.id}})"></path></sc-for>
+  <line x1="0" x2="{{mtm.W}}" y1="{{mtm.horizonY}}" y2="{{mtm.horizonY}}" stroke="#6E746E" stroke-width="1" stroke-dasharray="1 5" stroke-linecap="round"></line>
+  <path class="mv" style="d: path('{{mtm.surface}}')" fill="none" stroke="#199E70" stroke-width="2.2" stroke-linecap="round"></path>
+  <sc-for list="{{mtm.anchors}}" as="a" hint-placeholder-count="7">
+    <circle cx="{{a.x}}" cy="{{a.y}}" r="{{a.r}}" fill="{{a.fill}}" stroke="{{a.stroke}}" stroke-width="{{a.sw}}"></circle>
+    <sc-for list="{{a.e}}" as="e" hint-placeholder-count="3"><circle cx="{{e.x}}" cy="{{mtm.dotY}}" r="2.4" fill="{{e.c}}"></circle></sc-for>
+    <text x="{{a.x}}" y="{{mtm.labY}}" text-anchor="middle" font-size="10" font-weight="{{a.fw}}" fill="{{a.lc}}">{{a.lab}}</text>
+  </sc-for>
+  <sc-for list="{{mtm.hits}}" as="h" hint-placeholder-count="7"><rect x="{{h.x}}" y="0" width="{{h.w}}" height="{{mtm.H}}" fill="transparent" style="cursor: pointer" onClick="{{ h.pick }}"></rect></sc-for>
+</svg>
+            <div class="tip" style="left: {{mtm.selPct}}; top: {{mtm.tipTop}}px"><small>{{mtm.tipDate}}</small><strong>{{mtm.tipMood}} · {{mtm.tipEn}} energy</strong></div>
+          </div>
+          <span style="font-size: 12px; color: #A5AAA3; line-height: 1.45">Level names move into the tooltip; the horizon stays. Tap a day to pin it.</span>
+        </div>
+        <div class="pc" style="align-items: center">
+          <span class="sh" style="align-self: flex-start">FOCUS CLOCK · SIMPLIFIED</span>
+          <div style="position: relative; width: 300px; height: 300px">
+            <svg viewBox="0 0 420 420" width="300" height="300" style="display: block; overflow: visible" role="img" aria-label="Focus clock: 24 hours, wedge length is typical focus minutes. Best window {{fcm.bestLabel}}.">
+  <path d="{{fcm.night}}" fill="#2A2E2A"></path>
+  <path d="{{fcm.guide}}" fill="none" stroke="#2C302C" stroke-width="1" stroke-dasharray="1 6" stroke-linecap="round"></path>
+  <sc-for list="{{fcm.wedges}}" as="w" hint-placeholder-count="24"><path class="mv" style="d: path('{{w.d}}'); cursor: pointer" fill="{{w.c}}" stroke="{{w.stroke}}" stroke-width="{{w.sw}}" stroke-linejoin="round" onClick="{{ w.pick }}"></path></sc-for>
+  <path d="{{fcm.bestArc}}" fill="none" stroke="#6FD4B8" stroke-width="5" stroke-linecap="round"></path>
+  <sc-for list="{{fcm.dial}}" as="t" hint-placeholder-count="8"><line x1="{{t.tx1}}" y1="{{t.ty1}}" x2="{{t.tx2}}" y2="{{t.ty2}}" stroke="#6E746E" stroke-width="1.5" stroke-linecap="round"></line><text x="{{t.x}}" y="{{t.y}}" text-anchor="middle" font-size="{{t.fs}}" font-weight="{{t.fw}}" fill="{{t.c}}">{{t.t}}</text></sc-for>
+  <circle cx="210" cy="210" r="50" fill="#0D1210"></circle>
+  <text x="210" y="196" text-anchor="middle" font-size="11" font-weight="700" fill="#969B94">{{fcm.cTop}}</text>
+  <text x="210" y="219" text-anchor="middle" font-size="19" font-weight="600" fill="#ECEEE9">{{fcm.cMid}}</text>
+  <text x="210" y="236" text-anchor="middle" font-size="10" font-weight="600" fill="#969B94">{{fcm.cBot}}</text>
+</svg>
+          </div>
+          <div style="align-self: stretch; padding: 12px; border-radius: 18px; background: #16231F; font-size: 13px; font-weight: 600; line-height: 1.45">Best window <b>09:00–12:00</b> · work days<br><span style="font-size: 12px; font-weight: 700; color: #6FD4B8">Protect as focus block ›</span></div>
+        </div>
+      </div>
+      <div class="phone">
+        <div class="pc" style="gap: 0">
+          <span class="sh" style="margin-bottom: 4px">DAILY SHUTDOWN · TUE 21 MEHR</span>
+          <span style="font-size: 16px; font-weight: 700; margin-bottom: 12px">What happened today</span>
+          <div style="position: relative">
+            <svg viewBox="0 0 {{cfm.W}} {{cfm.H}}" width="100%" style="display: block" aria-hidden="true"><sc-for list="{{cfm.flows}}" as="f" hint-placeholder-count="3"><path d="{{f.d}}" fill="{{f.col}}" fill-opacity="{{f.op}}"></path></sc-for></svg>
+            <div style="position: absolute; left: 50%; top: 0; transform: translateX(-50%); width: {{cfm.srcW}}px; height: 50px; box-sizing: border-box; border-radius: 18px; background: #1C1F1C; box-shadow: 0 0 0 1.5px #2C302C; display: flex; align-items: center; justify-content: center; gap: 8px"><span style="font-size: 24px; font-weight: 600">18</span><span style="font-size: 12px; font-weight: 700">planned</span></div>
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px">
+            <sc-for list="{{cfm.cards}}" as="o" hint-placeholder-count="3"><div style="display: flex; flex-direction: column; gap: 2px; padding: 10px; border-radius: 18px; background: {{o.bg}}; box-shadow: {{o.ring}}"><span style="width: 22px; height: 22px; border-radius: 50%; background: {{o.col}}"></span><span style="font-size: 24px; font-weight: 600; line-height: 1.1">{{o.n}}</span><span style="font-size: 11px; font-weight: 700">{{o.tShort}}</span></div></sc-for>
+          </div>
+          <button type="button" style="margin-top: 12px; height: 46px; border: 0; border-radius: 999px; background: #6FD4B8; color: #0D1210; font-family: inherit; font-size: 14px; font-weight: 700">Plan tomorrow · 4 tasks</button>
+        </div>
+        <div class="pc">
+          <span class="sh">TAP AN OUTCOME → SHEET</span>
+          <div style="padding: 12px; border-radius: 22px; background: #2E2614; box-shadow: inset 0 0 0 2px #C98500; display: flex; flex-direction: column; gap: 8px">
+            <span style="font-size: 14px; font-weight: 700">4 moved to tomorrow</span>
+            <sc-for list="{{movedTasks}}" as="t" hint-placeholder-count="4"><span style="display: flex; align-items: center; gap: 8px; height: 40px; padding: 0 12px; border-radius: 14px; background: #1C1F1C; font-size: 13px; font-weight: 600"><span style="width: 7px; height: 7px; border-radius: 50%; background: #C98500"></span>{{t.t}}<span style="flex: 1"></span><span style="font-size: 11px; color: #969B94">{{t.m}}</span></span></sc-for>
+          </div>
+        </div>
+      </div>
+      <div class="phone" dir="rtl" style="font-family: 'Vazirmatn', 'Urbanist', sans-serif">
+        <div class="pc">
+          <div style="display: flex; justify-content: space-between; align-items: center"><span class="sh">نقشه‌ی حال و انرژی · ۷ روز</span></div>
+          <div style="position: relative; margin-top: 34px">
+            <svg viewBox="0 0 {{mtf.W}} {{mtf.H}}" width="100%" style="display: block; overflow: visible" role="img" aria-label="Mood terrain. Elevation is mood, soil layers are energy. Selected {{mtf.tipDate}}: mood {{mtf.tipMood}}, energy {{mtf.tipEn}}.">
+  <defs>
+    <linearGradient id="mtFsky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#199E70" stop-opacity="0.34"></stop><stop offset="0.55" stop-color="#199E70" stop-opacity="0.12"></stop><stop offset="1" stop-color="#199E70" stop-opacity="0.02"></stop></linearGradient>
+    <sc-for list="{{mtf.strata}}" as="s" hint-placeholder-count="3"><linearGradient id="{{s.id}}" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="{{mtf.W}}" y2="0"><sc-for list="{{s.stops}}" as="t" hint-placeholder-count="7"><stop offset="{{t.off}}" stop-color="#C98500" stop-opacity="{{t.op}}"></stop></sc-for></linearGradient></sc-for>
+    <clipPath id="mtFclip"><path d="{{mtf.terrainD}}"></path></clipPath>
+  </defs>
+  <sc-for list="{{mtf.levels}}" as="l" hint-placeholder-count="5"><text x="{{l.x}}" y="{{l.y}}" dy="4" text-anchor="{{l.anchor}}" font-size="10" font-weight="600" fill="#6E746E">{{l.t}}</text></sc-for>
+  <path class="mv" style="d: path('{{mtf.terrainD}}')" fill="url(#mtFsky)"></path>
+  <g clip-path="url(#mtFclip)">
+    <sc-for list="{{mtf.levels}}" as="l" hint-placeholder-count="5"><line x1="0" x2="{{mtf.W}}" y1="{{l.y}}" y2="{{l.y}}" stroke="#0D1210" stroke-opacity="0.55" stroke-width="1"></line></sc-for>
+    <rect x="{{mtf.colX}}" y="0" width="{{mtf.colW}}" height="{{mtf.H}}" rx="12" fill="#0D1210" fill-opacity="0.55"></rect>
+  </g>
+  <sc-for list="{{mtf.strata}}" as="s" hint-placeholder-count="3"><path class="mv" style="d: path('{{s.d}}')" fill="url(#{{s.id}})"></path></sc-for>
+  <line x1="0" x2="{{mtf.W}}" y1="{{mtf.horizonY}}" y2="{{mtf.horizonY}}" stroke="#6E746E" stroke-width="1" stroke-dasharray="1 5" stroke-linecap="round"></line>
+  <path class="mv" style="d: path('{{mtf.surface}}')" fill="none" stroke="#199E70" stroke-width="2.2" stroke-linecap="round"></path>
+  <sc-for list="{{mtf.anchors}}" as="a" hint-placeholder-count="7">
+    <circle cx="{{a.x}}" cy="{{a.y}}" r="{{a.r}}" fill="{{a.fill}}" stroke="{{a.stroke}}" stroke-width="{{a.sw}}"></circle>
+    <sc-for list="{{a.e}}" as="e" hint-placeholder-count="3"><circle cx="{{e.x}}" cy="{{mtf.dotY}}" r="2.4" fill="{{e.c}}"></circle></sc-for>
+    <text x="{{a.x}}" y="{{mtf.labY}}" text-anchor="middle" font-size="10" font-weight="{{a.fw}}" fill="{{a.lc}}">{{a.lab}}</text>
+  </sc-for>
+  <sc-for list="{{mtf.hits}}" as="h" hint-placeholder-count="7"><rect x="{{h.x}}" y="0" width="{{h.w}}" height="{{mtf.H}}" fill="transparent" style="cursor: pointer" onClick="{{ h.pick }}"></rect></sc-for>
+</svg>
+            <div class="tip" style="left: {{mtf.selPct}}; top: {{mtf.tipTop}}px"><small>{{mtf.tipDate}}</small><strong>حال {{mtf.tipMood}} · انرژی {{mtf.tipEn}}</strong></div>
+          </div>
+          <span style="font-size: 12px; color: #A5AAA3; line-height: 1.7">جهت زمان آینه می‌شود (A): امروز سمت چپ است و روزها از راست شروع می‌شوند. افق «معمولی» و لایه‌های خاک تغییری نمی‌کنند.</span>
+        </div>
+        <div class="pc">
+          <span class="sh">ساعت تمرکز — آینه نمی‌شود (B)</span>
+          <span style="font-size: 12px; color: #A5AAA3; line-height: 1.7">صفحه‌ی ساعت ثابت است: ۰۰ بالا، ساعت‌گرد. فقط برچسب‌ها و ارقام فارسی می‌شوند. جریان کارها (Carry-over) آینه می‌شود: ترتیب کارت‌ها از راست: انجام شد، فردا، عقب‌افتاده.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":4200}}'>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { mtRange: 7, mtDay: 21, fcMode: 'work', fcSel: null, cfSelD: null, cfSelW: null }; }
+  renderVals() {
+    const VZ2 = (() => {
+      const f1 = (n) => (Math.round(n * 10) / 10).toString();
+      const sm = (p) => { if (!p.length) return ''; let d = 'M' + f1(p[0][0]) + ' ' + f1(p[0][1]); for (let i = 0; i < p.length - 1; i++) { const p0 = p[i - 1] || p[i], p1 = p[i], p2 = p[i + 1], p3 = p[i + 2] || p2; d += ' C' + f1(p1[0] + (p2[0] - p0[0]) / 6) + ' ' + f1(p1[1] + (p2[1] - p0[1]) / 6) + ' ' + f1(p2[0] - (p3[0] - p1[0]) / 6) + ' ' + f1(p2[1] - (p3[1] - p1[1]) / 6) + ' ' + f1(p2[0]) + ' ' + f1(p2[1]); } return d; };
+      const band = (top, bot) => sm(top) + ' L' + sm(bot.slice().reverse()).slice(1) + ' Z';
+      const FA = '۰۱۲۳۴۵۶۷۸۹', fa = (s) => String(s).replace(/[0-9]/g, (d) => FA[d]);
+      const DN = ['Sat', 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri'], DNF = ['شنبه', 'یکشنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنجشنبه', 'جمعه'], DSF = ['ش', 'ی', 'د', 'س', 'چ', 'پ', 'ج'];
+      const wd = (d) => (((d - 1 + 4) % 7) + 7) % 7, dd = (d) => (d <= 0 ? d + 31 : d);
+
+      /* Mood Terrain v2 — elevation = mood, soil strata = energy */
+      function terrain(o) {
+        const W = o.W || 820, H = o.H || 280, range = o.range || 7, rtl = !!o.rtl, compact = !!o.compact;
+        const MOOD = [3, 4, 4, 2, 3, 4, 5, 4, 3, 3, 4, 2, 2, 3, 4, 4, 5, 4, 3, 4, 4, 3, 4, 5, 4, 3, 3, 4, 5, 4];
+        const EN = [2, 2, 3, 1, 2, 3, 3, 2, 2, 1, 2, 1, 1, 2, 3, 2, 3, 3, 2, 2, 2, 2, 2, 3, 3, 2, 1, 2, 3, 2];
+        const end = 21, start = end - range + 1, days = []; for (let d = start; d <= end; d++) days.push(d);
+        const val = (a, d) => a[(d - 1 + 30) % 30];
+        const padL = compact ? 14 : 70, padR = compact ? 14 : 24, n = days.length;
+        const X = (i) => { const x = padL + (n === 1 ? 0 : i / (n - 1)) * (W - padL - padR); return rtl ? W - x : x; };
+        const top = 26, ground = H - (compact ? 56 : 66), step = (ground - top - 40) / 4;
+        const Y = (m) => ground - 40 - (m - 1) * step; // 1 Awful … 5 Great
+        const S = 60, samp = Array.from({ length: S }, (_, k) => { const t = k / (S - 1) * (n - 1), i0 = Math.floor(t), i1 = Math.min(n - 1, i0 + 1), f0 = t - i0, f = f0 * f0 * (3 - 2 * f0); return [X(t), Y(val(MOOD, days[i0]) * (1 - f) + val(MOOD, days[i1]) * f)]; });
+        const edge = compact ? 0 : padL - 14, left = rtl ? W - edge : edge, right = rtl ? 0 : W;
+        const ext = [[left, samp[0][1] + 6]].concat(samp, [[right, samp[S - 1][1] + 6]]);
+        const surface = sm(ext);
+        const terrainD = surface + ` L${f1(right)} ${H} L${f1(left)} ${H} Z`;
+        const SL = 11;
+        const strata = [1, 2, 3].map((k) => {
+          const a = ext.map(([x, y]) => [x, y + 9 + (k - 1) * SL]), b = ext.map(([x, y]) => [x, y + 9 + k * SL - 3]);
+          return { k, d: band(a, b), id: (o.idp || 't') + 'st' + k + (o.dark ? 'd' : '') };
+        });
+        const stops = (k) => { const out = []; days.forEach((d, i) => { const on = val(EN, d) >= k; const p = Math.max(0, Math.min(1, X(i) / W)); out.push({ off: p.toFixed(4), op: on ? [0.55, 0.42, 0.32][k - 1].toFixed(2) : '0.05' }); }); return rtl ? out.reverse() : out; };
+        const levels = [5, 4, 3, 2, 1].map((m) => ({ y: f1(Y(m)), t: rtl ? ['خیلی بد', 'بد', 'معمولی', 'خوب', 'عالی'][m - 1] : ['Awful', 'Low', 'Okay', 'Good', 'Great'][m - 1], x: rtl ? W - 8 : 8, anchor: rtl ? 'end' : 'start', horizon: m === 3 }));
+        const sel = Math.min(end, Math.max(start, o.day || end)), si = sel - start, sx = X(si), sy = Y(val(MOOD, sel)), ev = val(EN, sel), mv = val(MOOD, sel);
+        const ML = ['Awful', 'Low', 'Okay', 'Good', 'Great'], MLF = ['خیلی بد', 'بد', 'معمولی', 'خوب', 'عالی'], EL = ['Low', 'Medium', 'High'], ELF = ['کم', 'متوسط', 'زیاد'];
+        const every = n <= 7 ? 1 : n <= 14 ? 2 : 5;
+        const anchors = days.map((d, i) => ({ x: f1(X(i)), y: f1(Y(val(MOOD, d))), lab: (i % every === 0 || d === end) ? (rtl ? DSF[wd(d)] + ' ' + fa(dd(d)) : DN[wd(d)].slice(0, n > 14 ? 1 : 3) + ' ' + dd(d)) : '', fri: wd(d) === 6, en: val(EN, d), sel: d === sel,
+          e: [1, 2, 3].map((k) => ({ c: val(EN, d) >= k ? '#C98500' : '#2C302C', x: f1(X(i) + (k - 2) * 6) })) }));
+        const hw = (W - padL - padR) / Math.max(1, n - 1);
+        return { W, H, ground, surface, terrainD, strata: strata.map((s) => Object.assign(s, { stops: stops(s.k) })), levels, anchors,
+          hits: days.map((d, i) => ({ x: f1(X(i) - hw / 2), w: f1(hw), d })), sx: f1(sx), sy: f1(sy), colX: f1(sx - Math.min(18, hw / 2 - 2)), colW: f1(Math.min(36, hw - 4)),
+          selPct: Math.min(86, Math.max(12, sx / W * 100)).toFixed(2) + '%', tipTop: f1(sy - 74),
+          tipDate: rtl ? DNF[wd(sel)] + ' ' + fa(sel) + ' مهر' : DN[wd(sel)] + ', ' + sel + ' Mehr', tipMood: rtl ? MLF[mv - 1] : ML[mv - 1], tipEn: rtl ? ELF[ev - 1] : EL[ev - 1],
+          horizonY: f1(Y(3)), labelX: rtl ? W - 8 : 8, anchorEnd: rtl ? 'end' : 'start' };
+      }
+
+      /* Focus Clock v2 — sculpted 24h wedges; length = typical focus, best window integrated */
+      function clock(o) {
+        const cx = o.cx || 210, cy = o.cy || 210, R0 = o.r0 || 58, RMAX = o.rmax || 168, mode = o.mode || 'all';
+        const BASE = [0, 0, 0, 0, 0, 0, 2, 8, 22, 48, 54, 46, 14, 6, 26, 34, 30, 18, 10, 6, 8, 4, 0, 0];
+        const WORK = [0, 0, 0, 0, 0, 0, 2, 10, 26, 55, 58, 52, 12, 6, 30, 38, 32, 18, 8, 4, 4, 2, 0, 0];
+        const WEEKEND = [0, 0, 0, 0, 0, 0, 0, 2, 6, 18, 26, 22, 18, 8, 10, 12, 10, 8, 14, 16, 12, 6, 2, 0];
+        const M = mode === 'work' ? WORK : mode === 'weekend' ? WEEKEND : BASE;
+        const max = 60, best = mode === 'weekend' ? [9, 12] : [9, 12];
+        const pt = (r, a) => [cx + r * Math.sin(a), cy - r * Math.cos(a)];
+        const tier = (v) => v >= 45 ? 3 : v >= 25 ? 2 : v > 0 ? 1 : 0;
+        const COL = ['#2A2E2A', '#1F3A33', '#3E937A', '#6FD4B8'];
+        const wedges = M.map((v, h) => {
+          const a0 = h / 24 * Math.PI * 2 + 0.035, a1 = (h + 1) / 24 * Math.PI * 2 - 0.035, am = (a0 + a1) / 2;
+          const r1 = v ? R0 + 14 + (RMAX - R0 - 14) * Math.min(1, v / max) : R0 + 8;
+          const [x1, y1] = pt(R0, a0), [x2, y2] = pt(r1, a0), [x3, y3] = pt(r1, a1), [x4, y4] = pt(R0, a1);
+          const d = `M${f1(x1)} ${f1(y1)} L${f1(x2)} ${f1(y2)} A${f1(r1)} ${f1(r1)} 0 0 1 ${f1(x3)} ${f1(y3)} L${f1(x4)} ${f1(y4)} A${R0} ${R0} 0 0 0 ${f1(x1)} ${f1(y1)} Z`;
+          const t = tier(v), inBest = h >= best[0] && h < best[1], sel = o.sel === h;
+          const [lx, ly] = pt(r1 + 12, am);
+          return { h, v, d, c: COL[t], t, inBest, sel, stroke: sel ? '#ECEEE9' : COL[t], sw: sel ? 2 : 3, lx: f1(lx), ly: f1(ly + 3), showV: sel };
+        });
+        const dial = []; for (let h = 0; h < 24; h += 3) { const [x, y] = pt(RMAX + 22, h / 24 * Math.PI * 2); const [tx1, ty1] = pt(RMAX + 6, h / 24 * Math.PI * 2), [tx2, ty2] = pt(RMAX + 11, h / 24 * Math.PI * 2); dial.push({ x: f1(x), y: f1(y + 4), t: String(h).padStart(2, '0'), major: h % 6 === 0, tx1: f1(tx1), ty1: f1(ty1), tx2: f1(tx2), ty2: f1(ty2) }); }
+        const arc = (r, h0, h1) => { const a0 = h0 / 24 * Math.PI * 2, a1 = h1 / 24 * Math.PI * 2; const [x1, y1] = pt(r, a0), [x2, y2] = pt(r, a1); return `M${f1(x1)} ${f1(y1)} A${r} ${r} 0 ${a1 - a0 > Math.PI ? 1 : 0} 1 ${f1(x2)} ${f1(y2)}`; };
+        const night = (() => { const r = RMAX + 9, R0 = RMAX + 4, a0 = 21 / 24 * Math.PI * 2, a1 = (24 + 6) / 24 * Math.PI * 2; const [x1, y1] = pt(R0 - 4, a0), [x2, y2] = pt(r, a0), [x3, y3] = pt(r, a1), [x4, y4] = pt(R0 - 4, a1); return `M${f1(x1)} ${f1(y1)} L${f1(x2)} ${f1(y2)} A${r} ${r} 0 0 1 ${f1(x3)} ${f1(y3)} L${f1(x4)} ${f1(y4)} A${R0 - 4} ${R0 - 4} 0 0 0 ${f1(x1)} ${f1(y1)} Z`; })();
+        const [bx, by] = pt(RMAX + 46, (best[0] + best[1]) / 2 / 24 * Math.PI * 2);
+        const total = M.reduce((a, b) => a + b, 0);
+        return { cx, cy, wedges, dial, night, bestArc: arc(RMAX + 4, best[0], best[1]), bx: f1(bx), by: f1(by), best, R0, RMAX, COL,
+          total: mode === 'weekend' ? '3h 40m' : mode === 'work' ? '10h 50m' : '14h 30m', guide: arc(RMAX, 0, 23.999) };
+      }
+
+      /* Carry-over Flow v2 — top-down, proportional streams into outcome cards */
+      function carry(o) {
+        const W = o.W || 820, rtl = !!o.rtl, week = !!o.week, compact = !!o.compact;
+        const items = week ? [['done', 31], ['moved', 6], ['overdue', 3], ['inbox', 2]] : (o.inbox ? [['done', 12], ['moved', 4], ['overdue', 2], ['inbox', 1]] : [['done', 12], ['moved', 4], ['overdue', 2]]);
+        const total = items.reduce((a, b) => a + b[1], 0), n = items.length;
+        const y0 = compact ? 58 : 72, y1 = compact ? 132 : 170, srcW = compact ? 150 : 300, minW = compact ? 10 : 14;
+        let sx = W / 2 - srcW / 2;
+        const colX = (i) => { const c = (i + 0.5) / n * W; return rtl ? W - c : c; };
+        const order = rtl ? items.map((_, i) => n - 1 - i) : items.map((_, i) => i);
+        const segs = []; let x = W / 2 - srcW / 2;
+        order.forEach((i) => { const w = Math.max(minW, items[i][1] / total * srcW); segs[i] = [x, x + w]; x += w + 3; });
+        const shift = (x - 3 - (W / 2 + srcW / 2)) / 2; segs.forEach((s) => { s[0] -= shift; s[1] -= shift; });
+        const flows = items.map(([id, cnt], i) => {
+          const [a, b] = segs[i], w = b - a, c = colX(i), d0 = c - w / 2, d1 = c + w / 2, m = (y0 + y1) / 2;
+          const d = `M${f1(a)} ${y0} C${f1(a)} ${f1(m)} ${f1(d0)} ${f1(m)} ${f1(d0)} ${y1} L${f1(d1)} ${y1} C${f1(d1)} ${f1(m)} ${f1(b)} ${f1(m)} ${f1(b)} ${y0} Z`;
+          return { id, cnt, d, cx: f1(c), pct: Math.round(cnt / total * 100) };
+        });
+        return { W, total, flows, y0, y1, srcX: f1(W / 2 - srcW / 2 - 10), srcW: f1(srcW + 20), n, H: y1 + 2 };
+      }
+      return { terrain, clock, carry, fa };
+    })();
+
+    const st = this.state;
+    const segs = (key, opts) => opts.map(([v, t]) => ({ t, on: st[key] === v ? 'true' : 'false', pick: () => this.setState({ [key]: v }) }));
+    const decoT = (v, pickable) => {
+      v.anchors = v.anchors.map((a) => Object.assign(a, { r: a.sel ? 6.5 : 3.5, fill: a.sel ? '#6FD4B8' : '#0D1210', stroke: a.sel ? '#0D1210' : '#199E70', sw: a.sel ? 3 : 2, fw: a.sel ? 800 : 700, lc: a.sel ? '#6FD4B8' : a.fri ? '#F2555A' : '#7D827B' }));
+      v.dotY = v.H - 30; v.labY = v.H - 10;
+      v.hits = v.hits.map((h) => Object.assign(h, { pick: pickable ? () => this.setState({ mtDay: h.d }) : () => {} }));
+      return v;
+    };
+    const mt = decoT(VZ2.terrain({ range: st.mtRange, day: st.mtDay, idp: 'mtA' }), true);
+    const mtm = decoT(VZ2.terrain({ W: 326, H: 230, range: 7, compact: true, day: st.mtDay, idp: 'mtM' }), true);
+    const mtf = decoT(VZ2.terrain({ W: 326, H: 230, range: 7, compact: true, rtl: true, day: 21, idp: 'mtF' }), false);
+    mtf.levels = []; mtm.levels = [];
+
+    const decoC = (c, persian) => {
+      const sel = c.wedges.find((w) => w.h === st.fcSel);
+      c.wedges = c.wedges.map((w) => Object.assign(w, { pick: () => this.setState({ fcSel: st.fcSel === w.h ? null : w.h }) }));
+      c.dial = c.dial.map((t) => Object.assign(t, { fs: t.major ? 12 : 10, fw: t.major ? 700 : 600, c: t.major ? '#C4C8C2' : '#6E746E' }));
+      c.bestLabel = '09:00–12:00';
+      c.bxp = (c.bx / 420 * 100).toFixed(1) + '%'; c.byp = (c.by / 420 * 100).toFixed(1) + '%';
+      c.cTop = sel ? String(sel.h).padStart(2, '0') + ':00 – ' + String(sel.h + 1).padStart(2, '0') + ':00' : 'Focused';
+      c.cMid = sel ? sel.v + ' min' : c.total; c.cBot = sel ? ['no focus', 'light', 'steady', 'deep'][sel.t] : (st.fcMode === 'weekend' ? 'weekends' : st.fcMode === 'work' ? 'work days' : 'this week');
+      return c;
+    };
+    const fc = decoC(VZ2.clock({ mode: st.fcMode, sel: st.fcSel }));
+    const fcm = decoC(VZ2.clock({ mode: 'work' }));
+    fcm.cTop = 'Focused'; fcm.cMid = '10h 50m'; fcm.cBot = 'work days';
+
+    const COL = { done: '#199E70', moved: '#C98500', overdue: '#C9608E', inbox: '#6E746E' };
+    const ICON = { done: 'M5 12l5 5 9-10', moved: 'M5 12h14M13 6l6 6-6 6', overdue: 'M12 7v6M12 16.5v.5', inbox: 'M4 13h4l2 3h4l2-3h4M5 5h14l1 8v6H4v-6z' };
+    const TASKS = { done: ['UI design · My Day', 'Client call', 'Review expenses'], moved: ['Reply to Katy’s brief', 'Prepare check-in notes', 'Read “Shape Up” ch. 4', 'Gym'], overdue: ['Update board deck numbers', 'Call the insurer'], inbox: ['Plan weekend trip', 'Research rail pass'] };
+    const mkCf = (week, key) => {
+      const v = VZ2.carry({ week, inbox: !week });
+      const sel = st[key];
+      const LBL = week ? { done: ['Completed', 'Great week'], moved: ['Moved to next week', 'Review in planning'], overdue: ['Overdue', 'Reschedule'], inbox: ['Back to inbox', 'Sort later'] }
+                       : { done: ['Completed', ''], moved: ['Tomorrow', 'Plan tomorrow ›'], overdue: ['Overdue', 'Reschedule'], inbox: ['Back to inbox', ''] };
+      const emph = week ? 'done' : 'moved';
+      const SOFT = { done: '#16231F', moved: '#2E2614', overdue: '#2E1E26', inbox: '#222622' };
+      return {
+        ctx: week ? 'WEEKLY REVIEW · CARRY OVER' : 'DAILY SHUTDOWN', title: week ? 'This week · 18 – 24 Mehr' : 'Today · Tue 21 Mehr', hint: week ? 'Completed leads the week' : 'Tomorrow leads the shutdown',
+        W: v.W, H: v.H, n: v.n, srcW: 260, srcH: 60, total: v.total, totalL: week ? 'planned this week' : 'planned today', totalS: week ? '42 tasks across 5 days' : 'incl. 1 sent back to inbox',
+        aria: v.flows.map((f) => f.cnt + ' ' + LBL[f.id][0]).join(', '),
+        flows: v.flows.map((f) => ({ d: f.d, col: COL[f.id], op: sel ? (sel === f.id ? 0.7 : 0.12) : (f.id === emph ? 0.6 : 0.35), pick: () => this.setState({ [key]: sel === f.id ? null : f.id }) })),
+        cards: v.flows.map((f) => { const on = sel === f.id, em = f.id === emph; return {
+          n: f.cnt, t: LBL[f.id][0], pct: f.pct + '%', col: COL[f.id], icon: ICON[f.id], on: on ? 'true' : 'false', aria: f.cnt + ' ' + LBL[f.id][0] + ', ' + f.pct + ' percent',
+          bg: on || em ? SOFT[f.id] : '#222622', ring: on ? 'inset 0 0 0 2px ' + COL[f.id] : em ? 'inset 0 0 0 1.5px ' + COL[f.id] : 'none', dim: sel && !on ? 0.55 : 1,
+          hasCta: !!LBL[f.id][1], cta: LBL[f.id][1], ctaBg: em ? COL[f.id] : '#1C1F1C', ctaFg: em ? '#0D1210' : '#C4C8C2', pick: () => this.setState({ [key]: sel === f.id ? null : f.id }) }; }),
+        hasSel: !!sel, selT: sel ? LBL[sel][0] + ' · tap a task to open it' : '', tasks: sel ? TASKS[sel].map((t) => ({ t, c: COL[sel] })) : []
+      };
+    };
+    const cfm0 = VZ2.carry({ W: 326, compact: true });
+    const cfm = { W: cfm0.W, H: cfm0.H, srcW: 150, flows: cfm0.flows.map((f) => ({ d: f.d, col: COL[f.id], op: f.id === 'moved' ? 0.65 : 0.35 })),
+      cards: cfm0.flows.map((f) => ({ n: f.cnt, tShort: { done: 'Completed', moved: 'Tomorrow', overdue: 'Overdue' }[f.id], col: COL[f.id], bg: f.id === 'moved' ? '#2E2614' : '#222622', ring: f.id === 'moved' ? 'inset 0 0 0 1.5px #C98500' : 'none' })) };
+
+    return {
+      frozen: ['Budget River', 'Milestone Path', 'Weekly Story', 'Habit Field', 'Habit Streak Ribbon', 'Context Ribbon'].map((t) => ({ t })),
+      specMt: [
+        ['What changed', 'Two separate line charts became one landscape: mood shapes the land, energy is read from the ground under each day. No second y-axis.'],
+        ['Selected day', 'A soft lit column inside the land + a raised marker on the ridge — embedded, not floating.'],
+        ['Readability', 'Faint contour lines inside the land mark the 5 mood levels; three dots under each day give exact energy.'],
+        ['Interaction', 'Hover/tap a day → tooltip. Second tap → that day’s journal entry. ←/→ steps days.'],
+        ['Motion', 'Land and soil layers morph between 7 / 14 / 30 days; the lit column glides to the new day.'],
+        ['RTL', 'A — mirror (time right → left). Horizon and strata unchanged.']
+      ].map(([k, v]) => ({ k, v })),
+      mt, mtm, mtf, mtRanges: segs('mtRange', [[7, '7 days'], [14, '14 days'], [30, '30 days']]),
+      specFc: [
+        ['What changed', 'Seven equal rings (a heatmap donut) became 24 sculpted wedges whose length shows focus. One glance finds the long ones.'],
+        ['Day influence', '“All · Work days · Weekend” morphs the wedges instead of drawing seven rings.'],
+        ['Selection', 'Tapping an hour outlines its wedge and the centre switches to that hour’s minutes — the clock answers in place.'],
+        ['Not', 'No progress arc, no percentage, no countdown — so it can’t be confused with a gauge or the Focus timer.'],
+        ['Motion', 'Wedges grow outward from the centre once (inside → out, 500ms); mode changes morph lengths.'],
+        ['RTL', 'B — keep. 00 at top, clockwise. Labels and digits localised.']
+      ].map(([k, v]) => ({ k, v })),
+      fc, fcm, fcModes: segs('fcMode', [['all', 'All days'], ['work', 'Work days'], ['weekend', 'Weekend']]),
+      fcDays: st.fcMode === 'weekend' ? 'on weekends' : st.fcMode === 'work' ? 'Tuesday–Thursday' : 'mostly Tuesday–Thursday',
+      fcTiers: [['Deep focus · 45+ min', '#6FD4B8', 14], ['Steady · 25–45 min', '#3E937A', 10], ['Light · under 25 min', '#1F3A33', 6], ['No focus', '#2A2E2A', 3]].map(([t, c, h]) => ({ t, c, d: `M8 ${16 - h} L26 ${16 - h} L23 16 L11 16 Z` })),
+      specCf: [
+        ['What changed', 'Horizontal Sankey-like branches became a top-down split into cards. Total → outcomes reads in one glance.'],
+        ['Numbers', 'Total 32px in the source card; each outcome 34px. Percent is secondary.'],
+        ['Emphasis', 'Daily Shutdown: Tomorrow carries the CTA “Plan tomorrow”. Weekly Review: Completed is highlighted.'],
+        ['Selection', 'Click a card or its stream → the stream strengthens, others fade, the task list appears below.'],
+        ['Tone', 'Overdue is soft rose with “Reschedule” — never red, never a warning icon.'],
+        ['Motion', 'Streams pour from the total and settle into cards (800ms). RTL: A — mirror the card order.']
+      ].map(([k, v]) => ({ k, v })),
+      cfs: [mkCf(false, 'cfSelD'), mkCf(true, 'cfSelW')], cfm,
+      movedTasks: [['Reply to Katy’s brief', '20m'], ['Prepare check-in notes', '45m'], ['Read “Shape Up” ch. 4', '30m'], ['Gym', '1h']].map(([t, m]) => ({ t, m }))
+    };
+  }
+}
+</script>
+</body>
+</html>

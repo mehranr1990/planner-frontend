@@ -1,0 +1,331 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Company Overview</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F1F1EE}
+a{color:#1A1A17}a:hover{color:#7A2BC4}
+.rail-slot{align-self:stretch}
+.rail-sticky{position:sticky;top:16px;height:calc(100vh - 32px);max-height:100%;display:flex;align-items:center}
+.rail-sticky>nav{max-height:100%;overflow-y:auto}
+@media (max-width: 720px){.rail-sticky{position:static;height:auto}.rail-slot{width:100%!important}}
+@media (max-width: 960px){.g-fixed{grid-template-columns:1fr!important}.g-fixed>*{grid-column:auto!important}}
+</style>
+</helmet>
+<div style="min-height: 100vh; box-sizing: border-box; padding: 16px; background: #F1F1EE; font-family: 'Urbanist', system-ui, sans-serif; color: #1A1A17">
+<div style="max-width: 1400px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px">
+
+  <!-- Command bar -->
+  <header style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px">
+    <a href="#" aria-label="Planner home" style="flex: none; width: 56px; height: 56px; border-radius: 50%; background: #FFFFFF; box-shadow: 0 1px 0 #E6E6E1, 0 12px 32px rgba(14,14,12,0.06); display: inline-flex; align-items: center; justify-content: center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0E0E0C" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M5 19L19 5M9 5h10v10"></path></svg></a>
+    <button type="button" style="flex: none; display: inline-flex; align-items: center; gap: 12px; height: 56px; padding: 0 16px 0 8px; border: 0; border-radius: 999px; background: #FFFFFF; box-shadow: 0 1px 0 #E6E6E1, 0 12px 32px rgba(14,14,12,0.06); font-family: inherit; text-align: left; cursor: pointer"><span style="width: 40px; height: 40px; border-radius: 50%; background: #F4E9FF; display: inline-flex; align-items: center; justify-content: center"><span style="width: 12px; height: 12px; border-radius: 50%; background: #C07BFF; box-shadow: 0 0 0 3px #FFFFFF"></span></span><span style="display: flex; flex-direction: column; line-height: 1.15"><span style="font-size: 11px; font-weight: 600; color: #6B6B64">Companies</span><span style="font-size: 15px; font-weight: 700; color: #1A1A17">Euroly</span></span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1A1A17" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button>
+    <section aria-label="Your schedule" style="flex: 1 1 420px; min-width: 0; height: 56px; box-sizing: border-box; padding: 4px 4px 4px 18px; border-radius: 999px; background: #FFFFFF; box-shadow: 0 1px 0 #E6E6E1, 0 12px 32px rgba(14,14,12,0.06); display: flex; align-items: center; gap: 12px">
+      <span style="flex: none; display: flex; flex-direction: column; line-height: 1.1"><span style="font-size: 10px; font-weight: 600; color: #6B6B64">Today</span><span style="font-size: 13px; font-weight: 700">13 Oct</span></span>
+      <div style="position: relative; flex: 1; min-width: 0; height: 48px; border-radius: 999px; background: #F1F1EE; overflow: hidden">
+        <span style="position: absolute; left: 1%; top: 6px; bottom: 6px; width: 16%; border-radius: 999px; background: repeating-linear-gradient(135deg, #E6E6E1 0 2px, #F1F1EE 2px 6px); display: flex; align-items: center; padding: 0 12px; box-sizing: border-box; font-size: 12px; font-weight: 600; color: #6B6B64; white-space: nowrap; overflow: hidden">Leads sync · done</span>
+        <div style="position: absolute; left: 19%; top: 4px; bottom: 4px; width: 38%; border-radius: 999px; background: #FFFFFF; box-shadow: 0 2px 10px rgba(14,14,12,0.08); overflow: hidden; display: flex; align-items: center; gap: 8px; padding: 0 12px; box-sizing: border-box"><span aria-hidden="true" style="position: absolute; left: 0; top: 0; bottom: 0; width: 28%; background: #F4E9FF"></span><span style="position: relative; font-size: 13px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Q4 planning review</span><span style="position: relative; margin-left: auto; flex: none; font-size: 11px; font-weight: 600; color: #6B6B64">2:00 – 3:30</span></div>
+        <span aria-hidden="true" style="position: absolute; left: calc(19% + 38% * 0.28); top: 6px; bottom: 6px; width: 2px; margin-left: -1px; background: #7A2BC4"></span>
+        <span role="img" aria-label="Now" style="position: absolute; left: calc(19% + 38% * 0.28); top: 3px; width: 10px; height: 10px; margin-left: -5px; border-radius: 50%; background: #C8FF3D; box-shadow: 0 0 0 2px #7A2BC4, 0 0 12px 3px rgba(200,255,61,0.55)"></span>
+        <span style="position: absolute; left: 59%; top: 8px; bottom: 8px; width: 40%; border-radius: 999px; background: #F4E9FF; color: #7A2BC4; display: flex; align-items: center; padding: 0 12px; box-sizing: border-box; font-size: 12px; font-weight: 700; white-space: nowrap; overflow: hidden">4:00 · Board prep</span>
+      </div>
+    </section>
+    <div style="flex: none; display: flex; align-items: center; gap: 4px; height: 56px; box-sizing: border-box; padding: 4px; border-radius: 999px; background: #FFFFFF; box-shadow: 0 1px 0 #E6E6E1, 0 12px 32px rgba(14,14,12,0.06)">
+      <button type="button" aria-label="Search and commands" style="display: inline-flex; align-items: center; gap: 8px; height: 48px; padding: 0 8px 0 14px; border: 0; border-radius: 999px; background: #F1F1EE; font-family: inherit; font-size: 13px; font-weight: 600; color: #45453F; cursor: pointer"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1A1A17" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-4-4"></path></svg>Search<span style="font-size: 11px; font-weight: 700; padding: 3px 7px; border-radius: 8px; background: #FFFFFF">⌘K</span></button>
+      <button type="button" aria-label="Quick create" style="width: 48px; height: 48px; border-radius: 50%; border: 0; background: #F1F1EE; display: inline-flex; align-items: center; justify-content: center; cursor: pointer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0E0E0C" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></button>
+      <button type="button" aria-label="Notifications, 3 unread" style="position: relative; width: 48px; height: 48px; border-radius: 50%; border: 0; background: #F1F1EE; display: inline-flex; align-items: center; justify-content: center; cursor: pointer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1A1A17" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M6 16v-5a6 6 0 0 1 12 0v5l2 2H4z"></path><path d="M10 20a2 2 0 0 0 4 0"></path></svg><span style="position: absolute; top: 9px; right: 9px; min-width: 16px; height: 16px; padding: 0 4px; box-sizing: border-box; border-radius: 999px; background: #E5484D; color: #FFFFFF; font-size: 10px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center">3</span></button>
+      <span style="width: 48px; height: 48px; border-radius: 50%; background: #DDFAF2; color: #0E6B57; display: inline-flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700">MR</span>
+    </div>
+  </header>
+
+  <div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start">
+    <div class="rail-slot" style="flex: none; width: 64px">
+<div class="rail-sticky">
+<nav aria-label="Company navigation" style="flex: none; width: 64px; box-sizing: border-box; padding: 8px; border-radius: 34px; background: #FFFFFF; box-shadow: 0 1px 0 #E6E6E1, 0 12px 32px rgba(14,14,12,0.06); display: flex; flex-direction: column; gap: 4px">
+      <sc-for list="{{rail}}" as="it" hint-placeholder-count="9">
+        <a href="#" aria-label="{{it.label}}" aria-current="{{it.current}}" style="display: flex; align-items: center; justify-content: center; width: 48px; height: 48px; border-radius: 999px; background: {{it.bg}}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{it.icon}}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{it.d}}"></path></svg></a>
+      </sc-for>
+    </nav></div>
+</div>
+
+    <main style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 18px">
+      <!-- Header -->
+      <div style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px; padding: 6px 4px 0">
+        <div style="display: flex; flex-direction: column; gap: 10px">
+          <span style="display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; color: #6B6B64"><span style="width: 8px; height: 8px; border-radius: 50%; background: #C07BFF"></span>Companies</span>
+          <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px">
+            <h1 style="margin: 0; font-size: 40px; font-weight: 500; letter-spacing: -0.015em; line-height: 1.05">Euroly</h1>
+            <button type="button" style="display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px; border: 0; border-radius: 999px; background: #F4E9FF; color: #7A2BC4; font-family: inherit; font-size: 13px; font-weight: 700; cursor: pointer">All departments<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#7A2BC4" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button>
+            <button type="button" style="display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px; border: 0; border-radius: 999px; background: #FFFFFF; color: #1A1A17; font-family: inherit; font-size: 13px; font-weight: 600; cursor: pointer">Q4 2026<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#1A1A17" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button>
+          </div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px"><button type="button" style="height: 48px; padding: 0 18px; border: 0; border-radius: 999px; background: #FFFFFF; font-family: inherit; font-size: 14px; font-weight: 600; color: #1A1A17; cursor: pointer">Export</button><button type="button" style="height: 48px; padding: 0 22px; border: 0; border-radius: 999px; background: #7A2BC4; color: #FFFFFF; font-family: inherit; font-size: 14px; font-weight: 600; cursor: pointer">Review approvals · 4</button></div>
+      </div>
+
+      <!-- Executive hero -->
+      <div style="display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-start">
+<section aria-label="Company health" style="flex: 1 1 360px; min-width: 0; display: flex; flex-direction: column">
+  <div style="background: #FFFFFF; border-radius: {{rc6.bodyR}}; padding: 24px 22px 20px; display: flex; flex-direction: column; align-items: center; gap: 18px">
+    <div style="display: flex; flex-direction: column; align-items: center; gap: 2px"><span style="font-size: 22px; font-weight: 500">Company health</span><span style="font-size: 13px; font-weight: 600; color: #6B6B64">Euroly · {{rc6.label}}</span></div>
+    <div style="display: flex; align-items: center; gap: 14px">
+      <button type="button" aria-label="Previous period" onClick="{{ rc6.prev }}" style="width: 44px; height: 44px; border-radius: 50%; border: 0; background: #F1F1EE; display: inline-flex; align-items: center; justify-content: center; cursor: pointer"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1A1A17" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"></path></svg></button>
+      <div role="img" aria-label="Company health {{rc6.disp}}" style="width: 196px; height: 196px; border-radius: 50%; background: {{rc6.ring}}; display: flex; align-items: center; justify-content: center"><div style="width: 160px; height: 160px; border-radius: 50%; background: #FFFFFF; box-shadow: 0 10px 30px rgba(14,14,12,0.10); display: flex; flex-direction: column; align-items: center; justify-content: center"><span style="font-size: 54px; font-weight: 300; letter-spacing: -0.03em; line-height: 1">{{rc6.disp}}</span><span style="font-size: 13px; font-weight: 700; color: #7A2BC4">Healthy</span></div></div>
+      <button type="button" aria-label="Next period" onClick="{{ rc6.next }}" style="width: 44px; height: 44px; border-radius: 50%; border: 0; background: #F1F1EE; display: inline-flex; align-items: center; justify-content: center; cursor: pointer"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1A1A17" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg></button>
+    </div>
+    <div style="align-self: stretch; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); padding-top: 14px; border-top: 1px solid #EDEDEA"><div style="display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 4px 0"><span style="width: 32px; height: 32px; border-radius: 50%; background: #F4E9FF; display: inline-flex; align-items: center; justify-content: center"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#7A2BC4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l4 4 10-10"></path></svg></span><span style="font-size: 26px; font-weight: 400; letter-spacing: -0.01em">12/14</span><span style="font-size: 12px; font-weight: 600; color: #6B6B64">projects on track</span></div><div style="display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 4px 0; box-shadow: inset 1px 0 0 #EDEDEA"><span style="width: 32px; height: 32px; border-radius: 50%; background: #FEF1D9; display: inline-flex; align-items: center; justify-content: center"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#8A5300" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4l9 16H3zM12 10v4"></path></svg></span><span style="font-size: 26px; font-weight: 400; letter-spacing: -0.01em">2</span><span style="font-size: 12px; font-weight: 600; color: #6B6B64">key risks</span></div></div>
+    <sc-if value="{{rc6.historyOn}}" hint-placeholder-val="{{ true }}">
+      <div role="radiogroup" aria-label="Period" style="align-self: stretch; display: flex; gap: 4px; padding: 4px; border-radius: 18px; background: #F8F8F6">
+        <sc-for list="{{rc6.strip}}" as="s" hint-placeholder-count="4">
+          <button type="button" role="radio" aria-checked="{{s.sel}}" onClick="{{ s.pick }}" style="flex: 1; height: 58px; border: 0; border-radius: 14px; background: {{s.bg}}; box-shadow: {{s.sh}}; font-family: inherit; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; cursor: pointer"><span style="font-size: 16px; font-weight: {{s.w}}; color: {{s.fg}}">{{s.v}}</span><span style="font-size: 11px; font-weight: 700; color: #6B6B64">{{s.l}}</span></button>
+        </sc-for>
+      </div>
+    </sc-if>
+    <sc-if value="{{rc6.detailsOn}}" hint-placeholder-val="{{ false }}">
+      <div style="align-self: stretch; display: flex; flex-direction: column; gap: 10px">
+        <sc-for list="{{rc6.details}}" as="d" hint-placeholder-count="4">
+          <div style="display: flex; align-items: center; gap: 10px"><span style="width: 84px; font-size: 13px; font-weight: 600">{{d.n}}</span><div style="flex: 1; height: 8px; border-radius: 4px; background: #F1F1EE"><div style="width: {{d.p}}; height: 8px; border-radius: 4px; background: {{d.c}}"></div></div><span style="width: 36px; text-align: right; font-size: 12px; font-weight: 700">{{d.v}}</span></div>
+        </sc-for>
+      </div>
+    </sc-if>
+  </div>
+  <div role="tablist" aria-label="Company health view" style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr))">
+    <div style="display: flex">
+      <sc-if value="{{rc6.leftOn}}" hint-placeholder-val="{{ true }}"><button type="button" role="tab" aria-selected="true" onClick="{{ rc6.pickHistory }}" style="position: relative; flex: 1; height: 56px; border: 0; border-radius: 0 0 24px 24px; background: #FFFFFF; font-family: inherit; font-size: 12px; font-weight: 800; letter-spacing: 0.12em; color: #1A1A17; cursor: pointer">HISTORY<span aria-hidden="true" style="position: absolute; left: 100%; top: 0; width: 20px; height: 20px; background: radial-gradient(circle at 100% 100%, transparent 19.5px, #FFFFFF 20px)"></span></button></sc-if>
+      <sc-if value="{{rc6.leftOff}}" hint-placeholder-val="{{ false }}"><button type="button" role="tab" aria-selected="false" onClick="{{ rc6.pickHistory }}" style="flex: 1; height: 56px; border: 0; background: transparent; font-family: inherit; font-size: 12px; font-weight: 700; letter-spacing: 0.12em; color: #5E5E58; cursor: pointer">HISTORY</button></sc-if>
+    </div>
+    <div style="display: flex">
+      <sc-if value="{{rc6.rightOn}}" hint-placeholder-val="{{ false }}"><button type="button" role="tab" aria-selected="true" onClick="{{ rc6.pickDetails }}" style="position: relative; flex: 1; height: 56px; border: 0; border-radius: 0 0 24px 24px; background: #FFFFFF; font-family: inherit; font-size: 12px; font-weight: 800; letter-spacing: 0.12em; color: #1A1A17; cursor: pointer">DETAILS<span aria-hidden="true" style="position: absolute; right: 100%; top: 0; width: 20px; height: 20px; background: radial-gradient(circle at 0 100%, transparent 19.5px, #FFFFFF 20px)"></span></button></sc-if>
+      <sc-if value="{{rc6.rightOff}}" hint-placeholder-val="{{ true }}"><button type="button" role="tab" aria-selected="false" onClick="{{ rc6.pickDetails }}" style="flex: 1; height: 56px; border: 0; background: transparent; font-family: inherit; font-size: 12px; font-weight: 700; letter-spacing: 0.12em; color: #5E5E58; cursor: pointer">DETAILS</button></sc-if>
+    </div>
+  </div>
+</section>
+      <div style="flex: 2 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 16px">
+      <section aria-label="Company snapshot" style="position: relative; box-sizing: border-box; padding: 26px 28px; border-radius: 34px; background: #FFFFFF; display: flex; flex-wrap: wrap; align-items: stretch; gap: 22px">
+        <div aria-hidden="true" style="position: absolute; top: 0; right: 0; width: 66px; height: 66px; background: #F1F1EE; border-bottom-left-radius: 32px"></div>
+        <div aria-hidden="true" style="position: absolute; top: 0; right: 66px; width: 32px; height: 32px; background: radial-gradient(circle at 0 100%, transparent 31.5px, #F1F1EE 32px)"></div>
+        <div aria-hidden="true" style="position: absolute; top: 66px; right: 0; width: 32px; height: 32px; background: radial-gradient(circle at 0 100%, transparent 31.5px, #F1F1EE 32px)"></div>
+        <button type="button" aria-label="Open health report" style="position: absolute; top: 0; right: 0; width: 54px; height: 54px; border-radius: 50%; border: 0; background: #7A2BC4; display: inline-flex; align-items: center; justify-content: center; cursor: pointer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"></path></svg></button>
+
+        <div style="flex: 1 1 320px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; padding-right: 60px">
+          <sc-for list="{{stats}}" as="s" hint-placeholder-count="4">
+            <div style="border-radius: 22px; background: #F8F8F6; padding: 14px 16px; display: flex; flex-direction: column; gap: 4px"><span style="font-size: 12px; font-weight: 700; color: #6B6B64">{{s.l}}</span><span style="font-size: 30px; font-weight: 400; letter-spacing: -0.02em; line-height: 1">{{s.n}}</span><span style="font-size: 12px; font-weight: 600; color: {{s.subFg}}">{{s.sub}}</span></div>
+          </sc-for>
+        </div>
+        <div style="flex: 1 1 100%; display: flex; flex-wrap: wrap; align-items: center; gap: 12px; padding: 14px 16px; border-radius: 22px; background: #FEF1D9">
+          <span style="flex: none; width: 36px; height: 36px; border-radius: 50%; background: #FFFFFF; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8A5300" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4l9 16H3zM12 10v4M12 17h.01"></path></svg></span>
+          <span style="flex: 1 1 300px; font-size: 14px; color: #5C3A00"><b style="color: #8A5300">Key risk ·</b> Engineering runs at 92% capacity while 2 launches overlap in November.</span>
+          <a href="#" style="font-size: 13px; font-weight: 700; color: #8A5300">View risk</a>
+        </div>
+      </section>
+        <section aria-label="Executive insight" style="border-radius: 28px; background: #7A2BC4; color: #FFFFFF; padding: 22px; display: flex; flex-direction: column; gap: 12px">
+          <span style="display: inline-flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700; letter-spacing: 0.08em; color: #C8FF3D"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#C8FF3D" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9V16h7v-2.1A6 6 0 0 0 12 3z"></path></svg>EXECUTIVE INSIGHT</span>
+          <p style="margin: 0; font-size: 19px; line-height: 1.35; font-weight: 500">2 projects are at risk.</p>
+          <div style="display: flex; flex-direction: column; gap: 8px">
+            <div style="display: flex; justify-content: space-between; font-size: 13px; color: rgba(255,255,255,0.86)"><span>Engineering capacity</span><b style="color: #FFFFFF">92%</b></div>
+            <div style="height: 6px; border-radius: 3px; background: rgba(255,255,255,0.22)"><div style="width: 92%; height: 6px; border-radius: 3px; background: #F5A524"></div></div>
+            <div style="display: flex; justify-content: space-between; font-size: 13px; color: rgba(255,255,255,0.86)"><span>Marketing capacity</span><b style="color: #FFFFFF">64%</b></div>
+            <div style="height: 6px; border-radius: 3px; background: rgba(255,255,255,0.22)"><div style="width: 64%; height: 6px; border-radius: 3px; background: #C07BFF"></div></div>
+          </div>
+          <p style="margin: 0; font-size: 14px; line-height: 1.45; color: rgba(255,255,255,0.86)">Recommended: review allocation before the next sprint — Marketing has room for 2 front-end hires on loan.</p>
+          <button type="button" style="align-self: flex-start; margin-top: auto; height: 44px; padding: 0 16px; border: 0; border-radius: 999px; background: #FFFFFF; color: #0E0E0C; font-family: inherit; font-size: 13px; font-weight: 700; cursor: pointer">Plan allocation</button>
+        </section>
+      </div>
+      </div>
+
+      <!-- Grid -->
+      <div class="g-fixed" style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; align-items: start">
+<section aria-label="Company areas" style="grid-column: 1 / -1; display: flex; flex-direction: column">
+<div role="tablist" aria-label="Company areas" style="display: flex; flex-wrap: wrap; align-items: flex-end; gap: 10px; position: relative; z-index: 1">
+  <sc-for list="{{c6.tabs}}" as="t" hint-placeholder-count="4">
+    <div style="display: flex">
+      <sc-if value="{{t.on}}" hint-placeholder-val="{{ false }}">
+        <button type="button" role="tab" aria-selected="true" onClick="{{ t.pick }}" style="position: relative; display: inline-flex; align-items: center; gap: 8px; height: 56px; padding: 0 26px; border: 0; border-radius: 24px 24px 0 0; background: #FFFFFF; font-family: inherit; font-size: 15px; font-weight: 700; color: #1A1A17; cursor: pointer">{{t.label}}<span style="font-size: 13px; font-weight: 700; color: #6B6B64">{{t.count}}</span><sc-if value="{{t.notFirst}}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="position: absolute; right: 100%; bottom: 0; width: 20px; height: 20px; background: radial-gradient(circle at 0 0, transparent 19.5px, #FFFFFF 20px)"></span></sc-if><span aria-hidden="true" style="position: absolute; left: 100%; bottom: 0; width: 20px; height: 20px; background: radial-gradient(circle at 100% 0, transparent 19.5px, #FFFFFF 20px)"></span></button>
+      </sc-if>
+      <sc-if value="{{t.off}}" hint-placeholder-val="{{ true }}">
+        <button type="button" role="tab" aria-selected="false" onClick="{{ t.pick }}" style="display: inline-flex; align-items: center; gap: 8px; height: 44px; margin-bottom: 8px; padding: 0 18px; border: 1.5px solid #D3D3CC; border-radius: 999px; background: transparent; font-family: inherit; font-size: 14px; font-weight: 600; color: #45453F; cursor: pointer">{{t.label}}<span style="font-size: 12px; font-weight: 700; color: #6B6B64">{{t.count}}</span></button>
+      </sc-if>
+    </div>
+  </sc-for>
+</div>
+<div role="tabpanel" style="background: #FFFFFF; border-radius: {{c6.bodyR}}; padding: 24px; min-height: 220px; box-sizing: border-box; display: flex; flex-direction: column; gap: 12px">
+<sc-if value="{{c6.on.departments}}" hint-placeholder-val="{{ true }}">
+          <sc-for list="{{depts}}" as="d" hint-placeholder-count="5">
+            <div style="display: flex; align-items: center; gap: 14px; min-height: 46px; padding: 0 4px; border-bottom: 1px solid #F1F1EE">
+              <span style="flex: none; width: 120px; font-size: 14px; font-weight: 600">{{d.name}}</span>
+              <div style="flex: 1; height: 8px; border-radius: 4px; background: #F1F1EE"><div style="width: {{d.prog}}; height: 8px; border-radius: 4px; background: #C07BFF"></div></div>
+              <span style="flex: none; width: 40px; font-size: 12px; font-weight: 700">{{d.prog}}</span>
+              <span style="flex: none; display: inline-flex; align-items: center; gap: 6px; width: 92px; font-size: 12px; font-weight: 700; color: {{d.hFg}}"><span style="width: 8px; height: 8px; border-radius: 50%; background: {{d.hDot}}"></span>{{d.health}}</span>
+              <span style="flex: none; width: 70px; text-align: right; font-size: 12px; font-weight: 700; color: {{d.capFg}}">{{d.cap}} cap.</span>
+            </div>
+          </sc-for>
+</sc-if>
+<sc-if value="{{c6.on.portfolio}}" hint-placeholder-val="{{ false }}">
+          <sc-for list="{{portfolio}}" as="p" hint-placeholder-count="5">
+            <div style="display: flex; flex-direction: column; gap: 5px">
+              <div style="display: flex; justify-content: space-between; font-size: 13px; font-weight: 600"><span>{{p.name}}</span><span style="color: {{p.fg}}">{{p.pct}} · {{p.state}}</span></div>
+              <div style="height: 8px; border-radius: 4px; background: #F1F1EE"><div style="width: {{p.pct}}; height: 8px; border-radius: 4px; background: {{p.bar}}"></div></div>
+            </div>
+          </sc-for>
+</sc-if>
+<sc-if value="{{c6.on.goals}}" hint-placeholder-val="{{ false }}">
+          <sc-for list="{{goals}}" as="g" hint-placeholder-count="3">
+            <div style="display: flex; align-items: center; gap: 12px">
+              <div role="img" aria-label="{{g.pct}}" style="flex: none; width: 46px; height: 46px; border-radius: 50%; background: {{g.ring}}; display: flex; align-items: center; justify-content: center"><span style="width: 36px; height: 36px; border-radius: 50%; background: #FFFFFF; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700">{{g.pct}}</span></div>
+              <div style="flex: 1; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 14px; font-weight: 600">{{g.t}}</span><span style="font-size: 12px; color: #6B6B64">{{g.m}}</span></div>
+            </div>
+          </sc-for>
+</sc-if>
+<sc-if value="{{c6.on.capacity}}" hint-placeholder-val="{{ false }}">
+          <div role="img" aria-label="14 under, 52 balanced, 16 overloaded" style="display: flex; gap: 4px; height: 16px"><span style="flex: 14; border-radius: 6px; background: #D3D3CC"></span><span style="flex: 52; border-radius: 6px; background: #C07BFF"></span><span style="flex: 16; border-radius: 6px; background: #E5484D"></span></div>
+          <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px">
+            <div style="border-radius: 18px; background: #F8F8F6; padding: 12px; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 24px; font-weight: 500">14</span><span style="font-size: 12px; font-weight: 600; color: #45453F">Under</span></div>
+            <div style="border-radius: 18px; background: #F4E9FF; padding: 12px; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 24px; font-weight: 500; color: #7A2BC4">52</span><span style="font-size: 12px; font-weight: 600; color: #7A2BC4">Balanced</span></div>
+            <div style="border-radius: 18px; background: #FDE7E8; padding: 12px; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 24px; font-weight: 500; color: #B4232A">16</span><span style="font-size: 12px; font-weight: 600; color: #B4232A">Overloaded</span></div>
+          </div>
+</sc-if>
+</div>
+</section>
+
+
+
+
+
+
+
+
+
+        <section aria-label="Budget" style="border-radius: 28px; background: #FFFFFF; padding: 20px; display: flex; flex-direction: column; gap: 12px">
+          <div style="display: flex; align-items: center; justify-content: space-between"><h2 style="margin: 0; font-size: 19px; font-weight: 600">Budget · Q4</h2><span style="font-size: 12px; font-weight: 600; color: #6B6B64">Toman</span></div>
+          <div style="display: flex; align-items: baseline; gap: 8px"><span style="font-size: 30px; font-weight: 500">38.4B</span><span style="font-size: 13px; color: #6B6B64">of 52B planned</span></div>
+          <div style="height: 10px; border-radius: 5px; background: #F1F1EE"><div style="width: 74%; height: 10px; border-radius: 5px; background: #7A2BC4"></div></div>
+          <div style="display: flex; align-items: flex-end; gap: 8px; height: 60px">
+            <sc-for list="{{months}}" as="m" hint-placeholder-count="3">
+              <div style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px"><div style="width: 100%; display: flex; align-items: flex-end; gap: 3px; height: 44px"><span style="flex: 1; height: {{m.p}}; border-radius: 4px; background: #D3D3CC"></span><span style="flex: 1; height: {{m.a}}; border-radius: 4px; background: #C07BFF"></span></div><span style="font-size: 10px; font-weight: 700; color: #6B6B64">{{m.l}}</span></div>
+            </sc-for>
+          </div>
+        </section>
+
+        <section aria-label="Approvals" style="border-radius: 28px; background: #FFFFFF; padding: 20px; display: flex; flex-direction: column; gap: 8px">
+          <div style="display: flex; align-items: center; justify-content: space-between"><h2 style="margin: 0; font-size: 19px; font-weight: 600">Approvals</h2><span style="font-size: 12px; font-weight: 700; color: #7A2BC4">4 pending</span></div>
+          <sc-for list="{{approvals}}" as="a" hint-placeholder-count="3">
+            <div style="display: flex; align-items: center; gap: 10px; min-height: 56px; padding: 0 4px 0 12px; border-radius: 16px; background: #F8F8F6">
+              <div style="flex: 1; display: flex; flex-direction: column; line-height: 1.25"><span style="font-size: 14px; font-weight: 600">{{a.t}}</span><span style="font-size: 12px; color: #6B6B64">{{a.m}}</span></div>
+              <button type="button" aria-label="Decline {{a.t}}" style="width: 40px; height: 40px; border-radius: 50%; border: 0; background: #FFFFFF; display: inline-flex; align-items: center; justify-content: center; cursor: pointer"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#45453F" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>
+              <button type="button" aria-label="Approve {{a.t}}" style="width: 40px; height: 40px; border-radius: 50%; border: 0; background: #7A2BC4; display: inline-flex; align-items: center; justify-content: center; cursor: pointer"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l4 4 10-10"></path></svg></button>
+            </div>
+          </sc-for>
+        </section>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- Floating assistant (library: notched chat) -->
+<div style="position: fixed; right: 24px; bottom: 24px; z-index: 60; display: flex; flex-direction: column; align-items: flex-end; gap: 12px">
+  <sc-if value="{{assistOpen}}" hint-placeholder-val="{{ false }}">
+    <div role="dialog" aria-label="Assistant" style="width: 360px; box-sizing: border-box; padding: 8px; border-radius: 34px; background: #FFFFFF; box-shadow: 0 0 0 1px #E6E6E1, 0 24px 60px rgba(14,14,12,0.18)">
+      <div style="position: relative; height: 420px; box-sizing: border-box; padding: 12px; border-radius: 28px; background: #F4F4F1; display: flex; flex-direction: column; gap: 10px">
+        <div aria-hidden="true" style="position: absolute; top: 0; right: 0; width: 66px; height: 66px; background: #FFFFFF; border-bottom-left-radius: 28px"></div>
+        <div aria-hidden="true" style="position: absolute; top: 0; right: 66px; width: 28px; height: 28px; background: radial-gradient(circle at 0 100%, transparent 27.5px, #FFFFFF 28px)"></div>
+        <div aria-hidden="true" style="position: absolute; top: 66px; right: 0; width: 28px; height: 28px; background: radial-gradient(circle at 0 100%, transparent 27.5px, #FFFFFF 28px)"></div>
+        <span role="img" aria-label="Assistant" style="position: absolute; top: 0; right: 0; width: 54px; height: 54px; border-radius: 50%; background: #7A2BC4; display: inline-flex; align-items: center; justify-content: center"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#C8FF3D" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M6 6l2 2M16 16l2 2M6 18l2-2M16 8l2-2"></path></svg></span>
+        <div style="display: flex; gap: 6px; padding-right: 70px"><span style="height: 40px; padding: 0 14px; border-radius: 999px; background: #FFFFFF; font-size: 13px; font-weight: 700; display: inline-flex; align-items: center">Chat</span><span style="height: 40px; padding: 0 14px; border-radius: 999px; font-size: 13px; font-weight: 600; color: #5E5E58; display: inline-flex; align-items: center">Plan</span><span style="height: 40px; padding: 0 14px; border-radius: 999px; font-size: 13px; font-weight: 600; color: #5E5E58; display: inline-flex; align-items: center">Help</span></div>
+        <div style="align-self: flex-start; max-width: 85%; background: #FFFFFF; border-radius: 18px 18px 18px 6px; padding: 11px 14px; font-size: 14px; line-height: 1.45">{{assistHello}}</div>
+        <div style="align-self: flex-end; max-width: 80%; background: #7A2BC4; color: #FFFFFF; border-radius: 18px 18px 6px 18px; padding: 11px 14px; font-size: 14px">{{assistAsk}}</div>
+        <div style="margin-top: auto; display: flex; gap: 6px; overflow-x: auto"><span style="flex: none; height: 36px; padding: 0 12px; border-radius: 999px; box-shadow: inset 0 0 0 1px #D3D3CC; font-size: 12px; font-weight: 600; display: inline-flex; align-items: center">Summarize</span><span style="flex: none; height: 36px; padding: 0 12px; border-radius: 999px; box-shadow: inset 0 0 0 1px #D3D3CC; font-size: 12px; font-weight: 600; display: inline-flex; align-items: center">What’s at risk?</span></div>
+        <div style="display: flex; align-items: center; gap: 4px; height: 52px; padding: 0 6px 0 16px; border-radius: 999px; background: #FFFFFF"><label for="assist-q" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Ask the assistant</label><input id="assist-q" type="text" placeholder="Ask anything…" style="flex: 1; min-width: 0; border: 0; outline: none; background: transparent; font-family: inherit; font-size: 14px; color: #1A1A17"><button type="button" aria-label="Send" style="width: 42px; height: 42px; border-radius: 50%; border: 0; background: #7A2BC4; display: inline-flex; align-items: center; justify-content: center; cursor: pointer"><svg width="15" height="15" viewBox="0 0 24 24" fill="#C8FF3D" aria-hidden="true"><path d="M5 4l15 8-15 8 3-8z"></path></svg></button></div>
+      </div>
+    </div>
+  </sc-if>
+  <button type="button" onClick="{{ toggleAssist }}" aria-expanded="{{assistExpanded}}" aria-label="{{assistLabel}}" style="display: inline-flex; align-items: center; gap: 10px; height: 60px; padding: 0 20px 0 8px; border: 0; border-radius: 999px; background: #FFFFFF; box-shadow: 0 1px 0 #E6E6E1, 0 14px 34px rgba(14,14,12,0.14); font-family: inherit; font-size: 14px; font-weight: 700; color: #1A1A17; cursor: pointer"><span style="width: 44px; height: 44px; border-radius: 50%; background: #7A2BC4; display: inline-flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C8FF3D" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="{{assistIcon}}"></path></svg></span>{{assistText}}</button>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1500}}'>
+class Component extends DCLogic {
+  ftab(key, ids, names, counts, deep) {
+    const cur = (this.state && this.state[key]) || ids[0];
+    const on = {};
+    ids.forEach((id) => { on[id] = id === cur; });
+    return {
+      on, bodyR: cur === ids[0] ? '0 32px 32px 32px' : '32px',
+      tabs: ids.map((id, i) => ({ label: names[i], count: (counts || [])[i] || '', on: id === cur, off: id !== cur, notFirst: i > 0, sel: id === cur ? 'true' : 'false', pick: () => this.setState({ [key]: id }) }))
+    };
+  }
+  ringCard(key, qkey, d) {
+    const side = (this.state && this.state[key]) || 'history';
+    const q = (this.state && this.state[qkey] != null) ? this.state[qkey] : d.vals.length - 1;
+    const v = d.vals[q];
+    return {
+      historyOn: side === 'history', detailsOn: side === 'details',
+      leftOn: side === 'history', leftOff: side !== 'history', rightOn: side === 'details', rightOff: side !== 'details',
+      bodyR: side === 'history' ? '32px 32px 32px 0' : '32px 32px 0 32px',
+      pickHistory: () => this.setState({ [key]: 'history' }), pickDetails: () => this.setState({ [key]: 'details' }),
+      disp: d.disp[q], label: d.labels[q], ring: 'conic-gradient(' + d.color + ' 0 ' + v + '%, #F1F1EE ' + v + '% 100%)',
+      prev: () => this.setState({ [qkey]: Math.max(0, q - 1) }), next: () => this.setState({ [qkey]: Math.min(d.vals.length - 1, q + 1) }),
+      strip: d.labels.map((l, i) => ({ l, v: d.disp[i], bg: i === q ? '#FFFFFF' : 'transparent', sh: i === q ? '0 6px 16px rgba(14,14,12,0.10)' : 'none', fg: i === q ? '#1A1A17' : '#6B6B64', w: i === q ? 800 : 600, sel: i === q ? 'true' : 'false', pick: () => this.setState({ [qkey]: i }) })),
+      details: d.details
+    };
+  }
+  assist(hello, ask) {
+    const open = !!(this.state && this.state.assistOpen);
+    return {
+      assistOpen: open, assistExpanded: open ? 'true' : 'false', assistLabel: open ? 'Close assistant' : 'Open assistant',
+      assistText: open ? 'Close' : 'Assistant', assistIcon: open ? 'M6 6l12 12M18 6L6 18' : 'M12 3v3M12 18v3M3 12h3M18 12h3M6 6l2 2M16 16l2 2M6 18l2-2M16 8l2-2',
+      assistHello: hello, assistAsk: ask,
+      toggleAssist: () => this.setState({ assistOpen: !open })
+    };
+  }
+  renderVals() {
+    const I = {
+      overview: 'M4 4h7v7H4zM13 4h7v4h-7zM13 10h7v10h-7zM4 13h7v7H4z', departments: 'M4 20V8l8-4 8 4v12M9 20v-6h6v6', projects: 'M3 7h7l2 2h9v10H3z',
+      people: 'M9 4.5a3.5 3.5 0 1 0 0 7a3.5 3.5 0 1 0 0-7zM3 20a6 6 0 0 1 12 0M16 4.5a3.5 3.5 0 0 1 0 7M18 14a5 5 0 0 1 3 6', goals: 'M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18zM12 8a4 4 0 1 0 0 8a4 4 0 1 0 0-8z',
+      finance: 'M3 7h18v12H3zM3 11h18M7 15h3', assets: 'M12 3l8 4.5v9L12 21l-8-4.5v-9zM12 12l8-4.5M12 12v9M12 12L4 7.5', approvals: 'M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18zM8 12l3 3 5-6', reports: 'M6 3h9l4 4v14H6zM9 17v-4M12 17v-6M15 17v-2'
+    };
+    const rail = Object.keys(I).map((k) => ({ d: I[k], label: k, current: k === 'overview' ? 'page' : 'false', bg: k === 'overview' ? '#F4E9FF' : 'transparent', icon: k === 'overview' ? '#7A2BC4' : '#45453F' }));
+    const H = { good: ['Healthy', '#4F6B0F', '#7FB51A'], watch: ['Watch', '#8A5300', '#F5A524'], risk: ['At risk', '#B4232A', '#E5484D'] };
+    const dept = (name, prog, h, cap) => ({ name, prog: prog + '%', health: H[h][0], hFg: H[h][1], hDot: H[h][2], cap: cap + '%', capFg: cap > 90 ? '#B4232A' : '#1A1A17' });
+    const ring = (p) => `conic-gradient(#C07BFF 0 ${p}%, #F1F1EE ${p}% 100%)`;
+    return {
+      rc6: this.ringCard('rc6side', 'rc6q', { vals: [71, 75, 78, 82], disp: ['71', '75', '78', '82'], labels: ['Q1', 'Q2', 'Q3', 'Q4'], color: '#C07BFF', details: [{ n: 'Delivery', v: '88', p: '88%', c: '#C07BFF' }, { n: 'Goals', v: '80', p: '80%', c: '#C07BFF' }, { n: 'Budget', v: '86', p: '86%', c: '#C07BFF' }, { n: 'Capacity', v: '64', p: '64%', c: '#F5A524' }] }),
+      c6: this.ftab('c6tab', ['departments', 'portfolio', 'goals', 'capacity'], ['Departments', 'Portfolio', 'Goals', 'Capacity'], ['5', '14', '9', '82'], '#7A2BC4'),
+      ...this.assist('Engineering is at 92% while two launches overlap in November.', 'Draft an allocation plan'),
+      rail,
+      stats: [
+        { l: 'Active projects', n: '14', sub: '2 at risk', subFg: '#B4232A' },
+        { l: 'Teams', n: '6', sub: 'all checked in', subFg: '#4F6B0F' },
+        { l: 'People', n: '82', sub: '+3 this quarter', subFg: '#45453F' },
+        { l: 'Goals on track', n: '6/9', sub: '1 behind', subFg: '#8A5300' }
+      ],
+      depts: [dept('Engineering', 68, 'watch', 92), dept('Design', 74, 'good', 81), dept('Marketing', 59, 'good', 64), dept('Sales', 81, 'good', 77), dept('Operations', 45, 'risk', 88)],
+      portfolio: [
+        { name: 'Website Redesign', pct: '72%', state: 'on track', fg: '#4F6B0F', bar: '#5AB4FF' },
+        { name: 'Planner App', pct: '48%', state: 'at risk', fg: '#B4232A', bar: '#5AB4FF' },
+        { name: 'Mobile Launch', pct: '31%', state: 'at risk', fg: '#B4232A', bar: '#5AB4FF' },
+        { name: 'CRM Migration', pct: '86%', state: 'on track', fg: '#4F6B0F', bar: '#5AB4FF' },
+        { name: 'Brand Refresh', pct: '58%', state: 'watch', fg: '#8A5300', bar: '#5AB4FF' }
+      ],
+      goals: [
+        { t: 'Grow ARR to 120B Toman', m: 'Revenue · owner: CEO', pct: '71%', ring: ring(71) },
+        { t: 'Ship Planner v1 to 5k users', m: 'Product · 2 projects', pct: '46%', ring: ring(46) },
+        { t: 'eNPS above 40', m: 'People · survey in Nov', pct: '80%', ring: ring(80) }
+      ],
+      months: [['Oct', 60, 52], ['Nov', 72, 0], ['Dec', 80, 0]].map(([l, p, a]) => ({ l, p: p + '%', a: a + '%' })),
+      approvals: [
+        { t: 'Hire: senior front-end', m: 'Engineering · 2.1B / yr' },
+        { t: 'Conference travel ×3', m: 'Marketing · 180M' },
+        { t: 'Design tool licences', m: 'Design · 46M / yr' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

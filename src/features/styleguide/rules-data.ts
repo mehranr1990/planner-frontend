@@ -2,7 +2,7 @@ import type { Tier } from "./tier-badge";
 
 /*
  * Design-system classification and pattern audit, compiled from every board
- * in mehran-planner-design (screenshots + board scripts) and CLAUDE.md.
+ * in design/ (screenshots + board scripts) and CLAUDE.md.
  * Text lives in Styleguide.rulesPage; this file holds the structure only.
  * Rule of the page: document approved, reusable patterns — never extrapolate
  * a product-wide rule from a single screen.

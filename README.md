@@ -2,7 +2,7 @@
 
 Personal, project, team and company planning. Next.js (App Router) · React · TypeScript · Tailwind CSS v4.
 
-The visual source of truth is `mehran-planner-design/` (see its `CLAUDE.md`). The boards are reference only; production code lives in `src/`.
+The visual source of truth is `design/` (the final Personal package: see the root `CLAUDE.md` and `design/PERSONAL.md`). The boards are reference only; production code lives in `src/`.
 
 ## Scripts
 
@@ -20,7 +20,7 @@ If the Playwright browser download is blocked, use an installed browser: `PLAYWR
 
 ## Layout
 
-- `src/styles/` — `tokens.css` (app font/motion overrides + semantic layer; primitives come from `mehran-planner-design/tokens.css`, imported first by `globals.css`), Tailwind theme, typography, global utilities
+- `src/styles/` — `tokens.css` (app font/motion overrides + semantic layer; primitives come from `design/tokens.css`, imported first by `globals.css`), Tailwind theme, typography, global utilities
 - `src/design-system/` — reusable visual language: token metadata, surfaces, feedback, motion
 - `src/components/ui/` — accessible primitives on Radix (forms, overlays, menus, toast, calendar/date picker, display)
 - `src/components/feedback/` — inline alerts and empty / loading / error / no-results / unavailable states

@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>موبایل — افزودن سریع</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700&amp;family=Urbanist:wght@500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F1F1EE}
+a{color:#1A1A17}a:hover{color:#1A1A17}
+button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid #0F5BA8;outline-offset:2px}
+.ltr{direction:ltr;unicode-bidi:isolate}
+</style>
+</helmet>
+<div dir="rtl" style="position: relative; width: 390px; height: 844px; overflow: hidden; box-sizing: border-box; background: #F1F1EE; font-family: 'Vazirmatn', 'Urbanist', system-ui, sans-serif; color: #1A1A17">
+  <!-- Underlying screen (dimmed) -->
+  <div aria-hidden="true" style="padding: 20px 16px; display: flex; flex-direction: column; gap: 14px">
+    <div style="display: flex; align-items: center; gap: 12px"><span style="width: 48px; height: 48px; border-radius: 50%; background: #DDFAF2"></span><div style="flex: 1; display: flex; flex-direction: column; gap: 6px"><span style="width: 80px; height: 10px; border-radius: 5px; background: #DADAD4"></span><span style="width: 120px; height: 14px; border-radius: 7px; background: #CFCFC8"></span></div></div>
+    <div style="height: 64px; border-radius: 999px; background: #FFFFFF"></div>
+    <div style="height: 200px; border-radius: 28px; background: #C8FF3D"></div>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px"><div style="height: 150px; border-radius: 26px; background: #0E6B57"></div><div style="height: 150px; border-radius: 26px; background: #DDFAF2"></div></div>
+  </div>
+  <div aria-hidden="true" style="position: absolute; inset: 0; background: rgba(38,44,40,0.34)"></div>
+
+  <!-- Bottom sheet -->
+  <section role="dialog" aria-modal="true" aria-label="افزودن سریع" style="position: absolute; left: 0; right: 0; bottom: 0; box-sizing: border-box; padding: 10px 16px 24px; border-radius: 32px 32px 0 0; background: #FFFFFF; box-shadow: 0 -20px 50px rgba(14,14,12,0.16); display: flex; flex-direction: column; gap: 14px">
+    <span aria-hidden="true" style="align-self: center; width: 44px; height: 5px; border-radius: 3px; background: #D3D3CC"></span>
+    <div style="display: flex; align-items: center; justify-content: space-between">
+      <h1 style="margin: 0; font-size: 20px; font-weight: 700">افزودن سریع</h1>
+      <div role="radiogroup" aria-label="نوع" style="display: inline-flex; gap: 2px; padding: 3px; border-radius: 999px; background: #F1F1EE">
+        <sc-for list="{{kinds}}" as="k" hint-placeholder-count="3"><button type="button" role="radio" aria-checked="{{k.on}}" onClick="{{ k.pick }}" style="height: 34px; padding: 0 12px; border: 0; border-radius: 999px; background: {{k.bg}}; box-shadow: {{k.sh}}; color: {{k.fg}}; font-family: inherit; font-size: 12px; font-weight: 700; cursor: pointer">{{k.label}}</button></sc-for>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 8px; padding: 14px; border-radius: 22px; background: #F4F4F1; box-shadow: 0 0 0 3px #CDE6FF">
+      <label for="qa" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">عنوان</label>
+      <div id="qa" style="font-size: 16px; font-weight: 600; line-height: 1.8">بررسی هزینه‌های مهر <span style="color: #0F5BA8">فردا ساعت ۱۰</span> <span style="color: #0E6B57">#مالی</span> <span style="color: #B4232A">!مهم</span> <span style="color: #4343C8">~۳۰د</span><span aria-hidden="true" style="display: inline-block; width: 2px; height: 18px; margin-right: 2px; vertical-align: middle; background: #0F5BA8"></span></div>
+      <div style="display: flex; flex-wrap: wrap; gap: 6px">
+        <sc-for list="{{parsed}}" as="p" hint-placeholder-count="4"><span style="display: inline-flex; align-items: center; gap: 5px; height: 28px; padding: 0 10px; border-radius: 999px; background: {{p.bg}}; color: {{p.fg}}; font-size: 12px; font-weight: 700">{{p.label}}</span></sc-for>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 8px">
+      <span style="font-size: 12px; font-weight: 700; color: #5E5E58">بخش</span>
+      <div role="radiogroup" aria-label="بخش" style="display: flex; gap: 6px; overflow-x: auto; margin: 0 -16px; padding: 0 16px">
+        <sc-for list="{{ctxs}}" as="c" hint-placeholder-count="4"><button type="button" role="radio" aria-checked="{{c.on}}" onClick="{{ c.pick }}" style="flex: none; display: inline-flex; align-items: center; gap: 7px; height: 40px; padding: 0 14px; border: 0; border-radius: 999px; background: {{c.bg}}; box-shadow: {{c.ring}}; color: {{c.fg}}; font-family: inherit; font-size: 13px; font-weight: 700; cursor: pointer"><span style="width: 8px; height: 8px; border-radius: 50%; background: {{c.dot}}"></span>{{c.label}}</button></sc-for>
+      </div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px">
+      <sc-for list="{{opts}}" as="o" hint-placeholder-count="4">
+        <button type="button" onClick="{{ o.pick }}" style="display: flex; align-items: center; gap: 10px; height: 56px; padding: 0 8px 0 12px; border: 0; border-radius: 18px; background: #F8F8F6; font-family: inherit; text-align: right; cursor: pointer">
+          <span style="flex: none; width: 38px; height: 38px; border-radius: 12px; background: #FFFFFF; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="{{deep}}" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{o.icon}}"></path></svg></span>
+          <span style="display: flex; flex-direction: column; line-height: 1.45; min-width: 0"><span style="font-size: 11px; font-weight: 600; color: #6B6B64">{{o.k}}</span><span style="font-size: 13px; font-weight: 700; color: #1A1A17; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{o.v}}</span></span>
+        </button>
+      </sc-for>
+    </div>
+
+    <div style="display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 18px; background: {{soft}}">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="{{deep}}" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M6 6l2 2M16 16l2 2M6 18l2-2M16 8l2-2"></path></svg>
+      <span style="flex: 1; font-size: 13px; font-weight: 600; line-height: 1.6">پیشنهاد: <b>چهارشنبه ۰۸:۳۰</b> قبل از مرور فصلی آزاده.</span>
+      <button type="button" onClick="{{ toggleSlot }}" aria-pressed="{{slotOn}}" style="height: 34px; padding: 0 12px; border: 0; border-radius: 999px; background: {{slotBg}}; color: {{slotFg}}; font-family: inherit; font-size: 12px; font-weight: 700; cursor: pointer">{{slotLabel}}</button>
+    </div>
+
+    <div style="display: flex; gap: 8px">
+      <a href="S8TaskCreate.dc.html" style="flex: 1; display: inline-flex; align-items: center; justify-content: center; height: 54px; border-radius: 999px; box-shadow: inset 0 0 0 1px #D3D3CC; font-size: 14px; font-weight: 700; color: #1A1A17; text-decoration: none">جزئیات بیشتر</a>
+      <button type="button" onClick="{{ save }}" style="flex: 1.4; height: 54px; border: 0; border-radius: 999px; background: {{deep}}; color: #FFFFFF; font-family: inherit; font-size: 15px; font-weight: 700; cursor: pointer">{{saveLabel}}</button>
+    </div>
+  </section>
+
+  <sc-if value="{{saved}}" hint-placeholder-val="{{ false }}">
+    <div role="status" style="position: absolute; top: 20px; left: 16px; right: 16px; z-index: 9; display: flex; align-items: center; gap: 10px; min-height: 56px; padding: 0 12px 0 8px; border-radius: 999px; background: #FFFFFF; box-shadow: 0 16px 40px rgba(14,14,12,0.18); font-size: 13px; font-weight: 700">
+      <span style="width: 38px; height: 38px; border-radius: 50%; background: {{soft}}; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="{{deep}}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg></span>
+      <span style="flex: 1">ثبت شد · {{savedWhen}}</span>
+      <button type="button" onClick="{{ undo }}" style="height: 36px; padding: 0 12px; border: 0; border-radius: 999px; background: #F1F1EE; font-family: inherit; font-size: 12px; font-weight: 700; color: #1A1A17; cursor: pointer">برگرداندن</button>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { kind: 'task', ctx: 'personal', prio: 1, slot: true, saved: false }; }
+  renderVals() {
+    const fa = (s) => String(s).replace(/[0-9]/g, (d) => '۰۱۲۳۴۵۶۷۸۹'[d]);
+    const st = this.state;
+    const C = { personal: ['شخصی', '#DDFAF2', '#0E6B57', '#4FE3C1'], project: ['پروژه‌ها', '#E0F0FF', '#0F5BA8', '#5AB4FF'], team: ['تیم‌ها', '#ECECFF', '#4343C8', '#8B8BFF'], company: ['شرکت‌ها', '#F4E9FF', '#7A2BC4', '#C07BFF'] };
+    const c = C[st.ctx];
+    const PR = ['معمولی', 'مهم', 'فوری'];
+    const kinds = [['task', 'کار'], ['event', 'رویداد'], ['rem', 'یادآور']];
+    const when = st.slot ? 'چهارشنبه ۲۲ مهر · ۰۸:۳۰' : 'فردا ۲۲ مهر · ۱۰:۰۰';
+    return {
+      deep: c[2], soft: c[1],
+      kinds: kinds.map(([id, label]) => ({ label, on: st.kind === id ? 'true' : 'false', bg: st.kind === id ? '#FFFFFF' : 'transparent', sh: st.kind === id ? '0 1px 2px rgba(14,14,12,0.08)' : 'none', fg: st.kind === id ? '#1A1A17' : '#5E5E58', pick: () => this.setState({ kind: id }) })),
+      parsed: [
+        { label: 'فردا · ۲۲ مهر', bg: '#E0F0FF', fg: '#0F5BA8' }, { label: '۱۰:۰۰', bg: '#E0F0FF', fg: '#0F5BA8' },
+        { label: 'مالی', bg: '#DDFAF2', fg: '#0E6B57' }, { label: 'اولویت ' + PR[st.prio], bg: '#FFE8E8', fg: '#B4232A' }, { label: '۳۰ دقیقه', bg: '#ECECFF', fg: '#4343C8' }
+      ],
+      ctxs: Object.keys(C).map((k) => { const o = st.ctx === k; return { label: C[k][0], dot: C[k][3], on: o ? 'true' : 'false', bg: o ? C[k][1] : '#FFFFFF', fg: o ? C[k][2] : '#45453F', ring: o ? 'inset 0 0 0 2px ' + C[k][2] : 'inset 0 0 0 1px #D3D3CC', pick: () => this.setState({ ctx: k }) }; }),
+      opts: [
+        { k: 'تاریخ', v: st.slot ? 'چهارشنبه ۲۲ مهر' : 'فردا · ۲۲ مهر', icon: 'M4 5h16v15H4zM4 10h16M9 3v4M15 3v4', pick: () => {} },
+        { k: 'ساعت', v: st.slot ? '۰۸:۳۰ تا ۰۹:۰۰' : '۱۰:۰۰ تا ۱۰:۳۰', icon: 'M12 7v5l3 2M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18z', pick: () => {} },
+        { k: 'اولویت', v: PR[st.prio], icon: 'M5 21V4h11l-2 4 2 4H5', pick: () => this.setState({ prio: (st.prio + 1) % 3 }) },
+        { k: 'تکرار', v: 'بدون تکرار', icon: 'M4 12a8 8 0 0 1 14-5.3M20 12a8 8 0 0 1-14 5.3M18 3v4h-4M6 21v-4h4', pick: () => {} }
+      ],
+      toggleSlot: () => this.setState({ slot: !st.slot }), slotOn: st.slot ? 'true' : 'false',
+      slotBg: st.slot ? c[2] : '#FFFFFF', slotFg: st.slot ? '#FFFFFF' : c[2], slotLabel: st.slot ? 'انتخاب شد' : 'انتخاب',
+      saveLabel: st.kind === 'event' ? 'ثبت رویداد' : st.kind === 'rem' ? 'تنظیم یادآور' : 'ثبت کار',
+      save: () => this.setState({ saved: true }), undo: () => this.setState({ saved: false }), saved: !!st.saved, savedWhen: when
+    };
+  }
+}
+</script>
+</body>
+</html>

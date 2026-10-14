@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Design Rationale</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#1A1A17}a:hover{color:#0E0E0C}
+</style>
+</helmet>
+<div style="width: 1440px; height: 1500px; box-sizing: border-box; padding: 64px 72px; background: #F1F1EE; font-family: 'Urbanist', system-ui, sans-serif; color: #1A1A17; display: flex; flex-direction: column; gap: 36px">
+
+  <header style="display: flex; align-items: flex-end; justify-content: space-between; gap: 40px">
+    <div style="display: flex; flex-direction: column; gap: 10px">
+      <span style="font-size: 13px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: #6B6B64">Mehran Planner · Phase 1</span>
+      <h1 style="margin: 0; font-size: 56px; font-weight: 400; letter-spacing: -0.02em; line-height: 1">Design rationale</h1>
+    </div>
+    <p style="margin: 0; max-width: 520px; font-size: 16px; line-height: 1.5; color: #5E5E58">The six answers the brief asks for before high-fidelity screens. Everything here is already live in the desktop shell next to this board.</p>
+  </header>
+
+  <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px">
+
+    <!-- 1 Shape -->
+    <article style="position: relative; background: #FFFFFF; border-radius: 30px; padding: 26px; display: flex; flex-direction: column; gap: 16px">
+      <div aria-hidden="true" style="position: absolute; top: 0; right: 0; width: 60px; height: 60px; background: #F1F1EE; border-bottom-left-radius: 28px"></div>
+      <div aria-hidden="true" style="position: absolute; top: 0; right: 60px; width: 28px; height: 28px; background: radial-gradient(circle at 0 100%, transparent 27.5px, #F1F1EE 28px)"></div>
+      <div aria-hidden="true" style="position: absolute; top: 60px; right: 0; width: 28px; height: 28px; background: radial-gradient(circle at 0 100%, transparent 27.5px, #F1F1EE 28px)"></div>
+      <span aria-hidden="true" style="position: absolute; top: 0; right: 0; width: 48px; height: 48px; border-radius: 50%; background: #0E0E0C; color: #C8FF3D; display: inline-flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700">01</span>
+      <h2 style="margin: 0; font-size: 24px; font-weight: 600">Shape language</h2>
+      <ul style="margin: 0; padding: 0 0 0 18px; display: flex; flex-direction: column; gap: 8px; font-size: 14px; line-height: 1.5; color: #45453F">
+        <li><b style="color: #1A1A17">Capsule</b> for every control: buttons, chips, inputs, switchers, nav items.</li>
+        <li><b style="color: #1A1A17">Sculpted card</b>, 24–32px radius, for product surfaces.</li>
+        <li><b style="color: #1A1A17">Notch</b> (cut-out with soft fillets) is the signature move. A corner notch holds a card’s primary action; a top-centre notch holds people.</li>
+        <li>The notch is rationed to signature surfaces: hero, health, focus, nav, insight. Never on utility.</li>
+      </ul>
+    </article>
+
+    <!-- 2 Navigation -->
+    <article style="background: #FFFFFF; border-radius: 30px; padding: 26px; display: flex; flex-direction: column; gap: 16px">
+      <div style="display: flex; align-items: center; gap: 12px"><span style="width: 48px; height: 48px; border-radius: 50%; background: #F1F1EE; display: inline-flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700">02</span><h2 style="margin: 0; font-size: 24px; font-weight: 600">Navigation system</h2></div>
+      <div aria-hidden="true" style="display: flex; flex-direction: column; gap: 6px; padding: 12px; border-radius: 18px; background: #F1F1EE">
+        <div style="display: flex; gap: 5px"><span style="width: 22px; height: 18px; border-radius: 6px; background: #0E0E0C"></span><span style="width: 60px; height: 18px; border-radius: 9px; background: #FFFFFF"></span><span style="flex: 1; height: 18px; border-radius: 9px; background: #0E0E0C"></span><span style="width: 52px; height: 18px; border-radius: 9px; background: #FFFFFF"></span></div>
+        <div style="display: flex; gap: 6px"><span style="width: 18px; height: 70px; border-radius: 9px; background: #FFFFFF"></span><span style="flex: 1; height: 70px; border-radius: 12px; background: #E6E6E1"></span></div>
+      </div>
+      <ul style="margin: 0; padding: 0 0 0 18px; display: flex; flex-direction: column; gap: 8px; font-size: 14px; line-height: 1.5; color: #45453F">
+        <li><b style="color: #1A1A17">Command bar</b>: floating pieces, not a toolbar: logo · context switcher · schedule · search ⌘K · create · notifications · profile.</li>
+        <li><b style="color: #1A1A17">Context switcher</b> opens to Personal / Projects / Teams / Companies; each expands to pick the workspace.</li>
+        <li><b style="color: #1A1A17">Floating rail</b>: icon-only by default, expands to labels with a button (never hover-only). Items change per context.</li>
+      </ul>
+    </article>
+
+    <!-- 3 Hierarchy -->
+    <article style="background: #FFFFFF; border-radius: 30px; padding: 26px; display: flex; flex-direction: column; gap: 16px">
+      <div style="display: flex; align-items: center; gap: 12px"><span style="width: 48px; height: 48px; border-radius: 50%; background: #F1F1EE; display: inline-flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700">03</span><h2 style="margin: 0; font-size: 24px; font-weight: 600">Hierarchy</h2></div>
+      <div style="display: flex; flex-direction: column; gap: 8px">
+        <div style="display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 18px; background: #0E0E0C; color: #FFFFFF"><span style="font-size: 12px; font-weight: 700; color: #C8FF3D; width: 84px">SIGNATURE</span><span style="font-size: 13px">Notch, accent, motion. One or two per screen.</span></div>
+        <div style="display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 18px; background: #F8F8F6; box-shadow: inset 0 0 0 1px #EDEDEA"><span style="font-size: 12px; font-weight: 700; width: 84px">PRODUCT</span><span style="font-size: 13px; color: #45453F">Plain sculpted card, scope tint as cue.</span></div>
+        <div style="display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 14px; border: 1.5px dashed #C9C9C2"><span style="font-size: 12px; font-weight: 700; width: 84px; color: #45453F">UTILITY</span><span style="font-size: 13px; color: #45453F">Flat, compact, dense. Forms, tables, filters.</span></div>
+      </div>
+      <p style="margin: 0; font-size: 14px; line-height: 1.5; color: #45453F">Large type only inside signature zones. Body stays 14–15px for long sessions.</p>
+    </article>
+
+    <!-- 4 Card logic -->
+    <article style="background: #FFFFFF; border-radius: 30px; padding: 26px; display: flex; flex-direction: column; gap: 16px">
+      <div style="display: flex; align-items: center; gap: 12px"><span style="width: 48px; height: 48px; border-radius: 50%; background: #F1F1EE; display: inline-flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700">04</span><h2 style="margin: 0; font-size: 24px; font-weight: 600">Card logic</h2></div>
+      <ul style="margin: 0; padding: 0 0 0 18px; display: flex; flex-direction: column; gap: 8px; font-size: 14px; line-height: 1.5; color: #45453F">
+        <li><b style="color: #1A1A17">Surface tells state.</b> White = content · Volt = happening now · Ink = focus/panel · Scope soft = context cue.</li>
+        <li><b style="color: #1A1A17">One primary action per card</b>, placed in the notch when the card is signature, at the bottom otherwise.</li>
+        <li><b style="color: #1A1A17">Anatomy</b>: tag row → title → meta → footer (people · progress · counts). Same order everywhere.</li>
+        <li>Max one volt card per viewport (the 5% rule).</li>
+      </ul>
+    </article>
+
+    <!-- 5 Mobile -->
+    <article style="background: #FFFFFF; border-radius: 30px; padding: 26px; display: flex; flex-direction: column; gap: 16px">
+      <div style="display: flex; align-items: center; gap: 12px"><span style="width: 48px; height: 48px; border-radius: 50%; background: #F1F1EE; display: inline-flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700">05</span><h2 style="margin: 0; font-size: 24px; font-weight: 600">Mobile adaptation</h2></div>
+      <ul style="margin: 0; padding: 0 0 0 18px; display: flex; flex-direction: column; gap: 8px; font-size: 14px; line-height: 1.5; color: #45453F">
+        <li>Context switcher moves to the top as a capsule; the rail becomes the floating bottom bar.</li>
+        <li>Quick-add sits in the bar’s notch and opens a sheet: Task · Expense · Mood · Note · Habit · Event.</li>
+        <li>Popovers become bottom sheets. Task detail is full-screen with sticky Complete / More.</li>
+        <li>44px minimum targets; desktop-only grids collapse to stacked surfaces, timeline goes full width.</li>
+      </ul>
+    </article>
+
+    <!-- 6 Motion -->
+    <article style="background: #FFFFFF; border-radius: 30px; padding: 26px; display: flex; flex-direction: column; gap: 16px">
+      <div style="display: flex; align-items: center; gap: 12px"><span style="width: 48px; height: 48px; border-radius: 50%; background: #F1F1EE; display: inline-flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700">06</span><h2 style="margin: 0; font-size: 24px; font-weight: 600">Motion strategy</h2></div>
+      <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px">
+        <div style="border-radius: 16px; background: #F1F1EE; padding: 10px 12px; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 18px; font-weight: 600">120ms</span><span style="font-size: 11px; color: #5E5E58">press, toggle</span></div>
+        <div style="border-radius: 16px; background: #F1F1EE; padding: 10px 12px; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 18px; font-weight: 600">220ms</span><span style="font-size: 11px; color: #5E5E58">popover, sheet</span></div>
+        <div style="border-radius: 16px; background: #F1F1EE; padding: 10px 12px; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 18px; font-weight: 600">360ms</span><span style="font-size: 11px; color: #5E5E58">context, layout</span></div>
+      </div>
+      <ul style="margin: 0; padding: 0 0 0 18px; display: flex; flex-direction: column; gap: 8px; font-size: 14px; line-height: 1.5; color: #45453F">
+        <li>Springs with high damping (no bounce). Context switch morphs the scope tint and slides the rail.</li>
+        <li>Counters and rings animate once on load; the “now” marker drifts in real time.</li>
+        <li>Honour reduced-motion: swap movement for fades.</li>
+      </ul>
+    </article>
+  </div>
+
+  <div style="display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 20px">
+    <!-- Decisions -->
+    <article style="background: #0E0E0C; color: #FFFFFF; border-radius: 30px; padding: 26px; display: flex; flex-direction: column; gap: 14px">
+      <h2 style="margin: 0; font-size: 22px; font-weight: 600">Decisions log <span style="font-size: 13px; font-weight: 600; color: #9A9A92">· agreed with Mehran</span></h2>
+      <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 24px; font-size: 14px; line-height: 1.45; color: #D6D6D0">
+        <span><b style="color: #C8FF3D">Palette</b> · Spectrum Zoom stays.</span>
+        <span><b style="color: #C8FF3D">Search</b> · round button, opens ⌘K palette.</span>
+        <span><b style="color: #C8FF3D">Sidebar</b> · floating vertical rail.</span>
+        <span><b style="color: #C8FF3D">Context</b> · expandable switcher, tinted per scope.</span>
+        <span><b style="color: #C8FF3D">Workspaces</b> · dropdown under each context.</span>
+        <span><b style="color: #C8FF3D">Mobile nav</b> · current bar kept for now.</span>
+        <span><b style="color: #C8FF3D">Case flow &amp; assistant</b> · kept (Projects › Case flow).</span>
+        <span><b style="color: #C8FF3D">Persian</b> · IRANSans; digits ۱۲۳ / 123 in settings.</span>
+        <span><b style="color: #C8FF3D">Money</b> · Toman and Rial.</span>
+        <span><b style="color: #C8FF3D">Mood / energy</b> · 5 levels / 3 levels, no emoji.</span>
+      </div>
+    </article>
+    <!-- Simple vs signature -->
+    <article style="background: #FFFFFF; border-radius: 30px; padding: 26px; display: flex; flex-direction: column; gap: 14px">
+      <h2 style="margin: 0; font-size: 22px; font-weight: 600">Stays simple vs. signature</h2>
+      <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; font-size: 13px; line-height: 1.7; color: #45453F">
+        <div><span style="display: inline-flex; height: 24px; padding: 0 10px; align-items: center; border-radius: 999px; background: #E6E6E1; font-size: 11px; font-weight: 700; color: #1A1A17">SIMPLE</span><br>Settings · forms · tables · filters · task lists · activity feed · approvals queue · expense rows</div>
+        <div><span style="display: inline-flex; height: 24px; padding: 0 10px; align-items: center; border-radius: 999px; background: #0E0E0C; color: #C8FF3D; font-size: 11px; font-weight: 700">SIGNATURE</span><br>Today progress · project health · journey · executive hero · insights · context switcher · schedule bar · focus timer</div>
+      </div>
+    </article>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1500}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

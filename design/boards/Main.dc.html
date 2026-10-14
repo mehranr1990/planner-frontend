@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Foundations — Spectrum Zoom</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#1A1A17}a:hover{color:#0E0E0C}
+</style>
+</helmet>
+<div style="width: 1440px; height: 1240px; box-sizing: border-box; padding: 64px 72px; background: #F1F1EE; font-family: 'Urbanist', system-ui, sans-serif; color: #1A1A17; display: flex; flex-direction: column; gap: 32px">
+
+  <header style="display: flex; align-items: flex-end; justify-content: space-between; gap: 32px">
+    <div style="display: flex; flex-direction: column; gap: 10px">
+      <span style="font-size: 13px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: #6B6B64">Planner Design System · Color v2</span>
+      <h1 style="margin: 0; font-size: 64px; font-weight: 400; letter-spacing: -0.02em; line-height: 1">Spectrum Zoom</h1>
+    </div>
+    <p style="margin: 0; max-width: 520px; font-size: 16px; line-height: 1.5; color: #5E5E58">One continuous hue sweep. Zoom out from <b style="color: #1A1A17">me</b> to <b style="color: #1A1A17">company</b> and the color moves from mint to orchid. Volt lime marks <b style="color: #1A1A17">now</b> in every scope. Alerts live outside the sweep, on the warm side.</p>
+  </header>
+
+  <!-- Spectrum -->
+  <section style="background: #FFFFFF; border-radius: 28px; padding: 28px; display: flex; flex-direction: column; gap: 20px">
+    <div style="display: flex; align-items: baseline; justify-content: space-between">
+      <h2 style="margin: 0; font-size: 22px; font-weight: 500">The sweep</h2>
+      <span style="font-size: 13px; font-weight: 500; color: #6B6B64">base · soft · deep (text)</span>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 16px">
+      <sc-for list="{{sweep}}" as="s" hint-placeholder-count="5">
+        <div style="display: flex; flex-direction: column; gap: 8px">
+          <div style="height: 132px; border-radius: 22px; background: {{s.base}}; padding: 16px; box-sizing: border-box; display: flex; flex-direction: column; justify-content: space-between">
+            <span style="font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #0E0E0C">{{s.scope}}</span>
+            <div style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 22px; font-weight: 500; color: #0E0E0C">{{s.name}}</span><span style="font-size: 12px; font-weight: 600; color: #0E0E0C">{{s.base}}</span></div>
+          </div>
+          <div style="height: 52px; border-radius: 16px; background: {{s.soft}}; padding: 0 16px; display: flex; align-items: center; justify-content: space-between">
+            <span style="font-size: 18px; font-weight: 600; color: {{s.deep}}">Aa</span>
+            <span style="font-size: 12px; font-weight: 600; color: {{s.deep}}">{{s.soft}} / {{s.deep}}</span>
+          </div>
+          <span style="font-size: 12px; line-height: 1.4; color: #5E5E58">{{s.use}}</span>
+        </div>
+      </sc-for>
+    </div>
+    <div aria-hidden="true" style="display: flex; height: 10px; border-radius: 5px; overflow: hidden">
+      <span style="flex: 1; background: #C8FF3D"></span><span style="flex: 1; background: #4FE3C1"></span><span style="flex: 1; background: #5AB4FF"></span><span style="flex: 1; background: #8B8BFF"></span><span style="flex: 1; background: #C07BFF"></span>
+    </div>
+  </section>
+
+  <section style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px">
+    <!-- Neutrals -->
+    <div style="background: #FFFFFF; border-radius: 28px; padding: 28px; display: flex; flex-direction: column; gap: 16px">
+      <h2 style="margin: 0; font-size: 22px; font-weight: 500">Graphite neutrals</h2>
+      <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px">
+        <sc-for list="{{neutrals}}" as="n" hint-placeholder-count="8">
+          <div style="display: flex; flex-direction: column; gap: 5px">
+            <div style="height: 52px; border-radius: 14px; background: {{n.hex}}; box-shadow: inset 0 0 0 1px #E6E6E1"></div>
+            <span style="font-size: 12px; font-weight: 600">{{n.role}}</span>
+            <span style="font-size: 11px; color: #6B6B64">{{n.hex}}</span>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+
+    <!-- Status + rules -->
+    <div style="background: #FFFFFF; border-radius: 28px; padding: 28px; display: flex; flex-direction: column; gap: 16px">
+      <h2 style="margin: 0; font-size: 22px; font-weight: 500">Alerts &amp; rules</h2>
+      <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px">
+        <div style="border-radius: 18px; background: #FDE7E8; padding: 14px; display: flex; flex-direction: column; gap: 6px"><span style="width: 28px; height: 28px; border-radius: 50%; background: #E5484D"></span><span style="font-size: 14px; font-weight: 600; color: #B4232A">Danger · overdue</span><span style="font-size: 11px; color: #B4232A">#E5484D / #B4232A</span></div>
+        <div style="border-radius: 18px; background: #FEF1D9; padding: 14px; display: flex; flex-direction: column; gap: 6px"><span style="width: 28px; height: 28px; border-radius: 50%; background: #F5A524"></span><span style="font-size: 14px; font-weight: 600; color: #8A5300">Warning · at risk</span><span style="font-size: 11px; color: #8A5300">#F5A524 / #8A5300</span></div>
+      </div>
+      <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 10px; font-size: 14px; line-height: 1.45; color: #45453F">
+        <li style="display: flex; gap: 10px"><span style="flex: none; width: 8px; height: 8px; margin-top: 6px; border-radius: 50%; background: #0E0E0C"></span>80% graphite · 15% soft tints · 5% strong color.</li>
+        <li style="display: flex; gap: 10px"><span style="flex: none; width: 8px; height: 8px; margin-top: 6px; border-radius: 50%; background: #0E0E0C"></span>Primary action is ink. Volt only marks what is happening now.</li>
+        <li style="display: flex; gap: 10px"><span style="flex: none; width: 8px; height: 8px; margin-top: 6px; border-radius: 50%; background: #0E0E0C"></span>Colored text always uses the deep step. Ink text on every base.</li>
+        <li style="display: flex; gap: 10px"><span style="flex: none; width: 8px; height: 8px; margin-top: 6px; border-radius: 50%; background: #0E0E0C"></span>Scope color appears as cues: dots, chips, rails, chart series.</li>
+      </ul>
+    </div>
+
+    <!-- Type -->
+    <div style="background: #FFFFFF; border-radius: 28px; padding: 28px; display: flex; flex-direction: column; gap: 14px">
+      <h2 style="margin: 0; font-size: 22px; font-weight: 500">Type · Urbanist</h2>
+      <div style="display: flex; align-items: baseline; justify-content: space-between; border-bottom: 1px solid #EDEDEA; padding-bottom: 10px"><span style="font-size: 52px; font-weight: 400; line-height: 1; letter-spacing: -0.02em">20:10</span><span style="font-size: 12px; color: #6B6B64">Display 52/400</span></div>
+      <div style="display: flex; align-items: baseline; justify-content: space-between; border-bottom: 1px solid #EDEDEA; padding-bottom: 10px"><span style="font-size: 34px; font-weight: 500; letter-spacing: -0.01em">Dashboard</span><span style="font-size: 12px; color: #6B6B64">H1 34/500</span></div>
+      <div style="display: flex; align-items: baseline; justify-content: space-between; border-bottom: 1px solid #EDEDEA; padding-bottom: 10px"><span style="font-size: 22px; font-weight: 600">Revamp Sidebar</span><span style="font-size: 12px; color: #6B6B64">Card title 22/600</span></div>
+      <div style="display: flex; align-items: baseline; justify-content: space-between; border-bottom: 1px solid #EDEDEA; padding-bottom: 10px"><span style="font-size: 15px">Body copy for descriptions</span><span style="font-size: 12px; color: #6B6B64">Body 15/400</span></div>
+      <div style="display: flex; align-items: baseline; justify-content: space-between"><span style="font-size: 12px; font-weight: 600; color: #6B6B64; letter-spacing: 0.1em; text-transform: uppercase">Section label</span><span style="font-size: 12px; color: #6B6B64">Label 12/600</span></div>
+    </div>
+  </section>
+
+  <!-- Components -->
+  <section style="background: #FFFFFF; border-radius: 28px; padding: 28px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px 40px">
+    <div style="display: flex; flex-direction: column; gap: 12px">
+      <span style="font-size: 12px; font-weight: 600; color: #6B6B64; letter-spacing: 0.1em; text-transform: uppercase">Buttons</span>
+      <div style="display: flex; flex-wrap: wrap; gap: 10px">
+        <button type="button" style="display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 20px; border: 0; border-radius: 999px; background: #0E0E0C; color: #FFFFFF; font-family: inherit; font-size: 14px; font-weight: 600; cursor: pointer"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>Add task</button>
+        <button type="button" style="height: 44px; padding: 0 20px; border: 0; border-radius: 999px; background: #C8FF3D; color: #0E0E0C; font-family: inherit; font-size: 14px; font-weight: 600; cursor: pointer">Start focus</button>
+        <button type="button" style="height: 44px; padding: 0 20px; border: 0; border-radius: 999px; background: #E6E6E1; color: #1A1A17; font-family: inherit; font-size: 14px; font-weight: 500; cursor: pointer">Secondary</button>
+        <button type="button" style="height: 44px; padding: 0 20px; border: 0; border-radius: 999px; background: #B4232A; color: #FFFFFF; font-family: inherit; font-size: 14px; font-weight: 600; cursor: pointer">Delete</button>
+      </div>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 12px">
+      <span style="font-size: 12px; font-weight: 600; color: #6B6B64; letter-spacing: 0.1em; text-transform: uppercase">Scope chips</span>
+      <div style="display: flex; flex-wrap: wrap; gap: 8px">
+        <span style="display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 12px; border-radius: 999px; background: #DDFAF2; color: #0E6B57; font-size: 12px; font-weight: 600"><span style="width: 8px; height: 8px; border-radius: 50%; background: #4FE3C1"></span>Personal</span>
+        <span style="display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 12px; border-radius: 999px; background: #E0F0FF; color: #0F5BA8; font-size: 12px; font-weight: 600"><span style="width: 8px; height: 8px; border-radius: 50%; background: #5AB4FF"></span>Project</span>
+        <span style="display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 12px; border-radius: 999px; background: #ECECFF; color: #4343C8; font-size: 12px; font-weight: 600"><span style="width: 8px; height: 8px; border-radius: 50%; background: #8B8BFF"></span>Team</span>
+        <span style="display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 12px; border-radius: 999px; background: #F4E9FF; color: #7A2BC4; font-size: 12px; font-weight: 600"><span style="width: 8px; height: 8px; border-radius: 50%; background: #C07BFF"></span>Company</span>
+      </div>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 12px">
+      <span style="font-size: 12px; font-weight: 600; color: #6B6B64; letter-spacing: 0.1em; text-transform: uppercase">Priority &amp; due tags</span>
+      <div style="display: flex; flex-wrap: wrap; gap: 8px">
+        <span style="display: inline-flex; align-items: center; height: 28px; padding: 0 10px; border-radius: 999px; background: #FDE7E8; color: #B4232A; font-size: 12px; font-weight: 700">Urgent</span>
+        <span style="display: inline-flex; align-items: center; height: 28px; padding: 0 10px; border-radius: 999px; background: #FEF1D9; color: #8A5300; font-size: 12px; font-weight: 700">High</span>
+        <span style="display: inline-flex; align-items: center; height: 28px; padding: 0 10px; border-radius: 999px; background: #E6E6E1; color: #45453F; font-size: 12px; font-weight: 700">Low priority</span>
+        <span style="display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 10px; border-radius: 999px; border: 1px solid #D3D3CC; color: #45453F; font-size: 12px; font-weight: 600"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#45453F" stroke-width="2" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2"></rect><path d="M4 10h16"></path></svg>Due Sep 14</span>
+      </div>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 12px">
+      <span style="font-size: 12px; font-weight: 600; color: #6B6B64; letter-spacing: 0.1em; text-transform: uppercase">Progress</span>
+      <div style="display: flex; flex-direction: column; gap: 10px">
+        <div style="display: flex; gap: 4px; height: 8px"><span style="flex: 5; border-radius: 4px; background: #C8FF3D"></span><span style="flex: 3; border-radius: 4px; background: #0E0E0C"></span><span style="flex: 4; border-radius: 4px; background: #E6E6E1"></span></div>
+        <div style="display: flex; gap: 4px; height: 8px"><span style="flex: 7; border-radius: 4px; background: #8B8BFF"></span><span style="flex: 5; border-radius: 4px; background: #ECECFF"></span></div>
+      </div>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 12px">
+      <span style="font-size: 12px; font-weight: 600; color: #6B6B64; letter-spacing: 0.1em; text-transform: uppercase">Avatars · scope-tinted</span>
+      <div style="display: flex; align-items: center; gap: 14px">
+        <span style="width: 44px; height: 44px; border-radius: 50%; background: #DDFAF2; color: #0E6B57; display: inline-flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700">HB</span>
+        <div style="display: flex">
+          <span style="width: 34px; height: 34px; border-radius: 50%; background: #E0F0FF; color: #0F5BA8; border: 2px solid #FFFFFF; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700">KF</span>
+          <span style="width: 34px; height: 34px; margin-left: -10px; border-radius: 50%; background: #ECECFF; color: #4343C8; border: 2px solid #FFFFFF; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700">JK</span>
+          <span style="width: 34px; height: 34px; margin-left: -10px; border-radius: 50%; background: #F4E9FF; color: #7A2BC4; border: 2px solid #FFFFFF; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700">SP</span>
+          <span style="width: 34px; height: 34px; margin-left: -10px; border-radius: 50%; background: #0E0E0C; color: #FFFFFF; border: 2px solid #FFFFFF; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700">+6</span>
+        </div>
+      </div>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 12px">
+      <span style="font-size: 12px; font-weight: 600; color: #6B6B64; letter-spacing: 0.1em; text-transform: uppercase">Dark surface</span>
+      <div style="border-radius: 20px; background: #0E0E0C; padding: 14px 16px; display: flex; align-items: center; justify-content: space-between">
+        <div style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 12px; color: #9A9A92">Focus · now</span><span style="font-size: 18px; font-weight: 500; color: #FFFFFF">Design review</span></div>
+        <span style="display: inline-flex; align-items: center; height: 32px; padding: 0 12px; border-radius: 999px; background: #C8FF3D; color: #0E0E0C; font-size: 13px; font-weight: 700">24:10</span>
+      </div>
+    </div>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1240}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      sweep: [
+        { scope: 'Now', name: 'Volt', base: '#C8FF3D', soft: '#F1FFD1', deep: '#4F6B0F', use: 'Active task, focus mode, timer, done check. Every scope.' },
+        { scope: 'Personal', name: 'Mint', base: '#4FE3C1', soft: '#DDFAF2', deep: '#0E6B57', use: 'My day, habits, notes, personal goals.' },
+        { scope: 'Project', name: 'Sky', base: '#5AB4FF', soft: '#E0F0FF', deep: '#0F5BA8', use: 'Boards, milestones, flows, deliverables.' },
+        { scope: 'Team', name: 'Periwinkle', base: '#8B8BFF', soft: '#ECECFF', deep: '#4343C8', use: 'Members, workload, meetings, chat.' },
+        { scope: 'Company', name: 'Orchid', base: '#C07BFF', soft: '#F4E9FF', deep: '#7A2BC4', use: 'Strategy, OKRs, portfolio, reports.' }
+      ],
+      neutrals: [
+        { role: 'Surface', hex: '#FFFFFF' },
+        { role: 'Raised', hex: '#F8F8F6' },
+        { role: 'Canvas', hex: '#F1F1EE' },
+        { role: 'Subtle', hex: '#E6E6E1' },
+        { role: 'Border', hex: '#D3D3CC' },
+        { role: 'Muted text', hex: '#6B6B64' },
+        { role: 'Text', hex: '#1A1A17' },
+        { role: 'Ink', hex: '#0E0E0C' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,431 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>New task</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@300;400;500;600;700&amp;family=Vazirmatn:wght@400;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F1F1EE}
+a{color:#1A1A17}a:hover{color:#1A1A17}
+.rail-slot{align-self:stretch}
+.rail-sticky{position:sticky;top:16px;height:calc(100vh - 32px);max-height:100%;display:flex;align-items:center}
+.rail-sticky>nav{max-height:100%;overflow-y:auto}
+button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid #0F5BA8;outline-offset:2px}
+.fld{display:flex;flex-direction:column;gap:8px;min-width:0}
+.lbl{font-size:12px;font-weight:700;color:#5E5E58}
+@media (max-width: 720px){.rail-sticky{position:static;height:auto}.rail-slot{width:100%!important}}
+</style>
+</helmet>
+<div style="min-height: 100vh; box-sizing: border-box; padding: 16px; background: #F1F1EE; font-family: 'Urbanist', 'Vazirmatn', system-ui, sans-serif; color: #1A1A17">
+<div style="max-width: 1400px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px">
+  <!-- Command bar -->
+  <header style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px">
+    <a href="#" aria-label="Planner home" style="flex: none; width: 56px; height: 56px; border-radius: 50%; background: #FFFFFF; box-shadow: 0 1px 0 #E6E6E1, 0 12px 32px rgba(14,14,12,0.06); display: inline-flex; align-items: center; justify-content: center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0E0E0C" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M5 19L19 5M9 5h10v10"></path></svg></a>
+    <button type="button" style="flex: none; display: inline-flex; align-items: center; gap: 12px; height: 56px; padding: 0 16px 0 8px; border: 0; border-radius: 999px; background: #FFFFFF; box-shadow: 0 1px 0 #E6E6E1, 0 12px 32px rgba(14,14,12,0.06); font-family: inherit; text-align: left; cursor: pointer"><span style="width: 40px; height: 40px; border-radius: 50%; background: #DDFAF2; display: inline-flex; align-items: center; justify-content: center"><span style="width: 12px; height: 12px; border-radius: 50%; background: #4FE3C1; box-shadow: 0 0 0 3px #FFFFFF"></span></span><span style="display: flex; flex-direction: column; line-height: 1.15"><span style="font-size: 11px; font-weight: 600; color: #6B6B64">Personal</span><span style="font-size: 15px; font-weight: 700; color: #1A1A17">Mehran</span></span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1A1A17" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button>
+    <section aria-label="Your schedule" style="flex: 1 1 420px; min-width: 0; height: 56px; box-sizing: border-box; padding: 4px 4px 4px 18px; border-radius: 999px; background: #FFFFFF; box-shadow: 0 1px 0 #E6E6E1, 0 12px 32px rgba(14,14,12,0.06); display: flex; align-items: center; gap: 12px">
+      <span style="flex: none; display: flex; flex-direction: column; line-height: 1.1"><span style="font-size: 10px; font-weight: 600; color: #6B6B64">Today</span><span style="font-size: 13px; font-weight: 700">Tue 21 Mehr</span></span>
+      <div style="position: relative; flex: 1; min-width: 0; height: 48px; border-radius: 999px; background: #F1F1EE; overflow: hidden">
+        <span style="position: absolute; left: 1%; top: 6px; bottom: 6px; width: 16%; border-radius: 999px; background: repeating-linear-gradient(135deg, #E6E6E1 0 2px, #F1F1EE 2px 6px); display: flex; align-items: center; padding: 0 12px; box-sizing: border-box; font-size: 12px; font-weight: 600; color: #6B6B64; white-space: nowrap; overflow: hidden">Design review · done</span>
+        <div style="position: absolute; left: 19%; top: 4px; bottom: 4px; width: 38%; border-radius: 999px; background: #FFFFFF; box-shadow: 0 2px 10px rgba(14,14,12,0.08); overflow: hidden; display: flex; align-items: center; gap: 8px; padding: 0 12px 0 3px; box-sizing: border-box">
+          <span aria-hidden="true" style="position: absolute; left: 0; top: 0; bottom: 0; width: 29%; background: #E0F0FF"></span>
+          <span style="position: relative; flex: none; width: 34px; height: 34px; border-radius: 50%; background: #E0F0FF; border: 2px solid #FFFFFF; box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0F5BA8" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"></path></svg></span>
+          <span style="position: relative; font-size: 13px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">UI design · My Day</span>
+          <span style="position: relative; margin-left: auto; flex: none; font-size: 11px; font-weight: 600; color: #6B6B64; white-space: nowrap">14:00 – 16:00</span>
+        </div>
+        <span aria-hidden="true" style="position: absolute; left: calc(19% + 38% * 0.29); top: 6px; bottom: 6px; width: 2px; margin-left: -1px; border-radius: 1px; background: #0F5BA8"></span>
+        <span role="img" aria-label="Now 14:35" style="position: absolute; left: calc(19% + 38% * 0.29); top: 3px; width: 10px; height: 10px; margin-left: -5px; border-radius: 50%; background: #C8FF3D; box-shadow: 0 0 0 2px #0F5BA8, 0 0 12px 3px rgba(200,255,61,0.55)"></span>
+        <span style="position: absolute; left: 59%; top: 8px; bottom: 8px; width: 21%; border-radius: 999px; background: #E0F0FF; color: #0F5BA8; display: flex; align-items: center; padding: 0 12px; box-sizing: border-box; font-size: 12px; font-weight: 700; white-space: nowrap; overflow: hidden">16:30 · Client call</span>
+        <span style="position: absolute; left: 81.5%; top: 8px; bottom: 8px; width: 17.5%; border-radius: 999px; background: #DDFAF2; color: #0E6B57; display: flex; align-items: center; padding: 0 12px; box-sizing: border-box; font-size: 12px; font-weight: 700; white-space: nowrap; overflow: hidden">17:15 · Gym</span>
+      </div>
+    </section>
+    <div style="flex: none; display: flex; align-items: center; gap: 4px; height: 56px; box-sizing: border-box; padding: 4px; border-radius: 999px; background: #FFFFFF; box-shadow: 0 1px 0 #E6E6E1, 0 12px 32px rgba(14,14,12,0.06)">
+      <button type="button" aria-label="Search and commands" style="display: inline-flex; align-items: center; gap: 8px; height: 48px; padding: 0 8px 0 14px; border: 0; border-radius: 999px; background: #F1F1EE; font-family: inherit; font-size: 13px; font-weight: 600; color: #45453F; cursor: pointer"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1A1A17" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-4-4"></path></svg>Search<span style="font-size: 11px; font-weight: 700; padding: 3px 7px; border-radius: 8px; background: #FFFFFF">⌘K</span></button>
+      <button type="button" aria-label="Quick create" style="width: 48px; height: 48px; border-radius: 50%; border: 0; background: #F1F1EE; display: inline-flex; align-items: center; justify-content: center; cursor: pointer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0E0E0C" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></button>
+      <button type="button" aria-label="Notifications, 3 unread" style="position: relative; width: 48px; height: 48px; border-radius: 50%; border: 0; background: #F1F1EE; display: inline-flex; align-items: center; justify-content: center; cursor: pointer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1A1A17" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M6 16v-5a6 6 0 0 1 12 0v5l2 2H4z"></path><path d="M10 20a2 2 0 0 0 4 0"></path></svg><span style="position: absolute; top: 9px; right: 9px; min-width: 16px; height: 16px; padding: 0 4px; box-sizing: border-box; border-radius: 999px; background: #E5484D; color: #FFFFFF; font-size: 10px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center">3</span></button>
+      <span style="width: 48px; height: 48px; border-radius: 50%; background: #DDFAF2; color: #0E6B57; display: inline-flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700">MR</span>
+    </div>
+  </header>
+  <div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start">
+    <div class="rail-slot" style="flex: none; width: 64px">
+<div class="rail-sticky">
+<nav aria-label="Personal navigation" style="flex: none; width: 64px; box-sizing: border-box; padding: 8px; border-radius: 34px; background: #FFFFFF; box-shadow: 0 1px 0 #E6E6E1, 0 12px 32px rgba(14,14,12,0.06); display: flex; flex-direction: column; gap: 4px">
+      <sc-for list="{{rail}}" as="it" hint-placeholder-count="9">
+        <a href="#" aria-label="{{it.label}}" aria-current="{{it.current}}" style="display: flex; align-items: center; justify-content: center; width: 48px; height: 48px; border-radius: 999px; background: {{it.bg}}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{it.icon}}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{it.d}}"></path></svg></a>
+      </sc-for>
+    </nav></div>
+</div>
+    <main style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 18px">
+      <!-- Page header + flow stepper -->
+      <div style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px; padding: 6px 4px 0">
+        <div style="display: flex; flex-direction: column; gap: 6px"><span style="font-size: 14px; font-weight: 600; color: #6B6B64">Capture → details → schedule → done</span><h1 style="margin: 0; font-size: 40px; font-weight: 500; letter-spacing: -0.015em; line-height: 1.05">New task</h1></div>
+        <ol aria-label="Steps" style="list-style: none; margin: 0; padding: 4px; display: flex; gap: 4px; border-radius: 999px; background: #FFFFFF">
+          <sc-for list="{{steps}}" as="s" hint-placeholder-count="4">
+            <li aria-current="{{s.current}}" style="display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px 0 6px; border-radius: 999px; background: {{s.bg}}; font-size: 13px; font-weight: 700; color: {{s.fg}}"><span style="width: 28px; height: 28px; border-radius: 50%; background: {{s.numBg}}; color: {{s.numFg}}; display: inline-flex; align-items: center; justify-content: center; font-size: 12px">{{s.n}}</span>{{s.label}}</li>
+          </sc-for>
+        </ol>
+      </div>
+
+      <!-- 1 · Quick capture -->
+      <section aria-label="Quick capture" style="box-sizing: border-box; padding: 8px; border-radius: 34px; background: #FFFFFF; box-shadow: 0 1px 0 #E6E6E1, 0 12px 32px rgba(14,14,12,0.06)">
+        <div style="display: flex; align-items: center; gap: 10px; min-height: 60px; padding: 0 8px 0 18px; border-radius: 28px; background: #F4F4F1">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1A1A17" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
+          <span style="flex: 1; min-width: 0; font-size: 16px; font-weight: 600; color: #1A1A17; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Review October expenses <span style="color: #0F5BA8">tomorrow 10:00</span> <span style="color: #0E6B57">#finance</span> <span style="color: #B4232A">!high</span> <span style="color: #4343C8">~30m</span></span>
+          <span style="font-size: 11px; font-weight: 700; padding: 4px 8px; border-radius: 8px; background: #FFFFFF; color: #45453F">⌘K · N</span>
+          <button type="button" onClick="{{ toDetails }}" style="height: 46px; padding: 0 18px; border: 0; border-radius: 999px; background: {{deep}}; color: #FFFFFF; font-family: inherit; font-size: 13px; font-weight: 700; cursor: pointer">Add details</button>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px; padding: 10px 12px 6px">
+          <span style="font-size: 12px; font-weight: 700; color: #6B6B64; margin-right: 4px">Understood as</span>
+          <sc-for list="{{parsed}}" as="p" hint-placeholder-count="5">
+            <span style="display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 12px 0 10px; border-radius: 999px; background: {{p.bg}}; color: {{p.fg}}; font-size: 12px; font-weight: 700"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{p.icon}}"></path></svg>{{p.label}}</span>
+          </sc-for>
+          <span style="flex: 1"></span>
+          <span style="font-size: 12px; font-weight: 600; color: #6B6B64">Enter to save as is · Tab to edit</span>
+        </div>
+      </section>
+
+      <div style="display: flex; flex-wrap: wrap; gap: 18px; align-items: flex-start">
+        <!-- 2 · Details (notched) -->
+        <section aria-label="Task details" style="flex: 3 1 600px; min-width: 0; position: relative; box-sizing: border-box; padding: 24px; border-radius: 32px; background: #FFFFFF; display: flex; flex-direction: column; gap: 22px">
+          <div aria-hidden="true" style="position: absolute; top: 0; right: 0; width: 64px; height: 64px; background: #F1F1EE; border-bottom-left-radius: 30px"></div>
+          <div aria-hidden="true" style="position: absolute; top: 0; right: 64px; width: 30px; height: 30px; background: radial-gradient(circle at 0 100%, transparent 29.5px, #F1F1EE 30px)"></div>
+          <div aria-hidden="true" style="position: absolute; top: 64px; right: 0; width: 30px; height: 30px; background: radial-gradient(circle at 0 100%, transparent 29.5px, #F1F1EE 30px)"></div>
+          <a href="S7Calendar.dc.html" aria-label="Close" style="position: absolute; top: 0; right: 0; width: 52px; height: 52px; box-sizing: border-box; border-radius: 50%; border: 1px solid #D3D3CC; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1A1A17" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></a>
+
+          <div role="radiogroup" aria-label="Item type" style="align-self: flex-start; display: inline-flex; gap: 4px; padding: 4px; border-radius: 999px; background: #F1F1EE">
+            <sc-for list="{{kinds}}" as="k" hint-placeholder-count="3">
+              <button type="button" role="radio" aria-checked="{{k.on}}" onClick="{{ k.pick }}" style="height: 38px; padding: 0 16px; border: 0; border-radius: 999px; background: {{k.bg}}; color: {{k.fg}}; box-shadow: {{k.sh}}; font-family: inherit; font-size: 13px; font-weight: 700; cursor: pointer">{{k.label}}</button>
+            </sc-for>
+          </div>
+
+          <div class="fld" style="padding-right: 56px">
+            <label for="t-title" class="lbl">Title</label>
+            <input id="t-title" type="text" value="Review October expenses" style="height: 56px; padding: 0 18px; border: 0; border-radius: 18px; background: #F4F4F1; font-family: inherit; font-size: 20px; font-weight: 600; color: #1A1A17">
+          </div>
+
+          <!-- Context + workspace -->
+          <div class="fld">
+            <span class="lbl" id="ctx-l">Context</span>
+            <div role="radiogroup" aria-labelledby="ctx-l" style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px">
+              <sc-for list="{{contexts}}" as="c" hint-placeholder-count="4">
+                <button type="button" role="radio" aria-checked="{{c.on}}" onClick="{{ c.pick }}" style="display: flex; align-items: center; gap: 10px; height: 56px; padding: 0 12px 0 8px; border: 0; border-radius: 999px; background: {{c.bg}}; box-shadow: {{c.ring}}; font-family: inherit; font-size: 14px; font-weight: 700; color: #1A1A17; cursor: pointer"><span style="width: 38px; height: 38px; border-radius: 50%; background: {{c.dotBg}}; display: inline-flex; align-items: center; justify-content: center"><span style="width: 11px; height: 11px; border-radius: 50%; background: {{c.dot}}"></span></span>{{c.label}}</button>
+              </sc-for>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px">
+            <div class="fld">
+              <span class="lbl">{{wsLabel}}</span>
+              <div style="display: flex; flex-wrap: wrap; gap: 6px">
+                <sc-for list="{{workspaces}}" as="w" hint-placeholder-count="3">
+                  <button type="button" aria-pressed="{{w.on}}" onClick="{{ w.pick }}" style="height: 40px; padding: 0 14px; border: 0; border-radius: 999px; background: {{w.bg}}; color: {{w.fg}}; box-shadow: {{w.ring}}; font-family: inherit; font-size: 13px; font-weight: 700; cursor: pointer">{{w.label}}</button>
+                </sc-for>
+              </div>
+            </div>
+            <div class="fld">
+              <span class="lbl">Assignee</span>
+              <div style="display: flex; flex-wrap: wrap; gap: 6px">
+                <sc-for list="{{people}}" as="p" hint-placeholder-count="3">
+                  <button type="button" aria-pressed="{{p.on}}" onClick="{{ p.pick }}" style="display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px 0 4px; border: 0; border-radius: 999px; background: {{p.bg}}; box-shadow: {{p.ring}}; font-family: inherit; font-size: 13px; font-weight: 700; color: #1A1A17; cursor: pointer"><span style="width: 32px; height: 32px; border-radius: 50%; background: {{p.avBg}}; color: {{p.avFg}}; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700">{{p.ini}}</span>{{p.name}}</button>
+                </sc-for>
+              </div>
+            </div>
+          </div>
+
+          <!-- When -->
+          <div style="display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 16px">
+            <div class="fld">
+              <span class="lbl">Date</span>
+              <button type="button" onClick="{{ togglePicker }}" aria-expanded="{{pickerOpen}}" style="display: flex; align-items: center; gap: 12px; height: 56px; padding: 0 16px 0 8px; border: 0; border-radius: 18px; background: #F4F4F1; box-shadow: {{pickerRing}}; font-family: inherit; text-align: left; cursor: pointer">
+                <span style="width: 40px; height: 40px; border-radius: 12px; background: #FFFFFF; display: inline-flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="{{deep}}" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 5h16v15H4zM4 10h16M9 3v4M15 3v4"></path></svg></span>
+                <span style="flex: 1; display: flex; flex-direction: column; line-height: 1.2"><span style="font-size: 15px; font-weight: 700; color: #1A1A17">{{dateMain}}</span><span style="font-size: 12px; font-weight: 600; color: #6B6B64">{{dateAlt}}</span></span>
+                <span style="font-size: 12px; font-weight: 700; color: {{deep}}">{{dateRel}}</span>
+              </button>
+              <sc-if value="{{showPicker}}" hint-placeholder-val="{{ true }}">
+                <div style="padding: 12px; border-radius: 20px; background: #FFFFFF; box-shadow: 0 0 0 1px #E6E6E1, 0 18px 40px rgba(14,14,12,0.10)">
+                  <div style="display: flex; align-items: center; justify-content: space-between; padding: 0 4px 8px"><span style="font-size: 14px; font-weight: 700">Mehr 1405</span><span style="font-size: 12px; font-weight: 600; color: #6B6B64">Sep – Oct 2026</span></div>
+                  <div style="display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 2px">
+                    <sc-for list="{{wk}}" as="w" hint-placeholder-count="7"><span style="text-align: center; font-size: 11px; font-weight: 700; color: {{w.fg}}; padding-bottom: 4px">{{w.n}}</span></sc-for>
+                    <sc-for list="{{pickDays}}" as="d" hint-placeholder-count="35">
+                      <button type="button" aria-disabled="{{d.disabled}}" aria-pressed="{{d.on}}" aria-label="{{d.aria}}" onClick="{{ d.pick }}" style="height: 34px; border: 0; border-radius: 999px; background: {{d.bg}}; color: {{d.fg}}; box-shadow: {{d.ring}}; font-family: inherit; font-size: 12px; font-weight: 700; cursor: {{d.cursor}}; opacity: {{d.op}}">{{d.num}}</button>
+                    </sc-for>
+                  </div>
+                  <div style="display: flex; gap: 6px; padding-top: 10px">
+                    <sc-for list="{{shortcuts}}" as="q" hint-placeholder-count="3"><button type="button" onClick="{{ q.pick }}" style="height: 32px; padding: 0 12px; border: 0; border-radius: 999px; background: #F1F1EE; font-family: inherit; font-size: 12px; font-weight: 700; color: #1A1A17; cursor: pointer">{{q.label}}</button></sc-for>
+                  </div>
+                </div>
+              </sc-if>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 16px">
+              <div class="fld">
+                <span class="lbl">Estimate</span>
+                <div role="radiogroup" aria-label="Estimate" style="display: flex; gap: 6px; flex-wrap: wrap">
+                  <sc-for list="{{estimates}}" as="e" hint-placeholder-count="5"><button type="button" role="radio" aria-checked="{{e.on}}" onClick="{{ e.pick }}" style="height: 40px; min-width: 52px; padding: 0 12px; border: 0; border-radius: 999px; background: {{e.bg}}; color: {{e.fg}}; box-shadow: {{e.ring}}; font-family: inherit; font-size: 13px; font-weight: 700; cursor: pointer">{{e.label}}</button></sc-for>
+                </div>
+              </div>
+              <div class="fld">
+                <span class="lbl">Priority</span>
+                <div role="radiogroup" aria-label="Priority" style="display: flex; gap: 6px; flex-wrap: wrap">
+                  <sc-for list="{{priorities}}" as="p" hint-placeholder-count="4"><button type="button" role="radio" aria-checked="{{p.on}}" onClick="{{ p.pick }}" style="display: inline-flex; align-items: center; gap: 6px; height: 40px; padding: 0 12px; border: 0; border-radius: 999px; background: {{p.bg}}; color: {{p.fg}}; box-shadow: {{p.ring}}; font-family: inherit; font-size: 13px; font-weight: 700; cursor: pointer"><span style="width: 8px; height: 8px; border-radius: 50%; background: {{p.dot}}"></span>{{p.label}}</button></sc-for>
+                </div>
+              </div>
+              <div class="fld">
+                <span class="lbl">Energy needed</span>
+                <div role="radiogroup" aria-label="Energy" style="display: flex; gap: 6px">
+                  <sc-for list="{{energy}}" as="e" hint-placeholder-count="3"><button type="button" role="radio" aria-checked="{{e.on}}" onClick="{{ e.pick }}" style="display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px; border: 0; border-radius: 999px; background: {{e.bg}}; color: {{e.fg}}; box-shadow: {{e.ring}}; font-family: inherit; font-size: 13px; font-weight: 700; cursor: pointer"><span aria-hidden="true" style="display: inline-flex; gap: 2px"><span style="width: 4px; height: 12px; border-radius: 2px; background: {{e.b1}}"></span><span style="width: 4px; height: 12px; border-radius: 2px; background: {{e.b2}}"></span><span style="width: 4px; height: 12px; border-radius: 2px; background: {{e.b3}}"></span></span>{{e.label}}</button></sc-for>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="fld">
+            <span class="lbl">Repeat</span>
+            <div role="radiogroup" aria-label="Repeat" style="display: flex; gap: 6px; flex-wrap: wrap">
+              <sc-for list="{{repeats}}" as="r" hint-placeholder-count="5"><button type="button" role="radio" aria-checked="{{r.on}}" onClick="{{ r.pick }}" style="height: 40px; padding: 0 14px; border: 0; border-radius: 999px; background: {{r.bg}}; color: {{r.fg}}; box-shadow: {{r.ring}}; font-family: inherit; font-size: 13px; font-weight: 700; cursor: pointer">{{r.label}}</button></sc-for>
+            </div>
+          </div>
+
+          <!-- Subtasks -->
+          <div class="fld">
+            <div style="display: flex; justify-content: space-between; align-items: center"><span class="lbl">Subtasks</span><span style="font-size: 12px; font-weight: 700; color: #6B6B64">{{subCount}}</span></div>
+            <div style="display: flex; flex-direction: column; gap: 6px">
+              <sc-for list="{{subtasks}}" as="s" hint-placeholder-count="2">
+                <div style="display: flex; align-items: center; gap: 10px; height: 46px; padding: 0 8px 0 12px; border-radius: 14px; background: #F8F8F6">
+                  <span aria-hidden="true" style="width: 18px; height: 18px; box-sizing: border-box; border-radius: 6px; border: 2px solid #A9A9A1"></span>
+                  <span style="flex: 1; font-size: 14px; font-weight: 600">{{s.title}}</span>
+                  <button type="button" aria-label="{{s.aria}}" onClick="{{ s.remove }}" style="width: 32px; height: 32px; border: 0; border-radius: 50%; background: transparent; display: inline-flex; align-items: center; justify-content: center; cursor: pointer"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#6B6B64" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>
+                </div>
+              </sc-for>
+              <button type="button" onClick="{{ addSub }}" style="display: flex; align-items: center; gap: 10px; height: 46px; padding: 0 12px; border: 1.5px dashed #C9C9C2; border-radius: 14px; background: transparent; font-family: inherit; font-size: 13px; font-weight: 700; color: #45453F; cursor: pointer; text-align: left"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#45453F" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>Add subtask</button>
+            </div>
+          </div>
+
+          <div class="fld">
+            <label for="t-notes" class="lbl">Notes</label>
+            <textarea id="t-notes" rows="3" style="padding: 14px 16px; border: 0; border-radius: 18px; background: #F4F4F1; font-family: inherit; font-size: 14px; line-height: 1.5; color: #1A1A17; resize: vertical">Compare with September. Flag anything over 2,000,000 Toman.</textarea>
+          </div>
+
+          <!-- Footer -->
+          <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding-top: 6px; border-top: 1px solid #EDEDEA">
+            <button type="button" role="switch" aria-checked="{{another}}" onClick="{{ toggleAnother }}" style="display: inline-flex; align-items: center; gap: 10px; height: 44px; padding: 0 6px; border: 0; background: transparent; font-family: inherit; font-size: 13px; font-weight: 700; color: #45453F; cursor: pointer"><span style="position: relative; width: 40px; height: 24px; border-radius: 999px; background: {{anotherTrack}}"><span style="position: absolute; top: 3px; left: {{anotherKnob}}; width: 18px; height: 18px; border-radius: 50%; background: #FFFFFF; box-shadow: 0 1px 3px rgba(14,14,12,0.2)"></span></span>Create another</button>
+            <span style="flex: 1"></span>
+            <a href="S7Calendar.dc.html" style="display: inline-flex; align-items: center; height: 50px; padding: 0 20px; border-radius: 999px; box-shadow: inset 0 0 0 1px #D3D3CC; font-size: 14px; font-weight: 700; color: #1A1A17; text-decoration: none">Cancel</a>
+            <button type="button" onClick="{{ create }}" style="display: inline-flex; align-items: center; gap: 10px; height: 50px; padding: 0 8px 0 22px; border: 0; border-radius: 999px; background: {{deep}}; color: #FFFFFF; font-family: inherit; font-size: 14px; font-weight: 700; cursor: pointer">{{createLabel}}<span style="font-size: 11px; font-weight: 700; padding: 4px 8px; border-radius: 999px; background: rgba(255,255,255,0.18)">⌘↵</span></button>
+          </div>
+        </section>
+
+        <!-- 3 · Schedule + preview -->
+        <aside style="flex: 1 1 320px; min-width: 0; display: flex; flex-direction: column; gap: 16px">
+          <section aria-label="Schedule" style="border-radius: 28px; background: #FFFFFF; padding: 20px; display: flex; flex-direction: column; gap: 14px">
+            <div style="display: flex; align-items: center; justify-content: space-between"><h2 style="margin: 0; font-size: 18px; font-weight: 600">Schedule it</h2><span style="font-size: 12px; font-weight: 700; color: #6B6B64">{{freeLabel}}</span></div>
+            <sc-if value="{{isFriday}}" hint-placeholder-val="{{ false }}">
+              <div role="note" style="display: flex; gap: 10px; align-items: center; padding: 10px 12px; border-radius: 16px; background: #FFF3DC; color: #8A5300; font-size: 13px; font-weight: 600"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8A5300" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 8v5M12 16v.5M10.3 4l-8 14a2 2 0 0 0 1.7 3h16a2 2 0 0 0 1.7-3l-8-14a2 2 0 0 0-3.4 0z"></path></svg>Friday is your weekend.</div>
+            </sc-if>
+            <div role="radiogroup" aria-label="Suggested slots" style="display: flex; flex-direction: column; gap: 8px">
+              <sc-for list="{{slots}}" as="s" hint-placeholder-count="3">
+                <button type="button" role="radio" aria-checked="{{s.on}}" onClick="{{ s.pick }}" style="display: flex; align-items: center; gap: 12px; height: 54px; padding: 0 14px 0 8px; border: 0; border-radius: 999px; background: {{s.bg}}; box-shadow: {{s.ring}}; font-family: inherit; text-align: left; cursor: pointer">
+                  <span style="width: 38px; height: 38px; border-radius: 50%; background: {{s.iconBg}}; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="{{s.iconFg}}" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="{{s.icon}}"></path></svg></span>
+                  <span style="flex: 1; display: flex; flex-direction: column; line-height: 1.2"><span style="font-size: 14px; font-weight: 700; color: #1A1A17">{{s.label}}</span><span style="font-size: 12px; font-weight: 600; color: #6B6B64">{{s.note}}</span></span>
+                </button>
+              </sc-for>
+            </div>
+            <!-- Day preview -->
+            <div style="position: relative; height: 352px; margin-top: 4px; padding-left: 44px; box-sizing: border-box">
+              <sc-for list="{{dayHours}}" as="h" hint-placeholder-count="12">
+                <div style="position: absolute; left: 0; right: 0; top: {{h.top}}; display: flex; align-items: center; gap: 8px"><span style="width: 36px; font-size: 11px; font-weight: 600; color: #8A8A82">{{h.label}}</span><span style="flex: 1; height: 1px; background: #EDEDEA"></span></div>
+              </sc-for>
+              <sc-for list="{{busy}}" as="b" hint-placeholder-count="3">
+                <div style="position: absolute; left: 44px; right: 0; top: {{b.top}}; height: {{b.h}}; box-sizing: border-box; padding: 0 10px; border-radius: 10px; background: {{b.bg}}; display: flex; align-items: center; font-size: 11px; font-weight: 700; color: #45453F; overflow: hidden; white-space: nowrap">{{b.t}}</div>
+              </sc-for>
+              <sc-if value="{{hasGhost}}" hint-placeholder-val="{{ true }}">
+                <div style="position: absolute; left: 44px; right: 0; top: {{ghostTop}}; height: {{ghostH}}; box-sizing: border-box; padding: 0 10px; border-radius: 10px; border: 2px dashed {{deep}}; background: {{soft}}; display: flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 700; color: {{deep}}; overflow: hidden; white-space: nowrap">New · {{ghostLabel}}</div>
+              </sc-if>
+            </div>
+          </section>
+
+          <!-- Preview (library task card) -->
+          <section aria-label="Preview" style="display: flex; flex-direction: column; gap: 10px">
+            <span style="font-size: 12px; font-weight: 700; color: #6B6B64; padding-left: 6px">Preview</span>
+            <article style="position: relative; box-sizing: border-box; min-height: 178px; padding: 20px; border-radius: 28px; background: {{soft}}; display: flex; flex-direction: column; justify-content: space-between; gap: 12px">
+              <div aria-hidden="true" style="position: absolute; top: 0; right: 0; width: 60px; height: 60px; background: #F1F1EE; border-bottom-left-radius: 26px"></div>
+              <div aria-hidden="true" style="position: absolute; top: 0; right: 60px; width: 26px; height: 26px; background: radial-gradient(circle at 0 100%, transparent 25.5px, #F1F1EE 26px)"></div>
+              <div aria-hidden="true" style="position: absolute; top: 60px; right: 0; width: 26px; height: 26px; background: radial-gradient(circle at 0 100%, transparent 25.5px, #F1F1EE 26px)"></div>
+              <span aria-hidden="true" style="position: absolute; top: 0; right: 0; width: 50px; height: 50px; border-radius: 50%; background: {{deep}}; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"></path></svg></span>
+              <div style="display: flex; gap: 6px; flex-wrap: wrap; padding-right: 60px"><span style="height: 26px; padding: 0 10px; border-radius: 999px; background: #FFFFFF; color: {{deep}}; font-size: 11px; font-weight: 700; display: inline-flex; align-items: center; gap: 6px"><span style="width: 7px; height: 7px; border-radius: 50%; background: {{dot}}"></span>{{ctxLabel}} · {{wsName}}</span><span style="height: 26px; padding: 0 10px; border-radius: 999px; background: #FFFFFF; color: {{prioFg}}; font-size: 11px; font-weight: 700; display: inline-flex; align-items: center">{{prioLabel}}</span></div>
+              <div style="display: flex; flex-direction: column; gap: 6px"><span style="font-size: 21px; font-weight: 600; line-height: 1.2">Review October expenses</span><span style="font-size: 13px; font-weight: 600; color: #45453F">{{previewMeta}}</span></div>
+              <div style="display: flex; align-items: center; gap: 8px"><span style="width: 30px; height: 30px; border-radius: 50%; background: #FFFFFF; color: {{deep}}; display: inline-flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700">{{assIni}}</span><span style="font-size: 12px; font-weight: 700; color: #45453F">{{subCount}}</span><span style="flex: 1"></span><span style="font-size: 12px; font-weight: 700; color: #45453F">{{repeatLabel}}</span></div>
+            </article>
+          </section>
+        </aside>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- 4 · Done toast -->
+<sc-if value="{{created}}" hint-placeholder-val="{{ false }}">
+  <div role="status" style="position: fixed; left: 50%; bottom: 28px; transform: translateX(-50%); z-index: 70; display: flex; align-items: center; gap: 12px; min-height: 60px; padding: 0 8px 0 10px; border-radius: 999px; background: #FFFFFF; box-shadow: 0 0 0 1px #E6E6E1, 0 20px 50px rgba(14,14,12,0.18); font-size: 14px; font-weight: 600; white-space: nowrap">
+    <span style="width: 40px; height: 40px; border-radius: 50%; background: {{soft}}; display: inline-flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="{{deep}}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg></span>
+    <span>Task created · {{toastWhen}}</span>
+    <button type="button" onClick="{{ undo }}" style="height: 44px; padding: 0 16px; border: 0; border-radius: 999px; background: #F1F1EE; font-family: inherit; font-size: 13px; font-weight: 700; color: #1A1A17; cursor: pointer">Undo</button>
+    <a href="S7Calendar.dc.html" style="display: inline-flex; align-items: center; height: 44px; padding: 0 16px; border-radius: 999px; background: {{deep}}; color: #FFFFFF; font-size: 13px; font-weight: 700; text-decoration: none">View in calendar</a>
+  </div>
+</sc-if>
+<!-- Floating assistant (library: notched chat) -->
+<div style="position: fixed; right: 24px; bottom: 24px; z-index: 60; display: flex; flex-direction: column; align-items: flex-end; gap: 12px">
+  <sc-if value="{{assistOpen}}" hint-placeholder-val="{{ false }}">
+    <div role="dialog" aria-label="Assistant" style="width: 360px; box-sizing: border-box; padding: 8px; border-radius: 34px; background: #FFFFFF; box-shadow: 0 0 0 1px #E6E6E1, 0 24px 60px rgba(14,14,12,0.18)">
+      <div style="position: relative; height: 420px; box-sizing: border-box; padding: 12px; border-radius: 28px; background: #F4F4F1; display: flex; flex-direction: column; gap: 10px">
+        <div aria-hidden="true" style="position: absolute; top: 0; right: 0; width: 66px; height: 66px; background: #FFFFFF; border-bottom-left-radius: 28px"></div>
+        <div aria-hidden="true" style="position: absolute; top: 0; right: 66px; width: 28px; height: 28px; background: radial-gradient(circle at 0 100%, transparent 27.5px, #FFFFFF 28px)"></div>
+        <div aria-hidden="true" style="position: absolute; top: 66px; right: 0; width: 28px; height: 28px; background: radial-gradient(circle at 0 100%, transparent 27.5px, #FFFFFF 28px)"></div>
+        <span role="img" aria-label="Assistant" style="position: absolute; top: 0; right: 0; width: 54px; height: 54px; border-radius: 50%; background: #0E6B57; display: inline-flex; align-items: center; justify-content: center"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#C8FF3D" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M6 6l2 2M16 16l2 2M6 18l2-2M16 8l2-2"></path></svg></span>
+        <div style="display: flex; gap: 6px; padding-right: 70px"><span style="height: 40px; padding: 0 14px; border-radius: 999px; background: #FFFFFF; font-size: 13px; font-weight: 700; display: inline-flex; align-items: center">Chat</span><span style="height: 40px; padding: 0 14px; border-radius: 999px; font-size: 13px; font-weight: 600; color: #5E5E58; display: inline-flex; align-items: center">Plan</span><span style="height: 40px; padding: 0 14px; border-radius: 999px; font-size: 13px; font-weight: 600; color: #5E5E58; display: inline-flex; align-items: center">Help</span></div>
+        <div style="align-self: flex-start; max-width: 85%; background: #FFFFFF; border-radius: 18px 18px 18px 6px; padding: 11px 14px; font-size: 14px; line-height: 1.45">{{assistHello}}</div>
+        <div style="align-self: flex-end; max-width: 80%; background: #0E6B57; color: #FFFFFF; border-radius: 18px 18px 6px 18px; padding: 11px 14px; font-size: 14px">{{assistAsk}}</div>
+        <div style="margin-top: auto; display: flex; gap: 6px; overflow-x: auto"><span style="flex: none; height: 36px; padding: 0 12px; border-radius: 999px; box-shadow: inset 0 0 0 1px #D3D3CC; font-size: 12px; font-weight: 600; display: inline-flex; align-items: center">Summarize</span><span style="flex: none; height: 36px; padding: 0 12px; border-radius: 999px; box-shadow: inset 0 0 0 1px #D3D3CC; font-size: 12px; font-weight: 600; display: inline-flex; align-items: center">What’s at risk?</span></div>
+        <div style="display: flex; align-items: center; gap: 4px; height: 52px; padding: 0 6px 0 16px; border-radius: 999px; background: #FFFFFF"><label for="assist-q" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Ask the assistant</label><input id="assist-q" type="text" placeholder="Ask anything…" style="flex: 1; min-width: 0; border: 0; outline: none; background: transparent; font-family: inherit; font-size: 14px; color: #1A1A17"><button type="button" aria-label="Send" style="width: 42px; height: 42px; border-radius: 50%; border: 0; background: #0E6B57; display: inline-flex; align-items: center; justify-content: center; cursor: pointer"><svg width="15" height="15" viewBox="0 0 24 24" fill="#C8FF3D" aria-hidden="true"><path d="M5 4l15 8-15 8 3-8z"></path></svg></button></div>
+      </div>
+    </div>
+  </sc-if>
+  <button type="button" onClick="{{ toggleAssist }}" aria-expanded="{{assistExpanded}}" aria-label="{{assistLabel}}" style="display: inline-flex; align-items: center; gap: 10px; height: 60px; padding: 0 20px 0 8px; border: 0; border-radius: 999px; background: #FFFFFF; box-shadow: 0 1px 0 #E6E6E1, 0 14px 34px rgba(14,14,12,0.14); font-family: inherit; font-size: 14px; font-weight: 700; color: #1A1A17; cursor: pointer"><span style="width: 44px; height: 44px; border-radius: 50%; background: #0E6B57; display: inline-flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C8FF3D" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="{{assistIcon}}"></path></svg></span>{{assistText}}</button>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1640}}'>
+class Component extends DCLogic {
+  assist(hello, ask) {
+    const open = !!(this.state && this.state.assistOpen);
+    return {
+      assistOpen: open, assistExpanded: open ? 'true' : 'false', assistLabel: open ? 'Close assistant' : 'Open assistant',
+      assistText: open ? 'Close' : 'Assistant', assistIcon: open ? 'M6 6l12 12M18 6L6 18' : 'M12 3v3M12 18v3M3 12h3M18 12h3M6 6l2 2M16 16l2 2M6 18l2-2M16 8l2-2',
+      assistHello: hello, assistAsk: ask,
+      toggleAssist: () => this.setState({ assistOpen: !open })
+    };
+  }
+  constructor(props) {
+    super(props);
+    this.state = { kind: 'task', ctx: 'personal', ws: 0, who: 0, date: 22, est: '30m', prio: 'high', energy: 'low', repeat: 'none', slot: 0, picker: false, another: false, created: false, subs: ['Export bank statement', 'Tag uncategorised items'] };
+  }
+  renderVals() {
+    const st = this.state;
+    const I = {
+      overview: 'M4 4h7v7H4zM13 4h7v4h-7zM13 10h7v10h-7zM4 13h7v7H4z', myday: 'M12 3v2M12 19v2M3 12h2M19 12h2M12 8a4 4 0 1 0 0 8a4 4 0 1 0 0-8z',
+      tasks: 'M4 4h16v16H4zM8 12l3 3 5-6', calendar: 'M4 5h16v15H4zM4 10h16M9 3v4M15 3v4', goals: 'M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18zM12 8a4 4 0 1 0 0 8a4 4 0 1 0 0-8z',
+      habits: 'M4 12a8 8 0 0 1 14-5.3M20 12a8 8 0 0 1-14 5.3M18 3v4h-4M6 21v-4h4', finance: 'M3 7h18v12H3zM3 11h18M7 15h3', journal: 'M6 3h12v18H6zM9 8h6M9 12h6', insights: 'M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9V16h7v-2.1A6 6 0 0 0 12 3z'
+    };
+    const rail = Object.keys(I).map((k) => ({ d: I[k], label: k, current: k === 'tasks' ? 'page' : 'false', bg: k === 'tasks' ? '#DDFAF2' : 'transparent', icon: k === 'tasks' ? '#0E6B57' : '#45453F' }));
+    const SC = {
+      personal: { label: 'Personal', soft: '#DDFAF2', deep: '#0E6B57', dot: '#4FE3C1', ws: ['Mehran'], wsLabel: 'Area', people: [['MR', 'Me']] },
+      project: { label: 'Projects', soft: '#E0F0FF', deep: '#0F5BA8', dot: '#5AB4FF', ws: ['Planner App', 'Website Redesign', 'Mobile v2'], wsLabel: 'Project', people: [['MR', 'Me'], ['KF', 'Katy'], ['SA', 'Sara']] },
+      team: { label: 'Teams', soft: '#ECECFF', deep: '#4343C8', dot: '#8B8BFF', ws: ['Design Team', 'Engineering'], wsLabel: 'Team', people: [['MR', 'Me'], ['KF', 'Katy'], ['AR', 'Arash'], ['NL', 'Nila']] },
+      company: { label: 'Companies', soft: '#F4E9FF', deep: '#7A2BC4', dot: '#C07BFF', ws: ['Euroly', 'Araxitis'], wsLabel: 'Company', people: [['MR', 'Me'], ['SA', 'Sara'], ['DB', 'Dariush']] }
+    };
+    const c = SC[st.ctx];
+    const on = (b, bg, fg) => ({ bg: b ? (bg || c.deep) : '#FFFFFF', fg: b ? (fg || '#FFFFFF') : '#1A1A17', ring: b ? 'none' : 'inset 0 0 0 1px #D3D3CC', on: b ? 'true' : 'false' });
+
+    // Dates (Mehr 1405: 1 Mehr = Wed, Sat-first index 4). Today = 21.
+    const DN = ['Saturday', 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+    const wd = (d) => (d - 1 + 4) % 7;
+    const greg = (d) => (d <= 8 ? (22 + d) + ' Sep' : (d - 8) + ' Oct') + ' 2026';
+    const rel = (d) => d === 21 ? 'Today' : d === 22 ? 'Tomorrow' : d < 21 ? 'Past' : 'In ' + (d - 21) + ' days';
+    const fmt = (h) => String(Math.floor(h)).padStart(2, '0') + ':' + String(Math.round((h % 1) * 60)).padStart(2, '0');
+    const EST = { '15m': 0.25, '30m': 0.5, '1h': 1, '2h': 2, '4h': 4 };
+    const dur = EST[st.est];
+
+    // Busy blocks per date (week 18–24 from the calendar)
+    const B = {
+      18: [[9, 11, 'Deep work'], [15, 16, 'Sprint planning']], 19: [[10, 11, 'Client call'], [13, 14, 'Lunch with Sara'], [16, 18, 'Board deck prep']],
+      20: [[9, 10.5, 'Design review'], [11, 13, 'Wireframes'], [17.25, 18.25, 'Gym']], 21: [[9, 11, 'Deep work'], [11, 11.75, 'Design review'], [14, 16, 'UI design'], [16.5, 17, 'Client call'], [17.25, 18.25, 'Gym']],
+      22: [[10, 11, 'Quarterly review'], [14, 15.5, '1:1 with Katy']], 23: [[10, 12, 'Family brunch']], 24: [[9, 10.5, 'Hike']]
+    };
+    const busyList = (B[st.date] || [[9.5, 10.5, 'Stand-up']]).slice().sort((a, b) => a[0] - b[0]);
+    const free = []; let t = st.date === 21 ? 14.75 : 8.5;
+    busyList.forEach(([s, e]) => { if (s - t >= dur) free.push([t, s]); t = Math.max(t, e + 0.25); });
+    if (19 - t >= dur) free.push([t, 19]);
+    let freeH = 0, t2 = st.date === 21 ? 14.75 : 8.5;
+    busyList.forEach(([s, e]) => { if (s > t2) freeH += s - t2; t2 = Math.max(t2, e); });
+    if (19 > t2) freeH += 19 - t2;
+    const fri = wd(st.date) === 6;
+    const slotsRaw = free.slice(0, 2).map(([s]) => s);
+    const SL = slotsRaw.map((s, i) => ({ s, label: fmt(s) + ' – ' + fmt(s + dur), note: i === 0 ? 'Best fit · ' + (st.energy === 'high' ? 'morning focus' : 'between blocks') : 'Also free', icon: 'M12 7v5l3 2M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18z' }));
+    SL.push({ s: null, label: 'Keep unscheduled', note: 'Shows in the Unscheduled list', icon: 'M4 6h16M4 12h10M4 18h6' });
+    const slot = Math.min(st.slot, SL.length - 1);
+    const chosen = SL[slot];
+    const H = 30, START = 8;
+
+    const pickDays = [];
+    for (let k = 0; k < 35; k++) {
+      const d = k - 4 + 1, inM = d >= 1 && d <= 30, sel = d === st.date, today = d === 21, past = d < 21;
+      pickDays.push({
+        num: inM ? d : '', disabled: !inM || past ? 'true' : 'false', on: sel ? 'true' : 'false', aria: inM ? d + ' Mehr' : 'empty',
+        bg: sel ? c.deep : 'transparent', fg: sel ? '#FFFFFF' : k % 7 === 6 ? '#E5484D' : '#1A1A17', ring: today && !sel ? 'inset 0 0 0 1.5px ' + c.deep : 'none',
+        op: inM && past ? 0.35 : 1, cursor: inM && !past ? 'pointer' : 'default',
+        pick: () => { if (inM && !past) this.setState({ date: d, slot: 0, picker: false }); }
+      });
+    }
+    const subs = st.subs || [];
+    const MORE = ['Compare with September', 'Update budget sheet', 'Share summary with Sara'];
+    const PR = { low: ['Low', '#A9A9A1', '#45453F'], med: ['Medium', '#5AB4FF', '#0F5BA8'], high: ['High', '#F5A524', '#8A5300'], urgent: ['Urgent', '#E5484D', '#B4232A'] };
+    const RP = { none: 'No repeat', daily: 'Daily', work: 'Work days · Sat–Wed', weekly: 'Weekly', monthly: 'Monthly' };
+    const E = [['low', 'Low', 1], ['medium', 'Medium', 2], ['high', 'High', 3]];
+    const dateMain = DN[wd(st.date)] + ', ' + st.date + ' Mehr 1405';
+    const when = chosen.s === null ? 'unscheduled' : DN[wd(st.date)].slice(0, 3) + ' ' + st.date + ' Mehr · ' + fmt(chosen.s);
+    const stepN = st.created ? 4 : 3;
+    const who = c.people[Math.min(st.who, c.people.length - 1)];
+    const wsName = c.ws[Math.min(st.ws, c.ws.length - 1)];
+
+    return {
+      ...this.assist('Wednesday 08:30 is your best low-energy slot for this. Want me to also block 30 min next month to repeat it?', 'Make it monthly'),
+      rail, deep: c.deep, soft: c.soft, dot: c.dot,
+      steps: ['Capture', 'Details', 'Schedule', 'Done'].map((label, i) => {
+        const n = i + 1, cur = n === stepN, done = n < stepN;
+        return { n: done ? '✓' : String(n), label, current: cur ? 'step' : 'false', bg: cur ? c.soft : 'transparent', fg: cur || done ? '#1A1A17' : '#8A8A82', numBg: cur || done ? c.deep : '#F1F1EE', numFg: cur || done ? '#FFFFFF' : '#6B6B64' };
+      }),
+      parsed: [
+        { label: 'Tomorrow · 22 Mehr', icon: 'M4 5h16v15H4zM4 10h16M9 3v4M15 3v4', bg: '#E0F0FF', fg: '#0F5BA8' },
+        { label: '10:00', icon: 'M12 7v5l3 2M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18z', bg: '#E0F0FF', fg: '#0F5BA8' },
+        { label: 'Finance · Personal', icon: 'M4 12l8-8h8v8l-8 8z', bg: '#DDFAF2', fg: '#0E6B57' },
+        { label: 'High priority', icon: 'M5 21V4h11l-2 4 2 4H5', bg: '#FFE8E8', fg: '#B4232A' },
+        { label: '30 min', icon: 'M6 3h12M6 21h12M7 3c0 6 10 6 10 9s-10 3-10 9', bg: '#ECECFF', fg: '#4343C8' }
+      ],
+      toDetails: () => this.setState({ created: false }),
+      kinds: [['task', 'Task'], ['event', 'Event'], ['reminder', 'Reminder']].map(([id, label]) => ({ label, on: st.kind === id ? 'true' : 'false', bg: st.kind === id ? '#FFFFFF' : 'transparent', fg: st.kind === id ? '#1A1A17' : '#5E5E58', sh: st.kind === id ? '0 1px 2px rgba(14,14,12,0.08)' : 'none', pick: () => this.setState({ kind: id }) })),
+      contexts: Object.keys(SC).map((k) => { const s = SC[k], o = st.ctx === k; return { label: s.label, on: o ? 'true' : 'false', bg: o ? s.soft : '#FFFFFF', ring: o ? 'inset 0 0 0 2px ' + s.deep : 'inset 0 0 0 1px #D3D3CC', dotBg: o ? '#FFFFFF' : s.soft, dot: s.dot, pick: () => this.setState({ ctx: k, ws: 0, who: 0 }) }; }),
+      wsLabel: c.wsLabel,
+      workspaces: c.ws.map((w, i) => Object.assign(on(i === Math.min(st.ws, c.ws.length - 1), c.soft, c.deep), { label: w, pick: () => this.setState({ ws: i }) })),
+      people: c.people.map(([ini, name], i) => { const o = i === Math.min(st.who, c.people.length - 1); return { ini, name, on: o ? 'true' : 'false', bg: o ? c.soft : '#FFFFFF', ring: o ? 'inset 0 0 0 2px ' + c.deep : 'inset 0 0 0 1px #D3D3CC', avBg: o ? '#FFFFFF' : c.soft, avFg: c.deep, pick: () => this.setState({ who: i }) }; }),
+      togglePicker: () => this.setState({ picker: !st.picker }), pickerOpen: st.picker ? 'true' : 'false', showPicker: !!st.picker, pickerRing: st.picker ? '0 0 0 3px #CDE6FF' : 'none',
+      dateMain, dateAlt: greg(st.date), dateRel: rel(st.date),
+      wk: ['Sa', 'Su', 'Mo', 'Tu', 'We', 'Th', 'Fr'].map((n, i) => ({ n, fg: i === 6 ? '#E5484D' : '#6B6B64' })),
+      pickDays,
+      shortcuts: [['Today', 21], ['Tomorrow', 22], ['Next Sat', 25]].map(([label, d]) => ({ label, pick: () => this.setState({ date: d, slot: 0, picker: false }) })),
+      estimates: Object.keys(EST).map((k) => Object.assign(on(st.est === k), { label: k, pick: () => this.setState({ est: k, slot: 0 }) })),
+      priorities: Object.keys(PR).map((k) => Object.assign(on(st.prio === k, '#FFFFFF', PR[k][2]), { label: PR[k][0], dot: PR[k][1], ring: st.prio === k ? 'inset 0 0 0 2px ' + PR[k][1] : 'inset 0 0 0 1px #D3D3CC', pick: () => this.setState({ prio: k }) })),
+      energy: E.map(([id, label, n]) => { const o = st.energy === id; return Object.assign(on(o, c.soft, '#1A1A17'), { label, ring: o ? 'inset 0 0 0 2px ' + c.deep : 'inset 0 0 0 1px #D3D3CC', b1: '#1A1A17', b2: n > 1 ? '#1A1A17' : '#D3D3CC', b3: n > 2 ? '#1A1A17' : '#D3D3CC', pick: () => this.setState({ energy: id }) }); }),
+      repeats: Object.keys(RP).map((k) => Object.assign(on(st.repeat === k, c.soft, c.deep), { label: k === 'work' ? 'Work days' : RP[k], ring: st.repeat === k ? 'inset 0 0 0 2px ' + c.deep : 'inset 0 0 0 1px #D3D3CC', pick: () => this.setState({ repeat: k }) })),
+      subtasks: subs.map((s, i) => ({ title: s, aria: 'Remove ' + s, remove: () => this.setState({ subs: subs.filter((_, j) => j !== i) }) })),
+      subCount: subs.length ? '0 of ' + subs.length + ' subtasks' : 'No subtasks',
+      addSub: () => { const next = MORE.find((m) => subs.indexOf(m) < 0); if (next) this.setState({ subs: subs.concat([next]) }); },
+      another: st.another ? 'true' : 'false', anotherTrack: st.another ? c.deep : '#D3D3CC', anotherKnob: st.another ? '19px' : '3px', toggleAnother: () => this.setState({ another: !st.another }),
+      createLabel: st.kind === 'event' ? 'Create event' : st.kind === 'reminder' ? 'Set reminder' : 'Create task',
+      create: () => this.setState({ created: true }), undo: () => this.setState({ created: false }), created: !!st.created,
+      freeLabel: Math.round(freeH * 10) / 10 + 'h free · ' + st.date + ' Mehr', isFriday: fri,
+      slots: SL.map((s, i) => { const o = i === slot; return { label: s.label, note: s.note, icon: s.icon, on: o ? 'true' : 'false', bg: o ? c.soft : '#F8F8F6', ring: o ? 'inset 0 0 0 2px ' + c.deep : 'none', iconBg: o ? '#FFFFFF' : '#FFFFFF', iconFg: o ? c.deep : '#6B6B64', pick: () => this.setState({ slot: i }) }; }),
+      dayHours: Array.from({ length: 12 }, (_, i) => ({ top: (i * H - 6) + 'px', label: String(START + i).padStart(2, '0') + ':00' })),
+      busy: busyList.map(([s, e, tt]) => ({ t: tt, top: ((s - START) * H + 1) + 'px', h: ((e - s) * H - 2) + 'px', bg: '#F1F1EE' })),
+      hasGhost: chosen.s !== null, ghostTop: chosen.s === null ? '0px' : ((chosen.s - START) * H + 1) + 'px', ghostH: Math.max(dur * H - 2, 22) + 'px', ghostLabel: chosen.s === null ? '' : chosen.label,
+      ctxLabel: c.label, wsName, prioLabel: PR[st.prio][0], prioFg: PR[st.prio][2], assIni: who[0], repeatLabel: RP[st.repeat],
+      previewMeta: (chosen.s === null ? 'Unscheduled · due ' + st.date + ' Mehr' : when) + ' · ' + st.est,
+      toastWhen: when
+    };
+  }
+}
+</script>
+</body>
+</html>

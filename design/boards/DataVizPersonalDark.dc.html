@@ -1,0 +1,944 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Personal data visualization language · Dark</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@300;400;500;600;700&amp;family=Vazirmatn:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#121412}
+.fam{display:grid;grid-template-columns:380px minmax(0,1fr);gap:32px;align-items:start}
+.spec{display:flex;flex-direction:column;gap:14px;padding-top:6px}
+.num{display:inline-flex;align-items:center;justify-content:center;width:44px;height:30px;border-radius:999px;background:#1C1F1C;font-size:13px;font-weight:700;color:#C4C8C2}
+.cls{align-self:flex-start;height:26px;padding:0 10px;border-radius:999px;font-size:11px;font-weight:700;display:inline-flex;align-items:center;letter-spacing:.02em}
+.q{margin:0;font-size:19px;font-weight:600;line-height:1.35;color:#ECEEE9}
+.row{display:grid;grid-template-columns:96px minmax(0,1fr);gap:10px;font-size:13px;line-height:1.5}
+.row b{font-weight:700;color:#969B94;font-size:12px}
+.row span{color:#D6D9D3}
+.card{position:relative;box-sizing:border-box;padding:22px;border-radius:32px;background:#1C1F1C}
+.tip{position:absolute;transform:translateX(-50%);z-index:3;box-sizing:border-box;padding:9px 12px;border-radius:16px;background:#1C1F1C;box-shadow:0 0 0 1px #2C302C,0 10px 24px rgba(0,0,0,0.40);display:flex;flex-direction:column;gap:1px;white-space:nowrap;pointer-events:none}
+.tip small{font-size:11px;font-weight:600;color:#969B94}
+.tip strong{font-size:15px;font-weight:700;color:#ECEEE9}
+.tip em{font-style:normal;font-size:11px;font-weight:700;color:#6FD4B8}
+.seg{display:inline-flex;gap:2px;padding:3px;border-radius:999px;background:#121412}
+.seg button{height:32px;padding:0 12px;border:0;border-radius:999px;background:transparent;font-family:inherit;font-size:12px;font-weight:700;color:#A5AAA3;cursor:pointer}
+.seg button[aria-pressed="true"]{background:#1C1F1C;color:#ECEEE9;box-shadow:0 1px 2px rgba(0,0,0,0.32)}
+.insight{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:18px;background:#222622;font-size:13px;font-weight:600;line-height:1.45;color:#D6D9D3}
+.insight i{flex:none;width:34px;height:34px;border-radius:50%;background:#1D4A40;display:inline-flex;align-items:center;justify-content:center}
+.sh{font-size:12px;font-weight:700;color:#969B94;letter-spacing:.02em}
+.mv{transition:d .6s cubic-bezier(.3,.7,.2,1),opacity .3s}
+.draw{stroke-dasharray:1400;stroke-dashoffset:1400;animation:draw 1.4s cubic-bezier(.3,.7,.2,1) .2s forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+.settle{animation:settle .5s ease-out both}
+@keyframes settle{from{opacity:0;transform:scale(.7)}to{opacity:1;transform:scale(1)}}
+@media (prefers-reduced-motion: reduce){.mv{transition:none}.draw{animation:none;stroke-dashoffset:0}.settle{animation:none}}
+button:focus-visible,[tabindex]:focus-visible{outline:2px solid #7DB6F0;outline-offset:2px}
+table.t{width:100%;border-collapse:separate;border-spacing:0 6px;font-size:13px}
+table.t th{text-align:left;font-size:11px;font-weight:700;color:#969B94;padding:0 12px}
+table.t td{background:#222622;padding:10px 12px;vertical-align:top;line-height:1.45}
+table.t td:first-child{border-radius:14px 0 0 14px;font-weight:700}
+table.t td:last-child{border-radius:0 14px 14px 0}
+</style>
+</helmet>
+<div style="width: 1440px; box-sizing: border-box; padding: 64px 56px 80px; background: #121412; font-family: 'Urbanist', 'Vazirmatn', system-ui, sans-serif; color: #ECEEE9; display: flex; flex-direction: column; gap: 56px">
+
+  <!-- ================= HEADER ================= -->
+  <header style="display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 40px; align-items: end">
+    <div style="display: flex; flex-direction: column; gap: 12px">
+      <span style="font-size: 14px; font-weight: 700; color: #6FD4B8">Personal · Data visualization language · v1</span>
+      <h1 style="margin: 0; font-size: 56px; font-weight: 500; letter-spacing: -0.02em; line-height: 1.02">Charts that answer<br>“what does this tell me?”</h1>
+      <p style="margin: 0; max-width: 620px; font-size: 16px; line-height: 1.55; color: #A5AAA3">Nine specialized visualizations for the Personal planner. Each one answers a single question, belongs to named modules, has a mobile form, and falls back to plain words when there isn’t enough data. Everything else keeps using the default progress and simple charts.</p>
+    </div>
+    <div class="card" style="display: flex; flex-direction: column; gap: 12px">
+      <span class="sh">CLASSIFICATION</span>
+      <sc-for list="{{classes}}" as="c" hint-placeholder-count="4">
+        <div style="display: flex; align-items: center; gap: 12px"><span class="cls" style="background: {{c.bg}}; color: {{c.fg}}; min-width: 150px; justify-content: center">{{c.t}}</span><span style="font-size: 13px; color: #C4C8C2; line-height: 1.4">{{c.d}}</span></div>
+      </sc-for>
+    </div>
+  </header>
+
+  <!-- Default vs specialized -->
+  <section style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px">
+    <div class="card" style="display: flex; flex-direction: column; gap: 12px">
+      <span class="sh">DEFAULT — USE FIRST, ANYWHERE</span>
+      <div style="display: flex; flex-wrap: wrap; gap: 8px"><sc-for list="{{defaults}}" as="d" hint-placeholder-count="6"><span style="height: 34px; padding: 0 14px; border-radius: 999px; background: #121412; font-size: 13px; font-weight: 600; display: inline-flex; align-items: center">{{d.t}}</span></sc-for></div>
+      <span style="font-size: 13px; color: #A5AAA3; line-height: 1.5">Rings stay limited to the screens already approved for them. No gauges. A percentage alone is never a reason to add a ring.</span>
+    </div>
+    <div class="card" style="display: flex; flex-direction: column; gap: 12px; background: #16231F">
+      <span class="sh" style="color: #6FD4B8">SPECIALIZED — ONLY FOR THEIR QUESTION</span>
+      <div style="display: flex; flex-wrap: wrap; gap: 8px"><sc-for list="{{specials}}" as="d" hint-placeholder-count="9"><span style="height: 34px; padding: 0 14px; border-radius: 999px; background: #1C1F1C; font-size: 13px; font-weight: 700; color: #6FD4B8; display: inline-flex; align-items: center">{{d.t}}</span></sc-for></div>
+      <span style="font-size: 13px; color: #C4C8C2; line-height: 1.5">If the screen isn’t asking that visualization’s question, use a default chart instead. Never promote one of these to a generic primitive.</span>
+    </div>
+  </section>
+
+  <!-- ================= 01 BUDGET RIVER ================= -->
+  <section class="fam">
+    <div class="spec">
+      <div style="display: flex; align-items: center; gap: 10px"><span class="num">01</span><span class="cls" style="background: #1D4A40; color: #6FD4B8">Specialized visualization</span></div>
+      <h2 style="margin: 0; font-size: 30px; font-weight: 500">Budget River</h2>
+      <p class="q">“Where has my money flowed during this period?”</p>
+      <sc-for list="{{spec1}}" as="r" hint-placeholder-count="7"><div class="row"><b>{{r.k}}</b><span>{{r.v}}</span></div></sc-for>
+    </div>
+    <div class="card" style="display: flex; flex-direction: column; gap: 16px">
+      <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px">
+        <div style="display: flex; gap: 28px">
+          <div style="display: flex; flex-direction: column"><span style="font-size: 26px; font-weight: 600">{{rv.spent}}</span><span style="font-size: 12px; font-weight: 600; color: #969B94">spent · Toman</span></div>
+          <div style="display: flex; flex-direction: column"><span style="font-size: 26px; font-weight: 600; color: #6FD4B8">{{rv.remaining}}</span><span style="font-size: 12px; font-weight: 600; color: #969B94">remaining</span></div>
+          <div style="display: flex; flex-direction: column"><span style="font-size: 26px; font-weight: 600">{{rv.pct}}</span><span style="font-size: 12px; font-weight: 600; color: #969B94">of 33M budget</span></div>
+        </div>
+        <div class="seg" role="group" aria-label="State"><sc-for list="{{rvStates}}" as="s" hint-placeholder-count="4"><button type="button" aria-pressed="{{s.on}}" onClick="{{ s.pick }}">{{s.t}}</button></sc-for></div>
+      </div>
+      <div style="position: relative">
+        <svg viewBox="0 0 820 240" width="100%" role="img" aria-label="Budget river: spending by category across Mehr; {{rv.insight}}" style="display: block; overflow: visible">
+          <sc-if value="{{rv.hasData}}" hint-placeholder-val="{{ true }}">
+            <line x1="{{rv.env.x1}}" x2="{{rv.env.x2}}" y1="{{rv.env.y1}}" y2="{{rv.env.y1}}" stroke="{{rv.env.c}}" stroke-width="1.5" stroke-dasharray="2 5" stroke-linecap="round"></line>
+            <line x1="{{rv.env.x1}}" x2="{{rv.env.x2}}" y1="{{rv.env.y2}}" y2="{{rv.env.y2}}" stroke="{{rv.env.c}}" stroke-width="1.5" stroke-dasharray="2 5" stroke-linecap="round"></line>
+            <sc-for list="{{rv.streams}}" as="s" hint-placeholder-count="6"><path class="mv" style="d: path('{{s.d}}')" fill="{{s.c}}" fill-opacity="{{s.op}}"></path></sc-for>
+            <sc-for list="{{rv.edges}}" as="s" hint-placeholder-count="6"><path class="mv" style="d: path('{{s.d}}')" fill="none" stroke="{{s.c}}" stroke-width="1.6" stroke-opacity="{{s.op}}"></path></sc-for>
+            <sc-if value="{{rv.showFc}}" hint-placeholder-val="{{ true }}"><rect x="{{rv.fx}}" y="0" width="{{rv.fw}}" height="240" fill="#0D1210" fill-opacity="0.62"></rect><text x="{{rv.fcx}}" y="16" font-size="11" font-weight="700" fill="#7D827B">forecast</text></sc-if>
+            <sc-if value="{{rv.showToday}}" hint-placeholder-val="{{ true }}"><line x1="{{rv.tx}}" x2="{{rv.tx}}" y1="8" y2="232" stroke="#ECEEE9" stroke-width="1.2" stroke-opacity="0.55"></line></sc-if>
+            <line x1="{{rv.sx}}" x2="{{rv.sx}}" y1="24" y2="226" stroke="#6FD4B8" stroke-width="2" stroke-dasharray="3 4"></line>
+            <sc-for list="{{rv.labels}}" as="l" hint-placeholder-count="6"><text x="{{l.x}}" y="{{l.y}}" text-anchor="{{l.anchor}}" font-size="12" font-weight="700" fill="#C4C8C2">{{l.t}}</text></sc-for>
+            <sc-for list="{{rv.hits}}" as="h" hint-placeholder-count="21"><rect x="{{h.x}}" y="0" width="{{h.w}}" height="240" fill="transparent" style="cursor: pointer" onClick="{{ h.pick }}"></rect></sc-for>
+          </sc-if>
+        </svg>
+        <sc-if value="{{rv.hasData}}" hint-placeholder-val="{{ true }}"><div class="tip" style="left: {{rv.selPct}}; top: -8px"><small>{{rv.tipDate}}</small><strong>{{rv.tipVal}}</strong><em>{{rv.tipSub}}</em></div></sc-if>
+        <sc-if value="{{rvEmpty}}" hint-placeholder-val="{{ false }}">
+          <div style="position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; text-align: center">
+            <svg width="220" height="60" viewBox="0 0 220 60" aria-hidden="true"><path d="M4 34 C50 10 90 54 130 30 S200 20 216 30" fill="none" stroke="#3A3F3A" stroke-width="10" stroke-linecap="round" stroke-dasharray="1 16"></path></svg>
+            <span style="font-size: 15px; font-weight: 600">Add expenses to see where your money flows.</span>
+            <button type="button" style="height: 40px; padding: 0 16px; border: 0; border-radius: 999px; background: #6FD4B8; color: #0D1210; font-family: inherit; font-size: 13px; font-weight: 700">Add expense</button>
+          </div>
+        </sc-if>
+      </div>
+      <div style="position: relative; height: 14px; margin-top: -8px; font-size: 11px; font-weight: 700; color: #7D827B"><span style="position: absolute; left: 2%">1 Mehr</span><span style="position: absolute; left: {{rvTodayPct}}; transform: translateX(-50%); color: #ECEEE9">today · 21</span><span style="position: absolute; left: {{rvEndPct}}; transform: translateX(-100%)">30 Mehr</span></div>
+      <sc-if value="{{rvInsight}}" hint-placeholder-val="{{ true }}"><div class="insight"><i><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6FD4B8" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9V16h7v-2.1A6 6 0 0 0 12 3z"></path></svg></i><span>{{rv.insight}}</span><span style="flex: 1"></span><span style="font-size: 12px; font-weight: 700; color: #6FD4B8">Open Finance ›</span></div></sc-if>
+      <div style="display: flex; gap: 14px; flex-wrap: wrap; font-size: 12px; font-weight: 600; color: #C4C8C2"><span>Dotted lines = expected daily pace (budget envelope)</span><span>· Dashed green = selected day</span><span>· Faded area = forecast, not data</span></div>
+    </div>
+  </section>
+
+  <!-- ================= 02 MILESTONE PATH ================= -->
+  <section class="fam">
+    <div class="spec">
+      <div style="display: flex; align-items: center; gap: 10px"><span class="num">02</span><span class="cls" style="background: #1D4A40; color: #6FD4B8">Specialized visualization</span></div>
+      <h2 style="margin: 0; font-size: 30px; font-weight: 500">Milestone Path</h2>
+      <p class="q">“Where am I on the journey toward this goal?”</p>
+      <sc-for list="{{spec2}}" as="r" hint-placeholder-count="7"><div class="row"><b>{{r.k}}</b><span>{{r.v}}</span></div></sc-for>
+    </div>
+    <div class="card" style="display: flex; flex-direction: column; gap: 14px">
+      <div style="display: flex; align-items: center; justify-content: space-between">
+        <div style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 18px; font-weight: 700">Launch Planner App v1</span><span style="font-size: 13px; font-weight: 600; color: #969B94">{{msSub}}</span></div>
+        <div style="display: flex; align-items: center; gap: 10px"><span class="cls" style="background: {{msChipBg}}; color: {{msChipFg}}">{{msChip}}</span><div class="seg" role="group" aria-label="State"><sc-for list="{{msStates}}" as="s" hint-placeholder-count="3"><button type="button" aria-pressed="{{s.on}}" onClick="{{ s.pick }}">{{s.t}}</button></sc-for></div></div>
+      </div>
+      <div style="position: relative; border-radius: 24px; overflow: hidden; background: linear-gradient(180deg, #1E2420 0%, #1C1F1C 100%)">
+        <svg viewBox="0 0 820 260" width="100%" role="img" aria-label="{{msAria}}" style="display: block">
+          <defs><linearGradient id="hillA" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1D4A40"></stop><stop offset="1" stop-color="#1C1F1C" stop-opacity="0"></stop></linearGradient><linearGradient id="hillB" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2A2E2A"></stop><stop offset="1" stop-color="#1C1F1C" stop-opacity="0"></stop></linearGradient></defs>
+          <path d="{{ms.h0}}" fill="url(#hillB)"></path>
+          <path d="{{ms.h1}}" fill="url(#hillA)"></path>
+          <path d="{{ms.full}}" fill="none" stroke="#4A504A" stroke-width="3" stroke-dasharray="2 9" stroke-linecap="round"></path>
+          <path class="draw" d="{{ms.done}}" fill="none" stroke="#6FD4B8" stroke-width="4" stroke-linecap="round"></path>
+          <sc-for list="{{ms.nodes}}" as="n" hint-placeholder-count="6">
+            <g class="settle" style="transform-origin: {{n.x}}px {{n.y}}px; cursor: pointer" onClick="{{ n.select }}" tabindex="0" role="button" aria-label="{{n.aria}}">
+              <circle cx="{{n.x}}" cy="{{n.y}}" r="22" fill="transparent"></circle>
+              <sc-if value="{{n.done}}" hint-placeholder-val="{{ true }}"><circle cx="{{n.x}}" cy="{{n.y}}" r="11" fill="#6FD4B8" stroke="#0D1210" stroke-width="3"></circle><path d="M{{n.cx1}} {{n.cy1}} l3.5 3.5 l6 -7" fill="none" stroke="#0D1210" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></sc-if>
+              <sc-if value="{{n.current}}" hint-placeholder-val="{{ false }}"><circle cx="{{n.x}}" cy="{{n.y}}" r="15" fill="#0D1210" stroke="#6FD4B8" stroke-width="3"></circle><circle cx="{{n.x}}" cy="{{n.y}}" r="6" fill="#6FD4B8"></circle></sc-if>
+              <sc-if value="{{n.late}}" hint-placeholder-val="{{ false }}"><circle cx="{{n.x}}" cy="{{n.y}}" r="15" fill="#3A2E12" stroke="#E5A520" stroke-width="3"></circle><path d="M{{n.x}} {{n.cly}} v5 l3 2" fill="none" stroke="#F5B54A" stroke-width="2" stroke-linecap="round"></path></sc-if>
+              <sc-if value="{{n.next}}" hint-placeholder-val="{{ false }}"><circle cx="{{n.x}}" cy="{{n.y}}" r="9" fill="#0D1210" stroke="#4A504A" stroke-width="2.5"></circle></sc-if>
+              <sc-if value="{{n.goal}}" hint-placeholder-val="{{ false }}"><path d="M{{n.x}} {{n.y}} v-30 l18 6 l-18 6" fill="{{n.flag}}" stroke="{{n.flagStroke}}" stroke-width="2" stroke-linejoin="round"></path><circle cx="{{n.x}}" cy="{{n.y}}" r="5" fill="{{n.flagStroke}}"></circle></sc-if>
+              <text x="{{n.x}}" y="{{n.ly}}" text-anchor="middle" font-size="12" font-weight="{{n.fw}}" fill="{{n.lc}}">{{n.label}}</text>
+            </g>
+          </sc-for>
+        </svg>
+        <div class="tip" style="left: {{msTipX}}; top: {{msTipY}}"><small>{{msTipDate}}</small><strong>{{msTipT}}</strong><em style="color: {{msTipC}}">{{msTipS}}</em></div>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px">
+        <sc-for list="{{msActs}}" as="a" hint-placeholder-count="3"><div style="display: flex; align-items: center; gap: 10px; padding: 12px; border-radius: 18px; background: #222622"><span style="flex: none; width: 24px; height: 24px; box-sizing: border-box; border-radius: 50%; border: {{a.border}}; background: {{a.bg}}; display: inline-flex; align-items: center; justify-content: center"><sc-if value="{{a.done}}" hint-placeholder-val="{{ false }}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#0D1210" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg></sc-if></span><span style="display: flex; flex-direction: column; line-height: 1.3"><span style="font-size: 13px; font-weight: 700">{{a.t}}</span><span style="font-size: 11px; font-weight: 600; color: {{a.sc}}">{{a.s}}</span></span></div></sc-for>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 03 MOOD TERRAIN ================= -->
+  <section class="fam">
+    <div class="spec">
+      <div style="display: flex; align-items: center; gap: 10px"><span class="num">03</span><span class="cls" style="background: #1D4A40; color: #6FD4B8">Specialized visualization</span></div>
+      <h2 style="margin: 0; font-size: 30px; font-weight: 500">Mood Terrain</h2>
+      <p class="q">“How have my mood and energy moved together?”</p>
+      <sc-for list="{{spec3}}" as="r" hint-placeholder-count="7"><div class="row"><b>{{r.k}}</b><span>{{r.v}}</span></div></sc-for>
+    </div>
+    <div class="card" style="display: flex; flex-direction: column; gap: 14px">
+      <div style="display: flex; align-items: center; justify-content: space-between">
+        <div style="display: flex; align-items: center; gap: 16px"><span style="font-size: 18px; font-weight: 700">Mood & energy</span><span style="display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; color: #C4C8C2"><span style="width: 14px; height: 4px; border-radius: 2px; background: #199E70"></span>Mood</span><span style="display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; color: #C4C8C2"><span style="width: 14px; height: 4px; border-radius: 2px; background: #C98500"></span>Energy</span></div>
+        <div style="display: flex; gap: 8px"><div class="seg" role="group" aria-label="Range"><sc-for list="{{mtRanges}}" as="s" hint-placeholder-count="3"><button type="button" aria-pressed="{{s.on}}" onClick="{{ s.pick }}">{{s.t}}</button></sc-for></div><div class="seg" role="group" aria-label="Data"><sc-for list="{{mtData}}" as="s" hint-placeholder-count="2"><button type="button" aria-pressed="{{s.on}}" onClick="{{ s.pick }}">{{s.t}}</button></sc-for></div></div>
+      </div>
+      <div style="position: relative">
+        <svg viewBox="0 0 820 250" width="100%" role="img" aria-label="Mood and energy per day; selected {{mt.tipDate}}: mood {{mt.tipMood}}, energy {{mt.tipEn}}" style="display: block; overflow: visible">
+          <defs><linearGradient id="gM" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#199E70" stop-opacity="0.45"></stop><stop offset="1" stop-color="#199E70" stop-opacity="0.04"></stop></linearGradient><linearGradient id="gE" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#C98500" stop-opacity="0.45"></stop><stop offset="1" stop-color="#C98500" stop-opacity="0.04"></stop></linearGradient></defs>
+          <sc-for list="{{mt.grid}}" as="g" hint-placeholder-count="5"><line x1="56" x2="800" y1="{{g.y}}" y2="{{g.y}}" stroke="#121412"></line><text x="{{g.x}}" y="{{g.y}}" dy="4" text-anchor="{{g.anchor}}" font-size="11" font-weight="600" fill="#7D827B">{{g.t}}</text></sc-for>
+          <sc-for list="{{mt.egrid}}" as="g" hint-placeholder-count="3"><text x="{{g.x}}" y="{{g.y}}" dy="4" text-anchor="{{g.anchor}}" font-size="10" font-weight="600" fill="#6E746E">{{g.t}}</text></sc-for>
+          <rect x="{{mtSelX}}" y="8" width="28" height="232" rx="14" fill="#121412"></rect>
+          <sc-if value="{{mtFull}}" hint-placeholder-val="{{ true }}">
+            <path class="mv" style="d: path('{{mt.moodA}}')" fill="url(#gM)"></path>
+            <path class="mv" style="d: path('{{mt.mood}}')" fill="none" stroke="#199E70" stroke-width="2.4" stroke-linecap="round"></path>
+            <path class="mv" style="d: path('{{mt.enA}}')" fill="url(#gE)"></path>
+            <path class="mv" style="d: path('{{mt.en}}')" fill="none" stroke="#C98500" stroke-width="2" stroke-linecap="round"></path>
+            <circle cx="{{mt.hx}}" cy="{{mt.hy}}" r="4" fill="#0D1210" stroke="#199E70" stroke-width="2"></circle><text x="{{mt.hx}}" y="{{mt.hy}}" dy="-10" text-anchor="middle" font-size="10" font-weight="700" fill="#6FD4B8">best</text>
+            <circle cx="{{mt.lx}}" cy="{{mt.ly}}" r="4" fill="#0D1210" stroke="#6E746E" stroke-width="2"></circle><text x="{{mt.lx}}" y="{{mt.ly}}" dy="18" text-anchor="middle" font-size="10" font-weight="700" fill="#969B94">lowest</text>
+            <circle cx="{{mt.sx}}" cy="{{mt.my}}" r="7" fill="#199E70" stroke="#0D1210" stroke-width="3"></circle>
+            <circle cx="{{mt.sx}}" cy="{{mt.ey}}" r="6" fill="#C98500" stroke="#0D1210" stroke-width="3"></circle>
+            <sc-for list="{{mt.hits}}" as="h" hint-placeholder-count="7"><rect x="{{h.x}}" y="0" width="{{h.w}}" height="250" fill="transparent" style="cursor: pointer" onClick="{{ h.pick }}"></rect></sc-for>
+          </sc-if>
+          <sc-if value="{{mtSparse}}" hint-placeholder-val="{{ false }}"><sc-for list="{{mt.sparseDots}}" as="p" hint-placeholder-count="3"><circle cx="{{p.x}}" cy="{{p.y}}" r="6" fill="#199E70" stroke="#0D1210" stroke-width="3"></circle></sc-for></sc-if>
+          <sc-for list="{{mt.xl}}" as="x" hint-placeholder-count="7"><text x="{{x.x}}" y="248" text-anchor="middle" font-size="11" font-weight="700" fill="{{x.c}}">{{x.t}}</text></sc-for>
+        </svg>
+        <sc-if value="{{mtFull}}" hint-placeholder-val="{{ true }}"><div class="tip" style="left: {{mt.selPct}}; top: -14px"><small>{{mt.tipDate}}</small><strong>Mood · {{mt.tipMood}}</strong><em style="color: #F5B54A">Energy · {{mt.tipEn}}</em></div></sc-if>
+        <sc-if value="{{mtSparse}}" hint-placeholder-val="{{ false }}"><div style="position: absolute; left: 50%; top: 42%; transform: translate(-50%, -50%); padding: 12px 16px; border-radius: 18px; background: #1C1F1C; box-shadow: 0 0 0 1px #2C302C; font-size: 13px; font-weight: 600; text-align: center">3 of 7 days logged · log your mood for a few more days<br>to reveal your pattern.</div></sc-if>
+      </div>
+      <div class="insight"><i><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6FD4B8" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9V16h7v-2.1A6 6 0 0 0 12 3z"></path></svg></i><span>Your mood and energy were higher on days with focused work sessions.</span></div>
+    </div>
+  </section>
+
+  <!-- ================= 04 FOCUS CLOCK ================= -->
+  <section class="fam">
+    <div class="spec">
+      <div style="display: flex; align-items: center; gap: 10px"><span class="num">04</span><span class="cls" style="background: #1D4A40; color: #6FD4B8">Specialized visualization</span></div>
+      <h2 style="margin: 0; font-size: 30px; font-weight: 500">Focus Clock</h2>
+      <p class="q">“At what times do I consistently focus best?”</p>
+      <sc-for list="{{spec4}}" as="r" hint-placeholder-count="7"><div class="row"><b>{{r.k}}</b><span>{{r.v}}</span></div></sc-for>
+    </div>
+    <div class="card" style="display: grid; grid-template-columns: 400px minmax(0, 1fr); gap: 24px; align-items: center">
+      <svg viewBox="0 0 400 400" width="400" height="400" style="overflow: visible" role="img" aria-label="Focus clock: 24 hours around the circle, one ring per weekday from Saturday (inside) to Friday (outside). Strongest window 09:00 to 12:00, Tuesday to Thursday.">
+        <sc-for list="{{fc.cells}}" as="c" hint-placeholder-count="168"><path d="{{c.d}}" fill="{{c.c}}" stroke="{{c.stroke}}" stroke-width="2" style="cursor: pointer" onClick="{{ c.pick }}"></path></sc-for>
+        <path d="{{fc.win}}" fill="none" stroke="#6FD4B8" stroke-width="2" stroke-dasharray="4 4"></path>
+        <sc-for list="{{fc.lab}}" as="l" hint-placeholder-count="4"><text x="{{l.x}}" y="{{l.y}}" text-anchor="middle" font-size="11" font-weight="700" fill="#7D827B">{{l.t}}</text></sc-for>
+        <text x="200" y="186" text-anchor="middle" font-size="12" font-weight="700" fill="#969B94">Focused</text>
+        <text x="200" y="212" text-anchor="middle" font-size="24" font-weight="600" fill="#ECEEE9">{{fcTotal}}</text>
+        <text x="200" y="230" text-anchor="middle" font-size="11" font-weight="600" fill="#969B94">{{fcRange}}</text>
+      </svg>
+      <div style="display: flex; flex-direction: column; gap: 14px">
+        <div class="seg" role="group" aria-label="Range" style="align-self: flex-start"><sc-for list="{{fcRanges}}" as="s" hint-placeholder-count="2"><button type="button" aria-pressed="{{s.on}}" onClick="{{ s.pick }}">{{s.t}}</button></sc-for></div>
+        <div style="padding: 14px; border-radius: 20px; background: #222622; display: flex; flex-direction: column; gap: 2px"><small style="font-size: 11px; font-weight: 700; color: #969B94">{{fcSelDay}}</small><strong style="font-size: 18px">{{fcSelVal}}</strong><span style="font-size: 12px; font-weight: 600; color: #6FD4B8">{{fcSelNote}}</span></div>
+        <div style="display: flex; flex-direction: column; gap: 6px"><span class="sh">INTENSITY</span><sc-for list="{{fcLegend}}" as="l" hint-placeholder-count="5"><span style="display: inline-flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 600; color: #C4C8C2"><span style="width: 16px; height: 12px; border-radius: 4px; background: {{l.c}}"></span>{{l.t}}</span></sc-for></div>
+        <span style="font-size: 12px; color: #969B94; line-height: 1.5">Rings, inside → outside: Sat · Sun · Mon · Tue · Wed · Thu · Fri. Dashed outline = strongest window.</span>
+        <div class="insight"><i><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6FD4B8" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18zM12 7v5l3 2"></path></svg></i><span>Your strongest deep-work window is 09:00–12:00, Tuesday–Thursday.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 05 WEEKLY STORY ================= -->
+  <section class="fam">
+    <div class="spec">
+      <div style="display: flex; align-items: center; gap: 10px"><span class="num">05</span><span class="cls" style="background: #B4F58C; color: #24400F">Signature</span></div>
+      <h2 style="margin: 0; font-size: 30px; font-weight: 500">Weekly Story</h2>
+      <p class="q">“What kind of week did I have?”</p>
+      <sc-for list="{{spec5}}" as="r" hint-placeholder-count="7"><div class="row"><b>{{r.k}}</b><span>{{r.v}}</span></div></sc-for>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 12px">
+      <div class="seg" role="group" aria-label="Week type" style="align-self: flex-start"><sc-for list="{{wsStates}}" as="s" hint-placeholder-count="3"><button type="button" aria-pressed="{{s.on}}" onClick="{{ s.pick }}">{{s.t}}</button></sc-for></div>
+      <article aria-label="Weekly story" style="position: relative; overflow: hidden; box-sizing: border-box; min-height: 420px; padding: 28px; border-radius: 32px; background: {{ws.bg}}; color: #FEFEFE; display: flex; flex-direction: column; gap: 18px">
+        <svg viewBox="0 0 900 420" preserveAspectRatio="xMidYMax slice" width="100%" height="100%" aria-hidden="true" style="position: absolute; inset: 0">
+          <circle cx="{{ws.sunX}}" cy="110" r="40" fill="{{ws.sun}}" opacity="0.9"></circle>
+          <path d="M0 230 C140 170 260 210 380 180 S640 130 900 170 L900 420 L0 420 Z" fill="{{ws.h1}}"></path>
+          <path d="M0 290 C180 250 300 290 470 260 S760 250 900 270 L900 420 L0 420 Z" fill="{{ws.h2}}"></path>
+          <path d="M0 350 C200 330 360 360 560 335 S820 340 900 350 L900 420 L0 420 Z" fill="{{ws.h3}}"></path>
+        </svg>
+        <div style="position: relative; display: flex; justify-content: space-between; align-items: center"><span style="font-size: 13px; font-weight: 700; opacity: 0.85">Your week at a glance · 18 – 24 Mehr</span><span style="height: 30px; padding: 0 12px; border-radius: 999px; background: rgba(255,255,255,0.16); font-size: 12px; font-weight: 700; display: inline-flex; align-items: center">Share summary</span></div>
+        <h3 style="position: relative; margin: 0; max-width: 520px; font-size: 38px; font-weight: 500; line-height: 1.1">{{ws.head}}</h3>
+        <div style="position: relative; margin-top: auto; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px">
+          <sc-for list="{{ws.metrics}}" as="m" hint-placeholder-count="4"><div style="padding: 14px; border-radius: 20px; background: rgba(255,255,255,0.14); backdrop-filter: blur(8px); display: flex; flex-direction: column; gap: 2px"><span style="font-size: 26px; font-weight: 600">{{m.v}}</span><span style="font-size: 12px; font-weight: 600; opacity: 0.85">{{m.l}}</span><span style="font-size: 11px; font-weight: 700; color: {{m.dc}}">{{m.d}}</span></div></sc-for>
+        </div>
+        <div style="position: relative; padding: 14px 16px; border-radius: 20px; background: rgba(255,255,255,0.14); font-size: 15px; font-weight: 600; line-height: 1.45">“{{ws.line}}”</div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ================= 06 HABIT FIELD ================= -->
+  <section class="fam">
+    <div class="spec">
+      <div style="display: flex; align-items: center; gap: 10px"><span class="num">06</span><span class="cls" style="background: #1D4A40; color: #6FD4B8">Specialized visualization</span></div>
+      <h2 style="margin: 0; font-size: 30px; font-weight: 500">Habit Field</h2>
+      <p class="q">“How consistent have my habits been?”</p>
+      <sc-for list="{{spec6}}" as="r" hint-placeholder-count="7"><div class="row"><b>{{r.k}}</b><span>{{r.v}}</span></div></sc-for>
+    </div>
+    <div class="card" style="display: flex; flex-direction: column; gap: 16px">
+      <div style="display: grid; grid-template-columns: 170px repeat(14, 38px) 80px; gap: 6px; align-items: center">
+        <span></span>
+        <sc-for list="{{hfDays}}" as="d" hint-placeholder-count="14"><span style="display: flex; flex-direction: column; align-items: center; font-size: 10px; font-weight: 700; color: {{d.c}}; line-height: 1.3"><span>{{d.n}}</span><span style="font-size: 12px; color: {{d.c2}}">{{d.d}}</span></span></sc-for>
+        <span style="font-size: 10px; font-weight: 700; color: #969B94; text-align: right">streak · rate</span>
+        <sc-for list="{{hf}}" as="h" hint-placeholder-count="5">
+          <span style="display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 700"><span style="width: 30px; height: 30px; border-radius: 50%; background: #1D4A40; display: inline-flex; align-items: center; justify-content: center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6FD4B8" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{h.icon}}"></path></svg></span>{{h.t}}</span>
+          <sc-for list="{{h.cells}}" as="c" hint-placeholder-count="14">
+            <button type="button" onClick="{{ c.toggle }}" aria-label="{{c.aria}}" style="position: relative; width: 38px; height: 38px; padding: 0; border: {{c.border}}; box-sizing: border-box; border-radius: 12px; background: {{c.bg}}; box-shadow: {{c.ring}}; cursor: {{c.cur}}; display: inline-flex; align-items: center; justify-content: center">
+              <sc-if value="{{c.isDone}}" hint-placeholder-val="{{ true }}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0D1210" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg></sc-if>
+              <sc-if value="{{c.isRest}}" hint-placeholder-val="{{ false }}"><span style="width: 12px; height: 2px; border-radius: 1px; background: #5A5F59"></span></sc-if>
+            </button>
+          </sc-for>
+          <span style="display: flex; flex-direction: column; align-items: flex-end; line-height: 1.25"><span style="font-size: 14px; font-weight: 700">{{h.streak}}d</span><span style="font-size: 11px; font-weight: 700; color: #969B94">{{h.rate}}</span></span>
+        </sc-for>
+      </div>
+      <div style="display: flex; flex-wrap: wrap; gap: 14px; padding-top: 8px; border-top: 1px solid #2A2E2A">
+        <sc-for list="{{hfLegend}}" as="l" hint-placeholder-count="6"><span style="display: inline-flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 600; color: #C4C8C2"><span style="width: 20px; height: 20px; box-sizing: border-box; border-radius: 7px; background: {{l.bg}}; border: {{l.border}}; box-shadow: {{l.ring}}"></span>{{l.t}}</span></sc-for>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px">
+        <div style="display: flex; align-items: center; gap: 14px; padding: 14px; border-radius: 20px; background: #222622"><span style="width: 44px; height: 44px; border-radius: 50%; background: #3A2E12; display: inline-flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C98500" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M12 3c1 3 5 5 5 10a5 5 0 0 1-10 0c0-2 1-3.5 2-4.5c0 2 1 3 2 3c0-3-1-5 1-8.5z"></path></svg></span><span style="display: flex; flex-direction: column"><span style="font-size: 24px; font-weight: 600">{{hfBest}}</span><span style="font-size: 12px; font-weight: 600; color: #969B94">day streak · Morning routine</span></span></div>
+        <div style="display: flex; align-items: center; gap: 14px; padding: 14px; border-radius: 20px; background: #222622"><span style="width: 44px; height: 44px; border-radius: 50%; background: #1D4A40; display: inline-flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6FD4B8" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M5 19V13M10 19V9M15 19V11M20 19V5"></path></svg></span><span style="display: flex; flex-direction: column"><span style="font-size: 24px; font-weight: 600">{{hfRate}}</span><span style="font-size: 12px; font-weight: 600; color: #969B94">completion · last 2 weeks</span></span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 06b HABIT STREAK RIBBON ================= -->
+  <section class="fam">
+    <div class="spec">
+      <div style="display: flex; align-items: center; gap: 10px"><span class="num">06b</span><span class="cls" style="background: #1C1F1C; color: #C4C8C2; box-shadow: inset 0 0 0 1px #3A3F3A">Product · Specialized</span></div>
+      <h2 style="margin: 0; font-size: 30px; font-weight: 500">Habit Streak Ribbon</h2>
+      <p class="q">“Am I keeping this habit going right now?”</p>
+      <sc-for list="{{spec6b}}" as="r" hint-placeholder-count="6"><div class="row"><b>{{r.k}}</b><span>{{r.v}}</span></div></sc-for>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 12px">
+      <div class="seg" role="group" aria-label="Scenario" style="align-self: flex-start"><sc-for list="{{srStates}}" as="s" hint-placeholder-count="5"><button type="button" aria-pressed="{{s.on}}" onClick="{{ s.pick }}">{{s.t}}</button></sc-for></div>
+      <div dir="{{sr.dir}}" role="group" aria-label="{{sr.aria}}" style="display: flex; align-items: center; gap: 14px; padding: 12px; border-radius: 30px; background: #1C1F1C; box-shadow: 0 1px 0 #2C302C, 0 12px 32px rgba(0,0,0,0.24); font-family: {{sr.font}}; color: #ECEEE9">
+  <div style="flex: none; display: flex; align-items: center; gap: 12px; padding: 12px 18px 12px 12px; border-radius: 22px; background: #222622">
+    <span style="width: 42px; height: 42px; border-radius: 50%; background: {{sr.flameBg}}; display: inline-flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{sr.flame}}" stroke-width="1.9" stroke-linejoin="round" aria-hidden="true"><path d="M12 3c1 3 5 5 5 10a5 5 0 0 1-10 0c0-2 1-3.5 2-4.5c0 2 1 3 2 3c0-3-1-5 1-8.5z"></path></svg></span>
+    <span style="display: flex; flex-direction: column; line-height: 1.15"><span style="font-size: 28px; font-weight: 600">{{sr.streak}}</span><span style="font-size: 12px; font-weight: 600; color: #969B94; white-space: nowrap">{{sr.streakLabel}}</span></span>
+  </div>
+  <div style="position: relative; flex: 1; min-width: 0; height: 88px">
+    <svg viewBox="0 0 700 84" preserveAspectRatio="none" width="100%" height="84" aria-hidden="true" style="position: absolute; left: 0; top: 4px; overflow: visible">
+      <sc-for list="{{sr.conns}}" as="c" hint-placeholder-count="6"><path d="{{c.d}}" fill="none" stroke="{{c.c}}" stroke-width="{{c.w}}" stroke-dasharray="{{c.dash}}" stroke-opacity="{{c.op}}" stroke-linecap="round" vector-effect="non-scaling-stroke"></path></sc-for>
+    </svg>
+    <div style="position: relative; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); height: 100%">
+      <sc-for list="{{sr.nodes}}" as="n" hint-placeholder-count="7">
+        <div role="img" aria-label="{{n.aria}}" style="display: flex; flex-direction: column; align-items: center; gap: 2px">
+          <span style="margin-top: {{n.mt}}; width: {{n.size}}; height: {{n.size}}; box-sizing: border-box; border-radius: 50%; background: {{n.bg}}; border: {{n.border}}; box-shadow: {{n.ring}}; display: inline-flex; align-items: center; justify-content: center">
+            <sc-if value="{{n.check}}" hint-placeholder-val="{{ true }}"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#0D1210" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg></sc-if>
+            <sc-if value="{{n.dot}}" hint-placeholder-val="{{ false }}"><span style="width: 12px; height: 12px; border-radius: 50%; background: #6FD4B8"></span></sc-if>
+            <sc-if value="{{n.dash}}" hint-placeholder-val="{{ false }}"><span style="width: 11px; height: 2.5px; border-radius: 2px; background: #6E746E"></span></sc-if>
+            <sc-if value="{{n.moon}}" hint-placeholder-val="{{ false }}"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#7D827B" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M20 14a8 8 0 1 1-10-10a6.5 6.5 0 0 0 10 10z"></path></svg></sc-if>
+          </span>
+          <span style="margin-top: 4px; font-size: 12px; font-weight: {{n.dayW}}; color: {{n.dayC}}">{{n.day}}</span>
+          <span style="font-size: 11px; font-weight: 600; color: #7D827B">{{n.date}}</span>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+  <sc-if value="{{sr.showCta}}" hint-placeholder-val="{{ true }}"><a href="S9Habits.dc.html" style="flex: none; display: inline-flex; align-items: center; gap: 10px; height: 52px; padding: 0 6px 0 18px; border-radius: 999px; background: #222622; font-size: 13px; font-weight: 700; color: #ECEEE9; text-decoration: none; white-space: nowrap" dir="{{sr.dir}}">{{sr.cta}}<span style="width: 40px; height: 40px; border-radius: 50%; background: #1C1F1C; display: inline-flex; align-items: center; justify-content: center"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#ECEEE9" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="{{sr.chev}}"></path></svg></span></a></sc-if>
+</div>
+      <span style="font-size: 12px; color: #969B94">Full component spec — all states, mobile, dark and Persian RTL — is on the “Habit Streak Ribbon” board.</span>
+    </div>
+  </section>
+
+  <!-- ================= 07 CONTEXT RIBBON ================= -->
+  <section class="fam">
+    <div class="spec">
+      <div style="display: flex; align-items: center; gap: 10px"><span class="num">07</span><span class="cls" style="background: #1D4A40; color: #6FD4B8">Specialized visualization</span></div>
+      <h2 style="margin: 0; font-size: 30px; font-weight: 500">Context Ribbon</h2>
+      <p class="q">“Where did my time and attention go?”</p>
+      <sc-for list="{{spec7}}" as="r" hint-placeholder-count="7"><div class="row"><b>{{r.k}}</b><span>{{r.v}}</span></div></sc-for>
+    </div>
+    <div class="card" style="display: flex; flex-direction: column; gap: 14px">
+      <div style="display: flex; align-items: center; justify-content: space-between"><div style="display: flex; align-items: baseline; gap: 12px"><span style="font-size: 18px; font-weight: 700">{{crTitle}}</span><span style="font-size: 13px; font-weight: 600; color: #969B94">Total {{cr.total}}</span></div><div class="seg" role="group" aria-label="Period"><sc-for list="{{crRanges}}" as="s" hint-placeholder-count="2"><button type="button" aria-pressed="{{s.on}}" onClick="{{ s.pick }}">{{s.t}}</button></sc-for></div></div>
+      <div style="position: relative">
+        <svg viewBox="0 0 820 220" width="100%" role="img" aria-label="Context ribbon: share of time per context across the week" style="display: block">
+          <sc-for list="{{cr.bands}}" as="b" hint-placeholder-count="5"><path class="mv" style="d: path('{{b.d}}'); cursor: pointer" fill="{{b.c}}" fill-opacity="{{b.op}}" onClick="{{ b.pick }}"></path></sc-for>
+          <sc-for list="{{cr.xl}}" as="x" hint-placeholder-count="7"><text x="{{x.x}}" y="216" text-anchor="middle" font-size="11" font-weight="700" fill="#7D827B">{{x.t}}</text></sc-for>
+        </svg>
+        <sc-for list="{{crChips}}" as="c" hint-placeholder-count="4"><span style="position: absolute; left: {{c.x}}; top: {{c.y}}; transform: translate(-50%, -50%); height: 26px; padding: 0 10px; border-radius: 999px; background: rgba(28,31,28,0.92); box-shadow: 0 2px 8px rgba(0,0,0,0.32); font-size: 11px; font-weight: 700; color: {{c.deep}}; display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; pointer-events: none"><span style="width: 7px; height: 7px; border-radius: 50%; background: {{c.c}}"></span>{{c.t}} {{c.pct}}</span></sc-for>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px">
+        <sc-for list="{{cr.rows}}" as="r" hint-placeholder-count="5"><button type="button" onClick="{{ r.pick }}" aria-pressed="{{r.on}}" style="display: flex; flex-direction: column; align-items: flex-start; gap: 2px; padding: 12px; border: 0; border-radius: 18px; background: {{r.bg}}; box-shadow: {{r.ring}}; font-family: inherit; text-align: left; cursor: pointer"><span style="display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; color: #C4C8C2"><span style="width: 8px; height: 8px; border-radius: 50%; background: {{r.c}}"></span>{{r.t}}</span><span style="font-size: 18px; font-weight: 600; color: #ECEEE9">{{r.hrs}}</span><span style="font-size: 11px; font-weight: 700; color: #969B94">{{r.pct}} · {{r.delta}}</span></button></sc-for>
+      </div>
+      <div class="insight"><i><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6FD4B8" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9V16h7v-2.1A6 6 0 0 0 12 3z"></path></svg></i><span>Personal took 3 points more of your time than last week — mostly Thursday and Friday.</span></div>
+    </div>
+  </section>
+
+  <!-- ================= 08 CARRY-OVER FLOW ================= -->
+  <section class="fam">
+    <div class="spec">
+      <div style="display: flex; align-items: center; gap: 10px"><span class="num">08</span><span class="cls" style="background: #1D4A40; color: #6FD4B8">Specialized visualization</span></div>
+      <h2 style="margin: 0; font-size: 30px; font-weight: 500">Carry-over Flow</h2>
+      <p class="q">“What happened to the work I planned?”</p>
+      <sc-for list="{{spec8}}" as="r" hint-placeholder-count="7"><div class="row"><b>{{r.k}}</b><span>{{r.v}}</span></div></sc-for>
+    </div>
+    <div class="card" style="display: flex; flex-direction: column; gap: 14px">
+      <div style="display: flex; align-items: center; justify-content: space-between"><span style="font-size: 18px; font-weight: 700">{{cfTitle}}</span><div class="seg" role="group" aria-label="Mode"><sc-for list="{{cfModes}}" as="s" hint-placeholder-count="2"><button type="button" aria-pressed="{{s.on}}" onClick="{{ s.pick }}">{{s.t}}</button></sc-for></div></div>
+      <div style="position: relative">
+        <svg viewBox="0 0 820 260" width="100%" role="img" aria-label="Carry-over flow: {{cfAria}}" style="display: block">
+          <sc-for list="{{cf.flows}}" as="f" hint-placeholder-count="3"><path class="mv" style="d: path('{{f.d}}'); cursor: pointer" fill="{{f.c}}" fill-opacity="{{f.op}}" onClick="{{ f.pick }}"></path></sc-for>
+          <circle cx="{{cf.cx}}" cy="{{cf.cyy}}" r="{{cf.R}}" fill="#0D1210" stroke="#2C302C" stroke-width="1.5"></circle>
+          <text x="{{cf.cx}}" y="{{cf.cyy}}" dy="4" text-anchor="middle" font-size="34" font-weight="600" fill="#ECEEE9">{{cf.total}}</text>
+          <text x="{{cf.cx}}" y="{{cf.cyy}}" dy="26" text-anchor="middle" font-size="12" font-weight="700" fill="#969B94">planned</text>
+        </svg>
+        <sc-for list="{{cf.flows}}" as="f" hint-placeholder-count="3">
+          <button type="button" onClick="{{ f.pick }}" aria-pressed="{{f.on}}" style="position: absolute; left: {{cf.pillX}}; top: {{f.top}}; transform: translateY(-50%); display: flex; align-items: center; gap: 12px; width: 280px; height: 54px; padding: 0 14px 0 8px; border: 0; border-radius: 999px; background: {{f.bg}}; box-shadow: {{f.ring}}; font-family: inherit; text-align: left; cursor: pointer">
+            <span style="width: 38px; height: 38px; border-radius: 50%; background: {{f.c}}; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0D1210" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{f.icon}}"></path></svg></span>
+            <span style="flex: 1; display: flex; flex-direction: column; line-height: 1.2"><span style="font-size: 18px; font-weight: 700; color: #ECEEE9">{{f.n}}</span><span style="font-size: 12px; font-weight: 600; color: #C4C8C2">{{f.t}}</span></span>
+            <span style="font-size: 13px; font-weight: 700; color: #C4C8C2">{{f.pct}}</span>
+          </button>
+        </sc-for>
+      </div>
+      <sc-if value="{{cfHasSel}}" hint-placeholder-val="{{ true }}"><div style="display: flex; flex-wrap: wrap; gap: 8px; padding: 12px; border-radius: 18px; background: #222622"><span style="font-size: 12px; font-weight: 700; color: #969B94; width: 100%">{{cfSelTitle}}</span><sc-for list="{{cfTasks}}" as="t" hint-placeholder-count="4"><span style="height: 32px; padding: 0 12px; border-radius: 999px; background: #1C1F1C; font-size: 12px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px"><span style="width: 7px; height: 7px; border-radius: 50%; background: {{t.c}}"></span>{{t.t}}</span></sc-for></div></sc-if>
+      <sc-if value="{{cfWeek}}" hint-placeholder-val="{{ false }}"><div style="display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px"><sc-for list="{{cfDays}}" as="d" hint-placeholder-count="7"><div style="display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 8px 0; border-radius: 16px; background: {{d.bg}}"><span style="font-size: 11px; font-weight: 700; color: {{d.nc}}">{{d.n}}</span><span style="font-size: 16px; font-weight: 700">{{d.d}}</span><span style="font-size: 10px; font-weight: 700; color: #969B94">{{d.s}}</span></div></sc-for></div></sc-if>
+      <div style="font-size: 12px; color: #969B94">Moved and overdue use warm, calm tones — never alarm red. Tap an outcome to see its tasks; a second tap or “Open” filters the task list.</div>
+    </div>
+  </section>
+
+  <!-- ================= SHARED LANGUAGE ================= -->
+  <section style="display: flex; flex-direction: column; gap: 20px">
+    <h2 style="margin: 0; font-size: 34px; font-weight: 500">Shared language</h2>
+    <div style="display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 20px">
+      <!-- Tooltip island -->
+      <div class="card" style="display: flex; flex-direction: column; gap: 16px">
+        <span class="sh">CHART TOOLTIP · “TINY ISLAND”</span>
+        <div style="display: flex; gap: 18px; align-items: flex-start; flex-wrap: wrap; padding: 26px 10px 8px">
+          <div class="tip" style="position: relative; left: auto; transform: none"><small>Tue, 21 Mehr</small><strong>Focus · 3h 20m</strong><em>↑ 24 min vs usual</em></div>
+          <div class="tip" style="position: relative; left: auto; transform: none"><small>Food · 14 Mehr</small><strong>420K Toman</strong><em style="color: #969B94">2 transactions</em></div>
+          <div class="tip" style="position: relative; left: auto; transform: none; direction: rtl; font-family: 'Vazirmatn', sans-serif"><small>سه‌شنبه ۲۱ مهر</small><strong>تمرکز · ۳ ساعت و ۲۰ دقیقه</strong><em>۲۴ دقیقه بیشتر از همیشه ↑</em></div>
+        </div>
+        <table class="t"><tbody>
+          <tr><td>Shape</td><td>16px radius, 9×12 padding, surface + 1px hairline + soft 10/24 shadow. Never a browser/library tooltip.</td></tr>
+          <tr><td>Content</td><td>Small context label (date / category) → one main value → optional delta in scope deep. Max 3 lines.</td></tr>
+          <tr><td>Placement</td><td>Above the point, centred, clamped inside the card. Never shifts layout. Pointer-events off.</td></tr>
+          <tr><td>Touch</td><td>Appears on tap and stays until another tap; second tap / “Open” goes to details.</td></tr>
+        </tbody></table>
+      </div>
+      <!-- Interaction -->
+      <div class="card" style="display: flex; flex-direction: column; gap: 12px">
+        <span class="sh">INTERACTION MODEL</span>
+        <table class="t"><thead><tr><th>Level</th><th>Desktop</th><th>Mobile</th></tr></thead><tbody>
+          <tr><td>Preview</td><td>Hover reveals the tooltip island. Nothing moves.</td><td>— (no hover dependency)</td></tr>
+          <tr><td>Select</td><td>Click selects a day / category / outcome; others dim to 12–15%.</td><td>Tap selects; tooltip pins.</td></tr>
+          <tr><td>Go deeper</td><td>Second click or the “Open ›” link filters the source list.</td><td>Second tap or explicit CTA.</td></tr>
+          <tr><td>Keyboard</td><td>Tab to the chart, ←/→ step through points, Enter = select, Esc = clear. Visible focus ring.</td><td>Screen reader reads the text summary.</td></tr>
+          <tr><td>Periods</td><td colspan="2">Day / Week / Month / 4 weeks / Quarter switches morph shapes in place — no blank reload.</td></tr>
+        </tbody></table>
+      </div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 20px">
+      <!-- Motion -->
+      <div class="card" style="display: flex; flex-direction: column; gap: 12px">
+        <span class="sh">MOTION — ONLY TO EXPLAIN CHANGE · ONCE · RESPECTS REDUCED MOTION</span>
+        <div style="display: flex; flex-direction: column; gap: 6px"><sc-for list="{{motion}}" as="m" hint-placeholder-count="9"><div style="display: grid; grid-template-columns: 140px minmax(0, 1fr) 60px; gap: 12px; padding: 10px 12px; border-radius: 14px; background: #222622; font-size: 13px; line-height: 1.45"><b>{{m.k}}</b><span>{{m.v}}</span><span style="color: #969B94; text-align: right">{{m.t}}</span></div></sc-for></div>
+      </div>
+      <!-- RTL -->
+      <div class="card" style="display: flex; flex-direction: column; gap: 12px">
+        <span class="sh">RTL / PERSIAN — DECIDED PER VISUALIZATION</span>
+        <div style="display: flex; flex-direction: column; gap: 6px"><sc-for list="{{rtl}}" as="r" hint-placeholder-count="9"><div style="display: grid; grid-template-columns: 140px 44px minmax(0, 1fr); align-items: center; gap: 12px; padding: 8px 12px; border-radius: 14px; background: #222622; font-size: 13px"><b>{{r.k}}</b><span class="cls" style="background: {{r.bg}}; color: {{r.fg}}; justify-content: center">{{r.c}}</span><span>{{r.v}}</span></div></sc-for></div>
+        <span style="font-size: 12px; color: #969B94; line-height: 1.5">A = mirror layout & time direction (time flows right → left, like reading). B = keep geometry (clock face, totals). Labels always Persian, digits follow the ۱۲۳/123 setting, dates Jalali, money Toman/Rial.</span>
+      </div>
+    </div>
+
+    <!-- Empty states -->
+    <div class="card" style="display: flex; flex-direction: column; gap: 14px">
+      <span class="sh">EMPTY & SPARSE DATA — NEVER SHOW FAKE DATA TO REAL USERS</span>
+      <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px">
+        <sc-for list="{{empties}}" as="e" hint-placeholder-count="8">
+          <div style="display: flex; flex-direction: column; gap: 10px; padding: 16px; border-radius: 22px; background: #222622; min-height: 150px">
+            <svg width="100%" height="40" viewBox="0 0 200 40" preserveAspectRatio="none" aria-hidden="true"><path d="{{e.d}}" fill="none" stroke="#3A3F3A" stroke-width="6" stroke-linecap="round" stroke-dasharray="1 12"></path></svg>
+            <span style="font-size: 12px; font-weight: 700; color: #6FD4B8">{{e.k}}</span>
+            <span style="font-size: 13px; font-weight: 600; line-height: 1.45">{{e.v}}</span>
+            <span style="font-size: 11px; font-weight: 700; color: #969B94">{{e.min}}</span>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 20px">
+      <div class="card" style="display: flex; flex-direction: column; gap: 12px">
+        <span class="sh">ACCESSIBILITY</span>
+        <sc-for list="{{a11y}}" as="a" hint-placeholder-count="6"><div style="display: flex; gap: 10px; font-size: 13px; line-height: 1.5"><span style="flex: none; width: 22px; height: 22px; border-radius: 50%; background: #1D4A40; color: #6FD4B8; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700">{{a.n}}</span><span>{{a.t}}</span></div></sc-for>
+      </div>
+      <div class="card" style="display: flex; flex-direction: column; gap: 12px">
+        <span class="sh">LOW-LEVEL PRIMITIVES (INTERNAL — NOT USER-FACING COMPONENTS)</span>
+        <sc-for list="{{prims}}" as="a" hint-placeholder-count="7"><div class="row" style="grid-template-columns: 150px minmax(0, 1fr)"><b style="color: #ECEEE9">{{a.k}}</b><span>{{a.v}}</span></div></sc-for>
+      </div>
+    </div>
+
+    <!-- Module mapping -->
+    <div class="card" style="display: flex; flex-direction: column; gap: 12px">
+      <span class="sh" style="font-size: 14px; color: #ECEEE9">MODULE MAPPING</span>
+      <div style="display: grid; grid-template-columns: 150px minmax(0, 1.2fr) minmax(0, 1fr); gap: 6px 12px; font-size: 13px; line-height: 1.45"><span class="sh">MODULE</span><span class="sh">USE THE SPECIALIZED VIZ</span><span class="sh">KEEP DEFAULT CHARTS FOR</span><sc-for list="{{mapping}}" as="m" hint-placeholder-count="7"><b style="padding: 10px 12px; border-radius: 14px; background: #222622">{{m.k}}</b><span style="padding: 10px 12px; border-radius: 14px; background: #16231F; color: #6FD4B8; font-weight: 600">{{m.v}}</span><span style="padding: 10px 12px; border-radius: 14px; background: #222622; color: #A5AAA3">{{m.d}}</span></sc-for></div>
+    </div>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":7600}}'>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { rvState: 'normal', rvDay: 21, rvFocus: null, msState: 'track', msSel: 3, mtRange: 7, mtDay: 21, mtSparse: false, fcWeek4: false, fcSel: [4, 10], wsType: 'good', srCase: 'today', crMonth: false, crFocus: null, cfWeek: false, cfSel: null, hf: {} }; }
+  renderVals() {
+    const VZ = (() => {
+      const f1 = (n) => (Math.round(n * 10) / 10).toString();
+      const sm = (p) => {
+        if (!p.length) return '';
+        let d = 'M' + f1(p[0][0]) + ' ' + f1(p[0][1]);
+        for (let i = 0; i < p.length - 1; i++) {
+          const p0 = p[i - 1] || p[i], p1 = p[i], p2 = p[i + 1], p3 = p[i + 2] || p2;
+          d += ' C' + f1(p1[0] + (p2[0] - p0[0]) / 6) + ' ' + f1(p1[1] + (p2[1] - p0[1]) / 6) + ' ' + f1(p2[0] - (p3[0] - p1[0]) / 6) + ' ' + f1(p2[1] - (p3[1] - p1[1]) / 6) + ' ' + f1(p2[0]) + ' ' + f1(p2[1]);
+        }
+        return d;
+      };
+      const band = (top, bot) => sm(top) + ' L' + sm(bot.slice().reverse()).slice(1) + ' Z';
+      const FA = '۰۱۲۳۴۵۶۷۸۹';
+      const fa = (s) => String(s).replace(/[0-9]/g, (d) => FA[d]);
+      const DN = ['Sat', 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
+      const DNF = ['شنبه', 'یکشنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنجشنبه', 'جمعه'];
+      const DSF = ['ش', 'ی', 'د', 'س', 'چ', 'پ', 'ج'];
+      const wd = (d) => (d - 1 + 4) % 7; // 1 Mehr 1405 = Wednesday
+      const money = (k, rtl) => { const s = k >= 1000 ? (k / 1000).toFixed(1) + 'M' : Math.round(k) + 'K'; return rtl ? fa(s.replace('M', ' میلیون').replace('K', ' هزار')) + ' تومان' : s; };
+      const dur = (m, rtl) => { const h = Math.floor(m / 60), r = Math.round(m % 60); return rtl ? fa((h ? h + ' ساعت' : '') + (h && r ? ' و ' : '') + (r ? r + ' دقیقه' : '')) : (h ? h + 'h ' : '') + (r ? r + 'm' : ''); };
+      const CAT = [['ess', 'Essentials', 'ضروری', '#199E70'], ['food', 'Food', 'خوراک', '#D95926'], ['trans', 'Transport', 'رفت‌وآمد', '#4F7FC0'], ['life', 'Lifestyle', 'سبک زندگی', '#C98500'], ['health', 'Health', 'سلامت', '#C9608E'], ['other', 'Other', 'سایر', '#6E746E']];
+      const OUT = { done: '#199E70', moved: '#C98500', overdue: '#C9608E', inbox: '#6E746E' };
+
+      /* ---------- 01 Budget River ---------- */
+      function river(o) {
+        const W = o.W || 820, H = o.H || 240, rtl = !!o.rtl, compact = !!o.compact, state = o.state || 'normal';
+        const last = state === 'sparse' ? 4 : state === 'empty' ? 0 : 21, fac = state === 'over' ? 1.35 : 1;
+        const base = { ess: 300, food: 240, trans: 95, life: 150, health: 60, other: 45 };
+        const raw = (c, d, i) => {
+          let v = base[c] * (1 + 0.38 * Math.sin(d * 1.3 + i * 1.9) + 0.18 * Math.cos(d * 0.55 + i));
+          if (c === 'ess' && (d === 1 || d === 15)) v += 900;
+          if (c === 'life' && (wd(d) === 5 || wd(d) === 6)) v += 260;
+          if (c === 'health' && d === 17) v += 700;
+          return Math.max(10, v) * 0.78 * (d <= last ? fac : 1);
+        };
+        const N = state === 'sparse' ? last : 30;
+        const sv = CAT.map(([c], i) => Array.from({ length: 31 }, (_, d) => { if (!d) return 0; let s = 0, n = 0; for (let k = d - 2; k <= d + 2; k++) if (k >= 1 && k <= 30) { s += raw(c, k, i); n++; } return s / n; }));
+        const padL = compact ? 10 : 18, padR = compact ? 10 : 104, plotW = W - padL - padR, step = plotW / 29;
+        const X = (d) => rtl ? W - padL - (d - 1) * step : padL + (d - 1) * step;
+        const cyF = (d) => H / 2 + 12 * Math.sin(d / 4.2) - 6 * Math.cos(d / 2.3), GAP = 2.5;
+        const taper = (d) => d === 1 || d === N ? 0.62 : d === 2 || d === N - 1 ? 0.86 : 1;
+        const cy = H / 2;
+        let maxT = 0; for (let d = 1; d <= 30; d++) { let t = 0; CAT.forEach((_, i) => { t += sv[i][d]; }); maxT = Math.max(maxT, t); }
+        const s = (H * 0.66) / maxT;
+        const tops = CAT.map(() => []), bots = CAT.map(() => []);
+        for (let d = 1; d <= N; d++) {
+          let t = 0; CAT.forEach((_, i) => { t += sv[i][d]; });
+          const k = taper(d), tot = t * s * k + GAP * (CAT.length - 1);
+          let y = cyF(d) - tot / 2;
+          CAT.forEach((_, i) => { tops[i].push([X(d), y]); y += sv[i][d] * s * k; bots[i].push([X(d), y]); y += GAP; });
+        }
+        const streams = state === 'empty' ? [] : CAT.map(([id, en, fan, c], i) => ({ d: band(tops[i], bots[i]), c, op: o.focus && o.focus !== id ? 0.12 : 0.42 }));
+        const edges = state === 'empty' ? [] : CAT.map(([id, en, fan, c], i) => ({ d: sm(tops[i]), c, op: o.focus && o.focus !== id ? 0.15 : 0.9 }));
+        let labels = compact || state === 'empty' || state === 'sparse' ? [] : CAT.map(([id, en, fan, c], i) => { const l = tops[i][N - 3], b = bots[i][N - 3]; return { x: rtl ? X(30) - 10 : X(30) + 10, y: (l[1] + b[1]) / 2 + 4, t: rtl ? fan : en, c, anchor: rtl ? 'end' : 'start' }; });
+        for (let i = 1; i < labels.length; i++) if (labels[i].y - labels[i - 1].y < 15) labels[i].y = labels[i - 1].y + 15;
+        const bd = 1100 * 0.78 * s;
+        const env = { y1: cy - bd / 2 - 8, y2: cy + bd / 2 + 8, c: state === 'over' ? '#C9608E' : '#5A5F59', x1: X(1), x2: X(30) };
+        const sel = Math.min(Math.max(1, o.day || last), Math.max(1, last));
+        let spent = 0; for (let d = 1; d <= last; d++) CAT.forEach(([c], i) => { spent += raw(c, d, i); });
+        const expected = 33000 * last / 30, diff = Math.round((spent - expected) / expected * 100);
+        const dayTot = CAT.map(([c], i) => raw(c, sel, i)); const top = dayTot.indexOf(Math.max(...dayTot));
+        const hits = []; for (let d = 1; d <= last; d++) hits.push({ x: Math.min(X(d), X(d) + (rtl ? step : -step) / 2) - (rtl ? step / 2 : 0), w: step, d });
+        return {
+          W, H, streams, edges, labels, env, hasData: state !== 'empty',
+          fx: rtl ? 0 : X(last), fw: rtl ? X(last) : W - X(last), showFc: state === 'normal' || state === 'over',
+          tx: X(last), showToday: last > 0, sx: X(sel), selPct: Math.min(86, Math.max(10, X(sel) / W * 100)).toFixed(2) + '%',
+          hits: hits.map((h) => ({ x: Math.min(X(h.d) - step / 2, X(h.d) + step / 2), w: step, d: h.d })),
+          tipDate: rtl ? DNF[wd(sel)] + ' ' + fa(sel) + ' مهر' : DN[wd(sel)] + ', ' + sel + ' Mehr',
+          tipVal: money(dayTot.reduce((a, b) => a + b, 0), rtl), tipSub: (rtl ? 'بیشترین: ' + CAT[top][2] : 'Top: ' + CAT[top][1]) + ' · ' + money(dayTot[top], rtl),
+          spent: money(spent, rtl), remaining: money(Math.max(0, 33000 - spent), rtl), pct: (rtl ? fa(Math.round(spent / 330)) + '٪' : Math.round(spent / 330) + '%'),
+          insight: state === 'empty' ? '' : state === 'sparse' ? 'Only 4 days so far — the flow becomes meaningful after about a week.' : diff <= 0 ? 'You’re ' + Math.abs(diff) + '% under your expected spending at this point in the month.' : 'You’re ' + diff + '% above your expected pace — Lifestyle and Food grew most this week.',
+          over: diff > 0 && state === 'over', legend: CAT.map(([id, en, fan, c]) => ({ t: rtl ? fan : en, c, id }))
+        };
+      }
+
+      /* ---------- 02 Milestone Path ---------- */
+      function milestones(o) {
+        const W = o.W || 820, H = o.H || 260, state = o.state || 'track', rtl = !!o.rtl;
+        const raw = [[0.04, 0.88], [0.2, 0.78], [0.37, 0.62], [0.53, 0.45], [0.72, 0.34], [0.92, 0.18]];
+        const P = raw.map(([x, y]) => [rtl ? W * (1 - x) : W * x, H * y]);
+        const names = [['Brief', 'شروع', '1 Mehr'], ['Research', 'تحقیق', '8 Mehr'], ['Design', 'طراحی', '18 Mehr'], ['Build', 'ساخت', '2 Aban'], ['Launch', 'انتشار', '20 Aban'], ['Goal', 'هدف', '30 Azar']];
+        const cur = state === 'done' ? 6 : 3;
+        const nodes = P.map((p, i) => {
+          const st = i < cur ? 'done' : i === cur ? (state === 'late' ? 'late' : 'current') : 'next';
+          const isGoal = i === 5;
+          return { x: p[0], y: p[1], st, isGoal, done: st === 'done' && !isGoal, current: st === 'current', late: st === 'late', next: st === 'next' && !isGoal, goal: isGoal, goalDone: isGoal && state === 'done',
+            r: st === 'current' || st === 'late' ? 13 : 10, label: rtl ? names[i][1] : names[i][0], lx: p[0], ly: p[1] + 30, pick: i };
+        });
+        return { W, H, full: sm(P), done: sm(P.slice(0, Math.min(cur, 5) + 1)), nodes, P,
+          hills: [
+            band([[0, H * 0.7], [W * 0.25, H * 0.55], [W * 0.55, H * 0.66], [W * 0.8, H * 0.5], [W, H * 0.58]], [[0, H], [W, H]]),
+            band([[0, H * 0.86], [W * 0.3, H * 0.74], [W * 0.62, H * 0.84], [W, H * 0.72]], [[0, H], [W, H]])
+          ] };
+      }
+
+      /* ---------- 03 Mood Terrain ---------- */
+      function terrain(o) {
+        const W = o.W || 820, H = o.H || 250, range = o.range || 7, rtl = !!o.rtl, sparse = !!o.sparse;
+        const MOOD = [3, 4, 4, 2, 3, 4, 5, 4, 3, 3, 4, 2, 2, 3, 4, 4, 5, 4, 3, 4, 4, 3, 4, 5, 4, 3, 3, 4, 5, 4];
+        const EN = [2, 2, 3, 1, 2, 3, 3, 2, 2, 1, 2, 1, 1, 2, 3, 2, 3, 3, 2, 2, 2, 2, 2, 3, 3, 2, 1, 2, 3, 2];
+        const end = 21, start = end - range + 1;
+        const days = []; for (let d = start; d <= end; d++) days.push(d);
+        const pad = o.compact ? 8 : 56, pr = o.compact ? 8 : 20, X = (i) => { const x = pad + (i / (days.length - 1)) * (W - pad - pr); return rtl ? W - x : x; };
+        const mTop = 18, mBot = H * 0.6, eTop = H * 0.7, eBot = H - 22;
+        const MY = (v) => mBot - (v - 1) / 4 * (mBot - mTop - 10) - 6, EY = (v) => eBot - (v - 1) / 2 * (eBot - eTop - 8) - 4;
+        const val = (arr, d) => arr[(d - 1 + 30) % 30];
+        const S = 24, samp = (fn) => Array.from({ length: S }, (_, k) => { const t = k / (S - 1) * (days.length - 1), i0 = Math.floor(t), i1 = Math.min(days.length - 1, i0 + 1), f = t - i0; const v = fn(days[i0]) * (1 - f) + fn(days[i1]) * f; return [X(t), v]; });
+        const mp = samp((d) => MY(val(MOOD, d))), ep = samp((d) => EY(val(EN, d)));
+        const sel = Math.min(end, Math.max(start, o.day || end)), si = sel - start;
+        const mv = val(MOOD, sel), ev = val(EN, sel);
+        const ML = ['Awful', 'Low', 'Okay', 'Good', 'Great'], MLF = ['خیلی بد', 'بد', 'معمولی', 'خوب', 'عالی'], EL = ['Low', 'Medium', 'High'], ELF = ['کم', 'متوسط', 'زیاد'];
+        let hi = 0, lo = 0; days.forEach((d, i) => { if (val(MOOD, d) > val(MOOD, days[hi])) hi = i; if (val(MOOD, d) < val(MOOD, days[lo])) lo = i; });
+        const every = range <= 7 ? 1 : range <= 14 ? 2 : 5;
+        const sparseDays = [2, 9, 15];
+        return {
+          W, H, mood: sm(mp), moodA: band(mp, [[mp[0][0], mBot], [mp[S - 1][0], mBot]]), en: sm(ep), enA: band(ep, [[ep[0][0], eBot], [ep[S - 1][0], eBot]]),
+          mBot, eBot, eTop, mTop,
+          grid: [5, 4, 3, 2, 1].map((v) => ({ y: MY(v), t: rtl ? MLF[v - 1] : ML[v - 1], x: rtl ? W - 6 : 6, anchor: rtl ? 'end' : 'start' })),
+          egrid: [3, 2, 1].map((v) => ({ y: EY(v), t: rtl ? ELF[v - 1] : EL[v - 1], x: rtl ? W - 6 : 6, anchor: rtl ? 'end' : 'start' })),
+          xl: days.map((d, i) => ({ x: X(i), t: (i % every === 0 || d === end) ? (rtl ? DSF[wd(d)] + ' ' + fa(d) : DN[wd(d)].slice(0, range > 14 ? 1 : 3) + ' ' + d) : '', fri: wd(d) === 6 })),
+          hits: days.map((d, i) => ({ x: X(i) - (W - pad - pr) / (days.length - 1) / 2, w: (W - pad - pr) / (days.length - 1), d })),
+          sx: X(si), my: MY(mv), ey: EY(ev), selPct: Math.min(88, Math.max(10, X(si) / W * 100)).toFixed(2) + '%',
+          hx: X(hi), hy: MY(val(MOOD, days[hi])), lx: X(lo), ly: MY(val(MOOD, days[lo])),
+          tipDate: rtl ? DNF[wd(sel)] + ' ' + fa(sel) + ' مهر' : DN[wd(sel)] + ', ' + sel + ' Mehr',
+          tipMood: rtl ? MLF[mv - 1] : ML[mv - 1], tipEn: rtl ? ELF[ev - 1] : EL[ev - 1],
+          sparseDots: sparseDays.map((d, i) => ({ x: pad + (i + 1) / 4 * (W - pad - pr), y: MY(val(MOOD, d)) })), sparse
+        };
+      }
+
+      /* ---------- 04 Focus Clock ---------- */
+      function clock(o) {
+        const R0 = o.r0 || 54, RW = o.rw || 14, G = 2, cx = o.cx || 200, cy = o.cy || 200, rings = o.single ? 1 : 7, week4 = !!o.week4;
+        const SEQ = ['#2A2E2A', '#1F3A33', '#2A5C4E', '#3E937A', '#6FD4B8'];
+        const pt = (r, a) => [cx + r * Math.sin(a), cy - r * Math.cos(a)];
+        const cells = [];
+        const v = (day, h) => { let b = (h >= 9 && h < 12) ? 3 : (h >= 14 && h < 17) ? 2 : (h >= 8 && h < 19) ? 1 : 0; if (h >= 9 && h < 12 && day >= 3 && day <= 5) b = 4; if (day === 6) b = Math.max(0, b - 2); if (h === 13) b = 0; if (week4 && b > 0 && (day + h) % 4 === 0) b = Math.max(1, b - 1); return b; };
+        for (let r = 0; r < rings; r++) for (let h = 0; h < 24; h++) {
+          const val = o.single ? Math.round([0, 1, 2, 3, 4, 5].reduce((a, d) => a + v(d, h), 0) / 6) : v(r, h);
+          const a0 = (h / 24) * Math.PI * 2 + 0.012, a1 = ((h + 1) / 24) * Math.PI * 2 - 0.012;
+          const ri = R0 + r * (RW + G), ro = ri + RW;
+          const [x1, y1] = pt(ro, a0), [x2, y2] = pt(ro, a1), [x3, y3] = pt(ri, a1), [x4, y4] = pt(ri, a0);
+          const sel = o.sel && o.sel[0] === r && o.sel[1] === h;
+          cells.push({ d: `M${f1(x1)} ${f1(y1)} A${ro} ${ro} 0 0 1 ${f1(x2)} ${f1(y2)} L${f1(x3)} ${f1(y3)} A${ri} ${ri} 0 0 0 ${f1(x4)} ${f1(y4)} Z`, c: SEQ[val], stroke: sel ? '#ECEEE9' : 'none', r, h, val });
+        }
+        const lab = [0, 6, 12, 18].map((h) => { const [x, y] = pt(R0 + rings * (RW + G) + 14, h / 24 * Math.PI * 2); return { x, y: y + 4, t: String(h).padStart(2, '0') + ':00' }; });
+        let win = '';
+        if (!o.single) { const ri = R0 + 3 * (RW + G) - 3, ro = R0 + 5 * (RW + G) + RW + 3, a0 = 9 / 24 * Math.PI * 2, a1 = 12 / 24 * Math.PI * 2; const [x1, y1] = pt(ro, a0), [x2, y2] = pt(ro, a1), [x3, y3] = pt(ri, a1), [x4, y4] = pt(ri, a0); win = `M${f1(x1)} ${f1(y1)} A${ro} ${ro} 0 0 1 ${f1(x2)} ${f1(y2)} L${f1(x3)} ${f1(y3)} A${ri} ${ri} 0 0 0 ${f1(x4)} ${f1(y4)} Z`; }
+        return { cells, lab, win, SEQ };
+      }
+
+      /* ---------- 07 Context Ribbon ---------- */
+      function ctx(o) {
+        const W = o.W || 820, H = o.H || 220, rtl = !!o.rtl, month = !!o.month;
+        const C = [['personal', 'Personal', 'شخصی', '#4FE3C1', '#6FD4B8'], ['project', 'Projects', 'پروژه‌ها', '#5AB4FF', '#7DB6F0'], ['team', 'Teams', 'تیم‌ها', '#8B8BFF', '#A5A5F5'], ['company', 'Companies', 'شرکت‌ها', '#C07BFF', '#C49DEB'], ['other', 'Other', 'سایر', '#4A504A', '#969B94']];
+        const D = month ? [[3, 2.5, 3.5, 3, 2.8, 4, 5], [3, 3.4, 2.6, 3, 3.2, 1.6, 0.5], [1.4, 2, 1.8, 2.2, 1.6, 0.6, 0.2], [0.8, 1.4, 1, 1.2, 1.1, 0.4, 0.1], [0.4, 0.3, 0.5, 0.4, 0.5, 0.6, 0.8]]
+          : [[2.5, 2, 3, 2.2, 2.6, 4.5, 5.5], [3.5, 4, 2.5, 3, 3.8, 1, 0.4], [1, 2.2, 2.6, 1.8, 1.2, 0.5, 0.1], [1.2, 0.8, 1.6, 1.4, 0.6, 0.3, 0], [0.3, 0.4, 0.5, 0.2, 0.6, 0.8, 0.9]];
+        const pad = o.compact ? 6 : 24, X = (i) => { const x = pad + i / 6 * (W - 2 * pad); return rtl ? W - x : x; };
+        const cy = H / 2; let maxT = 0; for (let i = 0; i < 7; i++) maxT = Math.max(maxT, D.reduce((a, r) => a + r[i], 0));
+        const s = H * 0.8 / maxT;
+        const tops = C.map(() => []), bots = C.map(() => []);
+        const tp = [0.5, 0.92, 1, 1, 1, 0.92, 0.5];
+        for (let i = 0; i < 7; i++) { const t = D.reduce((a, r) => a + r[i], 0), tot = t * s * tp[i] + 2.5 * 4; let y = cy + 8 * Math.sin(i * 1.1) - tot / 2; C.forEach((_, k) => { tops[k].push([X(i), y]); y += D[k][i] * s * tp[i]; bots[k].push([X(i), y]); y += 2.5; }); }
+        const tot = D.map((r) => r.reduce((a, b) => a + b, 0)), all = tot.reduce((a, b) => a + b, 0);
+        const prev = month ? [36, 30, 18, 11, 5] : [34, 31, 19, 12, 4];
+        return {
+          W, H, bands: C.map(([id, en, fan, c, deep], k) => ({ id, d: band(tops[k], bots[k]), c, op: o.focus && o.focus !== id ? 0.12 : 0.55, edge: sm(tops[k]), deep })),
+          rows: C.map(([id, en, fan, c, deep], k) => { const pct = Math.round(tot[k] / all * 100); const dl = pct - prev[k]; return { id, t: rtl ? fan : en, c, deep, pct: rtl ? fa(pct) + '٪' : pct + '%', hrs: (month ? (tot[k] * 4.3).toFixed(0) : tot[k].toFixed(1)) + (rtl ? ' س' : 'h'), delta: (dl > 0 ? '↑ ' : dl < 0 ? '↓ ' : '') + Math.abs(dl) + (rtl ? '٪' : ' pts'), peakX: tops[k][tot[k] ? D[k].indexOf(Math.max(...D[k])) : 0][0], peakY: (tops[k][D[k].indexOf(Math.max(...D[k]))][1] + bots[k][D[k].indexOf(Math.max(...D[k]))][1]) / 2 }; }),
+          xl: (rtl ? DSF : DN.map((d) => d.slice(0, 3))).map((t, i) => ({ x: X(i), t: month ? (rtl ? 'هفته ' + fa(Math.floor(i / 2) + 1) : '') : t })),
+          total: month ? '186h' : '42h 30m'
+        };
+      }
+
+      /* ---------- 08 Carry-over Flow ---------- */
+      function carry(o) {
+        const W = o.W || 820, H = o.H || 260, rtl = !!o.rtl, week = !!o.week;
+        const items = week ? [['done', 'Completed', 'انجام شد', 31], ['moved', 'Moved to next week', 'به هفته‌ی بعد', 6], ['overdue', 'Overdue', 'عقب‌افتاده', 3], ['inbox', 'Back to inbox', 'برگشت به صندوق', 2]]
+          : [['done', 'Completed', 'انجام شد', 12], ['moved', 'Moved to tomorrow', 'به فردا', 4], ['overdue', 'Overdue', 'عقب‌افتاده', 2]];
+        const total = items.reduce((a, b) => a + b[3], 0);
+        const c0 = o.cx || 90, cx = rtl ? W - c0 : c0, cyy = H / 2, R = o.R || 58, t0 = o.tx != null ? o.tx : W - 300, tx = rtl ? W - t0 : t0;
+        const unit = (H * 0.38) / total; let y0 = cyy - (total * unit + 3 * (items.length - 1)) / 2;
+        const gap = o.gap || (items.length > 3 ? 64 : 82), ty0 = cyy - (items.length - 1) * gap / 2;
+        const sx = cx;
+        const flows = items.map(([id, en, fan, n], i) => {
+          const h = n * unit, a = y0, b = y0 + h; y0 += h + 3;
+          const tc = ty0 + i * gap, th = Math.max(10, Math.min(42, h * 1.1)), ta = tc - th / 2, tb = tc + th / 2;
+          const mx = (sx + tx) / 2;
+          const d = `M${f1(sx)} ${f1(a)} C${f1(mx)} ${f1(a)} ${f1(mx)} ${f1(ta)} ${f1(tx)} ${f1(ta)} L${f1(tx)} ${f1(tb)} C${f1(mx)} ${f1(tb)} ${f1(mx)} ${f1(b)} ${f1(sx)} ${f1(b)} Z`;
+          const sel = o.sel === id;
+          return { id, d, c: OUT[id], op: o.sel && !sel ? 0.12 : 0.5, t: rtl ? fan : en, n: rtl ? fa(n) : n, pct: rtl ? fa(Math.round(n / total * 100)) + '٪' : Math.round(n / total * 100) + '%', top: (tc / H * 100).toFixed(2) + '%', sel };
+        });
+        return { W, H, flows, cx, cyy, R, total: rtl ? fa(total) : total, pillSide: rtl ? 'right' : 'left', pillX: rtl ? ((W - tx) / W * 100).toFixed(2) + '%' : (tx / W * 100).toFixed(2) + '%' };
+      }
+
+      return { sm, band, fa, DN, DNF, DSF, wd, money, dur, CAT, OUT, river, milestones, terrain, clock, ctx, carry };
+    })();
+
+    const RIB = (() => {
+      const FA = '۰۱۲۳۴۵۶۷۸۹', fa = (s) => String(s).replace(/[0-9]/g, (d) => FA[d]);
+      const DN = ['Sat', 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri'], DNF = ['ش', 'ی', 'د', 'س', 'چ', 'پ', 'ج'];
+      const SC = {
+        all: { s: ['done', 'done', 'done', 'todayDone', 'future', 'future', 'rest'], n: 12, cta: ['Perfect week so far', 'هفته‌ی بی‌نقص تا اینجا'] },
+        partial: { s: ['done', 'missed', 'done', 'todayDone', 'future', 'future', 'rest'], n: 2, cta: ['Keep going', 'ادامه بده'] },
+        today: { s: ['done', 'done', 'done', 'today', 'future', 'future', 'rest'], n: 11, cta: ['Keep going', 'ادامه بده'] },
+        missed: { s: ['done', 'done', 'missed', 'today', 'future', 'future', 'rest'], n: 0, cta: ['Start again today', 'از امروز دوباره'] },
+        rest: { s: ['done', 'done', 'rest', 'todayDone', 'future', 'future', 'rest'], n: 10, cta: ['Rest days don’t break it', 'استراحت زنجیره را نمی‌شکند'] }
+      };
+      const DK = { '#6FD4B8': '#6FD4B8', '#0D1210': '#1C1F1C', '#2F7F6B': '#2F7F6B', '#1D4A40': '#1D4A40', '#242824': '#242824', '#3A3F3A': '#3A3F3A', '#5A5F59': '#6E746E', '#4A504A': '#4A504A', '#C4C8C2': '#C4C8C2', '#F2555A': '#F2555A', '#3A2E12': '#3A2E12', '#C98500': '#F5B54A', '#121412': '#242824', '#6E746E': '#6E746E' };
+      function build(o) {
+        const dk = (v) => (o.dark ? String(v).replace(/#[0-9A-F]{6}/gi, (h) => DK[h.toUpperCase()] || h) : v);
+        const rtl = !!o.rtl, sc = SC[o.scenario || 'today'], compact = !!o.compact;
+        const W = 700, cy = 26, xs = (i) => { const x = (i + 0.5) / 7 * W; return rtl ? W - x : x; };
+        const isDone = (s) => s === 'done' || s === 'todayDone';
+        const conns = [];
+        for (let i = 0; i < 6; i++) {
+          const a = sc.s[i], b = sc.s[i + 1];
+          const x1 = xs(i), x2 = xs(i + 1), dx = (x2 - x1) / 3, w = i % 2 ? 7 : -7;
+          const d = `M${x1.toFixed(1)} ${cy} C${(x1 + dx).toFixed(1)} ${cy + w} ${(x2 - dx).toFixed(1)} ${cy - w} ${x2.toFixed(1)} ${cy}`;
+          const strong = (isDone(a) || a === 'rest') && (isDone(b) || b === 'today' || b === 'rest') && !(a === 'rest' && !isDone(sc.s[i - 1] || 'done'));
+          conns.push(strong ? { d, c: dk('#2F7F6B'), w: 9, dash: 'none', op: 0.75 } : { d, c: dk('#4A504A'), w: 2, dash: '1 7', op: 1 });
+        }
+        const nodes = sc.s.map((s, i) => {
+          const today = s === 'today' || s === 'todayDone';
+          const size = today ? 46 : compact ? 32 : 38;
+          const st = {
+            done: { bg: '#6FD4B8', border: '0', ring: 'none', t: 'done', tf: 'انجام شد' },
+            todayDone: { bg: '#6FD4B8', border: '0', ring: '0 0 0 4px #1C1F1C, 0 0 0 7px #2F7F6B', t: 'done today', tf: 'امروز انجام شد' },
+            today: { bg: '#1C1F1C', border: '3px solid #6FD4B8', ring: '0 0 0 5px #1D4A40', t: 'today, not yet', tf: 'امروز، هنوز نه' },
+            missed: { bg: '#242824', border: '2px solid #3A3F3A', ring: 'none', t: 'missed', tf: 'جا ماند' },
+            rest: { bg: '#1C1F1C', border: '2px dotted #5A5F59', ring: 'none', t: 'rest day', tf: 'روز استراحت' },
+            future: { bg: '#1C1F1C', border: '2px dashed #3A3F3A', ring: 'none', t: 'upcoming', tf: 'پیش رو' }
+          }[s];
+          const date = 18 + i;
+          return {
+            size: size + 'px', mt: today ? '4px' : ((46 - size) / 2 + 4) + 'px', bg: dk(st.bg), border: dk(st.border), ring: dk(st.ring),
+            check: isDone(s), dot: s === 'today', dash: s === 'missed', moon: s === 'rest',
+            day: rtl ? DNF[i] : DN[i], date: rtl ? fa(date) : String(date), dayW: today ? 800 : 700, dayC: dk(today ? '#6FD4B8' : i === 6 ? '#F2555A' : '#C4C8C2'),
+            aria: (rtl ? DNF[i] + ' ' + fa(date) + ' مهر: ' + st.tf : DN[i] + ' ' + date + ' Mehr: ' + st.t)
+          };
+        });
+        return {
+          dir: rtl ? 'rtl' : 'ltr', font: rtl ? "'Vazirmatn', 'Urbanist', sans-serif" : "'Urbanist', 'Vazirmatn', sans-serif",
+          conns, nodes, streak: rtl ? fa(sc.n) : String(sc.n), streakLabel: rtl ? 'روز پیاپی' : 'day streak', cta: sc.cta[rtl ? 1 : 0],
+          chev: rtl ? 'M15 6l-6 6 6 6' : 'M9 6l6 6-6 6', showCta: !compact, flameBg: dk(sc.n ? '#3A2E12' : '#121412'), flame: dk(sc.n ? '#C98500' : '#6E746E'),
+          aria: (rtl ? 'زنجیره‌ی عادت: ' + fa(sc.n) + ' روز پیاپی' : 'Habit streak: ' + sc.n + ' days')
+        };
+      }
+      return { build, SC };
+    })();
+
+    const st = this.state;
+    const pick = (k, v) => () => this.setState({ [k]: v });
+    const segs = (key, opts) => opts.map(([v, t]) => ({ t, on: st[key] === v ? 'true' : 'false', pick: pick(key, v) }));
+
+    /* 01 */
+    const rv = VZ.river({ state: st.rvState, day: st.rvDay, focus: st.rvFocus });
+    rv.hits = rv.hits.map((h) => Object.assign(h, { pick: () => this.setState({ rvDay: h.d }) }));
+    rv.fcx = rv.fx + 8;
+    const rvTodayPct = (rv.tx / 820 * 100).toFixed(1) + '%', rvEndPct = ((820 - 104) / 820 * 100).toFixed(1) + '%';
+
+    /* 02 */
+    const ms = VZ.milestones({ state: st.msState });
+    const MSN = [['Brief', 'Done · 1 Mehr', 'Goal defined, scope agreed'], ['Research', 'Done · 8 Mehr', '12 interviews'], ['Design', 'Done · 18 Mehr', 'Design pages completed'], ['Build', '64% · 2 days left', 'Due 2 Aban'], ['Launch', 'Upcoming · 20 Aban', 'Beta to 50 users'], ['Goal', 'Target · 30 Azar', 'Planner App v1 live']];
+    const selN = ms.nodes[st.msSel] || ms.nodes[3];
+    const msTip = st.msState === 'late' && st.msSel === 3 ? ['Build', '3 days behind · was due 30 Mehr', '#F5B54A'] : st.msState === 'done' ? [MSN[st.msSel][0], 'Completed', '#6FD4B8'] : [MSN[st.msSel][0], MSN[st.msSel][1], st.msSel < 3 ? '#6FD4B8' : '#C4C8C2'];
+    ms.nodes = ms.nodes.map((n, i) => Object.assign(n, {
+      select: () => this.setState({ msSel: i }), aria: MSN[i][0] + ', ' + MSN[i][1], ly: n.y + 32, fw: i === st.msSel ? 700 : 600, lc: i === st.msSel ? '#ECEEE9' : '#969B94',
+      cx1: n.x - 4.5, cy1: n.y, cly: n.y - 6, flag: n.goalDone ? '#6FD4B8' : '#0D1210', flagStroke: n.goalDone ? '#6FD4B8' : '#6E746E'
+    }));
+    ms.h0 = ms.hills[0]; ms.h1 = ms.hills[1];
+
+    /* 03 */
+    const mt = VZ.terrain({ range: st.mtRange, day: st.mtDay, sparse: st.mtSparse });
+    mt.hits = mt.hits.map((h) => Object.assign(h, { pick: () => this.setState({ mtDay: h.d }) }));
+    mt.xl = mt.xl.map((x) => Object.assign(x, { c: x.fri ? '#F2555A' : '#7D827B' }));
+
+    /* 04 */
+    const fc = VZ.clock({ week4: st.fcWeek4, sel: st.fcSel });
+    const FDN = ['Saturday', 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+    fc.cells = fc.cells.map((c) => Object.assign(c, { pick: () => this.setState({ fcSel: [c.r, c.h] }) }));
+    const selC = fc.cells.find((c) => c.r === st.fcSel[0] && c.h === st.fcSel[1]) || fc.cells[0];
+    const mins = [0, 12, 28, 41, 55][selC.val];
+
+    /* 05 */
+    const WS = {
+      good: { bg: 'linear-gradient(180deg, #1D5C4C 0%, #0E3F34 100%)', sun: '#E8F5C8', sunX: 690, h1: '#2C6E5B', h2: '#235E4E', h3: '#184A3E', head: 'A focused and balanced week.', line: 'More deep work, better sleep and steady progress on your goals.',
+        m: [['22h', 'Focus time', '↑ 18% vs usual'], ['31', 'Tasks done', '↑ 6'], ['4 / 5', 'Habits kept', 'steady'], ['Good', 'Average mood', '↑ from Okay']] },
+      mixed: { bg: 'linear-gradient(180deg, #4C5F66 0%, #33454C 100%)', sun: '#F3DDB0', sunX: 520, h1: '#5D7279', h2: '#4E6268', h3: '#3E5056', head: 'A mixed week with a strong finish.', line: 'A slow start, then two good focus days. Thursday is where things turned.',
+        m: [['14h', 'Focus time', 'about usual'], ['22', 'Tasks done', '6 moved on'], ['3 / 5', 'Habits kept', 'gym held'], ['Okay', 'Average mood', 'rising Thu–Fri']] },
+      hard: { bg: 'linear-gradient(180deg, #34405E 0%, #252F48 100%)', sun: '#D9DDF2', sunX: 210, h1: '#424F70', h2: '#38445F', h3: '#2D3750', head: 'A heavy week. Next week can be lighter.', line: 'Fewer focus hours and more meetings than usual. Rest counts as progress too.',
+        m: [['8h', 'Focus time', 'lighter week'], ['15', 'Tasks done', 'priorities kept'], ['2 / 5', 'Habits kept', 'reading held'], ['Low', 'Average mood', 'be kind to yourself']] }
+    };
+    const w = WS[st.wsType];
+    const ws = Object.assign({}, w, { metrics: w.m.map(([v, l, d]) => ({ v, l, d, dc: 'rgba(13,18,16,0.8)' })) });
+
+    /* 06 */
+    const HAB = [['Read 20 pages', 'M4 5a2 2 0 0 1 2-2h5v17H6a2 2 0 0 0-2 2zM20 5a2 2 0 0 0-2-2h-5v17h5a2 2 0 0 1 2 2z'], ['Morning routine', 'M12 3v2M12 19v2M3 12h2M19 12h2M12 8a4 4 0 1 0 0 8a4 4 0 1 0 0-8z'], ['Gym', 'M6 8v8M18 8v8M3 10v4M21 10v4M6 12h12'], ['Water 8×', 'M12 3c3 4 6 7.5 6 11a6 6 0 0 1-12 0c0-3.5 3-7 6-11z'], ['No phone late', 'M20 14a8 8 0 1 1-10-10a6.5 6.5 0 0 0 10 10z']];
+    const PAT = [[1,1,0,1,1,1,0,1,1,1,1,0,0,0],[1,1,1,1,1,1,0,1,1,1,1,0,0,0],[1,0,1,0,1,0,0,1,0,2,1,0,0,0],[1,1,1,0,1,1,0,1,1,1,0,0,0,0],[0,1,1,1,0,0,0,1,1,0,1,0,0,0]];
+    const hfDays = []; for (let d = 11; d <= 24; d++) hfDays.push(d);
+    let doneN = 0, possible = 0;
+    const hf = HAB.map(([t, icon], r) => {
+      let streak = 0, run = true;
+      const cells = hfDays.map((d, i) => {
+        const k = r + '-' + d, rest = VZ.wd(d) === 6, future = d > 21, today = d === 21;
+        let s = PAT[r][i]; if (k in st.hf) s = st.hf[k] ? 1 : 0;
+        const skipped = s === 2, done = s === 1;
+        if (!rest && !future) { possible++; if (done) doneN++; }
+        const bg = done ? '#6FD4B8' : rest ? 'transparent' : future ? 'transparent' : skipped ? 'repeating-linear-gradient(135deg, #2C302C 0 3px, #242824 3px 7px)' : '#121412';
+        return { aria: t + ', ' + d + ' Mehr: ' + (done ? 'done' : rest ? 'rest day' : future ? 'upcoming' : skipped ? 'skipped' : 'not done'), isDone: done, isRest: rest,
+          bg, border: future && !rest ? '1.5px dashed #4A504A' : rest ? '0' : '0', ring: today ? '0 0 0 2px #1C1F1C, 0 0 0 4px #6FD4B8' : 'none', cur: rest || future ? 'default' : 'pointer',
+          toggle: () => { if (!rest && !future) this.setState({ hf: Object.assign({}, st.hf, { [k]: !done }) }); } };
+      });
+      for (let i = hfDays.indexOf(21); i >= 0; i--) { const d = hfDays[i]; if (VZ.wd(d) === 6) continue; const c = cells[i]; if (c.isDone) streak++; else if (d !== 21) break; }
+      const n = cells.filter((c, i) => !c.isRest && hfDays[i] <= 21).length, dn = cells.filter((c) => c.isDone).length;
+      return { t, icon, cells, streak, rate: Math.round(dn / n * 100) + '%' };
+    });
+
+    /* 06b ribbon */
+    const sr = RIB.build({ scenario: st.srCase });
+
+    /* 07 */
+    const cr = VZ.ctx({ month: st.crMonth, focus: st.crFocus });
+    cr.bands = cr.bands.map((b) => Object.assign(b, { pick: () => this.setState({ crFocus: st.crFocus === b.id ? null : b.id }) }));
+    cr.rows = cr.rows.map((r) => Object.assign(r, { on: st.crFocus === r.id ? 'true' : 'false', bg: st.crFocus === r.id ? '#16231F' : '#222622', ring: st.crFocus === r.id ? 'inset 0 0 0 2px ' + r.deep : 'none', pick: () => this.setState({ crFocus: st.crFocus === r.id ? null : r.id }) }));
+
+    /* 08 */
+    const cf = VZ.carry({ week: st.cfWeek, sel: st.cfSel });
+    const ICON = { done: 'M5 12l5 5 9-10', moved: 'M5 12h14M13 6l6 6-6 6', overdue: 'M12 7v6M12 16.5v.5', inbox: 'M4 13h4l2 3h4l2-3h4M5 5h14l1 8v6H4v-6z' };
+    cf.flows = cf.flows.map((f) => Object.assign(f, { icon: ICON[f.id], on: f.sel ? 'true' : 'false', bg: f.sel ? '#1C1F1C' : '#222622', ring: f.sel ? '0 0 0 2px ' + f.c + ', 0 8px 20px rgba(0,0,0,0.32)' : 'none', pick: () => this.setState({ cfSel: st.cfSel === f.id ? null : f.id }) }));
+    const TASKS = { done: ['UI design · My Day', 'Client call', 'Review expenses', 'Gym'], moved: ['Reply to Katy’s brief', 'Prepare check-in notes'], overdue: ['Update board deck numbers', 'Read “Shape Up” ch. 4'], inbox: ['Plan weekend trip', 'Research rail pass'] };
+
+    return {
+      classes: [
+        { t: 'Utility', d: 'Low-level building blocks: progress bars, axes, tooltip island.', bg: '#121412', fg: '#C4C8C2' },
+        { t: 'Product', d: 'Reusable product component with fixed meaning (e.g. Habit Streak Ribbon).', bg: '#1C1F1C', fg: '#C4C8C2' },
+        { t: 'Specialized visualization', d: 'Answers one approved question in named modules only.', bg: '#1D4A40', fg: '#6FD4B8' },
+        { t: 'Signature', d: 'Editorial, brand-defining moment. One place. (Weekly Story)', bg: '#B4F58C', fg: '#24400F' }
+      ],
+      defaults: ['Linear progress', 'Segmented progress', 'Numeric progress', 'Compact inline progress', 'Simple bars', 'Simple line / area'].map((t) => ({ t })),
+      specials: ['Budget River', 'Milestone Path', 'Mood Terrain', 'Focus Clock', 'Weekly Story', 'Habit Field', 'Habit Streak Ribbon', 'Context Ribbon', 'Carry-over Flow'].map((t) => ({ t })),
+
+      spec1: [
+        { k: 'Use in', v: 'Finance overview · Finance insights.' }, { k: 'Never in', v: 'Tasks, Goals, Habits, dashboards that only need a total (use numeric + linear progress).' },
+        { k: 'Interaction', v: 'Hover/tap a day → tooltip with day total and top category. Click a category label → isolate its stream. Second click → filtered transactions.' },
+        { k: 'Motion', v: 'Streams reveal left→right once; switching month or category morphs widths in place.' },
+        { k: 'Mobile', v: 'Summary first; river below at full width without side labels; categories as a chip legend; tap to pin a day.' },
+        { k: 'RTL', v: 'A — mirror. Time flows right→left; labels sit on the left end.' },
+        { k: 'Empty / sparse', v: 'No data: “Add expenses to see where your money flows.” Under 7 days: show the days you have, no forecast, a plain note.' }
+      ],
+      rv, rvTodayPct, rvEndPct, rvEmpty: st.rvState === 'empty', rvInsight: st.rvState !== 'empty',
+      rvStates: segs('rvState', [['normal', 'Normal'], ['over', 'Over budget'], ['sparse', 'Sparse'], ['empty', 'Empty']]),
+
+      spec2: [
+        { k: 'Use in', v: 'Goal detail · Goal overview hero when there’s room (one goal at a time).' }, { k: 'Never in', v: 'Small goal cards and lists — they keep linear progress. Not for tasks or projects.' },
+        { k: 'Interaction', v: 'Click a milestone → island with title, %, due date and linked action. Second click opens the milestone.' },
+        { k: 'Motion', v: 'Path draws forward once; milestones settle in sequence; current point lands last.' },
+        { k: 'Mobile', v: 'Turns vertical: path runs top→bottom with milestones as rows; landscape becomes a faint side band.' },
+        { k: 'RTL', v: 'A — mirror. Journey starts on the right and rises to the left.' },
+        { k: 'Empty / sparse', v: 'No milestones yet: a single dashed path from Start to Goal + “Add your first milestone”.' }
+      ],
+      ms, msSub: st.msState === 'done' ? '5 of 5 milestones · 100% complete' : '3 of 5 milestones · 64% of current step',
+      msChip: st.msState === 'late' ? 'Behind by 3 days' : st.msState === 'done' ? 'Goal reached' : 'On track', msChipBg: st.msState === 'late' ? '#3A2E12' : st.msState === 'done' ? '#B4F58C' : '#1D4A40', msChipFg: st.msState === 'late' ? '#F5B54A' : st.msState === 'done' ? '#24400F' : '#6FD4B8',
+      msStates: segs('msState', [['track', 'In progress'], ['late', 'Delayed'], ['done', '100%']]),
+      msTipX: (selN.x / 820 * 100).toFixed(2) + '%', msTipY: ((selN.y - 70) / 260 * 100).toFixed(1) + '%', msTipDate: MSN[st.msSel][2], msTipT: msTip[0], msTipS: msTip[1], msTipC: msTip[2],
+      msAria: 'Goal path with 6 points; current step Build at 64 percent',
+      msActs: [['Write content', '2/3 done', 0], ['Design pages', 'Completed', 1], ['Set up analytics', st.msState === 'late' ? 'Blocked · waiting on API' : 'Not started', 0]].map(([t, s, d]) => ({ t, s, done: !!d || st.msState === 'done', bg: d || st.msState === 'done' ? '#6FD4B8' : '#1C1F1C', border: d || st.msState === 'done' ? '0' : '2px solid #4A504A', sc: s.startsWith('Blocked') ? '#F5B54A' : '#969B94' })),
+
+      spec3: [
+        { k: 'Use in', v: 'Journal trend · Personal Insights.' }, { k: 'Never in', v: 'Habits, Finance, any medical or diagnostic framing.' },
+        { k: 'Interaction', v: 'Hover/tap a day → mood + energy for that day, linked journal entry on second tap.' },
+        { k: 'Motion', v: 'Terrain morphs between 7 / 14 / 30 days (shapes keep the same sample count).' },
+        { k: 'Mobile', v: '7 days by default, both ridges stacked; swipe to change week; 30 days becomes a weekly average.' },
+        { k: 'RTL', v: 'A — mirror. Newest day on the left, level labels on the right.' },
+        { k: 'Empty / sparse', v: 'Under 4 logged days: dots only, no curve, “Log your mood for a few days to reveal your pattern.”' }
+      ],
+      mt, mtSelX: mt.sx - 14, mtFull: !st.mtSparse, mtSparse: st.mtSparse,
+      mtRanges: segs('mtRange', [[7, '7 days'], [14, '14 days'], [30, '30 days']]), mtData: segs('mtSparse', [[false, 'Full'], [true, 'Sparse']]),
+
+      spec4: [
+        { k: 'Use in', v: 'Personal Insights only.' }, { k: 'Never in', v: 'Focus Mode timer, Pomodoro, progress or activity rings, any “percent done”.' },
+        { k: 'Interaction', v: 'Hover/tap a cell → weekday, hour, focused minutes. Click the dashed window → suggest protecting it as a focus block.' },
+        { k: 'Motion', v: 'Cells fade + scale into their intensity, inner ring first.' },
+        { k: 'Mobile', v: 'One aggregated ring (24 cells) + the strongest window as text. Weekday detail behind “See by day”.' },
+        { k: 'RTL', v: 'B — keep. A clock face is not mirrored: 00 on top, clockwise. Labels in Persian.' },
+        { k: 'Empty / sparse', v: '“Complete a few focus sessions and your best focus windows will appear here.” Needs ≥ 5 sessions.' }
+      ],
+      fc, fcTotal: st.fcWeek4 ? '58h 10m' : '14h 30m', fcRange: st.fcWeek4 ? 'last 4 weeks' : 'this week',
+      fcRanges: segs('fcWeek4', [[false, 'This week'], [true, '4 weeks']]),
+      fcSelDay: FDN[selC.r] + ' · ' + String(selC.h).padStart(2, '0') + ':00 – ' + String(selC.h + 1).padStart(2, '0') + ':00', fcSelVal: mins ? mins + ' min deep work' : 'No focus logged',
+      fcSelNote: selC.val === 4 ? 'Peak window' : selC.val >= 3 ? 'Strong' : selC.val ? 'Some focus' : '—',
+      fcLegend: [['High focus', 4], ['Good', 3], ['Some', 2], ['Light', 1], ['None', 0]].map(([t, v]) => ({ t, c: fc.SEQ[v] })),
+
+      spec5: [
+        { k: 'Use in', v: 'Weekly Review (first screen) · optional shareable summary image.' }, { k: 'Never in', v: 'Dashboards, daily views, any other card. One per week.' },
+        { k: 'Interaction', v: 'Metrics are tappable → jump to the matching Review step. “Share summary” exports a private image.' },
+        { k: 'Motion', v: 'Numbers tick up once; background stays still.' },
+        { k: 'Mobile', v: 'Full-width card, 2×2 metrics, headline max 3 lines.' },
+        { k: 'RTL', v: 'A — mirror layout; landscape stays (it’s decoration, not data).' },
+        { k: 'Tone', v: 'Never punishes: difficult weeks get calm colours and kind copy, no red, no scores.' }
+      ],
+      ws, wsStates: segs('wsType', [['good', 'Positive week'], ['mixed', 'Mixed week'], ['hard', 'Difficult week']]),
+
+      spec6: [
+        { k: 'Use in', v: 'Habits overview (multi-habit, 2–4 weeks).' }, { k: 'Never in', v: 'Single-habit quick view (that’s the Streak Ribbon), Tasks, Goals. Not a GitHub-style year grid.' },
+        { k: 'Interaction', v: 'Tap a past/today cell to toggle done. Long-press / right-click → mark skipped. Row tap → habit detail.' },
+        { k: 'Motion', v: 'Completed cells settle with a short scale; toggles animate the single cell only.' },
+        { k: 'Mobile', v: '7 days visible, horizontal scroll to earlier weeks; streak/rate under each habit name.' },
+        { k: 'RTL', v: 'A — mirror. Saturday on the right, newest day on the left.' },
+        { k: 'States', v: 'Done (filled + check) · Not done (soft fill) · Today (ring) · Upcoming (dashed) · Skipped (hatched) · Rest day (dash).' }
+      ],
+      hfDays: hfDays.map((d) => { const w = VZ.wd(d); return { n: VZ.DN[w].slice(0, 2), d, c: w === 6 ? '#F2555A' : '#7D827B', c2: d === 21 ? '#6FD4B8' : w === 6 ? '#F2555A' : '#ECEEE9' }; }),
+      hfBest: hf[1].streak, hf, hfRate: Math.round(doneN / possible * 100) + '%',
+      hfLegend: [['Done', '#6FD4B8', '0', 'none'], ['Not done', '#121412', '0', 'none'], ['Today', '#121412', '0', '0 0 0 2px #1C1F1C, 0 0 0 4px #6FD4B8'], ['Upcoming', 'transparent', '1.5px dashed #4A504A', 'none'], ['Skipped', 'repeating-linear-gradient(135deg, #2C302C 0 3px, #242824 3px 7px)', '0', 'none'], ['Rest day', 'transparent', '1.5px solid #2C302C', 'none']].map(([t, bg, border, ring]) => ({ t, bg, border, ring })),
+
+      spec6b: [
+        { k: 'Use in', v: 'Personal Dashboard widget · Habits overview (per habit) · Weekly Review if useful.' }, { k: 'Never in', v: 'Generic timelines, task progress, multi-habit views (use Habit Field).' },
+        { k: 'Interaction', v: 'Tap a node → that day’s note/time. CTA opens the habit.' }, { k: 'Motion', v: 'Connector draws node to node once; today’s node settles last.' },
+        { k: 'Mobile', v: 'Summary on top, 7 nodes full width, CTA becomes the chevron only.' }, { k: 'RTL', v: 'A — mirror. Week starts Saturday on the right.' }
+      ],
+      sr, srStates: segs('srCase', [['all', 'All done'], ['partial', 'Partial'], ['today', 'Today active'], ['missed', 'Missed day'], ['rest', 'Rest day']]),
+
+      spec7: [
+        { k: 'Use in', v: 'Personal Insights.' }, { k: 'Never in', v: 'As a pie replacement elsewhere, inside Project/Team/Company screens, or for money.' },
+        { k: 'Interaction', v: 'Click a band or card → isolate that context; second click → calendar filtered to it.' },
+        { k: 'Motion', v: 'Bands morph between Week and 4 weeks; isolating fades others to 15%.' },
+        { k: 'Mobile', v: 'Ribbon becomes a single 100% bar + list of contexts with hours and change.' },
+        { k: 'RTL', v: 'A — mirror. Saturday on the right.' },
+        { k: 'Colour', v: 'Context colours only (Personal / Projects / Teams / Companies) + neutral Other — labels always shown.' }
+      ],
+      cr, crTitle: st.crMonth ? 'Last 4 weeks' : 'This week', crRanges: segs('crMonth', [[false, 'Week'], [true, '4 weeks']]),
+      crChips: cr.rows.filter((r) => r.id !== 'other').map((r) => ({ x: Math.min(88, Math.max(12, r.peakX / 820 * 100)).toFixed(1) + '%', y: (r.peakY / 220 * 100).toFixed(1) + '%', t: r.t, pct: r.pct, c: r.c, deep: r.deep })),
+
+      spec8: [
+        { k: 'Use in', v: 'Daily Shutdown · Weekly Review (Carry over step).' }, { k: 'Never in', v: 'Dashboards as decoration; Insights only if it adds a trend.' },
+        { k: 'Interaction', v: 'Tap an outcome → highlight its stream and list its tasks. Second tap / Open → task list filtered.' },
+        { k: 'Motion', v: 'Streams separate from the total and settle into outcomes.' },
+        { k: 'Mobile', v: 'Total on top, outcomes as stacked rows with short streams; tasks open in a sheet.' },
+        { k: 'RTL', v: 'A — mirror. Total on the right, outcomes on the left.' },
+        { k: 'Tone', v: 'No guilt: amber for moved, soft rose for overdue, neutral for inbox.' }
+      ],
+      cf, cfWeek: st.cfWeek, cfTitle: st.cfWeek ? 'This week · 18 – 24 Mehr' : 'Today · Tue 21 Mehr', cfModes: segs('cfWeek', [[false, 'Daily shutdown'], [true, 'Weekly review']]),
+      cfAria: cf.flows.map((f) => f.n + ' ' + f.t).join(', '), cfHasSel: !!st.cfSel, cfSelTitle: st.cfSel ? (cf.flows.find((f) => f.id === st.cfSel) || {}).t + ' — tap Open to filter' : '',
+      cfTasks: st.cfSel ? (TASKS[st.cfSel] || []).map((t) => ({ t, c: VZ.OUT[st.cfSel] })) : [],
+      cfDays: [['Sat', 18, '6 done'], ['Sun', 19, '5 done'], ['Mon', 20, '4 done'], ['Tue', 21, '5 done'], ['Wed', 22, '—'], ['Thu', 23, '—'], ['Fri', 24, 'rest']].map(([n, d, s]) => ({ n, d, s, bg: d === 21 ? '#1D4A40' : '#222622', nc: n === 'Fri' ? '#F2555A' : '#969B94' })),
+
+      motion: [['Budget River', 'Streams reveal left→right; widths morph on period/category change.', '700ms'], ['Milestone Path', 'Path draws forward once; milestones settle; current point last.', '1.4s'], ['Mood Terrain', 'Terrain morphs between ranges.', '600ms'], ['Focus Clock', 'Cells fade/scale into intensity, inside → out.', '500ms'], ['Weekly Story', 'Metrics tick once; background still.', '800ms'], ['Habit Field', 'Completed cells settle (scale 0.9 → 1).', '250ms'], ['Streak Ribbon', 'Connector reveals node → node.', '900ms'], ['Context Ribbon', 'Bands morph between periods.', '600ms'], ['Carry-over Flow', 'Streams split from total and settle.', '800ms']].map(([k, v, t]) => ({ k, v, t })),
+      rtl: [['Budget River', 'A', 'Time reads right→left in Persian.'], ['Milestone Path', 'A', 'Journey follows reading direction.'], ['Mood Terrain', 'A', 'Newest day where the eye ends.'], ['Focus Clock', 'B', 'A clock is a clock — never mirror.'], ['Weekly Story', 'A', 'Layout only; art unchanged.'], ['Habit Field', 'A', 'Week starts Saturday on the right.'], ['Streak Ribbon', 'A', 'Same as Habit Field.'], ['Context Ribbon', 'A', 'Time axis follows reading.'], ['Carry-over Flow', 'A', 'Cause (total) → effect follows reading.']].map(([k, c, v]) => ({ k, c, v, bg: c === 'A' ? '#1B3A5C' : '#3A2E12', fg: c === 'A' ? '#7DB6F0' : '#F5B54A' })),
+      empties: [
+        ['Budget River', 'Add expenses to see where your money flows.', 'needs ≥ 7 days', 'M0 22 C40 8 80 34 120 20 S180 14 200 20'],
+        ['Milestone Path', 'Add your first milestone to map the way to this goal.', 'needs ≥ 1 milestone', 'M0 34 C60 30 120 18 200 6'],
+        ['Mood Terrain', 'Log your mood for a few days to reveal your pattern.', 'needs ≥ 4 days', 'M0 26 C30 10 60 30 100 16 S160 26 200 12'],
+        ['Focus Clock', 'Complete a few focus sessions and your best focus windows will appear here.', 'needs ≥ 5 sessions', 'M20 20 a16 16 0 1 0 32 0 a16 16 0 1 0 -32 0 M90 20 h100'],
+        ['Weekly Story', 'Your first story appears after one full week.', 'needs 1 week', 'M0 30 C60 14 120 30 200 18'],
+        ['Habit Field', 'Add a habit and check it off for a few days.', 'needs ≥ 1 habit', 'M0 20 h40 M56 20 h40 M112 20 h40 M168 20 h32'],
+        ['Context Ribbon', 'Schedule a few blocks to see where your time goes.', 'needs ≥ 3 days', 'M0 24 C50 10 100 30 150 16 S190 20 200 18'],
+        ['Carry-over Flow', 'Plan tasks for today to see what happens to them.', 'needs ≥ 1 planned task', 'M30 20 C80 20 100 8 200 8 M30 20 C80 20 100 32 200 32']
+      ].map(([k, v, min, d]) => ({ k, v, min, d })),
+      a11y: ['Never colour alone: every series has a direct label, position, shape or pattern (hatched skipped, dashed upcoming).', 'Each chart has a one-sentence text summary (aria-label) generated from the same data as the insight line.', 'Table view available for River, Terrain, Clock and Context Ribbon.', 'Keyboard: Tab into the chart, arrows move the selection, Enter opens, Esc clears. Focus ring 2px project blue.', 'Contrast: lines and edges ≥ 3:1 on their surface; light fills always paired with a stronger edge or label.', 'Categorical palette validated for colour-blind separation (ΔE ≥ 8, normal-vision ≥ 15) in light and dark.'].map((t, i) => ({ n: i + 1, t })),
+      prims: [['Smooth path', 'Catmull-Rom → cubic Bézier; same sample count across periods so shapes can morph.'], ['Stream band', 'Stacked, centred layers (River, Context Ribbon).'], ['Ridge', 'Filled smooth area to its own baseline (Terrain).'], ['Annular cell', 'Ring sector with 1px gaps (Focus Clock).'], ['Flow ribbon', 'Two Béziers from a source to a target (Carry-over).'], ['Node + connector', 'Status node and soft connector (Streak Ribbon, Milestone Path).'], ['Tooltip island', 'Shared tooltip for every chart.']].map(([k, v]) => ({ k, v })),
+      mapping: [
+        ['Finance', 'Budget River (overview + insights)', 'Category budget bars, transaction lists, totals'],
+        ['Goals', 'Milestone Path (goal detail / hero)', 'Goal cards and lists → linear progress'],
+        ['Habits', 'Habit Field (overview) · Streak Ribbon (per habit)', 'Monthly completion → numeric / bars'],
+        ['Journal', 'Mood Terrain (trend)', 'Entry list, today’s check-in'],
+        ['Insights', 'Focus Clock · Context Ribbon · Mood Terrain', 'Weekly focus hours → simple bars'],
+        ['Weekly Review', 'Weekly Story (signature) · Carry-over Flow · Streak Ribbon (optional)', 'Goal deltas → linear progress'],
+        ['Daily Shutdown', 'Carry-over Flow (today)', 'Tomorrow’s plan list']
+      ].map(([k, v, d]) => ({ k, v, d }))
+    };
+  }
+}
+</script>
+</body>
+</html>

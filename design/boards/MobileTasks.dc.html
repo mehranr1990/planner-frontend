@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Mobile — Tasks</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#1A1A17}a:hover{color:#1A1A17}
+</style>
+</helmet>
+<div style="position: relative; width: 390px; height: 844px; overflow: hidden; box-sizing: border-box; padding: 20px 16px 0; background: #F1F1EE; font-family: 'Urbanist', system-ui, sans-serif; color: #1A1A17; display: flex; flex-direction: column; gap: 16px">
+
+  <header style="display: flex; align-items: center; gap: 10px">
+    <a href="MobileHome.dc.html" aria-label="Back" style="width: 48px; height: 48px; border-radius: 50%; background: #FFFFFF; display: inline-flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1A1A17" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"></path></svg></a>
+    <div style="flex: 1; display: flex; flex-direction: column; gap: 1px"><span style="display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; color: #0F5BA8"><span style="width: 7px; height: 7px; border-radius: 50%; background: #5AB4FF"></span>Product Launch</span><h1 style="margin: 0; font-size: 24px; font-weight: 600">Tasks</h1></div>
+    <button type="button" aria-label="Search" style="width: 48px; height: 48px; border-radius: 50%; border: 0; background: #FFFFFF; display: inline-flex; align-items: center; justify-content: center; cursor: pointer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1A1A17" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-4-4"></path></svg></button>
+    <button type="button" aria-label="Filters" style="width: 48px; height: 48px; border-radius: 50%; border: 0; background: #FFFFFF; display: inline-flex; align-items: center; justify-content: center; cursor: pointer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1A1A17" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"></path><circle cx="16" cy="7" r="2"></circle><circle cx="10" cy="17" r="2"></circle></svg></button>
+  </header>
+
+  <!-- Week strip -->
+  <section aria-label="This week" style="background: #FFFFFF; border-radius: 26px; padding: 14px 12px; display: flex; flex-direction: column; gap: 10px">
+    <div style="display: flex; align-items: center; justify-content: space-between; padding: 0 4px"><h2 style="margin: 0; font-size: 15px; font-weight: 600">September</h2><span style="font-size: 12px; font-weight: 600; color: #6B6B64">Week 37</span></div>
+    <div style="display: grid; grid-template-columns: repeat(7, minmax(0, 1fr))">
+      <sc-for list="{{week}}" as="d" hint-placeholder-count="7">
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 6px">
+          <span style="font-size: 11px; font-weight: 600; color: #6B6B64">{{d.w}}</span>
+          <div style="width: 100%; height: 40px; display: flex; align-items: center; justify-content: center; background: {{d.band}}; border-radius: {{d.radius}}">
+            <span style="width: 38px; height: 38px; border-radius: 50%; background: {{d.dot}}; color: {{d.fg}}; display: inline-flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700">{{d.n}}</span>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+
+  <!-- Status tabs -->
+  <div role="tablist" aria-label="Task status" style="display: flex; gap: 8px; overflow-x: auto; margin: 0 -16px; padding: 0 16px">
+    <sc-for list="{{tabs}}" as="t" hint-placeholder-count="4">
+      <button type="button" role="tab" aria-selected="{{t.sel}}" onClick="{{ t.pick }}" style="flex: none; display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 6px 0 16px; border: 0; border-radius: 999px; background: {{t.bg}}; color: {{t.fg}}; font-family: inherit; font-size: 13px; font-weight: 700; cursor: pointer">{{t.label}}<span style="min-width: 28px; height: 28px; padding: 0 8px; box-sizing: border-box; border-radius: 999px; background: {{t.cbg}}; color: #1A1A17; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700">{{t.count}}</span></button>
+    </sc-for>
+  </div>
+
+  <!-- Task card (notched) -->
+  <article style="position: relative; box-sizing: border-box; padding: 18px; border-radius: 28px; background: #FFFFFF; display: flex; flex-direction: column; gap: 12px">
+    <div aria-hidden="true" style="position: absolute; top: 0; right: 0; width: 60px; height: 60px; background: #F1F1EE; border-bottom-left-radius: 28px"></div>
+    <div aria-hidden="true" style="position: absolute; top: 0; right: 60px; width: 28px; height: 28px; background: radial-gradient(circle at 0 100%, transparent 27.5px, #F1F1EE 28px)"></div>
+    <div aria-hidden="true" style="position: absolute; top: 60px; right: 0; width: 28px; height: 28px; background: radial-gradient(circle at 0 100%, transparent 27.5px, #F1F1EE 28px)"></div>
+    <a href="MobileFlow.dc.html" aria-label="Open task" style="position: absolute; top: 0; right: 0; width: 48px; height: 48px; box-sizing: border-box; border-radius: 50%; border: 1px solid #D3D3CC; display: inline-flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1A1A17" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"></path></svg></a>
+    <div style="display: flex; gap: 6px; padding-right: 64px">
+      <span style="display: inline-flex; align-items: center; height: 26px; padding: 0 10px; border-radius: 999px; background: #FDE7E8; color: #B4232A; font-size: 11px; font-weight: 700">Urgent</span>
+      <span style="display: inline-flex; align-items: center; height: 26px; padding: 0 10px; border-radius: 999px; border: 1px solid #D3D3CC; color: #45453F; font-size: 11px; font-weight: 600">Due Sep 14</span>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 4px"><span style="font-size: 21px; font-weight: 600">Revamp sidebar</span><span style="font-size: 14px; line-height: 1.45; color: #5E5E58">Redesign navigation with better spacing for easier access.</span></div>
+    <div style="display: flex; align-items: center; gap: 12px; padding-top: 10px; border-top: 1px solid #EDEDEA">
+      <div style="display: flex"><span style="width: 30px; height: 30px; border-radius: 50%; background: #ECECFF; color: #4343C8; border: 2px solid #FFFFFF; display: inline-flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700">KF</span><span style="width: 30px; height: 30px; margin-left: -9px; border-radius: 50%; background: #DDFAF2; color: #0E6B57; border: 2px solid #FFFFFF; display: inline-flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700">JK</span><span style="width: 30px; height: 30px; margin-left: -9px; border-radius: 50%; background: #0E6B57; color: #FFFFFF; border: 2px solid #FFFFFF; display: inline-flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700">+2</span></div>
+      <span style="flex: 1"></span>
+      <span style="display: inline-flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 600; color: #5E5E58"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#5E5E58" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"></path></svg>10</span>
+      <span style="display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: #5E5E58"><span style="width: 44px; height: 6px; border-radius: 3px; background: #F1F1EE; display: inline-block"><span style="display: block; width: 50%; height: 6px; border-radius: 3px; background: #5AB4FF"></span></span>1/2</span>
+    </div>
+  </article>
+
+  <!-- Task card (plain) -->
+  <article style="box-sizing: border-box; padding: 18px; border-radius: 28px; background: #FFFFFF; display: flex; flex-direction: column; gap: 12px">
+    <div style="display: flex; gap: 6px"><span style="display: inline-flex; align-items: center; height: 26px; padding: 0 10px; border-radius: 999px; background: #E6E6E1; color: #45453F; font-size: 11px; font-weight: 700">Low priority</span><span style="display: inline-flex; align-items: center; height: 26px; padding: 0 10px; border-radius: 999px; border: 1px solid #D3D3CC; color: #45453F; font-size: 11px; font-weight: 600">Due Sep 26</span></div>
+    <div style="display: flex; flex-direction: column; gap: 4px"><span style="font-size: 21px; font-weight: 600">Onboarding flow</span><span style="font-size: 14px; line-height: 1.45; color: #5E5E58">Simplify the first-run journey.</span></div>
+    <div style="display: flex; align-items: center; gap: 12px; padding-top: 10px; border-top: 1px solid #EDEDEA">
+      <div style="display: flex"><span style="width: 30px; height: 30px; border-radius: 50%; background: #E0F0FF; color: #0F5BA8; border: 2px solid #FFFFFF; display: inline-flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700">SP</span><span style="width: 30px; height: 30px; margin-left: -9px; border-radius: 50%; background: #F4E9FF; color: #7A2BC4; border: 2px solid #FFFFFF; display: inline-flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700">AL</span></div>
+      <span style="flex: 1"></span>
+      <span style="display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: #5E5E58"><span style="width: 44px; height: 6px; border-radius: 3px; background: #F1F1EE; display: inline-block"><span style="display: block; width: 29%; height: 6px; border-radius: 3px; background: #5AB4FF"></span></span>2/7</span>
+    </div>
+  </article>
+
+  <!-- Bottom nav -->
+  <nav aria-label="Primary" style="position: absolute; left: 16px; right: 16px; bottom: 16px; z-index: 5; height: 72px; box-sizing: border-box; padding: 0 8px; border-radius: 36px; background: #FFFFFF; box-shadow: 0 12px 32px rgba(14,14,12,0.06); display: flex; align-items: center">
+    <div aria-hidden="true" style="position: absolute; top: 0; left: 50%; width: 80px; margin-left: -40px; height: 48px; background: #F1F1EE; border-radius: 0 0 40px 40px"></div>
+    <div aria-hidden="true" style="position: absolute; top: 0; left: calc(50% - 60px); width: 20px; height: 20px; background: radial-gradient(circle at 0 100%, transparent 19.5px, #F1F1EE 20px)"></div>
+    <div aria-hidden="true" style="position: absolute; top: 0; left: calc(50% + 40px); width: 20px; height: 20px; background: radial-gradient(circle at 100% 100%, transparent 19.5px, #F1F1EE 20px)"></div>
+    <a href="#" aria-label="New task" style="position: absolute; top: -16px; left: 50%; margin-left: -30px; width: 60px; height: 60px; border-radius: 50%; background: #0E6B57; display: inline-flex; align-items: center; justify-content: center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#C8FF3D" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></a>
+    <a href="MobileHome.dc.html" style="flex: 1; height: 56px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #5E5E58; font-size: 11px; font-weight: 600"><span style="width: 44px; height: 28px; border-radius: 999px; background: transparent; display: inline-flex; align-items: center; justify-content: center"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#5E5E58" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 11l8-7 8 7v9H4z"></path></svg></span>Today</a>
+    <a href="MobileTasks.dc.html" aria-current="page" style="flex: 1; height: 56px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #0E6B57; font-size: 11px; font-weight: 700"><span style="width: 44px; height: 28px; border-radius: 999px; background: #DDFAF2; display: inline-flex; align-items: center; justify-content: center"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#0E6B57" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16v16H4zM8 12l3 3 5-6"></path></svg></span>Tasks</a>
+    <span style="flex: none; width: 84px"></span>
+    <a href="MobileFlow.dc.html" style="flex: 1; height: 56px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #5E5E58; font-size: 11px; font-weight: 600"><span style="width: 44px; height: 28px; border-radius: 999px; background: transparent; display: inline-flex; align-items: center; justify-content: center"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#5E5E58" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3.5a2.5 2.5 0 1 0 0 5a2.5 2.5 0 1 0 0-5zM18 15.5a2.5 2.5 0 1 0 0 5a2.5 2.5 0 1 0 0-5zM8.5 6H14a4 4 0 0 1 0 8h-4a4 4 0 0 0 0 8"></path></svg></span>Flow</a>
+    <a href="MobileChat.dc.html" style="flex: 1; height: 56px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #5E5E58; font-size: 11px; font-weight: 600"><span style="width: 44px; height: 28px; border-radius: 999px; background: transparent; display: inline-flex; align-items: center; justify-content: center"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#5E5E58" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"></path></svg></span>Assistant</a>
+  </nav>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { tab: 'todo' };
+  }
+  renderVals() {
+    const W = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'];
+    const week = [8, 9, 10, 11, 12, 13, 14].map((n, i) => {
+      let d = { w: W[i], n, band: 'transparent', radius: '0', dot: 'transparent', fg: '#1A1A17' };
+      if (n >= 8 && n <= 11) d = { ...d, band: '#E0F0FF', radius: n === 8 ? '999px 0 0 999px' : n === 11 ? '0 999px 999px 0' : '0', dot: n === 8 || n === 11 ? '#5AB4FF' : 'transparent', fg: n === 8 || n === 11 ? '#0E6B57' : '#0F5BA8' };
+      if (n === 13) d = { ...d, dot: '#FDE7E8', fg: '#B4232A' };
+      if (n === 10) d = { ...d, dot: '#0E6B57', fg: '#C8FF3D' };
+      return d;
+    });
+    const T = [['todo', 'To do', 2], ['progress', 'In progress', 4], ['review', 'Review', 5], ['done', 'Done', 7]];
+    return {
+      week,
+      tabs: T.map(([id, label, count]) => {
+        const on = id === this.state.tab;
+        return { label, count, sel: on ? 'true' : 'false', bg: on ? '#0E6B57' : '#FFFFFF', fg: on ? '#FFFFFF' : '#1A1A17', cbg: on ? '#C8FF3D' : '#F1F1EE', pick: () => this.setState({ tab: id }) };
+      })
+    };
+  }
+}
+</script>
+</body>
+</html>

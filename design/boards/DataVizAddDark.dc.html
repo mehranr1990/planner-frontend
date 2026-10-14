@@ -1,0 +1,532 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Data viz additions · Dark</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@300;400;500;600;700&amp;family=Vazirmatn:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#121412}
+.fam{display:grid;grid-template-columns:360px minmax(0,1fr);gap:32px;align-items:start}
+.spec{display:flex;flex-direction:column;gap:14px;padding-top:6px}
+.num{display:inline-flex;align-items:center;justify-content:center;height:30px;padding:0 12px;border-radius:999px;background:#1C1F1C;font-size:12px;font-weight:700;color:#C4C8C2}
+.cls{align-self:flex-start;height:26px;padding:0 10px;border-radius:999px;font-size:11px;font-weight:700;display:inline-flex;align-items:center;background:#1D4A40;color:#6FD4B8}
+.q{margin:0;font-size:18px;font-weight:600;line-height:1.35}
+.row{display:grid;grid-template-columns:96px minmax(0,1fr);gap:10px;font-size:13px;line-height:1.5}
+.row b{font-weight:700;color:#969B94;font-size:12px}
+.card{position:relative;box-sizing:border-box;padding:22px;border-radius:32px;background:#1C1F1C}
+.tip{position:absolute;transform:translateX(-50%);z-index:5;box-sizing:border-box;padding:10px 12px;border-radius:16px;background:#1C1F1C;box-shadow:0 0 0 1px #2C302C,0 10px 24px rgba(0,0,0,0.40);display:flex;flex-direction:column;gap:3px;white-space:nowrap;pointer-events:none}
+.tip small{font-size:11px;font-weight:700;color:#969B94}
+.tr{display:grid;grid-template-columns:14px 64px auto;align-items:center;gap:6px;font-size:13px;font-weight:600;color:#C4C8C2}
+.tr b{font-weight:700;color:#ECEEE9;text-align:end}
+.seg{display:inline-flex;gap:2px;padding:3px;border-radius:999px;background:#121412}
+.seg button{height:32px;padding:0 12px;border:0;border-radius:999px;background:transparent;font-family:inherit;font-size:12px;font-weight:700;color:#A5AAA3;cursor:pointer}
+.seg button[aria-pressed="true"]{background:#1C1F1C;color:#ECEEE9;box-shadow:0 1px 2px rgba(0,0,0,0.32)}
+.sh{font-size:12px;font-weight:700;color:#969B94;letter-spacing:.02em}
+.was{display:flex;flex-direction:column;gap:6px;padding:12px 14px;border-radius:18px;background:#1C1F1C;font-size:13px;line-height:1.45}
+.mv{transition:d .6s cubic-bezier(.3,.7,.2,1),opacity .3s,fill-opacity .3s,stroke-opacity .3s}
+.draw{stroke-dasharray:1600;stroke-dashoffset:1600;animation:draw 1.4s cubic-bezier(.3,.7,.2,1) .2s forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+@media (prefers-reduced-motion: reduce){.mv{transition:none}.draw{animation:none;stroke-dashoffset:0}}
+.phone{width:390px;box-sizing:border-box;padding:18px 16px 24px;border-radius:44px;background:#121412;box-shadow:0 0 0 8px #1C1F1C,0 24px 48px rgba(0,0,0,0.40);display:flex;flex-direction:column;gap:12px}
+.pc{position:relative;box-sizing:border-box;padding:16px;border-radius:28px;background:#1C1F1C;display:flex;flex-direction:column;gap:10px}
+.mtab{display:inline-flex;align-items:center;gap:6px;height:34px;padding:0 12px;border:0;border-radius:999px;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer}
+button:focus-visible,[tabindex]:focus-visible{outline:2px solid #7DB6F0;outline-offset:2px}
+.tbl{display:grid;grid-template-columns:170px repeat(4,minmax(0,1fr));gap:6px;font-size:12px;line-height:1.45}
+.tbl > span{padding:10px 12px;border-radius:12px;background:#222622}
+.tbl > b{padding:6px 12px;font-size:11px;color:#969B94}
+</style>
+</helmet>
+<div style="width: 1440px; box-sizing: border-box; padding: 64px 56px 80px; background: #121412; font-family: 'Urbanist', 'Vazirmatn', system-ui, sans-serif; color: #ECEEE9; display: flex; flex-direction: column; gap: 56px">
+
+  <header style="display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 40px; align-items: end">
+    <div style="display: flex; flex-direction: column; gap: 10px">
+      <span style="font-size: 14px; font-weight: 700; color: #6FD4B8">Personal · Data visualization · additions from references</span>
+      <h1 style="margin: 0; font-size: 50px; font-weight: 500; letter-spacing: -0.02em; line-height: 1.05">Goal Milestone Path,<br>Budget Flow, Layered Area.</h1>
+      <p style="margin: 0; max-width: 660px; font-size: 15px; line-height: 1.55; color: #A5AAA3">Three references reinterpreted in the Mehran language: Personal mint instead of the references’ blue-violet, the validated category palette, the tiny-island tooltip, Jalali dates and Toman. Each stays scoped to its question.</p>
+    </div>
+    <div class="card" style="display: flex; flex-direction: column; gap: 10px">
+      <span class="sh">CLASSIFICATION</span>
+      <div style="display: grid; grid-template-columns: 1fr auto; gap: 8px; font-size: 13px; font-weight: 600"><span>Goal Milestone Path</span><span class="cls">Specialized</span><span>Budget Flow</span><span class="cls">Specialized</span><span>Layered Area Chart</span><span class="cls" style="background: #1C1F1C; color: #C4C8C2; box-shadow: inset 0 0 0 1px #3A3F3A">Product · Specialized</span></div>
+    </div>
+  </header>
+
+  <!-- ================= A · GOAL MILESTONE PATH ================= -->
+  <section class="fam">
+    <div class="spec">
+      <div style="display: flex; gap: 8px"><span class="num">A</span><span class="cls">Specialized visualization</span></div>
+      <h2 style="margin: 0; font-size: 32px; font-weight: 500">Goal Milestone Path</h2>
+      <p class="q">“Where am I on the journey toward this goal?”</p>
+      <div class="was"><b style="color: #6FD4B8">From the reference</b><span>Kept: % header, top progress bar, misty layered landscape, rising path, island callouts, flag.</span><span>Changed: palette to Personal mint and graphite; callouts use the tooltip-island shape; states got a delayed variant in calm amber; selection adds due date + action; landscape is three flat, low-contrast layers (no trees, no texture).</span></div>
+      <sc-for list="{{specA}}" as="r" hint-placeholder-count="7"><div class="row"><b>{{r.k}}</b><span>{{r.v}}</span></div></sc-for>
+    </div>
+    <div class="card" style="display: flex; flex-direction: column; gap: 14px">
+      <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 12px">
+        <div style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 20px; font-weight: 700">Launch Planner App v1</span><span style="font-size: 13px; font-weight: 600; color: #969B94">{{gpSub}}</span></div>
+        <div style="display: flex; align-items: center; gap: 12px"><div class="seg" role="group" aria-label="State"><sc-for list="{{gpStates}}" as="s" hint-placeholder-count="4"><button type="button" aria-pressed="{{s.on}}" onClick="{{ s.pick }}">{{s.t}}</button></sc-for></div><span style="font-size: 28px; font-weight: 600; color: {{gpPctC}}">{{gpPct}}</span></div>
+      </div>
+      <div role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{gpPctN}}" style="height: 8px; border-radius: 4px; background: #2A2E2A; overflow: hidden"><span style="display: block; height: 100%; width: {{gpPct}}; border-radius: 4px; background: linear-gradient(90deg, #4FE3C1, #6FD4B8)"></span></div>
+      <sc-if value="{{gpHas}}" hint-placeholder-val="{{ true }}"><div style="margin-top: 26px"><div style="position: relative; border-radius: 26px; overflow: hidden; background: linear-gradient(180deg, #1E2420 0%, #1C1F1C 75%)">
+  <svg viewBox="0 0 {{gp.W}} {{gp.H}}" width="100%" style="display: block" role="img" aria-label="{{gp.aria}}">
+    <defs>
+      <linearGradient id="gpAfar" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#232A27"></stop><stop offset="1" stop-color="#1E2420" stop-opacity="0"></stop></linearGradient>
+      <linearGradient id="gpAmid" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1F3A33"></stop><stop offset="1" stop-color="#1E2420" stop-opacity="0.2"></stop></linearGradient>
+      <linearGradient id="gpAnear" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1D4A40"></stop><stop offset="1" stop-color="#1A2B26"></stop></linearGradient>
+      <linearGradient id="gpAmist" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1C1F1C" stop-opacity="0"></stop><stop offset="0.55" stop-color="#1C1F1C" stop-opacity="0.65"></stop><stop offset="1" stop-color="#1C1F1C" stop-opacity="0"></stop></linearGradient>
+    </defs>
+    <path d="{{gp.far}}" fill="url(#gpAfar)"></path>
+    <rect x="0" y="40%" width="100%" height="30%" fill="url(#gpAmist)"></rect>
+    <path d="{{gp.mid}}" fill="url(#gpAmid)"></path>
+    <path d="{{gp.near}}" fill="url(#gpAnear)" fill-opacity="0.85"></path>
+    <path d="{{gp.full}}" fill="none" stroke="#0D1210" stroke-width="10" stroke-linecap="round" stroke-opacity="0.9"></path>
+    <path d="{{gp.full}}" fill="none" stroke="#5A5F59" stroke-width="2.5" stroke-dasharray="2 8" stroke-linecap="round"></path>
+    <path class="draw" d="{{gp.done}}" fill="none" stroke="#6FD4B8" stroke-width="4" stroke-linecap="round"></path>
+    <sc-for list="{{gp.nodes}}" as="n" hint-placeholder-count="6">
+      <g style="cursor: pointer" onClick="{{ n.pick }}" tabindex="0" role="button" aria-label="{{n.aria}}">
+        <circle cx="{{n.x}}" cy="{{n.y}}" r="22" fill="transparent"></circle>
+        <sc-if value="{{n.done}}" hint-placeholder-val="{{ true }}"><circle cx="{{n.x}}" cy="{{n.y}}" r="11" fill="#6FD4B8" stroke="#0D1210" stroke-width="3"></circle><path d="M{{n.cx1}} {{n.y}} l3.5 3.5 l6 -7" fill="none" stroke="#0D1210" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></sc-if>
+        <sc-if value="{{n.current}}" hint-placeholder-val="{{ false }}"><circle cx="{{n.x}}" cy="{{n.y}}" r="20" fill="#6FD4B8" fill-opacity="0.12"></circle><circle cx="{{n.x}}" cy="{{n.y}}" r="13" fill="#0D1210" stroke="#6FD4B8" stroke-width="3"></circle><circle cx="{{n.x}}" cy="{{n.y}}" r="5.5" fill="#6FD4B8"></circle></sc-if>
+        <sc-if value="{{n.late}}" hint-placeholder-val="{{ false }}"><circle cx="{{n.x}}" cy="{{n.y}}" r="20" fill="#C98500" fill-opacity="0.14"></circle><circle cx="{{n.x}}" cy="{{n.y}}" r="13" fill="#3A2E12" stroke="#E5A520" stroke-width="3"></circle><path d="M{{n.x}} {{n.cly}} v5 l3 2" fill="none" stroke="#F5B54A" stroke-width="2" stroke-linecap="round"></path></sc-if>
+        <sc-if value="{{n.next}}" hint-placeholder-val="{{ false }}"><circle cx="{{n.x}}" cy="{{n.y}}" r="9" fill="#0D1210" stroke="#5A5F59" stroke-width="2.5"></circle></sc-if>
+        <sc-if value="{{n.goal}}" hint-placeholder-val="{{ false }}"><path d="M{{n.x}} {{n.y}} v-34 l20 7 l-20 7" fill="{{n.flag}}" stroke="{{n.flagS}}" stroke-width="2" stroke-linejoin="round"></path><circle cx="{{n.x}}" cy="{{n.y}}" r="9" fill="{{n.goalBg}}" stroke="{{n.flagS}}" stroke-width="2.5"></circle></sc-if>
+      </g>
+    </sc-for>
+  </svg>
+  <sc-for list="{{gp.nodes}}" as="n" hint-placeholder-count="6">
+    <div style="position: absolute; left: {{n.px}}; top: {{n.py}}; transform: {{n.tf}}; min-width: 128px; box-sizing: border-box; padding: 8px 12px; border-radius: 16px; background: #1C1F1C; box-shadow: {{n.sh}}; display: flex; flex-direction: column; gap: 1px; pointer-events: none; white-space: nowrap; z-index: {{n.z}}; opacity: {{n.op}}">
+      <span style="font-size: 12px; font-weight: 700; color: #ECEEE9">{{n.name}}</span>
+      <span style="font-size: 11px; font-weight: 700; color: {{n.subC}}">{{n.sub}}</span>
+      <sc-if value="{{n.sel}}" hint-placeholder-val="{{ false }}"><span style="margin-top: 4px; font-size: 11px; font-weight: 600; color: #969B94">{{n.detail}}</span></sc-if>
+    </div>
+  </sc-for>
+</div></div></sc-if>
+      <sc-if value="{{gpEmpty}}" hint-placeholder-val="{{ false }}"><div style="position: relative; height: 300px; border-radius: 26px; background: linear-gradient(180deg, #1E2420, #1C1F1C); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px"><svg width="420" height="80" viewBox="0 0 420 80" aria-hidden="true"><path d="M10 70 C120 66 220 40 400 12" fill="none" stroke="#5A5F59" stroke-width="2.5" stroke-dasharray="2 8" stroke-linecap="round"></path><circle cx="10" cy="70" r="7" fill="#0D1210" stroke="#5A5F59" stroke-width="2.5"></circle><path d="M400 12 v-26 l16 6 l-16 6" fill="#0D1210" stroke="#6E746E" stroke-width="2"></path></svg><span style="font-size: 15px; font-weight: 600">Add your first milestone to map the way to this goal.</span><button type="button" style="height: 40px; padding: 0 16px; border: 0; border-radius: 999px; background: #6FD4B8; color: #0D1210; font-family: inherit; font-size: 13px; font-weight: 700">Add milestone</button></div></sc-if>
+      <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12px; font-weight: 600; color: #969B94"><span>Click a milestone for due date and next action · arrows move between milestones</span><span style="color: #6FD4B8; font-weight: 700">Open goal ›</span></div>
+    </div>
+  </section>
+
+  <!-- ================= B · BUDGET FLOW ================= -->
+  <section class="fam">
+    <div class="spec">
+      <div style="display: flex; gap: 8px"><span class="num">B</span><span class="cls">Specialized visualization</span></div>
+      <h2 style="margin: 0; font-size: 32px; font-weight: 500">Budget Flow</h2>
+      <p class="q">“Where is my money going?”</p>
+      <div class="was"><b style="color: #6FD4B8">From the reference</b><span>Kept: one source capsule feeding soft ribbons into a scannable category list with %, amount and marker.</span><span>Changed: source is Personal mint; ribbons fade in from the source and taper into each row (width at the source = amount); the unspent part flows to a dashed “Remaining” row so income and spending reconcile; expenses total is neutral, never red; Toman.</span></div>
+      <sc-for list="{{specB}}" as="r" hint-placeholder-count="7"><div class="row"><b>{{r.k}}</b><span>{{r.v}}</span></div></sc-for>
+    </div>
+    <div class="card" style="display: flex; flex-direction: column; gap: 14px">
+      <div style="display: flex; align-items: flex-end; justify-content: space-between">
+        <div style="display: flex; flex-direction: column; gap: 2px"><span style="display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 700; color: #C4C8C2"><span style="width: 9px; height: 9px; border-radius: 50%; background: #4FE3C1"></span>Available · Mehr</span><span style="font-size: 30px; font-weight: 600">{{bfIncome}} <span style="font-size: 13px; font-weight: 700; color: #969B94">Toman</span></span></div>
+        <div class="seg" role="group" aria-label="State"><sc-for list="{{bfStates}}" as="s" hint-placeholder-count="2"><button type="button" aria-pressed="{{s.on}}" onClick="{{ s.pick }}">{{s.t}}</button></sc-for></div>
+        <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 2px"><span style="font-size: 13px; font-weight: 700; color: #C4C8C2">Spent</span><span style="font-size: 30px; font-weight: 600">{{bfSpent}} <span style="font-size: 13px; font-weight: 700; color: #969B94">Toman</span></span></div>
+      </div>
+      <sc-if value="{{bfHas}}" hint-placeholder-val="{{ true }}">
+        <div style="position: relative">
+          <div style="position: relative">
+  <svg viewBox="0 0 {{bf.W}} {{bf.H}}" width="100%" style="display: block" role="img" aria-label="{{bf.aria}}">
+    <defs>
+      <linearGradient id="bfAsrc" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4FE3C1"></stop><stop offset="1" stop-color="#6FD4B8"></stop></linearGradient>
+      <sc-for list="{{bf.ribbons}}" as="r" hint-placeholder-count="8"><linearGradient id="{{r.gid}}" gradientUnits="userSpaceOnUse" x1="{{bf.gx1}}" y1="0" x2="{{bf.gx2}}" y2="0"><stop offset="0" stop-color="{{r.c}}" stop-opacity="{{r.o0}}"></stop><stop offset="1" stop-color="{{r.c}}" stop-opacity="{{r.o1}}"></stop></linearGradient></sc-for>
+    </defs>
+    <sc-for list="{{bf.ribbons}}" as="r" hint-placeholder-count="8"><path class="mv" d="{{r.d}}" fill="url(#{{r.gid}})" stroke="{{r.edge}}" stroke-width="1" stroke-dasharray="{{r.dash}}" style="cursor: pointer" onClick="{{ r.pick }}"></path></sc-for>
+    <rect x="{{bf.srcX}}" y="{{bf.srcY}}" width="{{bf.srcW}}" height="{{bf.srcH}}" rx="11" fill="url(#bfAsrc)"></rect>
+  </svg>
+  <sc-for list="{{bf.ribbons}}" as="r" hint-placeholder-count="8">
+    <button type="button" onClick="{{ r.pick }}" aria-pressed="{{r.on}}" aria-label="{{r.aria}}" style="position: absolute; {{bf.side}}: {{bf.rowX}}; {{bf.side2}}: 0; top: {{r.typ}}; transform: translateY(-50%); display: flex; align-items: center; gap: 10px; height: 38px; padding: 0 12px 0 6px; border: 0; border-radius: 999px; background: {{r.bg}}; box-shadow: {{r.ring}}; font-family: inherit; text-align: start; cursor: pointer; opacity: {{r.dim}}">
+      <span style="flex: none; width: 26px; height: 26px; box-sizing: border-box; border-radius: 50%; background: {{r.soft}}; border: {{r.mb}}; display: inline-flex; align-items: center; justify-content: center"><span style="width: 9px; height: 9px; border-radius: 50%; background: {{r.dot}}"></span></span>
+      <span style="flex: 1; min-width: 0; font-size: 14px; font-weight: 700; color: #ECEEE9; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{r.label}}</span>
+      <span style="flex: none; height: 24px; padding: 0 8px; border-radius: 999px; background: {{r.chip}}; font-size: 12px; font-weight: 700; color: #C4C8C2; display: inline-flex; align-items: center">{{r.pctT}}</span>
+      <span style="flex: none; min-width: 84px; text-align: end; font-size: 14px; font-weight: 700; color: {{r.amtC}}">{{r.amt}}</span>
+    </button>
+  </sc-for>
+</div>
+          <sc-if value="{{bfSel}}" hint-placeholder-val="{{ true }}"><div class="tip" style="left: 30%; top: {{bfTipTop}}"><small>{{bfTipT}}</small><b style="font-size: 16px">{{bfTipV}}</b><span style="font-size: 11px; font-weight: 700; color: #6FD4B8">{{bfTipD}}</span></div></sc-if>
+        </div>
+      </sc-if>
+      <sc-if value="{{bfEmpty}}" hint-placeholder-val="{{ false }}"><div style="height: 320px; border-radius: 24px; background: #222622; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px"><svg width="320" height="90" viewBox="0 0 320 90" aria-hidden="true"><rect x="8" y="10" width="18" height="70" rx="9" fill="none" stroke="#4A504A" stroke-width="2" stroke-dasharray="3 5"></rect><path d="M26 30 C150 30 150 20 300 20 M26 45 C150 45 150 45 300 45 M26 60 C150 60 150 70 300 70" fill="none" stroke="#3A3F3A" stroke-width="6" stroke-linecap="round" stroke-dasharray="1 12"></path></svg><span style="font-size: 15px; font-weight: 600">Add income and a few expenses to see where your money goes.</span></div></sc-if>
+    </div>
+  </section>
+
+  <!-- ================= C · LAYERED AREA ================= -->
+  <section class="fam">
+    <div class="spec">
+      <div style="display: flex; gap: 8px"><span class="num">C</span><span class="cls" style="background: #1C1F1C; color: #C4C8C2; box-shadow: inset 0 0 0 1px #3A3F3A">Product · Specialized</span></div>
+      <h2 style="margin: 0; font-size: 32px; font-weight: 500">Layered Area Chart</h2>
+      <p class="q">“How are several related signals changing over time?”</p>
+      <div class="was"><b style="color: #6FD4B8">From the reference</b><span>Kept: metric emphasis tabs, timeframe chip, soft overlapping areas, points, dashed inspection guide, multi-value tooltip.</span><span>Changed: colours are the validated aqua / amber / blue trio (no violet = no confusion with Teams); the emphasised series sits on top at full strength, others stay at ~40%; selected-day markers use three shapes (●■◆) so values don’t depend on colour; Jalali dates.</span></div>
+      <sc-for list="{{specC}}" as="r" hint-placeholder-count="7"><div class="row"><b>{{r.k}}</b><span>{{r.v}}</span></div></sc-for>
+    </div>
+    <div class="card" style="display: flex; flex-direction: column; gap: 14px">
+      <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px">
+        <div role="radiogroup" aria-label="Emphasise metric" style="display: flex; gap: 6px"><sc-for list="{{laTabs}}" as="t" hint-placeholder-count="3"><button type="button" class="mtab" role="radio" aria-checked="{{t.on}}" onClick="{{ t.pick }}" style="background: {{t.bg}}; color: {{t.fg}}; box-shadow: {{t.ring}}"><span style="display: inline-flex"><svg width="10" height="10" viewBox="0 0 10 10" aria-hidden="true"><path d="{{t.shape}}" fill="{{t.c}}"></path></svg></span>{{t.t}}</button></sc-for></div>
+        <div style="display: flex; gap: 8px"><div class="seg" role="group" aria-label="Data"><sc-for list="{{laData}}" as="s" hint-placeholder-count="2"><button type="button" aria-pressed="{{s.on}}" onClick="{{ s.pick }}">{{s.t}}</button></sc-for></div><div class="seg" role="group" aria-label="Timeframe"><sc-for list="{{laRanges}}" as="s" hint-placeholder-count="2"><button type="button" aria-pressed="{{s.on}}" onClick="{{ s.pick }}">{{s.t}}</button></sc-for></div></div>
+      </div>
+      <div style="position: relative; margin-top: 18px">
+        <svg viewBox="0 0 {{la.W}} {{la.H}}" width="100%" style="display: block; overflow: visible" role="img" aria-label="{{la.aria}}">
+  <defs><sc-for list="{{la.series}}" as="s" hint-placeholder-count="3"><linearGradient id="{{s.gid}}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="{{s.c}}" stop-opacity="{{s.fo}}"></stop><stop offset="1" stop-color="{{s.c}}" stop-opacity="0.02"></stop></linearGradient></sc-for></defs>
+  <sc-for list="{{la.ticks}}" as="t" hint-placeholder-count="6"><line x1="{{la.gl1}}" x2="{{la.gl2}}" y1="{{t.y}}" y2="{{t.y}}" stroke="#121412"></line><text x="{{t.x}}" y="{{t.y}}" dy="4" text-anchor="{{t.anchor}}" font-size="11" font-weight="600" fill="#6E746E">{{t.t}}</text></sc-for>
+  <sc-for list="{{la.series}}" as="s" hint-placeholder-count="3"><path class="mv" style="d: path('{{s.area}}')" fill="url(#{{s.gid}})"></path></sc-for>
+  <sc-for list="{{la.series}}" as="s" hint-placeholder-count="3"><path class="mv" style="d: path('{{s.line}}')" fill="none" stroke="{{s.lc}}" stroke-width="{{s.lw}}" stroke-opacity="{{s.lo}}" stroke-linecap="round"></path></sc-for>
+  <sc-for list="{{la.dots}}" as="p" hint-placeholder-count="6"><circle cx="{{p.x}}" cy="{{p.y}}" r="3.4" fill="#0D1210" stroke="{{p.c}}" stroke-width="2"></circle></sc-for>
+  <line x1="{{la.sx}}" x2="{{la.sx}}" y1="{{la.top}}" y2="{{la.base}}" stroke="#C4C8C2" stroke-width="1.2" stroke-dasharray="3 4" stroke-opacity="0.6"></line>
+  <sc-for list="{{la.marks}}" as="m" hint-placeholder-count="3"><path d="{{m.d}}" fill="{{m.c}}" stroke="#0D1210" stroke-width="2.5"></path></sc-for>
+  <sc-for list="{{la.xl}}" as="x" hint-placeholder-count="5"><text x="{{x.x}}" y="{{la.labY}}" text-anchor="middle" font-size="11" font-weight="700" fill="{{x.c}}">{{x.t}}</text></sc-for>
+  <sc-for list="{{la.hits}}" as="h" hint-placeholder-count="30"><rect x="{{h.x}}" y="0" width="{{h.w}}" height="{{la.H}}" fill="transparent" style="cursor: pointer" onClick="{{ h.pick }}"></rect></sc-for>
+</svg>
+        <sc-if value="{{laFull}}" hint-placeholder-val="{{ true }}"><div class="tip" style="left: {{la.selPct}}; top: -18px"><small>{{laTipDate}}</small><sc-for list="{{laTip}}" as="r" hint-placeholder-count="3"><span class="tr"><svg width="10" height="10" viewBox="0 0 10 10" aria-hidden="true"><path d="{{r.shape}}" fill="{{r.c}}"></path></svg><span>{{r.t}}</span><b>{{r.v}}</b></span></sc-for></div></sc-if>
+        <sc-if value="{{laSparse}}" hint-placeholder-val="{{ false }}"><div style="position: absolute; left: 50%; top: 40%; transform: translate(-50%, -50%); padding: 12px 16px; border-radius: 18px; background: #1C1F1C; box-shadow: 0 0 0 1px #2C302C; font-size: 13px; font-weight: 600; text-align: center">3 days logged · comparisons appear after a week of check-ins.</div></sc-if>
+      </div>
+      <div style="font-size: 12px; color: #969B94">All three are daily check-in scores on one 0–10 scale (same unit, one axis). Tap a day to pin the tooltip; tabs only change emphasis.</div>
+    </div>
+  </section>
+
+  <!-- ================= MOBILE ================= -->
+  <section style="display: flex; flex-direction: column; gap: 20px">
+    <div style="display: flex; flex-direction: column; gap: 6px"><span class="sh">MOBILE · 390</span><h2 style="margin: 0; font-size: 30px; font-weight: 500">Mobile forms — not scaled-down desktop</h2></div>
+    <div style="display: grid; grid-template-columns: repeat(3, 390px); justify-content: space-between; align-items: start; row-gap: 48px">
+      <!-- A mobile vertical -->
+      <div class="phone">
+        <div class="pc" style="overflow: hidden">
+          <svg viewBox="0 0 326 70" width="100%" style="position: absolute; left: 0; top: 0" aria-hidden="true"><path d="M0 50 C40 20 70 44 110 26 S190 10 230 34 S300 22 326 30 L326 70 L0 70 Z" fill="#232A27" fill-opacity="0.7"></path><path d="M0 62 C60 46 120 64 190 50 S280 52 326 46 L326 70 L0 70 Z" fill="#1F3A33"></path></svg>
+          <div style="position: relative; margin-top: 52px; display: flex; justify-content: space-between; align-items: baseline"><span style="font-size: 16px; font-weight: 700">Launch Planner App v1</span><span style="font-size: 20px; font-weight: 600; color: #6FD4B8">64%</span></div>
+          <div style="height: 6px; border-radius: 3px; background: #2A2E2A; overflow: hidden"><span style="display: block; width: 64%; height: 100%; background: linear-gradient(90deg, #4FE3C1, #6FD4B8)"></span></div>
+          <div style="display: flex; flex-direction: column; margin-top: 6px">
+            <sc-for list="{{gpm}}" as="m" hint-placeholder-count="6">
+              <div style="display: grid; grid-template-columns: 34px minmax(0, 1fr); gap: 10px; min-height: 58px">
+                <div style="position: relative; display: flex; justify-content: center"><span style="position: absolute; top: 0; bottom: 0; left: 50%; margin-left: -2px; width: 4px; border-radius: 2px; background: {{m.line}}; opacity: {{m.lo}}"></span><span style="position: relative; margin-top: 2px; width: {{m.s}}; height: {{m.s}}; box-sizing: border-box; border-radius: 50%; background: {{m.bg}}; border: {{m.border}}; box-shadow: {{m.ring}}; display: inline-flex; align-items: center; justify-content: center"><sc-if value="{{m.check}}" hint-placeholder-val="{{ true }}"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#0D1210" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg></sc-if><sc-if value="{{m.cur}}" hint-placeholder-val="{{ false }}"><span style="width: 9px; height: 9px; border-radius: 50%; background: #6FD4B8"></span></sc-if></span></div>
+                <div style="display: flex; flex-direction: column; padding-bottom: 10px"><span style="font-size: 14px; font-weight: {{m.fw}}">{{m.t}}</span><span style="font-size: 12px; font-weight: 700; color: {{m.sc}}">{{m.s2}}</span><sc-if value="{{m.cur}}" hint-placeholder-val="{{ false }}"><span style="margin-top: 6px; align-self: flex-start; height: 30px; padding: 0 12px; border-radius: 999px; background: #16231F; color: #6FD4B8; font-size: 12px; font-weight: 700; display: inline-flex; align-items: center">Next: finish API · due 2 Aban</span></sc-if></div>
+              </div>
+            </sc-for>
+          </div>
+          <span style="font-size: 12px; color: #A5AAA3; line-height: 1.45">Vertical, chronological top → bottom. The landscape shrinks to a header band; callouts become rows.</span>
+        </div>
+      </div>
+      <!-- B mobile -->
+      <div class="phone">
+        <div class="pc">
+          <div style="display: flex; justify-content: space-between"><div style="display: flex; flex-direction: column"><span style="font-size: 11px; font-weight: 700; color: #969B94">Available</span><span style="font-size: 20px; font-weight: 600">48M</span></div><div style="display: flex; flex-direction: column; align-items: flex-end"><span style="font-size: 11px; font-weight: 700; color: #969B94">Spent</span><span style="font-size: 20px; font-weight: 600">31.2M</span></div></div>
+          <div style="position: relative">
+  <svg viewBox="0 0 {{bfm.W}} {{bfm.H}}" width="100%" style="display: block" role="img" aria-label="{{bfm.aria}}">
+    <defs>
+      <linearGradient id="bfMsrc" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4FE3C1"></stop><stop offset="1" stop-color="#6FD4B8"></stop></linearGradient>
+      <sc-for list="{{bfm.ribbons}}" as="r" hint-placeholder-count="8"><linearGradient id="{{r.gid}}" gradientUnits="userSpaceOnUse" x1="{{bfm.gx1}}" y1="0" x2="{{bfm.gx2}}" y2="0"><stop offset="0" stop-color="{{r.c}}" stop-opacity="{{r.o0}}"></stop><stop offset="1" stop-color="{{r.c}}" stop-opacity="{{r.o1}}"></stop></linearGradient></sc-for>
+    </defs>
+    <sc-for list="{{bfm.ribbons}}" as="r" hint-placeholder-count="8"><path class="mv" d="{{r.d}}" fill="url(#{{r.gid}})" stroke="{{r.edge}}" stroke-width="1" stroke-dasharray="{{r.dash}}" style="cursor: pointer" onClick="{{ r.pick }}"></path></sc-for>
+    <rect x="{{bfm.srcX}}" y="{{bfm.srcY}}" width="{{bfm.srcW}}" height="{{bfm.srcH}}" rx="7" fill="url(#bfMsrc)"></rect>
+  </svg>
+  <sc-for list="{{bfm.ribbons}}" as="r" hint-placeholder-count="8">
+    <button type="button" onClick="{{ r.pick }}" aria-pressed="{{r.on}}" aria-label="{{r.aria}}" style="position: absolute; {{bfm.side}}: {{bfm.rowX}}; {{bfm.side2}}: 0; top: {{r.typ}}; transform: translateY(-50%); display: flex; align-items: center; gap: 6px; height: 30px; padding: 0 8px 0 4px; border: 0; border-radius: 999px; background: {{r.bg}}; box-shadow: {{r.ring}}; font-family: inherit; text-align: start; cursor: pointer; opacity: {{r.dim}}">
+      <span style="flex: none; width: 20px; height: 20px; box-sizing: border-box; border-radius: 50%; background: {{r.soft}}; border: {{r.mb}}; display: inline-flex; align-items: center; justify-content: center"><span style="width: 7px; height: 7px; border-radius: 50%; background: {{r.dot}}"></span></span>
+      <span style="flex: 1; min-width: 0; font-size: 12px; font-weight: 700; color: #ECEEE9; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{r.label}}</span>
+      <span style="flex: none; height: 20px; padding: 0 8px; border-radius: 999px; background: {{r.chip}}; font-size: 10px; font-weight: 700; color: #C4C8C2; display: inline-flex; align-items: center">{{r.pctT}}</span>
+      <span style="flex: none; min-width: 44px; text-align: end; font-size: 12px; font-weight: 700; color: {{r.amtC}}">{{r.amt}}</span>
+    </button>
+  </sc-for>
+</div>
+          <span style="font-size: 12px; color: #A5AAA3; line-height: 1.45">Top 4 categories + “Other (3)”. Tap a row → sheet with the folded categories and transactions.</span>
+        </div>
+      </div>
+      <!-- C mobile -->
+      <div class="phone">
+        <div class="pc">
+          <div style="display: flex; gap: 4px"><sc-for list="{{laTabsM}}" as="t" hint-placeholder-count="3"><span class="mtab" style="height: 30px; padding: 0 10px; background: {{t.bg}}; color: {{t.fg}}; box-shadow: {{t.ring}}"><svg width="9" height="9" viewBox="0 0 10 10" aria-hidden="true"><path d="{{t.shape}}" fill="{{t.c}}"></path></svg>{{t.t}}</span></sc-for></div>
+          <div style="position: relative; margin-top: 70px">
+            <svg viewBox="0 0 {{lam.W}} {{lam.H}}" width="100%" style="display: block; overflow: visible" role="img" aria-label="{{lam.aria}}">
+  <defs><sc-for list="{{lam.series}}" as="s" hint-placeholder-count="3"><linearGradient id="{{s.gid}}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="{{s.c}}" stop-opacity="{{s.fo}}"></stop><stop offset="1" stop-color="{{s.c}}" stop-opacity="0.02"></stop></linearGradient></sc-for></defs>
+  <sc-for list="{{lam.ticks}}" as="t" hint-placeholder-count="6"><line x1="{{lam.gl1}}" x2="{{lam.gl2}}" y1="{{t.y}}" y2="{{t.y}}" stroke="#121412"></line><text x="{{t.x}}" y="{{t.y}}" dy="4" text-anchor="{{t.anchor}}" font-size="10" font-weight="600" fill="#6E746E">{{t.t}}</text></sc-for>
+  <sc-for list="{{lam.series}}" as="s" hint-placeholder-count="3"><path class="mv" style="d: path('{{s.area}}')" fill="url(#{{s.gid}})"></path></sc-for>
+  <sc-for list="{{lam.series}}" as="s" hint-placeholder-count="3"><path class="mv" style="d: path('{{s.line}}')" fill="none" stroke="{{s.lc}}" stroke-width="{{s.lw}}" stroke-opacity="{{s.lo}}" stroke-linecap="round"></path></sc-for>
+  <sc-for list="{{lam.dots}}" as="p" hint-placeholder-count="6"><circle cx="{{p.x}}" cy="{{p.y}}" r="2.6" fill="#0D1210" stroke="{{p.c}}" stroke-width="2"></circle></sc-for>
+  <line x1="{{lam.sx}}" x2="{{lam.sx}}" y1="{{lam.top}}" y2="{{lam.base}}" stroke="#C4C8C2" stroke-width="1.2" stroke-dasharray="3 4" stroke-opacity="0.6"></line>
+  <sc-for list="{{lam.marks}}" as="m" hint-placeholder-count="3"><path d="{{m.d}}" fill="{{m.c}}" stroke="#0D1210" stroke-width="2.5"></path></sc-for>
+  <sc-for list="{{lam.xl}}" as="x" hint-placeholder-count="5"><text x="{{x.x}}" y="{{lam.labY}}" text-anchor="middle" font-size="10" font-weight="700" fill="{{x.c}}">{{x.t}}</text></sc-for>
+  <sc-for list="{{lam.hits}}" as="h" hint-placeholder-count="30"><rect x="{{h.x}}" y="0" width="{{h.w}}" height="{{lam.H}}" fill="transparent" style="cursor: pointer" onClick="{{ h.pick }}"></rect></sc-for>
+</svg>
+            <div class="tip" style="left: {{lam.selPct}}; top: -70px; padding: 8px 10px"><small>{{lamTipDate}}</small><sc-for list="{{lamTip}}" as="r" hint-placeholder-count="3"><span class="tr" style="grid-template-columns: 10px 50px auto; font-size: 12px"><svg width="9" height="9" viewBox="0 0 10 10" aria-hidden="true"><path d="{{r.shape}}" fill="{{r.c}}"></path></svg><span>{{r.t}}</span><b>{{r.v}}</b></span></sc-for></div>
+          </div>
+          <span style="font-size: 12px; color: #A5AAA3; line-height: 1.45">4 date labels, compact tooltip pinned by tap, tabs above instead of a legend.</span>
+        </div>
+      </div>
+      <!-- RTL B -->
+      <div class="phone" dir="rtl" style="font-family: 'Vazirmatn', 'Urbanist', sans-serif">
+        <div class="pc">
+          <span class="sh">جریان بودجه · مهر</span>
+          <div style="display: flex; justify-content: space-between"><div style="display: flex; flex-direction: column"><span style="font-size: 11px; font-weight: 700; color: #969B94">موجودی</span><span style="font-size: 18px; font-weight: 700">۴۸ میلیون</span></div><div style="display: flex; flex-direction: column; align-items: flex-end"><span style="font-size: 11px; font-weight: 700; color: #969B94">خرج‌شده</span><span style="font-size: 18px; font-weight: 700">۳۱٫۲ میلیون</span></div></div>
+          <div style="position: relative">
+  <svg viewBox="0 0 {{bff.W}} {{bff.H}}" width="100%" style="display: block" role="img" aria-label="{{bff.aria}}">
+    <defs>
+      <linearGradient id="bfFsrc" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4FE3C1"></stop><stop offset="1" stop-color="#6FD4B8"></stop></linearGradient>
+      <sc-for list="{{bff.ribbons}}" as="r" hint-placeholder-count="8"><linearGradient id="{{r.gid}}" gradientUnits="userSpaceOnUse" x1="{{bff.gx1}}" y1="0" x2="{{bff.gx2}}" y2="0"><stop offset="0" stop-color="{{r.c}}" stop-opacity="{{r.o0}}"></stop><stop offset="1" stop-color="{{r.c}}" stop-opacity="{{r.o1}}"></stop></linearGradient></sc-for>
+    </defs>
+    <sc-for list="{{bff.ribbons}}" as="r" hint-placeholder-count="8"><path class="mv" d="{{r.d}}" fill="url(#{{r.gid}})" stroke="{{r.edge}}" stroke-width="1" stroke-dasharray="{{r.dash}}" style="cursor: pointer" onClick="{{ r.pick }}"></path></sc-for>
+    <rect x="{{bff.srcX}}" y="{{bff.srcY}}" width="{{bff.srcW}}" height="{{bff.srcH}}" rx="7" fill="url(#bfFsrc)"></rect>
+  </svg>
+  <sc-for list="{{bff.ribbons}}" as="r" hint-placeholder-count="8">
+    <button type="button" onClick="{{ r.pick }}" aria-pressed="{{r.on}}" aria-label="{{r.aria}}" style="position: absolute; {{bff.side}}: {{bff.rowX}}; {{bff.side2}}: 0; top: {{r.typ}}; transform: translateY(-50%); display: flex; align-items: center; gap: 6px; height: 30px; padding: 0 8px 0 4px; border: 0; border-radius: 999px; background: {{r.bg}}; box-shadow: {{r.ring}}; font-family: inherit; text-align: start; cursor: pointer; opacity: {{r.dim}}">
+      <span style="flex: none; width: 20px; height: 20px; box-sizing: border-box; border-radius: 50%; background: {{r.soft}}; border: {{r.mb}}; display: inline-flex; align-items: center; justify-content: center"><span style="width: 7px; height: 7px; border-radius: 50%; background: {{r.dot}}"></span></span>
+      <span style="flex: 1; min-width: 0; font-size: 12px; font-weight: 700; color: #ECEEE9; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{r.label}}</span>
+      <span style="flex: none; height: 20px; padding: 0 8px; border-radius: 999px; background: {{r.chip}}; font-size: 10px; font-weight: 700; color: #C4C8C2; display: inline-flex; align-items: center">{{r.pctT}}</span>
+      <span style="flex: none; min-width: 44px; text-align: end; font-size: 12px; font-weight: 700; color: {{r.amtC}}">{{r.amt}}</span>
+    </button>
+  </sc-for>
+</div>
+          <span style="font-size: 12px; color: #A5AAA3; line-height: 1.7">آینه می‌شود (A): منبع سمت راست، دسته‌ها سمت چپ؛ ترتیب ردیف‌ها همان ترتیب مبلغ است.</span>
+        </div>
+      </div>
+      <!-- RTL C -->
+      <div class="phone" dir="rtl" style="font-family: 'Vazirmatn', 'Urbanist', sans-serif">
+        <div class="pc">
+          <span class="sh">حال، انرژی، تمرکز · مهر</span>
+          <div style="position: relative; margin-top: 70px">
+            <svg viewBox="0 0 {{laf.W}} {{laf.H}}" width="100%" style="display: block; overflow: visible" role="img" aria-label="{{laf.aria}}">
+  <defs><sc-for list="{{laf.series}}" as="s" hint-placeholder-count="3"><linearGradient id="{{s.gid}}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="{{s.c}}" stop-opacity="{{s.fo}}"></stop><stop offset="1" stop-color="{{s.c}}" stop-opacity="0.02"></stop></linearGradient></sc-for></defs>
+  <sc-for list="{{laf.ticks}}" as="t" hint-placeholder-count="6"><line x1="{{laf.gl1}}" x2="{{laf.gl2}}" y1="{{t.y}}" y2="{{t.y}}" stroke="#121412"></line><text x="{{t.x}}" y="{{t.y}}" dy="4" text-anchor="{{t.anchor}}" font-size="10" font-weight="600" fill="#6E746E">{{t.t}}</text></sc-for>
+  <sc-for list="{{laf.series}}" as="s" hint-placeholder-count="3"><path class="mv" style="d: path('{{s.area}}')" fill="url(#{{s.gid}})"></path></sc-for>
+  <sc-for list="{{laf.series}}" as="s" hint-placeholder-count="3"><path class="mv" style="d: path('{{s.line}}')" fill="none" stroke="{{s.lc}}" stroke-width="{{s.lw}}" stroke-opacity="{{s.lo}}" stroke-linecap="round"></path></sc-for>
+  <sc-for list="{{laf.dots}}" as="p" hint-placeholder-count="6"><circle cx="{{p.x}}" cy="{{p.y}}" r="2.6" fill="#0D1210" stroke="{{p.c}}" stroke-width="2"></circle></sc-for>
+  <line x1="{{laf.sx}}" x2="{{laf.sx}}" y1="{{laf.top}}" y2="{{laf.base}}" stroke="#C4C8C2" stroke-width="1.2" stroke-dasharray="3 4" stroke-opacity="0.6"></line>
+  <sc-for list="{{laf.marks}}" as="m" hint-placeholder-count="3"><path d="{{m.d}}" fill="{{m.c}}" stroke="#0D1210" stroke-width="2.5"></path></sc-for>
+  <sc-for list="{{laf.xl}}" as="x" hint-placeholder-count="5"><text x="{{x.x}}" y="{{laf.labY}}" text-anchor="middle" font-size="10" font-weight="700" fill="{{x.c}}">{{x.t}}</text></sc-for>
+  <sc-for list="{{laf.hits}}" as="h" hint-placeholder-count="30"><rect x="{{h.x}}" y="0" width="{{h.w}}" height="{{laf.H}}" fill="transparent" style="cursor: pointer" onClick="{{ h.pick }}"></rect></sc-for>
+</svg>
+            <div class="tip" style="left: {{laf.selPct}}; top: -70px; padding: 8px 10px"><small>{{lafTipDate}}</small><sc-for list="{{lafTip}}" as="r" hint-placeholder-count="3"><span class="tr" style="grid-template-columns: 10px 44px auto; font-size: 12px"><svg width="9" height="9" viewBox="0 0 10 10" aria-hidden="true"><path d="{{r.shape}}" fill="{{r.c}}"></path></svg><span>{{r.t}}</span><b>{{r.v}}</b></span></sc-for></div>
+          </div>
+          <span style="font-size: 12px; color: #A5AAA3; line-height: 1.7">آینه می‌شود (A): زمان از راست به چپ؛ محور ۰ تا ۱۰ سمت راست با ارقام فارسی.</span>
+        </div>
+      </div>
+      <!-- RTL A -->
+      <div class="phone" dir="rtl" style="font-family: 'Vazirmatn', 'Urbanist', sans-serif">
+        <div class="pc">
+          <span class="sh">مسیر هدف — دسکتاپ فارسی</span>
+          <div style="position: relative; border-radius: 26px; overflow: hidden; background: linear-gradient(180deg, #1E2420 0%, #1C1F1C 75%)">
+  <svg viewBox="0 0 {{gpf.W}} {{gpf.H}}" width="100%" style="display: block" role="img" aria-label="{{gpf.aria}}">
+    <defs>
+      <linearGradient id="gpFfar" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#232A27"></stop><stop offset="1" stop-color="#1E2420" stop-opacity="0"></stop></linearGradient>
+      <linearGradient id="gpFmid" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1F3A33"></stop><stop offset="1" stop-color="#1E2420" stop-opacity="0.2"></stop></linearGradient>
+      <linearGradient id="gpFnear" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1D4A40"></stop><stop offset="1" stop-color="#1A2B26"></stop></linearGradient>
+      <linearGradient id="gpFmist" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1C1F1C" stop-opacity="0"></stop><stop offset="0.55" stop-color="#1C1F1C" stop-opacity="0.65"></stop><stop offset="1" stop-color="#1C1F1C" stop-opacity="0"></stop></linearGradient>
+    </defs>
+    <path d="{{gpf.far}}" fill="url(#gpFfar)"></path>
+    <rect x="0" y="40%" width="100%" height="30%" fill="url(#gpFmist)"></rect>
+    <path d="{{gpf.mid}}" fill="url(#gpFmid)"></path>
+    <path d="{{gpf.near}}" fill="url(#gpFnear)" fill-opacity="0.85"></path>
+    <path d="{{gpf.full}}" fill="none" stroke="#0D1210" stroke-width="10" stroke-linecap="round" stroke-opacity="0.9"></path>
+    <path d="{{gpf.full}}" fill="none" stroke="#5A5F59" stroke-width="2.5" stroke-dasharray="2 8" stroke-linecap="round"></path>
+    <path class="draw" d="{{gpf.done}}" fill="none" stroke="#6FD4B8" stroke-width="4" stroke-linecap="round"></path>
+    <sc-for list="{{gpf.nodes}}" as="n" hint-placeholder-count="6">
+      <g style="cursor: pointer" onClick="{{ n.pick }}" tabindex="0" role="button" aria-label="{{n.aria}}">
+        <circle cx="{{n.x}}" cy="{{n.y}}" r="22" fill="transparent"></circle>
+        <sc-if value="{{n.done}}" hint-placeholder-val="{{ true }}"><circle cx="{{n.x}}" cy="{{n.y}}" r="11" fill="#6FD4B8" stroke="#0D1210" stroke-width="3"></circle><path d="M{{n.cx1}} {{n.y}} l3.5 3.5 l6 -7" fill="none" stroke="#0D1210" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></sc-if>
+        <sc-if value="{{n.current}}" hint-placeholder-val="{{ false }}"><circle cx="{{n.x}}" cy="{{n.y}}" r="20" fill="#6FD4B8" fill-opacity="0.12"></circle><circle cx="{{n.x}}" cy="{{n.y}}" r="13" fill="#0D1210" stroke="#6FD4B8" stroke-width="3"></circle><circle cx="{{n.x}}" cy="{{n.y}}" r="5.5" fill="#6FD4B8"></circle></sc-if>
+        <sc-if value="{{n.late}}" hint-placeholder-val="{{ false }}"><circle cx="{{n.x}}" cy="{{n.y}}" r="20" fill="#C98500" fill-opacity="0.14"></circle><circle cx="{{n.x}}" cy="{{n.y}}" r="13" fill="#3A2E12" stroke="#E5A520" stroke-width="3"></circle><path d="M{{n.x}} {{n.cly}} v5 l3 2" fill="none" stroke="#F5B54A" stroke-width="2" stroke-linecap="round"></path></sc-if>
+        <sc-if value="{{n.next}}" hint-placeholder-val="{{ false }}"><circle cx="{{n.x}}" cy="{{n.y}}" r="9" fill="#0D1210" stroke="#5A5F59" stroke-width="2.5"></circle></sc-if>
+        <sc-if value="{{n.goal}}" hint-placeholder-val="{{ false }}"><path d="M{{n.x}} {{n.y}} v-34 l20 7 l-20 7" fill="{{n.flag}}" stroke="{{n.flagS}}" stroke-width="2" stroke-linejoin="round"></path><circle cx="{{n.x}}" cy="{{n.y}}" r="9" fill="{{n.goalBg}}" stroke="{{n.flagS}}" stroke-width="2.5"></circle></sc-if>
+      </g>
+    </sc-for>
+  </svg>
+  <sc-for list="{{gpf.nodes}}" as="n" hint-placeholder-count="6">
+    <div style="position: absolute; left: {{n.px}}; top: {{n.py}}; transform: {{n.tf}}; min-width: 104px; box-sizing: border-box; padding: 6px 9px; border-radius: 16px; background: #1C1F1C; box-shadow: {{n.sh}}; display: flex; flex-direction: column; gap: 1px; pointer-events: none; white-space: nowrap; z-index: {{n.z}}; opacity: {{n.op}}">
+      <span style="font-size: 11px; font-weight: 700; color: #ECEEE9">{{n.name}}</span>
+      <span style="font-size: 10px; font-weight: 700; color: {{n.subC}}">{{n.sub}}</span>
+      <sc-if value="{{n.sel}}" hint-placeholder-val="{{ false }}"><span style="margin-top: 4px; font-size: 10px; font-weight: 600; color: #969B94">{{n.detail}}</span></sc-if>
+    </div>
+  </sc-for>
+</div>
+          <span style="font-size: 12px; color: #A5AAA3; line-height: 1.7">آینه می‌شود (A): مسیر از راست شروع و به چپ بالا می‌رود؛ ترتیب زمانی حفظ می‌شود. در موبایل همان حالت عمودی بالا به پایین.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= RULES TABLE ================= -->
+  <section class="card" style="display: flex; flex-direction: column; gap: 14px">
+    <span class="sh" style="font-size: 14px; color: #ECEEE9">USAGE, MOBILE, RTL, MOTION</span>
+    <div class="tbl">
+      <b></b><b>GOAL MILESTONE PATH</b><b>BUDGET FLOW</b><b>LAYERED AREA</b><b>RELATIONSHIP</b>
+      <sc-for list="{{tbl}}" as="r" hint-placeholder-count="9"><span style="font-weight: 700">{{r.k}}</span><span>{{r.a}}</span><span>{{r.b}}</span><span>{{r.c}}</span><span style="color: #A5AAA3">{{r.d}}</span></sc-for>
+    </div>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":4400}}'>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { gpState: 'track', gpSel: 3, bfState: 'normal', bfSel: 'housing', laMetric: 'mood', laSel: 13, laN: 30, laSparse: false }; }
+  renderVals() {
+    const VZ3 = (() => {
+      const f1 = (n) => (Math.round(n * 10) / 10).toString();
+      const sm = (p) => { if (!p.length) return ''; let d = 'M' + f1(p[0][0]) + ' ' + f1(p[0][1]); for (let i = 0; i < p.length - 1; i++) { const p0 = p[i - 1] || p[i], p1 = p[i], p2 = p[i + 1], p3 = p[i + 2] || p2; d += ' C' + f1(p1[0] + (p2[0] - p0[0]) / 6) + ' ' + f1(p1[1] + (p2[1] - p0[1]) / 6) + ' ' + f1(p2[0] - (p3[0] - p1[0]) / 6) + ' ' + f1(p2[1] - (p3[1] - p1[1]) / 6) + ' ' + f1(p2[0]) + ' ' + f1(p2[1]); } return d; };
+      const FA = '۰۱۲۳۴۵۶۷۸۹', fa = (s) => String(s).replace(/[0-9]/g, (d) => FA[d]);
+      const mir = (rtl, W) => (x) => (rtl ? W - x : x);
+
+      /* A · Goal Milestone Path (scenic) */
+      function path(o) {
+        const W = o.W || 820, H = o.H || 300, rtl = !!o.rtl, state = o.state || 'track', M = mir(rtl, W);
+        const raw = [[50, 250], [190, 222], [330, 190], [470, 160], [610, 120], [750, 104]];
+        const P = raw.map(([x, y]) => [M(x * W / 820), y * H / 300]);
+        const land = (pts, base) => { const q = pts.map(([x, y]) => [M(x * W / 820), y * H / 300]); return sm(q) + ` L${f1(M(W))} ${H} L${f1(M(0))} ${H} Z`; };
+        const far = land([[0, 150], [90, 96], [170, 128], [260, 70], [350, 120], [450, 84], [560, 130], [660, 60], [760, 104], [820, 88]]);
+        const mid = land([[0, 196], [120, 160], [240, 190], [380, 150], [520, 178], [650, 140], [820, 160]]);
+        const near = land([[0, 262], [150, 236], [300, 258], [460, 226], [620, 246], [820, 220]]);
+        const cur = state === 'done' ? 6 : 3;
+        const NAMES = o.names || [['Brief', 'Done'], ['Research', 'Done'], ['Design', 'Completed'], ['Development', 'In progress · 64%'], ['Beta', 'Next · 20 Aban'], ['Launch', 'Goal · 30 Azar']];
+        const nodes = P.map(([x, y], i) => {
+          const st = i === 5 ? (state === 'done' ? 'goalDone' : 'goal') : i < cur ? 'done' : i === cur ? (state === 'late' ? 'late' : 'current') : 'next';
+          return { i, x: f1(x), y: f1(y), st, done: st === 'done', current: st === 'current', late: st === 'late', next: st === 'next', goal: st === 'goal' || st === 'goalDone', goalDone: st === 'goalDone',
+            name: NAMES[i][0], sub: state === 'late' && i === cur ? 'Behind · 3 days' : state === 'done' && i < 5 ? 'Done' : state === 'done' ? 'Reached' : NAMES[i][1],
+            px: (x / W * 100).toFixed(2) + '%', py: (y / H * 100).toFixed(2) + '%', above: [true, false, true, true, false, true][i] };
+        });
+        return { W, H, far, mid, near, full: sm(P), done: sm(P.slice(0, Math.min(cur, 5) + 1)), nodes };
+      }
+
+      /* B · Budget Flow */
+      function flow(o) {
+        const W = o.W || 820, H = o.H || 400, rtl = !!o.rtl, M = mir(rtl, W), compact = !!o.compact;
+        const CAT = o.cats;
+        const income = o.income, spent = CAT.reduce((a, c) => a + c.v, 0), rest = Math.max(0, income - spent);
+        const top = 18, bot = H - 18, unit = (bot - top - 3 * CAT.length) / income;
+        const sx0 = compact ? 8 : 20, sx1 = sx0 + (compact ? 14 : 22), tx = compact ? W * 0.34 : 430;
+        const rows = CAT.concat(rest ? [{ id: 'rest', en: 'Remaining', fa: 'باقی‌مانده', v: rest, c: '#2A5C4E', rest: true }] : []);
+        const gap = (bot - top) / rows.length;
+        let y = top;
+        const ribbons = rows.map((c, i) => {
+          const h = c.v * unit, a = y, b = y + h; y += h + 3;
+          const ty = top + gap * (i + 0.5), th = Math.max(6, Math.min(compact ? 14 : 22, h * 0.45));
+          const x0 = M(sx1), x1 = M(tx), mx = (x0 + x1) / 2;
+          const d = `M${f1(x0)} ${f1(a)} C${f1(mx)} ${f1(a)} ${f1(mx)} ${f1(ty - th / 2)} ${f1(x1)} ${f1(ty - th / 2)} L${f1(x1)} ${f1(ty + th / 2)} C${f1(mx)} ${f1(ty + th / 2)} ${f1(mx)} ${f1(b)} ${f1(x0)} ${f1(b)} Z`;
+          return Object.assign({}, c, { d, ty, typ: (ty / H * 100).toFixed(2) + '%', pct: c.rest ? Math.round(c.v / income * 100) : Math.round(c.v / spent * 100), a, b });
+        });
+        return { W, H, ribbons, srcX: f1(Math.min(M(sx0), M(sx1))), srcW: f1(sx1 - sx0), srcY: top, srcH: f1(y - 3 - top), restY: ribbons.length ? ribbons[ribbons.length - 1].a : 0,
+          spent, income, rest, tx: (rtl ? (W - tx) / W : tx / W) * 100 };
+      }
+
+      /* C · Layered Area */
+      function layered(o) {
+        const W = o.W || 820, H = o.H || 260, rtl = !!o.rtl, M = mir(rtl, W), n = o.n || 30, compact = !!o.compact;
+        const SER = o.series;
+        const padL = compact ? 26 : 40, padR = compact ? 10 : 16, top = 14, base = H - 30;
+        const X = (i) => M(padL + i / (n - 1) * (W - padL - padR)), Y = (v) => base - v / 10 * (base - top);
+        const series = SER.map((s) => {
+          const pts = s.vals.slice(-n).map((v, i) => [X(i), Y(v)]);
+          const line = sm(pts), area = line + ` L${f1(pts[pts.length - 1][0])} ${base} L${f1(pts[0][0])} ${base} Z`;
+          return Object.assign({}, s, { line, area, pts });
+        });
+        const sel = Math.min(n - 1, Math.max(0, o.sel == null ? n - 9 : o.sel));
+        const ticks = [0, 2, 4, 6, 8, 10].map((v) => ({ y: f1(Y(v)), t: rtl ? fa(v) : String(v), x: rtl ? W - 4 : 4, anchor: rtl ? 'end' : 'start' }));
+        const step = (W - padL - padR) / (n - 1);
+        return { W, H, series, ticks, base, top, sel, sx: f1(X(sel)), selPct: Math.min(84, Math.max(14, X(sel) / W * 100)).toFixed(2) + '%',
+          hits: Array.from({ length: n }, (_, i) => ({ x: f1(X(i) - step / 2), w: f1(step), i })), X, Y };
+      }
+      return { path, flow, layered, fa, sm };
+    })();
+
+    const st = this.state;
+    const segs = (key, opts) => opts.map(([v, t]) => ({ t, on: st[key] === v ? 'true' : 'false', pick: () => this.setState({ [key]: v }) }));
+    const fa = VZ3.fa;
+
+    /* A */
+    const decoP = (p, sel, interactive, rtl) => {
+      const DET = ['Goal agreed · 1 Mehr', '12 interviews · 8 Mehr', 'Design pages · 18 Mehr', 'Due 2 Aban · Next: finish API', 'Due 20 Aban · 50 beta users', 'Target 30 Azar'];
+      const SUBC = { done: '#6FD4B8', current: '#6FD4B8', late: '#F5B54A', next: '#7D827B', goal: '#969B94', goalDone: '#6FD4B8' };
+      p.nodes = p.nodes.map((n) => { const isSel = n.i === sel; return Object.assign(n, {
+        pick: interactive ? () => this.setState({ gpSel: n.i }) : () => {}, aria: n.name + ', ' + n.sub,
+        cx1: (parseFloat(n.x) - 4.5).toFixed(1), cly: (parseFloat(n.y) - 6).toFixed(1), flag: n.goalDone ? '#6FD4B8' : '#0D1210', flagS: n.goalDone ? '#6FD4B8' : '#6E746E', goalBg: n.goalDone ? '#6FD4B8' : '#1C1F1C',
+        tf: n.goal ? (rtl ? 'translate(16px, -50%)' : 'translate(calc(-100% - 16px), calc(-100% - 6px))') : n.above ? 'translate(-50%, calc(-100% - 22px))' : 'translate(-50%, 24px)',
+        sh: isSel ? '0 0 0 2px #6FD4B8, 0 10px 24px rgba(0,0,0,0.48)' : '0 0 0 1px #2C302C, 0 8px 18px rgba(0,0,0,0.28)', z: isSel ? 4 : 2,
+        subC: SUBC[n.st], sel: isSel && !rtl, detail: DET[n.i], op: 1 }); });
+      p.aria = 'Goal path: ' + p.nodes.map((n) => n.name + ' ' + n.sub).join(', ');
+      return p;
+    };
+    const gp = decoP(VZ3.path({ state: st.gpState === 'empty' ? 'track' : st.gpState }), st.gpSel, true, false);
+    const gpf = decoP(VZ3.path({ W: 326, H: 220, rtl: true, names: [['شروع', 'انجام شد'], ['تحقیق', 'انجام شد'], ['طراحی', 'انجام شد'], ['توسعه', 'در حال انجام · ۶۴٪'], ['بتا', 'بعدی'], ['انتشار', 'هدف']] }), -1, false, true);
+    gpf.nodes.forEach((n) => { n.op = n.i === 3 ? 1 : 0; });
+    const pct = st.gpState === 'done' ? 100 : 64;
+
+    /* B */
+    const CATS = [['housing', 'Housing', 'مسکن', 12000, '#199E70'], ['food', 'Food', 'خوراک', 5800, '#D95926'], ['transport', 'Transport', 'رفت‌وآمد', 3900, '#4F7FC0'], ['life', 'Lifestyle', 'سبک زندگی', 3200, '#C98500'], ['work', 'Work', 'کار', 2600, '#8370D9'], ['health', 'Health', 'سلامت', 2100, '#C9608E'], ['other', 'Other', 'سایر', 1600, '#6E746E']].map(([id, en, fa_, v, c]) => ({ id, en, fa: fa_, v, c }));
+    const money = (k, rtl) => { const s = k >= 1000 ? (k / 1000).toFixed(1).replace('.0', '') + 'M' : k + 'K'; return rtl ? fa(s.replace('M', ' م').replace('.', '٫')) : s; };
+    const decoF = (f, idp, rtl, interactive, compact) => {
+      f.side = rtl ? 'right' : 'left'; f.side2 = rtl ? 'left' : 'right'; f.rowX = (rtl ? 100 - f.tx : f.tx).toFixed(2) + '%';
+      f.gx1 = rtl ? f.W - (compact ? 22 : 42) : (compact ? 22 : 42); f.gx2 = rtl ? f.W * (1 - f.tx / 100) : f.W * f.tx / 100;
+      const sel = interactive ? st.bfSel : null;
+      f.ribbons = f.ribbons.map((r, i) => { const on = sel === r.id; return Object.assign(r, {
+        gid: idp + 'g' + i, o0: r.rest ? 0.08 : (sel && !on ? 0.1 : 0.22), o1: r.rest ? 0.12 : (sel && !on ? 0.22 : on ? 0.75 : 0.5), edge: r.rest ? '#3E937A' : 'none', dash: r.rest ? '3 4' : 'none',
+        label: rtl ? r.fa : r.en, pctT: (rtl ? fa(r.pct) + '٪' : r.pct + '%') + (r.rest && !compact ? ' of income' : ''), amt: money(r.v, rtl), amtC: r.rest ? '#6FD4B8' : '#ECEEE9',
+        soft: r.rest ? '#0D1210' : r.c + '2E', dot: r.rest ? '#3E937A' : r.c, mb: r.rest ? '1.5px dashed #3E937A' : '0', chip: on ? r.c + '33' : '#121412',
+        bg: on ? '#222622' : 'transparent', ring: on ? 'inset 0 0 0 2px ' + r.c : 'none', dim: sel && !on ? 0.6 : 1, on: on ? 'true' : 'false',
+        aria: (rtl ? r.fa : r.en) + ': ' + money(r.v) + ' Toman, ' + r.pct + ' percent', pick: interactive ? () => this.setState({ bfSel: st.bfSel === r.id ? null : r.id }) : () => {} }); });
+      f.aria = 'Budget flow: ' + f.ribbons.map((r) => r.en + ' ' + r.pct + '%').join(', ');
+      return f;
+    };
+    const bf = decoF(VZ3.flow({ income: 48000, cats: CATS }), 'bfA', false, true, false);
+    const fold = CATS.slice(0, 4).concat([{ id: 'other3', en: 'Other (3)', fa: 'سایر (۳)', v: 2600 + 2100 + 1600, c: '#6E746E' }]);
+    const bfm = decoF(VZ3.flow({ W: 326, H: 270, compact: true, income: 48000, cats: fold }), 'bfM', false, false, true);
+    const bff = decoF(VZ3.flow({ W: 326, H: 270, compact: true, rtl: true, income: 48000, cats: fold }), 'bfF', true, false, true);
+    const selR = bf.ribbons.find((r) => r.id === st.bfSel);
+
+    /* C */
+    const SER = [['mood', 'Mood', 'حال', '#199E70', '#6FD4B8', 'M5 0.5 a4.5 4.5 0 1 0 0.01 0 Z'], ['energy', 'Energy', 'انرژی', '#C98500', '#C98500', 'M1 1 h8 v8 h-8 Z'], ['focus', 'Focus', 'تمرکز', '#4F7FC0', '#7DB6F0', 'M5 0 L10 5 L5 10 L0 5 Z']];
+    const vals = (id) => Array.from({ length: 30 }, (_, i) => { const v = id === 'mood' ? 6.6 + 1.5 * Math.sin(i / 2.3) + 0.6 * Math.cos(i / 1.3) : id === 'energy' ? 5.6 + 1.4 * Math.sin(i / 2.8 + 1) + 0.5 * Math.cos(i / 1.7) : 4.4 + 1.6 * Math.sin(i / 3.1 + 2) + 0.7 * Math.cos(i / 1.1); return Math.round(Math.max(0.5, Math.min(9.8, v)) * 10) / 10; });
+    const shapeAt = (k, x, y, r) => k === 0 ? `M${x} ${y - r} a${r} ${r} 0 1 0 0.01 0 Z` : k === 1 ? `M${x - r} ${y - r} h${2 * r} v${2 * r} h${-2 * r} Z` : `M${x} ${y - r - 1} L${x + r + 1} ${y} L${x} ${y + r + 1} L${x - r - 1} ${y} Z`;
+    const decoL = (W, H, n, sel, rtl, compact, emph, idp) => {
+      const L = VZ3.layered({ W, H, n, sel, rtl, compact, series: SER.map(([id, en, fa_, c, lc]) => ({ id, en, fa: fa_, c, lc, vals: vals(id) })) });
+      const order = L.series.filter((s) => s.id !== emph).concat(L.series.filter((s) => s.id === emph));
+      L.series = order.map((s) => { const e = s.id === emph; return Object.assign(s, { gid: idp + s.id, fo: e ? 0.42 : 0.12, lw: e ? 2.6 : 1.6, lo: e ? 1 : 0.55 }); });
+      const es = L.series[L.series.length - 1];
+      L.dots = es.pts.filter((_, i) => i % (n > 7 ? 4 : 1) === 0).map(([x, y]) => ({ x: x.toFixed(1), y: y.toFixed(1), c: es.lc }));
+      L.marks = SER.map(([id, en, fa_, c], k) => { const s = L.series.find((q) => q.id === id), [x, y] = s.pts[L.sel]; return { d: shapeAt(k, +x.toFixed(1), +y.toFixed(1), compact ? 4.5 : 5.5), c }; });
+      const day = (i) => 30 - n + 1 + i;
+      const idx = n > 7 ? (compact ? [0, 9, 19, n - 1] : [0, 6, 13, 20, n - 1]) : [0, 1, 2, 3, 4, 5, 6];
+      L.xl = idx.map((i) => ({ x: L.X(i).toFixed(1), t: rtl ? fa(day(i)) + ' مهر' : day(i) + ' Mehr', c: i === L.sel ? '#ECEEE9' : '#7D827B' }));
+      L.labY = H - 8; L.gl1 = rtl ? 8 : (compact ? 22 : 34); L.gl2 = rtl ? W - (compact ? 22 : 34) : W - 8;
+      L.hits = L.hits.map((h) => Object.assign(h, { pick: () => this.setState({ laSel: h.i }) }));
+      L.aria = 'Mood, energy and focus over ' + n + ' days; selected ' + day(L.sel) + ' Mehr';
+      const DN = ['Sat', 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri'], DNF = ['شنبه', 'یکشنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنجشنبه', 'جمعه'], wd = (d) => (d - 1 + 4) % 7;
+      L.tipDate = rtl ? DNF[wd(day(L.sel))] + ' ' + fa(day(L.sel)) + ' مهر' : DN[wd(day(L.sel))] + ', ' + day(L.sel) + ' Mehr';
+      L.tip = SER.map(([id, en, fa_, c], k) => { const s = L.series.find((q) => q.id === id); const v = s.vals.slice(-n)[L.sel]; return { t: rtl ? fa_ : en, v: rtl ? fa(String(v).replace('.', '٫')) : v.toFixed(1), c, shape: ['M5 0.5 a4.5 4.5 0 1 0 0.01 0 Z', 'M1 1 h8 v8 h-8 Z', 'M5 0 L10 5 L5 10 L0 5 Z'][k] }; });
+      if (st.laSparse && idp === 'laA') { L.series = L.series.map((s) => Object.assign(s, { area: 'M0 0', line: 'M0 0' })); L.dots = [0, 1, 2].map((i) => ({ x: L.X(n - 3 + i).toFixed(1), y: L.Y(vals('mood')[27 + i]).toFixed(1), c: '#6FD4B8' })); L.marks = []; }
+      return L;
+    };
+    const la = decoL(820, 280, st.laN, st.laN === 7 ? Math.min(6, st.laSel) : st.laSel, false, false, st.laMetric, 'laA');
+    const lam = decoL(326, 200, 30, 13, false, true, 'mood', 'laM');
+    const laf = decoL(326, 200, 30, 13, true, true, 'mood', 'laF');
+    const tabs = (metric, interactive) => SER.map(([id, en, fa_, c, lc, shape]) => { const on = metric === id; return { t: en, c, shape, on: on ? 'true' : 'false', bg: on ? c + '24' : '#222622', fg: on ? '#ECEEE9' : '#A5AAA3', ring: on ? 'inset 0 0 0 1.5px ' + c : 'none', pick: interactive ? () => this.setState({ laMetric: id }) : () => {} }; });
+
+    const TBL = [
+      ['Approved modules', 'Goals: goal detail; selected goal summary when there is room.', 'Finance: breakdown and insights.', 'Insights (trend comparison), Journal (behaviour comparison), Personal analytics.', '—'],
+      ['Do not use', 'Goal list rows, Tasks, Finance, Habits, Projects/Teams.', 'Where a sorted category list is enough; over time (that is Budget River); company/team money.', 'Where Mood Terrain tells the story; a single metric (one line); filling empty space.', 'One question per pattern; never as a generic primitive.'],
+      ['Desktop placement', 'Hero of goal detail, full content width, above key results.', 'Finance breakdown card, ~2/3 width; list on the right.', 'Insights / Journal trend card, ≥ 600px wide.', '—'],
+      ['Mobile', 'Vertical path top → bottom; landscape becomes a header band; callouts → rows.', 'Top 4 + “Other (n)”; amounts stay; tap → sheet with folded rows & transactions.', '4 date labels, tabs replace legend, tooltip pinned by tap.', 'Removed on mobile: decorative layers, minor ticks, hover.'],
+      ['Interaction', 'Click milestone → due date, % and next action; second click opens it.', 'Row ↔ ribbon highlight both ways; tooltip island; second tap filters transactions.', 'Tab = emphasis only; tap day pins tooltip with all values; ←/→ steps days.', 'Hover never required.'],
+      ['Motion', 'Path draws once; checkpoints settle; current gets a still halo.', 'Ribbons reveal source → rows once; selection fades others.', 'Series morph between ranges; emphasis cross-fades; guide appears in place.', 'No loops; reduced motion = instant.'],
+      ['RTL', 'A — mirror: path starts right, rises left; chronology kept.', 'A — mirror: source right, list left; row order = amount.', 'A — mirror time; axis on the right; Persian digits.', 'Clock-like forms (Focus Clock) stay B.'],
+      ['Dark', 'Landscape from surface steps (#1C1F1C → #242824 → #1D4A40), no glow.', 'Ribbons at the dark category steps, ≤ 0.6 opacity; source mint accent.', 'Fills ≤ 0.35, lines at dark steps, separation by opacity not glow.', 'Same tokens as the rest of DataViz.'],
+      ['vs. existing', 'Supersedes the frozen Milestone Path’s visual (same rules, richer card).', 'Complements Budget River (time) — this is distribution.', 'Complements Mood Terrain (story) — this is exact comparison.', '—']
+    ].map(([k, a, b, c, d]) => ({ k, a, b, c, d }));
+
+    return {
+      specA: [['Use in', 'Goal detail · selected goal summary (enough width).'], ['Never in', 'Goal list rows, Tasks, Finance, Habits.'], ['States', 'Completed (filled ✓) · Current (ring + halo) · Upcoming (outline) · Delayed (amber clock) · Goal flag (fills on 100%).'], ['Interaction', 'Click a checkpoint → island grows with due date and next action. Keyboard: Tab + ←/→.'], ['Motion', 'Path draws once (1.4s); checkpoints settle; current gets a static halo, no pulse.'], ['Mobile', 'Vertical journey; the landscape becomes a small header band.'], ['RTL', 'A — mirror. Starts on the right, chronology preserved.']].map(([k, v]) => ({ k, v })),
+      gp, gpf, gpHas: st.gpState !== 'empty', gpEmpty: st.gpState === 'empty', gpPct: pct + '%', gpPctN: pct, gpPctC: st.gpState === 'late' ? '#F5B54A' : '#6FD4B8',
+      gpSub: st.gpState === 'done' ? '5 of 5 milestones · goal reached' : st.gpState === 'late' ? '3 of 5 milestones · Development 3 days behind' : '3 of 5 milestones · due 30 Azar',
+      gpStates: segs('gpState', [['track', 'In progress'], ['late', 'Delayed'], ['done', '100%'], ['empty', 'Empty']]),
+      gpm: [['Brief', 'Done · 1 Mehr', 'done'], ['Research', 'Done · 8 Mehr', 'done'], ['Design', 'Completed · 18 Mehr', 'done'], ['Development', 'In progress · 64%', 'cur'], ['Beta', 'Next · 20 Aban', 'next'], ['Launch', 'Goal · 30 Azar', 'goal']].map(([t, s2, k], i) => ({ t, s2, check: k === 'done', cur: k === 'cur', s: k === 'cur' ? '26px' : '20px', bg: k === 'done' ? '#6FD4B8' : '#1C1F1C', border: k === 'done' ? '0' : k === 'cur' ? '3px solid #6FD4B8' : k === 'goal' ? '2px solid #6E746E' : '2px dashed #5A5F59', ring: k === 'cur' ? '0 0 0 5px #1D4A40' : 'none', line: i < 3 ? '#6FD4B8' : '#3A3F3A', lo: i === 5 ? 0 : 1, fw: k === 'cur' ? 700 : 600, sc: k === 'done' || k === 'cur' ? '#6FD4B8' : '#7D827B' })),
+
+      specB: [['Use in', 'Finance breakdown · Finance insights.'], ['Never in', 'Where a sorted list is enough; trends over time (Budget River); Projects/Teams/Companies money.'], ['Encoding', 'Width at the source = amount. Ribbons taper into rows so every row stays one line tall.'], ['Interaction', 'Hover/tap a row or ribbon → both highlight, others dim, island shows amount, share and change. Second tap → filtered transactions.'], ['Motion', 'Ribbons reveal from the source to the rows once; selection fades others in 300ms.'], ['Mobile', 'Top 4 + “Other (n)”; tap → detail sheet.'], ['RTL', 'A — mirror. Source on the right.']].map(([k, v]) => ({ k, v })),
+      bf, bfm, bff, bfIncome: '48M', bfSpent: '31.2M', bfHas: st.bfState !== 'empty', bfEmpty: st.bfState === 'empty', bfStates: segs('bfState', [['normal', 'Normal'], ['empty', 'Empty']]),
+      bfSel: !!selR, bfTipTop: selR ? Math.max(0, selR.ty / bf.H * 100 - 8).toFixed(1) + '%' : '0', bfTipT: selR ? selR.en + ' · Mehr' : '', bfTipV: selR ? money(selR.v) + ' Toman' : '', bfTipD: selR ? selR.pct + '% of spending · ↓ 4% vs Shahrivar' : '',
+
+      specC: [['Use in', 'Insights trend comparison · Journal behaviour comparison · Personal analytics.'], ['Never in', 'Where Mood Terrain tells the story; single metric; decoration.'], ['Emphasis', 'Tab raises one series (top layer, full line, 0.42 fill); others stay at ~40% for comparison — never hidden.'], ['Tooltip', 'Island with date + all three values, each with its shape marker.'], ['Motion', 'Series morph between ranges; emphasis cross-fades; guide appears without layout shift.'], ['Mobile', '4 date labels, compact tooltip, tabs instead of legend.'], ['RTL', 'A — mirror time; axis on the right.']].map(([k, v]) => ({ k, v })),
+      la, lam, laf, laFull: !st.laSparse, laSparse: st.laSparse,
+      laTabs: tabs(st.laMetric, true), laTabsM: tabs('mood', false), laData: segs('laSparse', [[false, 'Full'], [true, 'Sparse']]), laRanges: segs('laN', [[30, 'This month'], [7, 'This week']]),
+      laTipDate: la.tipDate, laTip: la.tip, lamTipDate: lam.tipDate, lamTip: lam.tip, lafTipDate: laf.tipDate, lafTip: laf.tip,
+      tbl: TBL
+    };
+  }
+}
+</script>
+</body>
+</html>

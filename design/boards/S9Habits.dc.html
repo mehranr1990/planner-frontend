@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Habits</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F1F1EE}
+a{color:#1A1A17}a:hover{color:#0E6B57}
+.rail-slot{align-self:stretch}
+.rail-sticky{position:sticky;top:16px;height:calc(100vh - 32px);max-height:100%;display:flex;align-items:center}
+.rail-sticky>nav{max-height:100%;overflow-y:auto}
+@media (max-width: 720px){.rail-sticky{position:static;height:auto}.rail-slot{width:100%!important}}
+</style>
+</helmet>
+<div style="min-height: 100vh; box-sizing: border-box; padding: 16px; background: #F1F1EE; font-family: 'Urbanist', system-ui, sans-serif; color: #1A1A17">
+<div style="max-width: 1400px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px">
+  <!-- Command bar -->
+  <header style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px">
+    <a href="#" aria-label="Planner home" style="flex: none; width: 56px; height: 56px; border-radius: 50%; background: #FFFFFF; box-shadow: 0 1px 0 #E6E6E1, 0 12px 32px rgba(14,14,12,0.06); display: inline-flex; align-items: center; justify-content: center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0E0E0C" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M5 19L19 5M9 5h10v10"></path></svg></a>
+    <button type="button" style="flex: none; display: inline-flex; align-items: center; gap: 12px; height: 56px; padding: 0 16px 0 8px; border: 0; border-radius: 999px; background: #FFFFFF; box-shadow: 0 1px 0 #E6E6E1, 0 12px 32px rgba(14,14,12,0.06); font-family: inherit; text-align: left; cursor: pointer"><span style="width: 40px; height: 40px; border-radius: 50%; background: #DDFAF2; display: inline-flex; align-items: center; justify-content: center"><span style="width: 12px; height: 12px; border-radius: 50%; background: #4FE3C1; box-shadow: 0 0 0 3px #FFFFFF"></span></span><span style="display: flex; flex-direction: column; line-height: 1.15"><span style="font-size: 11px; font-weight: 600; color: #6B6B64">Personal</span><span style="font-size: 15px; font-weight: 700; color: #1A1A17">Mehran</span></span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1A1A17" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button>
+    <section aria-label="Your schedule" style="flex: 1 1 420px; min-width: 0; height: 56px; box-sizing: border-box; padding: 4px 4px 4px 18px; border-radius: 999px; background: #FFFFFF; box-shadow: 0 1px 0 #E6E6E1, 0 12px 32px rgba(14,14,12,0.06); display: flex; align-items: center; gap: 12px">
+      <span style="flex: none; display: flex; flex-direction: column; line-height: 1.1"><span style="font-size: 10px; font-weight: 600; color: #6B6B64">Today</span><span style="font-size: 13px; font-weight: 700">Tue 21 Mehr</span></span>
+      <div style="position: relative; flex: 1; min-width: 0; height: 48px; border-radius: 999px; background: #F1F1EE; overflow: hidden">
+        <span style="position: absolute; left: 1%; top: 6px; bottom: 6px; width: 16%; border-radius: 999px; background: repeating-linear-gradient(135deg, #E6E6E1 0 2px, #F1F1EE 2px 6px); display: flex; align-items: center; padding: 0 12px; box-sizing: border-box; font-size: 12px; font-weight: 600; color: #6B6B64; white-space: nowrap; overflow: hidden">Design review · done</span>
+        <div style="position: absolute; left: 19%; top: 4px; bottom: 4px; width: 38%; border-radius: 999px; background: #FFFFFF; box-shadow: 0 2px 10px rgba(14,14,12,0.08); overflow: hidden; display: flex; align-items: center; gap: 8px; padding: 0 12px 0 3px; box-sizing: border-box">
+          <span aria-hidden="true" style="position: absolute; left: 0; top: 0; bottom: 0; width: 29%; background: #E0F0FF"></span>
+          <span style="position: relative; flex: none; width: 34px; height: 34px; border-radius: 50%; background: #E0F0FF; border: 2px solid #FFFFFF; box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0F5BA8" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"></path></svg></span>
+          <span style="position: relative; font-size: 13px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">UI design · My Day</span>
+          <span style="position: relative; margin-left: auto; flex: none; font-size: 11px; font-weight: 600; color: #6B6B64; white-space: nowrap">14:00 – 16:00</span>
+        </div>
+        <span aria-hidden="true" style="position: absolute; left: calc(19% + 38% * 0.29); top: 6px; bottom: 6px; width: 2px; margin-left: -1px; border-radius: 1px; background: #0F5BA8"></span>
+        <span role="img" aria-label="Now 14:35" style="position: absolute; left: calc(19% + 38% * 0.29); top: 3px; width: 10px; height: 10px; margin-left: -5px; border-radius: 50%; background: #C8FF3D; box-shadow: 0 0 0 2px #0F5BA8, 0 0 12px 3px rgba(200,255,61,0.55)"></span>
+        <span style="position: absolute; left: 59%; top: 8px; bottom: 8px; width: 21%; border-radius: 999px; background: #E0F0FF; color: #0F5BA8; display: flex; align-items: center; padding: 0 12px; box-sizing: border-box; font-size: 12px; font-weight: 700; white-space: nowrap; overflow: hidden">16:30 · Client call</span>
+        <span style="position: absolute; left: 81.5%; top: 8px; bottom: 8px; width: 17.5%; border-radius: 999px; background: #DDFAF2; color: #0E6B57; display: flex; align-items: center; padding: 0 12px; box-sizing: border-box; font-size: 12px; font-weight: 700; white-space: nowrap; overflow: hidden">17:15 · Gym</span>
+      </div>
+    </section>
+    <div style="flex: none; display: flex; align-items: center; gap: 4px; height: 56px; box-sizing: border-box; padding: 4px; border-radius: 999px; background: #FFFFFF; box-shadow: 0 1px 0 #E6E6E1, 0 12px 32px rgba(14,14,12,0.06)">
+      <button type="button" aria-label="Search and commands" style="display: inline-flex; align-items: center; gap: 8px; height: 48px; padding: 0 8px 0 14px; border: 0; border-radius: 999px; background: #F1F1EE; font-family: inherit; font-size: 13px; font-weight: 600; color: #45453F; cursor: pointer"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1A1A17" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-4-4"></path></svg>Search<span style="font-size: 11px; font-weight: 700; padding: 3px 7px; border-radius: 8px; background: #FFFFFF">⌘K</span></button>
+      <button type="button" aria-label="Quick create" style="width: 48px; height: 48px; border-radius: 50%; border: 0; background: #F1F1EE; display: inline-flex; align-items: center; justify-content: center; cursor: pointer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0E0E0C" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></button>
+      <button type="button" aria-label="Notifications, 3 unread" style="position: relative; width: 48px; height: 48px; border-radius: 50%; border: 0; background: #F1F1EE; display: inline-flex; align-items: center; justify-content: center; cursor: pointer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1A1A17" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M6 16v-5a6 6 0 0 1 12 0v5l2 2H4z"></path><path d="M10 20a2 2 0 0 0 4 0"></path></svg><span style="position: absolute; top: 9px; right: 9px; min-width: 16px; height: 16px; padding: 0 4px; box-sizing: border-box; border-radius: 999px; background: #E5484D; color: #FFFFFF; font-size: 10px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center">3</span></button>
+      <span style="width: 48px; height: 48px; border-radius: 50%; background: #DDFAF2; color: #0E6B57; display: inline-flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700">MR</span>
+    </div>
+  </header>
+  <div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start">
+    <div class="rail-slot" style="flex: none; width: 64px">
+<div class="rail-sticky">
+<nav aria-label="Personal navigation" style="flex: none; width: 64px; box-sizing: border-box; padding: 8px; border-radius: 34px; background: #FFFFFF; box-shadow: 0 1px 0 #E6E6E1, 0 12px 32px rgba(14,14,12,0.06); display: flex; flex-direction: column; gap: 4px">
+      <sc-for list="{{rail}}" as="it" hint-placeholder-count="9">
+        <a href="#" aria-label="{{it.label}}" aria-current="{{it.current}}" style="display: flex; align-items: center; justify-content: center; width: 48px; height: 48px; border-radius: 999px; background: {{it.bg}}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{it.icon}}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{it.d}}"></path></svg></a>
+      </sc-for>
+    </nav></div>
+</div>
+    <main style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 18px">
+      <div style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px; padding: 6px 4px 0">
+        <div style="display: flex; flex-direction: column; gap: 6px"><span style="font-size: 14px; font-weight: 600; color: #6B6B64">18 – 24 Mehr · {{doneToday}} of 5 done today</span><h1 style="margin: 0; font-size: 40px; font-weight: 500; letter-spacing: -0.015em; line-height: 1.05">Habits</h1></div>
+        <div style="display: flex; align-items: center; gap: 10px">
+          <div style="display: flex; flex-direction: column; justify-content: center; gap: 6px; height: 48px; padding: 0 16px; border-radius: 999px; background: #FFFFFF; min-width: 200px; box-sizing: border-box">
+            <div style="display: flex; justify-content: space-between; font-size: 12px; font-weight: 600"><span>This week</span><span style="color: #0E6B57">{{weekPct}}</span></div>
+            <div style="height: 6px; border-radius: 3px; background: #EDEDEA; overflow: hidden"><span style="display: block; height: 100%; width: {{weekPct}}; border-radius: 3px; background: #0E6B57"></span></div>
+          </div>
+          <button type="button" style="height: 48px; padding: 0 22px; border: 0; border-radius: 999px; background: #0E6B57; color: #FFFFFF; font-family: inherit; font-size: 14px; font-weight: 600; cursor: pointer">New habit</button>
+        </div>
+      </div>
+
+      <div style="display: flex; flex-wrap: wrap; gap: 18px; align-items: flex-start">
+        <!-- Tracker (notched) -->
+        <section aria-label="Habit tracker" style="flex: 2 1 600px; min-width: 0; position: relative; box-sizing: border-box; padding: 20px; border-radius: 32px; background: #FFFFFF">
+<div aria-hidden="true" style="position: absolute; top: 0; right: 0; width: 64px; height: 64px; background: #F1F1EE; border-bottom-left-radius: 30px"></div>
+<div aria-hidden="true" style="position: absolute; top: 0; right: 64px; width: 30px; height: 30px; background: radial-gradient(circle at 0 100%, transparent 29.5px, #F1F1EE 30px)"></div>
+<div aria-hidden="true" style="position: absolute; top: 64px; right: 0; width: 30px; height: 30px; background: radial-gradient(circle at 0 100%, transparent 29.5px, #F1F1EE 30px)"></div>
+          <button type="button" aria-label="Add habit" style="position: absolute; top: 0; right: 0; width: 52px; height: 52px; border-radius: 50%; border: 0; background: #0E6B57; display: inline-flex; align-items: center; justify-content: center; cursor: pointer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></button>
+          <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 14px; padding-right: 64px"><h2 style="margin: 0; font-size: 20px; font-weight: 600">This week</h2><span style="font-size: 13px; color: #6B6B64">Tap a day to check it off · Friday is a rest day</span></div>
+          <div style="display: grid; grid-template-columns: minmax(200px, 1.6fr) repeat(7, 48px) 72px; gap: 8px 6px; align-items: center">
+            <span></span>
+            <sc-for list="{{days}}" as="d" hint-placeholder-count="7"><span style="display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 6px 0; border-radius: 14px; background: {{d.bg}}"><span style="font-size: 11px; font-weight: 700; color: {{d.fg}}">{{d.name}}</span><span style="font-size: 14px; font-weight: 700; color: {{d.numFg}}">{{d.num}}</span></span></sc-for>
+            <span style="font-size: 11px; font-weight: 700; color: #6B6B64; text-align: right">Week</span>
+            <sc-for list="{{habits}}" as="h" hint-placeholder-count="5">
+              <button type="button" onClick="{{ h.select }}" aria-pressed="{{h.sel}}" style="display: flex; align-items: center; gap: 12px; min-height: 60px; padding: 0 10px 0 6px; border: 0; border-radius: 20px; background: {{h.rowBg}}; font-family: inherit; text-align: left; cursor: pointer">
+                <span style="flex: none; width: 44px; height: 44px; border-radius: 50%; background: #DDFAF2; display: inline-flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0E6B57" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{h.icon}}"></path></svg></span>
+                <span style="display: flex; flex-direction: column; gap: 2px; min-width: 0"><span style="font-size: 14px; font-weight: 700; color: #1A1A17">{{h.name}}</span><span style="font-size: 12px; font-weight: 600; color: #6B6B64">{{h.meta}}</span></span>
+              </button>
+              <sc-for list="{{h.cells}}" as="c" hint-placeholder-count="7">
+                <button type="button" onClick="{{ c.toggle }}" aria-label="{{c.aria}}" aria-pressed="{{c.on}}" style="width: 48px; height: 48px; border: 0; border-radius: 16px; background: {{c.bg}}; box-shadow: {{c.ring}}; display: inline-flex; align-items: center; justify-content: center; cursor: {{c.cursor}}; padding: 0">
+                  <sc-if value="{{c.isOn}}" hint-placeholder-val="{{ true }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg></sc-if>
+                  <sc-if value="{{c.rest}}" hint-placeholder-val="{{ false }}"><span style="width: 14px; height: 2px; border-radius: 1px; background: #C9C9C2"></span></sc-if>
+                </button>
+              </sc-for>
+              <span style="font-size: 14px; font-weight: 700; text-align: right; color: {{h.pctFg}}">{{h.pct}}</span>
+            </sc-for>
+          </div>
+        </section>
+
+        <!-- Detail -->
+        <aside style="flex: 1 1 320px; min-width: 0; display: flex; flex-direction: column; gap: 16px">
+          <article aria-label="Selected habit" style="position: relative; box-sizing: border-box; padding: 22px; border-radius: 30px; background: #DDFAF2; display: flex; flex-direction: column; gap: 16px">
+<div aria-hidden="true" style="position: absolute; top: 0; right: 0; width: 60px; height: 60px; background: #F1F1EE; border-bottom-left-radius: 28px"></div>
+<div aria-hidden="true" style="position: absolute; top: 0; right: 60px; width: 28px; height: 28px; background: radial-gradient(circle at 0 100%, transparent 27.5px, #F1F1EE 28px)"></div>
+<div aria-hidden="true" style="position: absolute; top: 60px; right: 0; width: 28px; height: 28px; background: radial-gradient(circle at 0 100%, transparent 27.5px, #F1F1EE 28px)"></div>
+            <button type="button" aria-label="Edit habit" style="position: absolute; top: 0; right: 0; width: 48px; height: 48px; border-radius: 50%; border: 1px solid #C9C9C2; background: transparent; display: inline-flex; align-items: center; justify-content: center; cursor: pointer"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1A1A17" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"></path></svg></button>
+            <div style="display: flex; flex-direction: column; gap: 4px; padding-right: 56px"><span style="font-size: 12px; font-weight: 700; color: #0E6B57">Personal · daily</span><span style="font-size: 24px; font-weight: 600; line-height: 1.15">{{selName}}</span></div>
+            <div style="display: flex; align-items: center; gap: 20px">
+              <div style="position: relative; width: 132px; height: 132px; flex: none">
+                <svg width="132" height="132" viewBox="0 0 132 132" role="img" aria-label="{{ringAria}}"><circle cx="66" cy="66" r="56" fill="none" stroke="#FFFFFF" stroke-width="14"></circle><circle cx="66" cy="66" r="56" fill="none" stroke="#0E6B57" stroke-width="14" stroke-linecap="round" stroke-dasharray="{{ringDash}}" transform="rotate(-90 66 66)"></circle></svg>
+                <div style="position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center"><span style="font-size: 30px; font-weight: 500; line-height: 1">{{monthDone}}</span><span style="font-size: 12px; font-weight: 600; color: #45453F">of 30 days</span></div>
+              </div>
+              <div style="display: flex; flex-direction: column; gap: 10px">
+                <div style="display: flex; flex-direction: column"><span style="font-size: 28px; font-weight: 500; line-height: 1">{{streak}}</span><span style="font-size: 12px; font-weight: 600; color: #45453F">day streak</span></div>
+                <div style="display: flex; flex-direction: column"><span style="font-size: 28px; font-weight: 500; line-height: 1">{{best}}</span><span style="font-size: 12px; font-weight: 600; color: #45453F">best streak</span></div>
+              </div>
+            </div>
+            <div style="display: flex; gap: 8px">
+              <span style="flex: 1; height: 44px; border-radius: 999px; background: rgba(255,255,255,0.7); display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 13px; font-weight: 700"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#1A1A17" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M6 16v-5a6 6 0 0 1 12 0v5l2 2H4z"></path></svg>{{remind}}</span>
+              <span style="flex: 1; height: 44px; border-radius: 999px; background: rgba(255,255,255,0.7); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700">Sat – Thu</span>
+            </div>
+          </article>
+
+          <section aria-label="Last 12 weeks" style="border-radius: 28px; background: #FFFFFF; padding: 20px; display: flex; flex-direction: column; gap: 12px">
+            <div style="display: flex; justify-content: space-between; align-items: baseline"><h2 style="margin: 0; font-size: 17px; font-weight: 600">Last 12 weeks</h2><span style="font-size: 12px; font-weight: 600; color: #6B6B64">all habits</span></div>
+            <div style="display: grid; grid-template-columns: 22px repeat(12, minmax(0, 1fr)); gap: 3px">
+              <sc-for list="{{heat}}" as="r" hint-placeholder-count="7">
+                <span style="font-size: 10px; font-weight: 700; color: #8A8A82; align-self: center">{{r.d}}</span>
+                <sc-for list="{{r.cells}}" as="c" hint-placeholder-count="12"><span title="{{c.t}}" style="aspect-ratio: 1; border-radius: 5px; background: {{c.bg}}"></span></sc-for>
+              </sc-for>
+            </div>
+            <div style="display: flex; align-items: center; justify-content: flex-end; gap: 4px; font-size: 11px; font-weight: 600; color: #6B6B64">Less<span style="width: 12px; height: 12px; border-radius: 3px; background: #EDEDEA"></span><span style="width: 12px; height: 12px; border-radius: 3px; background: #B8F0E0"></span><span style="width: 12px; height: 12px; border-radius: 3px; background: #4FE3C1"></span><span style="width: 12px; height: 12px; border-radius: 3px; background: #0E6B57"></span>More</div>
+          </section>
+        </aside>
+      </div>
+
+    </main>
+  </div>
+</div>
+<!-- Floating assistant (library: notched chat) -->
+<div style="position: fixed; right: 24px; bottom: 24px; z-index: 60; display: flex; flex-direction: column; align-items: flex-end; gap: 12px">
+  <sc-if value="{{assistOpen}}" hint-placeholder-val="{{ false }}">
+    <div role="dialog" aria-label="Assistant" style="width: 360px; box-sizing: border-box; padding: 8px; border-radius: 34px; background: #FFFFFF; box-shadow: 0 0 0 1px #E6E6E1, 0 24px 60px rgba(14,14,12,0.18)">
+      <div style="position: relative; height: 420px; box-sizing: border-box; padding: 12px; border-radius: 28px; background: #F4F4F1; display: flex; flex-direction: column; gap: 10px">
+        <div aria-hidden="true" style="position: absolute; top: 0; right: 0; width: 66px; height: 66px; background: #FFFFFF; border-bottom-left-radius: 28px"></div>
+        <div aria-hidden="true" style="position: absolute; top: 0; right: 66px; width: 28px; height: 28px; background: radial-gradient(circle at 0 100%, transparent 27.5px, #FFFFFF 28px)"></div>
+        <div aria-hidden="true" style="position: absolute; top: 66px; right: 0; width: 28px; height: 28px; background: radial-gradient(circle at 0 100%, transparent 27.5px, #FFFFFF 28px)"></div>
+        <span role="img" aria-label="Assistant" style="position: absolute; top: 0; right: 0; width: 54px; height: 54px; border-radius: 50%; background: #0E6B57; display: inline-flex; align-items: center; justify-content: center"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#C8FF3D" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M6 6l2 2M16 16l2 2M6 18l2-2M16 8l2-2"></path></svg></span>
+        <div style="display: flex; gap: 6px; padding-right: 70px"><span style="height: 40px; padding: 0 14px; border-radius: 999px; background: #FFFFFF; font-size: 13px; font-weight: 700; display: inline-flex; align-items: center">Chat</span><span style="height: 40px; padding: 0 14px; border-radius: 999px; font-size: 13px; font-weight: 600; color: #5E5E58; display: inline-flex; align-items: center">Plan</span><span style="height: 40px; padding: 0 14px; border-radius: 999px; font-size: 13px; font-weight: 600; color: #5E5E58; display: inline-flex; align-items: center">Help</span></div>
+        <div style="align-self: flex-start; max-width: 85%; background: #FFFFFF; border-radius: 18px 18px 18px 6px; padding: 11px 14px; font-size: 14px; line-height: 1.45">{{assistHello}}</div>
+        <div style="align-self: flex-end; max-width: 80%; background: #0E6B57; color: #FFFFFF; border-radius: 18px 18px 6px 18px; padding: 11px 14px; font-size: 14px">{{assistAsk}}</div>
+        <div style="margin-top: auto; display: flex; gap: 6px; overflow-x: auto"><span style="flex: none; height: 36px; padding: 0 12px; border-radius: 999px; box-shadow: inset 0 0 0 1px #D3D3CC; font-size: 12px; font-weight: 600; display: inline-flex; align-items: center">Summarize</span><span style="flex: none; height: 36px; padding: 0 12px; border-radius: 999px; box-shadow: inset 0 0 0 1px #D3D3CC; font-size: 12px; font-weight: 600; display: inline-flex; align-items: center">What’s at risk?</span></div>
+        <div style="display: flex; align-items: center; gap: 4px; height: 52px; padding: 0 6px 0 16px; border-radius: 999px; background: #FFFFFF"><label for="assist-q" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Ask the assistant</label><input id="assist-q" type="text" placeholder="Ask anything…" style="flex: 1; min-width: 0; border: 0; outline: none; background: transparent; font-family: inherit; font-size: 14px; color: #1A1A17"><button type="button" aria-label="Send" style="width: 42px; height: 42px; border-radius: 50%; border: 0; background: #0E6B57; display: inline-flex; align-items: center; justify-content: center; cursor: pointer"><svg width="15" height="15" viewBox="0 0 24 24" fill="#C8FF3D" aria-hidden="true"><path d="M5 4l15 8-15 8 3-8z"></path></svg></button></div>
+      </div>
+    </div>
+  </sc-if>
+  <button type="button" onClick="{{ toggleAssist }}" aria-expanded="{{assistExpanded}}" aria-label="{{assistLabel}}" style="display: inline-flex; align-items: center; gap: 10px; height: 60px; padding: 0 20px 0 8px; border: 0; border-radius: 999px; background: #FFFFFF; box-shadow: 0 1px 0 #E6E6E1, 0 14px 34px rgba(14,14,12,0.14); font-family: inherit; font-size: 14px; font-weight: 700; color: #1A1A17; cursor: pointer"><span style="width: 44px; height: 44px; border-radius: 50%; background: #0E6B57; display: inline-flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C8FF3D" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="{{assistIcon}}"></path></svg></span>{{assistText}}</button>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1240}}'>
+class Component extends DCLogic {
+  assist(hello, ask) {
+    const open = !!(this.state && this.state.assistOpen);
+    return {
+      assistOpen: open, assistExpanded: open ? 'true' : 'false', assistLabel: open ? 'Close assistant' : 'Open assistant',
+      assistText: open ? 'Close' : 'Assistant', assistIcon: open ? 'M6 6l12 12M18 6L6 18' : 'M12 3v3M12 18v3M3 12h3M18 12h3M6 6l2 2M16 16l2 2M6 18l2-2M16 8l2-2',
+      assistHello: hello, assistAsk: ask,
+      toggleAssist: () => this.setState({ assistOpen: !open })
+    };
+  }
+
+  constructor(props) { super(props); this.state = { sel: 'read', chk: { 'morning-0': 1, 'morning-1': 1, 'morning-2': 1, 'morning-3': 1, 'read-0': 1, 'read-1': 1, 'read-3': 1, 'gym-0': 1, 'gym-2': 1, 'water-0': 1, 'water-1': 1, 'water-2': 1, 'phone-1': 1, 'phone-2': 1 } }; }
+  renderVals() {
+        const I = {
+      overview: 'M4 4h7v7H4zM13 4h7v4h-7zM13 10h7v10h-7zM4 13h7v7H4z', myday: 'M12 3v2M12 19v2M3 12h2M19 12h2M12 8a4 4 0 1 0 0 8a4 4 0 1 0 0-8z',
+      tasks: 'M4 4h16v16H4zM8 12l3 3 5-6', calendar: 'M4 5h16v15H4zM4 10h16M9 3v4M15 3v4', goals: 'M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18zM12 8a4 4 0 1 0 0 8a4 4 0 1 0 0-8z',
+      habits: 'M4 12a8 8 0 0 1 14-5.3M20 12a8 8 0 0 1-14 5.3M18 3v4h-4M6 21v-4h4', finance: 'M3 7h18v12H3zM3 11h18M7 15h3', journal: 'M6 3h12v18H6zM9 8h6M9 12h6', insights: 'M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9V16h7v-2.1A6 6 0 0 0 12 3z'
+    };
+    const rail = Object.keys(I).map((k) => ({ d: I[k], label: k, current: k === 'habits' ? 'page' : 'false', bg: k === 'habits' ? '#DDFAF2' : 'transparent', icon: k === 'habits' ? '#0E6B57' : '#45453F' }));
+    const st = this.state, chk = st.chk || {};
+    const H = [
+      ['morning', 'Morning routine', 'M12 3v2M12 19v2M3 12h2M19 12h2M12 8a4 4 0 1 0 0 8a4 4 0 1 0 0-8z', '07:00 · 20 min', 21, 34, 12, '07:00'],
+      ['read', 'Read 20 pages', 'M4 5a2 2 0 0 1 2-2h5v17H6a2 2 0 0 0-2 2zM20 5a2 2 0 0 0-2-2h-5v17h5a2 2 0 0 1 2 2z', '22:00 · 20 pages', 18, 26, 4, '22:00'],
+      ['gym', 'Gym', 'M13 4a1.5 1.5 0 1 0 0 .1M8 21l3-6 3 2v4M7 12l3-3 4 1 3 3', '3× a week', 11, 15, 2, '17:15'],
+      ['water', 'Drink water 8×', 'M12 3c3 4 6 7.5 6 11a6 6 0 0 1-12 0c0-3.5 3-7 6-11z', 'all day', 24, 40, 9, 'every 2h'],
+      ['phone', 'No phone after 23:00', 'M20 14a8 8 0 1 1-10-10a6.5 6.5 0 0 0 10 10z', '23:00', 14, 19, 0, '22:45']
+    ];
+    const DN = ['Sat', 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri'], JD = [18, 19, 20, 21, 22, 23, 24], TODAY = 3;
+    let total = 0, done = 0, today = 0;
+    const habits = H.map(([id, name, icon, meta]) => {
+      let n = 0;
+      const cells = DN.map((d, i) => {
+        const k = id + '-' + i, on = !!chk[k], rest = i === 6, future = i > TODAY;
+        if (!rest && !future) { total++; if (on) { done++; n++; } }
+        if (i === TODAY && on) today++;
+        return { aria: name + ', ' + d + ' ' + JD[i] + ' Mehr' + (on ? ', done' : ''), on: on ? 'true' : 'false', isOn: on, rest,
+          bg: on ? '#0E6B57' : rest ? '#F8F8F6' : future ? '#FFFFFF' : '#F1F1EE', ring: i === TODAY && !on ? 'inset 0 0 0 2px #0E6B57' : future && !rest ? 'inset 0 0 0 1px #E6E6E1' : 'none',
+          cursor: rest || future ? 'default' : 'pointer', toggle: () => { if (!rest && !future) this.setState({ chk: Object.assign({}, chk, { [k]: !on }) }); } };
+      });
+      const pct = Math.round(n / (TODAY + 1) * 100);
+      return { name, icon, meta, cells, pct: pct + '%', pctFg: pct >= 75 ? '#0E6B57' : pct >= 50 ? '#45453F' : '#B4232A', sel: st.sel === id ? 'true' : 'false', rowBg: st.sel === id ? '#F4FBF8' : 'transparent', select: () => this.setState({ sel: id }) };
+    });
+    const sh = H.find((x) => x[0] === st.sel) || H[1];
+    const C = 2 * Math.PI * 56, frac = sh[4] / 30;
+    const heat = DN.map((d, r) => ({ d: d.slice(0, 2), cells: Array.from({ length: 12 }, (_, c) => {
+      const v = r === 6 ? 0 : (r * 7 + c * 13 + (c > 7 ? 3 : 0)) % 5;
+      return { t: (r === 6 ? 'Rest day' : v + ' of 5 habits') + ' · week ' + (c + 1), bg: ['#EDEDEA', '#EDEDEA', '#B8F0E0', '#4FE3C1', '#0E6B57'][v] };
+    }) }));
+    return {
+      ...this.assist('Reading drops on days with late meetings. Want me to move it to 21:00 on Sun and Mon?', 'Yes, try it'),
+      rail,
+      days: DN.map((d, i) => ({ name: d, num: JD[i], bg: i === TODAY ? '#DDFAF2' : 'transparent', fg: i === 6 ? '#E5484D' : i === TODAY ? '#0E6B57' : '#6B6B64', numFg: i === 6 ? '#E5484D' : '#1A1A17' })),
+      habits, doneToday: today, weekPct: Math.round(done / total * 100) + '%',
+      selName: sh[1], monthDone: sh[4], ringDash: (C * frac).toFixed(1) + ' ' + C.toFixed(1), ringAria: sh[4] + ' of 30 days this month',
+      streak: sh[6], best: sh[5], remind: sh[7], heat
+    };
+  }
+
+}
+</script>
+</body>
+</html>

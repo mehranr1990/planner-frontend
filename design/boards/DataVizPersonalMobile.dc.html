@@ -1,0 +1,528 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Personal data viz · mobile</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@300;400;500;600;700&amp;family=Vazirmatn:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#E8E8E3}
+.phone{width:390px;box-sizing:border-box;padding:20px 16px 28px;border-radius:44px;background:#F1F1EE;box-shadow:0 0 0 8px #FFFFFF,0 30px 60px rgba(14,14,12,0.12);display:flex;flex-direction:column;gap:14px}
+.pc{position:relative;box-sizing:border-box;padding:16px;border-radius:28px;background:#FFFFFF;display:flex;flex-direction:column;gap:10px}
+.ph{font-size:12px;font-weight:700;color:#6B6B64;letter-spacing:.02em}
+.pt{font-size:16px;font-weight:700}
+.tip{position:absolute;transform:translateX(-50%);z-index:3;box-sizing:border-box;padding:7px 10px;border-radius:14px;background:#FFFFFF;box-shadow:0 0 0 1px #E6E6E1,0 8px 20px rgba(14,14,12,0.10);display:flex;flex-direction:column;gap:0;white-space:nowrap;pointer-events:none}
+.tip small{font-size:10px;font-weight:600;color:#6B6B64}
+.tip strong{font-size:13px;font-weight:700;color:#1A1A17}
+.tip em{font-style:normal;font-size:10px;font-weight:700;color:#0E6B57}
+.chip{height:24px;padding:0 9px;border-radius:999px;background:#F8F8F6;font-size:11px;font-weight:700;display:inline-flex;align-items:center;gap:5px;color:#45453F}
+.note{font-size:12px;color:#5E5E58;line-height:1.45}
+.lab{font-size:11px;font-weight:700;color:#0E6B57;background:#DDFAF2;border-radius:999px;padding:3px 9px;align-self:flex-start}
+</style>
+</helmet>
+<div style="width: 1440px; box-sizing: border-box; padding: 64px 72px 80px; background: #E8E8E3; font-family: 'Urbanist', 'Vazirmatn', system-ui, sans-serif; color: #1A1A17; display: flex; flex-direction: column; gap: 40px">
+  <header style="display: flex; flex-direction: column; gap: 8px">
+    <span style="font-size: 14px; font-weight: 700; color: #0E6B57">Personal data visualization · mobile adaptations (390px)</span>
+    <h1 style="margin: 0; font-size: 44px; font-weight: 500; letter-spacing: -0.015em">Summary first, chart second, detail on tap.</h1>
+    <p style="margin: 0; max-width: 820px; font-size: 15px; line-height: 1.55; color: #5E5E58">No visualization is simply scaled down. Each drops side labels for a chip legend, shows fewer ticks, pins its tooltip on tap, and moves deeper detail behind a second tap or a sheet. The last phone shows the Persian / RTL behaviour.</p>
+  </header>
+
+  <div style="display: grid; grid-template-columns: repeat(3, 390px); justify-content: space-between; row-gap: 56px; align-items: start">
+
+    <!-- A · Finance + shutdown -->
+    <div class="phone">
+      <span class="lab">Finance · Daily shutdown</span>
+      <div class="pc">
+        <span class="ph">BUDGET RIVER · MEHR</span>
+        <div style="display: flex; gap: 18px"><div style="display: flex; flex-direction: column"><span style="font-size: 22px; font-weight: 600">{{rv.spent}}</span><span style="font-size: 11px; font-weight: 600; color: #6B6B64">spent</span></div><div style="display: flex; flex-direction: column"><span style="font-size: 22px; font-weight: 600; color: #0E6B57">{{rv.remaining}}</span><span style="font-size: 11px; font-weight: 600; color: #6B6B64">left</span></div><div style="display: flex; flex-direction: column"><span style="font-size: 22px; font-weight: 600">{{rv.pct}}</span><span style="font-size: 11px; font-weight: 600; color: #6B6B64">of budget</span></div></div>
+        <div style="position: relative; margin-top: 30px">
+          <svg viewBox="0 0 326 160" width="100%" style="display: block; overflow: visible" role="img" aria-label="Budget river for Mehr">
+            <line x1="{{rv.env.x1}}" x2="{{rv.env.x2}}" y1="{{rv.env.y1}}" y2="{{rv.env.y1}}" stroke="#B9B9B1" stroke-dasharray="2 5"></line><line x1="{{rv.env.x1}}" x2="{{rv.env.x2}}" y1="{{rv.env.y2}}" y2="{{rv.env.y2}}" stroke="#B9B9B1" stroke-dasharray="2 5"></line>
+            <sc-for list="{{rv.streams}}" as="s" hint-placeholder-count="6"><path d="{{s.d}}" fill="{{s.c}}" fill-opacity="{{s.op}}"></path></sc-for>
+            <sc-for list="{{rv.edges}}" as="s" hint-placeholder-count="6"><path d="{{s.d}}" fill="none" stroke="{{s.c}}" stroke-width="1.4"></path></sc-for>
+            <rect x="{{rv.fx}}" y="0" width="{{rv.fw}}" height="160" fill="#FFFFFF" fill-opacity="0.62"></rect>
+            <line x1="{{rv.sx}}" x2="{{rv.sx}}" y1="6" y2="154" stroke="#0E6B57" stroke-width="2" stroke-dasharray="3 4"></line>
+            <sc-for list="{{rv.hits}}" as="h" hint-placeholder-count="21"><rect x="{{h.x}}" y="0" width="{{h.w}}" height="160" fill="transparent" onClick="{{ h.pick }}"></rect></sc-for>
+          </svg>
+          <div class="tip" style="left: {{rv.selPct}}; top: -34px"><small>{{rv.tipDate}}</small><strong>{{rv.tipVal}}</strong></div>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; gap: 6px"><sc-for list="{{rv.legend}}" as="l" hint-placeholder-count="6"><span class="chip"><span style="width: 7px; height: 7px; border-radius: 50%; background: {{l.c}}"></span>{{l.t}}</span></sc-for></div>
+        <span class="note">Tap a day to pin it · tap a chip to isolate a category · “See transactions” opens a sheet.</span>
+      </div>
+      <div class="pc">
+        <span class="ph">CARRY-OVER · TODAY</span>
+        <svg viewBox="0 0 326 170" width="100%" style="display: block" role="img" aria-label="18 planned: 12 completed, 4 moved to tomorrow, 2 overdue">
+          <sc-for list="{{cfm.flows}}" as="f" hint-placeholder-count="3"><path d="{{f.d}}" fill="{{f.c}}" fill-opacity="0.5"></path><text x="186" y="{{f.ty}}" font-size="15" font-weight="700" fill="#1A1A17">{{f.n}}</text><text x="210" y="{{f.ty}}" font-size="12" font-weight="600" fill="#45453F">{{f.t}}</text></sc-for>
+          <circle cx="{{cfm.cx}}" cy="{{cfm.cyy}}" r="{{cfm.R}}" fill="#FFFFFF" stroke="#E6E6E1" stroke-width="1.5"></circle>
+          <text x="{{cfm.cx}}" y="{{cfm.cyy}}" dy="5" text-anchor="middle" font-size="22" font-weight="600" fill="#1A1A17">{{cfm.total}}</text>
+        </svg>
+        <span class="note">Each outcome is a row; tapping one opens its tasks in a bottom sheet.</span>
+      </div>
+    </div>
+
+    <!-- B · Journal + habits -->
+    <div class="phone">
+      <span class="lab">Journal · Habits</span>
+      <div class="pc">
+        <div style="display: flex; justify-content: space-between; align-items: center"><span class="ph">MOOD TERRAIN · 7 DAYS</span><span style="display: flex; gap: 8px; font-size: 11px; font-weight: 700; color: #45453F"><span style="display: inline-flex; align-items: center; gap: 4px"><span style="width: 10px; height: 3px; border-radius: 2px; background: #1BAF7A"></span>Mood</span><span style="display: inline-flex; align-items: center; gap: 4px"><span style="width: 10px; height: 3px; border-radius: 2px; background: #EDA100"></span>Energy</span></span></div>
+        <div style="position: relative; margin-top: 30px">
+          <svg viewBox="0 0 326 190" width="100%" style="display: block; overflow: visible" role="img" aria-label="Mood and energy, last 7 days">
+            <defs><linearGradient id="mgM" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1BAF7A" stop-opacity="0.45"></stop><stop offset="1" stop-color="#1BAF7A" stop-opacity="0.04"></stop></linearGradient><linearGradient id="mgE" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#EDA100" stop-opacity="0.45"></stop><stop offset="1" stop-color="#EDA100" stop-opacity="0.04"></stop></linearGradient></defs>
+            <rect x="{{mtSel}}" y="4" width="24" height="170" rx="12" fill="#F1F1EE"></rect>
+            <path d="{{mt.moodA}}" fill="url(#mgM)"></path><path d="{{mt.mood}}" fill="none" stroke="#1BAF7A" stroke-width="2.2"></path>
+            <path d="{{mt.enA}}" fill="url(#mgE)"></path><path d="{{mt.en}}" fill="none" stroke="#C98500" stroke-width="2"></path>
+            <circle cx="{{mt.sx}}" cy="{{mt.my}}" r="6" fill="#1BAF7A" stroke="#FFFFFF" stroke-width="2.5"></circle><circle cx="{{mt.sx}}" cy="{{mt.ey}}" r="5" fill="#EDA100" stroke="#FFFFFF" stroke-width="2.5"></circle>
+            <sc-for list="{{mt.xl}}" as="x" hint-placeholder-count="7"><text x="{{x.x}}" y="188" text-anchor="middle" font-size="10" font-weight="700" fill="#8A8A82">{{x.t}}</text></sc-for>
+            <sc-for list="{{mt.hits}}" as="h" hint-placeholder-count="7"><rect x="{{h.x}}" y="0" width="{{h.w}}" height="190" fill="transparent" onClick="{{ h.pick }}"></rect></sc-for>
+          </svg>
+          <div class="tip" style="left: {{mt.selPct}}; top: -34px"><small>{{mt.tipDate}}</small><strong>{{mt.tipMood}} · {{mt.tipEn}} energy</strong></div>
+        </div>
+        <span class="note">Swipe to change week. 30 days becomes weekly averages.</span>
+      </div>
+      <div class="pc">
+        <span class="ph">HABIT FIELD · THIS WEEK</span>
+        <div style="display: grid; grid-template-columns: minmax(0, 1fr) repeat(7, 28px); gap: 5px; align-items: center">
+          <span></span><sc-for list="{{hfmDays}}" as="d" hint-placeholder-count="7"><span style="text-align: center; font-size: 10px; font-weight: 700; color: {{d.c}}">{{d.n}}</span></sc-for>
+          <sc-for list="{{hfm}}" as="h" hint-placeholder-count="5">
+            <span style="display: flex; flex-direction: column; line-height: 1.2; min-width: 0"><span style="font-size: 12px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{h.t}}</span><span style="font-size: 10px; font-weight: 600; color: #6B6B64">{{h.meta}}</span></span>
+            <sc-for list="{{h.cells}}" as="c" hint-placeholder-count="7"><span style="width: 28px; height: 28px; box-sizing: border-box; border-radius: 9px; background: {{c.bg}}; border: {{c.border}}; box-shadow: {{c.ring}}; display: inline-flex; align-items: center; justify-content: center"><sc-if value="{{c.done}}" hint-placeholder-val="{{ true }}"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg></sc-if></span></sc-for>
+          </sc-for>
+        </div>
+        <span class="note">Earlier weeks scroll horizontally; tap a habit name for its own detail.</span>
+      </div>
+      <div dir="{{srm.dir}}" role="group" aria-label="{{srm.aria}}" style="display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: 30px; background: #FFFFFF; box-shadow: 0 1px 0 #E6E6E1, 0 12px 32px rgba(14,14,12,0.06); font-family: {{srm.font}}; color: #1A1A17">
+  <div style="flex: none; display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 10px 10px; border-radius: 22px; background: #F8F8F6">
+    <span style="width: 30px; height: 30px; border-radius: 50%; background: {{srm.flameBg}}; display: inline-flex; align-items: center; justify-content: center"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="{{srm.flame}}" stroke-width="1.9" stroke-linejoin="round" aria-hidden="true"><path d="M12 3c1 3 5 5 5 10a5 5 0 0 1-10 0c0-2 1-3.5 2-4.5c0 2 1 3 2 3c0-3-1-5 1-8.5z"></path></svg></span>
+    <span style="display: flex; flex-direction: column; align-items: center; line-height: 1.15"><span style="font-size: 20px; font-weight: 600">{{srm.streak}}</span><span style="font-size: 10px; font-weight: 600; color: #6B6B64; white-space: nowrap">{{srm.streakLabel}}</span></span>
+  </div>
+  <div style="position: relative; flex: 1; min-width: 0; height: 78px">
+    <svg viewBox="0 0 700 84" preserveAspectRatio="none" width="100%" height="84" aria-hidden="true" style="position: absolute; left: 0; top: 4px; overflow: visible">
+      <sc-for list="{{srm.conns}}" as="c" hint-placeholder-count="6"><path d="{{c.d}}" fill="none" stroke="{{c.c}}" stroke-width="{{c.w}}" stroke-dasharray="{{c.dash}}" stroke-opacity="{{c.op}}" stroke-linecap="round" vector-effect="non-scaling-stroke"></path></sc-for>
+    </svg>
+    <div style="position: relative; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); height: 100%">
+      <sc-for list="{{srm.nodes}}" as="n" hint-placeholder-count="7">
+        <div role="img" aria-label="{{n.aria}}" style="display: flex; flex-direction: column; align-items: center; gap: 2px">
+          <span style="margin-top: {{n.mt}}; width: {{n.size}}; height: {{n.size}}; box-sizing: border-box; border-radius: 50%; background: {{n.bg}}; border: {{n.border}}; box-shadow: {{n.ring}}; display: inline-flex; align-items: center; justify-content: center">
+            <sc-if value="{{n.check}}" hint-placeholder-val="{{ true }}"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg></sc-if>
+            <sc-if value="{{n.dot}}" hint-placeholder-val="{{ false }}"><span style="width: 12px; height: 12px; border-radius: 50%; background: #0E6B57"></span></sc-if>
+            <sc-if value="{{n.dash}}" hint-placeholder-val="{{ false }}"><span style="width: 11px; height: 2.5px; border-radius: 2px; background: #A9A9A1"></span></sc-if>
+            <sc-if value="{{n.moon}}" hint-placeholder-val="{{ false }}"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#8A8A82" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M20 14a8 8 0 1 1-10-10a6.5 6.5 0 0 0 10 10z"></path></svg></sc-if>
+          </span>
+          <span style="margin-top: 4px; font-size: 11px; font-weight: {{n.dayW}}; color: {{n.dayC}}">{{n.day}}</span>
+          <span style="font-size: 10px; font-weight: 600; color: #8A8A82">{{n.date}}</span>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+  <sc-if value="{{srm.showCta}}" hint-placeholder-val="{{ true }}"><a href="S9Habits.dc.html" style="flex: none; display: inline-flex; align-items: center; gap: 10px; height: 52px; padding: 0 6px 0 18px; border-radius: 999px; background: #F8F8F6; font-size: 13px; font-weight: 700; color: #1A1A17; text-decoration: none; white-space: nowrap" dir="{{srm.dir}}">{{srm.cta}}<span style="width: 40px; height: 40px; border-radius: 50%; background: #FFFFFF; display: inline-flex; align-items: center; justify-content: center"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#1A1A17" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="{{srm.chev}}"></path></svg></span></a></sc-if>
+</div>
+    </div>
+
+    <!-- C · Insights -->
+    <div class="phone">
+      <span class="lab">Insights</span>
+      <div class="pc" style="align-items: center">
+        <span class="ph" style="align-self: flex-start">FOCUS CLOCK · SIMPLIFIED</span>
+        <svg viewBox="0 0 300 300" width="280" height="280" style="overflow: visible" role="img" aria-label="Focus by hour of day, all weekdays combined. Strongest 09:00 to 12:00.">
+          <sc-for list="{{fcm.cells}}" as="c" hint-placeholder-count="24"><path d="{{c.d}}" fill="{{c.c}}"></path></sc-for>
+          <sc-for list="{{fcm.lab}}" as="l" hint-placeholder-count="4"><text x="{{l.x}}" y="{{l.y}}" text-anchor="middle" font-size="10" font-weight="700" fill="#8A8A82">{{l.t}}</text></sc-for>
+          <text x="150" y="142" text-anchor="middle" font-size="11" font-weight="700" fill="#6B6B64">Focused</text>
+          <text x="150" y="166" text-anchor="middle" font-size="22" font-weight="600" fill="#1A1A17">14h 30m</text>
+        </svg>
+        <div style="align-self: stretch; padding: 12px; border-radius: 18px; background: #F4FBF8; font-size: 13px; font-weight: 600; line-height: 1.4">Best window: <b>09:00–12:00</b>, Tue–Thu<br><span style="font-size: 12px; color: #0E6B57; font-weight: 700">See by day ›</span></div>
+      </div>
+      <div class="pc">
+        <span class="ph">CONTEXT RIBBON → 100% BAR</span>
+        <div role="img" aria-label="{{ctxAria}}" style="display: flex; gap: 2px; height: 18px"><sc-for list="{{cxm}}" as="c" hint-placeholder-count="5"><span style="width: {{c.pct}}; border-radius: 5px; background: {{c.c}}"></span></sc-for></div>
+        <sc-for list="{{cxm}}" as="c" hint-placeholder-count="5"><div style="display: flex; align-items: center; gap: 10px; height: 38px; padding: 0 10px; border-radius: 14px; background: #F8F8F6"><span style="width: 9px; height: 9px; border-radius: 50%; background: {{c.c}}"></span><span style="flex: 1; font-size: 13px; font-weight: 700">{{c.t}}</span><span style="font-size: 13px; font-weight: 700">{{c.hrs}}</span><span style="width: 74px; text-align: right; font-size: 11px; font-weight: 700; color: #6B6B64">{{c.pct}} · {{c.delta}}</span></div></sc-for>
+      </div>
+    </div>
+
+    <!-- D · Goals -->
+    <div class="phone">
+      <span class="lab">Goals</span>
+      <div class="pc">
+        <span class="ph">MILESTONE PATH · VERTICAL</span>
+        <span class="pt">Launch Planner App v1</span>
+        <div style="display: flex; flex-direction: column">
+          <sc-for list="{{msm}}" as="m" hint-placeholder-count="6">
+            <div style="display: grid; grid-template-columns: 36px minmax(0, 1fr); gap: 10px; min-height: 64px">
+              <div style="position: relative; display: flex; justify-content: center">
+                <span style="position: absolute; top: 0; bottom: 0; left: 50%; margin-left: -2px; width: 4px; border-radius: 2px; background: {{m.line}}; opacity: {{m.lineOp}}"></span>
+                <span style="position: relative; margin-top: 4px; width: {{m.s}}; height: {{m.s}}; box-sizing: border-box; border-radius: 50%; background: {{m.bg}}; border: {{m.border}}; box-shadow: {{m.ring}}; display: inline-flex; align-items: center; justify-content: center"><sc-if value="{{m.check}}" hint-placeholder-val="{{ true }}"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg></sc-if><sc-if value="{{m.cur}}" hint-placeholder-val="{{ false }}"><span style="width: 9px; height: 9px; border-radius: 50%; background: #0E6B57"></span></sc-if></span>
+              </div>
+              <div style="display: flex; flex-direction: column; padding-top: 4px; padding-bottom: 12px"><span style="font-size: 14px; font-weight: {{m.fw}}">{{m.t}}</span><span style="font-size: 12px; font-weight: 600; color: {{m.sc}}">{{m.s2}}</span>
+                <sc-if value="{{m.cur}}" hint-placeholder-val="{{ false }}"><div style="margin-top: 8px; padding: 10px 12px; border-radius: 16px; background: #F4FBF8; display: flex; flex-direction: column; gap: 6px"><div style="height: 6px; border-radius: 3px; background: #DDFAF2; overflow: hidden"><span style="display: block; width: 64%; height: 100%; background: #0E6B57; border-radius: 3px"></span></div><span style="font-size: 12px; font-weight: 600">Write content · 2/3 · Set up analytics</span></div></sc-if>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+        <span class="note">The landscape is dropped on mobile; the path runs top → bottom and the current step expands in place.</span>
+      </div>
+    </div>
+
+    <!-- E · Weekly story -->
+    <div class="phone">
+      <span class="lab">Weekly Review</span>
+      <article style="position: relative; overflow: hidden; box-sizing: border-box; min-height: 560px; padding: 22px; border-radius: 30px; background: linear-gradient(180deg, #1D5C4C 0%, #0E3F34 100%); color: #FEFEFE; display: flex; flex-direction: column; gap: 14px">
+        <svg viewBox="0 0 360 560" preserveAspectRatio="xMidYMax slice" width="100%" height="100%" aria-hidden="true" style="position: absolute; inset: 0"><circle cx="270" cy="150" r="30" fill="#E8F5C8" opacity="0.9"></circle><path d="M0 250 C80 210 160 240 230 215 S330 190 360 205 L360 560 L0 560 Z" fill="#2C6E5B"></path><path d="M0 320 C90 290 170 320 250 300 S340 290 360 300 L360 560 L0 560 Z" fill="#235E4E"></path></svg>
+        <span style="position: relative; font-size: 12px; font-weight: 700; opacity: 0.85">Your week · 18 – 24 Mehr</span>
+        <h3 style="position: relative; margin: 0; font-size: 30px; font-weight: 500; line-height: 1.12">A focused and balanced week.</h3>
+        <div style="position: relative; margin-top: auto; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px">
+          <sc-for list="{{wsm}}" as="m" hint-placeholder-count="4"><div style="padding: 12px; border-radius: 18px; background: rgba(255,255,255,0.14); display: flex; flex-direction: column"><span style="font-size: 22px; font-weight: 600">{{m.v}}</span><span style="font-size: 11px; font-weight: 600; opacity: 0.85">{{m.l}}</span><span style="font-size: 10px; font-weight: 700; opacity: 0.8">{{m.d}}</span></div></sc-for>
+        </div>
+        <div style="position: relative; padding: 12px 14px; border-radius: 18px; background: rgba(255,255,255,0.14); font-size: 13px; font-weight: 600; line-height: 1.45">“More deep work, better sleep and steady progress on your goals.”</div>
+      </article>
+      <span class="note" style="padding: 0 6px">Metrics tick once on open. Tapping one jumps to that review step.</span>
+    </div>
+
+    <!-- F · RTL -->
+    <div class="phone" dir="rtl" style="font-family: 'Vazirmatn', 'Urbanist', sans-serif">
+      <span class="lab">فارسی · راست‌به‌چپ</span>
+      <div class="pc">
+        <span class="ph">رودخانه‌ی بودجه · مهر</span>
+        <div style="position: relative; margin-top: 30px">
+          <svg viewBox="0 0 326 150" width="100%" style="display: block; overflow: visible" role="img" aria-label="جریان خرج‌ها در مهر">
+            <sc-for list="{{rvf.streams}}" as="s" hint-placeholder-count="6"><path d="{{s.d}}" fill="{{s.c}}" fill-opacity="{{s.op}}"></path></sc-for>
+            <sc-for list="{{rvf.edges}}" as="s" hint-placeholder-count="6"><path d="{{s.d}}" fill="none" stroke="{{s.c}}" stroke-width="1.4"></path></sc-for>
+            <rect x="{{rvf.fx}}" y="0" width="{{rvf.fw}}" height="150" fill="#FFFFFF" fill-opacity="0.62"></rect>
+            <line x1="{{rvf.sx}}" x2="{{rvf.sx}}" y1="6" y2="144" stroke="#0E6B57" stroke-width="2" stroke-dasharray="3 4"></line>
+          </svg>
+          <div class="tip" style="left: {{rvf.selPct}}; top: -34px"><small>{{rvf.tipDate}}</small><strong>{{rvf.tipVal}}</strong></div>
+        </div>
+        <div style="display: flex; justify-content: space-between; font-size: 10px; font-weight: 700; color: #8A8A82"><span>۱ مهر</span><span>امروز · ۲۱</span><span>۳۰ مهر</span></div>
+        <div style="display: flex; flex-wrap: wrap; gap: 6px"><sc-for list="{{rvf.legend}}" as="l" hint-placeholder-count="6"><span class="chip"><span style="width: 7px; height: 7px; border-radius: 50%; background: {{l.c}}"></span>{{l.t}}</span></sc-for></div>
+        <span class="note">زمان از راست به چپ جریان دارد؛ امروز در سمت چپِ داده‌هاست.</span>
+      </div>
+      <div class="pc">
+        <span class="ph">نقشه‌ی حال و انرژی · ۷ روز</span>
+        <div style="position: relative; margin-top: 30px">
+          <svg viewBox="0 0 326 180" width="100%" style="display: block; overflow: visible" role="img" aria-label="حال و انرژی هفت روز اخیر">
+            <path d="{{mtf.moodA}}" fill="#1BAF7A" fill-opacity="0.18"></path><path d="{{mtf.mood}}" fill="none" stroke="#1BAF7A" stroke-width="2.2"></path>
+            <path d="{{mtf.enA}}" fill="#EDA100" fill-opacity="0.18"></path><path d="{{mtf.en}}" fill="none" stroke="#C98500" stroke-width="2"></path>
+            <circle cx="{{mtf.sx}}" cy="{{mtf.my}}" r="6" fill="#1BAF7A" stroke="#FFFFFF" stroke-width="2.5"></circle>
+            <sc-for list="{{mtf.xl}}" as="x" hint-placeholder-count="7"><text x="{{x.x}}" y="178" text-anchor="middle" font-size="10" font-weight="700" fill="#8A8A82">{{x.t}}</text></sc-for>
+          </svg>
+          <div class="tip" style="left: {{mtf.selPct}}; top: -34px"><small>{{mtf.tipDate}}</small><strong>حال {{mtf.tipMood}} · انرژی {{mtf.tipEn}}</strong></div>
+        </div>
+      </div>
+      <div dir="{{srf.dir}}" role="group" aria-label="{{srf.aria}}" style="display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: 30px; background: #FFFFFF; box-shadow: 0 1px 0 #E6E6E1, 0 12px 32px rgba(14,14,12,0.06); font-family: {{srf.font}}; color: #1A1A17">
+  <div style="flex: none; display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 10px 10px; border-radius: 22px; background: #F8F8F6">
+    <span style="width: 30px; height: 30px; border-radius: 50%; background: {{srf.flameBg}}; display: inline-flex; align-items: center; justify-content: center"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="{{srf.flame}}" stroke-width="1.9" stroke-linejoin="round" aria-hidden="true"><path d="M12 3c1 3 5 5 5 10a5 5 0 0 1-10 0c0-2 1-3.5 2-4.5c0 2 1 3 2 3c0-3-1-5 1-8.5z"></path></svg></span>
+    <span style="display: flex; flex-direction: column; align-items: center; line-height: 1.15"><span style="font-size: 20px; font-weight: 600">{{srf.streak}}</span><span style="font-size: 10px; font-weight: 600; color: #6B6B64; white-space: nowrap">{{srf.streakLabel}}</span></span>
+  </div>
+  <div style="position: relative; flex: 1; min-width: 0; height: 78px">
+    <svg viewBox="0 0 700 84" preserveAspectRatio="none" width="100%" height="84" aria-hidden="true" style="position: absolute; left: 0; top: 4px; overflow: visible">
+      <sc-for list="{{srf.conns}}" as="c" hint-placeholder-count="6"><path d="{{c.d}}" fill="none" stroke="{{c.c}}" stroke-width="{{c.w}}" stroke-dasharray="{{c.dash}}" stroke-opacity="{{c.op}}" stroke-linecap="round" vector-effect="non-scaling-stroke"></path></sc-for>
+    </svg>
+    <div style="position: relative; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); height: 100%">
+      <sc-for list="{{srf.nodes}}" as="n" hint-placeholder-count="7">
+        <div role="img" aria-label="{{n.aria}}" style="display: flex; flex-direction: column; align-items: center; gap: 2px">
+          <span style="margin-top: {{n.mt}}; width: {{n.size}}; height: {{n.size}}; box-sizing: border-box; border-radius: 50%; background: {{n.bg}}; border: {{n.border}}; box-shadow: {{n.ring}}; display: inline-flex; align-items: center; justify-content: center">
+            <sc-if value="{{n.check}}" hint-placeholder-val="{{ true }}"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg></sc-if>
+            <sc-if value="{{n.dot}}" hint-placeholder-val="{{ false }}"><span style="width: 12px; height: 12px; border-radius: 50%; background: #0E6B57"></span></sc-if>
+            <sc-if value="{{n.dash}}" hint-placeholder-val="{{ false }}"><span style="width: 11px; height: 2.5px; border-radius: 2px; background: #A9A9A1"></span></sc-if>
+            <sc-if value="{{n.moon}}" hint-placeholder-val="{{ false }}"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#8A8A82" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M20 14a8 8 0 1 1-10-10a6.5 6.5 0 0 0 10 10z"></path></svg></sc-if>
+          </span>
+          <span style="margin-top: 4px; font-size: 11px; font-weight: {{n.dayW}}; color: {{n.dayC}}">{{n.day}}</span>
+          <span style="font-size: 10px; font-weight: 600; color: #8A8A82">{{n.date}}</span>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+  <sc-if value="{{srf.showCta}}" hint-placeholder-val="{{ true }}"><a href="S9Habits.dc.html" style="flex: none; display: inline-flex; align-items: center; gap: 10px; height: 52px; padding: 0 6px 0 18px; border-radius: 999px; background: #F8F8F6; font-size: 13px; font-weight: 700; color: #1A1A17; text-decoration: none; white-space: nowrap" dir="{{srf.dir}}">{{srf.cta}}<span style="width: 40px; height: 40px; border-radius: 50%; background: #FFFFFF; display: inline-flex; align-items: center; justify-content: center"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#1A1A17" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="{{srf.chev}}"></path></svg></span></a></sc-if>
+</div>
+      <div class="pc" dir="rtl">
+        <span class="ph">ساعت تمرکز — آینه نمی‌شود</span>
+        <span class="note">ساعت ۰۰ بالا و حرکت ساعت‌گرد می‌ماند؛ فقط برچسب‌ها فارسی می‌شوند: <b>بهترین بازه ۰۹:۰۰ تا ۱۲:۰۰، سه‌شنبه تا پنجشنبه.</b></span>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2600}}'>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { rvDay: 21, mtDay: 21 }; }
+  renderVals() {
+    const VZ = (() => {
+      const f1 = (n) => (Math.round(n * 10) / 10).toString();
+      const sm = (p) => {
+        if (!p.length) return '';
+        let d = 'M' + f1(p[0][0]) + ' ' + f1(p[0][1]);
+        for (let i = 0; i < p.length - 1; i++) {
+          const p0 = p[i - 1] || p[i], p1 = p[i], p2 = p[i + 1], p3 = p[i + 2] || p2;
+          d += ' C' + f1(p1[0] + (p2[0] - p0[0]) / 6) + ' ' + f1(p1[1] + (p2[1] - p0[1]) / 6) + ' ' + f1(p2[0] - (p3[0] - p1[0]) / 6) + ' ' + f1(p2[1] - (p3[1] - p1[1]) / 6) + ' ' + f1(p2[0]) + ' ' + f1(p2[1]);
+        }
+        return d;
+      };
+      const band = (top, bot) => sm(top) + ' L' + sm(bot.slice().reverse()).slice(1) + ' Z';
+      const FA = '۰۱۲۳۴۵۶۷۸۹';
+      const fa = (s) => String(s).replace(/[0-9]/g, (d) => FA[d]);
+      const DN = ['Sat', 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
+      const DNF = ['شنبه', 'یکشنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنجشنبه', 'جمعه'];
+      const DSF = ['ش', 'ی', 'د', 'س', 'چ', 'پ', 'ج'];
+      const wd = (d) => (d - 1 + 4) % 7; // 1 Mehr 1405 = Wednesday
+      const money = (k, rtl) => { const s = k >= 1000 ? (k / 1000).toFixed(1) + 'M' : Math.round(k) + 'K'; return rtl ? fa(s.replace('M', ' میلیون').replace('K', ' هزار')) + ' تومان' : s; };
+      const dur = (m, rtl) => { const h = Math.floor(m / 60), r = Math.round(m % 60); return rtl ? fa((h ? h + ' ساعت' : '') + (h && r ? ' و ' : '') + (r ? r + ' دقیقه' : '')) : (h ? h + 'h ' : '') + (r ? r + 'm' : ''); };
+      const CAT = [['ess', 'Essentials', 'ضروری', '#1BAF7A'], ['food', 'Food', 'خوراک', '#EB6834'], ['trans', 'Transport', 'رفت‌وآمد', '#4F86C6'], ['life', 'Lifestyle', 'سبک زندگی', '#EDA100'], ['health', 'Health', 'سلامت', '#D46A9A'], ['other', 'Other', 'سایر', '#A9A9A1']];
+      const OUT = { done: '#1BAF7A', moved: '#EDA100', overdue: '#D46A9A', inbox: '#A9A9A1' };
+
+      /* ---------- 01 Budget River ---------- */
+      function river(o) {
+        const W = o.W || 820, H = o.H || 240, rtl = !!o.rtl, compact = !!o.compact, state = o.state || 'normal';
+        const last = state === 'sparse' ? 4 : state === 'empty' ? 0 : 21, fac = state === 'over' ? 1.35 : 1;
+        const base = { ess: 300, food: 240, trans: 95, life: 150, health: 60, other: 45 };
+        const raw = (c, d, i) => {
+          let v = base[c] * (1 + 0.38 * Math.sin(d * 1.3 + i * 1.9) + 0.18 * Math.cos(d * 0.55 + i));
+          if (c === 'ess' && (d === 1 || d === 15)) v += 900;
+          if (c === 'life' && (wd(d) === 5 || wd(d) === 6)) v += 260;
+          if (c === 'health' && d === 17) v += 700;
+          return Math.max(10, v) * 0.78 * (d <= last ? fac : 1);
+        };
+        const N = state === 'sparse' ? last : 30;
+        const sv = CAT.map(([c], i) => Array.from({ length: 31 }, (_, d) => { if (!d) return 0; let s = 0, n = 0; for (let k = d - 2; k <= d + 2; k++) if (k >= 1 && k <= 30) { s += raw(c, k, i); n++; } return s / n; }));
+        const padL = compact ? 10 : 18, padR = compact ? 10 : 104, plotW = W - padL - padR, step = plotW / 29;
+        const X = (d) => rtl ? W - padL - (d - 1) * step : padL + (d - 1) * step;
+        const cyF = (d) => H / 2 + 12 * Math.sin(d / 4.2) - 6 * Math.cos(d / 2.3), GAP = 2.5;
+        const taper = (d) => d === 1 || d === N ? 0.62 : d === 2 || d === N - 1 ? 0.86 : 1;
+        const cy = H / 2;
+        let maxT = 0; for (let d = 1; d <= 30; d++) { let t = 0; CAT.forEach((_, i) => { t += sv[i][d]; }); maxT = Math.max(maxT, t); }
+        const s = (H * 0.66) / maxT;
+        const tops = CAT.map(() => []), bots = CAT.map(() => []);
+        for (let d = 1; d <= N; d++) {
+          let t = 0; CAT.forEach((_, i) => { t += sv[i][d]; });
+          const k = taper(d), tot = t * s * k + GAP * (CAT.length - 1);
+          let y = cyF(d) - tot / 2;
+          CAT.forEach((_, i) => { tops[i].push([X(d), y]); y += sv[i][d] * s * k; bots[i].push([X(d), y]); y += GAP; });
+        }
+        const streams = state === 'empty' ? [] : CAT.map(([id, en, fan, c], i) => ({ d: band(tops[i], bots[i]), c, op: o.focus && o.focus !== id ? 0.12 : 0.42 }));
+        const edges = state === 'empty' ? [] : CAT.map(([id, en, fan, c], i) => ({ d: sm(tops[i]), c, op: o.focus && o.focus !== id ? 0.15 : 0.9 }));
+        let labels = compact || state === 'empty' || state === 'sparse' ? [] : CAT.map(([id, en, fan, c], i) => { const l = tops[i][N - 3], b = bots[i][N - 3]; return { x: rtl ? X(30) - 10 : X(30) + 10, y: (l[1] + b[1]) / 2 + 4, t: rtl ? fan : en, c, anchor: rtl ? 'end' : 'start' }; });
+        for (let i = 1; i < labels.length; i++) if (labels[i].y - labels[i - 1].y < 15) labels[i].y = labels[i - 1].y + 15;
+        const bd = 1100 * 0.78 * s;
+        const env = { y1: cy - bd / 2 - 8, y2: cy + bd / 2 + 8, c: state === 'over' ? '#D46A9A' : '#B9B9B1', x1: X(1), x2: X(30) };
+        const sel = Math.min(Math.max(1, o.day || last), Math.max(1, last));
+        let spent = 0; for (let d = 1; d <= last; d++) CAT.forEach(([c], i) => { spent += raw(c, d, i); });
+        const expected = 33000 * last / 30, diff = Math.round((spent - expected) / expected * 100);
+        const dayTot = CAT.map(([c], i) => raw(c, sel, i)); const top = dayTot.indexOf(Math.max(...dayTot));
+        const hits = []; for (let d = 1; d <= last; d++) hits.push({ x: Math.min(X(d), X(d) + (rtl ? step : -step) / 2) - (rtl ? step / 2 : 0), w: step, d });
+        return {
+          W, H, streams, edges, labels, env, hasData: state !== 'empty',
+          fx: rtl ? 0 : X(last), fw: rtl ? X(last) : W - X(last), showFc: state === 'normal' || state === 'over',
+          tx: X(last), showToday: last > 0, sx: X(sel), selPct: Math.min(86, Math.max(10, X(sel) / W * 100)).toFixed(2) + '%',
+          hits: hits.map((h) => ({ x: Math.min(X(h.d) - step / 2, X(h.d) + step / 2), w: step, d: h.d })),
+          tipDate: rtl ? DNF[wd(sel)] + ' ' + fa(sel) + ' مهر' : DN[wd(sel)] + ', ' + sel + ' Mehr',
+          tipVal: money(dayTot.reduce((a, b) => a + b, 0), rtl), tipSub: (rtl ? 'بیشترین: ' + CAT[top][2] : 'Top: ' + CAT[top][1]) + ' · ' + money(dayTot[top], rtl),
+          spent: money(spent, rtl), remaining: money(Math.max(0, 33000 - spent), rtl), pct: (rtl ? fa(Math.round(spent / 330)) + '٪' : Math.round(spent / 330) + '%'),
+          insight: state === 'empty' ? '' : state === 'sparse' ? 'Only 4 days so far — the flow becomes meaningful after about a week.' : diff <= 0 ? 'You’re ' + Math.abs(diff) + '% under your expected spending at this point in the month.' : 'You’re ' + diff + '% above your expected pace — Lifestyle and Food grew most this week.',
+          over: diff > 0 && state === 'over', legend: CAT.map(([id, en, fan, c]) => ({ t: rtl ? fan : en, c, id }))
+        };
+      }
+
+      /* ---------- 02 Milestone Path ---------- */
+      function milestones(o) {
+        const W = o.W || 820, H = o.H || 260, state = o.state || 'track', rtl = !!o.rtl;
+        const raw = [[0.04, 0.88], [0.2, 0.78], [0.37, 0.62], [0.53, 0.45], [0.72, 0.34], [0.92, 0.18]];
+        const P = raw.map(([x, y]) => [rtl ? W * (1 - x) : W * x, H * y]);
+        const names = [['Brief', 'شروع', '1 Mehr'], ['Research', 'تحقیق', '8 Mehr'], ['Design', 'طراحی', '18 Mehr'], ['Build', 'ساخت', '2 Aban'], ['Launch', 'انتشار', '20 Aban'], ['Goal', 'هدف', '30 Azar']];
+        const cur = state === 'done' ? 6 : 3;
+        const nodes = P.map((p, i) => {
+          const st = i < cur ? 'done' : i === cur ? (state === 'late' ? 'late' : 'current') : 'next';
+          const isGoal = i === 5;
+          return { x: p[0], y: p[1], st, isGoal, done: st === 'done' && !isGoal, current: st === 'current', late: st === 'late', next: st === 'next' && !isGoal, goal: isGoal, goalDone: isGoal && state === 'done',
+            r: st === 'current' || st === 'late' ? 13 : 10, label: rtl ? names[i][1] : names[i][0], lx: p[0], ly: p[1] + 30, pick: i };
+        });
+        return { W, H, full: sm(P), done: sm(P.slice(0, Math.min(cur, 5) + 1)), nodes, P,
+          hills: [
+            band([[0, H * 0.7], [W * 0.25, H * 0.55], [W * 0.55, H * 0.66], [W * 0.8, H * 0.5], [W, H * 0.58]], [[0, H], [W, H]]),
+            band([[0, H * 0.86], [W * 0.3, H * 0.74], [W * 0.62, H * 0.84], [W, H * 0.72]], [[0, H], [W, H]])
+          ] };
+      }
+
+      /* ---------- 03 Mood Terrain ---------- */
+      function terrain(o) {
+        const W = o.W || 820, H = o.H || 250, range = o.range || 7, rtl = !!o.rtl, sparse = !!o.sparse;
+        const MOOD = [3, 4, 4, 2, 3, 4, 5, 4, 3, 3, 4, 2, 2, 3, 4, 4, 5, 4, 3, 4, 4, 3, 4, 5, 4, 3, 3, 4, 5, 4];
+        const EN = [2, 2, 3, 1, 2, 3, 3, 2, 2, 1, 2, 1, 1, 2, 3, 2, 3, 3, 2, 2, 2, 2, 2, 3, 3, 2, 1, 2, 3, 2];
+        const end = 21, start = end - range + 1;
+        const days = []; for (let d = start; d <= end; d++) days.push(d);
+        const pad = o.compact ? 8 : 56, pr = o.compact ? 8 : 20, X = (i) => { const x = pad + (i / (days.length - 1)) * (W - pad - pr); return rtl ? W - x : x; };
+        const mTop = 18, mBot = H * 0.6, eTop = H * 0.7, eBot = H - 22;
+        const MY = (v) => mBot - (v - 1) / 4 * (mBot - mTop - 10) - 6, EY = (v) => eBot - (v - 1) / 2 * (eBot - eTop - 8) - 4;
+        const val = (arr, d) => arr[(d - 1 + 30) % 30];
+        const S = 24, samp = (fn) => Array.from({ length: S }, (_, k) => { const t = k / (S - 1) * (days.length - 1), i0 = Math.floor(t), i1 = Math.min(days.length - 1, i0 + 1), f = t - i0; const v = fn(days[i0]) * (1 - f) + fn(days[i1]) * f; return [X(t), v]; });
+        const mp = samp((d) => MY(val(MOOD, d))), ep = samp((d) => EY(val(EN, d)));
+        const sel = Math.min(end, Math.max(start, o.day || end)), si = sel - start;
+        const mv = val(MOOD, sel), ev = val(EN, sel);
+        const ML = ['Awful', 'Low', 'Okay', 'Good', 'Great'], MLF = ['خیلی بد', 'بد', 'معمولی', 'خوب', 'عالی'], EL = ['Low', 'Medium', 'High'], ELF = ['کم', 'متوسط', 'زیاد'];
+        let hi = 0, lo = 0; days.forEach((d, i) => { if (val(MOOD, d) > val(MOOD, days[hi])) hi = i; if (val(MOOD, d) < val(MOOD, days[lo])) lo = i; });
+        const every = range <= 7 ? 1 : range <= 14 ? 2 : 5;
+        const sparseDays = [2, 9, 15];
+        return {
+          W, H, mood: sm(mp), moodA: band(mp, [[mp[0][0], mBot], [mp[S - 1][0], mBot]]), en: sm(ep), enA: band(ep, [[ep[0][0], eBot], [ep[S - 1][0], eBot]]),
+          mBot, eBot, eTop, mTop,
+          grid: [5, 4, 3, 2, 1].map((v) => ({ y: MY(v), t: rtl ? MLF[v - 1] : ML[v - 1], x: rtl ? W - 6 : 6, anchor: rtl ? 'end' : 'start' })),
+          egrid: [3, 2, 1].map((v) => ({ y: EY(v), t: rtl ? ELF[v - 1] : EL[v - 1], x: rtl ? W - 6 : 6, anchor: rtl ? 'end' : 'start' })),
+          xl: days.map((d, i) => ({ x: X(i), t: (i % every === 0 || d === end) ? (rtl ? DSF[wd(d)] + ' ' + fa(d) : DN[wd(d)].slice(0, range > 14 ? 1 : 3) + ' ' + d) : '', fri: wd(d) === 6 })),
+          hits: days.map((d, i) => ({ x: X(i) - (W - pad - pr) / (days.length - 1) / 2, w: (W - pad - pr) / (days.length - 1), d })),
+          sx: X(si), my: MY(mv), ey: EY(ev), selPct: Math.min(88, Math.max(10, X(si) / W * 100)).toFixed(2) + '%',
+          hx: X(hi), hy: MY(val(MOOD, days[hi])), lx: X(lo), ly: MY(val(MOOD, days[lo])),
+          tipDate: rtl ? DNF[wd(sel)] + ' ' + fa(sel) + ' مهر' : DN[wd(sel)] + ', ' + sel + ' Mehr',
+          tipMood: rtl ? MLF[mv - 1] : ML[mv - 1], tipEn: rtl ? ELF[ev - 1] : EL[ev - 1],
+          sparseDots: sparseDays.map((d, i) => ({ x: pad + (i + 1) / 4 * (W - pad - pr), y: MY(val(MOOD, d)) })), sparse
+        };
+      }
+
+      /* ---------- 04 Focus Clock ---------- */
+      function clock(o) {
+        const R0 = o.r0 || 54, RW = o.rw || 14, G = 2, cx = o.cx || 200, cy = o.cy || 200, rings = o.single ? 1 : 7, week4 = !!o.week4;
+        const SEQ = ['#EDEDEA', '#CDEFE4', '#8FDCC2', '#3FBF97', '#0E6B57'];
+        const pt = (r, a) => [cx + r * Math.sin(a), cy - r * Math.cos(a)];
+        const cells = [];
+        const v = (day, h) => { let b = (h >= 9 && h < 12) ? 3 : (h >= 14 && h < 17) ? 2 : (h >= 8 && h < 19) ? 1 : 0; if (h >= 9 && h < 12 && day >= 3 && day <= 5) b = 4; if (day === 6) b = Math.max(0, b - 2); if (h === 13) b = 0; if (week4 && b > 0 && (day + h) % 4 === 0) b = Math.max(1, b - 1); return b; };
+        for (let r = 0; r < rings; r++) for (let h = 0; h < 24; h++) {
+          const val = o.single ? Math.round([0, 1, 2, 3, 4, 5].reduce((a, d) => a + v(d, h), 0) / 6) : v(r, h);
+          const a0 = (h / 24) * Math.PI * 2 + 0.012, a1 = ((h + 1) / 24) * Math.PI * 2 - 0.012;
+          const ri = R0 + r * (RW + G), ro = ri + RW;
+          const [x1, y1] = pt(ro, a0), [x2, y2] = pt(ro, a1), [x3, y3] = pt(ri, a1), [x4, y4] = pt(ri, a0);
+          const sel = o.sel && o.sel[0] === r && o.sel[1] === h;
+          cells.push({ d: `M${f1(x1)} ${f1(y1)} A${ro} ${ro} 0 0 1 ${f1(x2)} ${f1(y2)} L${f1(x3)} ${f1(y3)} A${ri} ${ri} 0 0 0 ${f1(x4)} ${f1(y4)} Z`, c: SEQ[val], stroke: sel ? '#1A1A17' : 'none', r, h, val });
+        }
+        const lab = [0, 6, 12, 18].map((h) => { const [x, y] = pt(R0 + rings * (RW + G) + 14, h / 24 * Math.PI * 2); return { x, y: y + 4, t: String(h).padStart(2, '0') + ':00' }; });
+        let win = '';
+        if (!o.single) { const ri = R0 + 3 * (RW + G) - 3, ro = R0 + 5 * (RW + G) + RW + 3, a0 = 9 / 24 * Math.PI * 2, a1 = 12 / 24 * Math.PI * 2; const [x1, y1] = pt(ro, a0), [x2, y2] = pt(ro, a1), [x3, y3] = pt(ri, a1), [x4, y4] = pt(ri, a0); win = `M${f1(x1)} ${f1(y1)} A${ro} ${ro} 0 0 1 ${f1(x2)} ${f1(y2)} L${f1(x3)} ${f1(y3)} A${ri} ${ri} 0 0 0 ${f1(x4)} ${f1(y4)} Z`; }
+        return { cells, lab, win, SEQ };
+      }
+
+      /* ---------- 07 Context Ribbon ---------- */
+      function ctx(o) {
+        const W = o.W || 820, H = o.H || 220, rtl = !!o.rtl, month = !!o.month;
+        const C = [['personal', 'Personal', 'شخصی', '#4FE3C1', '#0E6B57'], ['project', 'Projects', 'پروژه‌ها', '#5AB4FF', '#0F5BA8'], ['team', 'Teams', 'تیم‌ها', '#8B8BFF', '#4343C8'], ['company', 'Companies', 'شرکت‌ها', '#C07BFF', '#7A2BC4'], ['other', 'Other', 'سایر', '#C9C9C2', '#6B6B64']];
+        const D = month ? [[3, 2.5, 3.5, 3, 2.8, 4, 5], [3, 3.4, 2.6, 3, 3.2, 1.6, 0.5], [1.4, 2, 1.8, 2.2, 1.6, 0.6, 0.2], [0.8, 1.4, 1, 1.2, 1.1, 0.4, 0.1], [0.4, 0.3, 0.5, 0.4, 0.5, 0.6, 0.8]]
+          : [[2.5, 2, 3, 2.2, 2.6, 4.5, 5.5], [3.5, 4, 2.5, 3, 3.8, 1, 0.4], [1, 2.2, 2.6, 1.8, 1.2, 0.5, 0.1], [1.2, 0.8, 1.6, 1.4, 0.6, 0.3, 0], [0.3, 0.4, 0.5, 0.2, 0.6, 0.8, 0.9]];
+        const pad = o.compact ? 6 : 24, X = (i) => { const x = pad + i / 6 * (W - 2 * pad); return rtl ? W - x : x; };
+        const cy = H / 2; let maxT = 0; for (let i = 0; i < 7; i++) maxT = Math.max(maxT, D.reduce((a, r) => a + r[i], 0));
+        const s = H * 0.8 / maxT;
+        const tops = C.map(() => []), bots = C.map(() => []);
+        const tp = [0.5, 0.92, 1, 1, 1, 0.92, 0.5];
+        for (let i = 0; i < 7; i++) { const t = D.reduce((a, r) => a + r[i], 0), tot = t * s * tp[i] + 2.5 * 4; let y = cy + 8 * Math.sin(i * 1.1) - tot / 2; C.forEach((_, k) => { tops[k].push([X(i), y]); y += D[k][i] * s * tp[i]; bots[k].push([X(i), y]); y += 2.5; }); }
+        const tot = D.map((r) => r.reduce((a, b) => a + b, 0)), all = tot.reduce((a, b) => a + b, 0);
+        const prev = month ? [36, 30, 18, 11, 5] : [34, 31, 19, 12, 4];
+        return {
+          W, H, bands: C.map(([id, en, fan, c, deep], k) => ({ id, d: band(tops[k], bots[k]), c, op: o.focus && o.focus !== id ? 0.12 : 0.55, edge: sm(tops[k]), deep })),
+          rows: C.map(([id, en, fan, c, deep], k) => { const pct = Math.round(tot[k] / all * 100); const dl = pct - prev[k]; return { id, t: rtl ? fan : en, c, deep, pct: rtl ? fa(pct) + '٪' : pct + '%', hrs: (month ? (tot[k] * 4.3).toFixed(0) : tot[k].toFixed(1)) + (rtl ? ' س' : 'h'), delta: (dl > 0 ? '↑ ' : dl < 0 ? '↓ ' : '') + Math.abs(dl) + (rtl ? '٪' : ' pts'), peakX: tops[k][tot[k] ? D[k].indexOf(Math.max(...D[k])) : 0][0], peakY: (tops[k][D[k].indexOf(Math.max(...D[k]))][1] + bots[k][D[k].indexOf(Math.max(...D[k]))][1]) / 2 }; }),
+          xl: (rtl ? DSF : DN.map((d) => d.slice(0, 3))).map((t, i) => ({ x: X(i), t: month ? (rtl ? 'هفته ' + fa(Math.floor(i / 2) + 1) : '') : t })),
+          total: month ? '186h' : '42h 30m'
+        };
+      }
+
+      /* ---------- 08 Carry-over Flow ---------- */
+      function carry(o) {
+        const W = o.W || 820, H = o.H || 260, rtl = !!o.rtl, week = !!o.week;
+        const items = week ? [['done', 'Completed', 'انجام شد', 31], ['moved', 'Moved to next week', 'به هفته‌ی بعد', 6], ['overdue', 'Overdue', 'عقب‌افتاده', 3], ['inbox', 'Back to inbox', 'برگشت به صندوق', 2]]
+          : [['done', 'Completed', 'انجام شد', 12], ['moved', 'Moved to tomorrow', 'به فردا', 4], ['overdue', 'Overdue', 'عقب‌افتاده', 2]];
+        const total = items.reduce((a, b) => a + b[3], 0);
+        const c0 = o.cx || 90, cx = rtl ? W - c0 : c0, cyy = H / 2, R = o.R || 58, t0 = o.tx != null ? o.tx : W - 300, tx = rtl ? W - t0 : t0;
+        const unit = (H * 0.38) / total; let y0 = cyy - (total * unit + 3 * (items.length - 1)) / 2;
+        const gap = o.gap || (items.length > 3 ? 64 : 82), ty0 = cyy - (items.length - 1) * gap / 2;
+        const sx = cx;
+        const flows = items.map(([id, en, fan, n], i) => {
+          const h = n * unit, a = y0, b = y0 + h; y0 += h + 3;
+          const tc = ty0 + i * gap, th = Math.max(10, Math.min(42, h * 1.1)), ta = tc - th / 2, tb = tc + th / 2;
+          const mx = (sx + tx) / 2;
+          const d = `M${f1(sx)} ${f1(a)} C${f1(mx)} ${f1(a)} ${f1(mx)} ${f1(ta)} ${f1(tx)} ${f1(ta)} L${f1(tx)} ${f1(tb)} C${f1(mx)} ${f1(tb)} ${f1(mx)} ${f1(b)} ${f1(sx)} ${f1(b)} Z`;
+          const sel = o.sel === id;
+          return { id, d, c: OUT[id], op: o.sel && !sel ? 0.12 : 0.5, t: rtl ? fan : en, n: rtl ? fa(n) : n, pct: rtl ? fa(Math.round(n / total * 100)) + '٪' : Math.round(n / total * 100) + '%', top: (tc / H * 100).toFixed(2) + '%', sel };
+        });
+        return { W, H, flows, cx, cyy, R, total: rtl ? fa(total) : total, pillSide: rtl ? 'right' : 'left', pillX: rtl ? ((W - tx) / W * 100).toFixed(2) + '%' : (tx / W * 100).toFixed(2) + '%' };
+      }
+
+      return { sm, band, fa, DN, DNF, DSF, wd, money, dur, CAT, OUT, river, milestones, terrain, clock, ctx, carry };
+    })();
+
+    const RIB = (() => {
+      const FA = '۰۱۲۳۴۵۶۷۸۹', fa = (s) => String(s).replace(/[0-9]/g, (d) => FA[d]);
+      const DN = ['Sat', 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri'], DNF = ['ش', 'ی', 'د', 'س', 'چ', 'پ', 'ج'];
+      const SC = {
+        all: { s: ['done', 'done', 'done', 'todayDone', 'future', 'future', 'rest'], n: 12, cta: ['Perfect week so far', 'هفته‌ی بی‌نقص تا اینجا'] },
+        partial: { s: ['done', 'missed', 'done', 'todayDone', 'future', 'future', 'rest'], n: 2, cta: ['Keep going', 'ادامه بده'] },
+        today: { s: ['done', 'done', 'done', 'today', 'future', 'future', 'rest'], n: 11, cta: ['Keep going', 'ادامه بده'] },
+        missed: { s: ['done', 'done', 'missed', 'today', 'future', 'future', 'rest'], n: 0, cta: ['Start again today', 'از امروز دوباره'] },
+        rest: { s: ['done', 'done', 'rest', 'todayDone', 'future', 'future', 'rest'], n: 10, cta: ['Rest days don’t break it', 'استراحت زنجیره را نمی‌شکند'] }
+      };
+      const DK = { '#0E6B57': '#6FD4B8', '#FFFFFF': '#1C1F1C', '#9ADFCB': '#2F7F6B', '#DDFAF2': '#1D4A40', '#F4F4F1': '#242824', '#D3D3CC': '#3A3F3A', '#B5B5AE': '#6E746E', '#C9C9C2': '#4A504A', '#45453F': '#C4C8C2', '#E5484D': '#F2555A', '#FFF3DC': '#3A2E12', '#C98500': '#F5B54A', '#F1F1EE': '#242824', '#A9A9A1': '#6E746E' };
+      function build(o) {
+        const dk = (v) => (o.dark ? String(v).replace(/#[0-9A-F]{6}/gi, (h) => DK[h.toUpperCase()] || h) : v);
+        const rtl = !!o.rtl, sc = SC[o.scenario || 'today'], compact = !!o.compact;
+        const W = 700, cy = 26, xs = (i) => { const x = (i + 0.5) / 7 * W; return rtl ? W - x : x; };
+        const isDone = (s) => s === 'done' || s === 'todayDone';
+        const conns = [];
+        for (let i = 0; i < 6; i++) {
+          const a = sc.s[i], b = sc.s[i + 1];
+          const x1 = xs(i), x2 = xs(i + 1), dx = (x2 - x1) / 3, w = i % 2 ? 7 : -7;
+          const d = `M${x1.toFixed(1)} ${cy} C${(x1 + dx).toFixed(1)} ${cy + w} ${(x2 - dx).toFixed(1)} ${cy - w} ${x2.toFixed(1)} ${cy}`;
+          const strong = (isDone(a) || a === 'rest') && (isDone(b) || b === 'today' || b === 'rest') && !(a === 'rest' && !isDone(sc.s[i - 1] || 'done'));
+          conns.push(strong ? { d, c: dk('#9ADFCB'), w: 9, dash: 'none', op: 0.75 } : { d, c: dk('#C9C9C2'), w: 2, dash: '1 7', op: 1 });
+        }
+        const nodes = sc.s.map((s, i) => {
+          const today = s === 'today' || s === 'todayDone';
+          const size = today ? 46 : compact ? 32 : 38;
+          const st = {
+            done: { bg: '#0E6B57', border: '0', ring: 'none', t: 'done', tf: 'انجام شد' },
+            todayDone: { bg: '#0E6B57', border: '0', ring: '0 0 0 4px #FFFFFF, 0 0 0 7px #9ADFCB', t: 'done today', tf: 'امروز انجام شد' },
+            today: { bg: '#FFFFFF', border: '3px solid #0E6B57', ring: '0 0 0 5px #DDFAF2', t: 'today, not yet', tf: 'امروز، هنوز نه' },
+            missed: { bg: '#F4F4F1', border: '2px solid #D3D3CC', ring: 'none', t: 'missed', tf: 'جا ماند' },
+            rest: { bg: '#FFFFFF', border: '2px dotted #B5B5AE', ring: 'none', t: 'rest day', tf: 'روز استراحت' },
+            future: { bg: '#FFFFFF', border: '2px dashed #D3D3CC', ring: 'none', t: 'upcoming', tf: 'پیش رو' }
+          }[s];
+          const date = 18 + i;
+          return {
+            size: size + 'px', mt: today ? '4px' : ((46 - size) / 2 + 4) + 'px', bg: dk(st.bg), border: dk(st.border), ring: dk(st.ring),
+            check: isDone(s), dot: s === 'today', dash: s === 'missed', moon: s === 'rest',
+            day: rtl ? DNF[i] : DN[i], date: rtl ? fa(date) : String(date), dayW: today ? 800 : 700, dayC: dk(today ? '#0E6B57' : i === 6 ? '#E5484D' : '#45453F'),
+            aria: (rtl ? DNF[i] + ' ' + fa(date) + ' مهر: ' + st.tf : DN[i] + ' ' + date + ' Mehr: ' + st.t)
+          };
+        });
+        return {
+          dir: rtl ? 'rtl' : 'ltr', font: rtl ? "'Vazirmatn', 'Urbanist', sans-serif" : "'Urbanist', 'Vazirmatn', sans-serif",
+          conns, nodes, streak: rtl ? fa(sc.n) : String(sc.n), streakLabel: rtl ? 'روز پیاپی' : 'day streak', cta: sc.cta[rtl ? 1 : 0],
+          chev: rtl ? 'M15 6l-6 6 6 6' : 'M9 6l6 6-6 6', showCta: !compact, flameBg: dk(sc.n ? '#FFF3DC' : '#F1F1EE'), flame: dk(sc.n ? '#C98500' : '#A9A9A1'),
+          aria: (rtl ? 'زنجیره‌ی عادت: ' + fa(sc.n) + ' روز پیاپی' : 'Habit streak: ' + sc.n + ' days')
+        };
+      }
+      return { build, SC };
+    })();
+
+    const st = this.state;
+    const rv = VZ.river({ W: 326, H: 160, compact: true, day: st.rvDay });
+    rv.hits = rv.hits.map((h) => Object.assign(h, { pick: () => this.setState({ rvDay: h.d }) }));
+    const mt = VZ.terrain({ W: 326, H: 190, range: 7, compact: true, day: st.mtDay });
+    mt.hits = mt.hits.map((h) => Object.assign(h, { pick: () => this.setState({ mtDay: h.d }) }));
+    const cfm = VZ.carry({ W: 326, H: 170, cx: 50, R: 40, tx: 176, gap: 48 });
+    cfm.flows = cfm.flows.map((f) => Object.assign(f, { ty: (parseFloat(f.top) / 100 * 170 + 5).toFixed(1) }));
+    const fcm = VZ.clock({ single: true, r0: 62, rw: 34, cx: 150, cy: 150 });
+    const cx = VZ.ctx({});
+    const PAT = [[1, 1, 1, 1, 0, 0, 2], [1, 1, 1, 1, 0, 0, 2], [1, 0, 3, 1, 0, 0, 2], [1, 1, 1, 0, 0, 0, 2], [1, 1, 0, 1, 0, 0, 2]];
+    const HN = [['Read 20 pages', '7d · 90%'], ['Morning routine', '10d · 100%'], ['Gym', '1d · 50%'], ['Water 8×', '5d · 80%'], ['No phone late', '1d · 60%']];
+    const rvf = VZ.river({ W: 326, H: 150, compact: true, rtl: true, day: 21 });
+    const mtf = VZ.terrain({ W: 326, H: 180, range: 7, compact: true, rtl: true, day: 21 });
+    const MS = [['Brief', 'Done · 1 Mehr', 'done'], ['Research', 'Done · 8 Mehr', 'done'], ['Design', 'Done · 18 Mehr', 'done'], ['Build', '64% · due 2 Aban', 'cur'], ['Launch', '20 Aban', 'next'], ['Goal · v1 live', '30 Azar', 'goal']];
+    return {
+      rv, mt, mtSel: mt.sx - 12, cfm, fcm, rvf, mtf,
+      cxm: cx.rows.map((r) => ({ t: r.t, c: r.c, pct: r.pct, hrs: r.hrs, delta: r.delta })), ctxAria: cx.rows.map((r) => r.t + ' ' + r.pct).join(', '),
+      hfmDays: ['Sa', 'Su', 'Mo', 'Tu', 'We', 'Th', 'Fr'].map((n, i) => ({ n, c: i === 6 ? '#E5484D' : i === 3 ? '#0E6B57' : '#8A8A82' })),
+      hfm: HN.map(([t, meta], r) => ({ t, meta, cells: PAT[r].map((v, i) => ({ done: v === 1, bg: v === 1 ? '#0E6B57' : v === 3 ? 'repeating-linear-gradient(135deg, #E6E6E1 0 3px, #F4F4F1 3px 7px)' : v === 2 || i > 3 ? 'transparent' : '#F1F1EE', border: v === 2 ? '1.5px solid #E6E6E1' : i > 3 ? '1.5px dashed #C9C9C2' : '0', ring: i === 3 ? '0 0 0 2px #FFFFFF, 0 0 0 3.5px #0E6B57' : 'none' })) })),
+      srm: RIB.build({ scenario: 'today', compact: true }), srf: RIB.build({ scenario: 'today', compact: true, rtl: true }),
+      msm: MS.map(([t, s2, k], i) => ({ t, s2, check: k === 'done', cur: k === 'cur', s: k === 'cur' ? '26px' : '20px', bg: k === 'done' ? '#0E6B57' : '#FFFFFF', border: k === 'done' ? '0' : k === 'cur' ? '3px solid #0E6B57' : k === 'goal' ? '2px solid #A9A9A1' : '2px dashed #C9C9C2', ring: k === 'cur' ? '0 0 0 5px #DDFAF2' : 'none', line: i < 3 ? '#0E6B57' : '#D3D3CC', lineOp: i === 5 ? 0 : 1, fw: k === 'cur' ? 700 : 600, sc: k === 'done' ? '#0E6B57' : '#6B6B64' })),
+      wsm: [['22h', 'Focus time', '↑ 18%'], ['31', 'Tasks done', '↑ 6'], ['4 / 5', 'Habits kept', 'steady'], ['Good', 'Average mood', '↑ from Okay']].map(([v, l, d]) => ({ v, l, d }))
+    };
+  }
+}
+</script>
+</body>
+</html>

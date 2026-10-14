@@ -1,0 +1,65 @@
+/* Mehran Planner — design tokens (light default, dark via [data-theme="dark"]) */
+:root {
+  /* Neutrals */
+  --canvas: #F1F1EE;      /* page background, notch cut-outs */
+  --surface: #FFFFFF;     /* cards, islands, rail */
+  --raised: #F4F4F1;      /* inputs, inner panels */
+  --subtle: #F8F8F6;      /* rows inside cards */
+  --line: #EDEDEA;        /* grid lines, dividers */
+  --hairline: #E6E6E1;    /* secondary button, soft borders */
+  --border: #D3D3CC;      /* outline buttons, chips */
+  --icon-muted: #A9A9A1;
+  --text-1: #1A1A17;
+  --text-2: #45453F;
+  --text-3: #6B6B64;
+  --on-accent: #FFFFFF;   /* text on an accent fill */
+
+  /* Scopes: soft (tint bg) · deep (primary/text) · dot (identity marker) */
+  --personal-soft: #DDFAF2; --personal-deep: #0E6B57; --personal-dot: #4FE3C1;
+  --project-soft:  #E0F0FF; --project-deep:  #0F5BA8; --project-dot:  #5AB4FF;
+  --team-soft:     #ECECFF; --team-deep:     #4343C8; --team-dot:     #8B8BFF;
+  --company-soft:  #F4E9FF; --company-deep:  #7A2BC4; --company-dot:  #C07BFF;
+
+  /* Live / now highlight */
+  --volt: #C8FF3D;
+  --on-volt: #1A1A17;
+  --on-volt-2: #2E3B08;
+
+  /* Status */
+  --danger: #E5484D;  --danger-text: #B4232A;  --danger-soft: #FFE8E8;
+  --warning: #F5A524; --warning-text: #8A5300; --warning-soft: #FFF3DC;
+  --focus-ring: #CDE6FF;
+  --weekend: #E5484D; /* Friday labels */
+
+  /* Shape */
+  --r-card: 32px; --r-card-sm: 28px; --r-tile: 22px; --r-row: 18px; --r-input: 18px; --r-pill: 999px;
+  --notch: 64px;          /* notch box size for a 52px corner button */
+  --notch-fillet: 30px;   /* concave fillet radius */
+  --shadow-island: 0 1px 0 #E6E6E1, 0 12px 32px rgba(14,14,12,0.06);
+  --shadow-overlay: 0 24px 60px rgba(14,14,12,0.18);
+
+  /* Type */
+  --font-latin: 'Urbanist', system-ui, sans-serif;
+  --font-fa: 'Vazirmatn', 'Urbanist', system-ui, sans-serif; /* swap to IRANSans when licensed */
+}
+
+[data-theme="dark"] {
+  --canvas: #121412; --surface: #1C1F1C; --raised: #242824; --subtle: #222622;
+  --line: #2A2E2A; --hairline: #2C302C; --border: #3A3F3A; --icon-muted: #6E746E;
+  --text-1: #ECEEE9; --text-2: #C4C8C2; --text-3: #969B94;
+  --on-accent: #0D1210;
+
+  /* In dark, "deep" becomes a bright accent; soft tints are lifted */
+  --personal-soft: #1D4A40; --personal-deep: #6FD4B8;
+  --project-soft:  #1B3A5C; --project-deep:  #7DB6F0;
+  --team-soft:     #2C2E5E; --team-deep:     #A5A5F5;
+  --company-soft:  #3B2A55; --company-deep:  #C49DEB;
+
+  --volt: #B4F58C; --on-volt: #10120F; --on-volt-2: #24400F;
+
+  --danger: #F2555A; --danger-text: #FF8589; --danger-soft: #42201F;
+  --warning-text: #F5B54A; --warning-soft: #3A2E12;
+  --focus-ring: #2B4766;
+  --shadow-island: none;
+  --shadow-overlay: 0 24px 60px rgba(0,0,0,0.55);
+}

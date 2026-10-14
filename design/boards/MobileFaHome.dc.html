@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>موبایل — امروز</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700&amp;family=Urbanist:wght@500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F1F1EE}
+a{color:#1A1A17}a:hover{color:#1A1A17}
+button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid #0F5BA8;outline-offset:2px}
+.ltr{direction:ltr;unicode-bidi:isolate}
+</style>
+</helmet>
+<div dir="rtl" style="position: relative; width: 390px; height: 844px; overflow: hidden; box-sizing: border-box; padding: 20px 16px 0; background: #F1F1EE; font-family: 'Vazirmatn', 'Urbanist', system-ui, sans-serif; color: #1A1A17; display: flex; flex-direction: column; gap: 14px">
+
+  <header style="display: flex; align-items: center; gap: 12px">
+    <span style="width: 48px; height: 48px; border-radius: 50%; background: #DDFAF2; color: #0E6B57; border: 3px solid #FFFFFF; box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 700">م‌ر</span>
+    <div style="flex: 1; display: flex; flex-direction: column; line-height: 1.5"><span style="font-size: 13px; font-weight: 500; color: #6B6B64">{{greet}}</span><h1 style="margin: 0; font-size: 21px; font-weight: 700; line-height: 1.4">مهران</h1></div>
+    <button type="button" onClick="{{ toggleDigits }}" aria-label="تغییر ارقام" style="height: 40px; padding: 0 12px; border: 0; border-radius: 999px; background: #FFFFFF; font-family: inherit; font-size: 13px; font-weight: 700; color: #45453F; cursor: pointer">{{digitsLabel}}</button>
+    <button type="button" aria-label="اعلان‌ها، ۳ خوانده‌نشده" style="position: relative; width: 48px; height: 48px; border-radius: 50%; border: 0; background: #FFFFFF; display: inline-flex; align-items: center; justify-content: center; cursor: pointer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1A1A17" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M6 16v-5a6 6 0 0 1 12 0v5l2 2H4z"></path><path d="M10 20a2 2 0 0 0 4 0"></path></svg><span style="position: absolute; top: 12px; left: 13px; width: 8px; height: 8px; border-radius: 50%; background: #E5484D; border: 2px solid #FFFFFF"></span></button>
+  </header>
+
+  <div role="tablist" aria-label="بخش" style="display: flex; gap: 8px; overflow-x: auto; margin: 0 -16px; padding: 0 16px">
+    <sc-for list="{{scopes}}" as="s" hint-placeholder-count="4">
+      <button type="button" role="tab" aria-selected="{{s.sel}}" onClick="{{ s.pick }}" style="flex: none; display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 16px; border: 0; border-radius: 999px; background: {{s.bg}}; color: {{s.fg}}; font-family: inherit; font-size: 13px; font-weight: 700; cursor: pointer"><span style="width: 8px; height: 8px; border-radius: 50%; background: {{s.base}}"></span>{{s.label}}</button>
+    </sc-for>
+  </div>
+
+  <!-- Schedule bar (RTL: time flows right → left) -->
+  <section aria-label="برنامه‌ی تو" style="display: flex; flex-direction: column; gap: 8px">
+    <div style="display: flex; align-items: baseline; justify-content: space-between"><h2 style="margin: 0; font-size: 15px; font-weight: 700">برنامه‌ی امروز</h2><span style="font-size: 12px; font-weight: 600; color: #6B6B64">{{today}}</span></div>
+    <div style="height: 64px; box-sizing: border-box; padding: 6px; border-radius: 999px; background: #FFFFFF; box-shadow: 0 1px 0 #E6E6E1, 0 12px 32px rgba(14,14,12,0.06); display: flex; align-items: center; gap: 6px">
+      <button type="button" aria-label="انتخاب تاریخ" style="flex: none; width: 52px; height: 52px; border-radius: 50%; border: 0; background: #F1F1EE; display: inline-flex; align-items: center; justify-content: center; cursor: pointer"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1A1A17" stroke-width="1.8" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2"></rect><path d="M4 10h16M9 3v4M15 3v4"></path></svg></button>
+      <div style="position: relative; flex: 1; min-width: 0; height: 52px; border-radius: 999px; background: #F1F1EE; overflow: hidden">
+        <div style="position: absolute; right: 2px; top: 4px; bottom: 4px; width: 66%; border-radius: 999px; background: #FFFFFF; box-shadow: 0 2px 10px rgba(14,14,12,0.08); overflow: hidden; display: flex; align-items: center; gap: 6px; padding: 0 3px 0 10px; box-sizing: border-box">
+          <span aria-hidden="true" style="position: absolute; right: 0; top: 0; bottom: 0; width: 68%; background: #E0F0FF"></span>
+          <span style="position: relative; flex: none; width: 36px; height: 36px; border-radius: 50%; background: #E0F0FF; color: #0F5BA8; border: 2px solid #FFFFFF; box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0F5BA8" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"></path></svg></span>
+          <span style="position: relative; font-size: 12px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">طراحی رابط</span>
+        </div>
+        <span aria-hidden="true" style="position: absolute; right: calc(2px + 66% * 0.68); top: 6px; bottom: 6px; width: 2px; margin-right: -1px; border-radius: 1px; background: #0F5BA8"></span>
+        <span role="img" aria-label="{{nowAria}}" style="position: absolute; right: calc(2px + 66% * 0.68); top: 3px; width: 10px; height: 10px; margin-right: -5px; border-radius: 50%; background: #C8FF3D; box-shadow: 0 0 0 2px #0F5BA8, 0 0 12px 3px rgba(200,255,61,0.55)"></span>
+        <span style="position: absolute; right: calc(66% + 6px); left: 4px; top: 8px; bottom: 8px; border-radius: 999px; background: #E0F0FF; color: #0F5BA8; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; white-space: nowrap; overflow: hidden">{{nextAt}}</span>
+      </div>
+    </div>
+  </section>
+
+  <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px">
+    <sc-for list="{{stats}}" as="s" hint-placeholder-count="3">
+      <div style="display: flex; align-items: flex-end; gap: 6px">
+        <span style="font-size: 36px; font-weight: 300; line-height: 1">{{s.n}}</span>
+        <div style="display: flex; flex-direction: column; gap: 2px"><span style="align-self: flex-start; height: 18px; padding: 0 6px; border-radius: 6px; background: {{s.bg}}; color: {{s.fg}}; font-size: 10px; font-weight: 700; display: inline-flex; align-items: center">{{s.delta}}</span><span style="font-size: 13px; color: #5E5E58">{{s.label}}</span></div>
+      </div>
+    </sc-for>
+  </div>
+
+  <!-- Now card (volt, notch top-left) -->
+  <article style="position: relative; height: 200px; box-sizing: border-box; padding: 18px; border-radius: 28px; background: #C8FF3D; display: flex; flex-direction: column; justify-content: space-between">
+<div aria-hidden="true" style="position: absolute; top: 0; left: 0; width: 60px; height: 60px; background: #F1F1EE; border-bottom-right-radius: 28px"></div>
+<div aria-hidden="true" style="position: absolute; top: 0; left: 60px; width: 28px; height: 28px; background: radial-gradient(circle at 100% 100%, transparent 27.5px, #F1F1EE 28px)"></div>
+<div aria-hidden="true" style="position: absolute; top: 60px; left: 0; width: 28px; height: 28px; background: radial-gradient(circle at 100% 100%, transparent 27.5px, #F1F1EE 28px)"></div>
+    <a href="MobileFaTasks.dc.html" aria-label="باز کردن کار" style="position: absolute; top: 0; left: 0; width: 48px; height: 48px; box-sizing: border-box; border-radius: 50%; border: 1px solid #A8D62F; display: inline-flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1A1A17" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 17L7 7M15 7H7v8"></path></svg></a>
+    <div style="display: flex; align-items: center; gap: 8px">
+      <span style="display: inline-flex; align-items: center; gap: 6px; height: 26px; padding: 0 10px; border-radius: 999px; background: #0F5BA8; color: #FFFFFF; font-size: 11px; font-weight: 700"><span style="width: 6px; height: 6px; border-radius: 50%; background: #C8FF3D"></span>الان</span>
+      <span style="font-size: 12px; font-weight: 600; color: #2E3B08">{{left}}</span>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 2px">
+      <span style="font-size: 22px; font-weight: 700; line-height: 1.45">طراحی رابط · صفحه‌ی امروز</span>
+      <span style="font-size: 13px; font-weight: 600; color: #2E3B08"><bdi>Planner App</bdi> · {{range}}</span>
+    </div>
+    <div style="display: flex; align-items: center; gap: 8px">
+      <button type="button" style="flex: 1; min-width: 0; display: inline-flex; align-items: center; justify-content: space-between; height: 48px; padding: 0 6px 0 14px; border: 0; border-radius: 999px; background: rgba(255,255,255,0.6); font-family: inherit; font-size: 13px; font-weight: 600; color: #1A1A17; cursor: pointer"><span style="display: inline-flex; align-items: center; gap: 8px"><span style="width: 36px; height: 36px; border-radius: 50%; background: #E0F0FF; color: #0F5BA8; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700">ک</span>با کتی</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1A1A17" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button>
+      <button type="button" aria-label="شروع تمرکز" style="width: 48px; height: 48px; border-radius: 50%; border: 0; background: #0F5BA8; display: inline-flex; align-items: center; justify-content: center; cursor: pointer"><svg width="16" height="16" viewBox="0 0 24 24" fill="#C8FF3D" aria-hidden="true"><path d="M7 4l13 8-13 8z"></path></svg></button>
+    </div>
+  </article>
+
+  <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px">
+    <section aria-label="تایمر" style="position: relative; height: 150px; box-sizing: border-box; padding: 16px; border-radius: 26px; background: #0E6B57; color: #FFFFFF; display: flex; flex-direction: column; justify-content: space-between">
+<div aria-hidden="true" style="position: absolute; top: 0; left: 0; width: 58px; height: 58px; background: #F1F1EE; border-bottom-right-radius: 26px"></div>
+<div aria-hidden="true" style="position: absolute; top: 0; left: 58px; width: 26px; height: 26px; background: radial-gradient(circle at 100% 100%, transparent 25.5px, #F1F1EE 26px)"></div>
+<div aria-hidden="true" style="position: absolute; top: 58px; left: 0; width: 26px; height: 26px; background: radial-gradient(circle at 100% 100%, transparent 25.5px, #F1F1EE 26px)"></div>
+      <button type="button" onClick="{{ toggleTimer }}" aria-label="{{timerAction}}" style="position: absolute; top: 0; left: 0; width: 48px; height: 48px; border-radius: 50%; border: 0; background: #FFFFFF; display: inline-flex; align-items: center; justify-content: center; cursor: pointer">
+        <sc-if value="{{running}}" hint-placeholder-val="{{ true }}"><span style="width: 13px; height: 13px; border-radius: 3px; background: #E5484D"></span></sc-if>
+        <sc-if value="{{paused}}" hint-placeholder-val="{{ false }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="#0E6B57" aria-hidden="true"><path d="M7 4l13 8-13 8z"></path></svg></sc-if>
+      </button>
+      <span style="font-size: 15px; font-weight: 700">تمرکز</span>
+      <div style="display: flex; flex-direction: column; gap: 2px"><span class="ltr" style="align-self: flex-start; font-size: 38px; font-weight: 400; line-height: 1; color: {{timerFg}}">{{timer}}</span><span style="font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.75)">{{timerLabel}}</span></div>
+    </section>
+    <section aria-label="یادداشت" style="height: 150px; box-sizing: border-box; padding: 16px; border-radius: 26px; background: #DDFAF2; display: flex; flex-direction: column; justify-content: space-between">
+      <div style="display: flex; align-items: center; gap: 8px"><span style="width: 32px; height: 32px; border-radius: 50%; background: #FFFFFF; display: inline-flex; align-items: center; justify-content: center"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#0E6B57" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h9l4 4v14H6z"></path><path d="M9 11h7M9 15h5"></path></svg></span><span style="font-size: 15px; font-weight: 700">یادداشت</span></div>
+      <div style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 13px; font-weight: 600; line-height: 1.6">حلقه یک بار پر می‌شود، بعد استراحت.</span><span style="font-size: 11px; font-weight: 700; color: #0E6B57">شخصی · امروز</span></div>
+    </section>
+  </div>
+
+  <nav aria-label="ناوبری اصلی" style="position: absolute; left: 16px; right: 16px; bottom: 16px; z-index: 5; height: 72px; box-sizing: border-box; padding: 0 8px; border-radius: 36px; background: #FFFFFF; box-shadow: 0 12px 32px rgba(14,14,12,0.06); display: flex; align-items: center">
+    <div aria-hidden="true" style="position: absolute; top: 0; left: 50%; width: 80px; margin-left: -40px; height: 48px; background: #F1F1EE; border-radius: 0 0 40px 40px"></div>
+    <div aria-hidden="true" style="position: absolute; top: 0; left: calc(50% - 60px); width: 20px; height: 20px; background: radial-gradient(circle at 0 100%, transparent 19.5px, #F1F1EE 20px)"></div>
+    <div aria-hidden="true" style="position: absolute; top: 0; left: calc(50% + 40px); width: 20px; height: 20px; background: radial-gradient(circle at 100% 100%, transparent 19.5px, #F1F1EE 20px)"></div>
+    <a href="MobileFaQuickAdd.dc.html" aria-label="افزودن سریع" style="position: absolute; top: -16px; left: 50%; margin-left: -30px; width: 60px; height: 60px; border-radius: 50%; background: #0E6B57; display: inline-flex; align-items: center; justify-content: center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#C8FF3D" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></a>
+    <a href="MobileFaHome.dc.html" aria-current="page" style="flex: 1; height: 56px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #0E6B57; font-size: 11px; font-weight: 700"><span style="width: 44px; height: 28px; border-radius: 999px; background: #DDFAF2; display: inline-flex; align-items: center; justify-content: center"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#0E6B57" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 11l8-7 8 7v9H4z"></path></svg></span>امروز</a>
+    <a href="MobileFaTasks.dc.html" style="flex: 1; height: 56px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #5E5E58; font-size: 11px; font-weight: 600"><span style="width: 44px; height: 28px; border-radius: 999px; background: transparent; display: inline-flex; align-items: center; justify-content: center"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#5E5E58" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16v16H4zM8 12l3 3 5-6"></path></svg></span>کارها</a>
+    <span style="flex: none; width: 84px"></span>
+    <a href="MobileFaCalendar.dc.html" style="flex: 1; height: 56px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #5E5E58; font-size: 11px; font-weight: 600"><span style="width: 44px; height: 28px; border-radius: 999px; background: transparent; display: inline-flex; align-items: center; justify-content: center"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#5E5E58" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16v15H4zM4 10h16M9 3v4M15 3v4"></path></svg></span>تقویم</a>
+    <a href="#" style="flex: 1; height: 56px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #5E5E58; font-size: 11px; font-weight: 600"><span style="width: 44px; height: 28px; border-radius: 999px; background: transparent; display: inline-flex; align-items: center; justify-content: center"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#5E5E58" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"></path></svg></span>دستیار</a>
+  </nav>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { scope: 'personal', running: true, faDigits: true }; }
+  renderVals() {
+    const fa = (s) => String(s).replace(/[0-9]/g, (d) => '۰۱۲۳۴۵۶۷۸۹'[d]);
+    const st = this.state, n = (s) => (st.faDigits ? fa(s) : String(s));
+    const S = [['personal', 'شخصی', '#4FE3C1', '#DDFAF2', '#0E6B57'], ['project', 'پروژه‌ها', '#5AB4FF', '#E0F0FF', '#0F5BA8'], ['team', 'تیم‌ها', '#8B8BFF', '#ECECFF', '#4343C8'], ['company', 'شرکت‌ها', '#C07BFF', '#F4E9FF', '#7A2BC4']];
+    const running = st.running;
+    return {
+      greet: 'عصر بخیر',
+      digitsLabel: st.faDigits ? '۱۲۳' : '123', toggleDigits: () => this.setState({ faDigits: !st.faDigits }),
+      scopes: S.map(([id, label, base, soft, deep]) => { const on = id === st.scope; return { label, base, sel: on ? 'true' : 'false', bg: on ? soft : '#FFFFFF', fg: on ? deep : '#45453F', pick: () => this.setState({ scope: id }) }; }),
+      today: 'سه‌شنبه ' + n(21) + ' مهر', nowAria: 'الان ' + n('14:35'), nextAt: n('16:30'),
+      stats: [
+        { n: n(12), label: 'کار', delta: '↑ ' + n(3), bg: '#DDFAF2', fg: '#0E6B57' },
+        { n: n(7), label: 'انجام‌شده', delta: '↑ ' + n(2), bg: '#DDFAF2', fg: '#0E6B57' },
+        { n: n(1), label: 'عقب‌افتاده', delta: '↑ ' + n(1), bg: '#FDE7E8', fg: '#B4232A' }
+      ],
+      left: n(35) + ' دقیقه مانده', range: n('14:00') + ' تا ' + n('16:00'),
+      running, paused: !running, timer: n('20:10'), timerFg: running ? '#C8FF3D' : 'rgba(255,255,255,0.6)',
+      timerLabel: running ? 'در حال اجرا · ' + n(1) + ' از ' + n(3) : 'متوقف', timerAction: running ? 'توقف تایمر' : 'شروع تایمر',
+      toggleTimer: () => this.setState({ running: !running })
+    };
+  }
+}
+</script>
+</body>
+</html>

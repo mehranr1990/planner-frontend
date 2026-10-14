@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>Persian & RTL rules</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700&amp;family=Urbanist:wght@500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F1F1EE}
+a{color:#1A1A17}a:hover{color:#1A1A17}
+button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid #0F5BA8;outline-offset:2px}
+.ltr{direction:ltr;unicode-bidi:isolate}
+</style>
+</helmet>
+<div dir="rtl" style="width: 1440px; min-height: 1700px; box-sizing: border-box; padding: 64px 72px; background: #F1F1EE; font-family: 'Vazirmatn', 'Urbanist', system-ui, sans-serif; color: #1A1A17; display: flex; flex-direction: column; gap: 28px">
+
+  <header style="display: flex; align-items: flex-end; justify-content: space-between; gap: 24px">
+    <div style="display: flex; flex-direction: column; gap: 8px">
+      <span style="font-size: 14px; font-weight: 700; color: #0E6B57">مرحله‌ی ۳ · Step 3</span>
+      <h1 style="margin: 0; font-size: 44px; font-weight: 600; line-height: 1.35">فارسی و راست‌به‌چپ</h1>
+      <p style="margin: 0; max-width: 640px; font-size: 16px; line-height: 1.9; color: #5E5E58">همه‌چیز آینه می‌شود جز چیزهایی که جهت واقعی دارند (پخش، ساعت، عدد). شکاف کارت‌ها به گوشه‌ی بالا-چپ می‌رود، ریل به راست، دستیار به پایین-چپ.</p>
+    </div>
+    <div style="display: flex; align-items: center; gap: 10px">
+      <span style="font-size: 13px; font-weight: 700; color: #45453F">ارقام</span>
+      <div role="radiogroup" aria-label="ارقام" style="display: inline-flex; gap: 4px; padding: 4px; border-radius: 999px; background: #FFFFFF">
+        <sc-for list="{{digitOpts}}" as="d" hint-placeholder-count="2"><button type="button" role="radio" aria-checked="{{d.on}}" onClick="{{ d.pick }}" style="height: 40px; padding: 0 16px; border: 0; border-radius: 999px; background: {{d.bg}}; color: {{d.fg}}; font-family: inherit; font-size: 14px; font-weight: 700; cursor: pointer">{{d.label}}</button></sc-for>
+      </div>
+    </div>
+  </header>
+
+  <!-- RTL shell preview -->
+  <section aria-label="پوسته‌ی راست‌به‌چپ" style="display: flex; flex-direction: column; gap: 14px; padding: 24px; border-radius: 32px; background: #E8E8E3">
+    <h2 style="margin: 0; font-size: 20px; font-weight: 700">پوسته · نوار فرمان و ریل</h2>
+    <div style="display: flex; align-items: center; gap: 10px">
+      <span style="flex: none; width: 56px; height: 56px; border-radius: 50%; background: #FFFFFF; display: inline-flex; align-items: center; justify-content: center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1A1A17" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M19 19L5 5M15 5H5v10"></path></svg></span>
+      <span style="flex: none; display: inline-flex; align-items: center; gap: 12px; height: 56px; padding: 0 8px 0 16px; border-radius: 999px; background: #FFFFFF"><span style="width: 40px; height: 40px; border-radius: 50%; background: #DDFAF2; display: inline-flex; align-items: center; justify-content: center"><span style="width: 12px; height: 12px; border-radius: 50%; background: #4FE3C1"></span></span><span style="display: flex; flex-direction: column; line-height: 1.35"><span style="font-size: 11px; font-weight: 600; color: #6B6B64">شخصی</span><span style="font-size: 15px; font-weight: 700">مهران</span></span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1A1A17" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></span>
+      <div style="flex: 1; display: flex; align-items: center; gap: 6px; height: 56px; padding: 4px; box-sizing: border-box; border-radius: 999px; background: #FFFFFF">
+        <div style="position: relative; flex: 1; height: 48px; border-radius: 999px; background: #F1F1EE; overflow: hidden">
+          <div style="position: absolute; right: 30%; top: 4px; bottom: 4px; width: 32%; border-radius: 999px; background: #FFFFFF; box-shadow: 0 2px 10px rgba(14,14,12,0.08); overflow: hidden; display: flex; align-items: center; padding: 0 14px; box-sizing: border-box"><span aria-hidden="true" style="position: absolute; right: 0; top: 0; bottom: 0; width: 30%; background: #E0F0FF"></span><span style="position: relative; font-size: 13px; font-weight: 700">طراحی رابط · {{t1400}}</span></div>
+          <span style="position: absolute; right: 2%; top: 8px; bottom: 8px; width: 26%; border-radius: 999px; background: #DDFAF2; color: #0E6B57; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700">کار عمیق</span>
+          <span style="position: absolute; left: 2%; top: 8px; bottom: 8px; width: 34%; border-radius: 999px; background: #ECECFF; color: #4343C8; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700">تماس با مشتری · {{t1630}}</span>
+        </div>
+      </div>
+      <div style="flex: none; display: flex; align-items: center; gap: 4px; height: 56px; padding: 4px; box-sizing: border-box; border-radius: 999px; background: #FFFFFF">
+        <span style="display: inline-flex; align-items: center; gap: 8px; height: 48px; padding: 0 14px 0 8px; border-radius: 999px; background: #F1F1EE; font-size: 13px; font-weight: 600; color: #45453F"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1A1A17" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-4-4"></path></svg>جستجو<span class="ltr" style="font-family: 'Urbanist', sans-serif; font-size: 11px; font-weight: 700; padding: 3px 7px; border-radius: 8px; background: #FFFFFF">⌘K</span></span>
+        <span style="width: 48px; height: 48px; border-radius: 50%; background: #DDFAF2; color: #0E6B57; display: inline-flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700">م‌ر</span>
+      </div>
+    </div>
+    <div style="display: flex; gap: 18px; align-items: center">
+      <nav aria-label="ریل نمونه" style="flex: none; width: 64px; box-sizing: border-box; padding: 8px; border-radius: 34px; background: #FFFFFF; display: flex; flex-direction: column; gap: 4px">
+        <sc-for list="{{rail}}" as="r" hint-placeholder-count="5"><span style="width: 48px; height: 48px; border-radius: 999px; background: {{r.bg}}; display: inline-flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{r.fg}}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{r.d}}"></path></svg></span></sc-for>
+      </nav>
+      <!-- RTL notched card -->
+      <article style="position: relative; flex: 1; height: 290px; box-sizing: border-box; padding: 22px; border-radius: 30px; background: #C8FF3D; display: flex; flex-direction: column; justify-content: space-between">
+<div aria-hidden="true" style="position: absolute; top: 0; left: 0; width: 112px; height: 60px; background: #E8E8E3; border-bottom-right-radius: 28px"></div>
+<div aria-hidden="true" style="position: absolute; top: 0; left: 112px; width: 28px; height: 28px; background: radial-gradient(circle at 100% 100%, transparent 27.5px, #E8E8E3 28px)"></div>
+<div aria-hidden="true" style="position: absolute; top: 60px; left: 0; width: 28px; height: 28px; background: radial-gradient(circle at 100% 100%, transparent 27.5px, #E8E8E3 28px)"></div>
+        <div style="position: absolute; top: 0; left: 0; display: flex; gap: 8px">
+          <span style="width: 48px; height: 48px; box-sizing: border-box; border-radius: 50%; border: 1px solid #A8D62F; display: inline-flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1A1A17" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 17L7 7M15 7H7v8"></path></svg></span>
+          <span style="width: 48px; height: 48px; box-sizing: border-box; border-radius: 50%; border: 1px solid #A8D62F; display: inline-flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1A1A17" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M6 16v-5a6 6 0 0 1 12 0v5l2 2H4z"></path><path d="M10 20a2 2 0 0 0 4 0"></path></svg></span>
+        </div>
+        <span style="align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 10px; border-radius: 999px; background: #0F5BA8; color: #FFFFFF; font-size: 12px; font-weight: 700"><span style="width: 7px; height: 7px; border-radius: 50%; background: #C8FF3D"></span>الان</span>
+        <div style="display: flex; flex-direction: column; gap: 4px"><span style="font-size: 26px; font-weight: 700; line-height: 1.45">طراحی رابط · صفحه‌ی امروز</span><span style="font-size: 14px; font-weight: 600; color: #2E3B08"><bdi>Planner App</bdi> · {{t1400}} تا {{t1600}} · {{min35}} دقیقه مانده</span></div>
+        <div style="display: flex; flex-direction: column; gap: 6px"><div style="display: flex; justify-content: space-between; font-size: 13px; font-weight: 700"><span>پیشرفت</span><span>{{pct}}</span></div><div style="height: 8px; border-radius: 4px; background: rgba(255,255,255,0.55); overflow: hidden"><span style="display: block; width: 68%; height: 100%; border-radius: 4px; background: #0F5BA8"></span></div></div>
+      </article>
+      <!-- Folder tabs RTL -->
+      <div style="flex: 1; display: flex; flex-direction: column">
+        <div style="display: flex; align-items: flex-end; gap: 6px">
+          <span style="position: relative; display: inline-flex; align-items: center; gap: 8px; height: 52px; padding: 0 18px; border-radius: 22px 22px 0 0; background: #FFFFFF; font-size: 14px; font-weight: 700">در حال انجام<span style="color: #8A8A82; font-size: 12px">{{n4}}</span><span aria-hidden="true" style="position: absolute; bottom: 0; left: -18px; width: 18px; height: 18px; background: radial-gradient(circle at 0 0, transparent 17.5px, #FFFFFF 18px)"></span></span>
+          <span style="display: inline-flex; align-items: center; gap: 8px; height: 42px; margin-bottom: 6px; padding: 0 16px; border-radius: 999px; box-shadow: inset 0 0 0 1px #C9C9C2; font-size: 14px; font-weight: 700; color: #5E5E58">بازبینی<span style="color: #8A8A82; font-size: 12px">{{n2}}</span></span>
+          <span style="display: inline-flex; align-items: center; gap: 8px; height: 42px; margin-bottom: 6px; padding: 0 16px; border-radius: 999px; box-shadow: inset 0 0 0 1px #C9C9C2; font-size: 14px; font-weight: 700; color: #5E5E58">مسدود<span style="color: #8A8A82; font-size: 12px">{{n1}}</span></span>
+        </div>
+        <div style="height: 238px; box-sizing: border-box; padding: 16px; border-radius: 28px 0 28px 28px; background: #FFFFFF; display: flex; flex-direction: column; gap: 8px">
+          <sc-for list="{{rows}}" as="r" hint-placeholder-count="3"><div style="display: flex; align-items: center; gap: 10px; height: 60px; padding: 0 12px; border-radius: 18px; background: #F8F8F6"><span style="width: 36px; height: 36px; border-radius: 50%; background: {{r.bg}}; color: {{r.fg}}; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700">{{r.ini}}</span><span style="flex: 1; display: flex; flex-direction: column; line-height: 1.5"><span style="font-size: 14px; font-weight: 700">{{r.t}}</span><span style="font-size: 12px; color: #6B6B64">{{r.m}}</span></span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6B6B64" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"></path></svg></div></sc-for>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px">
+    <!-- Mirror vs keep -->
+    <section aria-label="آینه کردن" style="padding: 24px; border-radius: 32px; background: #FFFFFF; display: flex; flex-direction: column; gap: 16px">
+      <h2 style="margin: 0; font-size: 20px; font-weight: 700">آیکن‌ها · آینه کن / نکن</h2>
+      <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px">
+        <div style="display: flex; flex-direction: column; gap: 8px"><span style="font-size: 13px; font-weight: 700; color: #0E6B57">آینه می‌شود</span>
+          <sc-for list="{{mirror}}" as="m" hint-placeholder-count="6"><div style="display: flex; align-items: center; gap: 10px; height: 48px; padding: 0 10px; border-radius: 16px; background: #F4FBF8"><span style="display: inline-flex; gap: 4px"><span class="ltr" style="width: 32px; height: 32px; border-radius: 10px; background: #FFFFFF; display: inline-flex; align-items: center; justify-content: center; opacity: 0.45"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1A1A17" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{m.d}}"></path></svg></span><span style="width: 32px; height: 32px; border-radius: 10px; background: #FFFFFF; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0E6B57" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="transform: scaleX(-1)"><path d="{{m.d}}"></path></svg></span></span><span style="font-size: 13px; font-weight: 600">{{m.l}}</span></div></sc-for>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 8px"><span style="font-size: 13px; font-weight: 700; color: #B4232A">ثابت می‌ماند</span>
+          <sc-for list="{{keep}}" as="m" hint-placeholder-count="6"><div style="display: flex; align-items: center; gap: 10px; height: 48px; padding: 0 10px; border-radius: 16px; background: #FBF6F4"><span style="width: 32px; height: 32px; border-radius: 10px; background: #FFFFFF; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1A1A17" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{m.d}}"></path></svg></span><span style="font-size: 13px; font-weight: 600">{{m.l}}</span></div></sc-for>
+        </div>
+      </div>
+    </section>
+
+    <!-- Numbers & formats -->
+    <section aria-label="عدد و قالب" style="padding: 24px; border-radius: 32px; background: #FFFFFF; display: flex; flex-direction: column; gap: 12px">
+      <h2 style="margin: 0; font-size: 20px; font-weight: 700">عدد، تاریخ، پول</h2>
+      <table style="width: 100%; border-collapse: separate; border-spacing: 0 6px; font-size: 14px">
+        <thead><tr><th scope="col" style="text-align: right; font-size: 12px; font-weight: 700; color: #6B6B64; padding: 0 12px">مورد</th><th scope="col" style="text-align: right; font-size: 12px; font-weight: 700; color: #6B6B64; padding: 0 12px">نمایش</th><th scope="col" style="text-align: left; font-size: 12px; font-weight: 700; color: #6B6B64; padding: 0 12px">English</th></tr></thead>
+        <tbody>
+          <sc-for list="{{formats}}" as="f" hint-placeholder-count="10">
+            <tr><td style="padding: 10px 12px; background: #F8F8F6; border-radius: 0 14px 14px 0; font-weight: 600; color: #45453F; white-space: nowrap">{{f.k}}</td><td style="padding: 10px 12px; background: #F8F8F6; font-weight: 700">{{f.fa}}</td><td class="ltr" style="padding: 10px 12px; background: #F8F8F6; border-radius: 14px 0 0 14px; text-align: left; font-family: 'Urbanist', sans-serif; font-weight: 600; color: #5E5E58; white-space: nowrap">{{f.en}}</td></tr>
+          </sc-for>
+        </tbody>
+      </table>
+    </section>
+  </div>
+
+  <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px">
+    <!-- Typography -->
+    <section aria-label="تایپوگرافی" style="padding: 24px; border-radius: 32px; background: #FFFFFF; display: flex; flex-direction: column; gap: 10px">
+      <div style="display: flex; justify-content: space-between; align-items: baseline"><h2 style="margin: 0; font-size: 20px; font-weight: 700">تایپوگرافی فارسی</h2><span style="font-size: 12px; font-weight: 600; color: #6B6B64">Vazirmatn (جای IRANSans)</span></div>
+      <sc-for list="{{type}}" as="t" hint-placeholder-count="5">
+        <div style="display: flex; align-items: baseline; gap: 16px; padding: 10px 0; border-bottom: 1px solid #EDEDEA"><span class="ltr" style="flex: none; width: 110px; font-family: 'Urbanist', sans-serif; font-size: 12px; font-weight: 600; color: #6B6B64; text-align: right">{{t.spec}}</span><span style="font-size: {{t.size}}; font-weight: {{t.w}}; line-height: {{t.lh}}">{{t.sample}}</span></div>
+      </sc-for>
+      <ul style="margin: 6px 0 0; padding: 0 18px 0 0; font-size: 14px; line-height: 2; color: #45453F">
+        <li>فاصله‌ی حروف (letter-spacing) صفر؛ بدون ایتالیک و حروف بزرگ.</li>
+        <li>ارتفاع خط ۱٫۶ تا ۱٫۹ — حدود ۲۰٪ بیشتر از انگلیسی.</li>
+        <li>نیم‌فاصله اجباری: «کارها»، «می‌شود»، «صفحه‌ی».</li>
+      </ul>
+    </section>
+
+    <!-- Bidi + layout rules -->
+    <section aria-label="قواعد چیدمان" style="padding: 24px; border-radius: 32px; background: #FFFFFF; display: flex; flex-direction: column; gap: 14px">
+      <h2 style="margin: 0; font-size: 20px; font-weight: 700">متن دوجهته و چیدمان</h2>
+      <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px">
+        <div style="padding: 14px; border-radius: 18px; background: #FBF6F4; display: flex; flex-direction: column; gap: 6px"><span style="font-size: 12px; font-weight: 700; color: #B4232A">بدون ایزوله</span><span style="font-size: 15px; font-weight: 600; line-height: 1.8">جلسه با <span dir="ltr">Katy (Design) 2:30</span> امروز</span></div>
+        <div style="padding: 14px; border-radius: 18px; background: #F4FBF8; display: flex; flex-direction: column; gap: 6px"><span style="font-size: 12px; font-weight: 700; color: #0E6B57">با &lt;bdi&gt;</span><span style="font-size: 15px; font-weight: 600; line-height: 1.8">جلسه با <bdi>Katy (Design)</bdi> ساعت {{t1430}} امروز</span></div>
+      </div>
+      <sc-for list="{{layout}}" as="l" hint-placeholder-count="7">
+        <div style="display: flex; align-items: flex-start; gap: 12px; padding: 4px 0"><span style="flex: none; width: 26px; height: 26px; border-radius: 50%; background: #DDFAF2; color: #0E6B57; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700">{{l.n}}</span><span style="font-size: 14px; font-weight: 600; line-height: 1.8">{{l.t}}</span></div>
+      </sc-for>
+    </section>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1700}}'>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { fa: true }; }
+  renderVals() {
+    const fa = (s) => String(s).replace(/[0-9]/g, (d) => '۰۱۲۳۴۵۶۷۸۹'[d]);
+    const st = this.state, n = (s) => (st.fa ? fa(s) : String(s));
+    const sep = (x) => n(String(x).replace(/\B(?=(\d{3})+(?!\d))/g, st.fa ? '٬' : ','));
+    const dec = (x) => n(String(x).replace('.', st.fa ? '٫' : '.'));
+    return {
+      digitOpts: [[true, '۱۲۳ فارسی'], [false, '123 انگلیسی']].map(([v, label]) => ({ label, on: st.fa === v ? 'true' : 'false', bg: st.fa === v ? '#0E6B57' : 'transparent', fg: st.fa === v ? '#FFFFFF' : '#45453F', pick: () => this.setState({ fa: v }) })),
+      t1400: n('14:00'), t1600: n('16:00'), t1630: n('16:30'), t1430: n('14:30'), min35: n(35), pct: n(68) + (st.fa ? '٪' : '%'), n4: n(4), n2: n(2), n1: n(1),
+      rail: [['M4 4h7v7H4zM13 4h7v4h-7zM13 10h7v10h-7zM4 13h7v7H4z', 1], ['M12 3v2M12 19v2M3 12h2M19 12h2M12 8a4 4 0 1 0 0 8a4 4 0 1 0 0-8z', 0], ['M4 4h16v16H4zM8 12l3 3 5-6', 0], ['M4 5h16v15H4zM4 10h16M9 3v4M15 3v4', 0], ['M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9V16h7v-2.1A6 6 0 0 0 12 3z', 0]].map(([d, on]) => ({ d, bg: on ? '#DDFAF2' : 'transparent', fg: on ? '#0E6B57' : '#45453F' })),
+      rows: [['ک', 'کتی · طراحی رابط', 'Planner App · ' + n(2) + ' روز مانده', '#E0F0FF', '#0F5BA8'], ['آ', 'آرش · API تقویم', 'Engineering · امروز', '#ECECFF', '#4343C8'], ['ن', 'نیلا · سیستم آیکن', 'تیم طراحی · فردا', '#DDFAF2', '#0E6B57']].map(([ini, t, m, bg, fg]) => ({ ini, t, m, bg, fg })),
+      mirror: [['M9 6l6 6-6 6', 'فلش بعدی / قبلی'], ['M5 12h14M13 6l6 6-6 6', 'برگشت و ادامه'], ['M4 7h10a6 6 0 0 1 0 12H8M4 7l4-4M4 7l4 4', 'برگرداندن (Undo)'], ['M5 4l15 8-15 8 3-8z', 'ارسال پیام'], ['M4 6h16M8 12h12M12 18h8', 'تورفتگی فهرست'], ['M4 12h10M4 12l3-3M4 12l3 3M18 6v12', 'خروج / پنل کناری']].map(([d, l]) => ({ d, l })),
+      keep: [['M7 4l13 8-13 8z', 'پخش و کنترل رسانه'], ['M12 7v5l3 2M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18z', 'ساعت (عقربه‌ها)'], ['M5 12l5 5 9-10', 'تیک تأیید'], ['M11 4a7 7 0 1 0 0 14a7 7 0 1 0 0-14zM20 20l-4-4', 'جستجو'], ['M12 5v14M5 12h14', 'افزودن'], ['M4 19V5M4 19h16M8 15l4-4 3 3 5-6', 'محور نمودار (عدد)']].map(([d, l]) => ({ d, l })),
+      formats: [
+        { k: 'تاریخ کامل', fa: 'سه‌شنبه ' + n(21) + ' مهر ' + n(1405), en: 'Tue, 13 Oct 2026' },
+        { k: 'تاریخ کوتاه', fa: n('1405/07/21'), en: '13/10/2026' },
+        { k: 'بازه', fa: n(18) + ' تا ' + n(24) + ' مهر', en: '10 – 16 Oct' },
+        { k: 'ساعت', fa: n('14:35'), en: '2:35 pm · 14:35' },
+        { k: 'مدت', fa: n(1) + ' ساعت و ' + n(30) + ' دقیقه', en: '1h 30m' },
+        { k: 'نسبی', fa: n(2) + ' روز دیگر · دیروز', en: 'in 2 days · yesterday' },
+        { k: 'تومان', fa: sep(2000000) + ' تومان', en: '2,000,000 Toman' },
+        { k: 'ریال', fa: sep(20000000) + ' ریال', en: '20,000,000 IRR' },
+        { k: 'درصد / اعشار', fa: n(45) + (st.fa ? '٪' : '%') + ' · ' + dec(3.5), en: '45% · 3.5' },
+        { k: 'شماره', fa: 'فاکتور #' + n(214) + ' · ' + n(3) + ' از ' + n(12), en: 'Invoice #214 · 3 of 12' }
+      ],
+      type: [
+        { spec: 'Display 40/1.4', size: '40px', w: 600, lh: 1.4, sample: 'برنامه‌ی امروز' },
+        { spec: 'H1 28/1.5', size: '28px', w: 700, lh: 1.5, sample: 'نمای کلی پروژه' },
+        { spec: 'H2 20/1.6', size: '20px', w: 700, lh: 1.6, sample: 'کارهای در حال انجام' },
+        { spec: 'Body 15/1.85', size: '15px', w: 500, lh: 1.85, sample: 'این هفته سه ساعت زمان آزاد داری که می‌شود برای مرور هزینه‌ها گذاشت.' },
+        { spec: 'Caption 12/1.7', size: '12px', w: 600, lh: 1.7, sample: 'شخصی · ' + n(35) + ' دقیقه مانده' }
+      ],
+      layout: [
+        'ریل ناوبری سمت راست، دستیار شناور پایین-چپ، Toast وسط-پایین.',
+        'شکاف کارت (notch) و دکمه‌ی آن به گوشه‌ی بالا-چپ می‌رود.',
+        'نوار زمان و پیشرفت از راست به چپ پر می‌شود؛ خود عددها چپ‌به‌راست می‌مانند.',
+        'تقویم: شنبه سمت راست، جمعه سمت چپ و قرمز.',
+        'میان‌برهای کیبورد (⌘K) و کدها همیشه LTR و با فونت لاتین.',
+        'سوایپ: سمت چپ = انجام شد، سمت راست = حذف/آرشیو (برعکس LTR).',
+        'در CSS از ویژگی‌های منطقی استفاده کن: margin-inline-start، inset-inline-end.'
+      ].map((t, i) => ({ n: n(i + 1), t }))
+    };
+  }
+}
+</script>
+</body>
+</html>

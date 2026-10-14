@@ -1,0 +1,353 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Desktop Shell</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F1F1EE}
+a{color:#1A1A17}a:hover{color:#1A1A17}
+.rail-slot{align-self:stretch}
+.rail-sticky{position:sticky;top:16px;height:calc(100vh - 32px);max-height:100%;display:flex;align-items:center}
+.rail-sticky>nav{max-height:100%;overflow-y:auto}
+@media (max-width: 720px){.rail-sticky{position:static;height:auto}.rail-slot{width:100%!important}}
+.rail{flex-direction:column}
+@media (max-width: 720px){.rail{flex-direction:row;overflow-x:auto;width:100%!important;border-radius:28px!important}}
+</style>
+</helmet>
+<div style="position: relative; min-height: 100vh; box-sizing: border-box; padding: 16px; background: #F1F1EE; font-family: 'Urbanist', system-ui, sans-serif; color: #1A1A17">
+<div style="max-width: 1400px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px">
+
+  <!-- ===== Command bar (floating pieces) ===== -->
+  <header style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px">
+    <a href="#" aria-label="Planner home" style="flex: none; width: 56px; height: 56px; border-radius: 50%; background: #FFFFFF; box-shadow: 0 1px 0 #E6E6E1, 0 12px 32px rgba(14,14,12,0.06); display: inline-flex; align-items: center; justify-content: center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0E0E0C" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M5 19L19 5M9 5h10v10"></path></svg></a>
+
+    <!-- Context switcher -->
+    <div style="position: relative; flex: none">
+      <button type="button" onClick="{{ toggleSwitcher }}" aria-haspopup="menu" aria-expanded="{{switcherExpanded}}" style="display: inline-flex; align-items: center; gap: 12px; height: 56px; padding: 0 16px 0 8px; border: 0; border-radius: 999px; background: {{switcherBg}}; box-shadow: 0 1px 0 #E6E6E1, 0 12px 32px rgba(14,14,12,0.06); color: {{switcherFg}}; font-family: inherit; text-align: left; cursor: pointer">
+        <span style="width: 40px; height: 40px; border-radius: 50%; background: {{switcherDotBg}}; display: inline-flex; align-items: center; justify-content: center"><span style="width: 12px; height: 12px; border-radius: 50%; background: {{c.base}}; box-shadow: 0 0 0 3px #FFFFFF"></span></span>
+        <span style="display: flex; flex-direction: column; line-height: 1.15"><span style="font-size: 11px; font-weight: 600; color: {{switcherSub}}">{{c.label}}</span><span style="font-size: 15px; font-weight: 700">{{ws}}</span></span>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="{{switcherFg}}" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="{{switcherChevron}}"></path></svg>
+      </button>
+
+      <sc-if value="{{showSwitcher}}" hint-placeholder-val="{{ false }}">
+        <div role="menu" aria-label="Switch context" style="position: absolute; top: 66px; left: 0; z-index: 30; width: 340px; box-sizing: border-box; padding: 10px; border-radius: 26px; background: #FFFFFF; box-shadow: 0 0 0 1px #E6E6E1, 0 18px 40px rgba(14,14,12,0.12); display: flex; flex-direction: column; gap: 4px">
+          <span style="padding: 6px 10px 8px; font-size: 11px; font-weight: 700; letter-spacing: 0.12em; color: #6B6B64">CONTEXT</span>
+          <sc-for list="{{ctxRows}}" as="r" hint-placeholder-count="4">
+            <div style="display: flex; flex-direction: column; border-radius: 18px; background: {{r.rowBg}}">
+              <button type="button" onClick="{{ r.toggle }}" aria-expanded="{{r.expanded}}" style="display: flex; align-items: center; gap: 12px; height: 54px; padding: 0 12px; border: 0; border-radius: 18px; background: transparent; font-family: inherit; text-align: left; cursor: pointer">
+                <span style="width: 12px; height: 12px; border-radius: 50%; background: {{r.base}}"></span>
+                <span style="flex: 1; display: flex; flex-direction: column; line-height: 1.2"><span style="font-size: 14px; font-weight: 700; color: #1A1A17">{{r.label}}</span><span style="font-size: 12px; font-weight: 500; color: #6B6B64">{{r.current}}</span></span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#45453F" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="{{r.chev}}"></path></svg>
+              </button>
+              <sc-if value="{{r.expandedBool}}" hint-placeholder-val="{{ false }}">
+                <div style="display: flex; flex-direction: column; gap: 2px; padding: 0 8px 8px 30px">
+                  <sc-for list="{{r.items}}" as="w" hint-placeholder-count="3">
+                    <button type="button" role="menuitemradio" aria-checked="{{w.checked}}" onClick="{{ w.pick }}" style="display: flex; align-items: center; gap: 10px; height: 44px; padding: 0 12px; border: 0; border-radius: 14px; background: {{w.bg}}; color: {{w.fg}}; font-family: inherit; font-size: 13px; font-weight: {{w.weight}}; text-align: left; cursor: pointer">
+                      <span style="flex: 1">{{w.name}}</span>
+                      <sc-if value="{{w.isOn}}" hint-placeholder-val="{{ false }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="{{w.fg}}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l4 4 10-10"></path></svg></sc-if>
+                    </button>
+                  </sc-for>
+                  <button type="button" style="display: flex; align-items: center; gap: 8px; height: 40px; padding: 0 12px; border: 0; border-radius: 14px; background: transparent; color: #45453F; font-family: inherit; font-size: 12px; font-weight: 600; text-align: left; cursor: pointer"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#45453F" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>{{r.addLabel}}</button>
+                </div>
+              </sc-if>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+    </div>
+
+    <!-- Schedule island (A · soft) -->
+    <section aria-label="Your schedule" style="flex: 1 1 420px; min-width: 0; height: 56px; box-sizing: border-box; padding: 4px 4px 4px 18px; border-radius: 999px; background: #FFFFFF; box-shadow: 0 1px 0 #E6E6E1, 0 12px 32px rgba(14,14,12,0.06); display: flex; align-items: center; gap: 12px">
+      <span style="flex: none; display: flex; flex-direction: column; line-height: 1.1"><span style="font-size: 10px; font-weight: 600; color: #6B6B64">Today</span><span style="font-size: 13px; font-weight: 700">{{dateShort}}</span></span>
+      <div style="position: relative; flex: 1; min-width: 0; height: 48px; border-radius: 999px; background: #F1F1EE; overflow: hidden">
+        <span style="position: absolute; left: 1%; top: 6px; bottom: 6px; width: 16%; border-radius: 999px; background: repeating-linear-gradient(135deg, #E6E6E1 0 2px, #F1F1EE 2px 6px); display: flex; align-items: center; padding: 0 12px; box-sizing: border-box; font-size: 12px; font-weight: 600; color: #6B6B64; white-space: nowrap; overflow: hidden">Standup · done</span>
+        <div style="position: absolute; left: 19%; top: 4px; bottom: 4px; width: 38%; border-radius: 999px; background: #FFFFFF; box-shadow: 0 2px 10px rgba(14,14,12,0.08); overflow: hidden; display: flex; align-items: center; gap: 8px; padding: 0 12px 0 3px; box-sizing: border-box">
+          <span aria-hidden="true" style="position: absolute; left: 0; top: 0; bottom: 0; width: 28%; background: {{c.soft}}"></span>
+          <span style="position: relative; flex: none; display: flex"><span style="width: 34px; height: 34px; border-radius: 50%; background: #ECECFF; color: #4343C8; border: 2px solid #FFFFFF; box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700">PT</span><span style="width: 34px; height: 34px; margin-left: -8px; border-radius: 50%; background: #DDFAF2; color: #0E6B57; border: 2px solid #FFFFFF; box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700">JK</span></span>
+          <span style="position: relative; font-size: 13px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Client call</span>
+          <span style="position: relative; margin-left: auto; flex: none; font-size: 11px; font-weight: 600; color: #6B6B64; white-space: nowrap">{{t1}} – {{t3}}</span>
+        </div>
+        <span aria-hidden="true" style="position: absolute; left: calc(19% + 38% * 0.28); top: 6px; bottom: 6px; width: 2px; margin-left: -1px; border-radius: 1px; background: {{c.deep}}"></span>
+        <span role="img" aria-label="Now {{t2}}" style="position: absolute; left: calc(19% + 38% * 0.28); top: 3px; width: 10px; height: 10px; margin-left: -5px; border-radius: 50%; background: #C8FF3D; box-shadow: 0 0 0 2px {{c.deep}}, 0 0 12px 3px rgba(200,255,61,0.55)"></span>
+        <span style="position: absolute; left: 59%; top: 8px; bottom: 8px; width: 21%; border-radius: 999px; background: #ECECFF; color: #4343C8; display: flex; align-items: center; padding: 0 12px; box-sizing: border-box; font-size: 12px; font-weight: 700; white-space: nowrap; overflow: hidden">{{t3}} · Design review</span>
+        <span style="position: absolute; left: 81.5%; top: 8px; bottom: 8px; width: 17.5%; border-radius: 999px; background: #DDFAF2; color: #0E6B57; display: flex; align-items: center; padding: 0 12px; box-sizing: border-box; font-size: 12px; font-weight: 700; white-space: nowrap; overflow: hidden">{{t4}} · Focus</span>
+      </div>
+    </section>
+
+    <!-- Actions capsule -->
+    <div style="position: relative; flex: none; display: flex; align-items: center; gap: 4px; height: 56px; box-sizing: border-box; padding: 4px; border-radius: 999px; background: #FFFFFF; box-shadow: 0 1px 0 #E6E6E1, 0 12px 32px rgba(14,14,12,0.06)">
+      <button type="button" onClick="{{ openPalette }}" aria-label="Search and commands" style="display: inline-flex; align-items: center; gap: 8px; height: 48px; padding: 0 8px 0 14px; border: 0; border-radius: 999px; background: #F1F1EE; font-family: inherit; font-size: 13px; font-weight: 600; color: #45453F; cursor: pointer"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1A1A17" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-4-4"></path></svg>Search<span style="font-size: 11px; font-weight: 700; color: #45453F; padding: 3px 7px; border-radius: 8px; background: #FFFFFF">⌘K</span></button>
+      <button type="button" aria-label="Quick create" style="width: 48px; height: 48px; border-radius: 50%; border: 0; background: #F1F1EE; display: inline-flex; align-items: center; justify-content: center; cursor: pointer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0E0E0C" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></button>
+      <button type="button" onClick="{{ toggleNotif }}" aria-label="Notifications, 3 unread" aria-expanded="{{notifExpanded}}" style="position: relative; width: 48px; height: 48px; border-radius: 50%; border: 0; background: {{notifBg}}; display: inline-flex; align-items: center; justify-content: center; cursor: pointer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="{{notifFg}}" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M6 16v-5a6 6 0 0 1 12 0v5l2 2H4z"></path><path d="M10 20a2 2 0 0 0 4 0"></path></svg><span style="position: absolute; top: 9px; right: 9px; min-width: 16px; height: 16px; padding: 0 4px; box-sizing: border-box; border-radius: 999px; background: #E5484D; color: #FFFFFF; font-size: 10px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center">{{n3}}</span></button>
+      <button type="button" onClick="{{ toggleProfile }}" aria-label="Account menu" aria-expanded="{{profileExpanded}}" style="width: 48px; height: 48px; border-radius: 50%; border: 2px solid {{profileRing}}; box-sizing: border-box; background: #DDFAF2; color: #0E6B57; font-family: inherit; font-size: 13px; font-weight: 700; cursor: pointer">MR</button>
+
+      <!-- Notifications popover -->
+      <sc-if value="{{showNotif}}" hint-placeholder-val="{{ false }}">
+        <div role="dialog" aria-label="Notifications" style="position: absolute; top: 66px; right: 0; z-index: 30; width: 360px; box-sizing: border-box; padding: 12px; border-radius: 26px; background: #FFFFFF; box-shadow: 0 0 0 1px #E6E6E1, 0 18px 40px rgba(14,14,12,0.12); display: flex; flex-direction: column; gap: 8px">
+          <div style="display: flex; align-items: center; justify-content: space-between; padding: 4px 6px"><span style="font-size: 16px; font-weight: 700">Notifications</span><button type="button" style="height: 36px; padding: 0 12px; border: 0; border-radius: 999px; background: #F1F1EE; font-family: inherit; font-size: 12px; font-weight: 600; color: #1A1A17; cursor: pointer">Mark all read</button></div>
+          <sc-for list="{{notifs}}" as="n" hint-placeholder-count="3">
+            <div style="display: flex; gap: 10px; padding: 10px; border-radius: 18px; background: {{n.bg}}">
+              <span style="flex: none; width: 38px; height: 38px; border-radius: 50%; background: {{n.avBg}}; color: {{n.avFg}}; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700">{{n.init}}</span>
+              <div style="flex: 1; display: flex; flex-direction: column; gap: 3px"><span style="font-size: 13px; line-height: 1.4; color: #1A1A17">{{n.text}}</span><span style="font-size: 11px; font-weight: 600; color: #6B6B64">{{n.meta}}</span></div>
+              <sc-if value="{{n.unread}}" hint-placeholder-val="{{ true }}"><span style="flex: none; width: 8px; height: 8px; margin-top: 6px; border-radius: 50%; background: #E5484D"></span></sc-if>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+
+      <!-- Profile popover -->
+      <sc-if value="{{showProfile}}" hint-placeholder-val="{{ false }}">
+        <div role="menu" aria-label="Account" style="position: absolute; top: 66px; right: 0; z-index: 30; width: 320px; box-sizing: border-box; padding: 10px; border-radius: 26px; background: #FFFFFF; box-shadow: 0 0 0 1px #E6E6E1, 0 18px 40px rgba(14,14,12,0.12); display: flex; flex-direction: column; gap: 4px">
+          <div style="display: flex; align-items: center; gap: 12px; padding: 8px 8px 12px; border-bottom: 1px solid #EDEDEA"><span style="width: 44px; height: 44px; border-radius: 50%; background: #DDFAF2; color: #0E6B57; display: inline-flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700">MR</span><div style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 15px; font-weight: 700">Mehran</span><span style="font-size: 12px; color: #6B6B64">Euroly · Admin</span></div></div>
+          <sc-for list="{{prefs}}" as="p" hint-placeholder-count="3">
+            <div style="display: flex; align-items: center; gap: 10px; height: 52px; padding: 0 8px">
+              <span style="flex: 1; font-size: 14px; font-weight: 600">{{p.label}}</span>
+              <div role="radiogroup" aria-label="{{p.label}}" style="display: inline-flex; gap: 2px; padding: 3px; border-radius: 999px; background: #F1F1EE">
+                <sc-for list="{{p.opts}}" as="o" hint-placeholder-count="2">
+                  <button type="button" role="radio" aria-checked="{{o.checked}}" onClick="{{ o.pick }}" style="min-width: 52px; height: 40px; padding: 0 12px; border: 0; border-radius: 999px; background: {{o.bg}}; color: {{o.fg}}; font-family: inherit; font-size: 13px; font-weight: 700; cursor: pointer">{{o.label}}</button>
+                </sc-for>
+              </div>
+            </div>
+          </sc-for>
+          <div style="height: 1px; background: #EDEDEA; margin: 4px 8px"></div>
+          <button type="button" role="menuitem" style="height: 46px; padding: 0 10px; border: 0; border-radius: 14px; background: transparent; font-family: inherit; font-size: 14px; font-weight: 500; color: #1A1A17; text-align: left; cursor: pointer">Settings</button>
+          <button type="button" role="menuitem" style="height: 46px; padding: 0 10px; border: 0; border-radius: 14px; background: transparent; font-family: inherit; font-size: 14px; font-weight: 600; color: #B4232A; text-align: left; cursor: pointer">Sign out</button>
+        </div>
+      </sc-if>
+    </div>
+  </header>
+
+  <!-- ===== Body: floating rail + content ===== -->
+  <div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start">
+
+    <div class="rail-slot" style="flex: none; width: {{railW}}">
+<div class="rail-sticky">
+<nav aria-label="{{c.label}} navigation" class="rail" style="flex: none; width: {{railW}}; box-sizing: border-box; padding: 8px; border-radius: 34px; background: #FFFFFF; box-shadow: 0 1px 0 #E6E6E1, 0 12px 32px rgba(14,14,12,0.06); display: flex; gap: 4px">
+      <sc-for list="{{nav}}" as="it" hint-placeholder-count="9">
+        <button type="button" onClick="{{ it.pick }}" aria-label="{{it.label}}" aria-current="{{it.current}}" style="flex: none; display: flex; align-items: center; gap: 12px; height: 48px; padding: 0 14px; border: 0; border-radius: 999px; background: {{it.bg}}; color: {{it.fg}}; font-family: inherit; font-size: 14px; font-weight: {{it.weight}}; text-align: left; white-space: nowrap; cursor: pointer">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{it.icon}}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="{{it.d}}"></path></svg>
+          <sc-if value="{{railOpen}}" hint-placeholder-val="{{ false }}"><span>{{it.label}}</span></sc-if>
+        </button>
+      </sc-for>
+      <span aria-hidden="true" style="flex: none; height: 1px; width: 100%; background: #EDEDEA; margin: 4px 0"></span>
+      <button type="button" onClick="{{ toggleRail }}" aria-label="{{railToggleLabel}}" aria-expanded="{{railExpanded}}" style="flex: none; display: flex; align-items: center; gap: 12px; height: 48px; padding: 0 14px; border: 0; border-radius: 999px; background: #F1F1EE; color: #45453F; font-family: inherit; font-size: 13px; font-weight: 600; cursor: pointer"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#45453F" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="{{railToggleIcon}}"></path></svg><sc-if value="{{railOpen}}" hint-placeholder-val="{{ false }}"><span>Collapse</span></sc-if></button>
+    </nav></div>
+</div>
+
+    <main style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 20px">
+      <!-- Page header -->
+      <div style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px; padding: 8px 4px 0">
+        <div style="display: flex; flex-direction: column; gap: 8px">
+          <span style="display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; color: #6B6B64"><span style="width: 8px; height: 8px; border-radius: 50%; background: {{c.base}}"></span>{{c.label}} › {{ws}} › <b style="color: #1A1A17">{{navLabel}}</b></span>
+          <h1 style="margin: 0; font-size: 40px; font-weight: 500; letter-spacing: -0.015em; line-height: 1.05">{{head.title}}</h1>
+          <span style="font-size: 15px; color: #5E5E58">{{head.sub}}</span>
+        </div>
+        <button type="button" style="display: inline-flex; align-items: center; gap: 8px; height: 48px; padding: 0 20px; border: 0; border-radius: 999px; background: {{c.deep}}; color: #FFFFFF; font-family: inherit; font-size: 14px; font-weight: 600; cursor: pointer">{{head.cta}}</button>
+      </div>
+
+      <!-- Hierarchy zones -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px">
+        <!-- Signature -->
+        <section style="grid-column: 1 / -1; position: relative; min-height: 220px; box-sizing: border-box; padding: 24px; border-radius: 32px; background: #FFFFFF; display: flex; flex-direction: column; justify-content: space-between; gap: 16px">
+          <div aria-hidden="true" style="position: absolute; top: 0; right: 0; width: 64px; height: 64px; background: #F1F1EE; border-bottom-left-radius: 30px"></div>
+          <div aria-hidden="true" style="position: absolute; top: 0; right: 64px; width: 30px; height: 30px; background: radial-gradient(circle at 0 100%, transparent 29.5px, #F1F1EE 30px)"></div>
+          <div aria-hidden="true" style="position: absolute; top: 64px; right: 0; width: 30px; height: 30px; background: radial-gradient(circle at 0 100%, transparent 29.5px, #F1F1EE 30px)"></div>
+          <button type="button" aria-label="Open" style="position: absolute; top: 0; right: 0; width: 52px; height: 52px; border-radius: 50%; border: 0; background: {{c.deep}}; display: inline-flex; align-items: center; justify-content: center; cursor: pointer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#C8FF3D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"></path></svg></button>
+          <span style="align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 12px; border-radius: 999px; background: {{c.deep}}; color: #C8FF3D; font-size: 11px; font-weight: 700; letter-spacing: 0.06em">SIGNATURE</span>
+          <div style="display: flex; flex-wrap: wrap; align-items: flex-end; gap: 24px 48px">
+            <div style="display: flex; flex-direction: column; gap: 6px; max-width: 520px"><span style="font-size: 28px; font-weight: 600">{{zones.hero}}</span><span style="font-size: 14px; line-height: 1.5; color: #5E5E58">{{zones.heroNote}}</span></div>
+            <div aria-hidden="true" style="flex: 1 1 240px; display: flex; gap: 6px; height: 12px"><span style="flex: 6; border-radius: 6px; background: {{c.base}}"></span><span style="flex: 2; border-radius: 6px; background: {{c.deep}}"></span><span style="flex: 3; border-radius: 6px; background: #E6E6E1"></span></div>
+          </div>
+        </section>
+        <!-- Product -->
+        <sc-for list="{{zones.products}}" as="z" hint-placeholder-count="3">
+          <section style="min-height: 170px; box-sizing: border-box; padding: 20px; border-radius: 26px; background: #FFFFFF; display: flex; flex-direction: column; justify-content: space-between; gap: 12px">
+            <span style="align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; height: 26px; padding: 0 10px; border-radius: 999px; background: {{c.soft}}; color: {{c.deep}}; font-size: 11px; font-weight: 700; letter-spacing: 0.06em">PRODUCT</span>
+            <div style="display: flex; flex-direction: column; gap: 4px"><span style="font-size: 19px; font-weight: 600">{{z.t}}</span><span style="font-size: 13px; line-height: 1.45; color: #5E5E58">{{z.d}}</span></div>
+          </section>
+        </sc-for>
+        <!-- Utility -->
+        <section style="grid-column: 1 / -1; min-height: 96px; box-sizing: border-box; padding: 16px 18px; border-radius: 20px; border: 1.5px dashed #C9C9C2; display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px">
+          <span style="display: inline-flex; align-items: center; height: 26px; padding: 0 10px; border-radius: 999px; background: #E6E6E1; color: #45453F; font-size: 11px; font-weight: 700; letter-spacing: 0.06em">UTILITY</span>
+          <span style="flex: 1 1 300px; font-size: 14px; color: #45453F">{{zones.utility}}</span>
+        </section>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- Command palette overlay -->
+<sc-if value="{{showPalette}}" hint-placeholder-val="{{ false }}">
+  <div style="position: absolute; inset: 0; z-index: 40">
+    <button type="button" aria-label="Close command palette" onClick="{{ closeAll }}" style="position: absolute; inset: 0; width: 100%; height: 100%; border: 0; background: rgba(14,14,12,0.28); cursor: default"></button>
+    <div role="dialog" aria-label="Search and commands" style="position: relative; width: min(640px, calc(100% - 32px)); margin: 110px auto 0; box-sizing: border-box; padding: 12px; border-radius: 30px; background: #FFFFFF; box-shadow: 0 24px 60px rgba(14,14,12,0.22); display: flex; flex-direction: column; gap: 12px">
+      <div style="display: flex; align-items: center; gap: 10px; height: 56px; padding: 0 8px 0 18px; border-radius: 999px; background: #F1F1EE">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1A1A17" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-4-4"></path></svg>
+        <label for="cmd-q" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Search</label>
+        <input id="cmd-q" type="search" placeholder="Search tasks, people, projects or type a command…" style="flex: 1; min-width: 0; border: 0; outline: none; background: transparent; font-family: inherit; font-size: 15px; color: #1A1A17">
+        <button type="button" onClick="{{ closeAll }}" style="height: 40px; padding: 0 12px; border: 0; border-radius: 999px; background: #FFFFFF; font-family: inherit; font-size: 12px; font-weight: 700; color: #45453F; cursor: pointer">Esc</button>
+      </div>
+      <span style="padding: 0 10px; font-size: 11px; font-weight: 700; letter-spacing: 0.12em; color: #6B6B64">QUICK CAPTURE</span>
+      <div style="display: flex; flex-wrap: wrap; gap: 8px; padding: 0 6px">
+        <sc-for list="{{capture}}" as="q" hint-placeholder-count="6">
+          <button type="button" style="display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 16px 0 8px; border: 0; border-radius: 999px; background: #F8F8F6; box-shadow: inset 0 0 0 1px #EDEDEA; font-family: inherit; font-size: 13px; font-weight: 600; color: #1A1A17; cursor: pointer"><span style="width: 30px; height: 30px; border-radius: 50%; background: {{q.bg}}; display: inline-flex; align-items: center; justify-content: center"><span style="width: 8px; height: 8px; border-radius: 50%; background: {{q.dot}}"></span></span>{{q.label}}</button>
+        </sc-for>
+      </div>
+      <span style="padding: 4px 10px 0; font-size: 11px; font-weight: 700; letter-spacing: 0.12em; color: #6B6B64">JUMP TO</span>
+      <div style="display: flex; flex-direction: column; gap: 2px">
+        <sc-for list="{{jumps}}" as="j" hint-placeholder-count="3">
+          <button type="button" style="display: flex; align-items: center; gap: 12px; height: 48px; padding: 0 12px; border: 0; border-radius: 16px; background: {{j.bg}}; font-family: inherit; text-align: left; cursor: pointer"><span style="width: 10px; height: 10px; border-radius: 50%; background: {{j.dot}}"></span><span style="flex: 1; font-size: 14px; font-weight: 600; color: #1A1A17">{{j.label}}</span><span style="font-size: 12px; color: #6B6B64">{{j.where}}</span></button>
+        </sc-for>
+      </div>
+      <div style="display: flex; gap: 16px; padding: 8px 12px 4px; border-top: 1px solid #EDEDEA; font-size: 12px; color: #6B6B64"><span>↑↓ navigate</span><span>↵ open</span><span>esc close</span></div>
+    </div>
+  </div>
+</sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = {
+      ctx: 'personal', pop: null, openCtx: 'project', railOpen: false, nav: 'overview',
+      ws: { personal: 'Mehran', project: 'Website Redesign', team: 'Design Team', company: 'Euroly' },
+      digits: 'en', theme: 'light', lang: 'en'
+    };
+  }
+  renderVals() {
+    const st = this.state;
+    const FA = '۰۱۲۳۴۵۶۷۸۹';
+    const f = (s) => st.digits === 'fa' ? String(s).replace(/[0-9]/g, (d) => FA[d]) : String(s);
+    const I = {
+      overview: 'M4 4h7v7H4zM13 4h7v4h-7zM13 10h7v10h-7zM4 13h7v7H4z',
+      myday: 'M12 3v2M12 19v2M3 12h2M19 12h2M12 8a4 4 0 1 0 0 8a4 4 0 1 0 0-8z',
+      tasks: 'M4 4h16v16H4zM8 12l3 3 5-6',
+      calendar: 'M4 5h16v15H4zM4 10h16M9 3v4M15 3v4',
+      goals: 'M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18zM12 8a4 4 0 1 0 0 8a4 4 0 1 0 0-8z',
+      habits: 'M4 12a8 8 0 0 1 14-5.3M20 12a8 8 0 0 1-14 5.3M18 3v4h-4M6 21v-4h4',
+      finance: 'M3 7h18v12H3zM3 11h18M7 15h3',
+      journal: 'M6 3h12v18H6zM9 8h6M9 12h6',
+      insights: 'M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9V16h7v-2.1A6 6 0 0 0 12 3z',
+      board: 'M4 4h5v16H4zM10.5 4h5v10h-5zM17 4h3v7h-3z',
+      timeline: 'M4 6h9M7 12h11M4 18h7',
+      gantt: 'M4 4v16h16M8 8h6M10 12h7M8 16h4',
+      docs: 'M6 3h9l4 4v14H6zM9 11h7M9 15h5',
+      analytics: 'M5 20V10M12 20V4M19 20v-7',
+      flow: 'M5 6h9a4 4 0 0 1 0 8H10a4 4 0 0 0 0 8h9',
+      work: 'M4 8h16v12H4zM9 8V5h6v3',
+      people: 'M9 4.5a3.5 3.5 0 1 0 0 7a3.5 3.5 0 1 0 0-7zM3 20a6 6 0 0 1 12 0M16 4.5a3.5 3.5 0 0 1 0 7M18 14a5 5 0 0 1 3 6',
+      checkins: 'M4 5h16v11H9l-5 4zM9 10l2 2 4-4',
+      activity: 'M3 12h4l3-8 4 16 3-8h4',
+      files: 'M3 6h6l2 2h10v11H3z',
+      departments: 'M4 20V8l8-4 8 4v12M9 20v-6h6v6',
+      projects: 'M3 7h7l2 2h9v10H3z',
+      assets: 'M12 3l8 4.5v9L12 21l-8-4.5v-9zM12 12l8-4.5M12 12v9M12 12L4 7.5',
+      approvals: 'M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18zM8 12l3 3 5-6',
+      reports: 'M6 3h9l4 4v14H6zM9 17v-4M12 17v-6M15 17v-2'
+    };
+    const L = { overview: 'Overview', myday: 'My Day', tasks: 'Tasks', calendar: 'Calendar', goals: 'Goals', habits: 'Habits', finance: 'Finance', journal: 'Journal', insights: 'Insights', board: 'Board', timeline: 'Timeline', gantt: 'Gantt', docs: 'Docs', analytics: 'Analytics', flow: 'Case flow', work: 'Work', people: 'People', checkins: 'Check-ins', activity: 'Activity', files: 'Files', departments: 'Departments', projects: 'Projects', assets: 'Assets', approvals: 'Approvals', reports: 'Reports' };
+    const CTX = {
+      personal: { label: 'Personal', base: '#4FE3C1', soft: '#DDFAF2', deep: '#0E6B57', items: ['Mehran'], add: 'Personal space only', nav: ['overview', 'myday', 'tasks', 'calendar', 'goals', 'habits', 'finance', 'journal', 'insights'] },
+      project: { label: 'Projects', base: '#5AB4FF', soft: '#E0F0FF', deep: '#0F5BA8', items: ['Website Redesign', 'Planner App', 'Mobile Launch'], add: 'New project', nav: ['overview', 'tasks', 'board', 'timeline', 'gantt', 'flow', 'docs', 'analytics'] },
+      team: { label: 'Teams', base: '#8B8BFF', soft: '#ECECFF', deep: '#4343C8', items: ['Design Team', 'Engineering', 'Marketing'], add: 'New team', nav: ['overview', 'work', 'people', 'calendar', 'checkins', 'activity', 'files'] },
+      company: { label: 'Companies', base: '#C07BFF', soft: '#F4E9FF', deep: '#7A2BC4', items: ['Euroly', 'Araxitis'], add: 'Add company', nav: ['overview', 'departments', 'projects', 'people', 'goals', 'finance', 'assets', 'approvals', 'reports'] }
+    };
+    const c = CTX[st.ctx];
+    const ws = st.ws[st.ctx];
+    const navKey = c.nav.includes(st.nav) ? st.nav : 'overview';
+    const pop = st.pop;
+    const toggle = (name) => () => this.setState({ pop: pop === name ? null : name });
+
+    const ctxRows = Object.keys(CTX).map((k) => {
+      const x = CTX[k];
+      const exp = st.openCtx === k;
+      return {
+        label: x.label, base: x.base, current: st.ws[k] + (k === st.ctx ? ' · active' : ''),
+        rowBg: exp ? '#F8F8F6' : 'transparent',
+        expanded: exp ? 'true' : 'false', expandedBool: exp,
+        chev: exp ? 'M6 15l6-6 6 6' : 'M6 9l6 6 6-6',
+        toggle: () => this.setState({ openCtx: exp ? null : k }),
+        addLabel: x.add,
+        items: x.items.map((name) => {
+          const on = st.ws[k] === name && st.ctx === k;
+          return {
+            name, isOn: on, checked: on ? 'true' : 'false',
+            bg: on ? x.soft : 'transparent', fg: on ? x.deep : '#1A1A17', weight: on ? 700 : 500,
+            pick: () => this.setState({ ctx: k, ws: { ...st.ws, [k]: name }, pop: null, nav: 'overview' })
+          };
+        })
+      };
+    });
+
+    const nav = c.nav.map((k) => {
+      const on = k === navKey;
+      return { label: L[k], d: I[k], current: on ? 'page' : 'false', bg: on ? c.soft : 'transparent', fg: on ? c.deep : '#1A1A17', icon: on ? c.deep : '#45453F', weight: on ? 700 : 500, pick: () => this.setState({ nav: k }) };
+    });
+
+    const HEAD = {
+      personal: { title: 'Good morning, Mehran', sub: f('Sunday, 13 October 2026'), cta: 'Plan my day' },
+      project: { title: ws, sub: f('On track · 72% · 1 Sep – 20 Dec'), cta: 'New task' },
+      team: { title: ws, sub: f('8 members · 12 active tasks · 3 blocked'), cta: 'Check in' },
+      company: { title: ws, sub: 'Engineering ▾ · ' + f('Q4 2026'), cta: 'Review approvals' }
+    };
+    const ZONES = {
+      personal: { hero: 'Today progress', heroNote: f('One sculpted surface: day ring at 74%, tasks 6/9, habits 4/5, focus 2h 40m, mood. Animates as the day fills.'), products: [{ t: 'Timeline', d: 'Calendar & time blocks, current activity.' }, { t: 'Goals', d: f('2–4 active goals with rings and next action.') }, { t: 'Habits & mood', d: 'Streaks, quick check-in, recent trend.' }], utility: 'Compact task list (due · overdue · unscheduled) and expenses in تومان / ریال.' },
+      project: { hero: 'Project health', heroNote: f('Progress 72%, milestones 3/5, time and budget used, blockers, and why the health is what it is.'), products: [{ t: 'Journey', d: 'Planning → Design → Build → Launch.' }, { t: 'Milestones', d: 'Progress and the next milestone.' }, { t: 'Current tasks', d: 'Active, important work only.' }], utility: 'Risks list and budget table (estimated vs actual).' },
+      team: { hero: 'People & workload', heroNote: 'People cluster with availability, plus capacity bars. No productivity ranking.', products: [{ t: 'Active work', d: 'Current team priorities.' }, { t: 'Team calendar', d: 'Shared schedule.' }, { t: 'Check-ins', d: 'Open decisions and recent check-ins.' }], utility: 'Meaningful activity feed and shared files.' },
+      company: { hero: 'Executive hero', heroNote: f('Company health, 14 projects, 6 teams, 82 people, goals and one key risk — composed, not a KPI row.'), products: [{ t: 'Departments', d: 'Progress, health, capacity.' }, { t: 'Portfolio', d: 'Cross-project progress.' }, { t: 'Company goals', d: 'Strategic objectives.' }], utility: 'Approvals queue, resource capacity and budget.' }
+    };
+
+    const prefOpt = (key, val, label) => ({ label, checked: st[key] === val ? 'true' : 'false', bg: st[key] === val ? c.deep : 'transparent', fg: st[key] === val ? '#FFFFFF' : '#45453F', pick: () => this.setState({ [key]: val }) });
+
+    return {
+      c, ws, navLabel: L[navKey], head: HEAD[st.ctx], zones: ZONES[st.ctx], nav,
+      ctxRows,
+      showSwitcher: pop === 'switcher', switcherExpanded: pop === 'switcher' ? 'true' : 'false',
+      switcherBg: pop === 'switcher' ? c.soft : '#FFFFFF', switcherFg: pop === 'switcher' ? c.deep : '#1A1A17', switcherSub: pop === 'switcher' ? c.deep : '#6B6B64', switcherDotBg: pop === 'switcher' ? '#FFFFFF' : c.soft,
+      switcherChevron: pop === 'switcher' ? 'M6 15l6-6 6 6' : 'M6 9l6 6 6-6',
+      toggleSwitcher: toggle('switcher'),
+      showNotif: pop === 'notif', notifExpanded: pop === 'notif' ? 'true' : 'false', notifBg: pop === 'notif' ? '#E6E6E1' : '#F1F1EE', notifFg: '#1A1A17', toggleNotif: toggle('notif'),
+      showProfile: pop === 'profile', profileExpanded: pop === 'profile' ? 'true' : 'false', profileRing: pop === 'profile' ? c.base : '#FFFFFF', toggleProfile: toggle('profile'),
+      showPalette: pop === 'palette', openPalette: toggle('palette'), closeAll: () => this.setState({ pop: null }),
+      railOpen: st.railOpen, railW: st.railOpen ? '232px' : '64px', railExpanded: st.railOpen ? 'true' : 'false',
+      railToggleLabel: st.railOpen ? 'Collapse navigation' : 'Expand navigation',
+      railToggleIcon: st.railOpen ? 'M15 6l-6 6 6 6' : 'M9 6l6 6-6 6',
+      toggleRail: () => this.setState({ railOpen: !st.railOpen }),
+      dateShort: f('13 Oct'), t1: f('2:00'), t2: f('2:15'), t3: f('3:00'), t4: f('4:30'), n3: f(3),
+      notifs: [
+        { init: 'SP', avBg: '#ECECFF', avFg: '#4343C8', text: 'Sarah moved “Revamp sidebar” to Review', meta: f('Design Team · 5 min'), unread: true, bg: '#F8F8F6' },
+        { init: 'KF', avBg: '#E0F0FF', avFg: '#0F5BA8', text: 'Katy mentioned you in Website Redesign', meta: f('Projects · 22 min'), unread: true, bg: '#F8F8F6' },
+        { init: 'EU', avBg: '#F4E9FF', avFg: '#7A2BC4', text: 'Budget request awaits your approval', meta: f('Euroly · 1 h'), unread: true, bg: '#F8F8F6' }
+      ],
+      prefs: [
+        { label: 'Theme', opts: [prefOpt('theme', 'light', 'Light'), prefOpt('theme', 'dark', 'Dark')] },
+        { label: 'Digits', opts: [prefOpt('digits', 'en', '123'), prefOpt('digits', 'fa', '۱۲۳')] },
+        { label: 'Language', opts: [prefOpt('lang', 'en', 'EN'), prefOpt('lang', 'fa', 'فا')] }
+      ],
+      capture: [
+        { label: 'Task', bg: '#F1F1EE', dot: c.deep },
+        { label: 'Event', bg: '#E0F0FF', dot: '#5AB4FF' },
+        { label: 'Expense', bg: '#E6E6E1', dot: '#45453F' },
+        { label: 'Mood', bg: '#DDFAF2', dot: '#4FE3C1' },
+        { label: 'Habit', bg: '#DDFAF2', dot: '#4FE3C1' },
+        { label: 'Note', bg: '#F4E9FF', dot: '#C07BFF' }
+      ],
+      jumps: [
+        { label: 'My Day', where: 'Personal', dot: '#4FE3C1', bg: '#F1F1EE' },
+        { label: 'Website Redesign · Board', where: 'Projects', dot: '#5AB4FF', bg: 'transparent' },
+        { label: 'Design Team · Check-ins', where: 'Teams', dot: '#8B8BFF', bg: 'transparent' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>
