@@ -18,7 +18,7 @@ import type { Scope, Task, TaskPriority } from "@/data/domain";
 import { useAddTaskNote, useAreas, useBlocks, useCreateTask } from "@/data/queries";
 import { protectedSpan } from "@/features/my-day/domain/placement";
 import { taskDetailHref } from "@/features/personal/routes";
-import { planningDurationMinutes } from "@/features/planner-settings/planner-settings";
+import { planningDurationMinutes, planningTags } from "@/features/planner-settings/planner-settings";
 import { usePlannerSettings } from "@/features/planner-settings/use-planner-settings";
 import { useIsClient } from "@/hooks/use-is-client";
 import { cn } from "@/lib/cn";
@@ -227,7 +227,7 @@ function CreateForm({ draft, setDraft, extras, setExtras, scheduled, setSchedule
   const labels = splitLabels(extras.labels);
   const rawMinutes = draft.durationMinutes ?? 30;
   // Planning length only: the task keeps rawMinutes; the Schedule panel fits this.
-  const planMinutes = planningDurationMinutes(rawMinutes, [...labels, area?.id, area?.name], insights.estimateBuffers);
+  const planMinutes = planningDurationMinutes(rawMinutes, planningTags({ labels, area }), insights.estimateBuffers);
 
   const patch = (next: Partial<TaskDraft>) => setDraft((current) => ({ ...current, ...next }));
 

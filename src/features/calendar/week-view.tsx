@@ -8,6 +8,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useIsDesktop } from "@/components/ui/use-is-desktop";
 import { SignatureCard, SignatureCardAction, SignatureCardHeader } from "@/design-system/surfaces/signature-card";
 import { workWindow } from "@/features/my-day/domain/capacity";
+import { protectedSpan } from "@/features/my-day/domain/placement";
 import { visibleWindow } from "@/features/my-day/domain/window";
 import { usePlannerNow } from "@/features/my-day/my-day-context";
 import { LABEL_COLUMN_PX, pxPerMinuteFor } from "@/features/my-day/timeline/geometry";
@@ -119,6 +120,7 @@ export function WeekView({ days, data }: { days: readonly string[]; data: Calend
             window={window}
             pxPerMinute={pxPerMinute}
             todayDay={now.day}
+            protectedFocus={protectedSpan(settings.insights.protectedFocus)}
             label={t("week.gridLabel", { from: format.dayMonth(shown[0]!), to: format.dayMonth(shown.at(-1)!) })}
           />
           {weekEmpty && view === "week" ? (

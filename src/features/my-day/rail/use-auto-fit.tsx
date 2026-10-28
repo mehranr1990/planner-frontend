@@ -5,7 +5,7 @@ import { useCallback, useEffect, useRef, type RefObject } from "react";
 import { toast } from "@/components/ui/toast";
 import type { Task } from "@/data/domain";
 import { useBlocks, useScheduleTask, useUnscheduleBlock } from "@/data/queries";
-import { planningDurationMinutes } from "@/features/planner-settings/planner-settings";
+import { planningDurationMinutes, planningTags } from "@/features/planner-settings/planner-settings";
 import { usePlannerSettings } from "@/features/planner-settings/use-planner-settings";
 import { formatClockTime } from "@/lib/dates/clock-time";
 import { workWindow } from "../domain/capacity";
@@ -46,7 +46,7 @@ export function useAutoFit(): (task: AutoFitTask) => Promise<void> {
       const durationMinutes = task.durationMinutes ?? planning.defaultDurationMinutes;
       const fitMinutes = planningDurationMinutes(
         durationMinutes,
-        [...(task.labels ?? []), task.area?.id, task.area?.name],
+        planningTags(task),
         insights.estimateBuffers,
       );
       const slot = autoFit(

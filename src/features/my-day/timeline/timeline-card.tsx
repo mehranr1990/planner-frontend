@@ -13,7 +13,7 @@ import {
   SignatureCardHeader,
 } from "@/design-system/surfaces/signature-card";
 import { useUnscheduledTasks } from "@/data/queries";
-import { planningDurationMinutes } from "@/features/planner-settings/planner-settings";
+import { planningDurationMinutes, planningTags } from "@/features/planner-settings/planner-settings";
 import { usePlannerSettings } from "@/features/planner-settings/use-planner-settings";
 import { useOpenSheet } from "@/features/sheets/sheet-params";
 import { cn } from "@/lib/cn";
@@ -163,7 +163,7 @@ function SingleDayBody({ desktop, emptyState, shrunk }: { desktop: boolean; empt
     energy: task.energy,
     durationMinutes: planningDurationMinutes(
       task.durationMinutes ?? defaultDuration,
-      [...(task.labels ?? []), task.area?.id, task.area?.name],
+      planningTags(task),
       settings.insights.estimateBuffers,
     ),
   }));

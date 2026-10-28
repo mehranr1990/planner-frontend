@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest";
 import type { Task } from "@/data/domain";
 import type { DayBlock } from "@/features/my-day/domain/day-blocks";
+import { protectedSpan } from "@/features/my-day/domain/placement";
+import { planningDurationMinutes, planningTags } from "@/features/planner-settings/planner-settings";
 import { IRAN_WEEK } from "@/lib/dates/week";
 import {
   autoArrange,
@@ -96,6 +98,23 @@ describe("shutdown tomorrow", () => {
     expect(placed.high).toBe(630);
     expect(placed.low).toBe(720);
     expect(placed.huge).toBeUndefined();
+  });
+
+  it("auto-arrange avoids the protected 09–12 window and fits the buffered length", () => {
+    const day = { startMinutes: 480, endMinutes: 1020 };
+    const blocks = [block(480, 540), block(780, 840)];
+    // A Persian "طراحی" label is the design category: 60m raw × 1.5 = 90m.
+    const planMinutes = planningDurationMinutes(60, planningTags({ labels: ["طراحی"] }), { design: 50 });
+    const guard = protectedSpan({ start: "09:00", end: "12:00" });
+    expect(planMinutes).toBe(90);
+    // 12:00–13:00 holds the raw hour but not 90m, so 14:00; the block keeps its raw length.
+    expect(autoArrange(blocks, [pending("t", 60, { planMinutes })], {}, day, guard).t).toBe(840);
+    expect(autoArrange(blocks, [pending("t", 60)], {}, day, guard).t).toBe(720);
+    expect(autoArrange(blocks, [pending("t", 60, { planMinutes })], {}, day).t).toBe(540);
+    // Manual placements stay where they were put, even inside the window.
+    expect(autoArrange(blocks, [pending("t", 60, { planMinutes })], { t: 600 }, day, guard).t).toBe(600);
+    // "Tomorrow is full" counts the planning length.
+    expect(tomorrowLoad([], [pending("t", 60, { planMinutes })], 480).plannedMinutes).toBe(90);
   });
 
   it("suggests moving routed low-priority work when tomorrow is over capacity", () => {

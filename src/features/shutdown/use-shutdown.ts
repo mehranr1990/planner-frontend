@@ -15,9 +15,11 @@ import {
 } from "@/data/queries";
 import { workWindow } from "@/features/my-day/domain/capacity";
 import { toDayBlocks } from "@/features/my-day/domain/day-blocks";
+import { protectedSpan } from "@/features/my-day/domain/placement";
 import { usePlannerNow } from "@/features/my-day/my-day-context";
 import { useMyDayFormat } from "@/features/my-day/ui/use-my-day-format";
 import { useSlotDismissals } from "@/features/overview/domain/slot-dismissals";
+import { planningDurationMinutes, planningTags } from "@/features/planner-settings/planner-settings";
 import { usePlannerSettings } from "@/features/planner-settings/use-planner-settings";
 import { formatClockTime } from "@/lib/dates/clock-time";
 import {
@@ -68,6 +70,14 @@ export function useShutdown() {
   const settings = usePlannerSettings();
   const days = useMemo(() => routeDays(today, settings.week), [today, settings.week]);
   const work = useMemo(() => workWindow(settings.workHours), [settings.workHours]);
+  // Suggestions (Auto-arrange, "Tomorrow is full") plan like My Day: buffered lengths, protected window avoided.
+  const estimateBuffers = settings.insights.estimateBuffers;
+  const guardStart = settings.insights.protectedFocus?.start;
+  const guardEnd = settings.insights.protectedFocus?.end;
+  const guarded = useMemo(
+    () => protectedSpan(guardStart && guardEnd ? { start: guardStart, end: guardEnd } : null),
+    [guardStart, guardEnd],
+  );
 
   const todayQuery = useTasks({ view: "today", day: today });
   const allQuery = useTasks({ view: "all" });
@@ -121,16 +131,20 @@ export function useShutdown() {
     const dated = (tasks ?? []).filter(
       (task) => task.status === "open" && task.date === days.tomorrow && !scheduled.has(task.id) && !routed.includes(task),
     );
-    const toPending = (task: Task, isRouted: boolean): PendingTask => ({
-      id: task.id,
-      title: task.title,
-      durationMinutes: task.durationMinutes ?? settings.planning.defaultDurationMinutes,
-      energy: task.energy,
-      priority: task.priority,
-      routed: isRouted,
-    });
+    const toPending = (task: Task, isRouted: boolean): PendingTask => {
+      const durationMinutes = task.durationMinutes ?? settings.planning.defaultDurationMinutes;
+      return {
+        id: task.id,
+        title: task.title,
+        durationMinutes,
+        planMinutes: planningDurationMinutes(durationMinutes, planningTags(task), estimateBuffers),
+        energy: task.energy,
+        priority: task.priority,
+        routed: isRouted,
+      };
+    };
     return [...dated.map((task) => toPending(task, false)), ...routed.map((task) => toPending(task, true))];
-  }, [tomorrowBlocks, unfinished, draft, days, tasks, settings.planning.defaultDurationMinutes]);
+  }, [tomorrowBlocks, unfinished, draft, days, tasks, settings.planning.defaultDurationMinutes, estimateBuffers]);
 
   const [rawPlacements, setPlacements] = useState<Placements>({});
   // Placements of tasks no longer routed to tomorrow fall away.
@@ -148,8 +162,8 @@ export function useShutdown() {
     });
   }, []);
   const arrange = useCallback(
-    () => setPlacements(autoArrange(tomorrowBlocks, pending, placements, work)),
-    [tomorrowBlocks, pending, placements, work],
+    () => setPlacements(autoArrange(tomorrowBlocks, pending, placements, work, guarded)),
+    [tomorrowBlocks, pending, placements, work, guarded],
   );
 
   const load = useMemo(() => tomorrowLoad(tomorrowBlocks, pending, work.totalMinutes), [tomorrowBlocks, pending, work.totalMinutes]);

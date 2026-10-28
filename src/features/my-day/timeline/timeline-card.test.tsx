@@ -4,6 +4,7 @@ import { beforeEach, describe, expect, it } from "vitest";
 import { createMockRepositories } from "@/data/mock";
 import type { Repositories } from "@/data/repositories";
 import { taskDetailHref } from "@/features/personal/routes";
+import { DEFAULT_PLANNER_SETTINGS } from "@/features/planner-settings/planner-settings";
 import { routerPush } from "@/test/setup";
 import { ContextProbe, mockViewport, persian, readProbe, renderMyDay, type RenderMyDayOptions } from "../states/test-utils";
 import { MyDayDndProvider } from "./my-day-dnd";
@@ -379,3 +380,26 @@ describe("TimelineCard · Persian", () => {
   });
 });
 
+
+describe("TimelineCard · protected focus window", () => {
+  const guarded = {
+    ...DEFAULT_PLANNER_SETTINGS,
+    insights: { protectedFocus: { start: "09:00", end: "12:00" } as const, estimateBuffers: {} },
+  };
+
+  it("describes the window to assistive tech only when it is on; the band stays hidden", async () => {
+    renderTimeline({ plannerSettings: guarded });
+    await waitFor(() => expect(blocks()).toHaveLength(7));
+    const grid = document.querySelector<HTMLElement>('[data-slot="timeline-grid"]')!;
+    expect(grid).toHaveAccessibleDescription("Protected focus window, 09:00 – 12:00.");
+    expect(document.querySelector('[data-slot="protected-focus"]')).toHaveAttribute("aria-hidden", "true");
+  });
+
+  it("has no description when the window is off", async () => {
+    renderTimeline();
+    await waitFor(() => expect(blocks()).toHaveLength(7));
+    const grid = document.querySelector<HTMLElement>('[data-slot="timeline-grid"]')!;
+    expect(grid).not.toHaveAttribute("aria-describedby");
+    expect(document.querySelector('[data-slot="protected-focus"]')).toBeNull();
+  });
+});

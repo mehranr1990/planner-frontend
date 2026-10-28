@@ -2,6 +2,8 @@ import { z } from "zod";
 import { IRAN_WEEK, type WeekConfig, type Weekday } from "@/lib/dates/week";
 import { isOptionalModule, optionalModuleIds, type OptionalModuleId, type PersonalModuleId } from "./modules";
 
+export { labelCategoryId, planningTags } from "./estimate-category";
+
 /*
  * Planner settings (P17): module visibility, week and work hours, planning
  * defaults, weekly review, focus timer and privacy-lock placeholders. Like
@@ -193,9 +195,10 @@ export function visibleModuleIds(settings: PlannerSettings): OptionalModuleId[] 
  * The length planning assumes for a task not on the timeline yet: the raw
  * estimate stretched by the accepted Insights buffer of its category
  * (estimateBuffers, e.g. design +50% → ×1.5), rounded up to 5 minutes.
- * A task belongs to a category when one of its tags (labels, area id or
- * name) is that category id. With no buffer it is the raw estimate; the
- * task's own durationMinutes is never rewritten.
+ * A task belongs to a category when one of its stable tags (planningTags:
+ * label ids and the area id, never a display name) is that category id.
+ * With no buffer it is the raw estimate; the task's own durationMinutes is
+ * never rewritten.
  */
 export function planningDurationMinutes(
   rawMinutes: number,

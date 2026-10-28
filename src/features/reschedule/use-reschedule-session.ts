@@ -87,6 +87,7 @@ export function useRescheduleSession(
       blocksByDay,
       tasks: taskList,
       defaultDurationMinutes: defaultDuration,
+      estimateBuffers: insights.estimateBuffers,
     });
     if (!resolved) return { status: "missing" };
     const rows = rescheduleRows({
@@ -110,5 +111,5 @@ export function useRescheduleSession(
       rows,
       pickDefault: slot ? { day: slot.day, startMinutes: slot.startMinutes } : { day, startMinutes: 540 },
     };
-  }, [failed, pending, taskList, days, fetched.data, target, day, defaultDuration, now.instant, week, start, end, preselect, allow, guardStart, guardEnd]);
+  }, [failed, pending, taskList, days, fetched.data, target, day, defaultDuration, now.instant, week, start, end, preselect, allow, guardStart, guardEnd, insights.estimateBuffers]);
 }

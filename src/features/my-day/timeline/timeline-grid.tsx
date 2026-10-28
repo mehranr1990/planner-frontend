@@ -2,7 +2,7 @@
 
 import { useDroppable } from "@dnd-kit/core";
 import { useTranslations } from "next-intl";
-import { useCallback, useMemo, useRef, useState, type ReactNode } from "react";
+import { useCallback, useId, useMemo, useRef, useState, type ReactNode } from "react";
 import type { Task } from "@/data/domain";
 import { cn } from "@/lib/cn";
 import type { DayBlock, MinuteSpan } from "../domain/day-blocks";
@@ -217,9 +217,25 @@ export function TimelineGrid({ columns, window, pxPerMinute, showHeaders = false
       : null;
   const multiple = columns.length > 1;
   const today = columns.find((column) => column.nowMinutes !== null);
+  const protectedId = useId();
 
   return (
-    <div data-slot="timeline-grid" role="group" aria-label={label} className="relative w-full">
+    <div
+      data-slot="timeline-grid"
+      role="group"
+      aria-label={label}
+      aria-describedby={protectedFocus ? protectedId : undefined}
+      className="relative w-full"
+    >
+      {protectedFocus ? (
+        // The band is decoration (aria-hidden); assistive tech gets the window here instead.
+        <p id={protectedId} className="sr-only">
+          {t.rich("protectedFocusDescription", {
+            range: format.clockRange(protectedFocus.startMinutes, protectedFocus.endMinutes),
+            clock: (chunks) => <ClockText>{chunks}</ClockText>,
+          })}
+        </p>
+      ) : null}
       {showHeaders ? (
         <div className="mb-2 flex" style={{ paddingInlineStart: LABEL_COLUMN_PX }}>
           <div className="grid min-w-0 flex-1 gap-2" style={{ gridTemplateColumns: `repeat(${columns.length}, minmax(0, 1fr))` }}>
@@ -243,6 +259,7 @@ export function TimelineGrid({ columns, window, pxPerMinute, showHeaders = false
       <div className="relative" style={{ height }}>
         {band ? (
           <div
+            aria-hidden
             data-slot="protected-focus"
             className="pointer-events-none absolute end-0 rounded-[14px] border border-dashed border-scope-deep/50 bg-scope-soft/40"
             style={{ insetInlineStart: LABEL_COLUMN_PX, top: band.top, height: band.height }}

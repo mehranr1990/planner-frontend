@@ -2,7 +2,7 @@ import type { EnergyLevel, Task, TaskPriority } from "@/data/domain";
 import type { TaskPatch } from "@/data/repositories";
 import type { DayBlock, MinuteSpan } from "@/features/my-day/domain/day-blocks";
 import { freeGaps, type Gap } from "@/features/my-day/domain/gaps";
-import { nextFreeSlot } from "@/features/my-day/domain/placement";
+import { suggestFreeSlot } from "@/features/my-day/domain/placement";
 import type { Rollover } from "@/features/planner-settings/planner-settings";
 import { addDaysToDay, dayToLocalDate, localDateToDay } from "@/lib/dates/clock-time";
 import { getWeekDates, isWorkingDay, nextWorkingDay, type WeekConfig } from "@/lib/dates/week";
@@ -162,6 +162,8 @@ export interface PendingTask {
   id: string;
   title: string;
   durationMinutes: number;
+  /** Planning length (estimate buffer applied, planningDurationMinutes); suggestions fit this. Default durationMinutes. */
+  planMinutes?: number;
   energy: EnergyLevel | null;
   priority: TaskPriority | null;
   /** Routed from today in this shutdown (false: already dated tomorrow). */
@@ -183,19 +185,25 @@ export function tomorrowGaps(spans: readonly MinuteSpan[], window: MinuteSpan): 
   return freeGaps(spans as DayBlock[], window, 15);
 }
 
+/** The length suggestions plan for: the buffered planning length, else the raw one. */
+const planOf = (task: PendingTask) => task.planMinutes ?? task.durationMinutes;
+
 const ENERGY_RANK: Record<EnergyLevel | "none", number> = { high: 0, medium: 1, low: 2, none: 3 };
 const PRIORITY_RANK: Record<TaskPriority | "none", number> = { urgent: 0, high: 1, medium: 2, low: 3, none: 4 };
 
 /**
  * Auto-arrange: high-energy work first (it takes the morning gaps), then by
  * priority; each task goes into the first free gap that holds it inside
- * the work window. Tasks that do not fit stay unplaced.
+ * the work window, outside the protected focus window (`avoid`) when it
+ * can (suggestFreeSlot), holding the task's planning length. Tasks that do
+ * not fit stay unplaced; manual placements are kept as they are.
  */
 export function autoArrange(
   blocks: readonly DayBlock[],
   pending: readonly PendingTask[],
   placements: Placements,
   window: MinuteSpan,
+  avoid: MinuteSpan | null = null,
 ): Placements {
   const next: Record<string, number> = { ...placements };
   const order = pending
@@ -206,7 +214,7 @@ export function autoArrange(
         PRIORITY_RANK[a.priority ?? "none"] - PRIORITY_RANK[b.priority ?? "none"],
     );
   for (const task of order) {
-    const start = nextFreeSlot(busySpans(blocks, pending, next), window.startMinutes, task.durationMinutes, window, 15);
+    const start = suggestFreeSlot(busySpans(blocks, pending, next), window.startMinutes, planOf(task), window, avoid, 15);
     if (start !== null) next[task.id] = start;
   }
   return next;
@@ -223,11 +231,11 @@ export interface TomorrowLoad {
   overMinutes: number;
 }
 
-/** Blocks (breaks excluded) plus every pending task, placed or not, against the work hours. */
+/** Blocks (breaks excluded) plus every pending task, placed or not (at its planning length), against the work hours. */
 export function tomorrowLoad(blocks: readonly DayBlock[], pending: readonly PendingTask[], totalMinutes: number): TomorrowLoad {
   const planned =
     blocks.reduce((sum, block) => (block.kind === "break" ? sum : sum + block.durationMinutes), 0) +
-    pending.reduce((sum, task) => sum + task.durationMinutes, 0);
+    pending.reduce((sum, task) => sum + planOf(task), 0);
   return { plannedMinutes: planned, totalMinutes, overMinutes: Math.max(0, planned - totalMinutes) };
 }
 
@@ -241,14 +249,14 @@ export function overloadSuggestion(load: TomorrowLoad, pending: readonly Pending
     .filter((task) => task.routed)
     .sort(
       (a, b) =>
-        PRIORITY_RANK[b.priority ?? "none"] - PRIORITY_RANK[a.priority ?? "none"] || b.durationMinutes - a.durationMinutes,
+        PRIORITY_RANK[b.priority ?? "none"] - PRIORITY_RANK[a.priority ?? "none"] || planOf(b) - planOf(a),
     );
   const moves: PendingTask[] = [];
   let over = load.overMinutes;
   for (const task of candidates) {
     if (over <= 0) break;
     moves.push(task);
-    over -= task.durationMinutes;
+    over -= planOf(task);
   }
   return moves;
 }

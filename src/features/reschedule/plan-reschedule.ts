@@ -2,6 +2,7 @@ import type { Task, TimeBlockKind } from "@/data/domain";
 import { addDaysToDay, snapTo } from "@/lib/dates/clock-time";
 import type { WeekConfig } from "@/lib/dates/week";
 import type { DayBlock, MinuteSpan } from "@/features/my-day/domain/day-blocks";
+import { planningDurationMinutes, planningTags, type PlannerSettings } from "@/features/planner-settings/planner-settings";
 import { overlapsWith } from "@/features/my-day/domain/overlap";
 import { resolvePlacement } from "@/features/my-day/domain/placement";
 import { rescheduleOptions, type RescheduleOption, type RescheduleOptionId } from "@/features/my-day/domain/reschedule";
@@ -28,6 +29,8 @@ export interface MoveItem {
   /** Where it starts now; null for a task without a block. */
   startMinutes: number | null;
   durationMinutes: number;
+  /** A task with no block: the length suggestions fit (estimate buffer applied). Blocks keep their own length. */
+  planMinutes?: number;
 }
 
 export interface ResolvedTarget {
@@ -36,6 +39,8 @@ export interface ResolvedTarget {
   sourceDay: string;
   /** Shared length of everything moving. */
   totalMinutes: number;
+  /** totalMinutes at planning length (estimate buffers on bare tasks): what suggested slots must hold. */
+  planMinutes: number;
   /** The single item's title; empty for several. */
   title: string;
   /** What the request named, for the copy: tasks are never called blocks. */
@@ -49,6 +54,8 @@ export interface TargetContext {
   blocksByDay: Readonly<Record<string, readonly DayBlock[]>>;
   tasks: readonly Task[];
   defaultDurationMinutes: number;
+  /** Accepted Insights estimate buffers (Settings); none by default. */
+  estimateBuffers?: PlannerSettings["insights"]["estimateBuffers"];
 }
 
 function findBlock(
@@ -94,6 +101,7 @@ export function resolveTarget(target: RescheduleTarget, context: TargetContext):
       if (found) {
         items.push(blockItem(found.block, found.day));
       } else if (task) {
+        const durationMinutes = task.durationMinutes ?? context.defaultDurationMinutes;
         items.push({
           type: "task",
           taskId: task.id,
@@ -101,7 +109,8 @@ export function resolveTarget(target: RescheduleTarget, context: TargetContext):
           blockKind: "task",
           day: context.day,
           startMinutes: null,
-          durationMinutes: task.durationMinutes ?? context.defaultDurationMinutes,
+          durationMinutes,
+          planMinutes: planningDurationMinutes(durationMinutes, planningTags(task), context.estimateBuffers ?? {}),
         });
       }
     }
@@ -112,6 +121,7 @@ export function resolveTarget(target: RescheduleTarget, context: TargetContext):
     items,
     sourceDay: first.day,
     totalMinutes: items.reduce((sum, item) => sum + item.durationMinutes, 0),
+    planMinutes: items.reduce((sum, item) => sum + (item.planMinutes ?? item.durationMinutes), 0),
     title: items.length === 1 ? first.title : "",
     noun: target.kind === "task" || target.kind === "tasks" ? "task" : "block",
   };
@@ -159,7 +169,7 @@ export function rescheduleRows(input: RowsInput): RescheduleRows {
     blocks: without[resolved.sourceDay] ?? [],
     blocksByDay: without,
     task: {
-      durationMinutes: resolved.totalMinutes,
+      durationMinutes: resolved.planMinutes,
       kind: single ? only.blockKind : "event",
     },
     week: input.week,

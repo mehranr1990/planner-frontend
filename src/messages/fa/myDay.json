@@ -5,6 +5,7 @@
   },
   "timeline": {
     "protectedFocus": "تمرکز محفوظ",
+    "protectedFocusDescription": "بازه‌ی تمرکز محفوظ، <clock>{range}</clock>.",
     "title": "خط زمان",
     "hint": "کارها را از ستون کناری بکشید · لبه‌ها را برای تغییر مدت بکشید",
     "viewLabel": "نمای خط زمان",

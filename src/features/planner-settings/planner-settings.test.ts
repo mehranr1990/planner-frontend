@@ -8,6 +8,7 @@ import {
   mergePlannerSettings,
   parsePlannerSettings,
   planningDurationMinutes,
+  planningTags,
   visibleModuleIds,
   type PlannerSettings,
 } from "./planner-settings";
@@ -206,6 +207,20 @@ describe("Insights opt-ins", () => {
     const old: Partial<PlannerSettings> = { ...on };
     delete old.insights;
     expect(parsePlannerSettings(old).insights).toEqual({ protectedFocus: null, estimateBuffers: {} });
+  });
+
+  it("planning duration matches stable category ids, never display names", () => {
+    const buffers = { design: 50 };
+    const en = planningTags({ labels: ["Design"] });
+    const fa = planningTags({ labels: [" طراحی "] });
+    expect(en).toEqual(["design"]);
+    expect(fa).toEqual(["design"]);
+    expect(planningDurationMinutes(60, en, buffers)).toBe(planningDurationMinutes(60, fa, buffers));
+    expect(planningDurationMinutes(60, fa, buffers)).toBe(90);
+    // An area matches by id only: a "Design" / "طراحی" area name with another id gets no buffer.
+    expect(planningDurationMinutes(60, planningTags({ area: { id: "design", name: "Studio" } }), buffers)).toBe(90);
+    expect(planningDurationMinutes(60, planningTags({ area: { id: "a-studio", name: "Design" } }), buffers)).toBe(60);
+    expect(planningDurationMinutes(60, planningTags({ area: { id: "a-studio", name: "طراحی" } }), buffers)).toBe(60);
   });
 
   it("planning duration: raw × buffer for a matching tag, raw otherwise", () => {
