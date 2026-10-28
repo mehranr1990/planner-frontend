@@ -84,6 +84,37 @@ export function PreferencesProvider({ initial, children }: { initial: Preference
   return <PreferencesContext value={value}>{children}</PreferencesContext>;
 }
 
+/** A read-through view of `parent` with `patch` applied; the snapshot stays stable until the parent's changes. */
+function overlayStore(parent: PreferencesStore, patch: Partial<Preferences>): PreferencesStore {
+  let base: Preferences | null = null;
+  let merged: Preferences | null = null;
+  return {
+    subscribe: parent.subscribe,
+    getSnapshot() {
+      const current = parent.getSnapshot();
+      if (current !== base || !merged) {
+        base = current;
+        merged = { ...current, ...patch };
+      }
+      return merged;
+    },
+    update: parent.update,
+    replace: parent.replace,
+  };
+}
+
+/**
+ * Shows a subtree with some preferences changed without saving them, e.g. the
+ * Calendar's Shamsi / Gregorian switch (?cal=), so every date in it follows.
+ */
+export function PreferencesOverride({ patch, children }: { patch: Partial<Preferences>; children: ReactNode }) {
+  const parent = usePreferencesContext();
+  const key = JSON.stringify(patch);
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- `key` is the patch's value identity.
+  const value = useMemo(() => ({ store: overlayStore(parent.store, patch), actions: parent.actions }), [parent, key]);
+  return <PreferencesContext value={value}>{children}</PreferencesContext>;
+}
+
 export function usePreferences(): Preferences {
   const { store } = usePreferencesContext();
   // The store is seeded with the server's values, so it is also the server snapshot.

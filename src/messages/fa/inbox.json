@@ -1,0 +1,140 @@
+{
+  "kicker": "شخصی · چیزهای ثبت‌شده‌ای که منتظر تصمیم‌اند",
+  "title": "صندوق ورودی",
+  "summary": "{count, plural, =0 {چیزی برای مرتب‌کردن نیست} other {{countText} مورد برای مرتب‌کردن}}{days, plural, =0 {} other { · قدیمی‌ترین {daysText} روز}}",
+  "tabsLabel": "نمای صندوق ورودی",
+  "tabs": {
+    "untriaged": "مرتب‌سازی",
+    "snoozed": "به‌تعویق‌افتاده",
+    "archived": "بایگانی"
+  },
+  "list": {
+    "toTriage": "برای مرتب‌کردن",
+    "snoozed": "به‌تعویق‌افتاده",
+    "archived": "بایگانی‌شده",
+    "today": "امروز",
+    "earlier": "قبل‌تر",
+    "allSources": "همه‌ی منابع",
+    "sourceFilter": "فیلتر بر اساس منبع",
+    "select": "انتخاب",
+    "doneSelecting": "تمام",
+    "selectItem": "انتخاب «{text}»",
+    "openItem": "رسیدگی به «{text}»",
+    "backFromSnooze": "برگشته از تعویق",
+    "until": "تا {when}",
+    "unsnooze": "لغو تعویق",
+    "restore": "بازگرداندن",
+    "quickActions": "کارهای سریع",
+    "loading": "در حال بارگذاری صندوق ورودی…",
+    "error": "صندوق ورودی بارگذاری نشد.",
+    "retry": "تلاش دوباره",
+    "emptySnoozed": "چیزی به تعویق نیفتاده. موارد به‌تعویق‌افتاده سر وقت انتخاب‌شده به بالای صندوق برمی‌گردند.",
+    "emptyArchived": "هنوز چیزی بایگانی نشده.",
+    "emptyFiltered": "از این منبع موردی نیست."
+  },
+  "source": {
+    "quick-add": "افزودن سریع",
+    "voice": "صوتی",
+    "share": "پیوند",
+    "note": "یادداشت",
+    "brain-dump": "ذهن‌ریزی"
+  },
+  "sourceDetail": {
+    "quick-add": "افزودن سریع",
+    "voice": "متن پیاده‌شده · {seconds}",
+    "share": "از منوی اشتراک",
+    "note": "یادداشت",
+    "brain-dump": "از ذهن‌ریزی"
+  },
+  "suggestionChip": "{target, select, task {کار؟} event {رویداد؟} note {یادداشت} journal {روزنوشت؟} reminder {یادآور؟} other {ذهن‌ریزی؟}}",
+  "acceptSuggestion": "پذیرفتن پیشنهاد برای «{text}»: {target}",
+  "target": {
+    "task": "کار",
+    "event": "رویداد",
+    "note": "یادداشت",
+    "journal": "روزنوشت",
+    "reminder": "یادآور",
+    "brain-dump": "ذهن‌ریزی"
+  },
+  "capture": {
+    "label": "ثبت در صندوق ورودی",
+    "placeholder": "هر چیزی را ثبت کنید… همین‌جا می‌نشیند",
+    "add": "ثبت",
+    "voice": "ثبت صوتی",
+    "added": "در صندوق ورودی ثبت شد",
+    "failed": "ثبت نشد. دوباره امتحان کنید."
+  },
+  "process": {
+    "label": "کارت رسیدگی",
+    "kicker": "در حال رسیدگی · {index} از {total}",
+    "progress": "پیشرفت رسیدگی",
+    "capturedAt": "{source} · {when}",
+    "audioNotKept": "صدا نگه داشته نمی‌شود",
+    "looksLike": "{target, select, task {به نظر یک کار است} event {به نظر یک رویداد است} note {به نظر یک یادداشت است} journal {به نظر روزنوشت است} reminder {به نظر یک یادآور است} other {به نظر ایده‌ای برای ذهن‌ریزی است}}",
+    "noSuggestion": "پیشنهادی نیست — مقصدش را انتخاب کنید.",
+    "edit": "ویرایش",
+    "destinations": "ارسال به",
+    "snooze": "تعویق",
+    "archive": "بایگانی",
+    "drop": "حذف",
+    "skip": "رفتن به مورد بعدی",
+    "hint": "↵ پذیرفتن پیشنهاد · → رد شدن"
+  },
+  "snooze": {
+    "title": "تعویق تا",
+    "evening": "امروز عصر",
+    "tomorrow": "فردا صبح",
+    "nextWorkingDay": "روز کاری بعد",
+    "nextWeek": "هفته‌ی بعد",
+    "pick": "انتخاب تاریخ…",
+    "pickTitle": "تعویق تا",
+    "confirm": "تعویق"
+  },
+  "transcript": {
+    "failed": "متن این مورد صوتی پیاده نشد",
+    "recording": "ضبط {time} · {seconds}",
+    "retry": "تلاش دوباره",
+    "kept": "صدا فقط تا وقتی نگه داشته می‌شود که متن پیاده شود یا کاربر آن را حذف کند.",
+    "rowMeta": "پیاده‌سازی متن ناموفق بود"
+  },
+  "bulk": {
+    "toolbar": "کارهای گروهی",
+    "selected": "{count} انتخاب‌شده",
+    "toTasks": "تبدیل به کار",
+    "snooze": "تعویق",
+    "archive": "بایگانی",
+    "clear": "پاک کردن انتخاب"
+  },
+  "toast": {
+    "converted": "به کار تبدیل شد",
+    "convertedMany": "{count, plural, other {{countText} مورد به کار تبدیل شد}}",
+    "addedTo": "به {day} اضافه شد",
+    "addedToDuration": "به {day} اضافه شد · {duration}",
+    "sentTo": "به {target} فرستاده شد",
+    "laterStep": "{target} در مرحله‌ی بعدی می‌آید — این مورد برایش نگه داشته شد.",
+    "addedToPage": "به صفحه‌ی امروزِ ذهن‌ریزی اضافه شد.",
+    "addedToJournal": "به روزنوشت امروز اضافه شد.",
+    "snoozed": "{count, plural, one {تا {when} به تعویق افتاد} other {{countText} مورد تا {when} به تعویق افتاد}}",
+    "archived": "{count, plural, one {بایگانی شد} other {{countText} مورد بایگانی شد}}",
+    "dropped": "حذف شد",
+    "restored": "به صندوق ورودی برگشت",
+    "undo": "واگرد",
+    "undoAlt": "مورد را در زبانه‌ی خودش پیدا کنید و بازگردانید",
+    "failed": "مشکلی پیش آمد. دوباره امتحان کنید."
+  },
+  "zero": {
+    "title": "صندوق خالی",
+    "body": "هر چیزی که ثبت شده جای خودش را دارد. موارد تازه از افزودن سریع، ثبت صوتی و منوی اشتراک اینجا می‌نشینند.",
+    "openBrainDump": "باز کردن ذهن‌ریزی"
+  },
+  "finished": {
+    "title": "{count, plural, other {{countText} مورد رسیدگی شد}}",
+    "tasks": "{count, plural, other {{countText} کار}}",
+    "events": "{count, plural, other {{countText} رویداد}}",
+    "archived": "{countText} بایگانی",
+    "other": "{countText} جای دیگر",
+    "light": "سبک و مرتب.",
+    "backToMyDay": "بازگشت به روز من",
+    "reviewTasks": "مرور کارها"
+  }
+}

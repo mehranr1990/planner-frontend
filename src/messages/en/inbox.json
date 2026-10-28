@@ -1,0 +1,140 @@
+{
+  "kicker": "Personal · captured items waiting for a decision",
+  "title": "Inbox",
+  "summary": "{count, plural, =0 {Nothing to triage} other {{countText} to triage}}{days, plural, =0 {} one { · oldest {daysText} day} other { · oldest {daysText} days}}",
+  "tabsLabel": "Inbox view",
+  "tabs": {
+    "untriaged": "Triage",
+    "snoozed": "Snoozed",
+    "archived": "Archived"
+  },
+  "list": {
+    "toTriage": "To triage",
+    "snoozed": "Snoozed",
+    "archived": "Archived",
+    "today": "Today",
+    "earlier": "Earlier",
+    "allSources": "All sources",
+    "sourceFilter": "Filter by source",
+    "select": "Select",
+    "doneSelecting": "Done",
+    "selectItem": "Select “{text}”",
+    "openItem": "Process “{text}”",
+    "backFromSnooze": "Back from snooze",
+    "until": "Until {when}",
+    "unsnooze": "Unsnooze",
+    "restore": "Restore",
+    "quickActions": "Quick actions",
+    "loading": "Loading the inbox…",
+    "error": "Couldn’t load the inbox.",
+    "retry": "Retry",
+    "emptySnoozed": "Nothing snoozed. Snoozed items return to the top of the inbox at the chosen time.",
+    "emptyArchived": "Nothing archived yet.",
+    "emptyFiltered": "No items from this source."
+  },
+  "source": {
+    "quick-add": "Quick add",
+    "voice": "Voice",
+    "share": "Link",
+    "note": "Note",
+    "brain-dump": "Brain Dump"
+  },
+  "sourceDetail": {
+    "quick-add": "quick add",
+    "voice": "transcript · {seconds}",
+    "share": "from share sheet",
+    "note": "note",
+    "brain-dump": "from Brain Dump"
+  },
+  "suggestionChip": "{target, select, task {Task?} event {Event?} note {Note} journal {Journal?} reminder {Reminder?} other {Brain Dump?}}",
+  "acceptSuggestion": "Accept suggestion for “{text}”: {target}",
+  "target": {
+    "task": "Task",
+    "event": "Event",
+    "note": "Note",
+    "journal": "Journal",
+    "reminder": "Reminder",
+    "brain-dump": "Brain Dump"
+  },
+  "capture": {
+    "label": "Capture to inbox",
+    "placeholder": "Capture anything… it lands here",
+    "add": "Capture",
+    "voice": "Voice capture",
+    "added": "Captured to Inbox",
+    "failed": "Couldn’t capture that. Try again."
+  },
+  "process": {
+    "label": "Process card",
+    "kicker": "Processing · {index} of {total}",
+    "progress": "Processing progress",
+    "capturedAt": "{source} · {when}",
+    "audioNotKept": "audio not kept",
+    "looksLike": "{target, select, task {Looks like a task} event {Looks like an event} note {Looks like a note} journal {Looks like a journal entry} reminder {Looks like a reminder} other {Looks like a Brain Dump idea}}",
+    "noSuggestion": "No suggestion — pick where it goes.",
+    "edit": "Edit",
+    "destinations": "Send to",
+    "snooze": "Snooze",
+    "archive": "Archive",
+    "drop": "Drop",
+    "skip": "Skip to the next item",
+    "hint": "↵ accepts suggestion · → skip"
+  },
+  "snooze": {
+    "title": "Snooze until",
+    "evening": "This evening",
+    "tomorrow": "Tomorrow morning",
+    "nextWorkingDay": "Next working day",
+    "nextWeek": "Next week",
+    "pick": "Pick date…",
+    "pickTitle": "Snooze until",
+    "confirm": "Snooze"
+  },
+  "transcript": {
+    "failed": "Voice item failed to transcribe",
+    "recording": "Recording {time} · {seconds}",
+    "retry": "Retry",
+    "kept": "Audio is kept only until a transcript succeeds or the user drops it.",
+    "rowMeta": "Transcript failed"
+  },
+  "bulk": {
+    "toolbar": "Bulk actions",
+    "selected": "{count} selected",
+    "toTasks": "To tasks",
+    "snooze": "Snooze",
+    "archive": "Archive",
+    "clear": "Clear selection"
+  },
+  "toast": {
+    "converted": "Converted to task",
+    "convertedMany": "{count, plural, one {{countText} item converted to a task} other {{countText} items converted to tasks}}",
+    "addedTo": "Added to {day}",
+    "addedToDuration": "Added to {day} · {duration}",
+    "sentTo": "Sent to {target}",
+    "laterStep": "{target} arrives in a later step — the item is kept for it.",
+    "addedToPage": "Added to today’s Brain Dump page.",
+    "addedToJournal": "Added to today’s Journal entry.",
+    "snoozed": "{count, plural, one {Snoozed until {when}} other {{countText} items snoozed until {when}}}",
+    "archived": "{count, plural, one {Archived} other {{countText} items archived}}",
+    "dropped": "Dropped",
+    "restored": "Back in the inbox",
+    "undo": "Undo",
+    "undoAlt": "Find the item in its tab and restore it",
+    "failed": "Something went wrong. Try again."
+  },
+  "zero": {
+    "title": "Inbox zero",
+    "body": "Everything captured has a home. New captures from Quick Add, voice and share sheet land here.",
+    "openBrainDump": "Open Brain Dump"
+  },
+  "finished": {
+    "title": "{count, plural, one {Processed {countText} item} other {Processed {countText} items}}",
+    "tasks": "{count, plural, one {{countText} task} other {{countText} tasks}}",
+    "events": "{count, plural, one {{countText} event} other {{countText} events}}",
+    "archived": "{countText} archived",
+    "other": "{countText} elsewhere",
+    "light": "Nice and light.",
+    "backToMyDay": "Back to My Day",
+    "reviewTasks": "Review tasks"
+  }
+}

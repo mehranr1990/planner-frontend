@@ -65,6 +65,22 @@ export const PERSONAL_ROUTES = [
   "/personal/settings",
 ] as const;
 
+/**
+ * The My Day demo harness (dev only, not in any navigation): one URL per spec-tab state, on isolated data.
+ * See src/features/styleguide/my-day/demo-params.ts.
+ */
+export const MY_DAY_DEMO_ROUTES = [
+  "/styleguide/my-day",
+  "/styleguide/my-day?state=empty",
+  "/styleguide/my-day?state=partial",
+  "/styleguide/my-day?state=overloaded",
+  "/styleguide/my-day?state=no-current",
+  "/styleguide/my-day?state=after-hours",
+] as const;
+
+/** Reschedule already open on a block of the overloaded day (a non-modal popover on desktop, a sheet below lg). */
+export const MY_DAY_RESCHEDULE_ROUTE = "/styleguide/my-day?state=overloaded&reschedule=blk-t-od-client-prep";
+
 /** One URL per global sheet (P18), on a Personal route. */
 export const SHEET_ROUTES = ["quick-add", "expense", "habit", "goal", "mood", "reschedule", "note", "voice"].map(
   (id) => `/personal/tasks?sheet=${id}`,

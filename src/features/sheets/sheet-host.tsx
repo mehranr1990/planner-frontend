@@ -5,14 +5,28 @@ import { useTranslations } from "next-intl";
 import { useCallback, useRef, type ReactNode } from "react";
 import { FloatingPanel, FloatingPanelContent } from "@/components/ui/floating-panel";
 import { Sheet, SheetContent, type SheetContentProps } from "@/components/ui/sheet";
-import { sheetSteps } from "@/features/personal/pages";
 import { moduleForSheet } from "@/features/planner-settings/modules";
 import { ModuleHiddenState } from "@/features/planner-settings/module-hidden-state";
 import { isModuleVisible } from "@/features/planner-settings/planner-settings";
 import { usePlannerSettings } from "@/features/planner-settings/use-planner-settings";
-import { usePreferences } from "@/features/preferences/use-preferences";
-import { convertDigits } from "@/lib/locale/digits";
-import { consumeOpenedSheet, isSheetId, SHEET_PARAM, sheetHref, type SheetId } from "./sheet-params";
+import { EXPENSE_SHEET_TX_PARAM, ExpenseSheet } from "@/features/finance/expense-sheet";
+import { GOAL_SHEET_PARAM, GOAL_SHEET_TITLE_PARAM, GoalSheet } from "@/features/goals/goal-sheet";
+import { HABIT_SHEET_PARAM, HABIT_SHEET_TITLE_PARAM, HabitSheet } from "@/features/habits/habit-sheet";
+import { MoodCheckIn } from "@/features/journal/mood-check-in";
+import { QuickAdd } from "@/features/tasks/create/quick-add";
+import { RescheduleSheet } from "@/features/reschedule/reschedule-sheet";
+import { QuickNote } from "./quick-note";
+import {
+  consumeOpenedSheet,
+  isSheetId,
+  QUICK_ADD_TEXT_PARAM,
+  SHEET_PARAM,
+  sheetHref,
+  sheetScopedParams,
+  type SheetId,
+} from "./sheet-params";
+import { usePageHydrated } from "./use-page-hydrated";
+import { VoiceCapture } from "./voice-capture";
 
 /*
  * The global sheet host (P00PersonalIA Routes · P18): `?sheet=<id>` on any
@@ -23,11 +37,12 @@ import { consumeOpenedSheet, isSheetId, SHEET_PARAM, sheetHref, type SheetId } f
  * FloatingPanel switch themselves).
  *
  * Mood and Reschedule are popovers in P18, anchored to what opened them. A
- * URL has no anchor, so here they open as a compact centred sheet; the
- * screens that own them (My Day, Journal) anchor real popovers later.
+ * URL has no anchor, so here they open as a compact centred sheet (Journal
+ * owns mood inline in its composer).
  *
- * Bodies are placeholders: the flows arrive with their first screen
- * (pages.ts · sheetSteps). Sheets of hidden modules show "Module hidden".
+ * Every body is real: Quick Add (P18 · H), Add expense (A), Habit (B), Goal (C),
+ * Mood check-in (D), Reschedule (E), Quick note (F) and Voice (G). Sheets of
+ * hidden modules show "Module hidden".
  * Reads useSearchParams(), so mount it inside <Suspense>.
  */
 
@@ -49,24 +64,55 @@ const containers: Record<SheetId, Container> = {
 export function SheetHost() {
   const params = useSearchParams();
   const value = params.get(SHEET_PARAM);
+  // Arriving with the URL, open only once the page under it has hydrated (see usePageHydrated).
+  const pageHydrated = usePageHydrated();
   // Keyed by id: switching sheets remounts the container cleanly.
-  return isSheetId(value) ? <OpenSheet key={value} id={value} /> : null;
+  return pageHydrated && isSheetId(value) ? (
+    <OpenSheet
+      key={value}
+      id={value}
+      initialText={params.get(QUICK_ADD_TEXT_PARAM) ?? undefined}
+      goalId={params.get(GOAL_SHEET_PARAM)}
+      goalTitle={params.get(GOAL_SHEET_TITLE_PARAM) ?? undefined}
+      habitId={params.get(HABIT_SHEET_PARAM)}
+      habitTitle={params.get(HABIT_SHEET_TITLE_PARAM) ?? undefined}
+      transactionId={params.get(EXPENSE_SHEET_TX_PARAM)}
+    />
+  ) : null;
 }
 
-function OpenSheet({ id }: { id: SheetId }) {
+function OpenSheet({
+  id,
+  initialText,
+  goalId,
+  goalTitle,
+  habitId,
+  habitTitle,
+  transactionId,
+}: {
+  id: SheetId;
+  initialText?: string;
+  goalId?: string | null;
+  goalTitle?: string;
+  habitId?: string | null;
+  habitTitle?: string;
+  transactionId?: string | null;
+}) {
   const t = useTranslations("Personal.sheets");
+  const tGoals = useTranslations("Goals.sheet");
+  const tHabits = useTranslations("Habits.sheet");
+  const tFinance = useTranslations("Finance.sheet");
   const router = useRouter();
   const pathname = usePathname();
   const settings = usePlannerSettings();
-  const { digits } = usePreferences();
   // The opener (top-bar +, FAB, palette) still has focus when the sheet mounts.
   const opener = useRef<Element | null>(typeof document === "undefined" ? null : document.activeElement);
 
   const close = useCallback(() => {
     // Opened here: Back consumes the entry. Arrived with the URL: drop the parameter.
     if (consumeOpenedSheet()) router.back();
-    else router.replace(sheetHref(pathname, window.location.search, null), { scroll: false });
-  }, [router, pathname]);
+    else router.replace(sheetHref(pathname, window.location.search, null, sheetScopedParams[id]), { scroll: false });
+  }, [router, pathname, id]);
 
   const onCloseAutoFocus = useCallback((event: Event) => {
     event.preventDefault();
@@ -79,13 +125,26 @@ function OpenSheet({ id }: { id: SheetId }) {
   const hidden = sheetModule !== null && !isModuleVisible(settings, sheetModule);
   const body: ReactNode = hidden ? (
     <ModuleHiddenState module={sheetModule} titleAs="h3" />
+  ) : id === "quick-add" ? (
+    <QuickAdd onClose={close} initialText={initialText} />
+  ) : id === "expense" ? (
+    <ExpenseSheet onClose={close} initialText={initialText} transactionId={transactionId} />
+  ) : id === "habit" ? (
+    <HabitSheet habitId={habitId} initialTitle={habitTitle} onClose={close} />
+  ) : id === "goal" ? (
+    <GoalSheet goalId={goalId} initialTitle={goalTitle} onClose={close} />
+  ) : id === "reschedule" ? (
+    <RescheduleSheet onClose={close} />
+  ) : id === "note" ? (
+    <QuickNote onClose={close} />
+  ) : id === "mood" ? (
+    <MoodCheckIn onClose={close} />
   ) : (
-    <p data-sheet-placeholder={id} className="type-body text-fg-secondary">
-      {t(`${id}.note`, { step: convertDigits(sheetSteps[id], digits) })}
-    </p>
+    <VoiceCapture onClose={close} />
   );
 
   const container = containers[id];
+  const title = id === "expense" && transactionId ? tFinance("titleEdit") : id === "goal" && goalId ? tGoals("titleEdit") : id === "habit" && habitId ? tHabits("titleEdit") : t(`${id}.title`);
   const onOpenChange = (open: boolean) => {
     if (!open) close();
   };
@@ -105,7 +164,7 @@ function OpenSheet({ id }: { id: SheetId }) {
       <SheetContent
         side={container.side}
         size={container.size}
-        title={t(`${id}.title`)}
+        title={title}
         data-scope="personal"
         data-sheet={id}
         onCloseAutoFocus={onCloseAutoFocus}

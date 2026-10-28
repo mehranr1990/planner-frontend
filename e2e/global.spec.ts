@@ -5,6 +5,8 @@ import {
   fontLoaded,
   horizontalOverflow,
   MODES,
+  MY_DAY_DEMO_ROUTES,
+  MY_DAY_RESCHEDULE_ROUTE,
   open,
   openSheetRoute,
   PERSONAL_ROUTES,
@@ -33,7 +35,13 @@ test.describe.configure({ timeout: 60_000 });
 for (const mode of Object.keys(ALL_MODES) as AnyModeName[]) {
   for (const width of [390, 1024, 1440] as const) {
     test.describe(`personal · ${mode} · ${width}px`, () => {
-      for (const route of [...PERSONAL_ROUTES, ...(width === 1440 ? [] : SHEET_ROUTES)]) {
+      for (const route of [
+        ...PERSONAL_ROUTES,
+        ...MY_DAY_DEMO_ROUTES,
+        // Below lg Reschedule is a modal sheet: it aria-hides the page heading that open() waits for.
+        ...(width === 390 ? [] : [MY_DAY_RESCHEDULE_ROUTE]),
+        ...(width === 1440 ? [] : SHEET_ROUTES),
+      ]) {
         test(route, async ({ page }) => {
           const errors = collectErrors(page);
           await page.setViewportSize({ width, height: 900 });

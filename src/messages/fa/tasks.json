@@ -1,0 +1,491 @@
+{
+  "page": {
+    "title": "کارها",
+    "progress": "{done} از {total} انجام شد · {left} مانده",
+    "progressShort": "{done} از {total} انجام شد",
+    "layout": "چیدمان",
+    "list": "فهرست",
+    "board": "تخته",
+    "newTask": "کار تازه"
+  },
+  "toolbar": {
+    "views": "نماها",
+    "tabs": {
+      "today": "امروز",
+      "upcoming": "پیش‌رو",
+      "all": "همه",
+      "completed": "انجام‌شده"
+    },
+    "mobileDone": "انجام‌شده",
+    "search": "جستجوی کارها",
+    "filters": "فیلترها",
+    "filtersActive": "فیلترها، {count} فعال",
+    "group": "گروه‌بندی: {value}",
+    "sort": "ترتیب: {value}",
+    "groupLabel": "گروه‌بندی بر اساس",
+    "sortLabel": "ترتیب بر اساس",
+    "filteredBy": "فیلتر شده با",
+    "clearAll": "پاک‌کردن همه",
+    "bulkHint": "انتخاب گروهی: ⇧ / ⌘ را نگه دارید و کلیک کنید، یا X را بزنید",
+    "openSearch": "جستجوی کارها",
+    "closeSearch": "بستن جستجو",
+    "showBoard": "نمای تخته"
+  },
+  "filters": {
+    "kind": {
+      "area": "حوزه",
+      "context": "زمینه",
+      "priority": "اولویت",
+      "energy": "انرژی",
+      "labels": "برچسب‌ها",
+      "hasDate": "تاریخ",
+      "recurring": "تکرار"
+    },
+    "chip": "{kind}: {values}",
+    "range": "{from} تا {to}",
+    "flag": {
+      "hasDateYes": "دارای تاریخ",
+      "hasDateNo": "بدون تاریخ",
+      "recurring": "تکرارشونده"
+    },
+    "title": "فیلترها",
+    "clear": "پاک‌کردن فیلترها",
+    "show": "نمایش {n} کار",
+    "noLabels": "هنوز برچسبی نیست",
+    "sort": "ترتیب",
+    "group": "گروه‌بندی"
+  },
+  "group": {
+    "titles": {
+      "overdue": "عقب‌افتاده",
+      "morning": "صبح",
+      "afternoon": "بعدازظهر",
+      "evening": "عصر",
+      "unscheduled": "بدون زمان",
+      "noDate": "بدون تاریخ",
+      "noArea": "بدون حوزه",
+      "noPriority": "بدون اولویت",
+      "all": "همه‌ی کارها",
+      "weekend": "تعطیل"
+    },
+    "options": {
+      "time": "زمان روز",
+      "date": "تاریخ",
+      "area": "حوزه",
+      "priority": "اولویت",
+      "none": "بدون گروه"
+    }
+  },
+  "sort": {
+    "options": {
+      "smart": "هوشمند",
+      "manual": "دستی",
+      "priority": "اولویت",
+      "duration": "مدت",
+      "created": "تاریخ ساخت"
+    }
+  },
+  "list": {
+    "label": "فهرست کارها",
+    "columns": {
+      "task": "کار",
+      "priority": "اولویت",
+      "energy": "انرژی",
+      "duration": "مدت",
+      "when": "زمان"
+    },
+    "doneCount": "· {count} انجام‌شده",
+    "showDone": "نمایش {count} انجام‌شده",
+    "hideDone": "پنهان‌کردن انجام‌شده‌ها",
+    "collapse": "بستن {name}",
+    "expand": "بازکردن {name}",
+    "rescheduleAll": "زمان‌بندی دوباره‌ی همه",
+    "dragHint": "· به یک گروه زمانی بکشید",
+    "completedNote": "نمای انجام‌شده: گروه‌بندی بر اساس روز؛ با برداشتن تیک، کار برمی‌گردد. ۹۰ روز نگه داشته می‌شود، بعد بایگانی می‌شود.",
+    "capacity": "{used} از {capacity}",
+    "addLabel": "افزودن کار",
+    "addPlaceholder": {
+      "today": "افزودن کار به امروز…",
+      "upcoming": "افزودن کار برای فردا…",
+      "all": "افزودن کار…"
+    },
+    "addHint": "مثلاً «تماس با مامان فردا ۱۸:۰۰ !بالا ~۱۵د»"
+  },
+  "row": {
+    "subtasks": "{done}/{total} زیرکار",
+    "goal": "هدف مرتبط: {title}",
+    "due": "مهلت {date}",
+    "overdue": "{n} روز عقب‌افتاده",
+    "repeats": "تکرارشونده",
+    "open": "بازکردن {title}",
+    "drag": "جابه‌جایی {title}",
+    "complete": "انجام {title}",
+    "reopen": "برگرداندن {title} به انجام‌نشده",
+    "select": "انتخاب {title}",
+    "moreLabels": "+{count}"
+  },
+  "edit": {
+    "title": "عنوان کار",
+    "enter": "Enter",
+    "esc": "Esc",
+    "hint": "ویرایش درجا · با Tab بین بخش‌ها بروید",
+    "date": "تاریخ",
+    "noDate": "بدون تاریخ",
+    "duration": "مدت",
+    "energy": "انرژی",
+    "priority": "اولویت",
+    "repeatOn": "هفتگی",
+    "repeatOff": "بدون تکرار",
+    "repeatLabel": "تکرار",
+    "area": "حوزه · {name}",
+    "noArea": "بدون حوزه",
+    "addLabel": "+ برچسب",
+    "newLabel": "برچسب تازه"
+  },
+  "bulk": {
+    "toolbar": "کارهای گروهی",
+    "selected": "{count} انتخاب",
+    "schedule": "زمان‌بندی",
+    "move": "انتقال",
+    "priority": "اولویت",
+    "complete": "انجام",
+    "delete": "حذف",
+    "clear": "لغو انتخاب",
+    "more": "کارهای بیشتر",
+    "reschedule": "زمان‌بندی دوباره",
+    "when": {
+      "today": "امروز",
+      "tomorrow": "فردا",
+      "nextWorkingDay": "روز کاری بعد",
+      "nextWeek": "هفته‌ی بعد",
+      "noDate": "بدون تاریخ"
+    }
+  },
+  "states": {
+    "allDoneTitle": "امروز همه‌چیز انجام شد",
+    "allDoneBody": "{n} کار انجام شد · {duration} تمرکز. نگاهی به فردا بیندازیم؟",
+    "planTomorrow": "برنامه‌ریزی فردا",
+    "seeCompleted": "دیدن انجام‌شده‌ها",
+    "emptyTitle": "هنوز کاری نیست",
+    "emptyBody": "اول همه‌چیز را بنویسید، بعد مرتب کنید. مثلاً «پرداخت اجاره ۱ آبان !بالا».",
+    "addFirst": "افزودن اولین کار",
+    "import": "درون‌ریزی",
+    "soon": "به‌زودی",
+    "noMatchTitle": "کاری پیدا نشد",
+    "noMatchBody": "در {tab} با {filters} هیچ کاری نیست.",
+    "noMatchUpcoming": "{n} مورد در پیش‌رو هست.",
+    "clearFilters": "پاک‌کردن فیلترها",
+    "showUpcoming": "نمایش پیش‌رو",
+    "todayClearTitle": "برای امروز برنامه‌ای نیست",
+    "todayClearBody": "از پیش‌رو کاری بردارید یا کار تازه‌ای بنویسید.",
+    "viewEmptyTitle": "اینجا خالی است",
+    "viewEmptyBody": "کارها همین‌که برنامه‌ریزی شوند اینجا می‌آیند.",
+    "errorTitle": "کارها بارگیری نشدند",
+    "errorBody": "اتصال را بررسی کنید و دوباره تلاش کنید.",
+    "retry": "تلاش دوباره",
+    "loading": "در حال بارگیری کارها"
+  },
+  "mobile": {
+    "swipeDone": "انجام",
+    "swipeReschedule": "زمان‌بندی دوباره"
+  },
+  "a11y": {
+    "groupCount": "{n} کار",
+    "selectionMode": "حالت انتخاب: روی کارها بزنید تا انتخاب شوند"
+  },
+  "undo": {
+    "action": "بازگردانی",
+    "completed": "«{title}» انجام شد",
+    "reopened": "«{title}» دوباره باز شد",
+    "deleted": "{n} کار حذف شد",
+    "updated": "{n} کار به‌روز شد",
+    "completedMany": "{n} کار انجام شد",
+    "created": "کار افزوده شد",
+    "failed": "تغییر ذخیره نشد"
+  },
+  "keyboard": {
+    "new": "N",
+    "search": "/"
+  },
+  "labels": {
+    "priority": {
+      "urgent": "فوری",
+      "high": "بالا",
+      "medium": "متوسط",
+      "low": "کم",
+      "none": "بدون اولویت"
+    },
+    "energy": {
+      "low": "کم",
+      "medium": "متوسط",
+      "high": "زیاد"
+    },
+    "scope": {
+      "personal": "شخصی",
+      "project": "پروژه‌ها",
+      "team": "تیم‌ها",
+      "company": "شرکت‌ها"
+    },
+    "relative": {
+      "yesterday": "دیروز",
+      "today": "امروز",
+      "tomorrow": "فردا"
+    }
+  },
+  "board": {
+    "label": "تخته‌ی کارها",
+    "hint": "برای جابه‌جایی زمان، کارت را بین ستون‌ها بکشید",
+    "groupBy": "دسته‌بندی",
+    "groups": {
+      "horizon": "افق زمانی",
+      "time": "بخش روز",
+      "status": "وضعیت"
+    },
+    "showDone": "نمایش انجام‌شده‌ها",
+    "hideDone": "پنهان‌کردن انجام‌شده‌ها",
+    "columns": {
+      "today": "امروز",
+      "tomorrow": "فردا",
+      "week": "این هفته",
+      "later": "بعداً",
+      "morning": "صبح",
+      "afternoon": "بعدازظهر",
+      "evening": "عصر",
+      "unscheduled": "بدون زمان",
+      "todo": "برای انجام",
+      "planned": "برنامه‌ریزی‌شده",
+      "done": "انجام‌شده‌ی امروز"
+    },
+    "until": "تا {date}",
+    "noDate": "بدون تاریخ",
+    "free": "{used} از {capacity} وقت آزاد",
+    "overloaded": "{used} / {capacity} · بیش از ظرفیت · {over} را جابه‌جا کنید",
+    "capacityLabel": "{used} از {capacity} برنامه‌ریزی شده",
+    "overdue": "{n} کار عقب‌افتاده",
+    "reschedule": "زمان‌بندی دوباره",
+    "empty": "چیزی اینجا نیست",
+    "emptyWeek": "این هفته کاری نیست",
+    "emptyHint": "کارتی را اینجا بکشید یا یکی اضافه کنید",
+    "emptyWeekHint": "از «بعداً» بکشید یا یکی اضافه کنید",
+    "match": "{shown} از {total} مطابق",
+    "filtersOn": "فیلتر فعال است",
+    "add": "افزودن",
+    "addLabel": "افزودن کار به {column}",
+    "addPlaceholder": "نام کار، سپس Enter",
+    "doneRail": "انجام‌شده‌ی امروز · {n}",
+    "dropToComplete": "برای انجام‌شدن اینجا رها کنید",
+    "expandDone": "نمایش کارهای انجام‌شده‌ی امروز",
+    "collapseDone": "جمع کردن کارهای انجام‌شده",
+    "doneEmpty": "امروز هنوز کاری انجام نشده",
+    "closed": "این هفته روز کاری دیگری نمانده است.",
+    "pager": "ستون‌های تخته",
+    "page": "رفتن به {column}",
+    "drag": {
+      "instructions": "برای جابه‌جایی کارت، Space را بزنید، با کلیدهای جهت ستون را انتخاب کنید و با Space رها کنید یا با Escape لغو کنید.",
+      "start": "{title} برداشته شد.",
+      "over": "روی {column}.",
+      "drop": "{title} به {column} رفت.",
+      "cancel": "جابه‌جایی لغو شد. {title} سر جایش ماند."
+    },
+    "move": "جابه‌جایی {title}",
+    "cards": "{count, plural, other {{n} کار}}"
+  },
+  "detail": {
+    "close": "بستن",
+    "back": "بازگشت به کارها",
+    "complete": "انجام شد",
+    "reopen": "برگرداندن به انجام‌نشده",
+    "status": {
+      "open": "باز",
+      "inProgress": "در حال انجام",
+      "done": "انجام‌شده"
+    },
+    "startFocus": "شروع تمرکز",
+    "reschedule": "زمان‌بندی دوباره",
+    "move": "انتقال",
+    "more": "کارهای بیشتر",
+    "duplicate": "تکثیر",
+    "convertToEvent": "تبدیل به رویداد",
+    "delete": "حذف",
+    "duplicated": "یک نسخه از کار ساخته شد",
+    "properties": "ویژگی‌ها",
+    "schedule": "زمان",
+    "duration": "مدت",
+    "energy": "انرژی",
+    "priority": "اولویت",
+    "goal": "هدف مرتبط",
+    "areaLabels": "حوزه · برچسب‌ها",
+    "inMyDay": "در روز من",
+    "left": "{duration} مانده",
+    "none": "هیچ",
+    "noGoal": "بدون هدف مرتبط",
+    "repeat": "تکرار",
+    "description": "توضیحات",
+    "descriptionPlaceholder": "توضیحی بنویسید…",
+    "tabsLabel": "بخش‌های کار",
+    "tabs": {
+      "subtasks": "زیرکارها",
+      "notes": "یادداشت‌ها",
+      "activity": "فعالیت",
+      "links": "پیوندها"
+    },
+    "subtasks": {
+      "progress": "{done} از {total}",
+      "progressLabel": "زیرکارهای انجام‌شده",
+      "add": "افزودن زیرکار",
+      "addHint": "افزودن زیرکار · Enter بعدی را اضافه می‌کند",
+      "empty": "هنوز زیرکاری نیست. کار را به گام‌های کوچک بشکنید.",
+      "remove": "حذف «{title}»"
+    },
+    "notes": {
+      "add": "یادداشتی بنویسید…",
+      "save": "افزودن یادداشت",
+      "empty": "هنوز یادداشتی نیست."
+    },
+    "activity": {
+      "created": {
+        "inbox-voice": "ساخته‌شده از صندوق ورودی (یادداشت صوتی)",
+        "inbox": "ساخته‌شده از صندوق ورودی",
+        "quick-add": "ساخته‌شده با افزودن سریع",
+        "manual": "ساخته شد"
+      },
+      "scheduled": "از بدون‌زمان به {time} منتقل شد",
+      "subtaskDone": "زیرکار «{title}» انجام شد",
+      "priority": "اولویت روی {priority} گذاشته شد"
+    },
+    "links": {
+      "blockedBy": "منتظرِ",
+      "blocks": "مانعِ",
+      "done": "انجام‌شده",
+      "open": "انجام‌نشده",
+      "hint": "وابستگی‌های شخصی اختیاری‌اند و فقط وقتی وجود دارند نشان داده می‌شوند.",
+      "drop": "فایل را اینجا رها کنید یا پیوندی بچسبانید",
+      "size": "{size} کیلوبایت"
+    },
+    "completed": {
+      "title": "انجام شد · {time}",
+      "hint": "به‌زودی بسته می‌شود. واگرد در اعلان است."
+    },
+    "recurring": {
+      "title": "کار تکرارشونده انجام شد",
+      "body": "«{title}» هر هفته تکرار می‌شود.",
+      "next": "بعدی: {when}",
+      "hint": "فقط همین نوبت انجام‌شده علامت می‌خورد؛ نوبت بعدی خودکار ساخته می‌شود."
+    },
+    "blocked": {
+      "title": "مسدود",
+      "chip": "منتظر {count} کار",
+      "body": "«{title}» هنوز انجام نشده",
+      "completeAnyway": "به‌هرحال انجام شد",
+      "cancel": "فعلاً نه",
+      "hint": "کارهای شخصی هیچ‌وقت قفل نمی‌شوند؛ این فقط یک هشدار است."
+    },
+    "deleteConfirm": {
+      "title": "کار حذف شود؟",
+      "body": "{count, plural, =0 {«{title}». تا {seconds} ثانیه می‌توانید واگرد کنید.} other {«{title}» و {n} زیرکارش. تا {seconds} ثانیه می‌توانید واگرد کنید.}}"
+    },
+    "loading": "در حال بارگذاری کار",
+    "keyboard": "Esc بستن · Ctrl/⌘ Enter انجام · F تمرکز · D تاریخ"
+  },
+  "quickAdd": {
+    "inputLabel": "ثبت در یک خط",
+    "placeholder": "فردا ساعت ۱۸ به مامان زنگ بزنم ~۱۵د",
+    "understood": "برداشت ما",
+    "nothingYet": "تاریخ، ساعت، #حوزه، !اولویت و ~مدت هنگام نوشتن شناسایی می‌شوند",
+    "todayUnscheduled": "امروز · بدون زمان",
+    "typeLabel": "نوع",
+    "types": {
+      "task": "کار",
+      "event": "رویداد",
+      "note": "یادداشت",
+      "expense": "هزینه",
+      "inbox": "صندوق ورودی"
+    },
+    "hint": "Enter ذخیره · Ctrl+Enter جزئیات",
+    "details": "جزئیات",
+    "save": "ذخیره",
+    "titleRequired": "اول بنویسید کار چیست",
+    "later": {
+      "event": "ثبت رویداد در مرحله‌ی بعد همراه تقویم می‌آید.",
+      "inbox": "ثبت در صندوق ورودی در مرحله‌ی بعد می‌آید.",
+      "note": "در یادداشت سریع ادامه می‌دهید.",
+      "expense": "در افزودن هزینه ادامه می‌دهید (اول صفحه‌کلید مبلغ)."
+    },
+    "open": {
+      "event": "باز کردن تقویم",
+      "inbox": "باز کردن صندوق ورودی",
+      "note": "باز کردن یادداشت سریع",
+      "expense": "باز کردن افزودن هزینه"
+    },
+    "created": "کار اضافه شد · {when}",
+    "removed": "کار حذف شد",
+    "undoAlt": "کار را از فهرست کارها حذف کنید"
+  },
+  "create": {
+    "title": "کار جدید",
+    "steps": {
+      "label": "پیشرفت",
+      "capture": "ثبت",
+      "details": "جزئیات",
+      "schedule": "زمان‌بندی",
+      "done": "پایان",
+      "complete": "{step}، انجام شد"
+    },
+    "capture": {
+      "label": "تغییر چند فیلد با یک خط",
+      "placeholder": "فردا ساعت ۱۰ #مالی !بالا ~۳۰د",
+      "hint": "با Enter این خط روی فرم اعمال می‌شود"
+    },
+    "fields": {
+      "title": "عنوان",
+      "titleRequired": "برای کار عنوانی بنویسید",
+      "context": "زمینه",
+      "date": "تاریخ",
+      "pickDate": "انتخاب تاریخ",
+      "time": "ساعت",
+      "timeHint": "اول تاریخ را انتخاب کنید",
+      "estimate": "برآورد زمان",
+      "priority": "اولویت",
+      "energy": "انرژی لازم",
+      "area": "حوزه",
+      "noArea": "بدون حوزه",
+      "repeat": "تکرار هفتگی",
+      "labels": "برچسب‌ها",
+      "labelsHint": "برچسب‌ها را با ویرگول جدا کنید",
+      "notes": "یادداشت",
+      "notesPlaceholder": "هر چیزی که ارزش به خاطر سپردن دارد"
+    },
+    "more": {
+      "toggle": "گزینه‌های بیشتر",
+      "summary": "تکرار · حوزه · برچسب‌ها · یادداشت",
+      "pending": "زیرکارها، یادآورها، هدف مرتبط و وابستگی‌ها همراه بخش‌های خودشان می‌آیند."
+    },
+    "schedule": {
+      "title": "زمان‌بندی",
+      "day": "زمان‌های آزاد · {day}",
+      "bestFit": "بهترین جا · بین بلوک‌ها",
+      "alsoFree": "این هم آزاد است",
+      "keep": "بدون زمان بماند",
+      "keepHint": "در فهرست بدون زمان نمایش داده می‌شود",
+      "noDate": "برای دیدن زمان‌های آزاد تاریخی انتخاب کنید",
+      "noRoom": "در ساعات کاری جای خالی برای {duration} نیست"
+    },
+    "footer": {
+      "createAnother": "ساختن یکی دیگر",
+      "cancel": "انصراف",
+      "submit": "ساختن کار",
+      "shortcut": "Ctrl+Enter"
+    },
+    "done": {
+      "title": "به {when} اضافه شد",
+      "noDate": "بدون تاریخ اضافه شد",
+      "createAnother": "ساختن یکی دیگر",
+      "open": "باز کردن کار",
+      "backMyDay": "بازگشت به روز من",
+      "back": "بازگشت",
+      "returning": "در حال بازگشت به جایی که شروع کردید…"
+    },
+    "added": "کار اضافه شد",
+    "failed": "ساختن کار ممکن نشد"
+  }
+}

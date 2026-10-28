@@ -1,0 +1,162 @@
+{
+  "title": "مالی",
+  "kicker": "شخصی · {month}",
+  "add": "ثبت هزینه",
+  "error": "بخش مالی بارگیری نشد.",
+  "retry": "دوباره تلاش کن",
+  "currency": {
+    "label": "واحد پول",
+    "toman": "تومان",
+    "rial": "ریال"
+  },
+  "month": {
+    "label": "ماه",
+    "prev": "ماه قبل",
+    "next": "ماه بعد"
+  },
+  "tabs": {
+    "label": "بخش‌های مالی",
+    "overview": "نمای کلی",
+    "trends": "روند",
+    "trendsHint": "رود",
+    "breakdown": "تفکیک",
+    "breakdownHint": "جریان",
+    "transactions": "تراکنش‌ها"
+  },
+  "categories": {
+    "housing": "مسکن",
+    "food": "خوراک",
+    "transport": "رفت‌وآمد",
+    "lifestyle": "سبک زندگی",
+    "work": "کار",
+    "health": "سلامت",
+    "other": "سایر",
+    "income": "درآمد"
+  },
+  "balance": {
+    "eyebrow": "موجودی · همهٔ حساب‌ها",
+    "spent": "{spent} از بودجهٔ {budget} خرج شده",
+    "noBudget": "{spent} خرج شده · بودجه‌ای تعیین نشده",
+    "position": "روز {day} از {days} · انتظار {expected}",
+    "closed": "ماه بسته شد",
+    "under": "{amount} کمتر از روند مورد انتظار · خنثی، نه هشدار",
+    "over": "{amount} بیشتر از روند مورد انتظار",
+    "onPace": "درست مطابق روند مورد انتظار",
+    "barLabel": "بودجهٔ مصرف‌شده",
+    "barText": "{percent} مصرف شده، تا امروز {expected} انتظار می‌رفت"
+  },
+  "kpi": {
+    "label": "این ماه در یک نگاه",
+    "income": "درآمد",
+    "spent": "خرج",
+    "spentHint": "{percent} از بودجه",
+    "saved": "پس‌انداز",
+    "savedGoal": "هدف {amount}",
+    "goalReached": "هدف {amount} · رسید",
+    "left": "باقی‌مانده برای خرج",
+    "leftDays": "{days, plural, =0 {روز آخر} other {{daysText} روز}}",
+    "noBudget": "بدون بودجه"
+  },
+  "budgets": {
+    "title": "بودجه در برابر خرج واقعی",
+    "value": "{spent} / {budget}",
+    "noBudget": "{spent} · بدون بودجه",
+    "over": "بیش از بودجه",
+    "row": "{category}: {value}"
+  },
+  "bills": {
+    "title": "پرداخت‌های پیش رو",
+    "empty": "پرداختی در پیش نیست.",
+    "in": "{days, plural, =0 {امروز} =1 {فردا} other {{daysText} روز دیگر}}"
+  },
+  "recent": {
+    "title": "اخیر",
+    "all": "همهٔ تراکنش‌ها",
+    "empty": "هنوز تراکنشی در این ماه نیست."
+  },
+  "when": {
+    "today": "امروز {time}",
+    "day": "{weekday} {date}"
+  },
+  "trends": {
+    "question": "خرج‌ها در {month} چطور جریان داشت؟",
+    "questionRange": "خرج‌ها در سه ماه گذشته چطور جریان داشت؟",
+    "caption": "رود بودجه · به تفکیک دسته · {unit, select, weekly {هفتگی} other {روزانه}}",
+    "period": "بازه",
+    "month": "این ماه",
+    "quarter": "۳ ماه",
+    "forecast": "پیش‌بینی",
+    "top": "بیشترین: {category} · {amount}",
+    "legend": "جدا کردن یک دسته",
+    "summary": "رود بودجه: {total} خرج شده، بزرگ‌ترین جریان {category}.",
+    "observation": "اوج خرج در {day} بود ({category})؛ {pace}",
+    "paceNone": "همهٔ دسته‌ها در محدودهٔ بودجه‌اند.",
+    "paceOne": "فقط {category} از بودجه‌اش جلو زده است.",
+    "paceMany": "{count} دسته از بودجه‌شان جلو زده‌اند."
+  },
+  "breakdown": {
+    "question": "پول به کجا می‌رود؟",
+    "caption": "جریان بودجه · درآمد ← دسته‌ها ← باقی‌مانده",
+    "compare": "ماه",
+    "remaining": "باقی‌مانده",
+    "remainingShare": "{percent} از درآمد",
+    "summary": "جریان بودجه: {spent} از درآمد {income} خرج شده؛ {remaining} باقی مانده."
+  },
+  "sparse": {
+    "title": "نمودارها پس از چند ثبت دیگر نمایش داده می‌شوند",
+    "body": "این ماه کمتر از ۵ تراکنش دارد — این هم ارقام."
+  },
+  "transactions": {
+    "search": "جست‌وجوی تراکنش‌ها",
+    "category": "دسته",
+    "allCategories": "همهٔ دسته‌ها",
+    "kind": "نوع",
+    "kindAll": "همه",
+    "kindExpense": "هزینه‌ها",
+    "kindIncome": "درآمد",
+    "today": "امروز · {total}",
+    "earlier": "پیش‌تر",
+    "none": "تراکنشی پیدا نشد.",
+    "edit": "ویرایش {title}",
+    "delete": "حذف {title}",
+    "deleted": "«{title}» حذف شد",
+    "undo": "برگردان",
+    "undoAlt": "دوباره از «ثبت هزینه» اضافه‌اش کن.",
+    "failed": "ذخیره نشد. دوباره تلاش کن."
+  },
+  "empty": {
+    "title": "هنوز تراکنشی نیست",
+    "body": "اولین هزینه‌ات را ثبت کن یا بودجهٔ ماهانه تعیین کن. مبالغ به تومان است (هر وقت خواستی ریال کن).",
+    "add": "ثبت هزینه",
+    "budget": "تعیین بودجه",
+    "budgetLabel": "بودجهٔ ماهانه ({unit})",
+    "save": "ذخیرهٔ بودجه",
+    "saved": "بودجه تعیین شد"
+  },
+  "locked": {
+    "title": "بخش مالی قفل است",
+    "body": "رمز / بیومتریک (تنظیمات › حریم خصوصی). تا باز نکنی، مبالغ پنهان می‌ماند.",
+    "unlock": "باز کردن"
+  },
+  "sheet": {
+    "titleEdit": "ویرایش هزینه",
+    "amount": "مبلغ",
+    "keypad": "صفحه‌کلید مبلغ",
+    "backspace": "پاک کردن آخرین رقم",
+    "thousand": "افزودن سه صفر",
+    "other": "= {amount}",
+    "category": "دسته",
+    "date": "تاریخ",
+    "note": "یادداشت",
+    "addNote": "+ یادداشت",
+    "save": "ثبت هزینه",
+    "saveEdit": "ذخیرهٔ تغییرات",
+    "saved": "هزینه ثبت شد · {amount}",
+    "updated": "هزینه به‌روز شد",
+    "needAmount": "مبلغ را وارد کن.",
+    "needCategory": "یک دسته انتخاب کن.",
+    "failed": "هزینه ذخیره نشد. دوباره تلاش کن.",
+    "notFound": "این تراکنش دیگر وجود ندارد.",
+    "notePlaceholder": "بابت چه بود؟"
+  }
+}

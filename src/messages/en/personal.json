@@ -102,7 +102,6 @@
   },
   "seams": {
     "tasks": "Today’s tasks",
-    "blocks": "{count} blocks on the timeline",
     "inbox": "{count} items to triage",
     "loading": "Loading…",
     "error": "The sample data could not be loaded."
@@ -113,14 +112,6 @@
       "open": "Open",
       "done": "Done"
     }
-  },
-  "focus": {
-    "leave": "Leave focus",
-    "cycle": "Cycle {current} of {total}",
-    "pause": "Pause",
-    "task": "Task",
-    "noTask": "No task chosen",
-    "landmark": "Focus"
   },
   "settings": {
     "modules": "Modules",
@@ -146,8 +137,7 @@
       "note": "One line, parsed live. The parser arrives in step {step}."
     },
     "expense": {
-      "title": "Add expense",
-      "note": "Amount keypad first. Arrives in step {step}."
+      "title": "Add expense"
     },
     "habit": {
       "title": "New habit",
@@ -158,20 +148,73 @@
       "note": "Title, target, deadline, optional milestones. Arrives in step {step}."
     },
     "mood": {
-      "title": "Mood check-in",
-      "note": "Five moods, three energy levels. Arrives in step {step}."
+      "title": "Mood check-in"
     },
     "reschedule": {
       "title": "Reschedule",
-      "note": "Later today, tomorrow, next working day… Arrives in step {step}."
+      "target": "Moving “<bdi>{title}</bdi>”",
+      "change": "Change task",
+      "pickLabel": "Choose a task to reschedule",
+      "pickHint": "Pick an open task.",
+      "noTasks": "No open tasks to reschedule.",
+      "loading": "Loading tasks",
+      "failed": "Couldn’t load your tasks. Close this and try again.",
+      "missing": "That task is gone — it may have been done or deleted elsewhere."
     },
     "note": {
       "title": "Quick note",
-      "note": "Save as a note, or send to Inbox or Brain Dump. Arrives in step {step}."
+      "label": "Note",
+      "placeholder": "Write it down before it slips…",
+      "destination": "Where it goes",
+      "to": {
+        "note": "Save as note",
+        "inbox": "→ Inbox",
+        "brain-dump": "→ Brain Dump"
+      },
+      "save": "Save",
+      "saving": "Saving…",
+      "hint": "⌘ Enter saves",
+      "empty": "Write something first.",
+      "saved": {
+        "note": "Saved as a note",
+        "inbox": "Sent to Inbox",
+        "brain-dump": "Added to today’s Brain Dump"
+      },
+      "failed": "Couldn’t save. Your text is still here."
     },
     "voice": {
       "title": "Voice capture",
-      "note": "Record, transcribe, convert. Arrives in step {step}."
+      "recording": "Recording",
+      "paused": "Paused",
+      "processing": "Transcribing",
+      "done": "Transcript ready",
+      "elapsed": "Elapsed time",
+      "live": "Live words appear here as you talk…",
+      "pausedHint": "Resume to continue the same note.",
+      "processingHint": "Usually a few seconds.",
+      "edit": "Transcript",
+      "editHint": "Edit the text before converting.",
+      "pause": "Pause",
+      "resume": "Resume",
+      "finish": "Done",
+      "cancel": "Cancel",
+      "createTask": "Create task",
+      "toInbox": "Send to Inbox",
+      "sent": "Sent to Inbox",
+      "sendFailed": "Couldn’t send. Your text is still here.",
+      "retry": "Retry",
+      "drop": "Drop",
+      "typeInstead": "Type a note instead",
+      "start": "Start recording",
+      "privacy": "Only the transcript is kept — no audio is stored.",
+      "error": {
+        "unsupported": "Voice capture isn’t supported in this browser.",
+        "denied": "Microphone access is blocked. Allow it in your browser settings and try again.",
+        "no-speech": "Didn’t catch anything. The audio may have been too quiet.",
+        "network": "No connection — transcription needs one.",
+        "failed": "Couldn’t transcribe."
+      },
+      "errorTitle": "Couldn’t transcribe"
     }
   }
 }

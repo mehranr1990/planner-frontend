@@ -1,0 +1,125 @@
+{
+  "kicker": "Daily shutdown · optional · {time}",
+  "title": "Finish your day",
+  "later": "Later",
+  "laterHint": "Not now: you can come back from My Day or Overview",
+  "steps": {
+    "label": "Shutdown steps",
+    "route": "1 · Route",
+    "tomorrow": "2 · Tomorrow",
+    "reflect": "3 · Reflect"
+  },
+  "loading": "Loading your day…",
+  "error": {
+    "title": "Couldn’t load today’s tasks",
+    "description": "Nothing was changed. Try again.",
+    "retry": "Retry"
+  },
+  "outcome": {
+    "title": "What happened to today’s plan",
+    "planned": "{count} planned",
+    "completed": "Completed",
+    "tomorrow": "Tomorrow",
+    "overdue": "Overdue",
+    "inbox": "Back to inbox",
+    "planTomorrow": "Plan tomorrow",
+    "reschedule": "Reschedule",
+    "extra": "{later} later · {dropped} dropped",
+    "share": "{percent} of the plan"
+  },
+  "route": {
+    "title": "Unfinished · {count}",
+    "hint": "decide where each one goes",
+    "sendAll": "Send all to",
+    "select": "Select “{title}”",
+    "destinationFor": "Destination for “{title}”",
+    "leave": "Leave as is",
+    "overdueMeta": "Overdue",
+    "repeat": "moved {count} times",
+    "repeatTitle": "Repeat offender",
+    "repeatBody": "Moved {count} times. Drop it or give it this week?",
+    "selected": "{count} selected",
+    "more": "More",
+    "clearSelection": "Clear selection",
+    "bulkLabel": "Route selected tasks",
+    "pickTitle": "Pick a date",
+    "pickConfirm": "Route here"
+  },
+  "destination": {
+    "tomorrow": "Tomorrow",
+    "next-working-day": "Next working day",
+    "pick": "Pick date",
+    "this-week": "This week",
+    "inbox": "Inbox",
+    "keep": "Keep unscheduled",
+    "drop": "Drop"
+  },
+  "nothing": {
+    "title": "Nothing left to route",
+    "body": "All {count} planned tasks done. Arrange tomorrow or just finish.",
+    "arrange": "Arrange tomorrow"
+  },
+  "tomorrow": {
+    "kicker": "Arrange tomorrow",
+    "open": "Open tomorrow in My Day",
+    "planned": "{duration} planned",
+    "of": "of {duration} work hours · {range}",
+    "capacity": "Tomorrow’s capacity",
+    "weekend": "Weekend · next working day is {day}",
+    "dropHere": "Drop here · {duration} free",
+    "placeHere": "Place “{title}” at {time}",
+    "notPlaced": "Not placed yet · {count}",
+    "pickToPlace": "Pick a task, then a free slot",
+    "unplace": "Remove “{title}” from {time}",
+    "autoArrange": "Auto-arrange",
+    "empty": "Nothing planned for tomorrow yet",
+    "full": {
+      "title": "Tomorrow is full",
+      "meta": "{planned} planned · {over} over your {total}",
+      "suggest": "Suggest: move {titles} to This week",
+      "apply": "Apply suggestion",
+      "keep": "Keep"
+    }
+  },
+  "reflect": {
+    "title": "Reflect",
+    "savedTo": "saved to Journal · {date}",
+    "mood": "Mood",
+    "energy": "Energy",
+    "moodLevel": {
+      "awful": "Rough",
+      "low": "Low",
+      "okay": "Okay",
+      "good": "Good",
+      "great": "Great"
+    },
+    "energyLevel": {
+      "low": "Low",
+      "medium": "Medium",
+      "high": "High"
+    },
+    "wentWell": "What went well?",
+    "wentWellPlaceholder": "One thing that went well",
+    "note": "Short note (optional)"
+  },
+  "finish": {
+    "hint": "Undo is available for 10s after each move · nothing is final until Finish day",
+    "action": "Finish day",
+    "saving": "Closing your day…",
+    "failed": "Couldn’t close the day. Nothing was lost — try again."
+  },
+  "toast": {
+    "moved": "{count, plural, one {{countText} task} other {{countText} tasks}} moved to {destination}",
+    "undo": "Undo",
+    "undoAlt": "Change the destination chip on the row instead"
+  },
+  "finished": {
+    "title": "Day closed",
+    "summary": "{done} done · {tomorrow} to tomorrow · {dropped} dropped",
+    "mood": "mood {mood} saved to Journal",
+    "starts": "Tomorrow starts {time}",
+    "startsEmpty": "Tomorrow is open",
+    "openTomorrow": "Open tomorrow",
+    "overview": "Back to Overview"
+  }
+}

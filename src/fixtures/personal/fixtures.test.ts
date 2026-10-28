@@ -47,7 +47,7 @@ describe("sample tasks", () => {
   it("put the P03 Today list on the sample day", () => {
     const today = sampleTasks.filter((task) => task.date === SAMPLE_DAY);
     expect(today.map((task) => task.title)).toEqual(
-      expect.arrayContaining(["UI design · My Day screen", "Reply to Katy’s brief", "Renew car insurance"]),
+      expect.arrayContaining(["UI design · My Day screen", "Reply to Katy’s brief", "Review October expenses"]),
     );
     expect(sampleTasks.find((task) => task.id === "t-pay-electricity-bill")?.date).toBe("2026-10-12");
   });
@@ -74,6 +74,38 @@ describe("sample blocks", () => {
       expect(Date.parse(block!.start)).toBe(shellBlock.start.getTime());
       expect(Date.parse(block!.end)).toBe(shellBlock.end.getTime());
     }
+  });
+});
+
+describe("P02 My Day alignment", () => {
+  it("makes lunch and the morning routine neutral breaks, and gives events and the gym their energy", () => {
+    const block = (id: string) => sampleBlocks.find((item) => item.id === id);
+    expect(block("lunch")?.kind).toBe("break");
+    expect(block("morning-routine")?.kind).toBe("break");
+    for (const id of ["design-review", "client-call", "gym"]) expect(block(id)?.energy, id).toBe("medium");
+  });
+
+  it("carries the effort spent on the current task (35m left of 2h)", () => {
+    const ui = sampleTasks.find((task) => task.id === "t-ui-design");
+    expect(ui?.spentMinutes).toBe(85);
+    expect((ui?.durationMinutes ?? 0) - (ui?.spentMinutes ?? 0)).toBe(35);
+  });
+
+  it("leaves the board's four unscheduled rows (2h 05m) and Thursday's insurance for the week", () => {
+    const task = (id: string) => sampleTasks.find((item) => item.id === id);
+    expect(task("t-reply-katy-brief")?.time).toBeNull();
+    expect(task("t-plan-weekend-trip")?.durationMinutes).toBe(65);
+    expect(task("t-renew-car-insurance")).toMatchObject({ date: "2026-10-15", deadline: "2026-10-16" });
+  });
+
+  it("has priorities and focus sessions that point at real tasks and blocks", () => {
+    const refs = personalFixtures.priorities[SAMPLE_DAY]!;
+    expect(refs).toHaveLength(3);
+    for (const ref of refs) {
+      const exists = (ref.kind === "task" ? sampleTasks : sampleBlocks).some((item) => item.id === ref.id);
+      expect(exists, ref.id).toBe(true);
+    }
+    expect(personalFixtures.focus[SAMPLE_DAY]).toEqual({ sessionsCompleted: 2, cycle: 1 });
   });
 });
 

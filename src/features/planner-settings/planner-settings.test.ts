@@ -24,7 +24,7 @@ const custom: PlannerSettings = {
   workHours: { start: "08:30", end: "16:30" },
   planning: { rollover: "keep", defaultDurationMinutes: 45, defaultEnergy: "high" },
   weeklyReview: { weekday: 5, time: "17:00" },
-  focus: { focusMinutes: 50, shortBreakMinutes: 10, longBreakMinutes: 30, cyclesBeforeLongBreak: 3, autoStartNext: true },
+  focus: { focusMinutes: 50, shortBreakMinutes: 10, longBreakMinutes: 30, cyclesBeforeLongBreak: 3, autoStartNext: true, dailyGoalMinutes: 180 },
   privacy: { journalLock: true, financeLock: false },
 };
 
@@ -37,7 +37,7 @@ describe("DEFAULT_PLANNER_SETTINGS", () => {
       workHours: { start: "09:00", end: "17:00" },
       planning: { rollover: "ask", defaultDurationMinutes: 30, defaultEnergy: "medium" },
       weeklyReview: { weekday: 4, time: "18:00" },
-      focus: { focusMinutes: 25, shortBreakMinutes: 5, longBreakMinutes: 15, cyclesBeforeLongBreak: 4, autoStartNext: false },
+      focus: { focusMinutes: 25, shortBreakMinutes: 5, longBreakMinutes: 15, cyclesBeforeLongBreak: 4, autoStartNext: false, dailyGoalMinutes: 240 },
       privacy: { journalLock: false, financeLock: false },
     });
   });
@@ -106,6 +106,12 @@ describe("mergePlannerSettings", () => {
   it("re-validates, so an invalid patch value cannot be stored", () => {
     const next = mergePlannerSettings(custom, { workHours: { start: "9am" as never } });
     expect(next.workHours).toEqual({ start: "09:00", end: "16:30" });
+  });
+
+  it("keeps a valid daily focus goal and falls back for an invalid one", () => {
+    expect(mergePlannerSettings(custom, { focus: { dailyGoalMinutes: 300 } }).focus.dailyGoalMinutes).toBe(300);
+    expect(mergePlannerSettings(custom, { focus: { dailyGoalMinutes: -5 } }).focus.dailyGoalMinutes).toBe(240);
+    expect(parsePlannerSettings({ focus: { focusMinutes: 50 } }).focus.dailyGoalMinutes).toBe(240);
   });
 });
 

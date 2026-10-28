@@ -11,5 +11,6 @@
   "noDateSelected": "No date selected",
   "today": "Today",
   "weekend": "Weekend",
-  "selectedDate": "Selected date"
+  "selectedDate": "Selected date",
+  "energyLevel": "{level, select, low {Energy low} medium {Energy medium} other {Energy high}}"
 }

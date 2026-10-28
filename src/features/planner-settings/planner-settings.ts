@@ -44,6 +44,8 @@ export interface PlannerSettings {
     longBreakMinutes: (typeof longBreakMinuteOptions)[number];
     cyclesBeforeLongBreak: (typeof cyclesBeforeLongBreakOptions)[number];
     autoStartNext: boolean;
+    /** Daily focus goal (Overview Focus tile: "goal 4h"). */
+    dailyGoalMinutes: number;
   };
   /** Placeholders: the toggles persist, no PIN or biometric logic yet. */
   privacy: { journalLock: boolean; financeLock: boolean };
@@ -57,7 +59,7 @@ export const DEFAULT_PLANNER_SETTINGS: PlannerSettings = {
   workHours: { start: "09:00", end: "17:00" },
   planning: { rollover: "ask", defaultDurationMinutes: 30, defaultEnergy: "medium" },
   weeklyReview: { weekday: 4, time: "18:00" },
-  focus: { focusMinutes: 25, shortBreakMinutes: 5, longBreakMinutes: 15, cyclesBeforeLongBreak: 4, autoStartNext: false },
+  focus: { focusMinutes: 25, shortBreakMinutes: 5, longBreakMinutes: 15, cyclesBeforeLongBreak: 4, autoStartNext: false, dailyGoalMinutes: 240 },
   privacy: { journalLock: false, financeLock: false },
 };
 
@@ -125,6 +127,7 @@ const plannerSettingsSchema = z.object({
       longBreakMinutes: z.literal(longBreakMinuteOptions).catch(D.focus.longBreakMinutes),
       cyclesBeforeLongBreak: z.literal(cyclesBeforeLongBreakOptions).catch(D.focus.cyclesBeforeLongBreak),
       autoStartNext: z.boolean().catch(D.focus.autoStartNext),
+      dailyGoalMinutes: z.number().int().min(15).max(960).catch(D.focus.dailyGoalMinutes),
     })
     .catch(D.focus),
   privacy: z

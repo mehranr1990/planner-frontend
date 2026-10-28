@@ -33,9 +33,13 @@ describe("data hooks", () => {
     const { result } = renderHook(() => useTasks({ view: "upcoming" }), { wrapper: wrapper() });
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
     expect(result.current.data?.map((task) => task.id)).toEqual([
+      "t-5km-run",
       "t-finish-finance-report",
       "t-reply-to-client",
       "t-call-dentist",
+      "t-haircut",
+      "t-renew-car-insurance",
+      "t-monthly-budget-review",
     ]);
   });
 

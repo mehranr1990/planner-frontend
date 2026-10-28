@@ -1,0 +1,143 @@
+{
+  "loading": "در حال بارگذاری…",
+  "error": "این کارت بارگذاری نشد",
+  "greeting": "{part, select, morning {صبح بخیر} afternoon {عصر بخیر} other {شب بخیر}}، {name}",
+  "greetingAnon": "{part, select, morning {صبح بخیر} afternoon {عصر بخیر} other {شب بخیر}}",
+  "energyFree": "{level, select, low {انرژی کم} medium {انرژی متوسط} other {انرژی زیاد}} · {free} وقت آزاد",
+  "planMyDay": "برنامه‌ریزی روز",
+  "moodLevel": "{level, select, awful {خیلی بد} low {بد} okay {معمولی} good {خوب} other {عالی}}",
+  "energy": "{level, select, low {انرژی کم} medium {انرژی متوسط} other {انرژی زیاد}}",
+  "hero": {
+    "eyebrow": "پیشرفت امروز",
+    "ofToday": "از امروز",
+    "open": "باز کردن روز من",
+    "title": "{state, select, done {همهٔ کارهای امروز انجام شد} over {امروز بیش از حد شلوغ است} empty {برای امروز برنامه‌ای نیست} other {یک {weekday} معمولی، طبق برنامه}}",
+    "summary": "{tasks, plural, other {{tasksText} کار}} و {habits, plural, other {{habitsText} عادت}} مانده · {free} وقت آزاد",
+    "summaryTasks": "{tasks, plural, other {{tasksText} کار}} مانده · {free} وقت آزاد",
+    "metrics": "امروز در یک نگاه",
+    "tasks": "کارها",
+    "habits": "عادت‌ها",
+    "focus": "تمرکز",
+    "focusGoal": "هدف {goal}",
+    "focusHintGoal": "{sessions, plural, other {{sessionsText} جلسه}} · هدف {goal}",
+    "mood": "حال · انرژی",
+    "moodNone": "ثبت نشده",
+    "free": "وقت آزاد",
+    "now": "اکنون"
+  },
+  "slot": {
+    "planMyDay": "برنامه‌ریزی روز",
+    "later": "بعداً",
+    "dismiss": "رد کردن",
+    "morning": {
+      "chip": "صبح · هنوز برنامه‌ای نیست",
+      "title": "{count, plural, other {{countText} کار}} و {free} وقت آزاد داری. در روزت برنامه‌ریزی‌شان کنی؟"
+    },
+    "gap": {
+      "chip": "آزاد · {gap}",
+      "title": "بعدی: <title></title> ساعت <time></time>",
+      "fits": "جا می‌شود: «<task></task>» · {duration}",
+      "nothingFits": "چیزی از فهرستت در این فاصله جا نمی‌شود؛ وقت خوبی برای استراحت است.",
+      "doItNow": "همین حالا انجامش بده",
+      "pickAnother": "انتخاب کار دیگر"
+    },
+    "evening": {
+      "chip": "بعد از {time} · پیشنهاد",
+      "title": "هنوز {count, plural, other {{countText} کار ناتمام}} داری. پیش از پایان روز برنامه‌ریزی‌شان کنی؟",
+      "start": "شروع"
+    },
+    "firstRun": {
+      "chip": "شروع کار",
+      "title": "با روز من، کارها و تقویم شروع کن.",
+      "body": "اهداف، عادت‌ها، مالی، دفترچه و بینش‌ها هر وقت خواستی آماده‌اند. هر کدام را می‌توانی در تنظیمات پنهان کنی.",
+      "addTask": "افزودن اولین کار",
+      "tour": "معرفی سه‌مرحله‌ای",
+      "skip": "رد شدن",
+      "tourStep": "معرفی · {step} از {total}",
+      "next": "بعدی",
+      "back": "قبلی",
+      "close": "بستن معرفی",
+      "steps": {
+        "myday": {
+          "title": "روز من، برنامهٔ امروز توست.",
+          "body": "کارها را روی خط زمان بکش، ببین الان چه در جریان است و جلسهٔ تمرکز را شروع کن."
+        },
+        "tasks": {
+          "title": "کارها، همهٔ کارهای توست.",
+          "body": "سریع ثبت کن، بر اساس اولویت مرتب کن و تیک بزن؛ در فهرست یا روی بورد."
+        },
+        "calendar": {
+          "title": "تقویم، تصویر بزرگ‌تر را نشان می‌دهد.",
+          "body": "به‌طور پیش‌فرض شمسی است، هفته از شنبه شروع می‌شود و جمعه تعطیل است."
+        }
+      }
+    }
+  },
+  "upNext": {
+    "title": "بعدی‌ها",
+    "open": "باز کردن روز من",
+    "now": "اکنون",
+    "until": "تا <time></time>",
+    "empty": "برای بقیهٔ امروز برنامه‌ای نیست.",
+    "fits": "{count, plural, other {{countText} کار بی‌زمان}} در {free} وقت آزادت جا می‌شود"
+  },
+  "tasks": {
+    "title": "کارها",
+    "left": "{count, plural, other {{countText} کار مانده}}",
+    "all": "همهٔ کارها",
+    "listLabel": "کارهای امروز",
+    "overdue": "عقب‌افتاده",
+    "complete": "انجام «{title}»",
+    "reopen": "بازگشایی «{title}»",
+    "failed": "کار به‌روز نشد",
+    "empty": "برای امروز کاری نمانده.",
+    "add": "افزودن کار…"
+  },
+  "habits": {
+    "title": "عادت‌ها",
+    "count": "{done} از {total} امروز",
+    "open": "عادت‌ها",
+    "today": "عادت‌های امروز",
+    "failed": "عادت به‌روز نشد",
+    "empty": "هنوز عادتی نداری."
+  },
+  "goals": {
+    "title": "اهداف",
+    "open": "اهداف",
+    "empty": "هدف فعالی نداری.",
+    "behind": "{days, plural, other {{daysText} روز عقب}}",
+    "next": "بعدی · <step></step>",
+    "nextToday": "<step></step> امروز",
+    "nextTomorrow": "<step></step> فردا",
+    "nextOn": "نقطهٔ عطف بعدی · <step></step>، {date}"
+  },
+  "mood": {
+    "title": "حال",
+    "open": "دفترچه",
+    "week": "حال در ۷ روز گذشته",
+    "none": "ثبت نشده",
+    "notYet": "امروز حالت را ثبت نکرده‌ای.",
+    "checkIn": "ثبت حال",
+    "checkedIn": "ثبت در ساعت <time></time>",
+    "addNote": "افزودن یادداشت",
+    "locked": "روزنوشت قفل است"
+  },
+  "finance": {
+    "title": "مالی",
+    "empty": "برای این ماه بودجه‌ای تعیین نشده.",
+    "spentIn": "هزینه در {month}",
+    "budget": "بودجه {amount}",
+    "position": "{percent} · روز {day} از {days}",
+    "over": "بیش از بودجه",
+    "barLabel": "بودجهٔ مصرف‌شده",
+    "barText": "{percent} مصرف‌شده، {expected} انتظار تا امروز",
+    "billIn": "{days, plural, =0 {امروز} other {{daysText} روز دیگر}}",
+    "locked": "قفل است"
+  },
+  "insight": {
+    "eyebrow": "بینش · ۴ هفتهٔ اخیر",
+    "bestFocus": "بهترین تمرکزت ساعت <range></range> است. {booked, select, yes {کار عمیق امروز همان‌جا برنامه‌ریزی شده.} other {کار عمیق امروز را همان‌جا بگذار.}}",
+    "see": "دیدن الگو",
+    "dismiss": "رد کردن"
+  }
+}

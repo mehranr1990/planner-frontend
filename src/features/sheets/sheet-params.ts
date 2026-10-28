@@ -23,9 +23,25 @@ export function isSheetId(value: unknown): value is SheetId {
   return typeof value === "string" && (sheetIds as readonly string[]).includes(value);
 }
 
-/** `pathname?…&sheet=id` (or without the parameter when `id` is null), keeping every other parameter. */
-export function sheetHref(pathname: string, search: string, id: SheetId | null): string {
+/** Quick Add's prefilled line (Voice capture → "Create task"). */
+export const QUICK_ADD_TEXT_PARAM = "text";
+
+/** Parameters that only mean something to an open sheet; closing it drops them too. */
+export const sheetScopedParams: Partial<Record<SheetId, readonly string[]>> = {
+  "quick-add": [QUICK_ADD_TEXT_PARAM],
+  expense: [QUICK_ADD_TEXT_PARAM, "tx"],
+  reschedule: ["task", "block"],
+  habit: ["habit", "title"],
+  goal: ["goal", "title"],
+};
+
+/**
+ * `pathname?…&sheet=id` (or without the parameter when `id` is null), keeping
+ * every other parameter except the `drop` ones.
+ */
+export function sheetHref(pathname: string, search: string, id: SheetId | null, drop: readonly string[] = []): string {
   const params = new URLSearchParams(search);
+  for (const key of drop) params.delete(key);
   if (id) params.set(SHEET_PARAM, id);
   else params.delete(SHEET_PARAM);
   const query = params.toString();
@@ -60,12 +76,15 @@ export function consumeOpenedSheet(): boolean {
 }
 
 /** Opens a sheet over the current route (push, so Back closes it). */
-export function useOpenSheet(): (id: SheetId) => void {
+export function useOpenSheet(): (id: SheetId, extra?: Readonly<Record<string, string>>) => void {
   const router = useRouter();
   const pathname = usePathname();
   return useCallback(
-    (id: SheetId) => {
-      const href = sheetHref(pathname, window.location.search, id);
+    (id: SheetId, extra?: Readonly<Record<string, string>>) => {
+      // Sheet-scoped parameters (e.g. ?goal= for editing) ride along with the sheet.
+      const search = new URLSearchParams(window.location.search);
+      for (const [key, value] of Object.entries(extra ?? {})) search.set(key, value);
+      const href = sheetHref(pathname, search.toString(), id);
       rememberOpened(href);
       router.push(href, { scroll: false });
     },

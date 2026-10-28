@@ -14,7 +14,7 @@ export interface DateFormatOptions {
   digits: DigitSystem;
 }
 
-export type DateStyle = "full" | "short" | "monthYear" | "dayMonth" | "day" | "weekday" | "weekdayNarrow";
+export type DateStyle = "full" | "short" | "monthYear" | "dayMonth" | "day" | "weekday" | "weekdayShort" | "weekdayNarrow";
 
 /*
  * Patterns per calendar × locale, matching FaRules:
@@ -23,12 +23,12 @@ export type DateStyle = "full" | "short" | "monthYear" | "dayMonth" | "day" | "w
  */
 const PATTERNS: Record<CalendarSystem, Record<Locale, Record<DateStyle, string>>> = {
   jalali: {
-    fa: { full: "EEEE d MMMM yyyy", short: "yyyy/MM/dd", monthYear: "MMMM yyyy", dayMonth: "d MMMM", day: "d", weekday: "EEEE", weekdayNarrow: "EEEEE" },
-    en: { full: "EEE, d MMMM yyyy", short: "yyyy/MM/dd", monthYear: "MMMM yyyy", dayMonth: "d MMMM", day: "d", weekday: "EEEE", weekdayNarrow: "EEEEEE" },
+    fa: { full: "EEEE d MMMM yyyy", short: "yyyy/MM/dd", monthYear: "MMMM yyyy", dayMonth: "d MMMM", day: "d", weekday: "EEEE", weekdayShort: "EEEE", weekdayNarrow: "EEEEE" },
+    en: { full: "EEE, d MMMM yyyy", short: "yyyy/MM/dd", monthYear: "MMMM yyyy", dayMonth: "d MMMM", day: "d", weekday: "EEEE", weekdayShort: "EEE", weekdayNarrow: "EEEEEE" },
   },
   gregorian: {
-    fa: { full: "EEEE d MMMM yyyy", short: "yyyy/MM/dd", monthYear: "MMMM yyyy", dayMonth: "d MMMM", day: "d", weekday: "EEEE", weekdayNarrow: "EEEEE" },
-    en: { full: "EEE, d MMM yyyy", short: "dd/MM/yyyy", monthYear: "MMMM yyyy", dayMonth: "d MMM", day: "d", weekday: "EEEE", weekdayNarrow: "EEEEEE" },
+    fa: { full: "EEEE d MMMM yyyy", short: "yyyy/MM/dd", monthYear: "MMMM yyyy", dayMonth: "d MMMM", day: "d", weekday: "EEEE", weekdayShort: "EEEE", weekdayNarrow: "EEEEE" },
+    en: { full: "EEE, d MMM yyyy", short: "dd/MM/yyyy", monthYear: "MMMM yyyy", dayMonth: "d MMM", day: "d", weekday: "EEEE", weekdayShort: "EEE", weekdayNarrow: "EEEEEE" },
   },
 };
 

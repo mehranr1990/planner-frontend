@@ -16,6 +16,8 @@ export interface NotchGeometry {
   notchHeight?: number;
   /** Concave fillet radius where the notch meets the card (default 28). */
   fillet?: number;
+  /** Radius of the top corner opposite the notch (default `radius`); 0 squares it where a folder tab merges in. */
+  startRadius?: number;
   direction?: Direction;
 }
 
@@ -76,6 +78,7 @@ export function notchPath(geometry: NotchGeometry): string {
     fillet: f = 28,
     direction = "ltr",
   } = geometry;
+  const S = geometry.startRadius ?? C;
 
   if (!canNotch(geometry)) {
     return serialize(roundedRect(W, H, Math.min(C, W / 2, H / 2)), W, direction);
@@ -83,7 +86,7 @@ export function notchPath(geometry: NotchGeometry): string {
 
   return serialize(
     [
-      { type: "M", x: C, y: 0 },
+      { type: "M", x: S, y: 0 },
       { type: "L", x: W - nw - f, y: 0 },
       { type: "A", r: f, sweep: 1, x: W - nw, y: f },
       { type: "L", x: W - nw, y: nh - f },
@@ -94,8 +97,8 @@ export function notchPath(geometry: NotchGeometry): string {
       { type: "A", r: C, sweep: 1, x: W - C, y: H },
       { type: "L", x: C, y: H },
       { type: "A", r: C, sweep: 1, x: 0, y: H - C },
-      { type: "L", x: 0, y: C },
-      { type: "A", r: C, sweep: 1, x: C, y: 0 },
+      { type: "L", x: 0, y: S },
+      { type: "A", r: S, sweep: 1, x: S, y: 0 },
     ],
     W,
     direction,

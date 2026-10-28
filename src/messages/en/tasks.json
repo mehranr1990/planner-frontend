@@ -1,0 +1,491 @@
+{
+  "page": {
+    "title": "Tasks",
+    "progress": "{done} of {total} done today · {left} left",
+    "progressShort": "{done} of {total} done",
+    "layout": "Layout",
+    "list": "List",
+    "board": "Board",
+    "newTask": "New task"
+  },
+  "toolbar": {
+    "views": "Views",
+    "tabs": {
+      "today": "Today",
+      "upcoming": "Upcoming",
+      "all": "All",
+      "completed": "Completed"
+    },
+    "mobileDone": "Done",
+    "search": "Search tasks",
+    "filters": "Filters",
+    "filtersActive": "Filters, {count} active",
+    "group": "Group: {value}",
+    "sort": "Sort: {value}",
+    "groupLabel": "Group by",
+    "sortLabel": "Sort by",
+    "filteredBy": "Filtered by",
+    "clearAll": "Clear all",
+    "bulkHint": "Bulk: hold ⇧ / ⌘ and click, or press X",
+    "openSearch": "Search tasks",
+    "closeSearch": "Close search",
+    "showBoard": "Board view"
+  },
+  "filters": {
+    "kind": {
+      "area": "Area",
+      "context": "Context",
+      "priority": "Priority",
+      "energy": "Energy",
+      "labels": "Labels",
+      "hasDate": "Date",
+      "recurring": "Repeat"
+    },
+    "chip": "{kind}: {values}",
+    "range": "{from}–{to}",
+    "flag": {
+      "hasDateYes": "Has date",
+      "hasDateNo": "No date",
+      "recurring": "Recurring"
+    },
+    "title": "Filters",
+    "clear": "Clear filters",
+    "show": "Show {count, plural, one {{n} task} other {{n} tasks}}",
+    "noLabels": "No labels yet",
+    "sort": "Sort",
+    "group": "Group"
+  },
+  "group": {
+    "titles": {
+      "overdue": "Overdue",
+      "morning": "Morning",
+      "afternoon": "Afternoon",
+      "evening": "Evening",
+      "unscheduled": "Unscheduled",
+      "noDate": "No date",
+      "noArea": "No area",
+      "noPriority": "No priority",
+      "all": "All tasks",
+      "weekend": "weekend"
+    },
+    "options": {
+      "time": "Time of day",
+      "date": "Date",
+      "area": "Area",
+      "priority": "Priority",
+      "none": "None"
+    }
+  },
+  "sort": {
+    "options": {
+      "smart": "Smart",
+      "manual": "Manual",
+      "priority": "Priority",
+      "duration": "Duration",
+      "created": "Created"
+    }
+  },
+  "list": {
+    "label": "Task list",
+    "columns": {
+      "task": "Task",
+      "priority": "Priority",
+      "energy": "En.",
+      "duration": "Dur.",
+      "when": "When"
+    },
+    "doneCount": "· {count} done",
+    "showDone": "Show {count} done",
+    "hideDone": "Hide done tasks",
+    "collapse": "Collapse {name}",
+    "expand": "Expand {name}",
+    "rescheduleAll": "Reschedule all",
+    "dragHint": "· drag into a time group",
+    "completedNote": "Completed view: grouped by day, uncheck to restore. Kept 90 days, then archived.",
+    "capacity": "{used} of {capacity}",
+    "addLabel": "Add a task",
+    "addPlaceholder": {
+      "today": "Add task to Today…",
+      "upcoming": "Add task for Tomorrow…",
+      "all": "Add task…"
+    },
+    "addHint": "try “call mom tomorrow 18:00 !high ~15m”"
+  },
+  "row": {
+    "subtasks": "{done}/{total} subtasks",
+    "goal": "linked goal: {title}",
+    "due": "due {date}",
+    "overdue": "{count, plural, one {{n} day overdue} other {{n} days overdue}}",
+    "repeats": "Repeats",
+    "open": "Open {title}",
+    "drag": "Reorder {title}",
+    "complete": "Complete {title}",
+    "reopen": "Mark {title} not done",
+    "select": "Select {title}",
+    "moreLabels": "+{count}"
+  },
+  "edit": {
+    "title": "Task title",
+    "enter": "Enter",
+    "esc": "Esc",
+    "hint": "Inline edit · Tab moves between fields",
+    "date": "Date",
+    "noDate": "No date",
+    "duration": "Duration",
+    "energy": "Energy",
+    "priority": "Priority",
+    "repeatOn": "Weekly",
+    "repeatOff": "No repeat",
+    "repeatLabel": "Repeat",
+    "area": "Area · {name}",
+    "noArea": "No area",
+    "addLabel": "+ label",
+    "newLabel": "New label"
+  },
+  "bulk": {
+    "toolbar": "Bulk actions",
+    "selected": "{count} selected",
+    "schedule": "Schedule",
+    "move": "Move",
+    "priority": "Priority",
+    "complete": "Complete",
+    "delete": "Delete",
+    "clear": "Clear selection",
+    "more": "More actions",
+    "reschedule": "Reschedule",
+    "when": {
+      "today": "Today",
+      "tomorrow": "Tomorrow",
+      "nextWorkingDay": "Next working day",
+      "nextWeek": "Next week",
+      "noDate": "No date"
+    }
+  },
+  "states": {
+    "allDoneTitle": "All done for today",
+    "allDoneBody": "{count, plural, one {{n} task} other {{n} tasks}} completed · {duration} focused. Want to look at tomorrow?",
+    "planTomorrow": "Plan tomorrow",
+    "seeCompleted": "See completed",
+    "emptyTitle": "No tasks yet",
+    "emptyBody": "Capture everything first — you can organise later. Try “Pay rent on 1 Aban !high”.",
+    "addFirst": "Add first task",
+    "import": "Import",
+    "soon": "Soon",
+    "noMatchTitle": "No tasks match",
+    "noMatchBody": "Nothing in {tab} with {filters}.",
+    "noMatchUpcoming": "{count, plural, one {{n} match} other {{n} matches}} in Upcoming.",
+    "clearFilters": "Clear filters",
+    "showUpcoming": "Show Upcoming",
+    "todayClearTitle": "Nothing planned for today",
+    "todayClearBody": "Pick something from Upcoming or add a task.",
+    "viewEmptyTitle": "Nothing here",
+    "viewEmptyBody": "Tasks show up here as you plan them.",
+    "errorTitle": "Tasks didn’t load",
+    "errorBody": "Check your connection and try again.",
+    "retry": "Try again",
+    "loading": "Loading tasks"
+  },
+  "mobile": {
+    "swipeDone": "Done",
+    "swipeReschedule": "Reschedule"
+  },
+  "a11y": {
+    "groupCount": "{count, plural, one {{n} task} other {{n} tasks}}",
+    "selectionMode": "Selection mode: tap tasks to select them"
+  },
+  "undo": {
+    "action": "Undo",
+    "completed": "“{title}” completed",
+    "reopened": "“{title}” is open again",
+    "deleted": "{count, plural, one {Task deleted} other {{n} tasks deleted}}",
+    "updated": "{count, plural, one {Task updated} other {{n} tasks updated}}",
+    "completedMany": "{count, plural, one {Task completed} other {{n} tasks completed}}",
+    "created": "Task added",
+    "failed": "Couldn’t save the change"
+  },
+  "keyboard": {
+    "new": "N",
+    "search": "/"
+  },
+  "labels": {
+    "priority": {
+      "urgent": "Urgent",
+      "high": "High",
+      "medium": "Medium",
+      "low": "Low",
+      "none": "No priority"
+    },
+    "energy": {
+      "low": "Low",
+      "medium": "Medium",
+      "high": "High"
+    },
+    "scope": {
+      "personal": "Personal",
+      "project": "Projects",
+      "team": "Teams",
+      "company": "Companies"
+    },
+    "relative": {
+      "yesterday": "Yesterday",
+      "today": "Today",
+      "tomorrow": "Tomorrow"
+    }
+  },
+  "board": {
+    "label": "Task board",
+    "hint": "Drag between columns to reschedule",
+    "groupBy": "Group by",
+    "groups": {
+      "horizon": "Horizon",
+      "time": "Time of day",
+      "status": "Status"
+    },
+    "showDone": "Show done",
+    "hideDone": "Hide done",
+    "columns": {
+      "today": "Today",
+      "tomorrow": "Tomorrow",
+      "week": "This week",
+      "later": "Later",
+      "morning": "Morning",
+      "afternoon": "Afternoon",
+      "evening": "Evening",
+      "unscheduled": "Unscheduled",
+      "todo": "To do",
+      "planned": "Planned",
+      "done": "Done today"
+    },
+    "until": "until {date}",
+    "noDate": "no date",
+    "free": "{used} of {capacity} free",
+    "overloaded": "{used} / {capacity} · Overloaded · move {over}",
+    "capacityLabel": "Planned {used} of {capacity}",
+    "overdue": "{n} overdue",
+    "reschedule": "Reschedule",
+    "empty": "Nothing here",
+    "emptyWeek": "Nothing this week",
+    "emptyHint": "Drag a card here or add one",
+    "emptyWeekHint": "Drag from Later or add one",
+    "match": "{shown} of {total} match",
+    "filtersOn": "filters on",
+    "add": "Add",
+    "addLabel": "Add a task to {column}",
+    "addPlaceholder": "Task name, then Enter",
+    "doneRail": "Done today · {n}",
+    "dropToComplete": "Drop here to complete",
+    "expandDone": "Show today’s completed tasks",
+    "collapseDone": "Collapse completed tasks",
+    "doneEmpty": "Nothing completed yet today",
+    "closed": "No working day is left this week.",
+    "pager": "Board columns",
+    "page": "Go to {column}",
+    "drag": {
+      "instructions": "To move a card, press Space, use the arrow keys to choose a column, then Space to drop or Escape to cancel.",
+      "start": "Picked up {title}.",
+      "over": "Over {column}.",
+      "drop": "{title} moved to {column}.",
+      "cancel": "Move cancelled. {title} stayed where it was."
+    },
+    "move": "Move {title}",
+    "cards": "{count, plural, one {{n} task} other {{n} tasks}}"
+  },
+  "detail": {
+    "close": "Close",
+    "back": "Back to tasks",
+    "complete": "Complete",
+    "reopen": "Mark as not done",
+    "status": {
+      "open": "Open",
+      "inProgress": "In progress",
+      "done": "Done"
+    },
+    "startFocus": "Start focus",
+    "reschedule": "Reschedule",
+    "move": "Move",
+    "more": "More actions",
+    "duplicate": "Duplicate",
+    "convertToEvent": "Convert to event",
+    "delete": "Delete",
+    "duplicated": "Task duplicated",
+    "properties": "Properties",
+    "schedule": "Schedule",
+    "duration": "Duration",
+    "energy": "Energy",
+    "priority": "Priority",
+    "goal": "Linked goal",
+    "areaLabels": "Area · labels",
+    "inMyDay": "in My Day",
+    "left": "{duration} left",
+    "none": "None",
+    "noGoal": "No linked goal",
+    "repeat": "Repeat",
+    "description": "Description",
+    "descriptionPlaceholder": "Add a description…",
+    "tabsLabel": "Task sections",
+    "tabs": {
+      "subtasks": "Subtasks",
+      "notes": "Notes",
+      "activity": "Activity",
+      "links": "Links"
+    },
+    "subtasks": {
+      "progress": "{done} of {total}",
+      "progressLabel": "Subtasks done",
+      "add": "Add subtask",
+      "addHint": "Add subtask · Enter adds next",
+      "empty": "No subtasks yet. Break the task into small steps.",
+      "remove": "Remove “{title}”"
+    },
+    "notes": {
+      "add": "Add a note…",
+      "save": "Add note",
+      "empty": "No notes yet."
+    },
+    "activity": {
+      "created": {
+        "inbox-voice": "Created from Inbox (voice note)",
+        "inbox": "Created from Inbox",
+        "quick-add": "Created with Quick add",
+        "manual": "Created"
+      },
+      "scheduled": "Moved from Unscheduled to {time}",
+      "subtaskDone": "Subtask “{title}” completed",
+      "priority": "Priority set to {priority}"
+    },
+    "links": {
+      "blockedBy": "Blocked by",
+      "blocks": "Blocks",
+      "done": "done",
+      "open": "not done",
+      "hint": "Personal dependencies are optional and only shown when one exists.",
+      "drop": "Drop files or paste a link",
+      "size": "{size} KB"
+    },
+    "completed": {
+      "title": "Completed · {time}",
+      "hint": "Closing in a moment. Undo is in the toast."
+    },
+    "recurring": {
+      "title": "Recurring task completed",
+      "body": "“{title}” repeats every week.",
+      "next": "Next: {when}",
+      "hint": "Only this occurrence is marked done; the next one is created automatically."
+    },
+    "blocked": {
+      "title": "Blocked",
+      "chip": "Blocked by {count}",
+      "body": "“{title}” is not done",
+      "completeAnyway": "Complete anyway",
+      "cancel": "Not now",
+      "hint": "Personal tasks never hard-block; this is a soft warning."
+    },
+    "deleteConfirm": {
+      "title": "Delete task?",
+      "body": "{count, plural, =0 {“{title}”. You can undo for {seconds} seconds.} one {“{title}” and its subtask. You can undo for {seconds} seconds.} other {“{title}” and its {n} subtasks. You can undo for {seconds} seconds.}}"
+    },
+    "loading": "Loading task",
+    "keyboard": "Esc close · Ctrl/⌘ Enter complete · F focus · D date"
+  },
+  "quickAdd": {
+    "inputLabel": "Capture one line",
+    "placeholder": "Call mom tomorrow 18:00 ~15m",
+    "understood": "Understood as",
+    "nothingYet": "Dates, times, #area, !priority and ~duration are picked up as you type",
+    "todayUnscheduled": "Today · unscheduled",
+    "typeLabel": "Type",
+    "types": {
+      "task": "Task",
+      "event": "Event",
+      "note": "Note",
+      "expense": "Expense",
+      "inbox": "Inbox"
+    },
+    "hint": "Enter saves · Ctrl+Enter adds details",
+    "details": "Details",
+    "save": "Save",
+    "titleRequired": "Type what the task is first",
+    "later": {
+      "event": "Events arrive with Calendar in a later step.",
+      "inbox": "Inbox capture arrives in a later step.",
+      "note": "Continues in Quick note.",
+      "expense": "Continues in Add expense (amount keypad first)."
+    },
+    "open": {
+      "event": "Open Calendar",
+      "inbox": "Open Inbox",
+      "note": "Open Quick note",
+      "expense": "Open Add expense"
+    },
+    "created": "Task added · {when}",
+    "removed": "Task removed",
+    "undoAlt": "Delete the task from the Tasks list"
+  },
+  "create": {
+    "title": "New task",
+    "steps": {
+      "label": "Progress",
+      "capture": "Capture",
+      "details": "Details",
+      "schedule": "Schedule",
+      "done": "Done",
+      "complete": "{step}, complete"
+    },
+    "capture": {
+      "label": "Change several fields with one line",
+      "placeholder": "tomorrow 10:00 #finance !high ~30m",
+      "hint": "Enter applies the line to the form"
+    },
+    "fields": {
+      "title": "Title",
+      "titleRequired": "Give the task a title",
+      "context": "Context",
+      "date": "Date",
+      "pickDate": "Pick a date",
+      "time": "Time",
+      "timeHint": "Needs a date",
+      "estimate": "Estimate",
+      "priority": "Priority",
+      "energy": "Energy needed",
+      "area": "Area",
+      "noArea": "No area",
+      "repeat": "Repeat weekly",
+      "labels": "Labels",
+      "labelsHint": "Separate labels with commas",
+      "notes": "Notes",
+      "notesPlaceholder": "Anything worth remembering"
+    },
+    "more": {
+      "toggle": "More options",
+      "summary": "Repeat · Area · Labels · Notes",
+      "pending": "Subtasks, reminders, linked goals and dependencies arrive with their modules."
+    },
+    "schedule": {
+      "title": "Schedule it",
+      "day": "Free slots · {day}",
+      "bestFit": "Best fit · between blocks",
+      "alsoFree": "Also free",
+      "keep": "Keep unscheduled",
+      "keepHint": "Shows in the Unscheduled list",
+      "noDate": "Pick a date to see free slots",
+      "noRoom": "Nothing free fits {duration} within work hours"
+    },
+    "footer": {
+      "createAnother": "Create another",
+      "cancel": "Cancel",
+      "submit": "Create task",
+      "shortcut": "Ctrl+Enter"
+    },
+    "done": {
+      "title": "Added to {when}",
+      "noDate": "Added without a date",
+      "createAnother": "Create another",
+      "open": "Open task",
+      "backMyDay": "Back to My Day",
+      "back": "Go back",
+      "returning": "Returning to where you started…"
+    },
+    "added": "Task added",
+    "failed": "Couldn’t create the task"
+  }
+}

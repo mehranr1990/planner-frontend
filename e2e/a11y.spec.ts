@@ -1,6 +1,6 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Page } from "@playwright/test";
-import { hideModules, MODES, open, openSheetRoute, PERSONAL_ROUTES, seedMode, type ModeName } from "./support/helpers";
+import { hideModules, MODES, MY_DAY_DEMO_ROUTES, open, openSheetRoute, PERSONAL_ROUTES, seedMode, type ModeName } from "./support/helpers";
 
 /*
  * axe (wcag2a, wcag2aa, wcag21aa) on the shell and styleguide routes in
@@ -42,7 +42,7 @@ for (const mode of Object.keys(MODES) as ModeName[]) {
       await seedMode(page, mode);
     });
 
-    for (const route of [...ROUTES, ...PERSONAL_ROUTES.filter((route) => route !== "/personal")]) {
+    for (const route of [...ROUTES, ...PERSONAL_ROUTES.filter((route) => route !== "/personal"), ...MY_DAY_DEMO_ROUTES]) {
       test(`${route}`, async ({ page }) => {
         await open(page, route);
         const findings = await scan(page, `${mode}${route.replaceAll("/", "_")}`);

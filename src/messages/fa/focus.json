@@ -1,0 +1,129 @@
+{
+  "landmark": "تمرکز",
+  "leave": "خروج از تمرکز",
+  "keepsRunning": "تایمر ادامه دارد",
+  "settings": "تنظیمات تمرکز",
+  "phases": {
+    "label": "حالت تایمر",
+    "focus": "تمرکز",
+    "short": "استراحت کوتاه",
+    "long": "استراحت طولانی"
+  },
+  "capsule": {
+    "label": "پیشرفت جلسه",
+    "focus": "تمرکز · دور {current} از {total}",
+    "short": "استراحت کوتاه · بعد تمرکز {next} از {total}",
+    "long": "استراحت طولانی · پس از {total} دور",
+    "complete": "جلسه تمام شد",
+    "cycleDone": "دور {n}: انجام شد",
+    "cycleCurrent": "دور {n}: در جریان",
+    "cycleUpcoming": "دور {n}: پیش رو"
+  },
+  "status": {
+    "focusing": "در حال تمرکز",
+    "paused": "متوقف · {minutes} دقیقه",
+    "ready": "آماده"
+  },
+  "noTaskTitle": "فقط تایمر",
+  "subtasks": "{done} از {total} زیرکار انجام شد",
+  "of": "از {total} · پایان {end}",
+  "ofPaused": "از {total} · متوقف",
+  "then": "بعد {minutes} دقیقه استراحت",
+  "thenLong": "بعد {minutes} دقیقه استراحت طولانی",
+  "timerLabel": "{minutes} دقیقه و {seconds} ثانیه مانده",
+  "sessionBar": "پیشرفت جلسه",
+  "pause": "توقف",
+  "resume": "ادامه",
+  "startFocus": "شروع تمرکز",
+  "startBreak": "شروع استراحت",
+  "finishTask": "پایان کار",
+  "finishSession": "پایان جلسه",
+  "plusMinutes": "+{n} دقیقه",
+  "skipBreak": "رد کردن استراحت",
+  "skip": "رد کردن",
+  "endFocus": "پایان تمرکز",
+  "break": {
+    "done": "تمرکز {current} از {total} انجام شد · {minutes} دقیقه",
+    "longEyebrow": "استراحت طولانی · پس از {total} دور",
+    "title": "کمی از کار فاصله بگیر",
+    "breathe": "{s} ثانیه دم · {s} ثانیه بازدم",
+    "suggestions": "پیشنهادهای استراحت",
+    "water": "آب بنوش",
+    "look": "به {m} متر دورتر نگاه کن",
+    "stretch": "شانه‌ها را کش بده",
+    "walk": "کمی قدم بزن",
+    "today": "جمع تمرکز امروز: {total}",
+    "next": "بعدی · تمرکز {next} از {total} روی «{task}»",
+    "nextNoTask": "بعدی · تمرکز {next} از {total}",
+    "auto": "خودکار شروع می‌شود (تنظیمات)",
+    "manual": "هر وقت آماده بودی شروعش کن"
+  },
+  "note": {
+    "title": "یادداشت سریع",
+    "label": "یادداشت این کار",
+    "placeholder": "فکری درباره این کار…",
+    "hint": "در یادداشت‌های کار ذخیره می‌شود",
+    "save": "ذخیره یادداشت",
+    "saved": "در یادداشت‌ها ذخیره شد",
+    "noTask": "برای یادداشت، یک کار انتخاب کن"
+  },
+  "park": {
+    "title": "کنار گذاشتن حواس‌پرتی",
+    "label": "حواس‌پرتی",
+    "placeholder": "چیزی یادت آمد؟ بنویس و Enter بزن",
+    "list": "حواس‌پرتی‌های کنارگذاشته",
+    "toInbox": "صندوق ورودی",
+    "hint": "موارد کنارگذاشته پس از جلسه به صندوق ورودی می‌روند.",
+    "added": "کنار گذاشته شد: {text}"
+  },
+  "complete": {
+    "title": "جلسه تمام شد",
+    "cycles": "{cycles, plural, one {{n} دور} other {{n} دور}} · {total}",
+    "parked": "{count, plural, =0 {حواس‌پرتی‌ای کنار گذاشته نشد} one {{n} حواس‌پرتی کنار گذاشته شد} other {{n} حواس‌پرتی کنار گذاشته شد}}",
+    "taskOpen": "کار «{task}» ← هنوز باز است",
+    "taskOpenSubtasks": "کار «{task}» ← هنوز باز است ({done} از {total} زیرکار)",
+    "taskDone": "کار «{task}» ← انجام شد",
+    "markDone": "علامت انجام‌شده",
+    "another": "یک دور دیگر",
+    "back": "بازگشت به روز من"
+  },
+  "pick": {
+    "title": "شروع بدون کار",
+    "description": "بلوک جاری‌ای نیست. روی چه چیزی تمرکز می‌کنی؟",
+    "list": "کارهای باز امروز",
+    "empty": "امروز کار بازی نداری.",
+    "loading": "در حال بارگذاری کارها",
+    "justTimer": "فقط تایمر",
+    "minutes": "{minutes} دقیقه"
+  },
+  "settingsSheet": {
+    "description": "همان مقادیر تنظیمات › تمرکز.",
+    "focus": "تمرکز",
+    "short": "استراحت کوتاه",
+    "long": "استراحت طولانی",
+    "cycles": "تعداد دور",
+    "minutes": "{value} دقیقه",
+    "saveDefault": "به‌عنوان پیش‌فرض ذخیره شود؟",
+    "saveDefaultAction": "ذخیره به‌عنوان پیش‌فرض",
+    "savedDefault": "به‌عنوان پیش‌فرض ذخیره شد"
+  },
+  "announce": {
+    "focus": "تمرکز شروع شد: دور {current} از {total}",
+    "short": "استراحت کوتاه: {minutes} دقیقه",
+    "long": "استراحت طولانی: {minutes} دقیقه",
+    "ready": "این مرحله تمام شد. هر وقت آماده بودی مرحله بعد را شروع کن.",
+    "paused": "تایمر متوقف شد",
+    "complete": "جلسه تمام شد"
+  },
+  "duration": {
+    "hm": "{h} ساعت و {m} دقیقه",
+    "m": "{m} دقیقه"
+  },
+  "running": {
+    "chip": "بازگشت به تمرکز · {status}",
+    "running": "در جریان · {time}",
+    "paused": "متوقف · {time}",
+    "break": "استراحت · {time}",
+    "open": "بازگشت به تمرکز"
+  }
+}

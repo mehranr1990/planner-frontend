@@ -27,6 +27,9 @@
   /* Overlays — 8-digit hex for the boards' rgba() values */
   --scrim: #0E0E0C47;             /* P18SupportingFlows / P06TaskDetail .scrim rgba(14,14,12,0.28) */
   --tip-shadow-tint: #0E0E0C1A;   /* DataVizPersonal / DataVizAdd .tip rgba(14,14,12,0.10) */
+
+  /* Rows */
+  --row-selected: #F4FBF8;        /* P03TasksList selected row */
 }
 
 [data-theme="dark"] {
@@ -46,4 +49,7 @@
   /* Overlays */
   --scrim: #0000008C;             /* P18SupportingFlowsDark / P06TaskDetailDark rgba(0,0,0,0.55) */
   --tip-shadow-tint: #00000066;   /* DataVizPersonalDark / DataVizAddDark .tip rgba(0,0,0,0.40) */
+
+  /* Rows */
+  --row-selected: #16231F;        /* P03TasksListDark selected row */
 }

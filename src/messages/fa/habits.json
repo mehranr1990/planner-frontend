@@ -1,0 +1,223 @@
+{
+  "title": "عادت‌ها",
+  "personal": "شخصی",
+  "kicker": "شخصی · {doneText} از {totalText} امروز",
+  "new": "عادت تازه",
+  "error": "عادت‌ها بارگیری نشد.",
+  "retry": "دوباره تلاش کن",
+  "period": {
+    "label": "بازه",
+    "14d": "۱۴ روز",
+    "month": "ماه",
+    "year": "سال"
+  },
+  "today": {
+    "label": "عادت‌های امروز",
+    "amount": "{done}/{target}",
+    "target": "{amount} {unit}",
+    "rest": "روز استراحت",
+    "skipped": "امروز رد شد",
+    "done": "انجام شد",
+    "toggle": "{habit}: {state}",
+    "states": {
+      "done": "امروز انجام شد",
+      "rest": "روز استراحت",
+      "skipped": "امروز رد شد",
+      "open": "هنوز انجام نشده"
+    },
+    "menu": "گزینه‌های {habit}",
+    "skip": "امروز رد شود",
+    "restToday": "امروز استراحت",
+    "log": "ثبت مقدار…",
+    "clear": "پاک کردن علامت امروز",
+    "logLabel": "{habit} · مقدار ({unit})",
+    "logSave": "ذخیره"
+  },
+  "timeOfDay": {
+    "anytime": "هر وقت",
+    "morning": "صبح",
+    "afternoon": "بعدازظهر",
+    "evening": "عصر"
+  },
+  "field": {
+    "title": "میدان عادت · پیوستگی",
+    "hint": "برای علامت زدن روی خانه بزن · امروز با حاشیه",
+    "label": "میدان عادت، {period}",
+    "periods": {
+      "14d": "۱۴ روز",
+      "month": "این ماه",
+      "year": "امسال"
+    },
+    "summary": "زنجیره · نرخ",
+    "streakShort": "{streakText} روز",
+    "cell": "{habit}، {day}: {state}",
+    "states": {
+      "done": "انجام شد",
+      "missed": "انجام نشد",
+      "open": "امروز، هنوز نه",
+      "skipped": "رد شد",
+      "rest": "روز استراحت",
+      "future": "پیش رو",
+      "hidden": "پیش از شروع عادت"
+    },
+    "legend": {
+      "done": "انجام شد",
+      "missed": "انجام نشد",
+      "today": "امروز",
+      "future": "پیش رو",
+      "skipped": "رد شد",
+      "rest": "روز استراحت"
+    },
+    "best": "روز پیاپی · {habit}",
+    "bestNone": "روز پیاپی",
+    "rate": "انجام · {period}",
+    "ratePeriods": {
+      "14d": "دو هفته‌ی اخیر",
+      "month": "این ماه",
+      "year": "امسال"
+    }
+  },
+  "selected": {
+    "label": "عادت انتخاب‌شده: {habit}",
+    "kicker": "عادت انتخاب‌شده",
+    "check": "علامت امروز",
+    "uncheck": "برداشتن علامت امروز",
+    "doneToday": "امروز انجام شد",
+    "restToday": "امروز روز استراحت است",
+    "notDoneToday": "امروز هنوز انجام نشده",
+    "notFound": "این عادت دیگر وجود ندارد — عادت‌هایت نمایش داده می‌شوند."
+  },
+  "details": {
+    "frequency": "تکرار",
+    "daily": "هر روز",
+    "dailyExcept": "هر روز · استراحت {days}",
+    "target": "هدف",
+    "targetValue": "{amount} {unit}",
+    "none": "ندارد",
+    "time": "زمان دلخواه",
+    "timeOfDay": {
+      "morning": "صبح",
+      "afternoon": "بعدازظهر",
+      "evening": "عصر"
+    },
+    "anyTime": "هر وقت",
+    "reminder": "یادآور",
+    "reminderIfNotDone": "{time} · اگر انجام نشده",
+    "off": "خاموش",
+    "best": "بهترین زنجیره",
+    "bestValue": "{countText} روز",
+    "archive": "بایگانی",
+    "edit": "ویرایش عادت"
+  },
+  "ring": {
+    "title": "میزان انجام",
+    "thisMonth": "این ماه",
+    "label": "میزان انجام {habit} در {month}",
+    "previous": "ماه قبل",
+    "next": "ماه بعد",
+    "period": "{month}: {value}",
+    "noData": "بدون داده",
+    "periods": "ماه‌ها",
+    "history": "تاریخچه",
+    "details": "جزئیات",
+    "tabs": "تاریخچه و جزئیات عادت",
+    "sparse": "حلقه‌ی ماهانه بعد از {daysText} روز داده نمایش داده می‌شود."
+  },
+  "ribbon": {
+    "streak": "روز پیاپی",
+    "label": "{habit}: {streakText} روز پیاپی، {today}",
+    "today": {
+      "done": "امروز انجام شد",
+      "today-done": "امروز انجام شد",
+      "today-open": "امروز هنوز انجام نشده",
+      "missed": "امروز هنوز انجام نشده",
+      "rest": "امروز روز استراحت است",
+      "upcoming": "امروز هنوز انجام نشده"
+    },
+    "node": "{day}: {state}",
+    "states": {
+      "done": "انجام شد",
+      "today-done": "امروز انجام شد",
+      "today-open": "امروز، هنوز نه",
+      "missed": "جا ماند",
+      "rest": "روز استراحت",
+      "upcoming": "پیش رو"
+    },
+    "cta": {
+      "perfect": "هفته‌ی بی‌نقص تا اینجا",
+      "keep": "ادامه بده",
+      "restart": "از امروز دوباره",
+      "rest": "استراحت زنجیره را نمی‌شکند",
+      "checkIn": "امروز علامت بزن"
+    }
+  },
+  "toast": {
+    "failed": "عادت به‌روز نشد",
+    "streak": "{habit} · {streakText} روز پیاپی",
+    "done": "{habit} علامت خورد",
+    "undone": "علامت {habit} برداشته شد",
+    "skipped": "{habit} امروز رد شد",
+    "rested": "امروز برای {habit} روز استراحت است",
+    "archived": "{habit} بایگانی شد",
+    "undo": "واگرد",
+    "undoAlt": "برای برگرداندن، دوباره روی عادت بزن",
+    "archiveUndoAlt": "عادت بایگانی‌شده را می‌توان بلافاصله برگرداند"
+  },
+  "empty": {
+    "title": "هنوز عادتی نداری",
+    "body": "با یک کار کوچک شروع کن که می‌خواهی بیشتر روزها انجامش بدهی. هدف و یادآور را بعداً هم می‌شود اضافه کرد.",
+    "create": "ساختن عادت",
+    "ideas": "ایده‌ها",
+    "ideasLabel": "ایده‌های عادت",
+    "idea1": "خواندن ۲۰ صفحه",
+    "idea2": "نوشیدن ۸ لیوان آب",
+    "idea3": "پیاده‌روی صبح",
+    "idea4": "بدون گوشی بعد از ۲۳:۰۰"
+  },
+  "sheet": {
+    "titleEdit": "ویرایش عادت",
+    "notFound": "این عادت دیگر وجود ندارد.",
+    "name": "نام",
+    "namePlaceholder": "مثلاً خواندن ۲۰ صفحه",
+    "nameRequired": "برای عادت نامی بنویس.",
+    "icon": "نماد",
+    "icons": {
+      "book": "کتاب",
+      "sun": "خورشید",
+      "dumbbell": "دمبل",
+      "droplet": "قطره‌ی آب",
+      "moon": "ماه",
+      "footprints": "ردپا",
+      "brain": "ذهن",
+      "pen": "قلم",
+      "heart": "قلب",
+      "leaf": "برگ"
+    },
+    "area": "حوزه",
+    "areaPlaceholder": "مثلاً سلامت، یادگیری",
+    "frequency": "تکرار",
+    "daily": "هر روز",
+    "specificDays": "روزهای مشخص",
+    "days": "روزها",
+    "daysRequired": "دست‌کم یک روز را انتخاب کن.",
+    "target": "هدف",
+    "targetAmount": "مقدار هدف",
+    "targetAmountPlaceholder": "۲۰",
+    "targetUnit": "واحد",
+    "targetUnitPlaceholder": "صفحه",
+    "targetHint": "اختیاری. ثبت کل مقدار، آن روز را علامت می‌زند.",
+    "time": "زمان دلخواه",
+    "timeOfDay": "بخش روز",
+    "preferredTime": "ساعت",
+    "reminder": "یادآور",
+    "reminderTime": "ساعت یادآور",
+    "ifNotDone": "فقط اگر انجام نشده",
+    "failed": "عادت ذخیره نشد. دوباره تلاش کن.",
+    "cancel": "انصراف",
+    "save": "ذخیره",
+    "create": "ساختن عادت",
+    "saving": "در حال ذخیره…",
+    "saved": "عادت ذخیره شد",
+    "created": "عادت ساخته شد"
+  }
+}

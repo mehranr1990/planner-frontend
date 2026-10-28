@@ -1,0 +1,143 @@
+{
+  "loading": "Loading…",
+  "error": "Couldn’t load this card",
+  "greeting": "{part, select, morning {Good morning} afternoon {Good afternoon} other {Good evening}}, {name}",
+  "greetingAnon": "{part, select, morning {Good morning} afternoon {Good afternoon} other {Good evening}}",
+  "energyFree": "{level, select, low {Energy low} medium {Energy medium} other {Energy high}} · {free} free",
+  "planMyDay": "Plan my day",
+  "moodLevel": "{level, select, awful {Awful} low {Low} okay {Okay} good {Good} other {Great}}",
+  "energy": "{level, select, low {Low energy} medium {Medium energy} other {High energy}}",
+  "hero": {
+    "eyebrow": "Today progress",
+    "ofToday": "of today",
+    "open": "Open My Day",
+    "title": "{state, select, done {All done for today} over {Your day is overloaded} empty {Nothing planned for today} other {On track for a normal {weekday}}}",
+    "summary": "{tasks, plural, one {{tasksText} task} other {{tasksText} tasks}} and {habits, plural, one {{habitsText} habit} other {{habitsText} habits}} left · {free} free",
+    "summaryTasks": "{tasks, plural, one {{tasksText} task} other {{tasksText} tasks}} left · {free} free",
+    "metrics": "Today at a glance",
+    "tasks": "Tasks",
+    "habits": "Habits",
+    "focus": "Focus",
+    "focusGoal": "goal {goal}",
+    "focusHintGoal": "{sessions, plural, one {{sessionsText} session} other {{sessionsText} sessions}} · goal {goal}",
+    "mood": "Mood · energy",
+    "moodNone": "Not checked in",
+    "free": "Free",
+    "now": "Now"
+  },
+  "slot": {
+    "planMyDay": "Plan my day",
+    "later": "Later",
+    "dismiss": "Dismiss",
+    "morning": {
+      "chip": "Morning · nothing planned",
+      "title": "You have {count, plural, one {{countText} task} other {{countText} tasks}} and {free} free. Plan them into your day?"
+    },
+    "gap": {
+      "chip": "Free · {gap}",
+      "title": "Next: <title></title> at <time></time>",
+      "fits": "Fits: “<task></task>” · {duration}",
+      "nothingFits": "Nothing on your list fits — a good moment for a break.",
+      "doItNow": "Do it now",
+      "pickAnother": "Pick another"
+    },
+    "evening": {
+      "chip": "After {time} · suggestion",
+      "title": "You still have {count, plural, one {{countText} unfinished task} other {{countText} unfinished tasks}}. Plan them before finishing your day?",
+      "start": "Start"
+    },
+    "firstRun": {
+      "chip": "First run",
+      "title": "Start with My Day, Tasks and Calendar.",
+      "body": "Goals, Habits, Finance, Journal and Insights are ready when you are. You can hide any of them in Settings.",
+      "addTask": "Add first task",
+      "tour": "Take 3-step tour",
+      "skip": "Skip",
+      "tourStep": "Tour · {step} of {total}",
+      "next": "Next",
+      "back": "Back",
+      "close": "Close tour",
+      "steps": {
+        "myday": {
+          "title": "My Day is your plan for today.",
+          "body": "Drag tasks onto the timeline, see what’s running now and start a focus session."
+        },
+        "tasks": {
+          "title": "Tasks holds everything you need to do.",
+          "body": "Capture fast, sort by priority and check things off — in a list or on a board."
+        },
+        "calendar": {
+          "title": "Calendar shows the bigger picture.",
+          "body": "Jalali by default, the week starts on Saturday and Friday is your weekend."
+        }
+      }
+    }
+  },
+  "upNext": {
+    "title": "Up next",
+    "open": "Open My Day",
+    "now": "Now",
+    "until": "until <time></time>",
+    "empty": "Nothing else planned today.",
+    "fits": "{count, plural, one {{countText} unscheduled task fits} other {{countText} unscheduled tasks fit}} in your {free} free time"
+  },
+  "tasks": {
+    "title": "Tasks",
+    "left": "{count, plural, one {{countText} left today} other {{countText} left today}}",
+    "all": "All tasks",
+    "listLabel": "Today’s tasks",
+    "overdue": "Overdue",
+    "complete": "Complete “{title}”",
+    "reopen": "Reopen “{title}”",
+    "failed": "Couldn’t update the task",
+    "empty": "Nothing left for today.",
+    "add": "Add a task…"
+  },
+  "habits": {
+    "title": "Habits",
+    "count": "{done} of {total} today",
+    "open": "Habits",
+    "today": "Today’s habits",
+    "failed": "Couldn’t update the habit",
+    "empty": "No habits yet."
+  },
+  "goals": {
+    "title": "Goals",
+    "open": "Goals",
+    "empty": "No active goals.",
+    "behind": "{days, plural, one {Behind by {daysText} day} other {Behind by {daysText} days}}",
+    "next": "Next · <step></step>",
+    "nextToday": "<step></step> today",
+    "nextTomorrow": "<step></step> tomorrow",
+    "nextOn": "Next milestone · <step></step>, {date}"
+  },
+  "mood": {
+    "title": "Mood",
+    "open": "Journal",
+    "week": "Mood, last 7 days",
+    "none": "no check-in",
+    "notYet": "You haven’t checked in today.",
+    "checkIn": "Check in",
+    "checkedIn": "Checked in at <time></time>",
+    "addNote": "Add a note",
+    "locked": "Journal is locked"
+  },
+  "finance": {
+    "title": "Finance",
+    "empty": "No budget set for this month.",
+    "spentIn": "Spent in {month}",
+    "budget": "Budget {amount}",
+    "position": "{percent} · day {day} of {days}",
+    "over": "Over budget",
+    "barLabel": "Budget used",
+    "barText": "{percent} used, {expected} expected by today",
+    "billIn": "{days, plural, =0 {today} one {in {daysText} day} other {in {daysText} days}}",
+    "locked": "Locked"
+  },
+  "insight": {
+    "eyebrow": "Insight · last 4 weeks",
+    "bestFocus": "Your best focus is <range></range>. {booked, select, yes {Today’s deep work is already booked there.} other {Try booking deep work there today.}}",
+    "see": "See pattern",
+    "dismiss": "Dismiss"
+  }
+}

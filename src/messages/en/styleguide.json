@@ -753,6 +753,22 @@
       "moodValue": "Good",
       "moodHint": "steady"
     },
+    "myDayStates": {
+      "title": "My Day · states",
+      "description": "P02 spec tab: current and completed, empty day, overloaded, partially planned, no current block, drag and Reschedule. Each tile is its own in-memory store (drag, move and complete freely); “Open full screen” runs the whole screen on the same state, without the app shell.",
+      "placeholder": "The state loads when you scroll to it.",
+      "openFull": "Open full screen",
+      "tiles": {
+        "current": "Current and completed",
+        "empty": "Empty day",
+        "overloaded": "Overloaded day",
+        "partial": "Partially planned",
+        "noCurrent": "No current block · Up next",
+        "afterHours": "After hours · 19:30",
+        "drag": "Drag",
+        "reschedule": "Reschedule"
+      }
+    },
     "folderTabs": {
       "title": "Folder tabs",
       "description": "D · Sections of ONE object. The active tab is 56px tall with a 24px top radius and joins the panel through two 20px concave fillets; inactive tabs are 44px outlined capsules with a muted count, never a coloured badge. Below 1024px the row becomes compact pills.",

@@ -1,0 +1,162 @@
+{
+  "title": "Finance",
+  "kicker": "Personal · {month}",
+  "add": "Add expense",
+  "error": "Couldn’t load Finance.",
+  "retry": "Retry",
+  "currency": {
+    "label": "Currency",
+    "toman": "Toman",
+    "rial": "Rial"
+  },
+  "month": {
+    "label": "Month",
+    "prev": "Previous month",
+    "next": "Next month"
+  },
+  "tabs": {
+    "label": "Finance sections",
+    "overview": "Overview",
+    "trends": "Trends",
+    "trendsHint": "River",
+    "breakdown": "Breakdown",
+    "breakdownHint": "Flow",
+    "transactions": "Transactions"
+  },
+  "categories": {
+    "housing": "Housing",
+    "food": "Food",
+    "transport": "Transport",
+    "lifestyle": "Lifestyle",
+    "work": "Work",
+    "health": "Health",
+    "other": "Other",
+    "income": "Income"
+  },
+  "balance": {
+    "eyebrow": "Balance · all accounts",
+    "spent": "Spent {spent} of {budget} budget",
+    "noBudget": "Spent {spent} · no budget set",
+    "position": "day {day} of {days} · expected {expected}",
+    "closed": "Month closed",
+    "under": "{amount} under expected pace · neutral, not a warning",
+    "over": "{amount} above expected pace",
+    "onPace": "Right on the expected pace",
+    "barLabel": "Budget used",
+    "barText": "{percent} used, {expected} expected by today"
+  },
+  "kpi": {
+    "label": "This month at a glance",
+    "income": "Income",
+    "spent": "Spent",
+    "spentHint": "{percent} of budget",
+    "saved": "Saved",
+    "savedGoal": "goal {amount}",
+    "goalReached": "goal {amount} · reached",
+    "left": "Left to spend",
+    "leftDays": "{days, plural, =0 {last day} one {{daysText} day} other {{daysText} days}}",
+    "noBudget": "no budget"
+  },
+  "budgets": {
+    "title": "Budget vs actual",
+    "value": "{spent} / {budget}",
+    "noBudget": "{spent} · no budget",
+    "over": "over budget",
+    "row": "{category}: {value}"
+  },
+  "bills": {
+    "title": "Upcoming payments",
+    "empty": "No payments due.",
+    "in": "{days, plural, =0 {today} one {tomorrow} other {in {daysText} days}}"
+  },
+  "recent": {
+    "title": "Recent",
+    "all": "All transactions",
+    "empty": "No transactions this month yet."
+  },
+  "when": {
+    "today": "Today {time}",
+    "day": "{weekday} {date}"
+  },
+  "trends": {
+    "question": "How did spending move through {month}?",
+    "questionRange": "How did spending move over the last 3 months?",
+    "caption": "Budget River · stacked by category · {unit, select, weekly {weekly} other {daily}}",
+    "period": "Period",
+    "month": "This month",
+    "quarter": "3 months",
+    "forecast": "forecast",
+    "top": "Top: {category} · {amount}",
+    "legend": "Isolate a category",
+    "summary": "Budget River: {total} spent, largest stream {category}.",
+    "observation": "Spending peaked on {day} ({category}); {pace}",
+    "paceNone": "every category is within its budget.",
+    "paceOne": "{category} is the only category above its budget.",
+    "paceMany": "{count} categories are above their budget."
+  },
+  "breakdown": {
+    "question": "Where is the money going?",
+    "caption": "Budget Flow · income → categories → remaining",
+    "compare": "Month",
+    "remaining": "Remaining",
+    "remainingShare": "{percent} of income",
+    "summary": "Budget Flow: {spent} of {income} income spent; {remaining} remaining."
+  },
+  "sparse": {
+    "title": "Charts appear after a few more entries",
+    "body": "Fewer than 5 transactions this month — here are the numbers."
+  },
+  "transactions": {
+    "search": "Search transactions",
+    "category": "Category",
+    "allCategories": "All categories",
+    "kind": "Type",
+    "kindAll": "All",
+    "kindExpense": "Expenses",
+    "kindIncome": "Income",
+    "today": "Today · {total}",
+    "earlier": "Earlier",
+    "none": "No transactions match.",
+    "edit": "Edit {title}",
+    "delete": "Delete {title}",
+    "deleted": "Deleted “{title}”",
+    "undo": "Undo",
+    "undoAlt": "Add it again with Add expense.",
+    "failed": "Couldn’t save. Try again."
+  },
+  "empty": {
+    "title": "No transactions yet",
+    "body": "Add your first expense or set a monthly budget. Amounts in Toman (switch to Rial anytime).",
+    "add": "Add expense",
+    "budget": "Set budget",
+    "budgetLabel": "Monthly budget ({unit})",
+    "save": "Save budget",
+    "saved": "Budget set"
+  },
+  "locked": {
+    "title": "Finance is locked",
+    "body": "PIN / biometric (Settings › Privacy). Amounts stay hidden until you unlock.",
+    "unlock": "Unlock"
+  },
+  "sheet": {
+    "titleEdit": "Edit expense",
+    "amount": "Amount",
+    "keypad": "Amount keypad",
+    "backspace": "Delete last digit",
+    "thousand": "Add three zeros",
+    "other": "= {amount}",
+    "category": "Category",
+    "date": "Date",
+    "note": "Note",
+    "addNote": "+ note",
+    "save": "Save expense",
+    "saveEdit": "Save changes",
+    "saved": "Expense saved · {amount}",
+    "updated": "Expense updated",
+    "needAmount": "Enter an amount.",
+    "needCategory": "Pick a category.",
+    "failed": "Couldn’t save the expense. Try again.",
+    "notFound": "This transaction no longer exists.",
+    "notePlaceholder": "What was it?"
+  }
+}

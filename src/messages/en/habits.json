@@ -1,0 +1,223 @@
+{
+  "title": "Habits",
+  "personal": "Personal",
+  "kicker": "Personal · {doneText} of {totalText} today",
+  "new": "New habit",
+  "error": "Couldn’t load your habits.",
+  "retry": "Try again",
+  "period": {
+    "label": "Period",
+    "14d": "14 days",
+    "month": "Month",
+    "year": "Year"
+  },
+  "today": {
+    "label": "Today’s habits",
+    "amount": "{done}/{target}",
+    "target": "{amount} {unit}",
+    "rest": "rest day",
+    "skipped": "skipped today",
+    "done": "done",
+    "toggle": "{habit}: {state}",
+    "states": {
+      "done": "done today",
+      "rest": "rest day",
+      "skipped": "skipped today",
+      "open": "not done yet"
+    },
+    "menu": "More for {habit}",
+    "skip": "Skip today",
+    "restToday": "Rest today",
+    "log": "Log amount…",
+    "clear": "Clear today’s mark",
+    "logLabel": "{habit} · amount ({unit})",
+    "logSave": "Save"
+  },
+  "timeOfDay": {
+    "anytime": "Any time",
+    "morning": "Morning",
+    "afternoon": "Afternoon",
+    "evening": "Evening"
+  },
+  "field": {
+    "title": "Habit Field · consistency",
+    "hint": "tap a cell to mark · today outlined",
+    "label": "Habit Field, {period}",
+    "periods": {
+      "14d": "14 days",
+      "month": "this month",
+      "year": "this year"
+    },
+    "summary": "streak · rate",
+    "streakShort": "{streakText}d",
+    "cell": "{habit}, {day}: {state}",
+    "states": {
+      "done": "done",
+      "missed": "not done",
+      "open": "today, not yet",
+      "skipped": "skipped",
+      "rest": "rest day",
+      "future": "upcoming",
+      "hidden": "before the habit started"
+    },
+    "legend": {
+      "done": "Done",
+      "missed": "Not done",
+      "today": "Today",
+      "future": "Upcoming",
+      "skipped": "Skipped",
+      "rest": "Rest day"
+    },
+    "best": "day streak · {habit}",
+    "bestNone": "day streak",
+    "rate": "completion · {period}",
+    "ratePeriods": {
+      "14d": "last 2 weeks",
+      "month": "this month",
+      "year": "this year"
+    }
+  },
+  "selected": {
+    "label": "Selected habit: {habit}",
+    "kicker": "Selected habit",
+    "check": "Check today",
+    "uncheck": "Uncheck today",
+    "doneToday": "done today",
+    "restToday": "rest day today",
+    "notDoneToday": "not done today",
+    "notFound": "That habit doesn’t exist any more — showing your habits instead."
+  },
+  "details": {
+    "frequency": "Frequency",
+    "daily": "Daily",
+    "dailyExcept": "Daily · rests {days}",
+    "target": "Target",
+    "targetValue": "{amount} {unit}",
+    "none": "None",
+    "time": "Preferred time",
+    "timeOfDay": {
+      "morning": "Morning",
+      "afternoon": "Afternoon",
+      "evening": "Evening"
+    },
+    "anyTime": "Any time",
+    "reminder": "Reminder",
+    "reminderIfNotDone": "{time} · if not done",
+    "off": "Off",
+    "best": "Best streak",
+    "bestValue": "{count, plural, one {{countText} day} other {{countText} days}}",
+    "archive": "Archive",
+    "edit": "Edit habit"
+  },
+  "ring": {
+    "title": "Completion",
+    "thisMonth": "this month",
+    "label": "{habit} completion in {month}",
+    "previous": "Previous month",
+    "next": "Next month",
+    "period": "{month}: {value}",
+    "noData": "no data",
+    "periods": "Months",
+    "history": "History",
+    "details": "Details",
+    "tabs": "Habit history and details",
+    "sparse": "The monthly ring appears after {daysText} days of data."
+  },
+  "ribbon": {
+    "streak": "day streak",
+    "label": "{habit}: {streakText}-day streak, {today}",
+    "today": {
+      "done": "today done",
+      "today-done": "today done",
+      "today-open": "today not done yet",
+      "missed": "today not done yet",
+      "rest": "rest day today",
+      "upcoming": "today not done yet"
+    },
+    "node": "{day}: {state}",
+    "states": {
+      "done": "done",
+      "today-done": "done today",
+      "today-open": "today, not yet",
+      "missed": "missed",
+      "rest": "rest day",
+      "upcoming": "upcoming"
+    },
+    "cta": {
+      "perfect": "Perfect week so far",
+      "keep": "Keep going",
+      "restart": "Start again today",
+      "rest": "Rest days don’t break it",
+      "checkIn": "Check in today"
+    }
+  },
+  "toast": {
+    "failed": "Couldn’t update the habit",
+    "streak": "{habit} · {streakText}-day streak",
+    "done": "{habit} checked",
+    "undone": "{habit} unchecked",
+    "skipped": "{habit} skipped today",
+    "rested": "Rest day for {habit}",
+    "archived": "{habit} archived",
+    "undo": "Undo",
+    "undoAlt": "Tap the habit again to change it back",
+    "archiveUndoAlt": "Archived habits can be restored right after archiving"
+  },
+  "empty": {
+    "title": "No habits yet",
+    "body": "Start with one small thing you want to do most days. You can add a target and reminder later.",
+    "create": "Create a habit",
+    "ideas": "Ideas",
+    "ideasLabel": "Habit ideas",
+    "idea1": "Read 20 pages",
+    "idea2": "Drink 8 glasses of water",
+    "idea3": "Morning walk",
+    "idea4": "No phone after 23:00"
+  },
+  "sheet": {
+    "titleEdit": "Edit habit",
+    "notFound": "This habit doesn’t exist any more.",
+    "name": "Name",
+    "namePlaceholder": "e.g. Read 20 pages",
+    "nameRequired": "Give the habit a name.",
+    "icon": "Icon",
+    "icons": {
+      "book": "Book",
+      "sun": "Sun",
+      "dumbbell": "Dumbbell",
+      "droplet": "Water drop",
+      "moon": "Moon",
+      "footprints": "Footprints",
+      "brain": "Mind",
+      "pen": "Pen",
+      "heart": "Heart",
+      "leaf": "Leaf"
+    },
+    "area": "Area",
+    "areaPlaceholder": "e.g. Health, Learning",
+    "frequency": "Frequency",
+    "daily": "Daily",
+    "specificDays": "Specific days",
+    "days": "Days",
+    "daysRequired": "Pick at least one day.",
+    "target": "Target",
+    "targetAmount": "Target amount",
+    "targetAmountPlaceholder": "20",
+    "targetUnit": "Unit",
+    "targetUnitPlaceholder": "pages",
+    "targetHint": "Optional. Logging the full amount checks the day.",
+    "time": "Preferred time",
+    "timeOfDay": "Part of the day",
+    "preferredTime": "Time",
+    "reminder": "Reminder",
+    "reminderTime": "Reminder time",
+    "ifNotDone": "Only if not done",
+    "failed": "Couldn’t save the habit. Try again.",
+    "cancel": "Cancel",
+    "save": "Save",
+    "create": "Create habit",
+    "saving": "Saving…",
+    "saved": "Habit saved",
+    "created": "Habit created"
+  }
+}

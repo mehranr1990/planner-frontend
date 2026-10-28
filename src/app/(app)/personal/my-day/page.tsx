@@ -1,7 +1,8 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
-import { personalPageMetadata, PersonalSkeleton } from "@/features/personal/personal-skeleton";
-import { SearchParamsProbe, BlocksProbe } from "@/features/personal/seams";
+import { MyDayScreen } from "@/features/my-day/my-day-screen";
+import { personalPageMetadata } from "@/features/personal/personal-skeleton";
+import { ModuleGate } from "@/features/planner-settings/module-hidden-state";
 
 // Localised from the preferences cookie, like every shell route: opt out of
 // instant validation (see the root layout).
@@ -11,13 +12,14 @@ export function generateMetadata(): Promise<Metadata> {
   return personalPageMetadata("myday");
 }
 
+/** P02 · My Day. ?date=1405-07-21 and ?view=3days are read by the screen's provider. */
 export default function MyDayPage() {
   return (
-    <PersonalSkeleton page="myday">
+    // My Day is a core module (never hidden); the gate keeps every Personal page on one rule.
+    <ModuleGate module="myday">
       <Suspense fallback={null}>
-        <SearchParamsProbe names={["date","view"]} />
+        <MyDayScreen />
       </Suspense>
-      <BlocksProbe />
-    </PersonalSkeleton>
+    </ModuleGate>
   );
 }

@@ -1,0 +1,129 @@
+{
+  "landmark": "Focus",
+  "leave": "Leave focus",
+  "keepsRunning": "timer keeps running",
+  "settings": "Focus settings",
+  "phases": {
+    "label": "Timer mode",
+    "focus": "Focus",
+    "short": "Short break",
+    "long": "Long break"
+  },
+  "capsule": {
+    "label": "Session progress",
+    "focus": "Focus · cycle {current} of {total}",
+    "short": "Short break · then focus {next} of {total}",
+    "long": "Long break · after {total} cycles",
+    "complete": "Session complete",
+    "cycleDone": "Cycle {n}: done",
+    "cycleCurrent": "Cycle {n}: current",
+    "cycleUpcoming": "Cycle {n}: upcoming"
+  },
+  "status": {
+    "focusing": "Focusing",
+    "paused": "Paused · {minutes}m",
+    "ready": "Ready"
+  },
+  "noTaskTitle": "Just a timer",
+  "subtasks": "{done} of {total} subtasks done",
+  "of": "of {total} · ends {end}",
+  "ofPaused": "of {total} · paused",
+  "then": "then {minutes}m break",
+  "thenLong": "then {minutes}m long break",
+  "timerLabel": "{minutes} min {seconds} s left",
+  "sessionBar": "Session progress",
+  "pause": "Pause",
+  "resume": "Resume",
+  "startFocus": "Start focus",
+  "startBreak": "Start break",
+  "finishTask": "Finish task",
+  "finishSession": "Finish session",
+  "plusMinutes": "+{n} min",
+  "skipBreak": "Skip break",
+  "skip": "Skip",
+  "endFocus": "End focus",
+  "break": {
+    "done": "Focus {current} of {total} done · {minutes} min",
+    "longEyebrow": "Long break · after {total} cycles",
+    "title": "Step away for a moment",
+    "breathe": "breathe in {s}s · out {s}s",
+    "suggestions": "Break suggestions",
+    "water": "Drink water",
+    "look": "Look {m} m away",
+    "stretch": "Stretch shoulders",
+    "walk": "Take a short walk",
+    "today": "Today’s focus total: {total}",
+    "next": "Next · Focus {next} of {total} on “{task}”",
+    "nextNoTask": "Next · Focus {next} of {total}",
+    "auto": "starts automatically (setting)",
+    "manual": "start it when you’re ready"
+  },
+  "note": {
+    "title": "Quick note",
+    "label": "Note for this task",
+    "placeholder": "A thought about this task…",
+    "hint": "Saved to the task’s Notes",
+    "save": "Save note",
+    "saved": "Saved to Notes",
+    "noTask": "Pick a task to keep notes"
+  },
+  "park": {
+    "title": "Park a distraction",
+    "label": "Distraction",
+    "placeholder": "Something popped up? Type it, Enter",
+    "list": "Parked distractions",
+    "toInbox": "Inbox",
+    "hint": "Parked items go to Inbox after the session.",
+    "added": "Parked: {text}"
+  },
+  "complete": {
+    "title": "Session complete",
+    "cycles": "{cycles, plural, one {{n} cycle} other {{n} cycles}} · {total}",
+    "parked": "{count, plural, =0 {No distractions parked} one {{n} distraction parked} other {{n} distractions parked}}",
+    "taskOpen": "Task “{task}” → still open",
+    "taskOpenSubtasks": "Task “{task}” → still open ({done} of {total} subtasks)",
+    "taskDone": "Task “{task}” → done",
+    "markDone": "Mark task done",
+    "another": "Another round",
+    "back": "Back to My Day"
+  },
+  "pick": {
+    "title": "Start without a task",
+    "description": "No current block. What will you focus on?",
+    "list": "Open tasks today",
+    "empty": "No open tasks today.",
+    "loading": "Loading tasks",
+    "justTimer": "Just a timer",
+    "minutes": "{minutes}m"
+  },
+  "settingsSheet": {
+    "description": "Same values as Settings › Focus.",
+    "focus": "Focus",
+    "short": "Short break",
+    "long": "Long break",
+    "cycles": "Cycles",
+    "minutes": "{value} min",
+    "saveDefault": "Save as default?",
+    "saveDefaultAction": "Save as default",
+    "savedDefault": "Saved as default"
+  },
+  "announce": {
+    "focus": "Focus started: cycle {current} of {total}",
+    "short": "Short break: {minutes} minutes",
+    "long": "Long break: {minutes} minutes",
+    "ready": "Phase finished. Start the next when you’re ready.",
+    "paused": "Timer paused",
+    "complete": "Session complete"
+  },
+  "duration": {
+    "hm": "{h}h {m}m",
+    "m": "{m}m"
+  },
+  "running": {
+    "chip": "Back to focus · {status}",
+    "running": "running · {time}",
+    "paused": "paused · {time}",
+    "break": "break · {time}",
+    "open": "Back to focus"
+  }
+}

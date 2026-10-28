@@ -122,7 +122,7 @@ test.describe("desktop @ 1440", () => {
     await expect(page.locator("[data-task-drawer]")).toBeVisible();
     expect(Math.round((await drawer.boundingBox())!.width)).toBe(520);
     // The list page stays underneath (the route was intercepted).
-    await expect(page.locator('[data-skeleton="tasks"]')).toBeAttached();
+    await expect(page.locator("[data-tasks-list]")).toBeAttached();
     await page.keyboard.press("Escape");
     await expect(page).toHaveURL(/\/personal\/tasks$/);
     await expect(page.getByRole("dialog")).toHaveCount(0);
@@ -153,7 +153,7 @@ test.describe("desktop @ 1440", () => {
       w.next.router.push("/personal/tasks/create");
     });
     await expect(page).toHaveURL(/\/personal\/tasks\/create$/);
-    await expect(page.locator('[data-skeleton="taskNew"]')).toBeVisible();
+    await expect(page.locator('[data-screen="task-create"]')).toBeVisible();
     await expect(page.locator("[data-task-drawer]")).toHaveCount(0);
     expect(await page.evaluate(() => (window as unknown as { __softNav?: boolean }).__softNav)).toBe(true);
   });

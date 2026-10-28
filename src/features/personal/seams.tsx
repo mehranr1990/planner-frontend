@@ -4,8 +4,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import type { ReactNode } from "react";
-import { getPlannerToday } from "@/data/clock";
-import { useBlocks, useInboxCount, useTasks } from "@/data/queries";
+import { useInboxCount, useTasks } from "@/data/queries";
 import type { TaskView } from "@/data/repositories";
 import { usePreferences } from "@/features/preferences/use-preferences";
 import { formatNumber } from "@/lib/locale/digits";
@@ -70,18 +69,6 @@ export function TaskLinksProbe({ view = "today" }: { view?: TaskView }) {
         </ul>
       )}
     </section>
-  );
-}
-
-/** Block count for a day from the blocks repository. */
-export function BlocksProbe({ day }: { day?: string }) {
-  const t = useTranslations("Personal.seams");
-  const { digits } = usePreferences();
-  const blocks = useBlocks(day ?? getPlannerToday());
-  return (
-    <p data-probe="blocks" className="text-sm text-fg">
-      {blocks.data ? t("blocks", { count: formatNumber(blocks.data.length, digits) }) : t("loading")}
-    </p>
   );
 }
 

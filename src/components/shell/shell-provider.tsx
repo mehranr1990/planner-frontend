@@ -1,8 +1,10 @@
 "use client";
 
+import { usePathname } from "next/navigation";
 import { createContext, use, useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
 import { appContexts } from "@/features/navigation/contexts";
 import type { ContextId, Workspace } from "@/features/navigation/types";
+import { useOpenSheet } from "@/features/sheets/sheet-params";
 import { CommandPalette } from "./command-palette";
 import { useReturnFocus } from "./use-shell-ui";
 
@@ -41,6 +43,11 @@ export function useShell(): ShellContextValue {
   return value;
 }
 
+/** The signed-in profile, or null outside the shell (tests, demo harnesses). */
+export function useShellProfile(): ShellProfile | null {
+  return use(ShellContext)?.profile ?? null;
+}
+
 /** The chosen workspace of a context, if it has any. */
 export function useActiveWorkspace(context: ContextId): Workspace | undefined {
   const { workspaces, activeWorkspaceIds } = useShell();
@@ -57,6 +64,12 @@ function isEditable(target: EventTarget | null): boolean {
 function isPaletteShortcut(event: KeyboardEvent): boolean {
   if (!(event.metaKey || event.ctrlKey) || event.altKey || event.shiftKey) return false;
   return event.code === "KeyK" || event.key.toLowerCase() === "k";
+}
+
+/** ⌘⇧N on macOS, Ctrl+Shift+N elsewhere: Quick note (P18 · F). `code` keeps it working on Persian layouts. */
+function isQuickNoteShortcut(event: KeyboardEvent): boolean {
+  if (!(event.metaKey || event.ctrlKey) || event.altKey || !event.shiftKey) return false;
+  return event.code === "KeyN" || event.key.toLowerCase() === "n";
 }
 
 export interface ShellProviderProps {
@@ -106,6 +119,22 @@ export function ShellProvider({ workspaces, profile, sample = false, children }:
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [paletteOpen, capture]);
+
+  // Quick note opens over any Personal route, even from a text field (it is a capture shortcut).
+  const pathname = usePathname();
+  const openSheet = useOpenSheet();
+  const personal = pathname === "/personal" || pathname.startsWith("/personal/");
+  useEffect(() => {
+    if (!personal) return;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.defaultPrevented || event.repeat || !isQuickNoteShortcut(event)) return;
+      if (new URLSearchParams(window.location.search).get("sheet") === "note") return;
+      event.preventDefault();
+      openSheet("note");
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [personal, openSheet]);
 
   const value = useMemo<ShellContextValue>(
     () => ({ workspaces, profile, sample, activeWorkspaceIds, selectWorkspace, paletteOpen, openPalette }),

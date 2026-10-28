@@ -26,6 +26,7 @@ const SECTIONS = [
   "Product card",
   "Utility card",
   "Metric tiles",
+  "My Day · states",
 ];
 
 // A full page of components: role queries over it are slow on a loaded machine.

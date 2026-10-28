@@ -1,51 +1,52 @@
 "use client";
 
+import { ArrowLeft, X } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback, useRef } from "react";
 import { useTranslations } from "next-intl";
-import { Sheet, SheetContent } from "@/components/ui/sheet";
+import { buttonVariants, IconButton } from "@/components/ui/button";
+import { Sheet, SheetClose, SheetContent } from "@/components/ui/sheet";
 import { useTask } from "@/data/queries";
+import { TaskDetailView } from "@/features/tasks/detail/task-detail-view";
+import { cn } from "@/lib/cn";
 
 /*
- * Task detail skeleton (P06). Two containers for one route:
+ * P06 Task detail: two containers for one route.
  * - soft navigation inside Personal is intercepted into the @drawer slot: a
- *   520px drawer over the page it was opened from (mobile: full screen);
- *   closing goes back, so the page underneath never re-renders;
+ *   520px drawer over the page it was opened from (mobile: full screen with
+ *   back); closing goes back, so the page underneath never re-renders;
  * - hard navigation (shared link, refresh) renders the full page route.
  */
 
+const TASKS_HREF = "/personal/tasks";
+
+/** The full page (hard navigation). */
 export function TaskDetailBody({ id }: { id: string }) {
-  const t = useTranslations("Personal");
-  const task = useTask(id);
-  if (task.isPending) return <p className="text-sm text-fg-muted">{t("seams.loading")}</p>;
-  if (!task.data) {
-    return (
-      <p role="status" className="text-sm text-fg-secondary">
-        {t("taskDetail.notFound")}
-      </p>
-    );
-  }
+  const t = useTranslations("Tasks.detail");
+  const router = useRouter();
   return (
-    <dl data-probe="task" className="flex flex-col gap-2">
-      <div className="flex flex-wrap items-baseline gap-x-3">
-        <dt className="type-label text-fg-muted">{t("pages.taskDetail.title")}</dt>
-        <dd className="text-sm font-semibold text-fg">
-          <bdi dir="auto">{task.data.title}</bdi>
-        </dd>
-      </div>
-      <div className="flex flex-wrap items-baseline gap-x-3">
-        <dt className="type-label text-fg-muted">id</dt>
-        <dd dir="ltr" className="font-mono text-xs text-fg-secondary">
-          {task.data.id} · {t(`taskDetail.status.${task.data.status}`)}
-        </dd>
-      </div>
-    </dl>
+    <TaskDetailView
+      id={id}
+      variant="page"
+      onDismiss={() => router.push(TASKS_HREF)}
+      closeControl={
+        <Link
+          href={TASKS_HREF}
+          aria-label={t("back")}
+          className={cn(buttonVariants({ variant: "secondary" }), "size-10 shrink-0 rounded-full bg-surface p-0")}
+        >
+          <ArrowLeft aria-hidden="true" size={18} className="rtl:-scale-x-100" />
+        </Link>
+      }
+    />
   );
 }
 
 /** The intercepted drawer (P06 desktop: right drawer 520px, mobile: full screen). */
 export function TaskDetailDrawer({ id }: { id: string }) {
   const t = useTranslations("Personal");
+  const tDetail = useTranslations("Tasks.detail");
   const router = useRouter();
   const task = useTask(id);
   // The task link that opened the drawer still has focus when it mounts; Radix
@@ -69,12 +70,26 @@ export function TaskDetailDrawer({ id }: { id: string }) {
         size="detail"
         mobileSide="fullscreen"
         title={task.data?.title ?? t("pages.taskDetail.title")}
-        description={t("pages.taskDetail.purpose")}
+        hideTitle
+        hideClose
+        bodyClassName="px-3 pt-3 pb-6"
         data-scope="personal"
         data-task-drawer=""
         onCloseAutoFocus={onCloseAutoFocus}
       >
-        <TaskDetailBody id={id} />
+        <TaskDetailView
+          id={id}
+          variant="drawer"
+          onDismiss={() => router.back()}
+          closeControl={
+            <SheetClose asChild>
+              <IconButton size="sm" variant="ghost" label={tDetail("close")} className="shrink-0 bg-surface">
+                <X aria-hidden="true" size={18} className="max-lg:hidden" />
+                <ArrowLeft aria-hidden="true" size={18} className="lg:hidden rtl:-scale-x-100" />
+              </IconButton>
+            </SheetClose>
+          }
+        />
       </SheetContent>
     </Sheet>
   );

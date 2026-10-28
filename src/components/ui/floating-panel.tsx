@@ -1,7 +1,7 @@
 "use client";
 
 import { Dialog as DialogPrimitive, Direction } from "radix-ui";
-import { useSyncExternalStore, type ComponentProps, type ReactNode } from "react";
+import type { ComponentProps, ReactNode } from "react";
 import { keepOpenWhileClearingSearch, overlayClassName } from "@/components/ui/dialog";
 import {
   SheetFrame,
@@ -9,6 +9,7 @@ import {
   sheetLayoutClassName,
   sheetSurfaceClassName,
 } from "@/components/ui/sheet";
+import { useIsDesktop } from "@/components/ui/use-is-desktop";
 import { cn } from "@/lib/cn";
 
 /*
@@ -24,23 +25,6 @@ import { cn } from "@/lib/cn";
  * modal flag follows the lg media query; panels are closed during SSR, so the
  * server snapshot (desktop) never paints.
  */
-
-/** Tailwind's lg breakpoint (64rem); keep in step with the lg: classes below. */
-const DESKTOP_QUERY = "(min-width: 64rem)";
-
-function subscribeDesktop(onChange: () => void) {
-  const query = window.matchMedia(DESKTOP_QUERY);
-  query.addEventListener("change", onChange);
-  return () => query.removeEventListener("change", onChange);
-}
-
-function useIsDesktop(): boolean {
-  return useSyncExternalStore(
-    subscribeDesktop,
-    () => window.matchMedia(DESKTOP_QUERY).matches,
-    () => true,
-  );
-}
 
 export type FloatingPanelProps = Omit<ComponentProps<typeof DialogPrimitive.Root>, "modal">;
 

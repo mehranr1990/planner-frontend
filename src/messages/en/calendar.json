@@ -1,0 +1,85 @@
+{
+  "toolbar": {
+    "nav": "Change dates",
+    "previous": "Previous",
+    "next": "Next",
+    "today": "Today",
+    "view": "Calendar view",
+    "day": "Day",
+    "week": "Week",
+    "month": "Month",
+    "agenda": "Agenda",
+    "system": "Calendar system",
+    "shamsi": "Shamsi",
+    "gregorian": "Gregorian",
+    "new": "New"
+  },
+  "title": {
+    "agenda": "Agenda · next {count} days"
+  },
+  "layers": {
+    "label": "Show",
+    "group": "Calendar layers",
+    "count": "{name}, {count}",
+    "alwaysOn": "Personal is always shown",
+    "names": {
+      "personal": "Personal",
+      "project": "Projects",
+      "team": "Teams",
+      "company": "Companies"
+    },
+    "managed": "Managed in {module}"
+  },
+  "week": {
+    "title": "Week",
+    "gridLabel": "Week of {from} to {to}",
+    "dayLabel": "{date}",
+    "free": "Free week · {hours} free",
+    "newEvent": "New event",
+    "weekend": "weekend",
+    "halfDay": "half day",
+    "loading": "Loading calendar",
+    "strip": "Days of this week"
+  },
+  "month": {
+    "title": "Month",
+    "more": "+{count}",
+    "moreLabel": "{count} more",
+    "cellLabel": "{date}, {count}",
+    "events": "{count, plural, =0 {nothing planned} one {{formatted} item} other {{formatted} items}}",
+    "hint": "Select a day to see its agenda. Double-click or press N to add.",
+    "dayPanel": "Agenda",
+    "dayEmpty": "Nothing planned this day.",
+    "dated": "Date set to {date}",
+    "dateFailed": "Couldn't set the date. Try again."
+  },
+  "agenda": {
+    "today": "Today",
+    "weekend": "weekend",
+    "task": "task",
+    "markDone": "Mark “{title}” done",
+    "empty": "Nothing planned in the next {count} days.",
+    "emptyTitle": "A clear fortnight"
+  },
+  "selected": {
+    "label": "Selected event",
+    "close": "Close",
+    "reschedule": "Reschedule",
+    "open": "Open detail",
+    "startFocus": "Start focus",
+    "markDone": "Mark done",
+    "scope": "Workspace",
+    "type": "Type",
+    "duration": "Duration",
+    "kinds": {
+      "task": "Task",
+      "event": "Event",
+      "routine": "Routine",
+      "break": "Break"
+    }
+  },
+  "mini": {
+    "label": "Jump to a date",
+    "thisWeek": "This week"
+  }
+}

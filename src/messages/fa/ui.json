@@ -11,5 +11,6 @@
   "noDateSelected": "تاریخی انتخاب نشده",
   "today": "امروز",
   "weekend": "تعطیل",
-  "selectedDate": "تاریخ انتخاب‌شده"
+  "selectedDate": "تاریخ انتخاب‌شده",
+  "energyLevel": "{level, select, low {انرژی کم} medium {انرژی متوسط} other {انرژی زیاد}}"
 }

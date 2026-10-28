@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
-import { personalPageMetadata, PersonalSkeleton } from "@/features/personal/personal-skeleton";
-import { SearchParamsProbe } from "@/features/personal/seams";
+import { personalPageMetadata } from "@/features/personal/personal-skeleton";
+import { ShutdownScreen } from "@/features/shutdown/shutdown-screen";
 
 // Localised from the preferences cookie, like every shell route: opt out of
 // instant validation (see the root layout).
@@ -11,12 +11,11 @@ export function generateMetadata(): Promise<Metadata> {
   return personalPageMetadata("shutdown");
 }
 
+/** P10 · Daily shutdown: a contextual flow (no nav item). ?step=tomorrow|reflect is read by the screen. */
 export default function DailyShutdownPage() {
   return (
-    <PersonalSkeleton page="shutdown">
-      <Suspense fallback={null}>
-        <SearchParamsProbe names={["step"]} />
-      </Suspense>
-    </PersonalSkeleton>
+    <Suspense fallback={null}>
+      <ShutdownScreen />
+    </Suspense>
   );
 }

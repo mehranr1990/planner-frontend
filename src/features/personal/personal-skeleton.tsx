@@ -9,7 +9,6 @@ import { getRequestPreferences } from "@/features/preferences/request-preference
 import { formatDate } from "@/lib/dates/format";
 import { convertDigits } from "@/lib/locale/digits";
 import { personalPages, type PersonalPageId } from "./pages";
-import { TodaySwitch } from "./today-switch";
 
 /*
  * STEP 3 SKELETON — every Personal route renders this until its screen is
@@ -61,10 +60,6 @@ export async function PersonalSkeleton({ page, children }: PersonalSkeletonProps
         title={t(`pages.${page}.title`)}
         subtitle={t(`pages.${page}.purpose`)}
       />
-      {page === "overview" || page === "myday" ? <TodaySwitch
-          current={page}
-          labels={{ nav: t("today.label"), overview: t("today.overview"), plan: t("today.plan") }}
-        /> : null}
       {spec.module && isOptionalModule(spec.module) ? <ModuleGate module={spec.module}>{body}</ModuleGate> : body}
     </>
   );

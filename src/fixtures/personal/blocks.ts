@@ -21,7 +21,7 @@ export const sampleBlocks: readonly TimeBlock[] = [
     start: sampleInstant(today, 8),
     end: sampleInstant(today, 8, 45),
     scope: "personal",
-    kind: "routine",
+    kind: "break",
     done: true,
   },
   {
@@ -41,6 +41,7 @@ export const sampleBlocks: readonly TimeBlock[] = [
     end: sampleInstant(today, 11, 45),
     scope: "team",
     kind: "event",
+    energy: "medium",
     done: true,
   },
   {
@@ -49,7 +50,7 @@ export const sampleBlocks: readonly TimeBlock[] = [
     start: sampleInstant(today, 13),
     end: sampleInstant(today, 13, 45),
     scope: "personal",
-    kind: "routine",
+    kind: "break",
   },
   {
     id: "ui-design",
@@ -67,6 +68,7 @@ export const sampleBlocks: readonly TimeBlock[] = [
     end: sampleInstant(today, 17),
     scope: "project",
     kind: "event",
+    energy: "medium",
   },
   {
     id: "gym",
@@ -75,6 +77,7 @@ export const sampleBlocks: readonly TimeBlock[] = [
     end: sampleInstant(today, 18, 15),
     scope: "personal",
     kind: "routine",
+    energy: "medium",
   },
   // Tomorrow
   {
@@ -94,4 +97,31 @@ export const sampleBlocks: readonly TimeBlock[] = [
     scope: "team",
     kind: "event",
   },
+  // The rest of the P04 Calendar week (Sat 18 – Fri 24 Mehr); events only, so no task needs a matching block.
+  ...weekBlocks(),
 ];
+
+function weekBlocks(): TimeBlock[] {
+  const { saturday, sunday, yesterday, thursday, friday } = sampleDays;
+  const block = (
+    id: string,
+    title: string,
+    day: string,
+    [startH, startM]: [number, number],
+    [endH, endM]: [number, number],
+    scope: TimeBlock["scope"],
+    kind: TimeBlock["kind"] = "event",
+  ): TimeBlock => ({ id, title, start: sampleInstant(day, startH, startM), end: sampleInstant(day, endH, endM), scope, kind });
+  return [
+    block("cal-deep-work-sat", "Deep work", saturday, [9, 0], [11, 0], "personal", "routine"),
+    block("cal-sprint-planning", "Sprint planning", saturday, [15, 0], [16, 0], "project"),
+    block("cal-client-call-sun", "Client call", sunday, [10, 0], [11, 0], "project"),
+    block("cal-lunch-sun", "Lunch with Sara", sunday, [13, 0], [14, 0], "personal"),
+    block("cal-board-decision", "Board decision", sunday, [16, 0], [18, 0], "company"),
+    block("cal-design-review-mon", "Design review", yesterday, [9, 0], [10, 30], "team"),
+    block("cal-wireframes", "Wireframes", yesterday, [11, 0], [13, 0], "project"),
+    block("cal-gym-mon", "Gym", yesterday, [17, 15], [18, 15], "personal", "routine"),
+    block("cal-family-brunch", "Family brunch", thursday, [10, 0], [12, 0], "personal"),
+    block("cal-hike", "Hike · Darband", friday, [9, 0], [11, 0], "personal"),
+  ];
+}

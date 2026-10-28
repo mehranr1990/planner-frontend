@@ -16,6 +16,7 @@ import { FormSection } from "./sections/components/form-section";
 import { IndicatorsSection } from "./sections/components/indicators-section";
 import { MenusSection } from "./sections/components/menus-section";
 import { MetricTilesSection } from "./sections/components/metric-tiles-section";
+import { MyDayStatesSection } from "./sections/components/my-day-states-section";
 import { OverlaysSection } from "./sections/components/overlays-section";
 import { ProductCardSection } from "./sections/components/product-card-section";
 import { ProgressSection } from "./sections/components/progress-section";
@@ -48,7 +49,7 @@ function ComponentsViewContent() {
         states · form (8) | choices · menus (8) | indicators · data display |
         progress | overlays (dialogs, tooltip, P18 containers) | tab families |
         folder tabs (7) · ring card (5) | signature cards | product card ·
-        utility card | metric tiles. Every section carries its tier.
+        utility card | metric tiles | My Day states (lazy). Every section carries its tier.
       */}
       <FieldsSection />
       <SelectSection />
@@ -71,6 +72,7 @@ function ComponentsViewContent() {
       <ProductCardSection />
       <UtilityCardSection />
       <MetricTilesSection />
+      <MyDayStatesSection />
     </StyleguideShell>
   );
 }

@@ -1,0 +1,97 @@
+{
+  "kicker": "Personal · just write, sort later",
+  "title": "Brain Dump",
+  "status": {
+    "label": "Save status",
+    "saving": "Saving…",
+    "saved": "Saved · {time}",
+    "offline": "Offline · will sync",
+    "error": "Not saved · retrying on the next pause"
+  },
+  "sendRest": "Send rest to Inbox",
+  "pages": {
+    "label": "Pages",
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "lines": "{count, plural, =0 {Empty} one {{countText} line} other {{countText} lines}}",
+    "allSorted": "all sorted",
+    "sorted": "{countText} sorted",
+    "left": "{countText} left",
+    "unsortedBadge": "{count, plural, one {{countText} unsorted line} other {{countText} unsorted lines}}",
+    "note": "One page per day. A new page starts at {time}. Unsorted lines stay until you clear them.",
+    "loading": "Loading pages",
+    "error": "The pages didn’t load."
+  },
+  "page": {
+    "heading": "{date} — no title, no type, no date needed",
+    "placeholder": "What’s on your mind?",
+    "label": "Page for {date}",
+    "line": "Line {index}",
+    "voice": "Voice capture",
+    "loading": "Loading the page",
+    "error": "This page didn’t load.",
+    "retry": "Try again"
+  },
+  "actions": {
+    "label": "Sort this line",
+    "bulkLabel": "Sort the selected lines",
+    "task": "Task",
+    "note": "Note",
+    "journal": "Journal",
+    "event": "Event",
+    "inbox": "Inbox",
+    "strike": "Strike"
+  },
+  "tag": {
+    "task": "Task",
+    "note": "Note",
+    "journal": "Journal",
+    "event": "Event",
+    "inbox": "Inbox",
+    "struck": "Struck",
+    "today": "today",
+    "open": "Open {target}",
+    "unstrike": "Unstrike this line"
+  },
+  "todo": {
+    "check": "Mark done",
+    "uncheck": "Mark not done"
+  },
+  "footer": {
+    "select": "Select lines",
+    "doneSelecting": "Done",
+    "selectLine": "Select line",
+    "selected": "{count, plural, =0 {No lines selected} one {{countText} line selected} other {{countText} lines selected}}",
+    "clear": "Clear sorted",
+    "hint": "Hover or focus a line to sort it · Enter starts a new line"
+  },
+  "convert": {
+    "title": "Convert line → Task",
+    "field": "Task title",
+    "scope": "Personal",
+    "create": "Create task",
+    "cancel": "Cancel",
+    "hint": "Pre-filled from the line. The line stays, tagged “→ Task”."
+  },
+  "clear": {
+    "title": "Clear page",
+    "sorted": "{count, plural, =0 {No sorted lines to archive.} one {{countText} sorted line will be archived.} other {{countText} sorted lines will be archived.}}",
+    "unsorted": "{count, plural, =0 {No unsorted lines.} one {{countText} unsorted line:} other {{countText} unsorted lines:}}",
+    "inbox": "Move unsorted to Inbox",
+    "keep": "Keep them on this page",
+    "archive": "Archive everything"
+  },
+  "toast": {
+    "converted": "Converted to task",
+    "addedTo": "Added to {day}",
+    "sentTo": "Sent to {target}",
+    "laterStep": "{target} arrives in a later step — the line keeps its tag.",
+    "addedToJournal": "Added to the day’s Journal entry.",
+    "sentInbox": "{count, plural, one {Line sent to Inbox} other {{countText} lines sent to Inbox}}",
+    "struck": "{count, plural, one {Line struck through} other {{countText} lines struck through}}",
+    "cleared": "Page cleared",
+    "undo": "Undo",
+    "undoAlt": "Find the line on its page and sort it again",
+    "failed": "Something went wrong. Try again."
+  }
+}

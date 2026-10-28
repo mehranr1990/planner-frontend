@@ -1,8 +1,9 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
-import { personalPageMetadata, PersonalSkeleton } from "@/features/personal/personal-skeleton";
+import { personalPageMetadata } from "@/features/personal/personal-skeleton";
 import { RouteParamProbe } from "@/features/personal/route-param-probe";
 import { TaskDetailBody } from "@/features/personal/task-detail";
+import { TaskDetailLoading } from "@/features/tasks/detail/task-detail-view";
 
 // Localised from the preferences cookie, like every shell route: opt out of
 // instant validation (see the root layout).
@@ -24,13 +25,16 @@ async function Detail({ params }: { params: Params }) {
   );
 }
 
-/** Hard navigation (shared link, refresh) and mobile: the full P06 page. */
+/**
+ * Hard navigation (shared link, refresh) and mobile: the full P06 page.
+ * data-skeleton stays as the route marker the e2e seams look for.
+ */
 export default function TaskDetailPage({ params }: { params: Params }) {
   return (
-    <PersonalSkeleton page="taskDetail">
-      <Suspense fallback={null}>
+    <section data-skeleton="taskDetail" data-scope="personal" className="mx-auto flex w-full max-w-[560px] flex-col">
+      <Suspense fallback={<TaskDetailLoading />}>
         <Detail params={params} />
       </Suspense>
-    </PersonalSkeleton>
+    </section>
   );
 }

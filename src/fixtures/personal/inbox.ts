@@ -22,6 +22,7 @@ export const sampleInboxItems: readonly InboxItem[] = [
     capturedAt: sampleInstant(today, 8, 12),
     state: "untriaged",
     suggested: "task",
+    audioSeconds: 14,
   },
   {
     id: "i-calm-dashboards-link",

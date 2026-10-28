@@ -1,0 +1,235 @@
+{
+  "page": {},
+  "a11y": {
+    "energy": "{level, select, low {انرژی کم} medium {انرژی متوسط} other {انرژی زیاد}}"
+  },
+  "timeline": {
+    "title": "خط زمان",
+    "hint": "کارها را از ستون کناری بکشید · لبه‌ها را برای تغییر مدت بکشید",
+    "viewLabel": "نمای خط زمان",
+    "day": "روز",
+    "threeDays": "سه روز",
+    "addBlock": "افزودن بازه",
+    "loading": "در حال بارگذاری خط زمان",
+    "gridLabel": "خط زمان {date}",
+    "gridLabelRange": "خط زمان از {from} تا {to}",
+    "today": "امروز",
+    "nowLine": "الان، {time}",
+    "freeSlot": "کاری را اینجا رها کنید",
+    "gapFree": "{duration} آزاد",
+    "gapFit": "{formatted} کار جا می‌شود"
+  },
+  "block": {
+    "roleDescription": "بازه‌ی زمانی",
+    "now": "الان",
+    "liveNow": "در حال انجام",
+    "done": "انجام‌شده",
+    "left": "{duration} مانده",
+    "overlaps": "{duration} هم‌پوشانی",
+    "scope": {
+      "personal": "شخصی",
+      "project": "پروژه‌ها",
+      "team": "تیم‌ها",
+      "company": "شرکت‌ها"
+    },
+    "reschedule": "زمان‌بندی دوباره‌ی «{title}»",
+    "resizing": "{range}، {duration}",
+    "help": "برای برداشتن و جابه‌جایی این بازه Space را بزنید. Enter جزئیات را باز می‌کند. R زمان‌بندی دوباره است. Shift با پیکان بالا یا پایین پایان بازه را تغییر می‌دهد و Alt با Shift و پیکان بالا یا پایین شروع آن را."
+  },
+  "drag": {
+    "instructions": "برای برداشتن Space را بزنید. با پیکان‌های بالا و پایین پانزده دقیقه جابه‌جا کنید و با پیکان‌های چپ و راست روز را عوض کنید. برای رها کردن Enter و برای لغو Escape را بزنید.",
+    "lifted": "«{title}» برداشته شد.",
+    "hoverAt": "«{title}» ساعت {time}، {day}.",
+    "hoverUnscheduled": "«{title}» روی «بدون زمان» است. برای برگرداندن به بدون زمان رها کنید.",
+    "hoverNothing": "«{title}» روی هیچ روزی نیست.",
+    "cancelled": "لغو شد. «{title}» سر جای خود ماند.",
+    "label": "در حال کشیدن · {duration} ← گام {step}",
+    "cannotDrop": "اینجا نمی‌شود رها کرد",
+    "scheduled": "«{title}» برای ساعت {time}، {day} زمان‌بندی شد.",
+    "movedTo": "«{title}» به ساعت {time}، {day} منتقل شد.",
+    "resizedTo": "«{title}» اکنون {range} است، {duration}.",
+    "unscheduled": "«{title}» به بدون زمان برگشت.",
+    "rejectedNoTarget": "بیرون از خط زمان رها شد. «{title}» سر جای خود ماند.",
+    "rejectedOutOfRange": "«{title}» آنجا جا نمی‌شود: از نیمه‌شب می‌گذرد.",
+    "rejectedTooShort": "«{title}» برای قرار گرفتن خیلی کوتاه است.",
+    "rejectedNotUnschedulable": "فقط کارها را می‌شود به بدون زمان برگرداند. «{title}» سر جای خود ماند.",
+    "failed": "ذخیره‌ی تغییر «{title}» انجام نشد.",
+    "toastScheduled": "«{title}» برای ساعت {time} زمان‌بندی شد",
+    "toastMoved": "«{title}» به ساعت {time} منتقل شد",
+    "toastResized": "مدت «{title}» اکنون {duration} است",
+    "toastUnscheduled": "«{title}» به بدون زمان برگشت",
+    "toastOverlap": "{duration} هم‌پوشانی با «{other}»",
+    "toastOverlapMore": "هم‌پوشانی با «{other}» و {count} مورد دیگر",
+    "toastUndo": "واگرد",
+    "toastUndoAlt": "«{title}» را به جای قبلی برگردانید",
+    "toastUndone": "واگرد شد",
+    "toastFailed": "«{title}» به‌روز نشد",
+    "toastFailedDetail": "چیزی تغییر نکرد. دوباره تلاش کنید."
+  },
+  "now": {
+    "landmark": "الان",
+    "chip": "الان · {left} مانده",
+    "progress": "پیشرفت",
+    "markDone": "انجام شد",
+    "markedDone": "به‌عنوان انجام‌شده ثبت شد",
+    "undo": "بازگردانی",
+    "undoAlt": "بازگردانی: «{title}» دوباره باز شود",
+    "markDoneFailed": "ثبت انجام‌شدن ناموفق بود",
+    "startFocus": "شروع تمرکز · {duration}",
+    "next": "بعدی",
+    "nothingNext": "امروز برنامه‌ی دیگری نیست",
+    "energy": "{level, select, low {انرژی کم} medium {انرژی متوسط} other {انرژی زیاد}}",
+    "upNextChip": "بعدی · {time}",
+    "idleChip": "الان آزادید",
+    "idleTitle": "الان کاری در جریان نیست",
+    "idleDescription": "کاری را برای تمرکز انتخاب کنید یا بازه‌ی بعدی را برنامه‌ریزی کنید.",
+    "loading": "در حال بارگیری…",
+    "error": "بارگیری برنامه‌ی امروز ناموفق بود",
+    "retry": "تلاش دوباره"
+  },
+  "focus": {
+    "landmark": "تمرکز",
+    "title": "تمرکز · پومودورو",
+    "start": "شروع تمرکز",
+    "loading": "در حال بارگیری…",
+    "summary": "{focus} / {short} · دور {cycle} از {cycles} · {sessionsFormatted} جلسه‌ی انجام‌شده امروز",
+    "plan": "{focus} / {short} · {cycles} دور",
+    "picker": {
+      "title": "روی کدام کار تمرکز کنیم؟",
+      "description": "برای شروع جلسه‌ی تمرکز، یکی از کارهای امروز را انتخاب کنید.",
+      "loading": "در حال بارگیری کارها…",
+      "error": "بارگیری کارها ناموفق بود",
+      "emptyTitle": "امروز کار بازی نیست",
+      "emptyDescription": "کاری اضافه کنید یا از «بدون زمان» بردارید.",
+      "listLabel": "کارهای باز امروز",
+      "withoutTask": "تمرکز بدون انتخاب کار"
+    }
+  },
+  "priorities": {
+    "title": "اولویت‌ها",
+    "count": "{formatted} مورد برای امروز",
+    "scheduled": "زمان‌بندی‌شده · {time}",
+    "unscheduled": "بدون زمان · {duration}",
+    "unscheduledNoDuration": "بدون زمان",
+    "rank": "اولویت {rank}",
+    "loading": "در حال بارگیری اولویت‌ها…",
+    "error": "بارگیری اولویت‌ها ناموفق بود",
+    "emptyTitle": "هنوز اولویتی انتخاب نشده",
+    "emptyDescription": "حداکثر سه کار مهم امروز را انتخاب کنید."
+  },
+  "unscheduled": {
+    "title": "بدون زمان",
+    "summary": "{formatted} کار · {duration}",
+    "filterLabel": "فیلتر کارهای بدون زمان",
+    "filters": {
+      "today": "امروز",
+      "overdue": "عقب‌افتاده",
+      "week": "این هفته"
+    },
+    "listLabel": "کارهای بدون زمان",
+    "loading": "در حال بارگیری کارها…",
+    "error": "بارگیری کارها ناموفق بود",
+    "emptyTitle": "چیزی بدون زمان نیست",
+    "emptyDescription": "همه‌ی کارهای این بخش زمان دارند.",
+    "tip": "نکته: روی یک بازه‌ی خالی رها کنید یا <kbd>S</kbd> را بزنید تا در نزدیک‌ترین بازه‌ی خالی جا بگیرد.",
+    "dropToUnschedule": "برای برداشتن از خط زمان اینجا رها کنید",
+    "overdueMark": "عقب‌افتاده",
+    "noEstimate": "بدون برآورد",
+    "needsEnergy": "{level, select, low {به انرژی کم نیاز دارد} medium {به انرژی متوسط نیاز دارد} other {به انرژی زیاد نیاز دارد}}",
+    "noRoom": "جای خالی نمانده",
+    "noRoomDescription": "کمی زمان آزاد کنید یا روز دیگری را امتحان کنید.",
+    "scheduled": "برای {time} برنامه‌ریزی شد",
+    "undo": "بازگردانی",
+    "undoAlt": "بازگردانی: «{title}» از خط زمان برداشته شود",
+    "scheduleFailed": "برنامه‌ریزی کار ناموفق بود",
+    "tray": {
+      "title": "بدون زمان · {formatted}",
+      "hint": "نگه دارید و بکشید بالا"
+    }
+  },
+  "header": {
+    "more": "بیشتر",
+    "shutdown": "جمع‌بندی روز",
+    "title": "روز من",
+    "energy": {
+      "caption": "انرژی",
+      "group": "سطح انرژی امروز",
+      "low": "کم",
+      "medium": "متوسط",
+      "high": "زیاد"
+    },
+    "nav": {
+      "group": "تغییر روز",
+      "previous": "روز قبل",
+      "next": "روز بعد",
+      "today": "امروز"
+    }
+  },
+  "capacity": {
+    "caption": "ظرفیت",
+    "planned": "{planned} از {total} برنامه‌ریزی شده",
+    "free": "{free} آزاد",
+    "overloaded": "پرکار",
+    "overloadedDetail": "پرکار · {planned} از {total}",
+    "overlap": "{count, plural, other {{countText} همپوشانی}}",
+    "moveToTomorrow": "انتقال {countText} مورد به فردا",
+    "bar": "میزان استفاده از ظرفیت",
+    "loading": "در حال بارگذاری ظرفیت",
+    "unavailable": "ظرفیت در دسترس نیست"
+  },
+  "reschedule": {
+    "title": "زمان‌بندی دوباره «<bdi>{title}</bdi>»",
+    "titleMany": "انتقال {countText} بازه",
+    "listLabel": "گزینه‌های زمان‌بندی دوباره",
+    "loading": "در حال بارگذاری گزینه‌ها",
+    "unavailable": "گزینه‌ها بارگذاری نشد. این پنجره را ببندید و دوباره امتحان کنید.",
+    "options": {
+      "later-today": "امروز، دیرتر",
+      "tomorrow": "فردا",
+      "next-working-day": "روز کاری بعد",
+      "pick": "انتخاب تاریخ و ساعت…",
+      "unscheduled": "بازگشت به بدون زمان"
+    },
+    "note": {
+      "free": "{duration} آزاد",
+      "bestFit": "بهترین گزینه",
+      "fri-weekend": "جمعه تعطیل است"
+    },
+    "footnote": "طول کار تغییر نمی‌کند. بلافاصله می‌توانید واگرد بزنید.",
+    "pick": {
+      "title": "انتخاب تاریخ و ساعت",
+      "time": "ساعت شروع",
+      "apply": "انتقال به اینجا",
+      "back": "بازگشت"
+    },
+    "when": {
+      "today": "امروز ساعت {time}",
+      "tomorrow": "فردا ساعت {time}",
+      "on": "{date} ساعت {time}"
+    },
+    "toast": {
+      "moved": "«{title}» به {when} منتقل شد",
+      "movedMany": "{countText} بازه به {when} منتقل شد",
+      "unscheduled": "«{title}» به «بدون زمان» برگشت",
+      "overlaps": "با «{title}» به اندازه {duration} همپوشانی دارد",
+      "undo": "واگرد",
+      "undoAlt": "برگرداندن به زمان قبلی",
+      "undone": "انتقال برگردانده شد",
+      "failed": "زمان‌بندی دوباره انجام نشد. دوباره تلاش کنید.",
+      "undoFailed": "واگرد انتقال انجام نشد. دوباره تلاش کنید."
+    },
+    "titleFallback": "زمان‌بندی دوباره"
+  },
+  "states": {
+    "empty": {
+      "title": "هنوز برنامه‌ای نیست",
+      "description": "امروز {free} وقت آزاد دارید و {count, plural, other {{countText} کار}} منتظر است. با {n} اولویت اول شروع کنید یا از «بدون زمان» بکشید.",
+      "descriptionOtherDay": "در این روز {free} وقت آزاد دارید و {count, plural, other {{countText} کار}} منتظر است. با {n} اولویت اول شروع کنید یا از «بدون زمان» بکشید.",
+      "pickTop": "انتخاب {n} اولویت",
+      "addBlock": "افزودن بازه",
+      "picked": "{n} اولویت اول روز تعیین شد",
+      "nothingToPick": "کار بازی برای انتخاب نیست",
+      "pickFailed": "{n} اولویت اول ثبت نشد. دوباره تلاش کنید."
+    }
+  }
+}

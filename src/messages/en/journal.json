@@ -1,0 +1,101 @@
+{
+  "title": "Journal",
+  "kicker": "Personal · private",
+  "lockNow": "Lock",
+  "searchEntries": "Search entries",
+  "error": "Couldn’t load the Journal.",
+  "retry": "Retry",
+  "moodLevel": {
+    "awful": "Rough",
+    "low": "Low",
+    "okay": "Okay",
+    "good": "Good",
+    "great": "Great"
+  },
+  "energyLevel": {
+    "low": "Low",
+    "medium": "Medium",
+    "high": "High"
+  },
+  "energyText": "{level, select, low {Low energy} medium {Medium energy} other {High energy}}",
+  "prompts": {
+    "grateful": "What are you grateful for today?",
+    "energy": "What gave you energy, and what drained it?",
+    "learned": "What did you learn?",
+    "proud": "What are you proud of?",
+    "tomorrow": "What would make tomorrow good?"
+  },
+  "composer": {
+    "today": "Today · {date}",
+    "backToToday": "Back to today",
+    "question": "How was today?",
+    "questionPast": "How was the day?",
+    "energy": "Energy",
+    "tags": "Tags",
+    "addTag": "Tag",
+    "tagPlaceholder": "calm",
+    "removeTag": "Remove tag {tag}",
+    "wentWell": "What went well",
+    "wentWellPlaceholder": "One thing is enough",
+    "reflection": "Reflection",
+    "reflectionPlaceholder": "A few lines a day is enough…",
+    "promptMe": "Prompt me",
+    "noMorePrompts": "All prompts added",
+    "removePrompt": "Remove prompt",
+    "autoSave": "Auto-saves as you write",
+    "saving": "Saving…",
+    "saved": "Saved · {time}",
+    "error": "Couldn’t save. It will try again when you keep writing."
+  },
+  "terrain": {
+    "title": "Mood & energy",
+    "range": "Last 7 days",
+    "label": "Mood terrain for the last 7 days. Elevation is mood, soil layers are energy.",
+    "moodLine": "Mood · {mood}",
+    "energyLine": "Energy · {energy}",
+    "caption": "Mood Terrain · elevation = mood, soil = energy. Full comparison with Focus lives in Insights.",
+    "sparse": "Your mood trend appears after 3 check-ins.",
+    "sparseDot": "{day}: {mood}"
+  },
+  "recent": {
+    "title": "Recent",
+    "count": "{count, plural, =0 {No entries} one {# entry} other {# entries}}",
+    "month": "Month",
+    "prevMonth": "Previous month",
+    "nextMonth": "Next month",
+    "search": "Search words or #tags",
+    "noMatch": "No entries match “{query}”.",
+    "noneThisMonth": "Nothing written this month.",
+    "open": "Open {date}",
+    "write": "Write",
+    "checkInOnly": "Mood check-in only",
+    "delete": "Delete entry for {date}",
+    "list": "Entries"
+  },
+  "empty": {
+    "title": "No entries yet",
+    "body": "A few lines a day is enough. Your mood and energy check-ins from Overview and Shutdown also land here.",
+    "cta": "Write today’s entry"
+  },
+  "locked": {
+    "title": "Journal is locked",
+    "body": "Enter PIN or use biometrics (Settings › Privacy). Entries stay hidden until you unlock.",
+    "pin": "PIN",
+    "unlock": "Unlock"
+  },
+  "toast": {
+    "deleted": "Entry deleted",
+    "undo": "Undo",
+    "undoAlt": "Undo the last Journal change",
+    "failed": "Couldn’t update the Journal. Try again.",
+    "checkedIn": "Saved to today’s Journal entry",
+    "checkedInBody": "{mood} · {energy}"
+  },
+  "checkIn": {
+    "question": "How are you feeling?",
+    "energy": "Energy",
+    "note": "Add a word… (optional)",
+    "hint": "Saved to today’s Journal entry",
+    "save": "Save"
+  }
+}

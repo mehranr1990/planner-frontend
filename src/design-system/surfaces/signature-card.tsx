@@ -180,6 +180,12 @@ export type SignatureCardProps = Omit<HTMLAttributes<HTMLElement>, "children"> &
     action: ReactElement | readonly [ReactElement, ReactElement];
     /** Semantic element for the root. */
     as?: RootElement;
+    /**
+     * Square the top inline-start corner from lg (side="end" only): the card is
+     * the panel of a FolderTabsCard whose first tab merges into that corner.
+     * Pass `lg:rounded-ss-none` in contentClassName for the first paint too.
+     */
+    squareStartTop?: boolean;
     /** Classes for the clipped surface (layout of the card's content). */
     contentClassName?: string;
     children?: ReactNode;
@@ -196,6 +202,7 @@ export function SignatureCard({
   padding,
   action,
   as: Root = "div",
+  squareStartTop = false,
   className,
   contentClassName,
   style,
@@ -224,7 +231,8 @@ export function SignatureCard({
       const { notchWidth, notchHeight, fillet } = notchPresets[active];
       const reading: Direction = getComputedStyle(element).direction === "rtl" ? "rtl" : "ltr";
       const corner = cornerDirection(reading, side);
-      const path = notchPath({ ...size, radius: RADIUS, notchWidth, notchHeight, fillet, direction: corner });
+      const square = squareStartTop && side === "end" && (preset !== "auto" || desktop?.matches === true);
+      const path = notchPath({ ...size, radius: RADIUS, notchWidth, notchHeight, fillet, direction: corner, startRadius: square ? 0 : RADIUS });
       element.style.clipPath = `path("${path}")`;
       element.dataset.notch = "path";
       element.dataset.notchPreset = active;
@@ -248,7 +256,7 @@ export function SignatureCard({
       desktop?.removeEventListener("change", apply);
       unsubscribe();
     };
-  }, [preset, side]);
+  }, [preset, side, squareStartTop]);
 
   const vars = {
     ...(preset === "auto"
@@ -274,7 +282,10 @@ export function SignatureCard({
         {children}
       </div>
       <div data-slot="notch-action" className={cn("absolute top-0 flex gap-2", side === "end" ? "end-0" : "start-0")}>
-        {actions}
+        {/* Keyed wrappers: the one or two elements arrive as props, not as list items (toArray still warns in React 19). */}
+        {actions.map((element, index) => (
+          <Fragment key={index}>{element}</Fragment>
+        ))}
       </div>
     </Root>
   );

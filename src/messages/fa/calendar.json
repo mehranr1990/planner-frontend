@@ -1,0 +1,85 @@
+{
+  "toolbar": {
+    "nav": "تغییر بازه",
+    "previous": "قبلی",
+    "next": "بعدی",
+    "today": "امروز",
+    "view": "نمای تقویم",
+    "day": "روز",
+    "week": "هفته",
+    "month": "ماه",
+    "agenda": "برنامه",
+    "system": "نوع تقویم",
+    "shamsi": "شمسی",
+    "gregorian": "میلادی",
+    "new": "جدید"
+  },
+  "title": {
+    "agenda": "برنامه · {count} روز آینده"
+  },
+  "layers": {
+    "label": "نمایش",
+    "group": "لایه‌های تقویم",
+    "count": "{name}، {count}",
+    "alwaysOn": "شخصی همیشه نمایش داده می‌شود",
+    "names": {
+      "personal": "شخصی",
+      "project": "پروژه‌ها",
+      "team": "تیم‌ها",
+      "company": "شرکت‌ها"
+    },
+    "managed": "مدیریت در {module}"
+  },
+  "week": {
+    "title": "هفته",
+    "gridLabel": "هفتهٔ {from} تا {to}",
+    "dayLabel": "{date}",
+    "free": "هفتهٔ آزاد · {hours} وقت خالی",
+    "newEvent": "رویداد جدید",
+    "weekend": "تعطیل",
+    "halfDay": "نیمه‌وقت",
+    "loading": "در حال بارگذاری تقویم",
+    "strip": "روزهای این هفته"
+  },
+  "month": {
+    "title": "ماه",
+    "more": "+{count}",
+    "moreLabel": "{count} مورد دیگر",
+    "cellLabel": "{date}، {count}",
+    "events": "{count, plural, =0 {برنامه‌ای نیست} other {{formatted} مورد}}",
+    "hint": "برای دیدن برنامهٔ هر روز آن را انتخاب کنید. برای افزودن دوبار کلیک کنید یا N را بزنید.",
+    "dayPanel": "برنامهٔ روز",
+    "dayEmpty": "برای این روز برنامه‌ای نیست.",
+    "dated": "تاریخ به {date} تغییر کرد",
+    "dateFailed": "تاریخ تنظیم نشد. دوباره امتحان کنید."
+  },
+  "agenda": {
+    "today": "امروز",
+    "weekend": "تعطیل",
+    "task": "کار",
+    "markDone": "«{title}» انجام شد",
+    "empty": "در {count} روز آینده برنامه‌ای نیست.",
+    "emptyTitle": "دو هفتهٔ خلوت"
+  },
+  "selected": {
+    "label": "رویداد انتخاب‌شده",
+    "close": "بستن",
+    "reschedule": "زمان‌بندی دوباره",
+    "open": "باز کردن جزئیات",
+    "startFocus": "شروع تمرکز",
+    "markDone": "انجام شد",
+    "scope": "فضای کاری",
+    "type": "نوع",
+    "duration": "مدت",
+    "kinds": {
+      "task": "کار",
+      "event": "رویداد",
+      "routine": "روال",
+      "break": "استراحت"
+    }
+  },
+  "mini": {
+    "label": "رفتن به تاریخ",
+    "thisWeek": "این هفته"
+  }
+}

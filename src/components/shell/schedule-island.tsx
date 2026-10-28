@@ -4,6 +4,7 @@ import { format } from "date-fns";
 import { useTranslations } from "next-intl";
 import { Avatar, type AvatarTone } from "@/components/ui/avatar";
 import type { Scope } from "@/design-system/tokens/colors";
+import { FocusIslandChip } from "@/features/focus/focus-running";
 import { usePreferences } from "@/features/preferences/use-preferences";
 import { cn } from "@/lib/cn";
 import { formatDate, formatTime } from "@/lib/dates/format";
@@ -199,6 +200,8 @@ export function ScheduleIsland({ date, now, blocks, label, sample = false, class
       <ol className="@container flex h-12 min-w-0 flex-1 items-center gap-1.5 rounded-pill bg-raised px-1">
         {visible.map(renderBlock)}
       </ol>
+      {/* A live Focus session keeps its timer here after Leave focus (P09). */}
+      <FocusIslandChip />
     </section>
   );
 }

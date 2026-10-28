@@ -1,4 +1,4 @@
-import { screen, within } from "@testing-library/react";
+import { screen } from "@testing-library/react";
 import { createTranslator } from "next-intl";
 import { describe, expect, it, vi } from "vitest";
 import { DEFAULT_PLANNER_SETTINGS } from "@/features/planner-settings/planner-settings";
@@ -21,8 +21,12 @@ async function renderSkeleton(page: PersonalPageId, options?: Parameters<typeof 
   return renderWithProviders(await PersonalSkeleton({ page }), options);
 }
 
+// Pages whose real screen has replaced the skeleton (Overview: P01, My Day: P02, Tasks: P03; covered by their features).
+const BUILT: readonly PersonalPageId[] = ["overview", "myday", "tasks"];
+const skeletonPages = (Object.keys(personalPages) as PersonalPageId[]).filter((page) => !BUILT.includes(page));
+
 describe("PersonalSkeleton", () => {
-  it.each(Object.keys(personalPages) as PersonalPageId[])("%s renders its header and the board/step it waits for", async (page) => {
+  it.each(skeletonPages)("%s renders its header and the board/step it waits for", async (page) => {
     await renderSkeleton(page);
     const title = messages.en.Personal.pages[page].title;
     expect(screen.getByRole("heading", { level: 1, name: title })).toBeInTheDocument();
@@ -36,13 +40,8 @@ describe("PersonalSkeleton", () => {
     expect(await personalPageMetadata(page)).toEqual({ title: messages.en.Personal.pages[page].title });
   });
 
-  it("shows the Today switch (Overview ⇄ Plan) on Overview and My Day only", async () => {
-    const { unmount } = await renderSkeleton("myday");
-    const today = screen.getByRole("navigation", { name: "Today" });
-    expect(within(today).getByRole("link", { name: "Plan" })).toHaveAttribute("aria-current", "page");
-    expect(within(today).getByRole("link", { name: "Overview" })).toHaveAttribute("href", "/personal");
-    unmount();
-    await renderSkeleton("tasks");
+  it("never shows the Today switch (Overview and My Day bring their own)", async () => {
+    await renderSkeleton("calendar");
     expect(screen.queryByRole("navigation", { name: "Today" })).not.toBeInTheDocument();
   });
 

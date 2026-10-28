@@ -1,0 +1,235 @@
+{
+  "page": {},
+  "a11y": {
+    "energy": "{level, select, low {Energy low} medium {Energy medium} other {Energy high}}"
+  },
+  "timeline": {
+    "title": "Timeline",
+    "hint": "Drag tasks in from the right · drag edges to resize",
+    "viewLabel": "Timeline view",
+    "day": "Day",
+    "threeDays": "3 days",
+    "addBlock": "Add block",
+    "loading": "Loading your timeline",
+    "gridLabel": "Timeline for {date}",
+    "gridLabelRange": "Timeline from {from} to {to}",
+    "today": "Today",
+    "nowLine": "Now, {time}",
+    "freeSlot": "Drop a task here",
+    "gapFree": "{duration} free",
+    "gapFit": "{count, plural, one {{formatted} task fits} other {{formatted} tasks fit}}"
+  },
+  "block": {
+    "roleDescription": "Time block",
+    "now": "Now",
+    "liveNow": "happening now",
+    "done": "done",
+    "left": "{duration} left",
+    "overlaps": "overlaps {duration}",
+    "scope": {
+      "personal": "Personal",
+      "project": "Projects",
+      "team": "Teams",
+      "company": "Companies"
+    },
+    "reschedule": "Reschedule {title}",
+    "resizing": "{range}, {duration}",
+    "help": "Press Space to lift and move this block. Enter opens its details. R reschedules it. Shift with the Up or Down arrow resizes the end; Alt with Shift and the Up or Down arrow resizes the start."
+  },
+  "drag": {
+    "instructions": "Press Space to lift. Use the Up and Down arrows to move by 15 minutes and the Left and Right arrows to change day. Press Enter to drop or Escape to cancel.",
+    "lifted": "Picked up {title}.",
+    "hoverAt": "{title} at {time}, {day}.",
+    "hoverUnscheduled": "{title} is over Unscheduled. Drop to unschedule it.",
+    "hoverNothing": "{title} is not over a day.",
+    "cancelled": "Cancelled. {title} stays where it was.",
+    "label": "Dragging · {duration} → snaps {step}",
+    "cannotDrop": "Can't drop here",
+    "scheduled": "{title} scheduled at {time}, {day}.",
+    "movedTo": "{title} moved to {time}, {day}.",
+    "resizedTo": "{title} is now {range}, {duration}.",
+    "unscheduled": "{title} moved back to Unscheduled.",
+    "rejectedNoTarget": "Dropped outside the timeline. {title} stays where it was.",
+    "rejectedOutOfRange": "{title} can't go there: it would run past midnight.",
+    "rejectedTooShort": "{title} is too short to place.",
+    "rejectedNotUnschedulable": "Only tasks can go back to Unscheduled. {title} stays where it was.",
+    "failed": "Couldn't save the change to {title}.",
+    "toastScheduled": "Scheduled “{title}” at {time}",
+    "toastMoved": "Moved “{title}” to {time}",
+    "toastResized": "“{title}” is now {duration}",
+    "toastUnscheduled": "“{title}” is back in Unscheduled",
+    "toastOverlap": "Overlaps {other} by {duration}",
+    "toastOverlapMore": "Overlaps {other} and {count} more",
+    "toastUndo": "Undo",
+    "toastUndoAlt": "Move “{title}” back to where it was",
+    "toastUndone": "Undone",
+    "toastFailed": "Couldn't update “{title}”",
+    "toastFailedDetail": "Nothing was changed. Try again."
+  },
+  "now": {
+    "landmark": "Now",
+    "chip": "Now · {left} left",
+    "progress": "Progress",
+    "markDone": "Mark done",
+    "markedDone": "Marked done",
+    "undo": "Undo",
+    "undoAlt": "Undo: reopen “{title}”",
+    "markDoneFailed": "Couldn’t mark it done",
+    "startFocus": "Start focus · {duration}",
+    "next": "Next",
+    "nothingNext": "Nothing else planned today",
+    "energy": "{level, select, low {low energy} medium {medium energy} other {high energy}}",
+    "upNextChip": "Up next · {time}",
+    "idleChip": "Free right now",
+    "idleTitle": "Nothing running",
+    "idleDescription": "Pick a task to focus on, or plan your next block.",
+    "loading": "Loading…",
+    "error": "Couldn’t load today’s plan",
+    "retry": "Retry"
+  },
+  "focus": {
+    "landmark": "Focus",
+    "title": "Focus · Pomodoro",
+    "start": "Start focus",
+    "loading": "Loading…",
+    "summary": "{focus} / {short} · cycle {cycle} of {cycles} · {sessions, plural, one {{sessionsFormatted} session} other {{sessionsFormatted} sessions}} done today",
+    "plan": "{focus} / {short} · {cycles} cycles",
+    "picker": {
+      "title": "Focus on which task?",
+      "description": "Choose a task from today to start a focus session.",
+      "loading": "Loading tasks…",
+      "error": "Couldn’t load tasks",
+      "emptyTitle": "No open tasks today",
+      "emptyDescription": "Add a task, or pull one from Unscheduled.",
+      "listLabel": "Open tasks for today",
+      "withoutTask": "Focus without a task"
+    }
+  },
+  "priorities": {
+    "title": "Priorities",
+    "count": "{formatted} for today",
+    "scheduled": "Scheduled · {time}",
+    "unscheduled": "Unscheduled · {duration}",
+    "unscheduledNoDuration": "Unscheduled",
+    "rank": "Priority {rank}",
+    "loading": "Loading priorities…",
+    "error": "Couldn’t load priorities",
+    "emptyTitle": "No priorities yet",
+    "emptyDescription": "Choose up to three things that matter most today."
+  },
+  "unscheduled": {
+    "title": "Unscheduled",
+    "summary": "{count, plural, one {{formatted} task} other {{formatted} tasks}} · {duration}",
+    "filterLabel": "Filter unscheduled tasks",
+    "filters": {
+      "today": "Today",
+      "overdue": "Overdue",
+      "week": "This week"
+    },
+    "listLabel": "Unscheduled tasks",
+    "loading": "Loading tasks…",
+    "error": "Couldn’t load tasks",
+    "emptyTitle": "Nothing unscheduled",
+    "emptyDescription": "Every task in this view has a time.",
+    "tip": "Tip: drop on a free slot or press <kbd>S</kbd> to auto-fit into the next free gap.",
+    "dropToUnschedule": "Drop here to take it off the timeline",
+    "overdueMark": "Overdue",
+    "noEstimate": "No estimate",
+    "needsEnergy": "{level, select, low {Needs low energy} medium {Needs medium energy} other {Needs high energy}}",
+    "noRoom": "No free gap left",
+    "noRoomDescription": "Free some time, or try another day.",
+    "scheduled": "Scheduled for {time}",
+    "undo": "Undo",
+    "undoAlt": "Undo: take “{title}” off the timeline",
+    "scheduleFailed": "Couldn’t schedule the task",
+    "tray": {
+      "title": "Unscheduled · {formatted}",
+      "hint": "long-press & drag up"
+    }
+  },
+  "header": {
+    "more": "More",
+    "shutdown": "Daily shutdown",
+    "title": "My Day",
+    "energy": {
+      "caption": "Energy",
+      "group": "Energy today",
+      "low": "Low",
+      "medium": "Medium",
+      "high": "High"
+    },
+    "nav": {
+      "group": "Change day",
+      "previous": "Previous day",
+      "next": "Next day",
+      "today": "Today"
+    }
+  },
+  "capacity": {
+    "caption": "Capacity",
+    "planned": "{planned} of {total} planned",
+    "free": "{free} free",
+    "overloaded": "Overloaded",
+    "overloadedDetail": "Overloaded · {planned} of {total}",
+    "overlap": "{count, plural, one {{countText} overlap} other {{countText} overlaps}}",
+    "moveToTomorrow": "Move {countText} to tomorrow",
+    "bar": "Capacity used",
+    "loading": "Loading capacity",
+    "unavailable": "Capacity unavailable"
+  },
+  "reschedule": {
+    "title": "Reschedule “<bdi>{title}</bdi>”",
+    "titleMany": "Move {count, plural, one {{countText} block} other {{countText} blocks}}",
+    "listLabel": "Reschedule options",
+    "loading": "Loading options",
+    "unavailable": "Couldn’t load the options. Close this and try again.",
+    "options": {
+      "later-today": "Later today",
+      "tomorrow": "Tomorrow",
+      "next-working-day": "Next working day",
+      "pick": "Pick date & time…",
+      "unscheduled": "Back to Unscheduled"
+    },
+    "note": {
+      "free": "free {duration}",
+      "bestFit": "best fit",
+      "fri-weekend": "Fri is weekend"
+    },
+    "footnote": "The task keeps its length. You can undo right after.",
+    "pick": {
+      "title": "Pick date & time",
+      "time": "Start time",
+      "apply": "Move here",
+      "back": "Back"
+    },
+    "when": {
+      "today": "today at {time}",
+      "tomorrow": "tomorrow at {time}",
+      "on": "{date} at {time}"
+    },
+    "toast": {
+      "moved": "Moved “{title}” to {when}",
+      "movedMany": "Moved {countText} blocks to {when}",
+      "unscheduled": "“{title}” is back in Unscheduled",
+      "overlaps": "Overlaps {title} by {duration}",
+      "undo": "Undo",
+      "undoAlt": "Move it back to where it was",
+      "undone": "Move undone",
+      "failed": "Couldn’t reschedule. Try again.",
+      "undoFailed": "Couldn’t undo the move. Try again."
+    },
+    "titleFallback": "Reschedule"
+  },
+  "states": {
+    "empty": {
+      "title": "Nothing planned yet",
+      "description": "You have {free} free today and {count, plural, one {{countText} task} other {{countText} tasks}} waiting. Start with your top {n} or pull from Unscheduled.",
+      "descriptionOtherDay": "You have {free} free on this day and {count, plural, one {{countText} task} other {{countText} tasks}} waiting. Start with your top {n} or pull from Unscheduled.",
+      "pickTop": "Pick top {n}",
+      "addBlock": "Add block",
+      "picked": "Top {n} set for the day",
+      "nothingToPick": "No open tasks to pick from",
+      "pickFailed": "Couldn’t set your top {n}. Try again."
+    }
+  }
+}

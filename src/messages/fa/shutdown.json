@@ -1,0 +1,125 @@
+{
+  "kicker": "جمع‌بندی روز · اختیاری · {time}",
+  "title": "روزت را ببند",
+  "later": "بعداً",
+  "laterHint": "الان نه؛ از «روز من» یا «نمای کلی» می‌توانی برگردی",
+  "steps": {
+    "label": "مراحل جمع‌بندی",
+    "route": "۱ · مسیر",
+    "tomorrow": "۲ · فردا",
+    "reflect": "۳ · مرور"
+  },
+  "loading": "در حال بارگذاری روزت…",
+  "error": {
+    "title": "کارهای امروز بارگذاری نشد",
+    "description": "چیزی تغییر نکرد. دوباره امتحان کن.",
+    "retry": "تلاش دوباره"
+  },
+  "outcome": {
+    "title": "برنامهٔ امروز چه شد",
+    "planned": "{count} برنامه‌ریزی‌شده",
+    "completed": "انجام شد",
+    "tomorrow": "فردا",
+    "overdue": "عقب‌افتاده",
+    "inbox": "برگشت به صندوق",
+    "planTomorrow": "برنامهٔ فردا",
+    "reschedule": "زمان‌بندی دوباره",
+    "extra": "{later} بعداً · {dropped} حذف",
+    "share": "{percent} از برنامه"
+  },
+  "route": {
+    "title": "ناتمام · {count}",
+    "hint": "برای هرکدام مقصدی انتخاب کن",
+    "sendAll": "همه به",
+    "select": "انتخاب «{title}»",
+    "destinationFor": "مقصد «{title}»",
+    "leave": "همین‌جا بماند",
+    "overdueMeta": "عقب‌افتاده",
+    "repeat": "{count} بار جابه‌جا شده",
+    "repeatTitle": "مدام عقب می‌افتد",
+    "repeatBody": "{count} بار جابه‌جا شده. حذفش کنی یا به این هفته بسپاری؟",
+    "selected": "{count} انتخاب شده",
+    "more": "بیشتر",
+    "clearSelection": "لغو انتخاب",
+    "bulkLabel": "مسیر کارهای انتخاب‌شده",
+    "pickTitle": "انتخاب تاریخ",
+    "pickConfirm": "به این روز"
+  },
+  "destination": {
+    "tomorrow": "فردا",
+    "next-working-day": "روز کاری بعد",
+    "pick": "انتخاب تاریخ",
+    "this-week": "این هفته",
+    "inbox": "صندوق",
+    "keep": "بدون زمان بماند",
+    "drop": "حذف"
+  },
+  "nothing": {
+    "title": "چیزی برای مسیردهی نمانده",
+    "body": "هر {count} کار برنامه‌ریزی‌شده انجام شد. فردا را بچین یا همین حالا تمامش کن.",
+    "arrange": "چیدن فردا"
+  },
+  "tomorrow": {
+    "kicker": "چیدن فردا",
+    "open": "باز کردن فردا در «روز من»",
+    "planned": "{duration} برنامه‌ریزی‌شده",
+    "of": "از {duration} ساعت کاری · {range}",
+    "capacity": "ظرفیت فردا",
+    "weekend": "تعطیل · روز کاری بعد {day} است",
+    "dropHere": "اینجا بگذار · {duration} آزاد",
+    "placeHere": "گذاشتن «{title}» در {time}",
+    "notPlaced": "هنوز جا نگرفته · {count}",
+    "pickToPlace": "یک کار را انتخاب کن، بعد یک جای خالی",
+    "unplace": "برداشتن «{title}» از {time}",
+    "autoArrange": "چیدن خودکار",
+    "empty": "هنوز برای فردا چیزی برنامه‌ریزی نشده",
+    "full": {
+      "title": "فردا پر است",
+      "meta": "{planned} برنامه‌ریزی‌شده · {over} بیشتر از {total}",
+      "suggest": "پیشنهاد: {titles} را به این هفته ببر",
+      "apply": "اعمال پیشنهاد",
+      "keep": "همین بماند"
+    }
+  },
+  "reflect": {
+    "title": "مرور",
+    "savedTo": "در دفترچه ذخیره می‌شود · {date}",
+    "mood": "حال",
+    "energy": "انرژی",
+    "moodLevel": {
+      "awful": "سخت",
+      "low": "پایین",
+      "okay": "معمولی",
+      "good": "خوب",
+      "great": "عالی"
+    },
+    "energyLevel": {
+      "low": "کم",
+      "medium": "متوسط",
+      "high": "زیاد"
+    },
+    "wentWell": "چه چیزی خوب پیش رفت؟",
+    "wentWellPlaceholder": "یک چیز که خوب پیش رفت",
+    "note": "یادداشت کوتاه (اختیاری)"
+  },
+  "finish": {
+    "hint": "تا ۱۰ ثانیه بعد از هر جابه‌جایی می‌توانی برگردانی · تا «پایان روز» چیزی قطعی نیست",
+    "action": "پایان روز",
+    "saving": "در حال بستن روز…",
+    "failed": "بستن روز انجام نشد. چیزی از دست نرفته؛ دوباره امتحان کن."
+  },
+  "toast": {
+    "moved": "{countText} کار به «{destination}» رفت",
+    "undo": "برگردان",
+    "undoAlt": "به‌جای آن، مقصد را روی خود ردیف عوض کن"
+  },
+  "finished": {
+    "title": "روز بسته شد",
+    "summary": "{done} انجام‌شده · {tomorrow} به فردا · {dropped} حذف",
+    "mood": "حال «{mood}» در دفترچه ذخیره شد",
+    "starts": "فردا از {time} شروع می‌شود",
+    "startsEmpty": "فردا هنوز خالی است",
+    "openTomorrow": "باز کردن فردا",
+    "overview": "بازگشت به نمای کلی"
+  }
+}

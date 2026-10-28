@@ -27,10 +27,9 @@ describe("mock tasks repository", () => {
       "t-deep-work",
       "t-water-plants",
       "t-ui-design",
-      "t-reply-katy-brief",
       "t-check-in-notes",
       "t-read-30-pages",
-      "t-renew-car-insurance",
+      "t-reply-katy-brief",
       "t-review-october-expenses",
       "t-plan-weekend-trip",
     ]);
@@ -46,9 +45,13 @@ describe("mock tasks repository", () => {
 
   it("upcoming: open tasks after the reference day", async () => {
     expect(ids(await tasks.list({ view: "upcoming" }))).toEqual([
+      "t-5km-run",
       "t-finish-finance-report",
       "t-reply-to-client",
       "t-call-dentist",
+      "t-haircut",
+      "t-renew-car-insurance",
+      "t-monthly-budget-review",
     ]);
   });
 
@@ -57,7 +60,12 @@ describe("mock tasks repository", () => {
     // Yesterday's and today's open tasks are overdue from tomorrow; today's done tasks are not.
     expect(ids(tomorrow)).toContain("t-ui-design");
     expect(ids(tomorrow)).not.toContain("t-deep-work");
-    expect(ids(await tasks.list({ view: "upcoming", day: sampleDays.tomorrow }))).toEqual([]);
+    // Thursday's two tasks and next Saturday's review are still ahead of tomorrow.
+    expect(ids(await tasks.list({ view: "upcoming", day: sampleDays.tomorrow }))).toEqual([
+      "t-haircut",
+      "t-renew-car-insurance",
+      "t-monthly-budget-review",
+    ]);
   });
 
   it("all: every task, undated last; status filters", async () => {
@@ -73,6 +81,12 @@ describe("mock tasks repository", () => {
       "t-deep-work",
       "t-water-plants",
       "t-weekly-groceries",
+      "t-review-weekly-notes",
+      "t-pay-phone-bill",
+      "t-clean-kitchen",
+      "t-meal-prep",
+      "t-call-grandma",
+      "t-submit-tax-documents",
     ]);
   });
 
@@ -116,7 +130,7 @@ describe("mock blocks repository", () => {
 
   it("separates days and returns nothing for an empty day", async () => {
     expect(ids(await blocks.listForDay(sampleDays.tomorrow))).toEqual(["finish-finance-report", "design-review-wed"]);
-    expect(await blocks.listForDay(sampleDays.friday)).toEqual([]);
+    expect(await blocks.listForDay("2026-10-17")).toEqual([]);
   });
 
   it("uses Tehran calendar days for any offset, and keeps a midnight end on its own day", async () => {
