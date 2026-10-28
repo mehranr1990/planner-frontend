@@ -1,0 +1,181 @@
+{
+  "kicker": "Weekly review · {range} · about 10 minutes",
+  "title": {
+    "current": "This week",
+    "past": "Week of {range}"
+  },
+  "saveExit": "Save & exit",
+  "saving": "Saving…",
+  "loading": "Gathering your week…",
+  "error": {
+    "title": "Couldn’t load your week",
+    "body": "Nothing was changed. Try again.",
+    "retry": "Retry"
+  },
+  "invalid": {
+    "title": "That week doesn’t exist",
+    "body": "Open the weekly review from Overview or the More menu."
+  },
+  "steps": {
+    "label": "Review steps",
+    "wins": "Wins",
+    "carry": "Carry over",
+    "goals": "Goals",
+    "plan": "Plan",
+    "reflect": "Reflect"
+  },
+  "stepOf": "Step {step} of {total}",
+  "intro": {
+    "wins": "Pick up to 5 things that went well. Suggestions come from what you finished.",
+    "carry": "What happened to this week’s plan, and where each unfinished task goes.",
+    "goals": "How each active goal moved this week.",
+    "plan": "Choose 3 priorities and place carried-over tasks on next week’s days.",
+    "reflect": "Three short answers, saved to your Journal tagged #weekly."
+  },
+  "back": "Back",
+  "next": "Next · {step}",
+  "finish": "Finish review",
+  "finishing": "Saving review…",
+  "add": "Add",
+  "toast": {
+    "saved": "Progress saved. Pick up where you left off any time.",
+    "saveFailed": "Couldn’t save your progress. Try again.",
+    "finished": "Week reviewed. Next week is set.",
+    "finishFailed": "Couldn’t finish the review. Nothing was lost; try again."
+  },
+  "story": {
+    "kicker": "Your week at a glance · {range}",
+    "share": "Share summary",
+    "shareTitle": "My week · {range}",
+    "copied": "Summary copied",
+    "headline": {
+      "good": "A focused and balanced week.",
+      "mixed": "A mixed week with a strong finish.",
+      "hard": "A heavy week. Next week can be lighter."
+    },
+    "line": {
+      "good": "More deep work and steady progress on your goals.",
+      "mixed": "Some days flowed, some didn’t. Keep what worked.",
+      "hard": "Fewer things got done than planned. Rest counts as progress too."
+    },
+    "focus": "Focus time",
+    "tasks": "Tasks done",
+    "habits": "Habits kept",
+    "mood": "Average mood",
+    "hours": "{value}h",
+    "of": "{value} / {total}",
+    "jump": "{metric}: open {step}",
+    "notes": {
+      "more": "↑ vs last week",
+      "moreBy": "↑ {count} vs last week",
+      "lighter": "lighter week",
+      "steady": "steady",
+      "from": "from {mood}"
+    }
+  },
+  "aside": {
+    "label": "Review summary",
+    "wins": "{count} picked",
+    "carry": "{done} done · {open} unfinished",
+    "noGoals": "No active goals",
+    "plan": "{count} of 3 priorities",
+    "reflect": "Saved to Journal",
+    "reflectStarted": "Started · saved to Journal on finish"
+  },
+  "numbers": {
+    "title": "Week in habits & mood",
+    "habits": "Habits done",
+    "mood": "Average mood",
+    "points": "{sign}{value} pts",
+    "steady": "steady",
+    "noMood": "no check-ins",
+    "footnote": "Simple numbers only; patterns live in Insights."
+  },
+  "wins": {
+    "picked": "{count} of {max} picked",
+    "listLabel": "Suggested wins",
+    "none": "Nothing finished yet this week. Add a win in your own words.",
+    "addOwn": "Add your own win",
+    "full": "5 wins picked — uncheck one to add another",
+    "source": {
+      "task": "Completed task",
+      "milestone": "Milestone reached",
+      "habit": "Kept all week",
+      "own": "Your own"
+    }
+  },
+  "carry": {
+    "title": "What happened to this week’s plan",
+    "planned": "{count} planned this week",
+    "plannedShort": "planned",
+    "completed": "Completed",
+    "moved": "Moved to next week",
+    "overdue": "Overdue",
+    "inbox": "Back to inbox",
+    "greatWeek": "Great week",
+    "reviewInPlan": "Review in planning",
+    "reschedule": "Reschedule",
+    "sortLater": "Sort later",
+    "nothing": {
+      "title": "Nothing slipped",
+      "body": "Every task planned this week is done."
+    }
+  },
+  "goals": {
+    "onTrack": "On track",
+    "delayed": "Delayed",
+    "progress": "Progress of {title}",
+    "delta": "+{delta} this week",
+    "noDelta": "No change this week",
+    "next": "Next milestone",
+    "empty": {
+      "title": "No active goals",
+      "body": "Goals you set show how they moved each week.",
+      "action": "Open Goals"
+    }
+  },
+  "plan": {
+    "priorities": "Priorities for next week",
+    "picked": "{count} of {max}",
+    "candidates": "Suggested priorities",
+    "addOwn": "Add a priority",
+    "full": "3 priorities chosen",
+    "remove": "Remove “{title}”",
+    "strip": "Next week",
+    "stripHint": "Pick a carried-over task, then a day (or drag it onto a day).",
+    "stripEmpty": "No carried-over tasks to place. The bars show what’s already planned.",
+    "carried": "Carried-over tasks",
+    "dayLabel": "{day}: {load} of {capacity}",
+    "placeOn": "Place on {day}",
+    "half": "half day",
+    "off": "weekend"
+  },
+  "reflect": {
+    "wentWell": {
+      "label": "What went well",
+      "placeholder": "A moment, a habit, a decision…"
+    },
+    "slipped": {
+      "label": "What slipped",
+      "placeholder": "No blame, just what happened"
+    },
+    "change": {
+      "label": "One thing to change",
+      "placeholder": "Small and concrete"
+    },
+    "journalHint": "Saved as a Journal entry tagged #weekly when you finish."
+  },
+  "tooEarly": {
+    "title": "Not enough week yet",
+    "body": "Weekly Review unlocks after 3 days of planning. Your first review will be on {day}.",
+    "lastWeek": "Review last week",
+    "overview": "Back to Overview"
+  },
+  "done": {
+    "title": "Week reviewed",
+    "summary": "{wins} wins kept · {priorities} priorities for next week",
+    "overview": "Overview",
+    "calendar": "Open calendar",
+    "edit": "Edit review"
+  }
+}

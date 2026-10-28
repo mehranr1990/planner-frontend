@@ -31,6 +31,7 @@ import type {
   MoodEntry,
   Task,
   TimeBlock,
+  WeeklyReview,
 } from "../domain";
 import {
   RepositoryError,
@@ -48,6 +49,7 @@ import { createMockFinance } from "./mock-finance";
 import { createMockHabits } from "./mock-habits";
 import { createMockInsights } from "./mock-insights";
 import { createMockJournal } from "./mock-journal";
+import { createMockReview } from "./mock-review";
 
 /*
  * In-memory adapter over the sample fixtures. Deterministic: "today" is a
@@ -86,6 +88,8 @@ export interface MockFixtures {
   insights?: { historyDays?: number; failing?: readonly InsightPatternId[] };
   /** Brain Dump pages (P08), one per day. */
   brainDump?: readonly BrainDumpPage[];
+  /** Weekly reviews (P16) in progress or finished. */
+  reviews?: readonly WeeklyReview[];
 }
 
 export interface MockRepositoriesOptions {
@@ -761,6 +765,7 @@ export function createMockRepositories({ fixtures, latencyMs = 0 }: MockReposito
       moods: source.moods ?? [],
       respond,
     }),
+    review: createMockReview({ reviews: source.reviews ?? [], now: nowInstant, respond }),
     brainDump: createMockBrainDump({
       pages: source.brainDump ?? [],
       today,

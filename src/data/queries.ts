@@ -28,9 +28,10 @@ import type {
   Task,
   TimeBlock,
   Transaction,
+  WeeklyReview,
 } from "./domain";
 import { useRepositories } from "./provider";
-import { blockKeys, brainDumpKeys, financeKeys, goalKeys, inboxKeys, moduleKeys, planKeys, taskKeys } from "./query-keys";
+import { blockKeys, brainDumpKeys, financeKeys, goalKeys, inboxKeys, moduleKeys, planKeys, reviewKeys, taskKeys } from "./query-keys";
 import type {
   GoalInput,
   GoalPatch,
@@ -55,6 +56,7 @@ import type {
   TransactionInput,
   TransactionPatch,
   UnscheduledRange,
+  WeeklyReviewPatch,
 } from "./repositories";
 
 /*
@@ -365,6 +367,39 @@ export function useBulkUpdateTasks() {
   return useMutation<Task[], Error, { ids: readonly string[]; patch: TaskPatch }>({
     mutationFn: ({ ids, patch }) => tasks.bulkUpdate(ids, patch),
     onSuccess: () => invalidateSchedule(client),
+  });
+}
+
+/** Focus sessions per day for several days (Weekly review), sharing useFocusToday's cache entries. */
+export function useFocusForDays(days: readonly string[]) {
+  const { plan } = useRepositories();
+  const hydrated = useIsClient();
+  const result = useQueries({
+    queries: days.map((day) => ({ queryKey: planKeys.focus(day), queryFn: () => plan.focusToday(day) })),
+    combine: (results: UseQueryResult<FocusSummary, Error>[]) => ({
+      data: results.map((item) => item.data ?? null),
+      isPending: results.some((item) => item.isPending),
+    }),
+  });
+  return hydrated ? result : { data: days.map(() => null), isPending: true };
+}
+
+// ── Weekly review (P16) ──────────────────────────────────────────────────
+
+/** The week's review progress (week = its first day), or null before it was started. */
+export function useWeeklyReview(week: string) {
+  const { review } = useRepositories();
+  const hydrated = useIsClient();
+  return afterHydration(useQuery({ queryKey: reviewKeys.week(week), queryFn: () => review.get(week) }), hydrated);
+}
+
+/** Field-level save of the week's review (Save & exit, Finish). */
+export function useSaveWeeklyReview() {
+  const { review } = useRepositories();
+  const client = useQueryClient();
+  return useMutation<WeeklyReview, Error, { week: string; patch: WeeklyReviewPatch }>({
+    mutationFn: ({ week, patch }) => review.save(week, patch),
+    onSuccess: (saved) => client.setQueryData(reviewKeys.week(saved.week), saved),
   });
 }
 

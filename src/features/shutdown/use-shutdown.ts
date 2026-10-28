@@ -26,7 +26,7 @@ import {
   outcome,
   overloadSuggestion,
   routeDays,
-  routePatch,
+  routeWrites,
   tomorrowLoad,
   type PendingTask,
   type Placements,
@@ -179,24 +179,8 @@ export function useShutdown() {
     setFinishing(true);
     try {
       // Calendar routes, grouped by their patch so each group is one bulk write.
-      const groups = new Map<string, { ids: string[]; patch: NonNullable<ReturnType<typeof routePatch>> }>();
-      const toInbox: Task[] = [];
-      const toDrop: string[] = [];
-      for (const task of unfinished) {
-        const route = draft[task.id];
-        if (!route) continue;
-        if (route.to === "inbox") toInbox.push(task);
-        else if (route.to === "drop") toDrop.push(task.id);
-        else {
-          const patch = routePatch(route, days);
-          if (!patch) continue;
-          const key = JSON.stringify(patch);
-          const group = groups.get(key) ?? { ids: [], patch };
-          group.ids.push(task.id);
-          groups.set(key, group);
-        }
-      }
-      for (const { ids, patch } of groups.values()) await bulkUpdate.mutateAsync({ ids, patch });
+      const { groups, toInbox, toDrop } = routeWrites(unfinished, draft, days);
+      for (const { ids, patch } of groups) await bulkUpdate.mutateAsync({ ids, patch });
       for (const task of pending) {
         const start = placements[task.id];
         if (start === undefined) continue;

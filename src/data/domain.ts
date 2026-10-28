@@ -601,3 +601,47 @@ export type InsightPatternOf<Id extends InsightPatternId> = Extract<InsightPatte
 export type InsightPatternResult<P extends InsightPattern = InsightPattern> =
   | { status: "ready"; pattern: P }
   | { status: "collecting"; have: number; need: number };
+
+// ── Weekly review (P16) ──────────────────────────────────────────────────
+
+/** The review's steps, in flow order (Wins → Carry over → Goals → Plan → Reflect). */
+export type ReviewStep = "wins" | "carry" | "goals" | "plan" | "reflect";
+
+/** A win the person kept for the week: suggested from a task, milestone or habit, or their own words. */
+export interface ReviewWin {
+  id: string;
+  title: string;
+  source: "task" | "milestone" | "habit" | "own";
+}
+
+/** One of next week's (at most three) priorities; `taskId` when it is an existing task. */
+export interface ReviewPriority {
+  id: string;
+  title: string;
+  taskId?: string;
+}
+
+/** A carry-over task's draft route (Daily Shutdown's destinations); `day` for "pick" only. */
+export interface ReviewRoute {
+  to: string;
+  day?: string;
+}
+
+/** A week's review, saved as it goes ("Save & exit keeps progress"). */
+export interface WeeklyReview {
+  /** The week's first day, "YYYY-MM-DD". */
+  week: string;
+  /** Where the person left off. */
+  step: ReviewStep;
+  wins: ReviewWin[];
+  priorities: ReviewPriority[];
+  /** Carry-over routing draft, task id → route; written to Tasks on Finish. */
+  routes: Record<string, ReviewRoute>;
+  wentWell: string;
+  slipped: string;
+  change: string;
+  /** Instant the review was finished; null while in progress. */
+  completedAt: string | null;
+  /** Instant of the last save. */
+  updatedAt: string;
+}

@@ -97,3 +97,9 @@ export const financeKeys = {
   bills: (from: string) => [...financeKeys.all, "bills", from] as const,
   transaction: (id: string) => [...financeKeys.all, "transaction", id] as const,
 };
+
+/** Weekly review (P16), one record per week (its first day). */
+export const reviewKeys = {
+  all: ["review"] as const,
+  week: (week: string) => [...reviewKeys.all, week] as const,
+};

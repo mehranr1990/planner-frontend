@@ -16,6 +16,7 @@ import enOverview from "./en/overview.json";
 import enPersonal from "./en/personal.json";
 import enSettings from "./en/settings.json";
 import enShell from "./en/shell.json";
+import enReview from "./en/review.json";
 import enShutdown from "./en/shutdown.json";
 import enTasks from "./en/tasks.json";
 import enUi from "./en/ui.json";
@@ -36,6 +37,7 @@ import faOverview from "./fa/overview.json";
 import faPersonal from "./fa/personal.json";
 import faSettings from "./fa/settings.json";
 import faShell from "./fa/shell.json";
+import faReview from "./fa/review.json";
 import faShutdown from "./fa/shutdown.json";
 import faTasks from "./fa/tasks.json";
 import faUi from "./fa/ui.json";
@@ -70,6 +72,7 @@ const en = {
   Finance: enFinance,
   Insights: enInsights,
   Journal: enJournal,
+  Review: enReview,
 };
 
 export type ClientMessages = typeof en;
@@ -95,6 +98,7 @@ const fa: ClientMessages = {
   Finance: faFinance,
   Insights: faInsights,
   Journal: faJournal,
+  Review: faReview,
 };
 
 export const clientMessages: Record<Locale, ClientMessages> = { en, fa };

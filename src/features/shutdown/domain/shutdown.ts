@@ -85,6 +85,34 @@ export function routePatch(route: Route, days: RouteDays): TaskPatch | null {
   return day ? { date: day, time: null } : null;
 }
 
+/** What committing a draft writes: one bulk patch per calendar destination, Inbox captures and drops (shared with the Weekly review). */
+export interface RouteWrites {
+  groups: { ids: string[]; patch: TaskPatch }[];
+  toInbox: Task[];
+  toDrop: string[];
+}
+
+export function routeWrites(tasks: readonly Task[], draft: RouteDraft, days: RouteDays): RouteWrites {
+  const groups = new Map<string, { ids: string[]; patch: TaskPatch }>();
+  const toInbox: Task[] = [];
+  const toDrop: string[] = [];
+  for (const task of tasks) {
+    const route = draft[task.id];
+    if (!route) continue;
+    if (route.to === "inbox") toInbox.push(task);
+    else if (route.to === "drop") toDrop.push(task.id);
+    else {
+      const patch = routePatch(route, days);
+      if (!patch) continue;
+      const key = JSON.stringify(patch);
+      const group = groups.get(key) ?? { ids: [], patch };
+      group.ids.push(task.id);
+      groups.set(key, group);
+    }
+  }
+  return { groups: [...groups.values()], toInbox, toDrop };
+}
+
 /** The pre-filled draft: Tomorrow for every unfinished task, unless the rollover rule keeps tasks where they are. */
 export function initialDraft(tasks: readonly Task[], rollover: Rollover): RouteDraft {
   if (rollover === "keep") return {};

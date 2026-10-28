@@ -40,6 +40,7 @@ import type {
   TimeBlock,
   Transaction,
   UpcomingBill,
+  WeeklyReview,
 } from "./domain";
 import type { WeekConfig } from "@/lib/dates/week";
 
@@ -488,6 +489,16 @@ export interface InsightsRepository {
   pattern<Id extends InsightPatternId>(id: Id, day: string, period: InsightsPeriod): Promise<InsightPatternResult<InsightPatternOf<Id>>>;
 }
 
+/** Weekly review (P16) progress. Wins ≤ 5 and priorities ≤ 3, else "invalid". */
+export type WeeklyReviewPatch = Partial<Omit<WeeklyReview, "week" | "updatedAt">>;
+
+export interface ReviewRepository {
+  /** The week's review (week = its first day), or null before it was started. */
+  get(week: string): Promise<WeeklyReview | null>;
+  /** Field-level upsert: fields absent from `patch` keep their stored value. */
+  save(week: string, patch: WeeklyReviewPatch): Promise<WeeklyReview>;
+}
+
 export interface Repositories {
   tasks: TasksRepository;
   blocks: BlocksRepository;
@@ -499,4 +510,5 @@ export interface Repositories {
   finance: FinanceRepository;
   insights: InsightsRepository;
   brainDump: BrainDumpRepository;
+  review: ReviewRepository;
 }
