@@ -17,5 +17,203 @@
     "title": "{module} پنهان است",
     "description": "{module} را در تنظیمات پنهان کرده‌اید. داده‌هایتان همچنان محفوظ است.",
     "turnOn": "روشن کردن {module}"
+  },
+  "page": {
+    "title": "تنظیمات",
+    "subtitle": "هر تغییر بی‌درنگ ذخیره می‌شود؛ تغییرهای برگشت‌ناپذیر تأیید می‌خواهند.",
+    "search": "جست‌وجو در تنظیمات",
+    "index": "بخش‌های تنظیمات",
+    "back": "همه‌ی تنظیمات",
+    "noResults": "تنظیمی با «{query}» پیدا نشد.",
+    "saved": "تنظیمات ذخیره شد",
+    "undo": "واگرد",
+    "undoAlt": "همین تنظیم را در صفحه‌ی تنظیمات برگردانید.",
+    "soon": "هنوز در دسترس نیست"
+  },
+  "groups": {
+    "appearance": {
+      "title": "ظاهر",
+      "keywords": "پوسته روشن تیره سیستم حرکت تراکم theme dark"
+    },
+    "language": {
+      "title": "زبان و منطقه",
+      "keywords": "زبان فارسی انگلیسی رقم عدد قالب ساعت language digits"
+    },
+    "calendar": {
+      "title": "تقویم",
+      "keywords": "شمسی جلالی میلادی شروع هفته روز کاری تعطیل جمعه calendar"
+    },
+    "planning": {
+      "title": "برنامه‌ریزی",
+      "keywords": "ساعت کاری مدت پیش‌فرض انرژی یادآوری نیمه‌تمام تمرکز محافظت‌شده تخمین planning"
+    },
+    "focus": {
+      "title": "تمرکز · پومودورو",
+      "keywords": "تمرکز پومودورو استراحت دور شروع خودکار هدف روزانه focus"
+    },
+    "modules": {
+      "title": "بخش‌ها",
+      "keywords": "بخش هدف عادت مالی روزنوشت بینش ذهن‌ریزی پنهان modules"
+    },
+    "finance": {
+      "title": "مالی",
+      "keywords": "واحد پول تومان ریال ماه دسته finance"
+    },
+    "notifications": {
+      "title": "اعلان‌ها",
+      "keywords": "یادآوری صبح پایان روز مرور هفتگی notifications"
+    },
+    "privacy": {
+      "title": "حریم خصوصی",
+      "keywords": "قفل رمز بیومتریک روزنوشت مالی privacy"
+    },
+    "data": {
+      "title": "داده و حساب",
+      "keywords": "حساب ورود گوگل ایمیل لینک درون‌ریزی برون‌بری بایگانی بازنشانی حذف account"
+    }
+  },
+  "appearance": {
+    "theme": "پوسته",
+    "light": "روشن",
+    "dark": "تیره",
+    "system": "سیستم",
+    "reducedMotion": "کاهش حرکت",
+    "reducedMotionValue": "از تنظیم سیستم پیروی می‌کند",
+    "density": "تراکم",
+    "densityValue": "راحت"
+  },
+  "language": {
+    "language": "زبان",
+    "languageHint": "فارسی پیش‌فرض است · چیدمان راست‌به‌چپ می‌شود",
+    "digits": "رقم‌ها",
+    "digitsHint": "مستقل از زبان",
+    "persianDigits": "رقم‌های فارسی",
+    "latinDigits": "رقم‌های لاتین",
+    "timeFormat": "قالب ساعت",
+    "timeFormatValue": "۲۴ ساعته"
+  },
+  "calendar": {
+    "calendar": "تقویم",
+    "calendarHint": "تقویم دیگر به‌صورت تاریخ دوم و کوچک نمایش داده می‌شود",
+    "shamsi": "شمسی",
+    "gregorian": "میلادی",
+    "weekStarts": "شروع هفته",
+    "days": "روزهای کاری",
+    "daysHint": "روزهای تعطیل با رنگ قرمز نمایش داده می‌شوند",
+    "dayKind": {
+      "work": "کاری",
+      "half": "نیمه‌وقت",
+      "weekend": "تعطیل",
+      "off": "بدون کار"
+    },
+    "dayLabel": "{day}: نوع روز",
+    "noWorkday": "دست‌کم یک روز کاری لازم است."
+  },
+  "planning": {
+    "workHours": "ساعت کاری",
+    "start": "شروع",
+    "end": "پایان",
+    "rangeError": "ساعت پایان باید بعد از ساعت شروع باشد.",
+    "defaultDuration": "مدت پیش‌فرض",
+    "minutes": "{count} دقیقه",
+    "defaultEnergy": "انرژی پیش‌فرض",
+    "energy": {
+      "low": "کم",
+      "medium": "متوسط",
+      "high": "زیاد"
+    },
+    "rollover": "کارهای نیمه‌تمام در پایان روز",
+    "rolloverValue": {
+      "ask": "از من بپرس (پایان روز)",
+      "move-to-tomorrow": "خودکار به فردا منتقل شوند",
+      "keep": "همان‌جا بمانند"
+    },
+    "rolloverHint": {
+      "ask": "در پایان روز برای هر کدام می‌پرسد چه کنید",
+      "move-to-tomorrow": "به روز کاری بعد منتقل می‌شوند",
+      "keep": "در همان روز می‌مانند و عقب‌افتاده می‌شوند"
+    },
+    "taskReminders": "یادآوری کارها",
+    "taskRemindersValue": "۱۰ دقیقه پیش از شروع",
+    "suggestSlots": "پیشنهاد زمان‌های آزاد",
+    "fromInsights": "از بینش‌ها",
+    "fromInsightsHint": "پیشنهادهایی که در بینش‌ها پذیرفته‌اید. تا روشنشان نکنید چیزی تغییر نمی‌کند.",
+    "protectedFocus": "بازه‌ی تمرکز محافظت‌شده",
+    "protectedFocusHint": "روز من این زمان را برای کار عمیق نگه می‌دارد",
+    "buffers": "حاشیه‌ی تخمین",
+    "buffersEmpty": "حاشیه‌ی تخمینی ندارید. از بینش‌ها · تخمین‌ها روشنش کنید.",
+    "bufferLabel": "مدت اضافه برای کارهای {category}",
+    "percent": "+{percent}٪",
+    "removeBuffer": "حذف حاشیه‌ی {category}"
+  },
+  "focus": {
+    "focus": "تمرکز",
+    "shortBreak": "استراحت کوتاه",
+    "longBreak": "استراحت بلند",
+    "cycles": "دور تا استراحت بلند",
+    "autoStart": "شروع خودکار بعدی",
+    "autoStartHint": "تمرکز یا استراحت بعدی بدون پرسش شروع شود",
+    "dailyGoal": "هدف تمرکز روزانه",
+    "hours": "{hours} ساعت"
+  },
+  "moduleSettings": {
+    "note": "همه‌ی بخش‌ها به‌طور پیش‌فرض روشن‌اند. پنهان کردن یک بخش آن را از ریل، «بیشتر»، نمای کلی، افزودن سریع و جست‌وجو برمی‌دارد. داده‌هایش حفظ می‌شود.",
+    "coreNote": "نمای کلی، روز من، کارها، تقویم، صندوق ورودی و تنظیمات اصلی‌اند و پنهان نمی‌شوند."
+  },
+  "finance": {
+    "currency": "واحد پول",
+    "currencyHint": "هر تومان = ۱۰ ریال",
+    "toman": "تومان",
+    "rial": "ریال",
+    "monthStarts": "شروع ماه",
+    "monthStartsValue": "اول ماه شمسی",
+    "categories": "دسته‌ها",
+    "categoriesValue": "۷ دسته"
+  },
+  "notifications": {
+    "taskReminders": "یادآوری کارها",
+    "morningNudge": "یادآوری برنامه‌ریزی صبح",
+    "morningNudgeValue": "۸:۳۰ در روزهای کاری",
+    "shutdown": "پیشنهاد پایان روز",
+    "shutdownValue": "بعد از ساعت کاری",
+    "weeklyReview": "مرور هفتگی",
+    "weeklyReviewHint": "زمانی که مرور هفتگی پیشنهاد می‌شود",
+    "weekday": "روز مرور هفتگی",
+    "time": "ساعت مرور هفتگی"
+  },
+  "privacy": {
+    "journalLock": "قفل روزنوشت",
+    "journalLockHint": "رمز / بیومتریک · باز کردن قفل با اتصال حساب فعال می‌شود",
+    "financeLock": "قفل مالی",
+    "financeLockHint": "رمز · باز کردن قفل با اتصال حساب فعال می‌شود"
+  },
+  "data": {
+    "account": "حساب",
+    "accountHint": "روش‌های ورود پس از اتصال حساب فعال می‌شوند.",
+    "google": "گوگل",
+    "email": "ایمیل و رمز عبور",
+    "magicLink": "لینک ورود",
+    "notConnected": "هنوز وصل نشده",
+    "import": "درون‌ریزی",
+    "importValue": "CSV · Todoist · Google Calendar",
+    "export": "برون‌بری",
+    "exportValue": "JSON · CSV",
+    "archive": "بایگانی کارهای انجام‌شده پس از",
+    "archiveValue": "۹۰ روز",
+    "reset": "بازنشانی تنظیمات برنامه‌ریز",
+    "resetHint": "بخش‌ها، هفته، برنامه‌ریزی، تمرکز، حریم خصوصی و انتخاب‌های بینش‌ها به حالت پیش‌فرض برمی‌گردند.",
+    "resetButton": "بازنشانی",
+    "resetDone": "تنظیمات برنامه‌ریز بازنشانی شد",
+    "deleteAccount": "حذف حساب",
+    "deleteButton": "حذف…",
+    "delete": {
+      "title": "حساب حذف شود؟",
+      "description": "این کار کارها، روزنوشت و داده‌های مالی را پس از ۱۴ روز برای همیشه پاک می‌کند. اول برون‌بری می‌کنید؟",
+      "typeLabel": "برای تأیید DELETE را بنویسید",
+      "confirm": "حذف",
+      "exportFirst": "اول برون‌بری",
+      "unavailable": "حذف حساب پس از اتصال حساب در دسترس خواهد بود.",
+      "exportUnavailable": "برون‌بری پس از اتصال حساب در دسترس خواهد بود."
+    }
   }
 }

@@ -113,24 +113,6 @@
       "done": "Done"
     }
   },
-  "settings": {
-    "modules": "Modules",
-    "modulesNote": "All modules are on by default. Hiding one removes it from the rail, More, Overview, Quick Add and search. Its data is kept.",
-    "coreNote": "Overview, My Day, Tasks, Calendar, Inbox and Settings are core and cannot be hidden.",
-    "defaults": "Current defaults",
-    "rollover": "Unfinished tasks at day end",
-    "rolloverValue": {
-      "ask": "Ask me (Daily shutdown)",
-      "move-to-tomorrow": "Move to tomorrow automatically",
-      "keep": "Keep where they are"
-    },
-    "weeklyReview": "Weekly review",
-    "focus": "Focus · Pomodoro",
-    "focusValue": "{focus} min focus · {short} min short break · {long} min long break · {cycles} cycles",
-    "workHours": "Work hours",
-    "week": "Week",
-    "weekValue": "Starts {start} · weekend {weekend}"
-  },
   "sheets": {
     "quick-add": {
       "title": "Universal Quick Add",

@@ -17,5 +17,203 @@
     "title": "{module} is hidden",
     "description": "You hid {module} in Settings. Your data is still here.",
     "turnOn": "Turn {module} on"
+  },
+  "page": {
+    "title": "Settings",
+    "subtitle": "Every change saves instantly; destructive ones confirm.",
+    "search": "Search settings",
+    "index": "Settings sections",
+    "back": "All settings",
+    "noResults": "No settings match “{query}”.",
+    "saved": "Settings saved",
+    "undo": "Undo",
+    "undoAlt": "Change the setting back here on the Settings page.",
+    "soon": "Not available yet"
+  },
+  "groups": {
+    "appearance": {
+      "title": "Appearance",
+      "keywords": "theme light dark system reduced motion density"
+    },
+    "language": {
+      "title": "Language & region",
+      "keywords": "language persian english farsi digits numbers time format"
+    },
+    "calendar": {
+      "title": "Calendar",
+      "keywords": "shamsi jalali gregorian week starts working days weekend friday"
+    },
+    "planning": {
+      "title": "Planning",
+      "keywords": "work hours default duration energy reminders unfinished rollover protected focus estimate buffer"
+    },
+    "focus": {
+      "title": "Focus · Pomodoro",
+      "keywords": "focus pomodoro break cycles auto-start daily goal"
+    },
+    "modules": {
+      "title": "Modules",
+      "keywords": "modules goals habits finance journal insights brain dump hide"
+    },
+    "finance": {
+      "title": "Finance",
+      "keywords": "currency toman rial month categories"
+    },
+    "notifications": {
+      "title": "Notifications",
+      "keywords": "reminders morning shutdown weekly review"
+    },
+    "privacy": {
+      "title": "Privacy",
+      "keywords": "lock pin biometric journal finance"
+    },
+    "data": {
+      "title": "Data & account",
+      "keywords": "account sign in google email magic link import export archive reset delete"
+    }
+  },
+  "appearance": {
+    "theme": "Theme",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System",
+    "reducedMotion": "Reduced motion",
+    "reducedMotionValue": "Follows your system setting",
+    "density": "Density",
+    "densityValue": "Comfortable"
+  },
+  "language": {
+    "language": "Language",
+    "languageHint": "Persian is default · layout switches to RTL",
+    "digits": "Digits",
+    "digitsHint": "Independent of language",
+    "persianDigits": "Persian digits",
+    "latinDigits": "Latin digits",
+    "timeFormat": "Time format",
+    "timeFormatValue": "24-hour"
+  },
+  "calendar": {
+    "calendar": "Calendar",
+    "calendarHint": "The other calendar shows as the small secondary date",
+    "shamsi": "Shamsi",
+    "gregorian": "Gregorian",
+    "weekStarts": "Week starts",
+    "days": "Working days",
+    "daysHint": "Weekend days are shown in red",
+    "dayKind": {
+      "work": "Working",
+      "half": "Half day",
+      "weekend": "Weekend",
+      "off": "Off"
+    },
+    "dayLabel": "{day}: day type",
+    "noWorkday": "Keep at least one working day."
+  },
+  "planning": {
+    "workHours": "Work hours",
+    "start": "Starts",
+    "end": "Ends",
+    "rangeError": "The end time must be after the start time.",
+    "defaultDuration": "Default duration",
+    "minutes": "{count} min",
+    "defaultEnergy": "Default energy",
+    "energy": {
+      "low": "Low",
+      "medium": "Medium",
+      "high": "High"
+    },
+    "rollover": "Unfinished tasks at day end",
+    "rolloverValue": {
+      "ask": "Ask me (Daily shutdown)",
+      "move-to-tomorrow": "Move to tomorrow automatically",
+      "keep": "Keep where they are"
+    },
+    "rolloverHint": {
+      "ask": "Daily shutdown asks what to do with each one",
+      "move-to-tomorrow": "They move to the next working day",
+      "keep": "They stay on their original day as overdue"
+    },
+    "taskReminders": "Task reminders",
+    "taskRemindersValue": "10 min before",
+    "suggestSlots": "Suggest free slots",
+    "fromInsights": "From Insights",
+    "fromInsightsHint": "Opt-in suggestions you accepted in Insights. Nothing changes until you turn them on.",
+    "protectedFocus": "Protected focus window",
+    "protectedFocusHint": "My Day keeps this time for deep work",
+    "buffers": "Estimate buffers",
+    "buffersEmpty": "No estimate buffers. Turn one on from Insights · Estimates.",
+    "bufferLabel": "Extra duration for {category} tasks",
+    "percent": "+{percent}%",
+    "removeBuffer": "Remove the {category} buffer"
+  },
+  "focus": {
+    "focus": "Focus",
+    "shortBreak": "Short break",
+    "longBreak": "Long break",
+    "cycles": "Cycles before long break",
+    "autoStart": "Auto-start next",
+    "autoStartHint": "Start the next focus or break without asking",
+    "dailyGoal": "Daily focus goal",
+    "hours": "{hours} h"
+  },
+  "moduleSettings": {
+    "note": "All modules are on by default. Hiding one removes it from the rail, More, Overview, Quick Add and search. Its data is kept.",
+    "coreNote": "Overview, My Day, Tasks, Calendar, Inbox and Settings are core and cannot be hidden."
+  },
+  "finance": {
+    "currency": "Currency",
+    "currencyHint": "1 Toman = 10 Rial",
+    "toman": "Toman",
+    "rial": "Rial",
+    "monthStarts": "Month starts",
+    "monthStartsValue": "1st of the Shamsi month",
+    "categories": "Categories",
+    "categoriesValue": "7 categories"
+  },
+  "notifications": {
+    "taskReminders": "Task reminders",
+    "morningNudge": "Morning planning nudge",
+    "morningNudgeValue": "08:30 on working days",
+    "shutdown": "Daily shutdown suggestion",
+    "shutdownValue": "After work hours",
+    "weeklyReview": "Weekly review",
+    "weeklyReviewHint": "When the weekly review is suggested",
+    "weekday": "Weekly review day",
+    "time": "Weekly review time"
+  },
+  "privacy": {
+    "journalLock": "Journal lock",
+    "journalLockHint": "PIN / biometric · unlocking arrives with accounts",
+    "financeLock": "Finance lock",
+    "financeLockHint": "PIN · unlocking arrives with accounts"
+  },
+  "data": {
+    "account": "Account",
+    "accountHint": "Sign-in methods become available when your account is connected.",
+    "google": "Google",
+    "email": "Email & password",
+    "magicLink": "Magic link",
+    "notConnected": "Not connected yet",
+    "import": "Import",
+    "importValue": "CSV · Todoist · Google Calendar",
+    "export": "Export",
+    "exportValue": "JSON · CSV",
+    "archive": "Archive completed after",
+    "archiveValue": "90 days",
+    "reset": "Reset planner settings",
+    "resetHint": "Modules, week, planning, focus, privacy and Insights choices go back to their defaults.",
+    "resetButton": "Reset",
+    "resetDone": "Planner settings reset",
+    "deleteAccount": "Delete account",
+    "deleteButton": "Delete…",
+    "delete": {
+      "title": "Delete account?",
+      "description": "This permanently removes tasks, journal and finance data after 14 days. Export first?",
+      "typeLabel": "Type DELETE to confirm",
+      "confirm": "Delete",
+      "exportFirst": "Export first",
+      "unavailable": "Account deletion becomes available when your account is connected.",
+      "exportUnavailable": "Export becomes available when your account is connected."
+    }
   }
 }
