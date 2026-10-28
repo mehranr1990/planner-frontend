@@ -8,17 +8,43 @@ import {
   minutesOfInstant,
   weekdayOfDay,
 } from "@/lib/dates/clock-time";
-import { getDayKind, nextWorkingDay, type WeekConfig, type Weekday } from "@/lib/dates/week";
+import { getDayKind, getWeekDates, IRAN_WEEK, nextWorkingDay, type WeekConfig, type Weekday } from "@/lib/dates/week";
 import { plannedMinutes, workWindow } from "./capacity";
 import type { DayBlock } from "./day-blocks";
 import { nextFreeSlot } from "./placement";
 
 /*
- * The Reschedule popover's rows (P18 E + P02). All three suggestions are
- * relative to the planner's today (the day of `now`): Later today, Tomorrow
- * and the next working day after today — Thursday → Saturday, Friday →
- * Saturday, with a "Friday is weekend" note when the weekend was skipped.
+ * The Reschedule popover's rows (P18 E + P02, also Tasks P03). The
+ * suggestions are relative to the planner's today (the day of `now`): Later
+ * today, Tomorrow, the next working day after today — Thursday → Saturday,
+ * Friday → Saturday, with a "Friday is weekend" note when the weekend was
+ * skipped — and This week: the first working day left after those. The
+ * whole-day helpers below are the one place "tomorrow" and "this week" are
+ * resolved from the week config (the Tasks board columns use them too).
  */
+
+/** The day a whole-day "Tomorrow" means: tomorrow, or the next working day when tomorrow is a weekend (Thu → Sat). */
+export function workingTomorrow(today: string, week: WeekConfig = IRAN_WEEK): string {
+  const tomorrow = addDaysToDay(today, 1);
+  if (getDayKind(dayToLocalDate(tomorrow), week) !== "weekend") return tomorrow;
+  const next = nextWorkingDay(dayToLocalDate(today), { config: week });
+  return next ? localDateToDay(next) : tomorrow;
+}
+
+/** The last day of the week containing `day` (the config's week: Saturday → Friday for Iran). */
+export function weekEndDay(day: string, week: WeekConfig = IRAN_WEEK): string {
+  return localDateToDay(getWeekDates(dayToLocalDate(day), week)[6]!);
+}
+
+/** "This week": the working days after the working tomorrow up to the week's end (none on Wed / Thu of the Iran week). */
+export function restOfWeekDays(today: string, week: WeekConfig = IRAN_WEEK): string[] {
+  const end = weekEndDay(today, week);
+  const days: string[] = [];
+  for (let day = addDaysToDay(workingTomorrow(today, week), 1); day <= end; day = addDaysToDay(day, 1)) {
+    if (getDayKind(dayToLocalDate(day), week) !== "weekend") days.push(day);
+  }
+  return days;
+}
 
 /** How long after work ends a suggested slot may still start (and fit). */
 const AFTER_WORK_MINUTES = 180;
@@ -26,7 +52,32 @@ const AFTER_WORK_MINUTES = 180;
 /** Suggestions start half an hour into the workday so the first slot is not the very first minute. */
 const DEFAULT_START_OFFSET = 30;
 
-export type RescheduleOptionId = "later-today" | "tomorrow" | "next-working-day" | "pick" | "unscheduled";
+export type RescheduleOptionId =
+  | "later-today"
+  | "tomorrow"
+  | "next-working-day"
+  | "this-week"
+  | "pick"
+  | "unscheduled";
+
+/** My Day / Calendar (P02 · P04): every row but "This week". */
+export const DEFAULT_RESCHEDULE_OPTIONS: readonly RescheduleOptionId[] = [
+  "later-today",
+  "tomorrow",
+  "next-working-day",
+  "pick",
+  "unscheduled",
+];
+
+/** Tasks (P03) and Task detail (P06): the default rows plus "This week". */
+export const TASK_RESCHEDULE_OPTIONS: readonly RescheduleOptionId[] = [
+  "later-today",
+  "tomorrow",
+  "next-working-day",
+  "this-week",
+  "pick",
+  "unscheduled",
+];
 
 interface Slot {
   /** Calendar day the option moves to. */
@@ -49,6 +100,11 @@ export type RescheduleOption =
       sameAsTomorrow: boolean;
       bestFit: boolean;
     })
+  | (Slot & {
+      id: "this-week";
+      /** JS weekday of the day, for its localised name. */
+      weekday: Weekday;
+    })
   | { id: "pick" }
   | { id: "unscheduled" };
 
@@ -65,13 +121,18 @@ export interface RescheduleInput {
   task: { durationMinutes: number; kind: TimeBlockKind; blockId?: string };
   week: WeekConfig;
   workHours: { start: string; end: string };
+  /** The rows the caller offers; default DEFAULT_RESCHEDULE_OPTIONS (no "This week"). */
+  allow?: readonly RescheduleOptionId[];
 }
 
 function slot(day: string, startMinutes: number): Slot {
   return { day, startMinutes, start: formatClockTime(startMinutes) };
 }
 
-/** Ordered rows; the first is the preselected one. "Later today" is omitted when nothing fits, "unscheduled" for non-task blocks. */
+/**
+ * Ordered rows; the first is the preselected one. "Later today" is omitted when nothing fits, "unscheduled" for
+ * non-task blocks, and any row the caller does not allow.
+ */
 export function rescheduleOptions(input: RescheduleInput): RescheduleOption[] {
   const { now, day, task, week } = input;
   const work = workWindow(input.workHours);
@@ -144,9 +205,16 @@ export function rescheduleOptions(input: RescheduleInput): RescheduleOption[] {
     options.push(followingOption);
   }
 
+  // This week: the first working day left after Tomorrow / the next working day.
+  const allow = input.allow ?? DEFAULT_RESCHEDULE_OPTIONS;
+  const [weekDay] = allow.includes("this-week")
+    ? restOfWeekDays(today, week).filter((target) => target !== tomorrow && target !== following)
+    : [];
+  if (weekDay) options.push({ id: "this-week", ...slot(weekDay, startOn(weekDay)), weekday: weekdayOfDay(weekDay) });
+
   options.push({ id: "pick" });
   if (task.kind === "task") options.push({ id: "unscheduled" });
-  return options;
+  return options.filter((option) => allow.includes(option.id));
 }
 
 /** Calendar days from `from` (inclusive) to `to` (exclusive). */

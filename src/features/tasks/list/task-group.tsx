@@ -30,7 +30,7 @@ export interface TaskGroupViewProps {
   group: TaskGroup;
   basis: "planned" | "completed";
   draggable: boolean;
-  onRescheduleOverdue(group: TaskGroup): void;
+  onRescheduleOverdue(group: TaskGroup, anchor: HTMLElement): void;
 }
 
 export function TaskGroupView({ group, basis, draggable, onRescheduleOverdue }: TaskGroupViewProps) {
@@ -97,7 +97,7 @@ export function TaskGroupView({ group, basis, draggable, onRescheduleOverdue }: 
         {group.kind === "overdue" && group.openCount > 0 && basis === "planned" ? (
           <button
             type="button"
-            onClick={() => onRescheduleOverdue(group)}
+            onClick={(event) => onRescheduleOverdue(group, event.currentTarget)}
             className="inline-flex min-h-[22px] items-center rounded-pill bg-danger-soft px-2.5 text-xs font-bold text-danger-text hover:brightness-95 focus-visible:focus-ring"
           >
             {t("rescheduleAll")}

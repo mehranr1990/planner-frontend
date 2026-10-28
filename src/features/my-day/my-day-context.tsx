@@ -36,11 +36,12 @@ export const VIEW_PARAM = "view";
 
 export type MyDayView = "day" | "3days";
 
-/** What a Reschedule request moves: one block, one task, or several blocks at once ("Move 2 to tomorrow"). */
+/** What a Reschedule request moves: one block, one task, or several blocks / tasks at once ("Move 2 to tomorrow"). */
 export type RescheduleTarget =
   | { kind: "block"; id: string }
   | { kind: "task"; id: string }
-  | { kind: "blocks"; ids: readonly string[] };
+  | { kind: "blocks"; ids: readonly string[] }
+  | { kind: "tasks"; ids: readonly string[] };
 
 /** Which Reschedule row starts selected. */
 export type ReschedulePreselect = RescheduleOptionId;

@@ -15,7 +15,6 @@ import type { TaskPatch } from "@/data/repositories";
 import { usePlannerSettings } from "@/features/planner-settings/use-planner-settings";
 import { addDaysToDay, dayToLocalDate, localDateToDay } from "@/lib/dates/clock-time";
 import { nextWorkingDay } from "@/lib/dates/week";
-import { useTasksState } from "../tasks-context";
 import { useCompletionLifecycle, type CompletionLifecycle } from "../use-completion";
 import { useTasksFormat } from "../ui/use-tasks-format";
 
@@ -38,13 +37,11 @@ export interface ScheduleOption {
   date: string | null;
 }
 
-/** Today · Tomorrow · Next working day (Thu → Sat) · Next week · No date. */
-export function useScheduleOptions(): ScheduleOption[] {
-  const { today } = useTasksState();
-  return useScheduleOptionsFor(today);
-}
-
-/** The same options for a given today, for screens outside the Tasks provider (the task drawer). */
+/**
+ * Today · Tomorrow · Next working day (Thu → Sat) · Next week · No date — the
+ * date-only menu of P05 create. The Tasks list, board and P06 detail
+ * use the shared Reschedule (src/features/reschedule) instead.
+ */
 export function useScheduleOptionsFor(today: string): ScheduleOption[] {
   const { week } = usePlannerSettings();
   return useMemo(() => {

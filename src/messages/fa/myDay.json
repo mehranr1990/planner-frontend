@@ -180,6 +180,7 @@
   "reschedule": {
     "title": "زمان‌بندی دوباره «<bdi>{title}</bdi>»",
     "titleMany": "انتقال {countText} بازه",
+    "titleManyTasks": "انتقال {count, plural, other {{countText} کار}}",
     "listLabel": "گزینه‌های زمان‌بندی دوباره",
     "loading": "در حال بارگذاری گزینه‌ها",
     "unavailable": "گزینه‌ها بارگذاری نشد. این پنجره را ببندید و دوباره امتحان کنید.",
@@ -187,6 +188,7 @@
       "later-today": "امروز، دیرتر",
       "tomorrow": "فردا",
       "next-working-day": "روز کاری بعد",
+      "this-week": "همین هفته",
       "pick": "انتخاب تاریخ و ساعت…",
       "unscheduled": "بازگشت به بدون زمان"
     },
@@ -210,6 +212,7 @@
     "toast": {
       "moved": "«{title}» به {when} منتقل شد",
       "movedMany": "{countText} بازه به {when} منتقل شد",
+      "movedManyTasks": "{count, plural, other {{countText} کار}} به {when} منتقل شد",
       "unscheduled": "«{title}» به «بدون زمان» برگشت",
       "overlaps": "با «{title}» به اندازه {duration} همپوشانی دارد",
       "undo": "واگرد",
@@ -218,7 +221,8 @@
       "failed": "زمان‌بندی دوباره انجام نشد. دوباره تلاش کنید.",
       "undoFailed": "واگرد انتقال انجام نشد. دوباره تلاش کنید."
     },
-    "titleFallback": "زمان‌بندی دوباره"
+    "titleFallback": "زمان‌بندی دوباره",
+    "titleTask": "زمان‌بندی دوباره کار"
   },
   "states": {
     "empty": {

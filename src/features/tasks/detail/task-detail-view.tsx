@@ -40,7 +40,11 @@ import type { Task } from "@/data/domain";
 import { useAreas, useCreateTask, useTask } from "@/data/queries";
 import type { TaskPatch } from "@/data/repositories";
 import { SignatureCard, SignatureCardAction } from "@/design-system/surfaces/signature-card";
+import { TASK_RESCHEDULE_OPTIONS } from "@/features/my-day/domain/reschedule";
+import type { RescheduleRequest } from "@/features/my-day/my-day-context";
+import { RescheduleSurface } from "@/features/my-day/reschedule/reschedule-host";
 import { focusHref } from "@/features/my-day/rail/focus-entry";
+import { useRescheduleActions } from "@/features/reschedule/use-reschedule-actions";
 import { addDaysToDay, parseClockTime } from "@/lib/dates/clock-time";
 import { cn } from "@/lib/cn";
 import { COMPLETION_HOLD_MS } from "../domain/completion";
@@ -49,7 +53,7 @@ import { ENERGIES, PRIORITIES } from "../domain/filters";
 import { completedClock } from "../domain/when";
 import { DURATIONS } from "../list/inline-edit";
 import { taskDotClass } from "../list/task-parts";
-import { DELETE_TOAST_MS, useScheduleOptionsFor, useTaskActions } from "../list/use-task-actions";
+import { DELETE_TOAST_MS, useTaskActions } from "../list/use-task-actions";
 import { priorityStyle } from "../ui/priority-style";
 import { useTasksFormat } from "../ui/use-tasks-format";
 import { DetailTabs } from "./detail-tabs";
@@ -58,7 +62,8 @@ import { DetailTabs } from "./detail-tabs";
  * P06 Task detail, shared by the intercepted drawer and the full page.
  * Head = signature card whose notch holds the ONE primary action (Complete);
  * then inline-editable properties (each value opens a menu, never a form),
- * the description and the folder tabs. Completing in the drawer holds the
+ * the description and the folder tabs. Reschedule (button, D, the Schedule
+ * row) opens the shared Reschedule (src/features/reschedule). Completing in the drawer holds the
  * completed state for 1.2s, then dismisses; Undo lives in the toast.
  */
 
@@ -97,7 +102,6 @@ export function TaskDetailView(props: TaskDetailViewProps) {
 function TaskDetailContent({ task, variant, closeControl, onDismiss }: TaskDetailViewProps & { task: Task }) {
   const t = useTranslations("Tasks.detail");
   const tEdit = useTranslations("Tasks.edit");
-  const tWhen = useTranslations("Tasks.bulk.when");
   const tUndo = useTranslations("Tasks.undo");
   const router = useRouter();
   const format = useTasksFormat();
@@ -105,11 +109,13 @@ function TaskDetailContent({ task, variant, closeControl, onDismiss }: TaskDetai
   const createTask = useCreateTask();
   const { data: areas } = useAreas();
   const today = getPlannerToday();
-  const schedule = useScheduleOptionsFor(today);
+  const { apply: applyReschedule } = useRescheduleActions();
   const titleId = useId();
 
   const [phase, setPhase] = useState<Phase>("idle");
-  const [scheduleOpen, setScheduleOpen] = useState(false);
+  const [reschedule, setReschedule] = useState<RescheduleRequest | null>(null);
+  const openReschedule = (anchor: HTMLElement | null) =>
+    setReschedule({ target: { kind: "task", id: task.id }, anchor });
   const [confirmDelete, setConfirmDelete] = useState(false);
   const holdTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   useEffect(() => () => clearTimeout(holdTimer.current), []);
@@ -170,7 +176,7 @@ function TaskDetailContent({ task, variant, closeControl, onDismiss }: TaskDetai
       router.push(focusHref(task.id));
     } else if (event.code === "KeyD") {
       event.preventDefault();
-      setScheduleOpen(true);
+      openReschedule(null);
     }
   };
 
@@ -260,21 +266,17 @@ function TaskDetailContent({ task, variant, closeControl, onDismiss }: TaskDetai
               </Link>
             </Button>
           )}
-          <DropdownMenu open={scheduleOpen} onOpenChange={setScheduleOpen}>
-            <DropdownMenuTrigger asChild>
-              <Button size="sm" variant="outline" className="gap-2 bg-surface" aria-keyshortcuts="D">
-                <CalendarClock aria-hidden="true" size={15} />
-                {t("reschedule")}
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="start">
-              {schedule.map((option) => (
-                <DropdownMenuItem key={option.id} onSelect={() => apply({ date: option.date })}>
-                  {tWhen(option.id)}
-                </DropdownMenuItem>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <Button
+            size="sm"
+            variant="outline"
+            className="gap-2 bg-surface"
+            aria-keyshortcuts="D"
+            aria-haspopup="dialog"
+            onClick={(event) => openReschedule(event.currentTarget)}
+          >
+            <CalendarClock aria-hidden="true" size={15} />
+            {t("reschedule")}
+          </Button>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button size="sm" variant="outline" className="gap-2 bg-surface">
@@ -371,13 +373,8 @@ function TaskDetailContent({ task, variant, closeControl, onDismiss }: TaskDetai
             label={t("schedule")}
             value={task.date ? <When label={format.dateHeader(task.date)} range={range} /> : tEdit("noDate")}
             hint={task.date === today && task.time ? t("inMyDay") : undefined}
-          >
-            {schedule.map((option) => (
-              <DropdownMenuItem key={option.id} onSelect={() => apply({ date: option.date })}>
-                {tWhen(option.id)}
-              </DropdownMenuItem>
-            ))}
-          </PropertyRow>
+            onActivate={openReschedule}
+          />
           <PropertyRow
             icon={Clock}
             label={t("duration")}
@@ -447,6 +444,17 @@ function TaskDetailContent({ task, variant, closeControl, onDismiss }: TaskDetai
 
       <p className="text-xs text-fg-muted max-lg:hidden">{t("keyboard")}</p>
 
+      {reschedule ? (
+        <RescheduleSurface
+          key={JSON.stringify(reschedule.target)}
+          request={reschedule}
+          day={today}
+          apply={applyReschedule}
+          options={TASK_RESCHEDULE_OPTIONS}
+          onClose={() => setReschedule(null)}
+        />
+      ) : null}
+
       <ConfirmDialog
         open={confirmDelete}
         onOpenChange={setConfirmDelete}
@@ -475,6 +483,7 @@ function PropertyRow({
   value,
   hint,
   children,
+  onActivate,
 }: {
   icon: LucideIcon;
   label: string;
@@ -482,6 +491,8 @@ function PropertyRow({
   hint?: string;
   /** Menu items: the value becomes a button that opens them. Without, the row is read-only. */
   children?: ReactNode;
+  /** Instead of a menu: the value is a button that opens a dialog anchored to it (Schedule → Reschedule). */
+  onActivate?(anchor: HTMLElement): void;
 }) {
   const body = (
     <>
@@ -492,6 +503,20 @@ function PropertyRow({
     </>
   );
   const rowClass = "flex min-h-[46px] w-full items-center gap-2.5 rounded-[14px] bg-subtle px-3 text-start";
+  if (onActivate) {
+    return (
+      <li>
+        <button
+          type="button"
+          aria-haspopup="dialog"
+          onClick={(event) => onActivate(event.currentTarget)}
+          className={cn(rowClass, "hover:bg-raised focus-visible:focus-ring")}
+        >
+          {body}
+        </button>
+      </li>
+    );
+  }
   if (!children) return <li className={rowClass}>{body}</li>;
   return (
     <li>

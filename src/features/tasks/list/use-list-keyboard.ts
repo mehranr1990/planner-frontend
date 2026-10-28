@@ -10,7 +10,7 @@ import { rowTitleId } from "./task-row";
 
 /*
  * The list's keyboard map (domain/keyboard.ts) on the document: N new · /
- * search · J K move · X select · E / D edit · 1–4 priority · ⌘↵ complete ·
+ * search · J K move · X select · E edit · D / S Reschedule (shared) · 1–4 priority · ⌘↵ complete ·
  * B Board · Space detail · ⌘A select the group · Esc clear. Nothing fires
  * over a dialog, sheet or menu, or while typing (⌘↵ excepted).
  */
@@ -70,9 +70,13 @@ export function useListKeyboard(
           s.toggleSelected(focused);
           return true;
         case "edit":
-        case "date":
           if (!focused || !isDesktop) return false;
           s.setExpandedId(focused);
+          return true;
+        case "date":
+        case "schedule":
+          if (!targets.length) return false;
+          l.openReschedule(targets, focused ? document.getElementById(rowTitleId(focused)) : null);
           return true;
         case "priority":
           if (!targetTasks.length) return false;

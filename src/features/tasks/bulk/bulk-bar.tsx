@@ -3,7 +3,7 @@
 import { CalendarDays, Check, Ellipsis, Flag, MoveRight, Trash2, X } from "lucide-react";
 import { motion, useReducedMotion } from "motion/react";
 import { useTranslations } from "next-intl";
-import type { ReactNode } from "react";
+import type { MouseEvent, ReactNode } from "react";
 import { Button, IconButton } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -19,13 +19,13 @@ import { cn } from "@/lib/cn";
 import { PRIORITIES } from "../domain/filters";
 import { useList } from "../list/list-context";
 import { TaskCheck } from "../list/task-parts";
-import { useScheduleOptions } from "../list/use-task-actions";
 import { useTasksState } from "../tasks-context";
 import { useTasksFormat } from "../ui/use-tasks-format";
 
 /*
  * The floating bulk bar ("2 selected | Schedule | Move | Priority | Complete |
- * Delete | ×"): a surface pill with a primary outline, never black. Desktop
+ * Delete | ×"): a surface pill with a primary outline, never black. Schedule
+ * opens the shared Reschedule (anchored popover from lg, bottom sheet below). Desktop
  * floats bottom-centre; phones (PM04) get Schedule · Complete · Delete and a
  * ⋯ menu for Move / Priority, above the bottom nav. Slides up 16px in 180ms.
  */
@@ -37,7 +37,6 @@ export function BulkBar() {
   const { selectedIds, clearSelection } = useTasksState();
   const { byId, actions, openReschedule } = useList();
   const { data: areas } = useAreas();
-  const schedule = useScheduleOptions();
 
   const tasks = selectedIds.map((id) => byId.get(id)).filter((task): task is Task => Boolean(task));
   if (tasks.length === 0) return null;
@@ -47,11 +46,6 @@ export function BulkBar() {
     clearSelection();
   };
 
-  const scheduleItems = schedule.map((option) => (
-    <DropdownMenuItem key={option.id} onSelect={done(() => actions.updateMany(tasks, { date: option.date }))}>
-      {t(`when.${option.id}`)}
-    </DropdownMenuItem>
-  ));
   const moveItems = (areas ?? []).map((area) => (
     <DropdownMenuItem key={area.id} onSelect={done(() => actions.updateMany(tasks, { area }))}>
       {area.name}
@@ -82,12 +76,7 @@ export function BulkBar() {
         </span>
         <span aria-hidden="true" className="mx-1.5 hidden h-[26px] w-px bg-hairline lg:block" />
         <div className="flex items-center gap-1.5 lg:rounded-pill lg:bg-canvas lg:p-1">
-          <div className="hidden lg:block">
-            <Menu label={t("schedule")} icon={<CalendarDays aria-hidden="true" size={15} />}>
-              {scheduleItems}
-            </Menu>
-          </div>
-          <BarButton className="lg:hidden" onClick={() => openReschedule(tasks.map((task) => task.id))}>
+          <BarButton onClick={(event) => openReschedule(tasks.map((task) => task.id), event.currentTarget)}>
             <CalendarDays aria-hidden="true" size={15} />
             {t("schedule")}
           </BarButton>
@@ -128,7 +117,7 @@ export function BulkBar() {
   );
 }
 
-function BarButton({ className, children, onClick }: { className?: string; children: ReactNode; onClick(): void }) {
+function BarButton({ className, children, onClick }: { className?: string; children: ReactNode; onClick(event: MouseEvent<HTMLButtonElement>): void }) {
   return (
     <Button
       variant="secondary"

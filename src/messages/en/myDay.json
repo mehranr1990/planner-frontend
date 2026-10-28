@@ -180,6 +180,7 @@
   "reschedule": {
     "title": "Reschedule “<bdi>{title}</bdi>”",
     "titleMany": "Move {count, plural, one {{countText} block} other {{countText} blocks}}",
+    "titleManyTasks": "Move {count, plural, one {{countText} task} other {{countText} tasks}}",
     "listLabel": "Reschedule options",
     "loading": "Loading options",
     "unavailable": "Couldn’t load the options. Close this and try again.",
@@ -187,6 +188,7 @@
       "later-today": "Later today",
       "tomorrow": "Tomorrow",
       "next-working-day": "Next working day",
+      "this-week": "This week",
       "pick": "Pick date & time…",
       "unscheduled": "Back to Unscheduled"
     },
@@ -210,6 +212,7 @@
     "toast": {
       "moved": "Moved “{title}” to {when}",
       "movedMany": "Moved {countText} blocks to {when}",
+      "movedManyTasks": "Moved {count, plural, one {{countText} task} other {{countText} tasks}} to {when}",
       "unscheduled": "“{title}” is back in Unscheduled",
       "overlaps": "Overlaps {title} by {duration}",
       "undo": "Undo",
@@ -218,7 +221,8 @@
       "failed": "Couldn’t reschedule. Try again.",
       "undoFailed": "Couldn’t undo the move. Try again."
     },
-    "titleFallback": "Reschedule"
+    "titleFallback": "Reschedule",
+    "titleTask": "Reschedule task"
   },
   "states": {
     "empty": {

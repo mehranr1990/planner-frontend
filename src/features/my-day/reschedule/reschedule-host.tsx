@@ -9,10 +9,15 @@ import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useMyDay, usePlannerNow, type RescheduleRequest } from "../my-day-context";
 import { useMyDayFormat } from "../ui/use-my-day-format";
-import { ReschedulePanel } from "./reschedule-panel";
+import { ReschedulePanel } from "@/features/reschedule/reschedule-panel";
 import { useIsDesktop } from "@/components/ui/use-is-desktop";
-import { useRescheduleActions, type RescheduleChoice, type RescheduleSessionData } from "./use-reschedule-actions";
-import { useRescheduleSession } from "./use-reschedule-session";
+import {
+  useRescheduleActions,
+  type RescheduleChoice,
+  type RescheduleSessionData,
+} from "@/features/reschedule/use-reschedule-actions";
+import { useRescheduleSession } from "@/features/reschedule/use-reschedule-session";
+import type { RescheduleOptionId } from "../domain/reschedule";
 
 /*
  * Reschedule for the whole My Day screen (render it once). It reads the open
@@ -20,19 +25,37 @@ import { useRescheduleSession } from "./use-reschedule-session";
  * the control that opened it (or to the pointer for a right-click), below lg a
  * bottom sheet. Choosing a row applies it, closes the surface and shows a toast
  * with Undo; Esc closes and focus returns to where it came from.
+ * RescheduleSurface is that popover / sheet without the My Day context, for
+ * other screens that keep their own request (Tasks).
  */
 
 export function RescheduleHost() {
-  const { reschedule } = useMyDay();
+  const { reschedule, day, closeReschedule } = useMyDay();
   const { apply } = useRescheduleActions();
   if (!reschedule) return null;
   // Keyed by target: a second request (another block's ⋯) starts a fresh session.
-  return <RescheduleSession key={JSON.stringify(reschedule.target)} request={reschedule} apply={apply} />;
+  return (
+    <RescheduleSurface
+      key={JSON.stringify(reschedule.target)}
+      request={reschedule}
+      day={day}
+      apply={apply}
+      onClose={closeReschedule}
+    />
+  );
 }
 
-interface SessionProps {
+export interface RescheduleSurfaceProps {
   request: RescheduleRequest;
+  /** The day the caller shows: suggestions are computed around it and today. */
+  day: string;
+  /** From useRescheduleActions in an always-mounted parent, so Undo outlives the surface. */
   apply: (data: RescheduleSessionData, choice: RescheduleChoice) => Promise<boolean>;
+  onClose(): void;
+  /** After a choice was applied (before onClose). */
+  onApplied?(): void;
+  /** The rows this consumer offers; default My Day / Calendar's (P02 · P04) set. */
+  options?: readonly RescheduleOptionId[];
 }
 
 /** A zero-size box at a point, for anchoring the popover to a right-click. */
@@ -41,14 +64,21 @@ function pointAnchor(x: number, y: number): RefObject<{ getBoundingClientRect():
   return { current: { getBoundingClientRect: () => rect as DOMRect } };
 }
 
-function RescheduleSession({ request, apply }: SessionProps) {
+/** Render it keyed by the request's target, so a new target starts a fresh session. */
+export function RescheduleSurface({
+  request,
+  day,
+  apply,
+  onClose: closeReschedule,
+  onApplied,
+  options,
+}: RescheduleSurfaceProps) {
   const t = useTranslations("MyDay.reschedule");
   const tCommon = useTranslations("Common");
   const format = useMyDayFormat();
-  const { closeReschedule } = useMyDay();
   const now = usePlannerNow();
   const desktop = useIsDesktop();
-  const session = useRescheduleSession(request);
+  const session = useRescheduleSession(request, day, options);
   const [busy, setBusy] = useState(false);
   const titleId = useId();
   // The control that opened it, or whatever had focus (the keyboard shortcut on a block).
@@ -75,16 +105,19 @@ function RescheduleSession({ request, apply }: SessionProps) {
     if (session.status !== "ready") return;
     setBusy(true);
     const ok = await apply({ resolved: session.resolved, blocksByDay: session.blocksByDay }, choice);
-    if (ok) closeReschedule();
-    else setBusy(false);
+    if (ok) {
+      onApplied?.();
+      closeReschedule();
+    } else setBusy(false);
   };
 
-  let title: ReactNode = t("titleFallback");
+  const taskTarget = request.target.kind === "task" || request.target.kind === "tasks";
+  let title: ReactNode = taskTarget ? t("titleTask") : t("titleFallback");
   if (session.status === "ready") {
     const count = session.resolved.items.length;
     title =
       count > 1
-        ? t("titleMany", { count, countText: format.number(count) })
+        ? t(session.resolved.noun === "task" ? "titleManyTasks" : "titleMany", { count, countText: format.number(count) })
         : t.rich("title", {
             title: session.resolved.title,
             bdi: (chunks) => <bdi dir="auto">{chunks}</bdi>,

@@ -1,6 +1,6 @@
 "use client";
 
-import { CalendarArrowDown, Calendar, Clock, Inbox, Sun, type LucideIcon } from "lucide-react";
+import { CalendarArrowDown, Calendar, CalendarRange, Clock, Inbox, Sun, type LucideIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
 import { Button } from "@/components/ui/button";
@@ -27,6 +27,7 @@ const ROW_ICON: Record<RescheduleOption["id"], LucideIcon> = {
   "later-today": Clock,
   tomorrow: Sun,
   "next-working-day": CalendarArrowDown,
+  "this-week": CalendarRange,
   pick: Calendar,
   unscheduled: Inbox,
 };
@@ -150,10 +151,12 @@ function RescheduleRow({ option, active, disabled, onFocus, onSelect, ref }: Row
   let suffix: ReactNode = clock;
   let note: string | null = null;
 
-  if (option.id === "next-working-day") {
+  if (option.id === "next-working-day" || option.id === "this-week") {
     const weekday = format.weekday(option.day);
     suffix = locale === "en" ? weekday.slice(0, 3) : weekday;
-    note = option.note === "fri-weekend" ? t("note.fri-weekend") : option.bestFit ? t("note.bestFit") : null;
+    if (option.id === "next-working-day") {
+      note = option.note === "fri-weekend" ? t("note.fri-weekend") : option.bestFit ? t("note.bestFit") : null;
+    }
   } else if (option.id === "later-today") {
     note = t("note.free", { duration: format.duration(option.freeMinutes) });
   } else if (option.id === "tomorrow") {

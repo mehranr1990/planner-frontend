@@ -215,6 +215,19 @@ export interface TasksRepository {
   addNote(id: string, body: string): Promise<Task>;
 }
 
+/**
+ * The scheduling state of some tasks and blocks before a change (Reschedule's
+ * Undo): each task's day, time and length, and every block of those tasks plus
+ * the named blocks, wherever they are. `blocks.restore` puts it back exactly.
+ */
+export interface ScheduleSnapshot {
+  tasks: Pick<Task, "id" | "date" | "time" | "durationMinutes">[];
+  /** The blocks as they were (a task with no block then has none here). */
+  blocks: TimeBlock[];
+  /** Ids of the named blocks (also those that did not exist): restore replaces them by `blocks`. */
+  blockIds: string[];
+}
+
 /** Where a block goes: a day, an "HH:mm" start and optionally a new length. */
 export interface BlockPlacement {
   day: string;
@@ -240,6 +253,14 @@ export interface BlocksRepository {
    * unscheduled ("forbidden").
    */
   unschedule(blockId: string): Promise<void>;
+  /** The current scheduling state of these tasks (and all their blocks) and blocks, for an Undo. Unknown ids are skipped. */
+  snapshot(input: { taskIds?: readonly string[]; blockIds?: readonly string[] }): Promise<ScheduleSnapshot>;
+  /**
+   * Puts a snapshot back: the tasks get their day, time and length again, and
+   * their blocks (and the named blocks) become exactly the snapshot's — blocks
+   * created since are removed, removed ones come back. Deleted tasks are skipped.
+   */
+  restore(snapshot: ScheduleSnapshot): Promise<void>;
   /** Marks a block done or open; a task block cascades to its task (status, completedAt). */
   setDone(blockId: string, done: boolean): Promise<TimeBlock>;
 }

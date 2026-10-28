@@ -83,7 +83,7 @@ export function BoardColumnView({ column }: { column: Column }) {
           <span>{t("overdue", { n: format.number(column.overdue.length) })}</span>
           <button
             type="button"
-            onClick={() => openReschedule(column.overdue.map((task) => task.id))}
+            onClick={(event) => openReschedule(column.overdue.map((task) => task.id), event.currentTarget)}
             className="rounded underline underline-offset-2 focus-visible:focus-ring"
           >
             {t("reschedule")}

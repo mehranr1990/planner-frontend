@@ -17,8 +17,8 @@ export interface ListContextValue {
   byId: ReadonlyMap<string, Task>;
   /** Ids in the order they are visible (collapsed groups and collapsed done rows left out). */
   visibleIds: readonly string[];
-  /** Opens the Reschedule sheet (phone swipe, phone bulk bar) for these tasks. */
-  openReschedule(ids: readonly string[]): void;
+  /** Opens the shared Reschedule for these tasks: anchored to `anchor` from lg, a bottom sheet below. */
+  openReschedule(ids: readonly string[], anchor?: HTMLElement | null): void;
   /** Focuses the add-task row (N, "Add first task"). */
   focusAdd(): void;
   /** Whether the done rows of a group that collapsed live are shown again. */

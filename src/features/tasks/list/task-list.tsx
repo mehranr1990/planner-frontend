@@ -50,7 +50,7 @@ export function dropTarget(groups: readonly TaskGroup[], overId: string): { grou
 export function TaskList({ addRef }: { addRef: Ref<HTMLInputElement> }) {
   const t = useTranslations("Tasks.list");
   const { tab, today } = useTasksState();
-  const { data, actions } = useList();
+  const { data, openReschedule } = useList();
   const { workHours } = usePlannerSettings();
   const reorder = useReorderTasks();
   const update = useUpdateTask();
@@ -78,8 +78,8 @@ export function TaskList({ addRef }: { addRef: Ref<HTMLInputElement> }) {
     }
   };
 
-  const rescheduleOverdue = (group: TaskGroup) =>
-    actions.updateMany(group.tasks.filter((task) => task.status === "open"), { date: today });
+  const rescheduleOverdue = (group: TaskGroup, anchor: HTMLElement) =>
+    openReschedule(group.tasks.filter((task) => task.status === "open").map((task) => task.id), anchor);
 
   return (
     <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={onDragEnd}>

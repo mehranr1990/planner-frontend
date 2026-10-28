@@ -38,6 +38,7 @@ import {
   type BlockPlacement,
   type NewTaskInput,
   type Repositories,
+  type ScheduleSnapshot,
   type TaskPatch,
   type TaskSnapshot,
   type UnscheduledQuery,
@@ -646,6 +647,42 @@ export function createMockRepositories({ fixtures, latencyMs = 0 }: MockReposito
         blocks.splice(blocks.indexOf(block), 1);
         const task = block.taskId ? tasks.find((item) => item.id === block.taskId) : undefined;
         if (task) task.time = null;
+        await respond(undefined);
+      },
+      async snapshot({ taskIds = [], blockIds = [] }) {
+        const taskSet = new Set(taskIds);
+        const named = new Set(blockIds);
+        const snapshot: ScheduleSnapshot = {
+          tasks: tasks
+            .filter((item) => taskSet.has(item.id))
+            .map(({ id, date, time, durationMinutes }) => ({ id, date, time, durationMinutes })),
+          blocks: structuredClone(
+            blocks.filter((block) => named.has(block.id) || (block.taskId !== undefined && taskSet.has(block.taskId))),
+          ),
+          blockIds: [...named],
+        };
+        return respond(snapshot);
+      },
+      async restore(snapshot) {
+        const restored = new Set<string>();
+        for (const saved of snapshot.tasks) {
+          const task = tasks.find((item) => item.id === saved.id);
+          if (!task) continue;
+          task.date = saved.date;
+          task.time = saved.time;
+          task.durationMinutes = saved.durationMinutes;
+          restored.add(task.id);
+        }
+        const covered = (block: TimeBlock) =>
+          snapshot.blockIds.includes(block.id) || (block.taskId !== undefined && restored.has(block.taskId));
+        for (let index = blocks.length - 1; index >= 0; index--) {
+          if (covered(blocks[index]!)) blocks.splice(index, 1);
+        }
+        for (const block of snapshot.blocks) {
+          // A block of a task deleted since stays gone.
+          if (block.taskId && block.kind === "task" && !tasks.some((item) => item.id === block.taskId)) continue;
+          blocks.push(structuredClone(block));
+        }
         await respond(undefined);
       },
       async setDone(blockId, done) {

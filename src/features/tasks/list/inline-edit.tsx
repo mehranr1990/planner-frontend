@@ -21,7 +21,6 @@ import { useTasksState } from "../tasks-context";
 import { useTasksFormat } from "../ui/use-tasks-format";
 import { useList } from "./list-context";
 import { Kbd, TaskCheck } from "./task-parts";
-import { useScheduleOptions } from "./use-task-actions";
 
 /*
  * The expanded row (board "Inline edit"): the title in an input (Enter saves,
@@ -36,12 +35,10 @@ const chipClass =
 
 export function InlineEditRow({ task, onClose }: { task: Task; onClose(): void }) {
   const t = useTranslations("Tasks.edit");
-  const tWhen = useTranslations("Tasks.bulk.when");
   const format = useTasksFormat();
   const { today } = useTasksState();
-  const { actions } = useList();
+  const { actions, openReschedule } = useList();
   const { data: areas } = useAreas();
-  const schedule = useScheduleOptions();
   const [title, setTitle] = useState(task.title);
   const [label, setLabel] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
@@ -94,13 +91,16 @@ export function InlineEditRow({ task, onClose }: { task: Task; onClose(): void }
         <Kbd className="bg-canvas">{t("esc")}</Kbd>
       </div>
       <div className="flex flex-wrap items-center gap-1.5 ps-[34px]">
-        <Menu trigger={<><Calendar aria-hidden="true" size={14} /> {dateText}</>} label={t("date")}>
-          {schedule.map((option) => (
-            <DropdownMenuItem key={option.id} onSelect={() => apply({ date: option.date })}>
-              {tWhen(option.id)}
-            </DropdownMenuItem>
-          ))}
-        </Menu>
+        {/* The date chip opens the shared Reschedule, anchored to the chip. */}
+        <button
+          type="button"
+          title={t("date")}
+          aria-haspopup="dialog"
+          onClick={(event) => openReschedule([task.id], event.currentTarget)}
+          className={chipClass}
+        >
+          <Calendar aria-hidden="true" size={14} /> {dateText}
+        </button>
         <Menu
           trigger={<><Clock aria-hidden="true" size={14} /> {task.durationMinutes ? format.durationShort(task.durationMinutes) : "—"}</>}
           label={t("duration")}

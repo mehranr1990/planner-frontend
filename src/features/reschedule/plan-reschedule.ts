@@ -9,9 +9,9 @@ import type { RescheduleTarget } from "@/features/my-day/my-day-context";
 
 /*
  * What a Reschedule request moves and where it can go, as plain data: the
- * session component only fetches and draws. A request names a block, a task
- * or several blocks; this resolves them to MoveItems, lists the rows to offer
- * and turns a chosen slot into one placement per item.
+ * session component only fetches and draws. A request names a block, a task,
+ * or several blocks or tasks; this resolves them to MoveItems, lists the rows
+ * to offer and turns a chosen slot into one placement per item.
  */
 
 /** One thing that moves: an existing block, or a task that has no block yet. */
@@ -38,6 +38,8 @@ export interface ResolvedTarget {
   totalMinutes: number;
   /** The single item's title; empty for several. */
   title: string;
+  /** What the request named, for the copy: tasks are never called blocks. */
+  noun: "task" | "block";
 }
 
 export interface TargetContext {
@@ -85,21 +87,23 @@ export function resolveTarget(target: RescheduleTarget, context: TargetContext):
       if (found) items.push(blockItem(found.block, found.day));
     }
   } else {
-    // A task that already has a block is rescheduled through it.
-    const found = findBlock(context.blocksByDay, (block) => block.taskId === target.id);
-    const task = context.tasks.find((item) => item.id === target.id);
-    if (found) {
-      items.push(blockItem(found.block, found.day));
-    } else if (task) {
-      items.push({
-        type: "task",
-        taskId: task.id,
-        title: task.title,
-        blockKind: "task",
-        day: context.day,
-        startMinutes: null,
-        durationMinutes: task.durationMinutes ?? context.defaultDurationMinutes,
-      });
+    for (const id of target.kind === "task" ? [target.id] : target.ids) {
+      // A task that already has a block is rescheduled through it.
+      const found = findBlock(context.blocksByDay, (block) => block.taskId === id);
+      const task = context.tasks.find((item) => item.id === id);
+      if (found) {
+        items.push(blockItem(found.block, found.day));
+      } else if (task) {
+        items.push({
+          type: "task",
+          taskId: task.id,
+          title: task.title,
+          blockKind: "task",
+          day: context.day,
+          startMinutes: null,
+          durationMinutes: task.durationMinutes ?? context.defaultDurationMinutes,
+        });
+      }
     }
   }
   const [first] = items;
@@ -109,6 +113,7 @@ export function resolveTarget(target: RescheduleTarget, context: TargetContext):
     sourceDay: first.day,
     totalMinutes: items.reduce((sum, item) => sum + item.durationMinutes, 0),
     title: items.length === 1 ? first.title : "",
+    noun: target.kind === "task" || target.kind === "tasks" ? "task" : "block",
   };
 }
 
@@ -125,6 +130,8 @@ export interface RowsInput {
   week: WeekConfig;
   workHours: { start: string; end: string };
   preselect?: RescheduleOptionId;
+  /** The rows this consumer offers (see DEFAULT_RESCHEDULE_OPTIONS / TASK_RESCHEDULE_OPTIONS). */
+  allow?: readonly RescheduleOptionId[];
 }
 
 /**
@@ -155,6 +162,7 @@ export function rescheduleRows(input: RowsInput): RescheduleRows {
     },
     week: input.week,
     workHours: input.workHours,
+    allow: input.allow,
   });
 
   const options = all.filter((option) => {

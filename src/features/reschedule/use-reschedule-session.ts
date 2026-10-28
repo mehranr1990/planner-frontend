@@ -6,7 +6,7 @@ import { useRepositories } from "@/data/provider";
 import { blockKeys, useTasks } from "@/data/queries";
 import { usePlannerSettings } from "@/features/planner-settings/use-planner-settings";
 import { toDayBlocks, type DayBlock } from "@/features/my-day/domain/day-blocks";
-import type { RescheduleOption } from "@/features/my-day/domain/reschedule";
+import type { RescheduleOption, RescheduleOptionId } from "@/features/my-day/domain/reschedule";
 import { usePlannerNow, type RescheduleRequest } from "@/features/my-day/my-day-context";
 import {
   rescheduleRows,
@@ -40,10 +40,12 @@ export type RescheduleSession =
 /**
  * `day` is the day the caller shows (My Day's day; the planner's today for a
  * sheet opened by URL). Suggestions are computed around it and today.
+ * `allow` is the consumer's rows (default: My Day / Calendar's set).
  */
 export function useRescheduleSession(
   request: Pick<RescheduleRequest, "target" | "preselect">,
   day: string,
+  allow?: readonly RescheduleOptionId[],
 ): RescheduleSession {
   const now = usePlannerNow();
   const { blocks } = useRepositories();
@@ -91,6 +93,7 @@ export function useRescheduleSession(
       week,
       workHours: { start, end },
       preselect,
+      allow,
     });
     const slots = rows.options.filter((option): option is Extract<RescheduleOption, { startMinutes: number }> =>
       "startMinutes" in option,
@@ -103,5 +106,5 @@ export function useRescheduleSession(
       rows,
       pickDefault: slot ? { day: slot.day, startMinutes: slot.startMinutes } : { day, startMinutes: 540 },
     };
-  }, [failed, pending, taskList, days, fetched.data, target, day, defaultDuration, now.instant, week, start, end, preselect]);
+  }, [failed, pending, taskList, days, fetched.data, target, day, defaultDuration, now.instant, week, start, end, preselect, allow]);
 }

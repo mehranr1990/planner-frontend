@@ -1,8 +1,9 @@
 import type { Task } from "@/data/domain";
 import type { TaskPatch } from "@/data/repositories";
 import { isOverdue } from "@/data/task-query";
-import { addDaysToDay, dayOfInstant, dayToLocalDate, localDateToDay } from "@/lib/dates/clock-time";
-import { getDayKind, getWeekDates, IRAN_WEEK, nextWorkingDay, type WeekConfig } from "@/lib/dates/week";
+import { dayOfInstant } from "@/lib/dates/clock-time";
+import { IRAN_WEEK, type WeekConfig } from "@/lib/dates/week";
+import { restOfWeekDays, weekEndDay, workingTomorrow } from "@/features/my-day/domain/reschedule";
 import { dayCapacityMinutes } from "./group";
 import { moveInList, patchForWindow } from "./reorder";
 import { defaultTimeForWindow, windowOfTime } from "./time-of-day";
@@ -74,29 +75,8 @@ const COLUMNS: Record<BoardGroupMode, readonly BoardColumnKind[]> = {
   status: ["todo", "planned"],
 };
 
-/** The day the Tomorrow column means: tomorrow, or the next working day when tomorrow is a weekend. */
-export function boardTomorrow(day: string, week: WeekConfig = IRAN_WEEK): string {
-  const tomorrow = addDaysToDay(day, 1);
-  if (getDayKind(dayToLocalDate(tomorrow), week) !== "weekend") return tomorrow;
-  const next = nextWorkingDay(dayToLocalDate(day), { config: week });
-  return next ? localDateToDay(next) : tomorrow;
-}
-
-/** The last day of the week containing `day` (the config's week). */
-export function weekEndDay(day: string, week: WeekConfig = IRAN_WEEK): string {
-  return localDateToDay(getWeekDates(dayToLocalDate(day), week)[6]!);
-}
-
-/** The working days after Tomorrow up to the week's end (where a drop on This week lands). */
-function weekDays(day: string, week: WeekConfig): string[] {
-  const tomorrow = boardTomorrow(day, week);
-  const end = weekEndDay(day, week);
-  const days: string[] = [];
-  for (let cursor = addDaysToDay(tomorrow, 1); cursor <= end; cursor = addDaysToDay(cursor, 1)) {
-    if (getDayKind(dayToLocalDate(cursor), week) !== "weekend") days.push(cursor);
-  }
-  return days;
-}
+/** The day the Tomorrow column means (the shared Reschedule rule: Thu → Sat with the Iran week). */
+export const boardTomorrow = workingTomorrow;
 
 function horizonOf(task: Task, day: string, tomorrow: string, end: string): BoardColumnKind {
   if (task.date === null) return "later";
@@ -155,7 +135,7 @@ export function buildBoard(tasks: readonly Task[], { mode, day, week = IRAN_WEEK
     const next = columns.get("tomorrow")!;
     next.day = tomorrow;
     next.capacityMinutes = dayCapacityMinutes(tomorrow, week, workHours);
-    const days = weekDays(day, week);
+    const days = restOfWeekDays(day, week);
     const thisWeek = columns.get("week")!;
     thisWeek.day = days[0];
     thisWeek.untilDay = days[days.length - 1];

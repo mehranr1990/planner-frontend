@@ -9,7 +9,10 @@ import { TaskBoard } from "./board/task-board";
 import { useBoard } from "./board/use-board";
 import { BulkBar } from "./bulk/bulk-bar";
 import { boardIds } from "./domain/board";
-import { RescheduleSheet } from "./bulk/reschedule-sheet";
+import { RescheduleSurface } from "@/features/my-day/reschedule/reschedule-host";
+import type { RescheduleRequest } from "@/features/my-day/my-day-context";
+import { useRescheduleActions } from "@/features/reschedule/use-reschedule-actions";
+import { TASK_RESCHEDULE_OPTIONS } from "@/features/my-day/domain/reschedule";
 import type { TasksUrlState } from "./domain/url-state";
 import { AddTaskRow } from "./list/add-task-row";
 import { ListContext, type ListContextValue } from "./list/list-context";
@@ -24,7 +27,8 @@ import { useTasksQuery } from "./use-tasks-query";
 
 /*
  * P03 Tasks · List. Header, toolbar, filter chips, then the list card (or
- * one of its states), the floating bulk bar and the phone Reschedule sheet.
+ * one of its states), the floating bulk bar and the shared Reschedule
+ * (popover from lg, bottom sheet below; src/features/reschedule).
  * The page mounts it inside <Suspense> (the provider follows the URL).
  * ?view=board swaps the toolbar and list for the board (board/*).
  */
@@ -53,7 +57,8 @@ function TasksLayout() {
   const desktop = useIsDesktop();
   const searchRef = useRef<HTMLInputElement>(null);
   const addRef = useRef<HTMLInputElement>(null);
-  const [rescheduleIds, setRescheduleIds] = useState<readonly string[] | null>(null);
+  const [reschedule, setReschedule] = useState<RescheduleRequest | null>(null);
+  const { apply: applyReschedule } = useRescheduleActions();
   const [doneShown, setDoneShown] = useState<Readonly<Record<string, boolean>>>({});
 
   const byId = useMemo(() => new Map<string, Task>(data.tasks.map((task) => [task.id, task])), [data.tasks]);
@@ -80,7 +85,12 @@ function TasksLayout() {
       actions,
       byId,
       visibleIds,
-      openReschedule: (ids) => setRescheduleIds(ids),
+      openReschedule: (ids, anchor = null) => {
+        const [only] = ids;
+        if (!only) return;
+        const target = ids.length === 1 ? { kind: "task" as const, id: only } : { kind: "tasks" as const, ids };
+        setReschedule({ target, anchor });
+      },
       focusAdd,
       isDoneShown: (groupId) => doneShown[groupId] === true,
       toggleDoneShown: (groupId) => setDoneShown((current) => ({ ...current, [groupId]: !current[groupId] })),
@@ -120,7 +130,17 @@ function TasksLayout() {
         )}
       </div>
       <BulkBar />
-      <RescheduleSheet ids={rescheduleIds} onClose={() => setRescheduleIds(null)} />
+      {reschedule ? (
+        <RescheduleSurface
+          key={JSON.stringify(reschedule.target)}
+          request={reschedule}
+          day={state.today}
+          apply={applyReschedule}
+          options={TASK_RESCHEDULE_OPTIONS}
+          onApplied={state.clearSelection}
+          onClose={() => setReschedule(null)}
+        />
+      ) : null}
     </ListContext.Provider>
   );
 }

@@ -49,6 +49,7 @@ import type {
   JournalEntryPatch,
   ReflectionInput,
   Repositories,
+  ScheduleSnapshot,
   TaskCountsQuery,
   TaskPatch,
   TaskQuery,
@@ -269,6 +270,16 @@ export function useUnscheduleBlock() {
   const client = useQueryClient();
   return useMutation<void, Error, { blockId: string }>({
     mutationFn: ({ blockId }) => blocks.unschedule(blockId),
+    onSuccess: () => invalidateSchedule(client),
+  });
+}
+
+/** Reschedule's Undo: puts a blocks.snapshot back (tasks' day, time, length and their blocks). */
+export function useRestoreSchedule() {
+  const { blocks } = useRepositories();
+  const client = useQueryClient();
+  return useMutation<void, Error, ScheduleSnapshot>({
+    mutationFn: (snapshot) => blocks.restore(snapshot),
     onSuccess: () => invalidateSchedule(client),
   });
 }

@@ -3,7 +3,9 @@
 import { useTranslations } from "next-intl";
 import { useCallback } from "react";
 import { toast } from "@/components/ui/toast";
-import { useMoveBlock, useScheduleTask, useUnscheduleBlock } from "@/data/queries";
+import { useRepositories } from "@/data/provider";
+import { useMoveBlock, useRestoreSchedule, useScheduleTask, useUnscheduleBlock } from "@/data/queries";
+import type { ScheduleSnapshot } from "@/data/repositories";
 import { usePreferences } from "@/features/preferences/use-preferences";
 import { addDaysToDay, formatClockTime } from "@/lib/dates/clock-time";
 import type { DayBlock } from "@/features/my-day/domain/day-blocks";
@@ -13,7 +15,9 @@ import { firstOverlap, planPlacements, type ResolvedTarget } from "./plan-resche
 
 /*
  * Applying a Reschedule choice: the repository calls, one toast with a single
- * Undo that puts everything back where it was, and the overlap warning when a
+ * Undo that puts everything back where it was (a repository snapshot taken
+ * just before the change — never the days on screen, which may not hold a
+ * task's block), and the overlap warning when a
  * picked time double-books the day. The hook lives in the always-mounted host
  * so an Undo still works after the popover has closed.
  */
@@ -27,12 +31,6 @@ export interface RescheduleSessionData {
   blocksByDay: Readonly<Record<string, readonly DayBlock[]>>;
 }
 
-/** What puts one change back. */
-type Inverse =
-  | { type: "move"; blockId: string; day: string; start: string; durationMinutes: number }
-  | { type: "unschedule"; blockId: string }
-  | { type: "schedule"; taskId: string; day: string; start: string; durationMinutes: number };
-
 /** Wraps user text so it keeps its own direction inside a translated sentence. */
 const isolate = (text: string) => `⁨${text}⁩`;
 
@@ -44,6 +42,8 @@ export function useRescheduleActions() {
   const move = useMoveBlock();
   const schedule = useScheduleTask();
   const unschedule = useUnscheduleBlock();
+  const restore = useRestoreSchedule();
+  const { blocks } = useRepositories();
 
   const whenLabel = useCallback(
     (day: string, start: string) => {
@@ -58,57 +58,40 @@ export function useRescheduleActions() {
   );
 
   const undo = useCallback(
-    async (inverses: readonly Inverse[]) => {
+    async (snapshot: ScheduleSnapshot) => {
       try {
-        for (const inverse of [...inverses].reverse()) {
-          if (inverse.type === "move") {
-            await move.mutateAsync({
-              blockId: inverse.blockId,
-              day: inverse.day,
-              start: inverse.start,
-              durationMinutes: inverse.durationMinutes,
-            });
-          } else if (inverse.type === "unschedule") {
-            await unschedule.mutateAsync({ blockId: inverse.blockId });
-          } else {
-            await schedule.mutateAsync({
-              taskId: inverse.taskId,
-              day: inverse.day,
-              start: inverse.start,
-              durationMinutes: inverse.durationMinutes,
-            });
-          }
-        }
+        await restore.mutateAsync(snapshot);
         toast({ tone: "info", title: t("toast.undone") });
       } catch {
         toast({ tone: "danger", title: t("toast.undoFailed") });
       }
     },
-    [move, schedule, unschedule, t],
+    [restore, t],
   );
 
   /** Applies the choice; resolves true when everything moved. */
   const apply = useCallback(
     async ({ resolved, blocksByDay }: RescheduleSessionData, choice: RescheduleChoice): Promise<boolean> => {
-      const inverses: Inverse[] = [];
-      const undoAction = () => ({
-        label: t("toast.undo"),
-        altText: t("toast.undoAlt"),
-        onClick: () => void undo(inverses),
-      });
+      let snapshot: ScheduleSnapshot | null = null;
+      let changed = false;
+      const undoAction = () => {
+        const saved = snapshot;
+        return saved
+          ? { label: t("toast.undo"), altText: t("toast.undoAlt"), onClick: () => void undo(saved) }
+          : undefined;
+      };
 
       try {
+        // Everything Undo puts back, read from the repository before anything changes.
+        snapshot = await blocks.snapshot({
+          taskIds: resolved.items.flatMap((item) => (item.taskId ? [item.taskId] : [])),
+          blockIds: resolved.items.flatMap((item) => (item.blockId ? [item.blockId] : [])),
+        });
         if (choice.type === "unschedule") {
           for (const item of resolved.items) {
             if (!item.blockId || !item.taskId || item.startMinutes === null) continue;
+            changed = true;
             await unschedule.mutateAsync({ blockId: item.blockId });
-            inverses.push({
-              type: "schedule",
-              taskId: item.taskId,
-              day: item.day,
-              start: formatClockTime(item.startMinutes),
-              durationMinutes: item.durationMinutes,
-            });
           }
           toast({
             tone: "success",
@@ -131,6 +114,7 @@ export function useRescheduleActions() {
 
         for (const planned of moves) {
           const { item } = planned;
+          changed = true;
           if (item.type === "block" && item.blockId) {
             await move.mutateAsync({
               blockId: item.blockId,
@@ -138,21 +122,13 @@ export function useRescheduleActions() {
               start: planned.start,
               durationMinutes: planned.durationMinutes,
             });
-            inverses.push({
-              type: "move",
-              blockId: item.blockId,
-              day: item.day,
-              start: formatClockTime(item.startMinutes ?? 0),
-              durationMinutes: item.durationMinutes,
-            });
           } else if (item.taskId) {
-            const block = await schedule.mutateAsync({
+            await schedule.mutateAsync({
               taskId: item.taskId,
               day: planned.day,
               start: planned.start,
               durationMinutes: planned.durationMinutes,
             });
-            inverses.push({ type: "unschedule", blockId: block.id });
           }
         }
 
@@ -163,7 +139,11 @@ export function useRescheduleActions() {
           title:
             resolved.items.length === 1
               ? t("toast.moved", { title: isolate(resolved.title), when })
-              : t("toast.movedMany", { countText: format.number(resolved.items.length), when }),
+              : t(resolved.noun === "task" ? "toast.movedManyTasks" : "toast.movedMany", {
+                  count: resolved.items.length,
+                  countText: format.number(resolved.items.length),
+                  when,
+                }),
           description: overlap
             ? t("toast.overlaps", { title: isolate(overlap.title), duration: format.duration(overlap.minutes) })
             : undefined,
@@ -175,12 +155,12 @@ export function useRescheduleActions() {
         toast({
           tone: "danger",
           title: t("toast.failed"),
-          action: inverses.length > 0 ? undoAction() : undefined,
+          action: changed ? undoAction() : undefined,
         });
         return false;
       }
     },
-    [format, move, schedule, unschedule, t, undo, whenLabel],
+    [blocks, format, move, schedule, unschedule, t, undo, whenLabel],
   );
 
   return { apply };
