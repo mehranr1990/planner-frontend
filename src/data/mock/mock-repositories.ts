@@ -26,6 +26,7 @@ import type {
   InboxSource,
   InboxState,
   InsightHighlight,
+  InsightPatternId,
   JournalEntry,
   MoodEntry,
   Task,
@@ -45,6 +46,7 @@ import { createMockBrainDump } from "./mock-brain-dump";
 import { createMockGoals } from "./mock-goals";
 import { createMockFinance } from "./mock-finance";
 import { createMockHabits } from "./mock-habits";
+import { createMockInsights } from "./mock-insights";
 import { createMockJournal } from "./mock-journal";
 
 /*
@@ -80,6 +82,8 @@ export interface MockFixtures {
   /** Finance (P13): budget months, transactions, bills; null = no finance data. */
   finance?: SampleFinance | null;
   insight?: InsightHighlight | null;
+  /** Insights (P15): days of history the sample person has (default 120) and tabs that fail to calculate. */
+  insights?: { historyDays?: number; failing?: readonly InsightPatternId[] };
   /** Brain Dump pages (P08), one per day. */
   brainDump?: readonly BrainDumpPage[];
 }
@@ -748,11 +752,15 @@ export function createMockRepositories({ fixtures, latencyMs = 0 }: MockReposito
     goals: createMockGoals({ goals, tasks, today, respond }),
     journal: createMockJournal({ moods: source.moods ?? [], entries: source.journal ?? [], now: nowInstant, respond }),
     finance: createMockFinance({ finance: source.finance ?? null, respond }),
-    insights: {
-      highlight() {
-        return respond(insight);
-      },
-    },
+    insights: createMockInsights({
+      today,
+      historyDays: source.insights?.historyDays ?? 120,
+      failing: source.insights?.failing ?? [],
+      highlight: insight,
+      habits,
+      moods: source.moods ?? [],
+      respond,
+    }),
     brainDump: createMockBrainDump({
       pages: source.brainDump ?? [],
       today,

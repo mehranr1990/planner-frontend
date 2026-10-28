@@ -11,7 +11,24 @@ import {
 } from "@tanstack/react-query";
 import { useIsClient } from "@/hooks/use-is-client";
 import type { WeekConfig } from "@/lib/dates/week";
-import type { DayPriorityRef, FinanceMonth, FocusSummary, Goal, GoalLifecycle, Habit, InboxItem, InboxSource, InboxState, JournalEntry, MoodEntry, Task, TimeBlock, Transaction } from "./domain";
+import type {
+  DayPriorityRef,
+  FinanceMonth,
+  FocusSummary,
+  Goal,
+  GoalLifecycle,
+  Habit,
+  InboxItem,
+  InboxSource,
+  InboxState,
+  InsightPatternId,
+  InsightsPeriod,
+  JournalEntry,
+  MoodEntry,
+  Task,
+  TimeBlock,
+  Transaction,
+} from "./domain";
 import { useRepositories } from "./provider";
 import { blockKeys, brainDumpKeys, financeKeys, goalKeys, inboxKeys, moduleKeys, planKeys, taskKeys } from "./query-keys";
 import type {
@@ -638,6 +655,31 @@ export function useInsightHighlight(day: string) {
   const { insights } = useRepositories();
   const hydrated = useIsClient();
   return afterHydration(useQuery({ queryKey: moduleKeys.insight(day), queryFn: () => insights.highlight(day) }), hydrated);
+}
+
+/** P15: data volume + headline for a period. */
+export function useInsightsSummary(day: string, period: InsightsPeriod) {
+  const { insights } = useRepositories();
+  const hydrated = useIsClient();
+  return afterHydration(
+    useQuery({ queryKey: moduleKeys.insightsSummary(day, period), queryFn: () => insights.summary(day, period), placeholderData: keepPreviousData }),
+    hydrated,
+  );
+}
+
+/** P15: one tab's pattern; each tab loads and fails on its own (no retry: the tab offers Retry). */
+export function useInsightPattern<Id extends InsightPatternId>(id: Id, day: string, period: InsightsPeriod) {
+  const { insights } = useRepositories();
+  const hydrated = useIsClient();
+  return afterHydration(
+    useQuery({
+      queryKey: moduleKeys.insightPattern(id, day, period),
+      queryFn: () => insights.pattern(id, day, period),
+      placeholderData: keepPreviousData,
+      retry: false,
+    }),
+    hydrated,
+  );
 }
 
 // ── Inbox (P07) ──────────────────────────────────────────────────────────

@@ -39,6 +39,7 @@ describe("DEFAULT_PLANNER_SETTINGS", () => {
       weeklyReview: { weekday: 4, time: "18:00" },
       focus: { focusMinutes: 25, shortBreakMinutes: 5, longBreakMinutes: 15, cyclesBeforeLongBreak: 4, autoStartNext: false, dailyGoalMinutes: 240 },
       privacy: { journalLock: false, financeLock: false },
+      insights: { protectedFocus: null, estimateBuffers: {} },
     });
   });
 
@@ -177,5 +178,17 @@ describe("createPlannerSettingsStore", () => {
     unsubscribe();
     store.update({ privacy: { financeLock: true } });
     expect(calls).toBe(2);
+  });
+
+  it("keeps the opt-in Insights actions off by default and validates them field by field", () => {
+    expect(DEFAULT_PLANNER_SETTINGS.insights).toEqual({ protectedFocus: null, estimateBuffers: {} });
+    const on = mergePlannerSettings(DEFAULT_PLANNER_SETTINGS, {
+      insights: { protectedFocus: { start: "09:00", end: "12:00" }, estimateBuffers: { design: 50 } },
+    });
+    expect(on.insights).toEqual({ protectedFocus: { start: "09:00", end: "12:00" }, estimateBuffers: { design: 50 } });
+    expect(on.planning).toEqual(DEFAULT_PLANNER_SETTINGS.planning);
+    const bad = parsePlannerSettings({ ...on, insights: { protectedFocus: "always", estimateBuffers: { design: -5 } } });
+    expect(bad.insights).toEqual({ protectedFocus: null, estimateBuffers: {} });
+    expect(parsePlannerSettings({ ...on, insights: 3 }).insights).toEqual(DEFAULT_PLANNER_SETTINGS.insights);
   });
 });

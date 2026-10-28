@@ -8,6 +8,7 @@ import enFocus from "./en/focus.json";
 import enGoals from "./en/goals.json";
 import enHabits from "./en/habits.json";
 import enInbox from "./en/inbox.json";
+import enInsights from "./en/insights.json";
 import enJournal from "./en/journal.json";
 import enMyDay from "./en/myDay.json";
 import enNavigation from "./en/navigation.json";
@@ -27,6 +28,7 @@ import faFocus from "./fa/focus.json";
 import faGoals from "./fa/goals.json";
 import faHabits from "./fa/habits.json";
 import faInbox from "./fa/inbox.json";
+import faInsights from "./fa/insights.json";
 import faJournal from "./fa/journal.json";
 import faMyDay from "./fa/myDay.json";
 import faNavigation from "./fa/navigation.json";
@@ -66,6 +68,7 @@ const en = {
   Goals: enGoals,
   Habits: enHabits,
   Finance: enFinance,
+  Insights: enInsights,
   Journal: enJournal,
 };
 
@@ -90,6 +93,7 @@ const fa: ClientMessages = {
   Goals: faGoals,
   Habits: faHabits,
   Finance: faFinance,
+  Insights: faInsights,
   Journal: faJournal,
 };
 

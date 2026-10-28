@@ -49,6 +49,12 @@ export interface PlannerSettings {
   };
   /** Placeholders: the toggles persist, no PIN or biometric logic yet. */
   privacy: { journalLock: boolean; financeLock: boolean };
+  /**
+   * Opt-in Insights actions (P15): nothing changes until the person accepts.
+   * protectedFocus: a daily window My Day keeps for deep work ("Protect 09–12").
+   * estimateBuffers: extra duration (%) suggested for new tasks per category ("+50%").
+   */
+  insights: { protectedFocus: { start: ClockTime; end: ClockTime } | null; estimateBuffers: Partial<Record<string, number>> };
 }
 
 /** No module hidden at start (P00 Onboarding); Iranian week; Thursday 18:00 review. */
@@ -61,6 +67,7 @@ export const DEFAULT_PLANNER_SETTINGS: PlannerSettings = {
   weeklyReview: { weekday: 4, time: "18:00" },
   focus: { focusMinutes: 25, shortBreakMinutes: 5, longBreakMinutes: 15, cyclesBeforeLongBreak: 4, autoStartNext: false, dailyGoalMinutes: 240 },
   privacy: { journalLock: false, financeLock: false },
+  insights: { protectedFocus: null, estimateBuffers: {} },
 };
 
 // Every field carries .catch(default), so one bad value never resets its
@@ -136,6 +143,15 @@ const plannerSettingsSchema = z.object({
       financeLock: z.boolean().catch(D.privacy.financeLock),
     })
     .catch(D.privacy),
+  insights: z
+    .object({
+      protectedFocus: z
+        .object({ start: clockTime(D.workHours.start), end: clockTime(D.workHours.end) })
+        .nullable()
+        .catch(D.insights.protectedFocus),
+      estimateBuffers: z.record(z.string().max(32), z.number().int().min(0).max(200)).catch({}),
+    })
+    .catch(() => ({ protectedFocus: null, estimateBuffers: {} })),
 });
 
 /**

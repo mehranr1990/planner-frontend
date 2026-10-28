@@ -70,6 +70,8 @@ export const moduleKeys = {
   journalEntry: (day: string) => ["journal", "entry", day] as const,
   finance: (day: string) => ["finance", "month", day] as const,
   insight: (day: string) => ["insights", "highlight", day] as const,
+  insightsSummary: (day: string, period: string) => ["insights", "summary", day, period] as const,
+  insightPattern: (id: string, day: string, period: string) => ["insights", "pattern", id, day, period] as const,
 };
 
 /** Brain Dump (P08): the pages list and one page per day. */

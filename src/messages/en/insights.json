@@ -1,0 +1,147 @@
+{
+  "title": "Insights",
+  "kicker": "Personal · patterns from the last {period, select, 4w {4 weeks} 3m {3 months} other {year}}",
+  "period": {
+    "label": "Period",
+    "4w": "4 weeks",
+    "3m": "3 months",
+    "year": "Year"
+  },
+  "headline": {
+    "eyebrow": "Headline · {period, select, 4w {last 4 weeks} 3m {last 3 months} other {this year}}",
+    "text": "You do your best work at <range></range> — and your calmest days are the ones with <habit></habit>.",
+    "plan": "Plan around it",
+    "why": "Why this?"
+  },
+  "observations": {
+    "time": {
+      "eyebrow": "Time",
+      "text": "Personal took {share} of your tracked time — {change} vs the period before.",
+      "link": "Context Ribbon · Time tab"
+    },
+    "estimates": {
+      "eyebrow": "Estimates",
+      "text": "{category} work takes {ratio}× your estimates.",
+      "link": "Estimates tab"
+    },
+    "habits": {
+      "eyebrow": "Habits",
+      "text": "<habit></habit> days average +{delta} mood.",
+      "link": "Habits tab"
+    }
+  },
+  "change": {
+    "up": "+{points} pts",
+    "down": "−{points} pts",
+    "same": "no change"
+  },
+  "tabs": {
+    "label": "Patterns",
+    "focus": "Focus",
+    "focusHint": "Clock",
+    "time": "Time",
+    "timeHint": "Ribbon",
+    "signals": "Signals",
+    "signalsHint": "Mood · Energy · Focus",
+    "estimates": "Estimates",
+    "habits": "Habits ↔ mood"
+  },
+  "focus": {
+    "question": "When do I focus best?",
+    "answer": "<range></range> is your strongest window — {share} of all focused minutes.",
+    "filterLabel": "Which days",
+    "all": "All days",
+    "work": "Work days",
+    "weekend": "Weekend",
+    "clockLabel": "Typical focus minutes by hour of the day",
+    "hour": "{hour}: {minutes}",
+    "center": "Focused",
+    "centerSub": "typical day",
+    "best": "Best · <range></range>",
+    "stats": "Focus numbers",
+    "sessions": "Sessions completed",
+    "sessionsValue": "{done} of {started}",
+    "average": "Average session",
+    "interrupted": "Interrupted most",
+    "protect": "Protect <range></range> in My Day",
+    "protected": "<range></range> is protected in My Day",
+    "protectedToast": "Protected in My Day",
+    "undo": "Undo",
+    "undoAlt": "Turn it off from Insights › Focus",
+    "turnOff": "Turn off",
+    "openMyDay": "Open My Day"
+  },
+  "time": {
+    "question": "Where did my time go?",
+    "caption": "Context Ribbon · share of tracked time per day",
+    "legend": "Emphasise a context",
+    "personal": "Personal",
+    "projects": "Projects",
+    "teams": "Teams",
+    "companies": "Companies",
+    "other": "Other",
+    "teamsCompanies": "Teams · Companies",
+    "share": "{share} of tracked time"
+  },
+  "signals": {
+    "question": "How do mood, energy and focus move together?",
+    "caption": "Layered Area · shared 0–10 score",
+    "chartLabel": "Mood, energy and focus on a 0–10 scale",
+    "metric": "Emphasise a signal",
+    "mood": "Mood",
+    "energy": "Energy",
+    "focus": "Focus",
+    "observation": "On days with 2h or more of focus, mood averages {with} vs {without} otherwise."
+  },
+  "estimates": {
+    "question": "Do I underestimate some work?",
+    "caption": "actual ÷ estimated · outline = estimate",
+    "design": "Design",
+    "admin": "Admin & bills",
+    "writing": "Writing",
+    "errands": "Errands",
+    "ratio": "×{ratio}",
+    "row": "{category}: takes {ratio} times the estimate",
+    "observation": "{category} tasks take {ratio}× your estimate.",
+    "suggest": "Suggest +{percent} for new {category} tasks",
+    "suggestHint": "Nothing changes until you turn this on. You can turn it off any time.",
+    "on": "New {category} tasks suggest +{percent} duration.",
+    "onToast": "Estimate suggestion on",
+    "turnOff": "Turn off",
+    "settings": "Manage in Settings"
+  },
+  "habits": {
+    "question": "Which habits go with better days?",
+    "caption": "Average mood (0–10) on days done vs not done",
+    "done": "Done",
+    "notDone": "Not done",
+    "row": "{habit}: mood {done} on days done, {notDone} on days not done",
+    "note": "Correlation, not cause. Shown only for habits with 10 or more days of data."
+  },
+  "states": {
+    "loading": "Loading patterns",
+    "noData": {
+      "title": "Not enough data yet",
+      "body": "Insights appear after about 2 weeks of using My Day, Focus and check-ins. We never show patterns from too little data.",
+      "what": "What do we look at?",
+      "sources": "My Day plans and time blocks · Focus sessions · Mood and energy check-ins · Habits you check off · Task estimates vs actual time"
+    },
+    "partial": {
+      "title": "Collecting · {have} of {need} days",
+      "body": "Each tab shows its own threshold: Focus needs 10 sessions, Signals 14 check-ins, Estimates 15 completed tasks with estimates."
+    },
+    "collecting": {
+      "title": "Collecting · {have} of {need}",
+      "focus": "Focus patterns need {need} sessions.",
+      "time": "The ribbon needs {need} days with scheduled blocks.",
+      "signals": "Signals need {need} check-ins.",
+      "estimates": "Estimates need {need} completed tasks with estimates.",
+      "habits": "Each habit needs {need} days of data."
+    },
+    "error": {
+      "title": "Couldn’t calculate",
+      "body": "Something went wrong with this pattern. Other tabs still work.",
+      "retry": "Retry"
+    }
+  }
+}

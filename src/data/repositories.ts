@@ -20,6 +20,11 @@ import type {
   HabitTimeOfDay,
   InboxItem,
   InsightHighlight,
+  InsightPatternId,
+  InsightPatternOf,
+  InsightPatternResult,
+  InsightsPeriod,
+  InsightsSummary,
   JournalEntry,
   MoodEntry,
   MoodLevel,
@@ -477,6 +482,10 @@ export interface FinanceRepository {
 export interface InsightsRepository {
   /** The one pattern worth showing on `day`, or null. */
   highlight(day: string): Promise<InsightHighlight | null>;
+  /** P15 header: how much data there is, and the headline once there is enough. */
+  summary(day: string, period: InsightsPeriod): Promise<InsightsSummary>;
+  /** One tab's pattern or its threshold progress; rejects when it cannot be calculated (per-tab error). */
+  pattern<Id extends InsightPatternId>(id: Id, day: string, period: InsightsPeriod): Promise<InsightPatternResult<InsightPatternOf<Id>>>;
 }
 
 export interface Repositories {

@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { useInsightHighlight } from "@/data/queries";
 import { ProductCard } from "@/design-system/surfaces/product-card";
+import { insightsHref } from "@/features/insights/domain/insights";
 import { useMyDayFormat } from "@/features/my-day/ui/use-my-day-format";
 import { cn } from "@/lib/cn";
 
@@ -40,7 +41,7 @@ export function InsightCard({ today, onDismiss, className }: { today: string; on
       </h2>
       <div className="mt-auto flex flex-wrap gap-2">
         <Button asChild size="sm" variant="secondary" className="bg-surface text-fg hover:bg-subtle">
-          <Link href="/personal/insights">{t("see")}</Link>
+          <Link href={insightsHref("focus")}>{t("see")}</Link>
         </Button>
         <Button
           size="sm"

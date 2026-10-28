@@ -511,3 +511,93 @@ export type InsightHighlight = {
   /** Today's deep work already sits in that window. */
   bookedToday: boolean;
 };
+
+// ── Insights (P15): patterns over a period, each behind its own threshold ──
+
+export type InsightsPeriod = "4w" | "3m" | "year";
+export const insightsPeriods: readonly InsightsPeriod[] = ["4w", "3m", "year"];
+export type InsightPatternId = "focus" | "time" | "signals" | "estimates" | "habits";
+export const insightPatternIds: readonly InsightPatternId[] = ["focus", "time", "signals", "estimates", "habits"];
+/** Focus tab day filter: All days · Work days · Weekend. */
+export type InsightDayFilter = "all" | "work" | "weekend";
+/** The four contexts plus untracked "other" (Context Ribbon bands). */
+export type InsightContext = "personal" | "projects" | "teams" | "companies" | "other";
+export const insightContexts: readonly InsightContext[] = ["personal", "projects", "teams", "companies", "other"];
+export type EstimateCategory = "design" | "admin" | "writing" | "errands";
+
+export interface InsightsSummary {
+  period: InsightsPeriod;
+  /** Days with My Day, Focus or check-in activity so far. */
+  activeDays: number;
+  /** Days needed before any pattern shows ("about 2 weeks"). */
+  requiredDays: number;
+  /** Best focus window before noon + the habit of the calmest days; null below the threshold. */
+  headline: { focusWindow: readonly [number, number]; habitId: string; habitTitle: string } | null;
+}
+
+export interface FocusWindowStats {
+  /** 24 values: typical focus minutes per hour. */
+  minutesByHour: number[];
+  totalMinutes: number;
+  sessionsCompleted: number;
+  sessionsStarted: number;
+  averageSessionMinutes: number;
+  /** Best window [startHour, endHour) and its share (0–1) of all focused minutes. */
+  bestWindow: [number, number];
+  bestShare: number;
+  /** Hour most sessions were interrupted in. */
+  interruptedHour: number;
+}
+
+export interface FocusPattern {
+  id: "focus";
+  byDays: Record<InsightDayFilter, FocusWindowStats>;
+}
+
+export interface TimePattern {
+  id: "time";
+  /** Seven rows in week order (first = week start): tracked minutes per context. */
+  days: { weekday: number; minutes: Record<InsightContext, number> }[];
+  /** Share per context (0–1) in the previous period, for the delta. */
+  previousShare: Record<InsightContext, number>;
+  /** The project that took most Projects time (user text). */
+  topProject: string;
+}
+
+export interface SignalsDay {
+  day: string;
+  /** Shared 0–10 daily scores. */
+  mood: number;
+  energy: number;
+  focus: number;
+}
+
+export interface SignalsPattern {
+  id: "signals";
+  days: SignalsDay[];
+  /** Mood (0–10) on days with ≥ 2h focus vs the rest. */
+  moodWithFocus: number;
+  moodWithoutFocus: number;
+}
+
+export interface EstimatesPattern {
+  id: "estimates";
+  /** Actual ÷ estimated per category, biggest overrun first. */
+  categories: { id: EstimateCategory; ratio: number }[];
+  /** The one opt-in suggestion: add +N% duration to new tasks of a category. */
+  suggestion: { category: EstimateCategory; bufferPercent: number } | null;
+}
+
+export interface HabitsPattern {
+  id: "habits";
+  /** Avg mood (0–10) on days done vs not done; only habits with ≥ 10 days of data. */
+  rows: { habitId: string; title: string; doneMood: number; notDoneMood: number }[];
+}
+
+export type InsightPattern = FocusPattern | TimePattern | SignalsPattern | EstimatesPattern | HabitsPattern;
+export type InsightPatternOf<Id extends InsightPatternId> = Extract<InsightPattern, { id: Id }>;
+
+/** A pattern, or progress to its own threshold (never a chart from too little data). */
+export type InsightPatternResult<P extends InsightPattern = InsightPattern> =
+  | { status: "ready"; pattern: P }
+  | { status: "collecting"; have: number; need: number };
