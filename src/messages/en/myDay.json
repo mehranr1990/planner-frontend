@@ -4,6 +4,7 @@
     "energy": "{level, select, low {Energy low} medium {Energy medium} other {Energy high}}"
   },
   "timeline": {
+    "protectedFocus": "Protected focus",
     "title": "Timeline",
     "hint": "Drag tasks in from the right · drag edges to resize",
     "viewLabel": "Timeline view",

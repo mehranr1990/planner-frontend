@@ -4,6 +4,7 @@
     "energy": "{level, select, low {انرژی کم} medium {انرژی متوسط} other {انرژی زیاد}}"
   },
   "timeline": {
+    "protectedFocus": "تمرکز محفوظ",
     "title": "خط زمان",
     "hint": "کارها را از ستون کناری بکشید · لبه‌ها را برای تغییر مدت بکشید",
     "viewLabel": "نمای خط زمان",

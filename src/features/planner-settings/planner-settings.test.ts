@@ -7,6 +7,7 @@ import {
   isModuleVisible,
   mergePlannerSettings,
   parsePlannerSettings,
+  planningDurationMinutes,
   visibleModuleIds,
   type PlannerSettings,
 } from "./planner-settings";
@@ -190,5 +191,29 @@ describe("createPlannerSettingsStore", () => {
     const bad = parsePlannerSettings({ ...on, insights: { protectedFocus: "always", estimateBuffers: { design: -5 } } });
     expect(bad.insights).toEqual({ protectedFocus: null, estimateBuffers: {} });
     expect(parsePlannerSettings({ ...on, insights: 3 }).insights).toEqual(DEFAULT_PLANNER_SETTINGS.insights);
+  });
+});
+
+describe("Insights opt-ins", () => {
+  it("saves and removes the protected window and the estimate buffer", () => {
+    const on = mergePlannerSettings(DEFAULT_PLANNER_SETTINGS, {
+      insights: { protectedFocus: { start: "09:00", end: "12:00" }, estimateBuffers: { design: 50 } },
+    });
+    expect(on.insights).toEqual({ protectedFocus: { start: "09:00", end: "12:00" }, estimateBuffers: { design: 50 } });
+    const off = mergePlannerSettings(on, { insights: { protectedFocus: null, estimateBuffers: {} } });
+    expect(off.insights).toEqual(DEFAULT_PLANNER_SETTINGS.insights);
+    // Old cookies without the group still parse to the neutral defaults.
+    const old: Partial<PlannerSettings> = { ...on };
+    delete old.insights;
+    expect(parsePlannerSettings(old).insights).toEqual({ protectedFocus: null, estimateBuffers: {} });
+  });
+
+  it("planning duration: raw × buffer for a matching tag, raw otherwise", () => {
+    const buffers = { design: 50 };
+    expect(planningDurationMinutes(60, ["Design"], buffers)).toBe(90);
+    expect(planningDurationMinutes(25, ["design"], buffers)).toBe(40);
+    expect(planningDurationMinutes(60, ["admin", null, undefined], buffers)).toBe(60);
+    expect(planningDurationMinutes(60, ["constructor"], buffers)).toBe(60);
+    expect(planningDurationMinutes(60, ["design"], {})).toBe(60);
   });
 });

@@ -5,11 +5,12 @@ import { useCallback, useEffect, useRef, type RefObject } from "react";
 import { toast } from "@/components/ui/toast";
 import type { Task } from "@/data/domain";
 import { useBlocks, useScheduleTask, useUnscheduleBlock } from "@/data/queries";
+import { planningDurationMinutes } from "@/features/planner-settings/planner-settings";
 import { usePlannerSettings } from "@/features/planner-settings/use-planner-settings";
 import { formatClockTime } from "@/lib/dates/clock-time";
 import { workWindow } from "../domain/capacity";
 import { toDayBlocks } from "../domain/day-blocks";
-import { autoFit } from "../domain/placement";
+import { autoFit, protectedSpan } from "../domain/placement";
 import { visibleWindow } from "../domain/window";
 import { useMyDay, usePlannerNow } from "../my-day-context";
 import { useMyDayFormat } from "../ui/use-my-day-format";
@@ -22,14 +23,14 @@ import { useMyDayFormat } from "../ui/use-my-day-format";
  * window, since there is no "now" to start after.
  */
 
-type AutoFitTask = Pick<Task, "id" | "title" | "durationMinutes">;
+type AutoFitTask = Pick<Task, "id" | "title" | "durationMinutes" | "labels" | "area">;
 
 export function useAutoFit(): (task: AutoFitTask) => Promise<void> {
   const t = useTranslations("MyDay.unscheduled");
   const format = useMyDayFormat();
   const { day } = useMyDay();
   const now = usePlannerNow();
-  const { workHours, planning } = usePlannerSettings();
+  const { workHours, planning, insights } = usePlannerSettings();
   const blocks = useBlocks(day);
   const { mutateAsync: schedule } = useScheduleTask();
   const { mutateAsync: unschedule } = useUnscheduleBlock();
@@ -41,8 +42,21 @@ export function useAutoFit(): (task: AutoFitTask) => Promise<void> {
       if (!blocksData) return;
       const dayBlocks = toDayBlocks(blocksData, day);
       const hours = visibleWindow(dayBlocks, workWindow(workHours));
+      // The block keeps the task's own length; the slot must hold its planning length (estimate buffer).
       const durationMinutes = task.durationMinutes ?? planning.defaultDurationMinutes;
-      const slot = autoFit(dayBlocks, { durationMinutes }, day === now.day ? now.minutes : 0, hours, planning.defaultDurationMinutes);
+      const fitMinutes = planningDurationMinutes(
+        durationMinutes,
+        [...(task.labels ?? []), task.area?.id, task.area?.name],
+        insights.estimateBuffers,
+      );
+      const slot = autoFit(
+        dayBlocks,
+        { durationMinutes: fitMinutes },
+        day === now.day ? now.minutes : 0,
+        hours,
+        planning.defaultDurationMinutes,
+        protectedSpan(insights.protectedFocus),
+      );
 
       if (slot === null) {
         toast({ tone: "warning", title: t("noRoom"), description: t("noRoomDescription") });
@@ -64,7 +78,7 @@ export function useAutoFit(): (task: AutoFitTask) => Promise<void> {
         toast({ tone: "danger", title: t("scheduleFailed") });
       }
     },
-    [blocksData, day, now.day, now.minutes, workHours, planning.defaultDurationMinutes, schedule, unschedule, format, t],
+    [blocksData, day, now.day, now.minutes, workHours, planning.defaultDurationMinutes, insights, schedule, unschedule, format, t],
   );
 }
 

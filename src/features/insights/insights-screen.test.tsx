@@ -50,7 +50,7 @@ describe("InsightsScreen (P15)", () => {
 
     await user.click(screen.getByRole("button", { name: "Protect 09–12 in My Day" }));
     expect(await screen.findByRole("button", { name: "Turn off" })).toBeInTheDocument();
-    expect(container.querySelector("[data-action=protected]")).toHaveTextContent("09–12 is protected in My Day");
+    expect(container.querySelector("[data-action=protected]")).toHaveTextContent("Protected · 09–12 stays free for focus in My Day");
     expect(screen.getByRole("link", { name: "Open My Day" })).toHaveAttribute("href", "/personal/my-day");
   });
 
@@ -61,7 +61,7 @@ describe("InsightsScreen (P15)", () => {
     expect(routerReplace).toHaveBeenLastCalledWith("/personal/insights?tab=estimates", { scroll: false });
     expect(await screen.findByText("Do I underestimate some work?")).toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: "Suggest +50% for new Design tasks" }));
-    expect(await screen.findByText("New Design tasks suggest +50% duration.")).toBeInTheDocument();
+    expect(await screen.findByText("Applied · new Design tasks plan with +50% duration.")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Manage in Settings" })).toBeInTheDocument();
     await user.click(screen.getByRole("radio", { name: "3 months" }));
     expect(routerReplace).toHaveBeenLastCalledWith("/personal/insights?tab=estimates&period=3m", { scroll: false });

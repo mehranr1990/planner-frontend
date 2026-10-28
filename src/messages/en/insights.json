@@ -64,7 +64,7 @@
     "average": "Average session",
     "interrupted": "Interrupted most",
     "protect": "Protect <range></range> in My Day",
-    "protected": "<range></range> is protected in My Day",
+    "protected": "Protected · <range></range> stays free for focus in My Day",
     "protectedToast": "Protected in My Day",
     "undo": "Undo",
     "undoAlt": "Turn it off from Insights › Focus",
@@ -105,7 +105,7 @@
     "observation": "{category} tasks take {ratio}× your estimate.",
     "suggest": "Suggest +{percent} for new {category} tasks",
     "suggestHint": "Nothing changes until you turn this on. You can turn it off any time.",
-    "on": "New {category} tasks suggest +{percent} duration.",
+    "on": "Applied · new {category} tasks plan with +{percent} duration.",
     "onToast": "Estimate suggestion on",
     "turnOff": "Turn off",
     "settings": "Manage in Settings"

@@ -13,13 +13,14 @@ import {
   SignatureCardHeader,
 } from "@/design-system/surfaces/signature-card";
 import { useUnscheduledTasks } from "@/data/queries";
+import { planningDurationMinutes } from "@/features/planner-settings/planner-settings";
 import { usePlannerSettings } from "@/features/planner-settings/use-planner-settings";
 import { useOpenSheet } from "@/features/sheets/sheet-params";
 import { cn } from "@/lib/cn";
 import { addDaysToDay } from "@/lib/dates/clock-time";
 import { workWindow } from "../domain/capacity";
 import { gapHints } from "../domain/gaps";
-import { nextFreeSlot } from "../domain/placement";
+import { protectedSpan, suggestFreeSlot } from "../domain/placement";
 import { visibleWindow } from "../domain/window";
 import { useMyDay, usePlannerNow, type MyDayView } from "../my-day-context";
 import { useMyDayFormat } from "../ui/use-my-day-format";
@@ -135,6 +136,7 @@ function SingleDayBody({ desktop, emptyState, shrunk }: { desktop: boolean; empt
   const work = workWindow(settings.workHours);
   const { startMinutes: workStart, endMinutes: workEnd } = work;
   const defaultDuration = settings.planning.defaultDurationMinutes;
+  const guarded = protectedSpan(settings.insights.protectedFocus);
   const pxPerMinute = pxPerMinuteFor(desktop);
   const { blocks, model } = data;
   const window = useMemo(
@@ -149,23 +151,32 @@ function SingleDayBody({ desktop, emptyState, shrunk }: { desktop: boolean; empt
   const nowMinutes = isToday ? now.minutes : null;
 
   if (blocks.length === 0 && emptyState) {
-    // A drop on an empty day lands at the next free half hour (today) or the start of work.
-    const start = nextFreeSlot([], isToday ? now.minutes : workStart, defaultDuration) ?? workStart;
+    // A drop on an empty day lands at the next free half hour (today) or the start of work, past the protected window.
+    const start = suggestFreeSlot([], isToday ? now.minutes : workStart, defaultDuration, undefined, guarded) ?? workStart;
     return <EmptyDropZone day={day} startMinutes={start}>{emptyState}</EmptyDropZone>;
   }
 
   const state = model.capacity.state;
   const lastEnd = blocks.reduce((latest, block) => Math.max(latest, block.endMinutes), 0);
+  // Gap hints count tasks by their planning length (estimate buffers), never their stored one.
+  const fitting = (unscheduled.data ?? []).map((task) => ({
+    energy: task.energy,
+    durationMinutes: planningDurationMinutes(
+      task.durationMinutes ?? defaultDuration,
+      [...(task.labels ?? []), task.area?.id, task.area?.name],
+      settings.insights.estimateBuffers,
+    ),
+  }));
   const column: DayColumnData = {
     day,
     model,
     tasks: data.tasks,
     nowMinutes,
     freeSlotMinutes:
-      state === "normal" ? nextFreeSlot(blocks, lastEnd, defaultDuration, window) : null,
+      state === "normal" ? suggestFreeSlot(blocks, lastEnd, defaultDuration, window, guarded) : null,
     gapHints:
       state === "partial"
-        ? gapHints(blocks, { startMinutes: workStart, endMinutes: workEnd }, unscheduled.data ?? [], energy, defaultDuration)
+        ? gapHints(blocks, { startMinutes: workStart, endMinutes: workEnd }, fitting, energy, defaultDuration, guarded)
         : [],
   };
 
@@ -178,6 +189,7 @@ function SingleDayBody({ desktop, emptyState, shrunk }: { desktop: boolean; empt
         window={window}
         pxPerMinute={pxPerMinute}
         todayDay={now.day}
+        protectedFocus={guarded}
         label={t("gridLabel", { date: format.kicker(day) })}
       />
     </GridScroller>
@@ -228,6 +240,7 @@ function ThreeDaysBody() {
       pxPerMinute={pxPerMinute}
       showHeaders
       todayDay={now.day}
+      protectedFocus={protectedSpan(settings.insights.protectedFocus)}
       label={t("gridLabelRange", { from: format.dayMonth(days[0]), to: format.dayMonth(days[2]) })}
     />
   );

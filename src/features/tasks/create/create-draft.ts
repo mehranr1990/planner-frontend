@@ -1,7 +1,41 @@
 import type { EnergyLevel, Scope, TaskPriority } from "@/data/domain";
 import { parseClockTime, parseDay } from "@/lib/dates/clock-time";
+import type { MinuteSpan } from "@/features/my-day/domain/day-blocks";
+import { suggestFreeSlot } from "@/features/my-day/domain/placement";
 import { TASK_CREATE_HREF } from "@/features/personal/routes";
 import { ENERGIES, PRIORITIES } from "../domain/filters";
+
+/** The Labels field: comma-separated (Latin or Persian comma), trimmed, empties dropped. */
+export function splitLabels(text: string): string[] {
+  return text
+    .split(/[,،]/)
+    .map((label) => label.trim())
+    .filter(Boolean);
+}
+
+/**
+ * The Schedule panel's free starts: up to `count` slots that hold the
+ * planning length (raw estimate × the accepted buffer), each after the
+ * previous one, outside the protected focus window when anything else fits.
+ */
+export function suggestedStarts(
+  busy: readonly MinuteSpan[],
+  afterMinutes: number,
+  planMinutes: number,
+  window: MinuteSpan,
+  avoid: MinuteSpan | null = null,
+  count = 2,
+): number[] {
+  const starts: number[] = [];
+  let after = afterMinutes;
+  while (starts.length < count) {
+    const start = suggestFreeSlot(busy, after, planMinutes, window, avoid);
+    if (start === null) break;
+    starts.push(start);
+    after = start + planMinutes;
+  }
+  return starts;
+}
 
 /*
  * The Quick Add → Task Create handoff (P05 · "Add details opens the full

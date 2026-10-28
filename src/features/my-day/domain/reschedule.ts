@@ -10,8 +10,8 @@ import {
 } from "@/lib/dates/clock-time";
 import { getDayKind, getWeekDates, IRAN_WEEK, nextWorkingDay, type WeekConfig, type Weekday } from "@/lib/dates/week";
 import { plannedMinutes, workWindow } from "./capacity";
-import type { DayBlock } from "./day-blocks";
-import { nextFreeSlot } from "./placement";
+import type { DayBlock, MinuteSpan } from "./day-blocks";
+import { suggestFreeSlot } from "./placement";
 
 /*
  * The Reschedule popover's rows (P18 E + P02, also Tasks P03). The
@@ -123,6 +123,8 @@ export interface RescheduleInput {
   workHours: { start: string; end: string };
   /** The rows the caller offers; default DEFAULT_RESCHEDULE_OPTIONS (no "This week"). */
   allow?: readonly RescheduleOptionId[];
+  /** The protected focus window: suggested slots avoid it when anything else fits. */
+  protectedFocus?: MinuteSpan | null;
 }
 
 function slot(day: string, startMinutes: number): Slot {
@@ -149,11 +151,13 @@ export function rescheduleOptions(input: RescheduleInput): RescheduleOption[] {
 
   // Later today: the first free slot from now + 15m, on :00 / :30.
   const todayBlocks = blocksOn(today);
-  const laterStart = nextFreeSlot(
+  const avoid = input.protectedFocus ?? null;
+  const laterStart = suggestFreeSlot(
     todayBlocks,
     minutesOfInstant(now) + 15,
     duration,
     { startMinutes: 0, endMinutes: horizon },
+    avoid,
   );
   if (laterStart !== null) {
     const nextStart = todayBlocks
@@ -169,10 +173,13 @@ export function rescheduleOptions(input: RescheduleInput): RescheduleOption[] {
       ? Math.floor((work.startMinutes + work.endMinutes) / 2)
       : horizon;
   const startOn = (target: string): number =>
-    nextFreeSlot(blocksOn(target), defaultStart, duration, {
-      startMinutes: work.startMinutes,
-      endMinutes: windowEndOn(target),
-    }) ?? defaultStart;
+    suggestFreeSlot(
+      blocksOn(target),
+      defaultStart,
+      duration,
+      { startMinutes: work.startMinutes, endMinutes: windowEndOn(target) },
+      avoid,
+    ) ?? defaultStart;
 
   const tomorrow = addDaysToDay(today, 1);
   const tomorrowIsWeekend = getDayKind(dayToLocalDate(tomorrow), week) === "weekend";

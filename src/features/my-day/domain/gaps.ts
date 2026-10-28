@@ -17,7 +17,7 @@ export const HINT_GAP_MINUTES = 60;
 const MORNING: MinuteSpan = { startMinutes: 9 * 60, endMinutes: 12 * 60 };
 
 /** Free gaps inside `window` of at least `minMinutes`, in time order. */
-export function freeGaps(blocks: readonly DayBlock[], window: MinuteSpan, minMinutes = 1): Gap[] {
+export function freeGaps(blocks: readonly MinuteSpan[], window: MinuteSpan, minMinutes = 1): Gap[] {
   const sorted = [...blocks].sort((a, b) => a.startMinutes - b.startMinutes);
   const gaps: Gap[] = [];
   let cursor = window.startMinutes;
@@ -59,15 +59,19 @@ export interface GapHint {
   fit: number;
 }
 
-/** The gaps worth a dashed "2h free · 3 tasks fit" placeholder: at least an hour long, in time order. */
+/**
+ * The gaps worth a dashed "2h free · 3 tasks fit" placeholder: at least an hour long, in time order.
+ * The protected focus window (`avoid`) is never offered as a gap to fill.
+ */
 export function gapHints(
   blocks: readonly DayBlock[],
   window: MinuteSpan,
   tasks: readonly Pick<Task, "durationMinutes" | "energy">[],
   selectedEnergy: EnergyLevel,
   defaultDurationMinutes = 30,
+  avoid: MinuteSpan | null = null,
 ): GapHint[] {
-  return freeGaps(blocks, window, HINT_GAP_MINUTES).map((gap) => ({
+  return freeGaps(avoid ? [...blocks, avoid] : blocks, window, HINT_GAP_MINUTES).map((gap) => ({
     gap,
     fit: fitHints(gap, tasks, selectedEnergy, defaultDurationMinutes),
   }));

@@ -6,6 +6,7 @@ import { useRepositories } from "@/data/provider";
 import { blockKeys, useTasks } from "@/data/queries";
 import { usePlannerSettings } from "@/features/planner-settings/use-planner-settings";
 import { toDayBlocks, type DayBlock } from "@/features/my-day/domain/day-blocks";
+import { protectedSpan } from "@/features/my-day/domain/placement";
 import type { RescheduleOption, RescheduleOptionId } from "@/features/my-day/domain/reschedule";
 import { usePlannerNow, type RescheduleRequest } from "@/features/my-day/my-day-context";
 import {
@@ -49,7 +50,7 @@ export function useRescheduleSession(
 ): RescheduleSession {
   const now = usePlannerNow();
   const { blocks } = useRepositories();
-  const { week, workHours, planning } = usePlannerSettings();
+  const { week, workHours, planning, insights } = usePlannerSettings();
   const tasks = useTasks({ view: "all" });
 
   const days = useMemo(() => sessionDays(day, now.day), [day, now.day]);
@@ -67,6 +68,8 @@ export function useRescheduleSession(
 
   const { target, preselect } = request;
   const { start, end } = workHours;
+  const guardStart = insights.protectedFocus?.start;
+  const guardEnd = insights.protectedFocus?.end;
   const defaultDuration = planning.defaultDurationMinutes;
   const taskList = tasks.data;
   const failed = fetched.failed || tasks.isError;
@@ -92,6 +95,7 @@ export function useRescheduleSession(
       blocksByDay,
       week,
       workHours: { start, end },
+      protectedFocus: protectedSpan(guardStart && guardEnd ? { start: guardStart, end: guardEnd } : null),
       preselect,
       allow,
     });
@@ -106,5 +110,5 @@ export function useRescheduleSession(
       rows,
       pickDefault: slot ? { day: slot.day, startMinutes: slot.startMinutes } : { day, startMinutes: 540 },
     };
-  }, [failed, pending, taskList, days, fetched.data, target, day, defaultDuration, now.instant, week, start, end, preselect, allow]);
+  }, [failed, pending, taskList, days, fetched.data, target, day, defaultDuration, now.instant, week, start, end, preselect, allow, guardStart, guardEnd]);
 }

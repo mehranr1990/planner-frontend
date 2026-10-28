@@ -189,6 +189,27 @@ export function visibleModuleIds(settings: PlannerSettings): OptionalModuleId[] 
   return optionalModuleIds.filter((id) => settings.modules[id]);
 }
 
+/**
+ * The length planning assumes for a task not on the timeline yet: the raw
+ * estimate stretched by the accepted Insights buffer of its category
+ * (estimateBuffers, e.g. design +50% → ×1.5), rounded up to 5 minutes.
+ * A task belongs to a category when one of its tags (labels, area id or
+ * name) is that category id. With no buffer it is the raw estimate; the
+ * task's own durationMinutes is never rewritten.
+ */
+export function planningDurationMinutes(
+  rawMinutes: number,
+  tags: readonly (string | null | undefined)[],
+  buffers: PlannerSettings["insights"]["estimateBuffers"],
+): number {
+  const percentOf = (tag: string | null | undefined) => {
+    const key = tag?.trim().toLowerCase();
+    return key && Object.hasOwn(buffers, key) ? (buffers[key] ?? 0) : 0;
+  };
+  const percent = Math.max(0, ...tags.map(percentOf));
+  return percent > 0 ? Math.ceil((rawMinutes * (1 + percent / 100)) / 5) * 5 : rawMinutes;
+}
+
 export interface PlannerSettingsStore {
   subscribe(listener: () => void): () => void;
   getSnapshot(): PlannerSettings;

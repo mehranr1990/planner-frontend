@@ -1,7 +1,7 @@
 import type { Task, TimeBlockKind } from "@/data/domain";
 import { addDaysToDay, snapTo } from "@/lib/dates/clock-time";
 import type { WeekConfig } from "@/lib/dates/week";
-import type { DayBlock } from "@/features/my-day/domain/day-blocks";
+import type { DayBlock, MinuteSpan } from "@/features/my-day/domain/day-blocks";
 import { overlapsWith } from "@/features/my-day/domain/overlap";
 import { resolvePlacement } from "@/features/my-day/domain/placement";
 import { rescheduleOptions, type RescheduleOption, type RescheduleOptionId } from "@/features/my-day/domain/reschedule";
@@ -130,6 +130,8 @@ export interface RowsInput {
   week: WeekConfig;
   workHours: { start: string; end: string };
   preselect?: RescheduleOptionId;
+  /** The protected focus window; suggested slots avoid it. */
+  protectedFocus?: MinuteSpan | null;
   /** The rows this consumer offers (see DEFAULT_RESCHEDULE_OPTIONS / TASK_RESCHEDULE_OPTIONS). */
   allow?: readonly RescheduleOptionId[];
 }
@@ -163,6 +165,7 @@ export function rescheduleRows(input: RowsInput): RescheduleRows {
     week: input.week,
     workHours: input.workHours,
     allow: input.allow,
+    protectedFocus: input.protectedFocus,
   });
 
   const options = all.filter((option) => {

@@ -199,13 +199,22 @@ export interface TimelineGridProps {
   showHeaders?: boolean;
   /** Which column is the planner's today, for its header mark. */
   todayDay?: string;
+  /** The protected focus window (Settings · Insights), drawn as a faint labelled band; null when off. */
+  protectedFocus?: MinuteSpan | null;
   label: string;
 }
 
-export function TimelineGrid({ columns, window, pxPerMinute, showHeaders = false, todayDay, label }: TimelineGridProps) {
+export function TimelineGrid({ columns, window, pxPerMinute, showHeaders = false, todayDay, protectedFocus = null, label }: TimelineGridProps) {
   const t = useTranslations("MyDay.timeline");
   const format = useMyDayFormat();
   const height = gridHeight(window, pxPerMinute);
+  // The protected focus window, clipped to the hours on screen; a cue only, drops into it stay allowed.
+  const bandStart = protectedFocus ? Math.max(protectedFocus.startMinutes, window.startMinutes) : 0;
+  const bandEnd = protectedFocus ? Math.min(protectedFocus.endMinutes, window.endMinutes) : 0;
+  const band =
+    bandEnd > bandStart
+      ? { top: (bandStart - window.startMinutes) * pxPerMinute, height: (bandEnd - bandStart) * pxPerMinute }
+      : null;
   const multiple = columns.length > 1;
   const today = columns.find((column) => column.nowMinutes !== null);
 
@@ -232,6 +241,17 @@ export function TimelineGrid({ columns, window, pxPerMinute, showHeaders = false
       ) : null}
 
       <div className="relative" style={{ height }}>
+        {band ? (
+          <div
+            data-slot="protected-focus"
+            className="pointer-events-none absolute end-0 rounded-[14px] border border-dashed border-scope-deep/50 bg-scope-soft/40"
+            style={{ insetInlineStart: LABEL_COLUMN_PX, top: band.top, height: band.height }}
+          >
+            <span className="absolute end-2 top-1 rounded-pill bg-surface px-2 text-[10px] leading-4 font-bold text-scope-deep">
+              {t("protectedFocus")}
+            </span>
+          </div>
+        ) : null}
         {hourMarks(window).map((minutes) => (
           <div
             key={minutes}

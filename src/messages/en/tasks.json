@@ -452,6 +452,7 @@
       "repeat": "Repeat weekly",
       "labels": "Labels",
       "labelsHint": "Separate labels with commas",
+      "plansAs": "Plans as {duration} · estimate buffer from Insights",
       "notes": "Notes",
       "notesPlaceholder": "Anything worth remembering"
     },

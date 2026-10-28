@@ -16,8 +16,9 @@ import { toast } from "@/components/ui/toast";
 import { getPlannerNow, getPlannerToday } from "@/data/clock";
 import type { Scope, Task, TaskPriority } from "@/data/domain";
 import { useAddTaskNote, useAreas, useBlocks, useCreateTask } from "@/data/queries";
-import { nextFreeSlot } from "@/features/my-day/domain/placement";
+import { protectedSpan } from "@/features/my-day/domain/placement";
 import { taskDetailHref } from "@/features/personal/routes";
+import { planningDurationMinutes } from "@/features/planner-settings/planner-settings";
 import { usePlannerSettings } from "@/features/planner-settings/use-planner-settings";
 import { useIsClient } from "@/hooks/use-is-client";
 import { cn } from "@/lib/cn";
@@ -27,7 +28,7 @@ import { quickParse } from "../domain/quick-parse";
 import { Kbd } from "../list/task-parts";
 import { useScheduleOptionsFor } from "../list/use-task-actions";
 import { useTasksFormat } from "../ui/use-tasks-format";
-import { draftFromParams, safeReturnPath, type TaskDraft } from "./create-draft";
+import { draftFromParams, safeReturnPath, splitLabels, suggestedStarts, type TaskDraft } from "./create-draft";
 import { dayLabel, ParsedChips } from "./parsed-chips";
 
 /*
@@ -61,10 +62,16 @@ const NO_EXTRAS: Extras = { recurring: false, labels: "", notes: "" };
 const card = "rounded-product bg-surface p-5 shadow-island lg:p-6";
 const sectionLabel = "type-label mb-2 block text-fg-secondary";
 
-/** Up to two free starts (minutes) for `duration` on `day`, inside work hours and after now on today. */
-function useFreeSlots(day: string | null, duration: number): { slots: number[]; loading: boolean } {
-  const { workHours } = usePlannerSettings();
+/**
+ * Up to two free starts (minutes) on `day` for the planning length (estimate
+ * buffer applied), inside work hours, after now on today, and outside the
+ * protected focus window when anything else fits.
+ */
+function useFreeSlots(day: string | null, planMinutes: number): { slots: number[]; loading: boolean } {
+  const { workHours, insights } = usePlannerSettings();
   const query = useBlocks(day ?? getPlannerToday());
+  const guardStart = insights.protectedFocus?.start;
+  const guardEnd = insights.protectedFocus?.end;
   return useMemo(() => {
     if (!day || !query.data) return { slots: [], loading: Boolean(day) && query.isLoading };
     const window = { startMinutes: parseClockTime(workHours.start) ?? 540, endMinutes: parseClockTime(workHours.end) ?? 1020 };
@@ -72,17 +79,10 @@ function useFreeSlots(day: string | null, duration: number): { slots: number[]; 
       startMinutes: minutesFromDayStart(block.start, day),
       endMinutes: minutesFromDayStart(block.end, day),
     }));
-    const now = getPlannerNow();
-    let after = day === getPlannerToday() ? minutesOfInstant(now) : window.startMinutes;
-    const slots: number[] = [];
-    while (slots.length < 2) {
-      const start = nextFreeSlot(busy, after, duration, window);
-      if (start === null) break;
-      slots.push(start);
-      after = start + duration;
-    }
-    return { slots, loading: false };
-  }, [day, duration, query.data, query.isLoading, workHours]);
+    const after = day === getPlannerToday() ? minutesOfInstant(getPlannerNow()) : window.startMinutes;
+    const avoid = protectedSpan(guardStart && guardEnd ? { start: guardStart, end: guardEnd } : null);
+    return { slots: suggestedStarts(busy, after, planMinutes, window, avoid), loading: false };
+  }, [day, planMinutes, query.data, query.isLoading, workHours, guardStart, guardEnd]);
 }
 
 export function TaskCreateScreen() {
@@ -222,6 +222,12 @@ function CreateForm({ draft, setDraft, extras, setExtras, scheduled, setSchedule
   const [titleError, setTitleError] = useState(false);
   const titleId = useId();
   const titleErrorId = useId();
+  const { insights } = usePlannerSettings();
+  const area = areas?.find((candidate) => candidate.id === draft.areaId) ?? null;
+  const labels = splitLabels(extras.labels);
+  const rawMinutes = draft.durationMinutes ?? 30;
+  // Planning length only: the task keeps rawMinutes; the Schedule panel fits this.
+  const planMinutes = planningDurationMinutes(rawMinutes, [...labels, area?.id, area?.name], insights.estimateBuffers);
 
   const patch = (next: Partial<TaskDraft>) => setDraft((current) => ({ ...current, ...next }));
 
@@ -233,11 +239,6 @@ function CreateForm({ draft, setDraft, extras, setExtras, scheduled, setSchedule
       titleRef.current?.focus();
       return;
     }
-    const area = areas?.find((candidate) => candidate.id === draft.areaId) ?? null;
-    const labels = extras.labels
-      .split(/[,،]/)
-      .map((label) => label.trim())
-      .filter(Boolean);
     create.mutate(
       {
         title,
@@ -330,6 +331,11 @@ function CreateForm({ draft, setDraft, extras, setExtras, scheduled, setSchedule
                     .sort((a, b) => a - b)
                     .map((minutes) => ({ value: String(minutes), label: format.durationShort(minutes) }))}
                 />
+                {planMinutes > rawMinutes && (
+                  <p data-slot="plans-as" className="mt-1.5 text-xs text-fg-muted">
+                    {t("fields.plansAs", { duration: format.durationShort(planMinutes) })}
+                  </p>
+                )}
               </Group>
               <Group label={t("fields.priority")}>
                 <PillGroup
@@ -364,7 +370,7 @@ function CreateForm({ draft, setDraft, extras, setExtras, scheduled, setSchedule
           </div>
         </section>
 
-        <SchedulePanel draft={draft} today={today} scheduled={scheduled} onPick={(time) => {
+        <SchedulePanel draft={draft} planMinutes={planMinutes} today={today} scheduled={scheduled} onPick={(time) => {
           patch({ time, date: draft.date ?? today });
           setScheduled(true);
         }} onKeep={() => {
@@ -597,12 +603,15 @@ function MoreOptions({
 
 function SchedulePanel({
   draft,
+  planMinutes,
   today,
   scheduled,
   onPick,
   onKeep,
 }: {
   draft: TaskDraft;
+  /** The estimate with its accepted buffer: what the slots must hold. */
+  planMinutes: number;
   today: string;
   scheduled: boolean;
   onPick(time: string): void;
@@ -611,7 +620,7 @@ function SchedulePanel({
   const t = useTranslations("Tasks.create.schedule");
   const format = useTasksFormat();
   const duration = draft.durationMinutes ?? 30;
-  const { slots } = useFreeSlots(draft.date, duration);
+  const { slots } = useFreeSlots(draft.date, planMinutes);
   const headingId = useId();
 
   const option = (key: string, selected: boolean, onClick: () => void, icon: ReactNode, title: ReactNode, hint: string) => (
@@ -645,7 +654,7 @@ function SchedulePanel({
         {draft.date && <span className="text-xs text-fg-muted">{t("day", { day: format.dayMonth(draft.date) })}</span>}
       </div>
       {!draft.date && <p className="text-sm text-fg-secondary">{t("noDate")}</p>}
-      {draft.date && slots.length === 0 && <p className="text-sm text-fg-secondary">{t("noRoom", { duration: format.durationShort(duration) })}</p>}
+      {draft.date && slots.length === 0 && <p className="text-sm text-fg-secondary">{t("noRoom", { duration: format.durationShort(planMinutes) })}</p>}
       <ul className="flex flex-col gap-2">
         {slots.map((start, index) => {
           const time = formatClockTime(start);

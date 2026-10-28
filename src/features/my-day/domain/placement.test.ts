@@ -2,6 +2,8 @@ import { describe, expect, it } from "vitest";
 import { FULL_DAY } from "./day-blocks";
 import {
   autoFit,
+  protectedSpan,
+  suggestFreeSlot,
   MIN_BLOCK_MINUTES,
   nextFreeSlot,
   resizeFromEdge,
@@ -131,5 +133,33 @@ describe("autoFit (the S shortcut)", () => {
   it("uses a default length for a task without one, and reports a full day as null", () => {
     expect(autoFit(blocks, { durationMinutes: null }, 875)).toBe(960);
     expect(autoFit(blocks, { durationMinutes: 60 }, 875, { startMinutes: 480, endMinutes: 1100 })).toBeNull();
+  });
+});
+
+describe("protected focus window", () => {
+  const guard = protectedSpan({ start: "09:00", end: "12:00" });
+
+  it("reads the setting as minutes; off or backwards is no window", () => {
+    expect(guard).toEqual({ startMinutes: 540, endMinutes: 720 });
+    expect(protectedSpan(null)).toBeNull();
+    expect(protectedSpan({ start: "12:00", end: "09:00" })).toBeNull();
+  });
+
+  it("suggestions skip the window when on, and use it when off", () => {
+    const blocks = [dayBlock("a", "13:00", "14:00")];
+    const work = { startMinutes: 540, endMinutes: 1020 };
+    expect(autoFit(blocks, { durationMinutes: 60 }, 540, work)).toBe(540);
+    expect(autoFit(blocks, { durationMinutes: 60 }, 540, work, 30, guard)).toBe(720);
+    expect(suggestFreeSlot(blocks, 540, 60, work, guard)).toBe(720);
+  });
+
+  it("falls back into the window only when nothing fits outside it", () => {
+    const work = { startMinutes: 540, endMinutes: 780 };
+    expect(suggestFreeSlot([dayBlock("a", "12:00", "13:00")], 540, 60, work, guard)).toBe(540);
+  });
+
+  it("manual placement inside the window stays allowed", () => {
+    const result = resolvePlacement({ day: "2026-10-13", startMinutes: 600, durationMinutes: 60 }, { startMinutes: 540, endMinutes: 1020 });
+    expect(result).toMatchObject({ ok: true, placement: { start: "10:00" } });
   });
 });

@@ -1,4 +1,4 @@
-import { formatClockTime, MINUTES_PER_DAY, snap15, snapTo } from "@/lib/dates/clock-time";
+import { formatClockTime, MINUTES_PER_DAY, parseClockTime, snap15, snapTo } from "@/lib/dates/clock-time";
 import { FULL_DAY, type DayBlock, type MinuteSpan } from "./day-blocks";
 
 export { snap15 } from "@/lib/dates/clock-time";
@@ -98,9 +98,37 @@ export function nextFreeSlot(
   return candidate + durationMinutes <= Math.min(window.endMinutes, MINUTES_PER_DAY) ? candidate : null;
 }
 
+/** The protected focus window (Settings · Insights) in minutes-of-day; null when off or not a forward range. */
+export function protectedSpan(range: { start: string; end: string } | null): MinuteSpan | null {
+  if (!range) return null;
+  const start = parseClockTime(range.start);
+  const end = parseClockTime(range.end);
+  return start !== null && end !== null && end > start ? { startMinutes: start, endMinutes: end } : null;
+}
+
+/**
+ * nextFreeSlot for suggestions (auto-fit, Later today, Tomorrow, free-slot
+ * placeholders, Task Create): the protected focus window counts as busy, so
+ * suggestions land outside it; only when nothing fits outside it does the
+ * plain search run (deprioritised, never locked). Manual drops and picks
+ * never go through here.
+ */
+export function suggestFreeSlot(
+  blocks: readonly Pick<DayBlock, "startMinutes" | "endMinutes">[],
+  afterMinutes: number,
+  durationMinutes: number,
+  window: MinuteSpan = FULL_DAY,
+  avoid: MinuteSpan | null = null,
+  step: number = SLOT_STEP_MINUTES,
+): number | null {
+  const outside = avoid ? nextFreeSlot([...blocks, avoid], afterMinutes, durationMinutes, window, step) : null;
+  return outside ?? nextFreeSlot(blocks, afterMinutes, durationMinutes, window, step);
+}
+
 /**
  * The S shortcut: the start of the next free gap that holds the task, after
- * now, else after the last block. Null when the day has no room left.
+ * now, else after the last block, outside the protected focus window when it
+ * can. Null when the day has no room left.
  */
 export function autoFit(
   blocks: readonly DayBlock[],
@@ -108,6 +136,7 @@ export function autoFit(
   nowMinutes: number,
   window: MinuteSpan = FULL_DAY,
   defaultDurationMinutes = 30,
+  avoid: MinuteSpan | null = null,
 ): number | null {
-  return nextFreeSlot(blocks, nowMinutes, task.durationMinutes ?? defaultDurationMinutes, window);
+  return suggestFreeSlot(blocks, nowMinutes, task.durationMinutes ?? defaultDurationMinutes, window, avoid);
 }

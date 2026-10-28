@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { draftFromParams, safeReturnPath, taskCreateHref } from "./create-draft";
+import { draftFromParams, safeReturnPath, splitLabels, suggestedStarts, taskCreateHref } from "./create-draft";
 
 const DEFAULTS = { durationMinutes: 30, energy: "medium" } as const;
 
@@ -32,5 +32,24 @@ describe("task create draft", () => {
     expect(safeReturnPath("/personal/tasks?view=board")).toBe("/personal/tasks?view=board");
     expect(safeReturnPath("https://evil.example")).toBeNull();
     expect(safeReturnPath("//evil.example")).toBeNull();
+  });
+});
+
+describe("Schedule panel suggestions", () => {
+  const work = { startMinutes: 540, endMinutes: 1020 };
+
+  it("splits labels on Latin and Persian commas", () => {
+    expect(splitLabels(" design, ui ،  ,x")).toEqual(["design", "ui", "x"]);
+  });
+
+  it("fits the 1.5× planning estimate, not the raw one", () => {
+    const busy = [{ startMinutes: 600, endMinutes: 660 }, { startMinutes: 720, endMinutes: 780 }];
+    // Raw 60m fits 09:00 and 11:00; planned as 90m, the 11:00 gap (60m) is too short.
+    expect(suggestedStarts(busy, 540, 60, work)).toEqual([540, 660]);
+    expect(suggestedStarts(busy, 540, 90, work)).toEqual([780, 870]);
+  });
+
+  it("keeps clear of the protected window when it can", () => {
+    expect(suggestedStarts([], 540, 60, work, { startMinutes: 540, endMinutes: 720 })).toEqual([720, 780]);
   });
 });

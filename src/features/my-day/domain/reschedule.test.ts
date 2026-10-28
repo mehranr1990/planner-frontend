@@ -133,3 +133,16 @@ describe("rescheduleOptions", () => {
     expect(option(options, "later-today")?.start).toBe("15:00");
   });
 });
+
+describe("rescheduleOptions · protected focus", () => {
+  it("Tomorrow and Later today land outside the protected window", () => {
+    const guard = { startMinutes: 540, endMinutes: 720 };
+    const plain = rescheduleOptions(input({ now: "2026-10-13T08:00:00+03:30", blocks: [] }));
+    expect(option(plain, "tomorrow")).toMatchObject({ start: "09:30" });
+    expect(option(plain, "later-today")).toMatchObject({ start: "08:30" });
+    const kept = rescheduleOptions(input({ now: "2026-10-13T08:00:00+03:30", blocks: [], protectedFocus: guard, task: { durationMinutes: 45, kind: "task" } }));
+    expect(option(kept, "tomorrow")).toMatchObject({ start: "12:00" });
+    // 08:30 + 45m would run into 09:00, so Later today moves past the window too.
+    expect(option(kept, "later-today")).toMatchObject({ start: "12:00" });
+  });
+});
