@@ -42,7 +42,7 @@
       "notes": "Notes"
     },
     "milestoneCount": "{count, plural, one {{countText} milestone} other {{countText} milestones}}",
-    "target": "Target: {target}",
+    "target": "Target: <target></target>",
     "due": "due {date}",
     "daysLeft": "{days, plural, one {{daysText} day left} other {{daysText} days left}}",
     "overdue": "{days, plural, one {{daysText} day past the deadline} other {{daysText} days past the deadline}}",

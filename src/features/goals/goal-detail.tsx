@@ -5,7 +5,7 @@ import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
-import type { ReactNode } from "react";
+import { Fragment, type ReactNode } from "react";
 import { IconButton } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { toast } from "@/components/ui/toast";
@@ -145,7 +145,7 @@ function GoalHead({ goal, today }: { goal: Goal; today: string }) {
   };
 
   const meta = [
-    goal.target ? t("target", { target: goal.target }) : null,
+    goal.target ? t.rich("target", { target: () => <bdi dir="auto">{goal.target}</bdi> }) : null,
     goal.dueDay ? t("due", { date: format.dayMonth(goal.dueDay) }) : null,
     left !== null && !reached
       ? left >= 0
@@ -193,7 +193,16 @@ function GoalHead({ goal, today }: { goal: Goal; today: string }) {
         <h2 className="min-w-0 break-words text-2xl font-bold text-fg lg:text-[1.875rem]">
           <bdi dir="auto">{goal.title}</bdi>
         </h2>
-        {meta.length ? <p className="text-xs text-fg-secondary">{meta.join(" · ")}</p> : null}
+        {meta.length ? (
+          <p className="text-xs text-fg-secondary">
+            {meta.map((part, index) => (
+              <Fragment key={index}>
+                {index ? " · " : null}
+                {part}
+              </Fragment>
+            ))}
+          </p>
+        ) : null}
       </div>
       <div className="flex shrink-0 flex-col items-end">
         <span className={cn("tabular text-4xl font-semibold leading-none", delayed ? "text-warning-text" : "text-fg")}>{format.percent(goal.progress)}</span>

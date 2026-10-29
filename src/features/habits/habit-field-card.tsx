@@ -53,7 +53,8 @@ export function HabitFieldCard({
   const { locale, calendar } = usePreferences();
   const { week } = usePlannerSettings();
   const days = trimBeforeStart(fieldDays(period, today, calendar, compact), habits);
-  const size = SIZE[period];
+  // Phones (PM03): the 7-day field in small cells, no summary column (the selected habit card carries the streak).
+  const size = compact && period === "14d" ? "sm" : SIZE[period];
   const byId = new Map(habits.map((habit) => [habit.id, habit]));
 
   const columns = days.map((day) => {
@@ -123,7 +124,7 @@ export function HabitFieldCard({
           rows={rows}
           size={size}
           direction={getDirection(locale)}
-          summaryHeader={t("summary")}
+          summaryHeader={compact ? undefined : t("summary")}
           selectedId={selectedId}
           onSelectRow={onSelect}
           onToggle={(id, day) => {

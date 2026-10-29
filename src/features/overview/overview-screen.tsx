@@ -2,7 +2,7 @@
 
 import { motion } from "motion/react";
 import Link from "next/link";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useState, type ReactNode } from "react";
 import { PageHeader } from "@/components/shell/page-header";
 import { useShellProfile } from "@/components/shell/shell-provider";
@@ -16,6 +16,7 @@ import { useMyDayFormat } from "@/features/my-day/ui/use-my-day-format";
 import { TodaySwitch } from "@/features/personal/today-switch";
 import { isModuleVisible } from "@/features/planner-settings/planner-settings";
 import { usePlannerSettings } from "@/features/planner-settings/use-planner-settings";
+import { useTasksFormat } from "@/features/tasks/ui/use-tasks-format";
 import { cn } from "@/lib/cn";
 import { FinanceCard } from "./cards/finance-card";
 import { GoalsCard } from "./cards/goals-card";
@@ -172,13 +173,16 @@ function OverviewLayout() {
 /** PM01 phone: three numbers (tasks, habits or focus, free time) instead of the hero. */
 function PhoneNumbers({ data }: { data: OverviewToday }) {
   const t = useTranslations("Overview.hero");
-  const format = useMyDayFormat();
+  // Phone tiles are a third of 390px: Persian durations take the short form ("۱س ۴۵د", as on board cards)
+  // and the wider Persian digits a step-down value size, so all three values stay on one line.
+  const format = useTasksFormat();
+  const fa = useLocale() === "fa";
   const { day } = usePlannerNow();
   const plan = useDayPlan(day);
   if (data.status !== "ready" || !data.tasks || !data.habits) return null;
   const { tasks, habits } = data;
   return (
-    <MetricGroup aria-label={t("metrics")} columns={3} className="grid-cols-3">
+    <MetricGroup aria-label={t("metrics")} columns={3} className={cn("grid-cols-3", fa && "[&_dd:first-of-type]:text-xl")}>
       <MetricTile label={t("tasks")} value={`${format.number(tasks.done)}/${format.number(tasks.total)}`}>
         <Progress size="sm" value={tasks.total ? (tasks.done / tasks.total) * 100 : 0} label={t("tasks")} />
       </MetricTile>
@@ -187,9 +191,9 @@ function PhoneNumbers({ data }: { data: OverviewToday }) {
           <Progress size="sm" value={habits.total ? (habits.done / habits.total) * 100 : 0} label={t("habits")} />
         </MetricTile>
       ) : (
-        <MetricTile label={t("focus")} value={format.duration(tasks.completedMinutes)} />
+        <MetricTile label={t("focus")} value={format.durationShort(tasks.completedMinutes)} />
       )}
-      <MetricTile label={t("free")} value={plan.status === "ready" ? format.duration(plan.capacity.freeMinutes) : "—"} />
+      <MetricTile label={t("free")} value={plan.status === "ready" ? format.durationShort(plan.capacity.freeMinutes) : "—"} />
     </MetricGroup>
   );
 }

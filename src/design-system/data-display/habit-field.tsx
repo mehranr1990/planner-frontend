@@ -64,8 +64,8 @@ export interface HabitFieldProps {
   label: string;
   columns: readonly HabitFieldColumn[];
   rows: readonly HabitFieldRow[];
-  /** "streak · rate". */
-  summaryHeader: string;
+  /** "streak · rate". Omit to drop the summary column (the phone form, PM03). */
+  summaryHeader?: string;
   /** The selected habit: its name button is pressed. */
   selectedId?: string | null;
   onSelectRow?: (id: string) => void;
@@ -205,12 +205,12 @@ export function HabitField({
     cells.current.get(`${next.row}:${next.col}`)?.focus();
   };
 
-  const template = `minmax(7.5rem, 11rem) repeat(${columns.length}, ${CELL_SIZE[size]}) minmax(3rem, auto)`;
+  const template = `minmax(7.5rem, 11rem) repeat(${columns.length}, ${CELL_SIZE[size]})${summaryHeader ? " minmax(3rem, auto)" : ""}`;
 
   return (
     <div data-slot="habit-field" className={cn("flex min-w-0 flex-col gap-4", className)}>
       <div className="-mx-1 overflow-x-auto px-1 py-1">
-        <div role="group" aria-label={label} dir={direction} className="grid w-max items-center" style={{ gridTemplateColumns: template, columnGap: GAP[size], rowGap: size === "xs" ? "0.5rem" : GAP[size] }}>
+        <div role="group" aria-label={label} dir={direction} className="grid w-max max-w-full items-center" style={{ gridTemplateColumns: template, columnGap: GAP[size], rowGap: size === "xs" ? "0.5rem" : GAP[size] }}>
           <span aria-hidden="true" />
           {columns.map((column) => (
             <span
@@ -227,7 +227,7 @@ export function HabitField({
               <span className={cn("tabular text-xs", column.today ? "text-scope-deep" : column.weekend ? "text-weekend-text" : "text-fg")}>{column.date}</span>
             </span>
           ))}
-          <span className="text-end text-[0.625rem] font-bold text-fg-muted">{summaryHeader}</span>
+          {summaryHeader ? <span className="text-end text-[0.625rem] font-bold text-fg-muted">{summaryHeader}</span> : null}
 
           {rows.map((row, rowIndex) => {
             const selected = row.id === selectedId;
@@ -269,10 +269,12 @@ export function HabitField({
                     onFocus={() => setActive({ row: rowIndex, col: colIndex })}
                   />
                 ))}
-                <span className="flex flex-col items-end leading-tight">
-                  <span className="tabular text-sm font-bold">{row.streakText}</span>
-                  <span className="tabular text-[0.6875rem] font-bold text-fg-muted">{row.rateText}</span>
-                </span>
+                {summaryHeader ? (
+                  <span className="flex flex-col items-end leading-tight">
+                    <span className="tabular text-sm font-bold">{row.streakText}</span>
+                    <span className="tabular text-[0.6875rem] font-bold text-fg-muted">{row.rateText}</span>
+                  </span>
+                ) : null}
               </div>
             );
           })}

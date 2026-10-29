@@ -289,7 +289,9 @@ export function GoalMilestonePath({
     const px = (x / W) * 100;
     const shiftX = px < 14 ? "-18%" : px > 86 ? "-82%" : "-50%";
     if (isGoal) return direction === "rtl" ? "translate(16px, calc(-100% - 6px))" : "translate(calc(-100% - 16px), calc(-100% - 6px))";
-    return i % 2 === 0 ? `translate(${shiftX}, calc(-100% - 22px))` : `translate(${shiftX}, 24px)`;
+    // The goal label sits above, beside the flag: the last milestone always labels below so the two never collide.
+    const above = i % 2 === 0 && i !== nodes.length - 1;
+    return above ? `translate(${shiftX}, calc(-100% - 22px))` : `translate(${shiftX}, 24px)`;
   };
 
   return (

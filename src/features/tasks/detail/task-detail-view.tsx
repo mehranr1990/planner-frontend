@@ -498,7 +498,9 @@ function PropertyRow({
     <>
       <Glyph aria-hidden="true" size={16} className="shrink-0 text-fg-muted" />
       <span className="w-24 shrink-0 text-xs text-fg-secondary sm:w-28">{label}</span>
-      <span className="min-w-0 flex-1 truncate text-sm font-bold text-fg">{value}</span>
+      <span className="min-w-0 flex-1 truncate text-sm font-bold text-fg">
+        <bdi>{value}</bdi>
+      </span>
       {hint ? <span className="shrink-0 text-xs text-fg-muted">{hint}</span> : null}
     </>
   );

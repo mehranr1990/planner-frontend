@@ -42,7 +42,7 @@
       "notes": "یادداشت‌ها"
     },
     "milestoneCount": "{count, plural, other {{countText} نقطهٔ عطف}}",
-    "target": "مقصد: {target}",
+    "target": "مقصد: <target></target>",
     "due": "مهلت {date}",
     "daysLeft": "{days, plural, other {{daysText} روز مانده}}",
     "overdue": "{days, plural, other {{daysText} روز از مهلت گذشته}}",
