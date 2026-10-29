@@ -30,6 +30,7 @@
 
   /* Rows */
   --row-selected: #F4FBF8;        /* P03TasksList selected row */
+  --danger-on-tint: #B4232A;      /* warning text on a soft scope tint (= danger-text) */
 }
 
 [data-theme="dark"] {
@@ -52,4 +53,5 @@
 
   /* Rows */
   --row-selected: #16231F;        /* P03TasksListDark selected row */
+  --danger-on-tint: #FFA3A6;      /* #FF8589 is 4.26:1 on the green tint; this is 5.2:1 */
 }

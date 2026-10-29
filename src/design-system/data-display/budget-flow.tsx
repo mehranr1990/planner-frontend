@@ -170,16 +170,22 @@ export function BudgetFlow({
               onClick={() => setSelected((current) => (current === row.id ? null : row.id))}
               onMouseEnter={() => setHovered(row.id)}
               onMouseLeave={() => setHovered(null)}
-              style={{ opacity: dim(row.id) === 1 ? 1 : 0.55 }}
               className={cn(
-                "flex w-full min-w-0 items-center gap-2 rounded-pill px-2.5 py-1.5 text-start text-sm transition-[opacity,box-shadow] duration-120 focus-visible:focus-ring",
-                selected === row.id ? "bg-surface font-bold text-fg inset-ring-[1.5px] inset-ring-scope-dot" : "font-semibold text-fg-secondary hover:text-fg",
+                "flex w-full min-w-0 items-center gap-2 rounded-pill px-2.5 py-1.5 text-start text-sm transition-[color,box-shadow] duration-120 focus-visible:focus-ring",
+                selected === row.id
+                  ? "bg-surface font-bold text-fg inset-ring-[1.5px] inset-ring-scope-dot"
+                  : cn("font-semibold hover:text-fg", dim(row.id) === 1 ? "text-fg-secondary" : "text-fg-muted"),
               )}
             >
-              <span aria-hidden="true" className="size-2.5 shrink-0 rounded-full" style={{ background: row.color }} />
+              {/* De-emphasis dims the colour mark (and the ribbon), never the text: labels and numbers stay AA. */}
+              <span
+                aria-hidden="true"
+                className="size-2.5 shrink-0 rounded-full transition-opacity duration-120"
+                style={{ background: row.color, opacity: dim(row.id) === 1 ? 1 : 0.35 }}
+              />
               <span className="min-w-0 flex-1 truncate">{row.label}</span>
               <span className="tabular rounded-pill bg-subtle px-2 py-0.5 text-[0.6875rem] text-fg-muted">{formatShare(spent ? row.value / spent : 0)}</span>
-              <span className="tabular w-16 shrink-0 text-end font-bold text-fg">{formatValue(row.value)}</span>
+              <span className={cn("tabular w-16 shrink-0 text-end font-bold", dim(row.id) === 1 ? "text-fg" : "text-fg-secondary")}>{formatValue(row.value)}</span>
             </button>
           </li>
         ))}
