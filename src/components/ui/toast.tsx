@@ -207,7 +207,8 @@ export function Toaster({ className }: ToasterProps) {
         className={cn(
           // The viewport spans the bottom edge; only toasts take pointer events.
           "pointer-events-none fixed inset-x-0 bottom-0 z-(--z-toast) mx-auto flex w-full max-w-md flex-col gap-2",
-          "px-gutter pb-[calc(var(--safe-bottom)+6rem)] md:pb-[calc(var(--safe-bottom)+1.5rem)]",
+          // Padding only while toasts show, so an empty viewport has no box over page content.
+          visible.length > 0 && "px-gutter pb-[calc(var(--safe-bottom)+6rem)] md:pb-[calc(var(--safe-bottom)+1.5rem)]",
           className,
         )}
       />

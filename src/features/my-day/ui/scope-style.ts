@@ -36,7 +36,7 @@ const TONES: Record<BlockTone, ToneClasses> = {
     meta: "text-personal-deep",
     dot: "bg-personal-dot",
     chip: "bg-personal-deep text-on-accent",
-    current: "ring-2 ring-inset ring-personal-deep shadow-[0_6px_18px_color-mix(in_oklab,var(--personal-deep)_22%,transparent)]",
+    current: "ring-2 ring-inset ring-personal-deep shadow-[0_6px_18px_color-mix(in_oklab,var(--personal-deep)_22%,transparent)] dark:shadow-none",
   },
   project: {
     surface: "bg-project-soft",
@@ -44,7 +44,7 @@ const TONES: Record<BlockTone, ToneClasses> = {
     meta: "text-project-deep",
     dot: "bg-project-dot",
     chip: "bg-project-deep text-on-accent",
-    current: "ring-2 ring-inset ring-project-deep shadow-[0_6px_18px_color-mix(in_oklab,var(--project-deep)_22%,transparent)]",
+    current: "ring-2 ring-inset ring-project-deep shadow-[0_6px_18px_color-mix(in_oklab,var(--project-deep)_22%,transparent)] dark:shadow-none",
   },
   team: {
     surface: "bg-team-soft",
@@ -52,7 +52,7 @@ const TONES: Record<BlockTone, ToneClasses> = {
     meta: "text-team-deep",
     dot: "bg-team-dot",
     chip: "bg-team-deep text-on-accent",
-    current: "ring-2 ring-inset ring-team-deep shadow-[0_6px_18px_color-mix(in_oklab,var(--team-deep)_22%,transparent)]",
+    current: "ring-2 ring-inset ring-team-deep shadow-[0_6px_18px_color-mix(in_oklab,var(--team-deep)_22%,transparent)] dark:shadow-none",
   },
   company: {
     surface: "bg-company-soft",
@@ -60,7 +60,7 @@ const TONES: Record<BlockTone, ToneClasses> = {
     meta: "text-company-deep",
     dot: "bg-company-dot",
     chip: "bg-company-deep text-on-accent",
-    current: "ring-2 ring-inset ring-company-deep shadow-[0_6px_18px_color-mix(in_oklab,var(--company-deep)_22%,transparent)]",
+    current: "ring-2 ring-inset ring-company-deep shadow-[0_6px_18px_color-mix(in_oklab,var(--company-deep)_22%,transparent)] dark:shadow-none",
   },
   break: {
     surface: "bg-subtle",
@@ -68,7 +68,7 @@ const TONES: Record<BlockTone, ToneClasses> = {
     meta: "text-fg-muted",
     dot: "bg-icon-muted",
     chip: "bg-fg-secondary text-on-accent",
-    current: "ring-2 ring-inset ring-fg-secondary shadow-[0_6px_18px_color-mix(in_oklab,var(--text-secondary)_18%,transparent)]",
+    current: "ring-2 ring-inset ring-fg-secondary shadow-[0_6px_18px_color-mix(in_oklab,var(--text-secondary)_18%,transparent)] dark:shadow-none",
   },
 };
 

@@ -141,7 +141,7 @@ const surfaceVariants = cva(
         deep: "bg-deep-card text-on-deep-card",
         /** Live / now state only: at most one volt area per viewport. */
         volt: "bg-volt text-on-volt",
-        "scope-soft": "bg-scope-soft text-fg",
+        "scope-soft": "bg-scope-soft text-fg dark:muted-on-tint",
       },
       padding: {
         /** 22px, the P00 board's signature card. */

@@ -90,3 +90,12 @@
   0%, 100% { transform: scale(0.9); }
   50% { transform: scale(1); }
 }
+
+/*
+ * Muted text on a soft scope tint. In dark the lifted tints (e.g. #1D4A40)
+ * leave --text-3 at ~3.5:1; secondary text clears AA. Apply as
+ * `dark:muted-on-tint` on the element that paints the tint.
+ */
+@utility muted-on-tint {
+  --text-muted: var(--text-secondary);
+}

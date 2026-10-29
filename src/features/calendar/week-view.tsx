@@ -185,7 +185,7 @@ function DayHeader({ day, onOpen }: { day: string; onOpen?: () => void }) {
       >
         {format.date(day, "day")}
       </span>
-      <span className="text-[11px] font-semibold text-fg-muted">{format.altDate(day, "dayMonth")}</span>
+      <span className={cn("text-[11px] font-semibold text-fg-muted", today && "dark:text-fg-secondary")}>{format.altDate(day, "dayMonth")}</span>
       {weekend || half ? <span className="sr-only">{weekend ? t("weekend") : t("halfDay")}</span> : null}
     </>
   );

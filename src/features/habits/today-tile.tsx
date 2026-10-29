@@ -98,7 +98,7 @@ export function TodayTile({ habit, today, selected, actions }: { habit: Habit; t
           }}
           className={cn(
             "flex min-h-26 min-w-0 flex-col gap-2 rounded-card p-3.5 text-start transition-colors duration-220 focus-visible:focus-ring",
-            done ? "bg-scope-soft" : rest || skipped ? "bg-subtle" : "bg-surface shadow-island hover:bg-raised",
+            done ? "bg-scope-soft dark:muted-on-tint" : rest || skipped ? "bg-subtle" : "bg-surface shadow-island hover:bg-raised",
             selected && "inset-ring-2 inset-ring-scope-deep",
           )}
         >

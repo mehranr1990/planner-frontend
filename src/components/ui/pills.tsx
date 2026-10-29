@@ -35,7 +35,7 @@ export const pillShape = [
 export const pillOutlineIdle = "inset-ring inset-ring-outline text-fg-secondary hover:text-fg";
 
 /** Active compact pill below lg (soft scope tint, no outline). */
-export const pillSoftActive = "bg-scope-soft text-scope-deep inset-ring-0";
+export const pillSoftActive = "bg-scope-soft text-scope-deep inset-ring-0 max-lg:dark:muted-on-tint";
 
 export const pillVariants = cva("", {
   variants: {

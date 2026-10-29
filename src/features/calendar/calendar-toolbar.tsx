@@ -114,7 +114,7 @@ export function LayerChips({ counts, className }: { counts: Record<Scope, number
             title={locked ? t("alwaysOn") : undefined}
             className={cn(locked && "disabled:opacity-100")}
           >
-            {name} <span className="tabular font-bold opacity-70">{format.number(counts[scope])}</span>
+            {name} <span className="tabular font-bold opacity-70 dark:opacity-90">{format.number(counts[scope])}</span>
           </ToggleChip>
         );
       })}
