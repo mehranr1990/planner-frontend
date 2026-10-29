@@ -1,10 +1,11 @@
 "use client";
 
-import { ArrowRight, BookOpen, CalendarDays, CheckSquare, FileText, Inbox, X, type LucideIcon } from "lucide-react";
+import { ArrowRight, BookOpen, CalendarDays, CheckSquare, Ellipsis, FileText, Inbox, X, type LucideIcon } from "lucide-react";
 import { motion, useReducedMotion } from "motion/react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { useLayoutEffect, useRef, type ClipboardEvent, type KeyboardEvent } from "react";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Icon } from "@/components/ui/icon";
 import type { BrainDumpDestination, BrainDumpLine } from "@/data/domain";
 import { TaskCheck } from "@/features/tasks/list/task-parts";
@@ -137,7 +138,7 @@ export function LineRow({
       </>
     );
     return (
-      <div data-line={line.id} data-sorted={line.sortedTo ?? "struck"} className="flex items-start gap-2 rounded-[20px] px-3 py-1">
+      <div data-line={line.id} data-sorted={line.sortedTo ?? "struck"} className="flex items-start gap-2 rounded-[20px] ps-3 pe-14 py-1.5">
         {select}
         <p dir="auto" className={cn(textClass, "min-w-0 flex-1 text-fg-muted", line.struck && "line-through")}>
           <span className="me-2">{line.text}</span>
@@ -169,7 +170,7 @@ export function LineRow({
     <div
       data-line={line.id}
       className={cn(
-        "group relative flex flex-col gap-2 rounded-[20px] px-3 py-1.5 ring-primary transition-shadow duration-150 motion-reduce:transition-none",
+        "group flex flex-col gap-2 rounded-[20px] px-3 py-1.5 ring-primary transition-shadow duration-150 motion-reduce:transition-none",
         !blank && "focus-within:ring-[1.5px]",
       )}
     >
@@ -203,27 +204,30 @@ export function LineRow({
             kind === "done" && "text-fg-muted line-through",
           )}
         />
+        {!blank && !selecting ? (
+          // A fixed-size slot at the end of the row: only its opacity changes, so nothing shifts and nothing overlays the next line.
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button
+                type="button"
+                aria-label={t("actions.label")}
+                className="grid size-9 shrink-0 place-items-center rounded-full text-fg-secondary opacity-0 transition-opacity hover:bg-subtle focus-visible:opacity-100 focus-visible:focus-ring group-hover:opacity-100 group-focus-within:opacity-100 data-[state=open]:opacity-100 pointer-coarse:opacity-100"
+              >
+                <Icon icon={Ellipsis} size={18} />
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              {actions.map((action) => (
+                <DropdownMenuItem key={action} icon={LINE_ACTION_ICON[action]} onSelect={() => onAction(action)}>
+                  {t(`actions.${action}`)}
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        ) : (
+          <span aria-hidden="true" className="size-9 shrink-0" />
+        )}
       </div>
-      {!blank && !selecting ? (
-        // Overlay below the line: showing it never changes the row height or moves the lines around it.
-        <div
-          role="toolbar"
-          aria-label={t("actions.label")}
-          className="absolute inset-x-0 top-full z-20 -mt-1 hidden flex-wrap items-center gap-1.5 rounded-[20px] bg-surface p-1.5 shadow-elevated group-hover:flex group-focus-within:flex"
-        >
-          {actions.map((action) => (
-            <button
-              key={action}
-              type="button"
-              onClick={() => onAction(action)}
-              className="inline-flex min-h-9 items-center gap-1.5 rounded-pill border-[1.5px] border-outline px-3 text-xs font-bold text-fg hover:bg-subtle"
-            >
-              <Icon icon={LINE_ACTION_ICON[action]} size={14} />
-              {t(`actions.${action}`)}
-            </button>
-          ))}
-        </div>
-      ) : null}
     </div>
   );
 }
