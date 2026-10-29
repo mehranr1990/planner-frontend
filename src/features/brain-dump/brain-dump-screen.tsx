@@ -273,8 +273,8 @@ function PageView({ page, today, nav }: { page: BrainDumpPage; today: string; na
                   <motion.div
                     key={line.id}
                     layout={reduce ? false : "position"}
-                    exit={reduce ? undefined : { opacity: 0, height: 0, transition: { duration: 0.24, ease: "easeOut" } }}
-                    className="overflow-hidden"
+                    // Clip only while collapsing: a permanent overflow-hidden would cut the action bar and the focus ring.
+                    exit={reduce ? undefined : { opacity: 0, height: 0, overflow: "hidden", transition: { duration: 0.24, ease: "easeOut" } }}
                   >
                     <LineRow
                       line={line}
