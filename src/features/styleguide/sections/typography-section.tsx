@@ -9,6 +9,7 @@ import { StyleguideSection } from "../styleguide-section";
 const LATIN_SAMPLES: Record<TypeStyle, string> = {
   display: "20:10",
   h1: "Dashboard",
+  h2: "On track for a normal Tuesday",
   title: "Revamp Sidebar",
   body: "Body copy for descriptions and longer notes.",
   caption: "Personal · 35 min left",
@@ -19,6 +20,7 @@ function persianSamples(minutes: string): Record<TypeStyle, string> {
   return {
     display: "برنامه‌ی امروز",
     h1: "نمای کلی پروژه",
+    h2: "امروز طبق برنامه پیش می‌رود",
     title: "کارهای در حال انجام",
     body: "این هفته سه ساعت زمان آزاد داری که می‌شود برای مرور هزینه‌ها گذاشت.",
     caption: `شخصی · ${minutes} دقیقه مانده`,

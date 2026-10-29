@@ -53,6 +53,19 @@
   }
 }
 
+@utility type-h2 {
+  font-size: 1.625rem;
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+
+  &:lang(fa) {
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1.45;
+  }
+}
+
 @utility type-title {
   font-size: 1.375rem;
   font-weight: 600;

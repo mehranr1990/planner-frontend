@@ -141,7 +141,7 @@ export function HabitStreakRibbon({
       aria-label={label}
       data-slot="streak-ribbon"
       dir={direction}
-      className={cn("flex min-w-0 items-center gap-2.5 rounded-[1.875rem] bg-surface p-2.5 shadow-island lg:gap-3 lg:p-3", className)}
+      className={cn("@container flex min-w-0 items-center gap-2.5 rounded-[1.875rem] bg-surface p-2.5 shadow-island lg:gap-3 lg:p-3", className)}
     >
       <div className="flex w-18 shrink-0 flex-col items-center gap-0.5 rounded-[1.375rem] bg-subtle px-2 py-2.5 lg:w-21">
         <span
@@ -224,7 +224,7 @@ export function HabitStreakRibbon({
       {cta && !compact ? (
         <Link
           href={cta.href}
-          className="flex h-13 shrink-0 items-center gap-2 rounded-pill bg-subtle ps-4 pe-1.5 text-sm font-bold text-fg hover:bg-raised focus-visible:focus-ring max-lg:hidden"
+          className="hidden h-13 shrink-0 items-center gap-2 rounded-pill bg-subtle ps-4 pe-1.5 text-sm font-bold text-fg hover:bg-raised focus-visible:focus-ring @2xl:flex"
         >
           {cta.label}
           <span aria-hidden="true" className="grid size-10 place-items-center rounded-full bg-surface">
