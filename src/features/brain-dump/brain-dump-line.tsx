@@ -169,8 +169,8 @@ export function LineRow({
     <div
       data-line={line.id}
       className={cn(
-        "group flex flex-col gap-2 rounded-[20px] px-3 py-1 ring-primary transition-shadow duration-150 motion-reduce:transition-none",
-        !blank && "focus-within:ring-[1.5px] focus-within:py-2.5",
+        "group relative flex flex-col gap-2 rounded-[20px] px-3 py-1.5 ring-primary transition-shadow duration-150 motion-reduce:transition-none",
+        !blank && "focus-within:ring-[1.5px]",
       )}
     >
       <div className="flex items-start gap-2">
@@ -205,7 +205,12 @@ export function LineRow({
         />
       </div>
       {!blank && !selecting ? (
-        <div role="toolbar" aria-label={t("actions.label")} className="hidden flex-wrap items-center gap-1.5 group-hover:flex group-focus-within:flex">
+        // Overlay below the line: showing it never changes the row height or moves the lines around it.
+        <div
+          role="toolbar"
+          aria-label={t("actions.label")}
+          className="absolute inset-x-0 top-full z-20 -mt-1 hidden flex-wrap items-center gap-1.5 rounded-[20px] bg-surface p-1.5 shadow-elevated group-hover:flex group-focus-within:flex"
+        >
           {actions.map((action) => (
             <button
               key={action}

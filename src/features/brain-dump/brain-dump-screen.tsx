@@ -431,7 +431,8 @@ function PagesNav({ pages, day, today }: { pages: ReturnType<typeof useBrainDump
           {t("pages.error")}
         </p>
       ) : (
-        <ul className="flex gap-1.5 overflow-x-auto max-lg:-mx-1 max-lg:px-1 lg:flex-col">
+        // overflow clips the selected ring (it sits outside the card): pad the scroller and pull it back with a negative margin.
+        <ul className="-m-1 flex gap-1.5 overflow-x-auto p-1 lg:flex-col">
           {list.map((page) => {
             const active = page.day === day;
             const badge = page.day !== today && page.unsortedCount > 0;
