@@ -13,8 +13,8 @@ import { usePlannerSettings, usePlannerSettingsActions } from "./use-planner-set
 
 export interface ModuleHiddenStateProps {
   module: OptionalModuleId;
-  /** Heading level for the title; h2 under a page header, the default. */
-  titleAs?: "h2" | "h3";
+  /** Heading level for the title: h2 under a page header (the default), h1 when the state is the whole page, h3 in a sheet. */
+  titleAs?: "h1" | "h2" | "h3";
   className?: string;
 }
 
@@ -56,8 +56,9 @@ export interface ModuleGateProps extends Omit<ModuleHiddenStateProps, "module"> 
  * Renders the module's page, or its hidden state when the user hid it. Reads
  * the client store (seeded by the server), so a route needs no request data
  * of its own and the toggle takes effect at once. Core modules always pass.
+ * A gate wraps a whole page, so the hidden state carries the page h1.
  */
-export function ModuleGate({ module, children, className, titleAs }: ModuleGateProps) {
+export function ModuleGate({ module, children, className, titleAs = "h1" }: ModuleGateProps) {
   const settings = usePlannerSettings();
   if (!isOptionalModule(module) || isModuleVisible(settings, module)) return <>{children}</>;
   return (

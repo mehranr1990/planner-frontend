@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
 import { HabitsScreen } from "@/features/habits/habits-screen";
-import { personalPageMetadata } from "@/features/personal/personal-skeleton";
+import { personalPageMetadata } from "@/features/personal/page-metadata";
 import { ModuleGate } from "@/features/planner-settings/module-hidden-state";
 
 // Localised from the preferences cookie, like every shell route: opt out of

@@ -84,6 +84,15 @@ describe("OverviewScreen (P01)", () => {
     expect(await screen.findByText(/goal 3h/)).toBeInTheDocument();
   });
 
+  it("keeps today's mood out of the hero tile while the Journal is locked", async () => {
+    const privacy = { ...DEFAULT_PLANNER_SETTINGS.privacy, journalLock: true };
+    renderOverview({ plannerSettings: { ...DEFAULT_PLANNER_SETTINGS, privacy } });
+    expect(await screen.findByText(/goal 4h/)).toBeInTheDocument();
+    const tile = screen.getByText("Mood · energy").closest("div")!;
+    await waitFor(() => expect(tile).toHaveTextContent("Journal is locked"));
+    expect(tile).not.toHaveTextContent(/Good|Medium energy/);
+  });
+
   it("offers the first-run card and its 3-step tour with no data", async () => {
     renderOverview({ empty: true });
     expect(await screen.findByRole("heading", { name: "Start with My Day, Tasks and Calendar." })).toBeInTheDocument();

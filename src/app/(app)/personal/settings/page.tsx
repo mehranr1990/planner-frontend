@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { personalPageMetadata } from "@/features/personal/personal-skeleton";
+import { personalPageMetadata } from "@/features/personal/page-metadata";
 import { SettingsScreen } from "@/features/settings/settings-screen";
 
 // Localised from the preferences cookie, like every shell route: opt out of

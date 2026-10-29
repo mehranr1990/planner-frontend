@@ -38,7 +38,7 @@ export interface StateViewProps {
   size?: StateSize;
   variant?: StateVariant;
   /** Heading level for the title (defaults to a paragraph). */
-  titleAs?: "h2" | "h3" | "h4" | "p";
+  titleAs?: "h1" | "h2" | "h3" | "h4" | "p";
   /**
    * Announce the view as a live region (role="status", or role="alert" for
    * ErrorState). Default true. Pass false when the caller owns the

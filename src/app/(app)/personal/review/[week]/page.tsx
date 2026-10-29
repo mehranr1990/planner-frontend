@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { personalPageMetadata } from "@/features/personal/personal-skeleton";
+import { personalPageMetadata } from "@/features/personal/page-metadata";
 import { WeeklyReviewScreen } from "@/features/review/review-screen";
 import { parseDateParam } from "@/lib/dates/date-param";
 

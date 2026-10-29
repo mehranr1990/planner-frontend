@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { FocusScreen } from "@/features/focus/focus-screen";
-import { personalPageMetadata } from "@/features/personal/personal-skeleton";
+import { personalPageMetadata } from "@/features/personal/page-metadata";
 
 export const instant = false;
 

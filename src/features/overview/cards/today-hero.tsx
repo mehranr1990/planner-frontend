@@ -34,7 +34,10 @@ export function TodayHero({ today: day, data, nowMinutes }: { today: string; dat
   const router = useRouter();
   const plan = useDayPlan(day);
   const focus = useFocusToday(day);
-  const focusGoal = usePlannerSettings().focus.dailyGoalMinutes;
+  const settings = usePlannerSettings();
+  const focusGoal = settings.focus.dailyGoalMinutes;
+  // Settings › Privacy: a locked Journal shows nothing of its content, here as on the Mood card.
+  const moodLocked = settings.privacy.journalLock;
 
   const action = <SignatureCardAction icon={ArrowUpRight} mirror label={t("open")} onClick={() => router.push(MY_DAY_HREF)} />;
 
@@ -144,8 +147,8 @@ export function TodayHero({ today: day, data, nowMinutes }: { today: string; dat
             {data.showMood ? (
               <MetricTile
                 label={t("mood")}
-                value={data.mood ? tm("moodLevel", { level: moodKey(data.mood.mood) }) : "—"}
-                hint={data.mood ? tm("energy", { level: data.mood.energy }) : t("moodNone")}
+                value={data.mood && !moodLocked ? tm("moodLevel", { level: moodKey(data.mood.mood) }) : "—"}
+                hint={moodLocked ? tm("mood.locked") : data.mood ? tm("energy", { level: data.mood.energy }) : t("moodNone")}
               />
             ) : null}
           </MetricGroup>

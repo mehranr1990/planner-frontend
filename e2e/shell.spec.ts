@@ -237,7 +237,8 @@ for (const width of [1440, 1024] as const) {
       await page.getByRole("menuitemradio", { name: "Persian ۱۲۳" }).click();
       await closeMenus(page);
       await expect(page.getByRole("region", { name: "Today's schedule" }).locator("time").first()).toContainText("۱۳");
-      await expect(page.locator("main h1")).toHaveText("Overview");
+      // Overview greets by name; the greeting follows the time of day.
+      await expect(page.locator("main h1")).toHaveText(/^Good (morning|afternoon|evening), Mehran$/);
       expect(errors).toEqual([]);
     });
 
@@ -251,7 +252,7 @@ for (const width of [1440, 1024] as const) {
       await expect(html).toHaveAttribute("lang", "fa");
       await expect(html).toHaveAttribute("dir", "rtl");
       // The modal menu hides the page from the accessibility tree, so query the DOM.
-      await expect(page.locator("main h1")).toHaveText("نمای کلی");
+      await expect(page.locator("main h1")).toHaveText(/،\s*مهران$/);
       // The open menu re-renders in Persian too.
       await expect(page.getByRole("menuitem", { name: /^زبان/ })).toBeVisible();
       await closeMenus(page);

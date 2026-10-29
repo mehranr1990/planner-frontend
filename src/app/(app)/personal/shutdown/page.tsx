@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
-import { personalPageMetadata } from "@/features/personal/personal-skeleton";
+import { personalPageMetadata } from "@/features/personal/page-metadata";
 import { ShutdownScreen } from "@/features/shutdown/shutdown-screen";
 
 // Localised from the preferences cookie, like every shell route: opt out of

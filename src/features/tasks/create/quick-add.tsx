@@ -25,7 +25,7 @@ import { dayLabel, ParsedChips } from "./parsed-chips";
  * without a date it lands on Today's Unscheduled list. Details (Ctrl+Enter)
  * escalates to the full Task Create page with the parsed values. Event and
  * Inbox continue in their screens, Note and Expense in their sheets (Expense
- * only while Finance is visible) — their own capture arrives with them.
+ * only while Finance is visible).
  */
 
 type QuickAddType = "task" | "event" | "note" | "expense" | "inbox";

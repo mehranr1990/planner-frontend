@@ -20,7 +20,7 @@ const pages = [
   ["companies", CompaniesPage, companiesMetadata, "Companies overview", "Review approvals"],
 ] as const;
 
-// Personal routes are Step 3 skeletons (src/features/personal, tested there).
+// Personal routes render their own screens (covered by each feature).
 describe("context overview routes", () => {
   it.each(pages)("/%s renders its overview", (_route, Page, _metadata, title, cta) => {
     renderWithProviders(<Page />);

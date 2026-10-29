@@ -1,7 +1,6 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
-import { personalPageMetadata } from "@/features/personal/personal-skeleton";
-import { RouteParamProbe } from "@/features/personal/route-param-probe";
+import { personalPageMetadata } from "@/features/personal/page-metadata";
 import { TaskDetailBody } from "@/features/personal/task-detail";
 import { TaskDetailLoading } from "@/features/tasks/detail/task-detail-view";
 
@@ -17,17 +16,12 @@ type Params = Promise<{ id: string }>;
 
 async function Detail({ params }: { params: Params }) {
   const { id } = await params;
-  return (
-    <>
-      <RouteParamProbe name="id" value={id} />
-      <TaskDetailBody id={id} />
-    </>
-  );
+  return <TaskDetailBody id={id} />;
 }
 
 /**
  * Hard navigation (shared link, refresh) and mobile: the full P06 page.
- * data-skeleton stays as the route marker the e2e seams look for.
+ * data-skeleton is the route marker the e2e specs look for.
  */
 export default function TaskDetailPage({ params }: { params: Params }) {
   return (

@@ -61,7 +61,7 @@ export function GoalsScreen({ goalId }: { goalId: string | null }) {
         title={t("title")}
         subtitle={t("kicker", { countText: format.number(active.data?.length ?? 0) })}
         subtitlePlacement="above"
-        className={cn(goalId && "max-lg:hidden")}
+        className={cn(goalId && "max-lg:sr-only")}
         actions={
           <div className="flex flex-wrap items-center gap-3">
             {none ? null : (

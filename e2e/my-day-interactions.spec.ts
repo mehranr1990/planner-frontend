@@ -710,6 +710,8 @@ test.describe("3 days view", () => {
     await blockButton(page, "Gym").focus();
     await page.keyboard.press("Space");
     await page.keyboard.press("ArrowLeft");
+    // Wait for the move to be announced (Wednesday) before dropping, like the LTR test.
+    await expect(liveRegion(page)).toContainText("چهارشنبه");
     await page.keyboard.press("Enter");
     await expect(
       page.locator(`[data-slot="day-column"][data-day="${TOMORROW}"]`).locator('[data-slot="time-block"]').filter({ hasText: "Gym" }),

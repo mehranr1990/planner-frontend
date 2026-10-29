@@ -55,7 +55,7 @@ export const PERSONAL_ROUTES = [
   `/personal/focus?task=${SAMPLE_TASK}`,
   "/personal/shutdown?step=route",
   "/personal/goals",
-  "/personal/goals/g-launch?tab=journey",
+  "/personal/goals/g-launch-planner-v1?tab=journey",
   "/personal/habits",
   "/personal/finance?tab=trends",
   "/personal/journal",

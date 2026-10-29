@@ -82,7 +82,7 @@ test.describe("desktop @ 1440", () => {
 
     // Turn on restores the page and the rail item.
     await page.getByRole("button", { name: "Turn Goals on" }).click();
-    await expect(page.locator('[data-skeleton="goals"]')).toBeVisible();
+    await expect(page.locator('[data-screen="goals"]')).toBeVisible();
     await expect(rail(page).getByRole("link", { name: "Goals" })).toBeVisible();
     expect(errors).toEqual([]);
   });
@@ -333,7 +333,8 @@ test.describe("mobile @ 390", () => {
 
   test("task detail is a full-screen view on mobile", async ({ page }) => {
     await open(page, "/personal/tasks");
-    await page.locator('[data-probe="tasks"] a').first().click();
+    // Below lg the ⤢ link is hidden: tapping the title opens the detail.
+    await page.locator("#task-title-t-ui-design").click();
     const drawer = page.getByRole("dialog");
     await expect(drawer).toBeVisible();
     expect(Math.round((await drawer.boundingBox())!.width)).toBe(390);
