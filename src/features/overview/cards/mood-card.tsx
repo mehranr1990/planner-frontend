@@ -55,7 +55,7 @@ export function MoodCard({ today, className }: { today: string; className?: stri
         <>
           {todayEntry ? (
             <div className="flex flex-wrap items-center gap-2">
-              <p className="type-h2">{tm("moodLevel", { level: moodKey(todayEntry.mood) })}</p>
+              <p className="text-[1.75rem] font-semibold leading-tight">{tm("moodLevel", { level: moodKey(todayEntry.mood) })}</p>
               <span className="inline-flex items-center gap-1.5 rounded-pill bg-surface px-2.5 py-1 text-[0.6875rem] font-semibold">
                 <EnergyBars level={todayEntry.energy} decorative />
                 {tm("energy", { level: todayEntry.energy })}
@@ -64,7 +64,7 @@ export function MoodCard({ today, className }: { today: string; className?: stri
           ) : (
             <p className="text-sm text-fg-secondary">{t("notYet")}</p>
           )}
-          <ol aria-label={t("week")} className="flex h-12 items-end gap-1.5">
+          <ol aria-label={t("week")} className="flex h-9 items-end gap-1.5">
             {days.map((day) => {
               const entry = entries.find((item) => item.day === day);
               const label = entry
@@ -76,7 +76,7 @@ export function MoodCard({ today, className }: { today: string; className?: stri
                     role="img"
                     aria-label={label}
                     className={cn(
-                      "block w-full rounded-md",
+                      "block w-full rounded-[0.5rem]",
                       !entry ? "h-1.5 bg-surface" : day === today ? "bg-scope-deep" : "bg-scope-dot/45",
                     )}
                     style={entry ? { height: `${(entry.mood / 5) * 100}%` } : undefined}
@@ -86,7 +86,7 @@ export function MoodCard({ today, className }: { today: string; className?: stri
             })}
           </ol>
           {todayEntry ? (
-            <p className="mt-auto text-[0.6875rem] font-semibold text-scope-deep">
+            <p className="text-[0.6875rem] font-semibold text-scope-deep">
               {t.rich("checkedIn", {
                 time: () => (
                   <span dir="ltr" className="tabular">
@@ -100,7 +100,7 @@ export function MoodCard({ today, className }: { today: string; className?: stri
               </Link>
             </p>
           ) : (
-            <Button size="sm" className="mt-auto self-start" onClick={() => openSheet("mood")}>
+            <Button size="sm" className="self-start" onClick={() => openSheet("mood")}>
               {t("checkIn")}
             </Button>
           )}

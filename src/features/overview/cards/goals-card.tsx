@@ -58,7 +58,7 @@ export function GoalsCard({ today, className }: { today: string; className?: str
                 <span className="truncate text-sm font-semibold">
                   <bdi dir="auto">{goal.title}</bdi>
                 </span>
-                <span className="tabular text-xs font-semibold text-fg-secondary">{format.percent(goal.progress)}</span>
+                <span className="tabular shrink-0 text-sm font-semibold">{format.percent(goal.progress)}</span>
               </div>
               <Progress
                 size="sm"

@@ -16,6 +16,7 @@ export function CardHead({
   id,
   title,
   count,
+  aside,
   href,
   linkLabel,
   className,
@@ -24,6 +25,8 @@ export function CardHead({
   id: string;
   title: ReactNode;
   count?: ReactNode;
+  /** Quiet end-aligned note when the card has no link (e.g. the currency). */
+  aside?: ReactNode;
   href?: string;
   linkLabel?: string;
   className?: string;
@@ -41,6 +44,8 @@ export function CardHead({
         >
           {linkLabel}
         </Link>
+      ) : aside ? (
+        <span className="ms-auto inline-flex min-h-touch items-center text-xs font-semibold text-fg-muted">{aside}</span>
       ) : null}
     </div>
   );

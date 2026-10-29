@@ -35,7 +35,7 @@ export function FinanceCard({ today, className }: { today: string; className?: s
 
   return (
     <ProductCard as="section" aria-labelledby="overview-finance-title" className={cn("flex flex-col gap-2", className)}>
-      <CardHead id="overview-finance-title" title={t("title")} count={currencyLabel(currency, locale)} />
+      <CardHead id="overview-finance-title" title={t("title")} aside={currencyLabel(currency, locale)} />
       {locked ? (
         <p role="status" data-finance-locked className="flex items-center gap-2 rounded-field bg-subtle p-4 text-sm font-semibold text-fg-secondary">
           <Icon icon={Lock} size={14} />
@@ -60,8 +60,8 @@ export function FinanceCard({ today, className }: { today: string; className?: s
           const billIn = bill ? diffDays(today, bill.dueDay) : 0;
           return (
             <>
-              <p className="text-xs font-semibold text-fg-muted">{t("spentIn", { month: monthName })}</p>
-              <p className="tabular text-[1.75rem] font-semibold leading-none">{amount(month.spentToman)}</p>
+              <p className="text-sm text-fg-muted">{t("spentIn", { month: monthName })}</p>
+              <p className="tabular text-[1.875rem] font-semibold leading-none">{amount(month.spentToman)}</p>
               <div className="flex items-baseline justify-between gap-2 text-[0.6875rem] font-semibold text-fg-muted">
                 <span>{t("budget", { amount: formatCompactMoney(month.budgetToman, { currency, digits, locale }) })}</span>
                 <span className={cn(over && "text-danger-text", ahead && "text-warning-text")}>
@@ -81,7 +81,7 @@ export function FinanceCard({ today, className }: { today: string; className?: s
                 aria-valuemax={100}
                 aria-valuenow={Math.round(Math.min(1, ratio) * 100)}
                 aria-valuetext={t("barText", { percent: format.percent(ratio), expected: format.percent(expected) })}
-                className="relative h-2 rounded-pill bg-raised"
+                className="relative my-1 h-2 rounded-pill bg-hairline"
               >
                 <span
                   className={cn("absolute inset-y-0 start-0 rounded-pill", over ? "bg-danger" : "bg-scope-deep")}
@@ -90,19 +90,19 @@ export function FinanceCard({ today, className }: { today: string; className?: s
                 <span
                   aria-hidden
                   data-slot="expected-marker"
-                  className="absolute -inset-y-1 w-0.5 rounded-pill bg-fg"
-                  style={{ insetInlineStart: `${expected * 100}%` }}
+                  className="absolute -inset-y-[3px] w-0.5 -ms-px rounded-pill bg-fg"
+                  style={{ insetInlineStart: `${Math.min(1, expected) * 100}%` }}
                 />
               </div>
               {bill ? (
-                <div className="mt-auto flex items-center gap-2 rounded-field bg-subtle px-3 py-2.5 text-xs">
-                  <span className="grid size-6 place-items-center rounded-full bg-warning-soft text-warning-text">
-                    <Icon icon={Bell} size={12} />
+                <div className="mt-1 flex items-center gap-2 rounded-field bg-subtle px-3 py-2.5 text-sm">
+                  <span className="grid size-7.5 shrink-0 place-items-center rounded-full bg-warning-soft text-warning-text">
+                    <Icon icon={Bell} size={14} />
                   </span>
-                  <span className="min-w-0 flex-1 truncate font-semibold">
+                  <span className="min-w-0 flex-1 truncate">
                     <bdi dir="auto">{bill.title}</bdi> · <span className="tabular">{amount(bill.amountToman)}</span>
                   </span>
-                  <span className="text-fg-muted">{t("billIn", { days: billIn, daysText: format.number(billIn) })}</span>
+                  <span className="shrink-0 text-xs text-fg-muted">{t("billIn", { days: billIn, daysText: format.number(billIn) })}</span>
                 </div>
               ) : null}
             </>
