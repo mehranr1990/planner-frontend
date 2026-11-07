@@ -24,6 +24,7 @@ import type {
   MemberInviteRepository,
   ProjectCreateRepository,
   ReassignRepository,
+  ScheduleRepository,
   TaskDetailRepository,
   ProjectRepositories,
   ProjectRepository,
@@ -32,6 +33,7 @@ import type {
 import { createMockProjectTasks } from "./mock-project-tasks";
 import { createMockTaskDetail } from "./mock-project-task-detail";
 import { createMockProjectSheets } from "./mock-project-sheets";
+import { createMockProjectSchedule } from "./mock-project-schedule";
 import { RepositoryError } from "../repositories";
 import { computeKpis, createMockProjectWork, createProjectWorkStore, type ProjectWorkStore } from "./mock-project-work";
 
@@ -136,6 +138,7 @@ export interface MockProjectsStore extends ReturnType<typeof createMockProjectWo
   projectCreate: ProjectCreateRepository;
   memberInvites: MemberInviteRepository;
   reassign: ReassignRepository;
+  schedule: ScheduleRepository;
   projects: ProjectRepository;
   invitations: InvitationRepository;
   /** Mock-only: the shared task store (PJ-02 / PJ-15 mocks). */
@@ -156,10 +159,16 @@ export function createMockProjects({
 
   const find = (id: string) => projects.find((project) => project.id === id);
   const work = createProjectWorkStore();
+  const manageSchedule = (id: string) => {
+    const found = find(id);
+    return found ? mockCapabilities(found.role, found.lifecycle).createMilestone : false;
+  };
   const workRepos = createMockProjectWork({
     store: work,
     now,
+    today,
     respond,
+    canEditMilestones: manageSchedule,
     canSeeTeamLoad: (id) => {
       const project = find(id);
       return project ? mockCapabilities(project.role, project.lifecycle).seeTeamLoad : false;
@@ -201,6 +210,13 @@ export function createMockProjects({
     membersOf: (id) => find(id)?.members ?? [],
   });
   const projectTasks = tasksMock.repo;
+  const { schedule } = createMockProjectSchedule({
+    store: work,
+    respond,
+    now,
+    canManageSchedule: manageSchedule,
+    canEditTask: (task) => tasksMock.withCan(task).can?.edit === true,
+  });
   const taskDetail = createMockTaskDetail({
     store: work,
     now,
@@ -341,6 +357,7 @@ export function createMockProjects({
   return {
     ...workRepos,
     projectTasks,
+    schedule,
     ...sheets,
     taskDetails: taskDetail.taskDetails,
     comments: taskDetail.comments,
@@ -370,5 +387,6 @@ export function projectRepositories(store: MockProjectsStore): ProjectRepositori
     projectCreate: store.projectCreate,
     memberInvites: store.memberInvites,
     reassign: store.reassign,
+    schedule: store.schedule,
   };
 }

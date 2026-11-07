@@ -8,6 +8,13 @@ import type {
   TaskComment,
   TaskDependency,
   MyProjectWork,
+  MilestoneRow,
+  PhaseRow,
+  ScheduleChange,
+  ScheduleGraph,
+  ScheduleMode,
+  ScheduleMove,
+  SchedulePreview,
   ProjectAccess,
   ProjectActivity,
   ProjectKpis,
@@ -71,6 +78,27 @@ export interface InvitationRepository {
 export interface MilestoneRepository {
   listPhases(projectId: string): Promise<readonly ProjectPhase[]>;
   listMilestones(projectId: string): Promise<readonly ProjectMilestone[]>;
+  /** PJ-08: phases with task counts, in project order. */
+  phaseRows(projectId: string): Promise<readonly PhaseRow[]>;
+  /** PJ-08: milestones with the server-computed status and linked-task counts. */
+  milestoneRows(projectId: string): Promise<readonly MilestoneRow[]>;
+  /** Manager+: new phase order (all phase ids). */
+  reorderPhases(projectId: string, phaseIds: readonly string[]): Promise<readonly ProjectPhase[]>;
+  /** Manager+: rename (dates change through ScheduleRepository). Rejects "conflict" on a stale revision. */
+  updateMilestone(milestoneId: string, patch: { title: string }, revision: number): Promise<ProjectMilestone>;
+}
+
+export interface ScheduleRepository {
+  /** Dated tasks, milestones and their dependency links. */
+  graph(projectId: string): Promise<ScheduleGraph>;
+  /** What a date change would do (nothing is saved). */
+  preview(projectId: string, change: ScheduleChange, mode: ScheduleMode): Promise<SchedulePreview>;
+  /**
+   * One request for every move of a preview, each with its expected revision.
+   * All or nothing: a stale revision rejects with "conflict"; the cascade
+   * needs Manager+ ("forbidden").
+   */
+  apply(projectId: string, moves: readonly ScheduleMove[]): Promise<void>;
 }
 
 export interface WorkflowRepository {
@@ -84,6 +112,8 @@ export interface ActivityRepository {
 
 export interface RiskRepository {
   list(projectId: string, options?: { open?: boolean }): Promise<readonly ProjectRisk[]>;
+  /** The open risk linked to a milestone, if any. */
+  byMilestone(projectId: string, milestoneId: string): Promise<ProjectRisk | null>;
 }
 
 export interface WorkloadRepository {
@@ -126,6 +156,7 @@ export interface ProjectRepositories {
   projectCreate: ProjectCreateRepository;
   memberInvites: MemberInviteRepository;
   reassign: ReassignRepository;
+  schedule: ScheduleRepository;
 }
 
 // ── Project tasks (PJ-02) ────────────────────────────────────────────────

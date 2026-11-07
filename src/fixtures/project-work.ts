@@ -14,6 +14,7 @@ import type {
   ProjectRisk,
   ProjectTask,
   ProjectWorkflow,
+  ScheduleLink,
   TaskAssignee,
   WorkloadEntry,
 } from "@/data/project-domain";
@@ -62,10 +63,19 @@ export const samplePhases: readonly ProjectPhase[] = [
 ];
 
 export const sampleMilestones: readonly ProjectMilestone[] = [
-  { id: "kickoff", title: "Kickoff", due: "2026-09-01", phaseId: "planning", done: true, tasksLeft: 0 },
-  { id: "scope", title: "Scope sign-off", due: "2026-09-14", phaseId: "planning", done: true, tasksLeft: 0 },
-  { id: "design-signoff", title: "Design sign-off", due: "2026-10-10", phaseId: "design", done: true, tasksLeft: 0 },
-  { id: "beta", title: "Beta", due: "2026-11-11", phaseId: "build", done: false, tasksLeft: 3 },
+  { id: "kickoff", title: "Kickoff", due: "2026-09-01", phaseId: "planning", done: true, tasksLeft: 0, owner: sara, revision: 1 },
+  { id: "scope", title: "Scope sign-off", due: "2026-09-14", phaseId: "planning", done: true, tasksLeft: 0, owner: sara, revision: 1 },
+  {
+    id: "design-signoff",
+    title: "Design sign-off",
+    due: "2026-10-10",
+    phaseId: "design",
+    done: true,
+    tasksLeft: 0,
+    owner: sara,
+    revision: 1,
+  },
+  { id: "beta", title: "Beta", due: "2026-11-11", phaseId: "build", done: false, tasksLeft: 3, owner: me, revision: 1 },
   {
     id: "payment-go-live",
     title: "Payment go-live",
@@ -74,8 +84,10 @@ export const sampleMilestones: readonly ProjectMilestone[] = [
     done: false,
     tasksLeft: 2,
     blockedBy: "API access",
+    owner: kian,
+    revision: 1,
   },
-  { id: "launch", title: "Launch", due: "2026-12-20", phaseId: "launch", done: false, tasksLeft: 2 },
+  { id: "launch", title: "Launch", due: "2026-12-20", phaseId: "launch", done: false, tasksLeft: 2, owner: sara, revision: 1 },
 ];
 
 const accepted = (person: TaskAssignee["person"]): TaskAssignee => ({ person, state: "accepted" });
@@ -346,6 +358,19 @@ export const sampleTasks: readonly ProjectTask[] = [
   }),
 ];
 
+/**
+ * Schedule links beyond `blockedBy` (FS, lag 0): milestones as predecessors
+ * and successors, so a milestone date change has dependents (PJ-08 / PJ-05).
+ */
+export const sampleScheduleLinks: readonly ScheduleLink[] = [
+  { id: "sl-1", predecessorId: "beta", successorId: "regression-plan", type: "FS", lagDays: 2 },
+  { id: "sl-2", predecessorId: "payment-go-live", successorId: "a11y-audit", type: "FS", lagDays: 0 },
+  { id: "sl-3", predecessorId: "a11y-audit", successorId: "cross-browser", type: "FS", lagDays: 0 },
+  { id: "sl-4", predecessorId: "cross-browser", successorId: "bug-bash", type: "FS", lagDays: 0 },
+  { id: "sl-5", predecessorId: "bug-bash", successorId: "uat-signoff", type: "FS", lagDays: 0 },
+  { id: "sl-6", predecessorId: "launch-checklist", successorId: "launch", type: "FS", lagDays: 1 },
+];
+
 export const sampleRisks: readonly ProjectRisk[] = [
   {
     id: "payment-api-delay",
@@ -357,6 +382,7 @@ export const sampleRisks: readonly ProjectRisk[] = [
     owner: sara,
     blocksTasks: 2,
     mitigation: "sandbox keys",
+    milestoneId: "payment-go-live",
   },
   {
     id: "qa-capacity",

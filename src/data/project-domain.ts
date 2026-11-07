@@ -258,6 +258,26 @@ export interface ProjectMilestone {
   tasksLeft: number;
   /** Short blocker line when blocked ("API access"). */
   blockedBy?: string;
+  owner?: ProjectPerson;
+  /** Optimistic concurrency token (If-Match on writes). */
+  revision?: number;
+}
+
+/** PJ-08 status, computed by the server (SPEC PJ-08 Rules › Status). */
+export type MilestoneStatus = "reached" | "next" | "risk" | "planned";
+
+export interface MilestoneRow {
+  milestone: ProjectMilestone;
+  status: MilestoneStatus;
+  tasksDone: number;
+  tasksTotal: number;
+}
+
+/** A phase with its task counts (server counts). */
+export interface PhaseRow {
+  phase: ProjectPhase;
+  tasksDone: number;
+  tasksTotal: number;
 }
 
 export type RiskSeverity = "low" | "medium" | "high" | "critical";
@@ -272,6 +292,8 @@ export interface ProjectRisk {
   owner: ProjectPerson;
   blocksTasks: number;
   mitigation?: string;
+  /** Milestone this risk threatens (PJ-08 linked risk). */
+  milestoneId?: string;
 }
 
 export type ProjectActivity =
@@ -359,4 +381,66 @@ export interface PendingInvite {
   email: string;
   role: InviteRole;
   sentAt: string;
+}
+
+// ── Schedule (PJ-08 reschedule, PJ-05 Gantt) ─────────────────────────────
+
+export type ScheduleItemKind = "task" | "milestone";
+
+/** A dated node of the dependency graph: a task (start → end) or a milestone (start = end = due). */
+export interface ScheduleItem {
+  id: string;
+  kind: ScheduleItemKind;
+  title: string;
+  /** Gregorian days. */
+  start: string;
+  end: string;
+  revision: number;
+}
+
+/** "successor depends on predecessor" with a type and a lag (+) / lead (−) in days. */
+export interface ScheduleLink {
+  id: string;
+  predecessorId: string;
+  successorId: string;
+  type: DependencyType;
+  lagDays: number;
+}
+
+export interface ScheduleGraph {
+  items: readonly ScheduleItem[];
+  links: readonly ScheduleLink[];
+}
+
+/** The change a user asks for: new dates of one item. */
+export interface ScheduleChange {
+  itemId: string;
+  start: string;
+  end: string;
+}
+
+/** "move dependents" (cascade) or "only this task" (dependencies become conflicts). */
+export type ScheduleMode = "cascade" | "only";
+
+export interface ScheduleMove {
+  id: string;
+  kind: ScheduleItemKind;
+  title: string;
+  from: { start: string; end: string };
+  to: { start: string; end: string };
+  /** Expected revision (If-Match) for the apply request. */
+  revision: number;
+}
+
+export interface SchedulePreview {
+  change: ScheduleChange;
+  mode: ScheduleMode;
+  /** Days the changed item moves (end date). */
+  deltaDays: number;
+  /** The changed item first, then every dependent that would move. */
+  moves: readonly ScheduleMove[];
+  /** Links that would be violated ("only this task"). */
+  conflicts: readonly string[];
+  /** Whether other items depend on the changed one at all. */
+  hasDependents: boolean;
 }

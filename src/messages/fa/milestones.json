@@ -1,0 +1,41 @@
+{
+  "title": "فازها و نقاط عطف",
+  "new": "نقطه‌ی عطف جدید",
+  "phase": "فاز",
+  "status": {
+    "reached": "رسیده",
+    "next": "بعدی",
+    "risk": "در خطر",
+    "planned": "برنامه‌ریزی‌شده"
+  },
+  "phases": {
+    "label": "فازها",
+    "count": "{done}/{total}",
+    "hint": "فازها بخش‌های مرتب پروژه‌اند. برای جابه‌جایی بکش (مدیر به بالا).",
+    "done": "انجام‌شده"
+  },
+  "list": {
+    "title": "نقاط عطف",
+    "summary": "{n} · {reached} رسیده",
+    "meta": "{phase} · کارها {done}/{total}",
+    "empty": "در این فاز نقطه‌ی عطفی نیست"
+  },
+  "detail": {
+    "eyebrow": "نقطه‌ی عطف · {status}",
+    "meta": "{phase} · موعد {date} · مسئول {name}",
+    "metaNoOwner": "{phase} · موعد {date}",
+    "progress": "{done} از {total} کار انجام شده",
+    "daysLeft": "{n, plural, other {{count} روز مانده}}",
+    "risk": "ریسک مرتبط: {title} ({severity})",
+    "tasks": "کارهای این نقطه‌ی عطف",
+    "noTasks": "هنوز کاری وصل نشده",
+    "open": "باز کردن در کارها (فیلترشده)",
+    "edit": "ویرایش نقطه‌ی عطف",
+    "back": "بازگشت به نقاط عطف"
+  },
+  "edit": {
+    "title": "ویرایش نقطه‌ی عطف",
+    "name": "عنوان",
+    "due": "تاریخ موعد"
+  }
+}

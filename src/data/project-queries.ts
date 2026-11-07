@@ -15,7 +15,14 @@ import type {
 import { useRepositories } from "./provider";
 import { RepositoryError } from "./repositories";
 import { afterHydration } from "./queries";
-import type { DependencyType, InviteRole, PendingInvite } from "./project-domain";
+import type {
+  DependencyType,
+  InviteRole,
+  PendingInvite,
+  ScheduleChange,
+  ScheduleMode,
+  ScheduleMove,
+} from "./project-domain";
 import { projectKeys, taskKeys } from "./query-keys";
 
 /*
@@ -419,4 +426,68 @@ export function useReassignTask(projectId: string) {
     onSettled: () => client.invalidateQueries({ queryKey: projectKeys.all }),
     meta: { projectId },
   });
+}
+
+// ── Phases, milestones & schedule (PJ-08, PJ-05) ─────────────────────────
+
+export function usePhaseRows(projectId: string) {
+  const { milestones } = useRepositories();
+  const hydrated = useIsClient();
+  return afterHydration(
+    useQuery({ queryKey: scoped(projectId, "phase-rows"), queryFn: () => milestones.phaseRows(projectId) }),
+    hydrated,
+  );
+}
+
+export function useMilestoneRows(projectId: string) {
+  const { milestones } = useRepositories();
+  const hydrated = useIsClient();
+  return afterHydration(
+    useQuery({ queryKey: scoped(projectId, "milestone-rows"), queryFn: () => milestones.milestoneRows(projectId) }),
+    hydrated,
+  );
+}
+
+export function useMilestoneRisk(projectId: string, milestoneId: string | null) {
+  const { risks } = useRepositories();
+  const hydrated = useIsClient();
+  return afterHydration(
+    useQuery({
+      queryKey: scoped(projectId, "milestone-risk", milestoneId),
+      queryFn: () => risks.byMilestone(projectId, milestoneId ?? ""),
+      enabled: milestoneId !== null,
+    }),
+    hydrated,
+  );
+}
+
+export function useScheduleGraph(projectId: string) {
+  const { schedule } = useRepositories();
+  const hydrated = useIsClient();
+  return afterHydration(
+    useQuery({ queryKey: scoped(projectId, "schedule"), queryFn: () => schedule.graph(projectId) }),
+    hydrated,
+  );
+}
+
+/** Phase order, milestone rename, schedule preview / apply; writes refresh the project's scoped queries. */
+export function useScheduleActions(projectId: string) {
+  const { milestones, schedule } = useRepositories();
+  const client = useQueryClient();
+  const refresh = () => client.invalidateQueries({ queryKey: projectKeys.scope(projectId) });
+  const reorderPhases = useMutation({
+    mutationFn: (phaseIds: readonly string[]) => milestones.reorderPhases(projectId, phaseIds),
+    onSettled: refresh,
+  });
+  const renameMilestone = useMutation({
+    mutationFn: ({ milestoneId, title, revision }: { milestoneId: string; title: string; revision: number }) =>
+      milestones.updateMilestone(milestoneId, { title }, revision),
+    onSettled: refresh,
+  });
+  const apply = useMutation({
+    mutationFn: (moves: readonly ScheduleMove[]) => schedule.apply(projectId, moves),
+    onSettled: refresh,
+  });
+  const preview = (change: ScheduleChange, mode: ScheduleMode) => schedule.preview(projectId, change, mode);
+  return { reorderPhases, renameMilestone, apply, preview, refresh };
 }

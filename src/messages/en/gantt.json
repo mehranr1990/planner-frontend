@@ -1,0 +1,21 @@
+{
+  "preview": {
+    "title": "Preview: {change}",
+    "move": "move “{title}” {delta}",
+    "delta": "{n, plural, one {{sign}{count} day} other {{sign}{count} days}}",
+    "notSaved": "Nothing is saved yet",
+    "apply": "Apply {n} changes",
+    "count": "{n, plural, one {{count} task would move} other {{count} tasks would move}}",
+    "milestone": "{title} milestone ({from}) would move to {to}",
+    "cascade": "Move dependent tasks too",
+    "only": "Move only this task (dependencies become conflicts)",
+    "range": "{from} → {to}"
+  },
+  "cycle": "This would create a loop",
+  "dep": {
+    "FS": "Finish → start",
+    "SS": "Start → start",
+    "FF": "Finish → finish",
+    "SF": "Start → finish"
+  }
+}

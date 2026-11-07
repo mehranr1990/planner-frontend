@@ -1,0 +1,41 @@
+{
+  "title": "Phases & milestones",
+  "new": "New milestone",
+  "phase": "Phase",
+  "status": {
+    "reached": "Reached",
+    "next": "Next",
+    "risk": "At risk",
+    "planned": "Planned"
+  },
+  "phases": {
+    "label": "Phases",
+    "count": "{done}/{total}",
+    "hint": "Phases are ordered sections of the project. Drag to reorder (Manager+).",
+    "done": "Done"
+  },
+  "list": {
+    "title": "Milestones",
+    "summary": "{n} · {reached} reached",
+    "meta": "{phase} · tasks {done}/{total}",
+    "empty": "No milestones in this phase"
+  },
+  "detail": {
+    "eyebrow": "Milestone · {status}",
+    "meta": "{phase} · due {date} · owner {name}",
+    "metaNoOwner": "{phase} · due {date}",
+    "progress": "{done} of {total} tasks done",
+    "daysLeft": "{n, plural, one {{count} day left} other {{count} days left}}",
+    "risk": "Linked risk: {title} ({severity})",
+    "tasks": "Tasks in this milestone",
+    "noTasks": "No tasks linked yet",
+    "open": "Open in Tasks (filtered)",
+    "edit": "Edit milestone",
+    "back": "Back to milestones"
+  },
+  "edit": {
+    "title": "Edit milestone",
+    "name": "Title",
+    "due": "Due date"
+  }
+}
