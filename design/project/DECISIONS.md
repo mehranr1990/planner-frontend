@@ -48,3 +48,11 @@
 ## DEVIATIONS FROM SOURCE DOCS
 - `09_LOCKED_DESIGN_SYSTEM.md` listed “Board” as a rail item (doc 02); applied D3 instead (view mode = segmented per tab rules).
 - S4 board elements removed: ring, budget, kanban preview, AI insight, Assistant FAB, header tabs (see PJ-01 “S4 reconciliation” tab).
+
+## RESOLVED BY OWNER (2026-11-07, after Batch A)
+- Task rights: Members may create tasks and edit their own; editing any task is Manager+ (PJ-01 table wins over PJ-02 "create/edit any").
+- Viewers may NOT comment (no comment box for Viewers). The OPEN item above is closed with the default (off).
+- PJ-90 New project keeps **Project key** and **Visibility** (spec text wins over board):
+  - Key: suggested from the project name, unique and editable; validate uniqueness + permitted characters client-side (mock); backend stays authoritative.
+  - Visibility: default Private; offer only options the approved backend authorization contract supports; visibility never bypasses membership, capabilities or resource permissions.
+  - Use existing design-system fields, no board redesign. If the backend contract does not define a field or its values, document the gap and keep it non-functional — never invent API behaviour.
