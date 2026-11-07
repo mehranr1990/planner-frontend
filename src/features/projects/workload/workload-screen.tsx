@@ -66,7 +66,8 @@ const TIER_CLASS: Record<LoadTier, string> = {
   none: "bg-subtle text-fg",
   low: "bg-subtle text-fg",
   mid: "bg-scope-soft text-scope-deep",
-  high: "bg-[color-mix(in_oklab,var(--color-scope-soft),var(--color-scope-deep)_30%)] text-fg",
+  // PJ11 Dark: 90–100% is a light blue fill with dark (on-accent) text, not a darker tint.
+  high: "bg-[color-mix(in_oklab,var(--color-scope-soft),var(--color-scope-deep)_30%)] text-fg dark:bg-[color-mix(in_oklab,var(--color-scope-deep),var(--color-fg)_35%)] dark:text-on-accent",
   over: "bg-danger-soft text-danger-text",
 };
 

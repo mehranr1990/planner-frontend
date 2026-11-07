@@ -392,7 +392,12 @@ function Throughput({ data }: { data: AnalyticsSummary }) {
               width={bar}
               height={Math.max(0, height - 28 - yOf(value))}
               rx={6}
-              className={index === last ? "fill-scope-deep" : "fill-scope-soft"}
+              // PJ12 Dark: past weeks are a lifted light blue (the soft tint is too close to the surface).
+              className={
+                index === last
+                  ? "fill-scope-deep"
+                  : "fill-scope-soft dark:fill-[color-mix(in_oklab,var(--color-scope-deep),var(--color-fg)_30%)]"
+              }
             />
             {value > 0 ? (
               <text x={xCenter(index)} y={yOf(value) - 6} textAnchor="middle" className="fill-fg text-[11px] font-bold">

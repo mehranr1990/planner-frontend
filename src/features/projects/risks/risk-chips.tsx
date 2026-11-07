@@ -16,7 +16,8 @@ export const SEVERITY_CLASS: Record<RiskSeverity, string> = {
   low: "bg-raised text-fg-secondary",
   medium: "bg-warning-soft text-warning-text",
   high: "bg-danger-soft text-danger-text",
-  critical: "bg-danger text-on-destructive",
+  // --on-destructive is the rose text tone in dark (unreadable on the rose fill); text on accents = --on-accent.
+  critical: "bg-danger text-on-accent",
 };
 
 const STATUS_TONE: Record<RiskStatus, StatusTone> = {
