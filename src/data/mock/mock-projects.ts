@@ -20,6 +20,8 @@ import type {
 import type {
   CommentRepository,
   FileRepository,
+  GrantRepository,
+  MemberRepository,
   DependencyRepository,
   InvitationRepository,
   MemberInviteRepository,
@@ -39,6 +41,7 @@ import { createMockProjectSchedule } from "./mock-project-schedule";
 import { createMockProjectCalendar } from "./mock-project-calendar";
 import { RepositoryError } from "../repositories";
 import { createMockFiles } from "./mock-project-files";
+import { createMockMembers } from "./mock-project-members";
 import { computeKpis, createMockProjectWork, createProjectWorkStore, type ProjectWorkStore } from "./mock-project-work";
 
 /*
@@ -110,6 +113,10 @@ export function mockCapabilities(role: ProjectRole, lifecycle: ProjectLifecycle)
     closeRisk: editable && rank >= RANK.manager,
     uploadFile: editable && rank >= RANK.member,
     manageFiles: editable && rank >= RANK.manager,
+    manageMembers: editable && rank >= RANK.admin,
+    manageJuniorMembers: editable && rank >= RANK.manager,
+    editCapacity: editable && rank >= RANK.manager,
+    manageGrants: editable && rank >= RANK.manager,
     restore: lifecycle === "archived" && rank >= RANK.admin,
     export: !guest,
   };
@@ -151,6 +158,8 @@ export interface MockProjectsStore extends ReturnType<typeof createMockProjectWo
   projects: ProjectRepository;
   invitations: InvitationRepository;
   files: FileRepository;
+  members: MemberRepository;
+  grants: GrantRepository;
   /** Mock-only: advance in-flight uploads one lifecycle step. */
   tickFiles(): void;
   /** Mock-only: the shared task store (PJ-02 / PJ-15 mocks). */
@@ -246,6 +255,18 @@ export function createMockProjects({
       const found = find(id);
       return found ? (options?.previewRole ?? found.role) : undefined;
     },
+  });
+  const membersMock = createMockMembers({
+    store: work,
+    respond,
+    find,
+    onLeave: (id) => {
+      const index = projects.findIndex((candidate) => candidate.id === id);
+      if (index >= 0) projects.splice(index, 1);
+      const at = recent.indexOf(id);
+      if (at >= 0) recent.splice(at, 1);
+    },
+    onUnassignedFromMe: (taskId) => onProjection?.(taskId, null),
   });
   const taskDetail = createMockTaskDetail({
     store: work,
@@ -390,6 +411,8 @@ export function createMockProjects({
     schedule,
     calendar,
     files: filesMock.files,
+    members: membersMock.members,
+    grants: membersMock.grants,
     tickFiles: filesMock.tick,
     ...sheets,
     taskDetails: taskDetail.taskDetails,
@@ -412,6 +435,8 @@ export function projectRepositories(store: MockProjectsStore): ProjectRepositori
     activity: store.activity,
     risks: store.risks,
     files: store.files,
+    members: store.members,
+    grants: store.grants,
     workload: store.workload,
     assignments: store.assignments,
     projectTasks: store.projectTasks,

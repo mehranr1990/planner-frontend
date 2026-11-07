@@ -27,6 +27,8 @@ import type {
   ProjectPhase,
   ProjectPriority,
   ProjectRisk,
+  GuestGrant,
+  ProjectMember,
   FileLibrary,
   FileServerConfig,
   ProjectFile,
@@ -202,6 +204,28 @@ export interface FileRepository {
   download(fileId: string): Promise<Blob>;
 }
 
+/**
+ * PJ-13 membership. Role changes apply at once (the UI offers Undo by
+ * setting the previous role back). The Owner is changed only by transfer:
+ * setRole / remove on the Owner reject "invalid" ("last-owner").
+ */
+export interface MemberRepository {
+  list(projectId: string): Promise<readonly ProjectMember[]>;
+  setRole(projectId: string, personId: string, role: Exclude<ProjectRole, "owner" | "guest">): Promise<ProjectMember>;
+  /** What removing someone does: their open tasks become Unassigned. */
+  removalPreview(projectId: string, personId: string): Promise<{ openTasks: number }>;
+  remove(projectId: string, personId: string): Promise<void>;
+  /** The current user leaves (same task rule); the project leaves their directory. */
+  leave(projectId: string): Promise<void>;
+  setCapacity(projectId: string, personId: string, hours: number | null): Promise<ProjectMember>;
+}
+
+/** PJ-13 guest task grants (verified external collaborators). */
+export interface GrantRepository {
+  list(projectId: string): Promise<readonly GuestGrant[]>;
+  set(projectId: string, grant: GuestGrant): Promise<GuestGrant>;
+}
+
 export interface WorkloadRepository {
   /** This week's estimates per member (D13); empty without the capability. */
   week(projectId: string): Promise<readonly WorkloadEntry[]>;
@@ -234,6 +258,8 @@ export interface ProjectRepositories {
   activity: ActivityRepository;
   risks: RiskRepository;
   files: FileRepository;
+  members: MemberRepository;
+  grants: GrantRepository;
   workload: WorkloadRepository;
   assignments: AssignmentRepository;
   projectTasks: ProjectTaskRepository;

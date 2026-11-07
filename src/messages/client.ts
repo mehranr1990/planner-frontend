@@ -29,6 +29,7 @@ import enProjectBoard from "./en/projectBoard.json";
 import enRisks from "./en/risks.json";
 import enRisk from "./en/risk.json";
 import enFiles from "./en/files.json";
+import enMembers from "./en/members.json";
 import enSettings from "./en/settings.json";
 import enShell from "./en/shell.json";
 import enReview from "./en/review.json";
@@ -65,6 +66,7 @@ import faProjectBoard from "./fa/projectBoard.json";
 import faRisks from "./fa/risks.json";
 import faRisk from "./fa/risk.json";
 import faFiles from "./fa/files.json";
+import faMembers from "./fa/members.json";
 import faSettings from "./fa/settings.json";
 import faShell from "./fa/shell.json";
 import faReview from "./fa/review.json";
@@ -118,6 +120,7 @@ const en = {
   Risks: enRisks,
   Risk: enRisk,
   Files: enFiles,
+  Members: enMembers,
 };
 
 export type ClientMessages = typeof en;
@@ -159,6 +162,7 @@ const fa: ClientMessages = {
   Risks: faRisks,
   Risk: faRisk,
   Files: faFiles,
+  Members: faMembers,
 };
 
 export const clientMessages: Record<Locale, ClientMessages> = { en, fa };

@@ -25,6 +25,7 @@ export const projectPeople = {
   ali: person("ali", "Ali I.", "AI"),
   nima: person("nima", "Nima T.", "NT"),
   lena: person("lena", "Lena M.", "LM"),
+  ava: person("ava", "Ava R.", "AR"),
 } as const;
 
 const { me, sara, kamran, jonathan, kian, maryam, arash, mina, ali, nima, lena } = projectPeople;

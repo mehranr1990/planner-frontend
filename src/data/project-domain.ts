@@ -119,6 +119,13 @@ export interface ProjectCapabilities {
   uploadFile: boolean;
   /** Move / rename / version / restore any file (Manager+); own files need only `uploadFile`. */
   manageFiles: boolean;
+  /** PJ-13: change roles / remove anyone but the Owner (Owner, Admin). */
+  manageMembers: boolean;
+  /** PJ-13 "own": Managers change Member/Viewer roles and remove people ranked below them. */
+  manageJuniorMembers: boolean;
+  /** Weekly capacity per member and guest grants (Manager+). */
+  editCapacity: boolean;
+  manageGrants: boolean;
   restore: boolean;
   export: boolean;
 }
@@ -451,6 +458,8 @@ export interface PendingInvite {
   email: string;
   role: InviteRole;
   sentAt: string;
+  /** When the invitation link stops working (server value, when known). */
+  expiresAt?: string;
 }
 
 // ── Schedule (PJ-08 reschedule, PJ-05 Gantt) ─────────────────────────────
@@ -605,4 +614,28 @@ export interface FileLibrary {
   folders: readonly (FileFolder & { count: number })[];
   files: readonly ProjectFile[];
   total: number;
+}
+
+// ── Members (PJ-13) ──────────────────────────────────────────────────────
+
+/** One person in the project (guests included, role "guest"). */
+export interface ProjectMember {
+  person: ProjectPerson;
+  /** Shown truncated; never used to reveal whether another email has an account. */
+  email: string;
+  role: ProjectRole;
+  /** Weekly project hours set by Manager+ (used by Workload, D13); null = not set. */
+  capacityHours: number | null;
+  /** Open tasks assigned in this project (server count). */
+  openTasks: number;
+  /** Who invited them (Manager+ may manage the people they invited, SPEC "own"). */
+  invitedById?: string;
+}
+
+/** Verified external collaborator's task-level grant with expiry. */
+export interface GuestGrant {
+  personId: string;
+  taskIds: readonly string[];
+  /** Gregorian day the grant ends. */
+  expires: string;
 }

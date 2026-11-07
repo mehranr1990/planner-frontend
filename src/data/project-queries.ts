@@ -20,6 +20,8 @@ import { afterHydration } from "./queries";
 import type {
   DependencyType,
   RiskCloseReason,
+  GuestGrant,
+  ProjectRole,
   InviteRole,
   PendingInvite,
   ScheduleChange,
@@ -693,5 +695,51 @@ export function useFileActions(projectId: string) {
       onSettled: refresh,
     }),
     download: (fileId: string) => files.download(fileId),
+  };
+}
+
+// ── Members (PJ-13) ──────────────────────────────────────────────────────
+
+export function useMemberList(projectId: string) {
+  const { members } = useRepositories();
+  const hydrated = useIsClient();
+  return afterHydration(
+    useQuery({ queryKey: scoped(projectId, "member-list"), queryFn: () => members.list(projectId) }),
+    hydrated,
+  );
+}
+
+export function useGuestGrants(projectId: string, enabled = true) {
+  const { grants } = useRepositories();
+  const hydrated = useIsClient();
+  return afterHydration(
+    useQuery({ queryKey: scoped(projectId, "grants"), queryFn: () => grants.list(projectId), enabled }),
+    hydrated,
+  );
+}
+
+/** Membership writes; every change refreshes the project (tasks become Unassigned on remove / leave). */
+export function useMemberActions(projectId: string) {
+  const { members, grants } = useRepositories();
+  const client = useQueryClient();
+  const refresh = () => client.invalidateQueries({ queryKey: projectKeys.scope(projectId) });
+  return {
+    setRole: useMutation({
+      mutationFn: ({ personId, role }: { personId: string; role: Exclude<ProjectRole, "owner" | "guest"> }) =>
+        members.setRole(projectId, personId, role),
+      onSettled: refresh,
+    }),
+    remove: useMutation({ mutationFn: (personId: string) => members.remove(projectId, personId), onSettled: refresh }),
+    leave: useMutation({
+      mutationFn: () => members.leave(projectId),
+      onSettled: () => client.invalidateQueries({ queryKey: projectKeys.all }),
+    }),
+    setCapacity: useMutation({
+      mutationFn: ({ personId, hours }: { personId: string; hours: number | null }) =>
+        members.setCapacity(projectId, personId, hours),
+      onSettled: refresh,
+    }),
+    setGrant: useMutation({ mutationFn: (grant: GuestGrant) => grants.set(projectId, grant), onSettled: refresh }),
+    removalPreview: (personId: string) => members.removalPreview(projectId, personId),
   };
 }

@@ -16,8 +16,20 @@ const ME: ProjectPerson = { id: "me", name: "Mehran R.", initials: "MR" };
 
 const pendingFixtures: Readonly<Record<string, readonly PendingInvite[]>> = {
   "website-redesign": [
-    { id: "pinv-1", email: "nima@studio.ir", role: "member", sentAt: "2026-10-11T10:00:00+03:30" },
-    { id: "pinv-2", email: "lea@mail.com", role: "viewer", sentAt: "2026-10-08T10:00:00+03:30" },
+    {
+      id: "pinv-1",
+      email: "nima@studio.ir",
+      role: "member",
+      sentAt: "2026-10-11T10:00:00+03:30",
+      expiresAt: "2026-10-18T10:00:00+03:30",
+    },
+    {
+      id: "pinv-2",
+      email: "lea@mail.com",
+      role: "viewer",
+      sentAt: "2026-10-08T10:00:00+03:30",
+      expiresAt: "2026-10-25T10:00:00+03:30",
+    },
   ],
   "mobile-onboarding": [{ id: "pinv-3", email: "nima@studio.ir", role: "member", sentAt: "2026-10-11T10:00:00+03:30" }],
 };
