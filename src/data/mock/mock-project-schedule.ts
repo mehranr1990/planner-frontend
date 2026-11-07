@@ -131,6 +131,59 @@ export function computePreview(graph: ScheduleGraph, change: ScheduleChange, mod
   };
 }
 
+/** Whether `from` (transitively) depends on `on` through the links. */
+export function dependsOn(links: readonly ScheduleLink[], from: string, on: string): boolean {
+  const seen = new Set<string>();
+  const stack = [from];
+  while (stack.length) {
+    const id = stack.pop()!;
+    if (id === on) return true;
+    if (seen.has(id)) continue;
+    seen.add(id);
+    for (const link of links) if (link.successorId === id) stack.push(link.predecessorId);
+  }
+  return false;
+}
+
+/**
+ * Longest chain (by days, including lags) ending at the final milestone (the
+ * latest one), or at the latest-ending item when there is no milestone.
+ */
+export function computeCriticalPath(graph: ScheduleGraph): string[] {
+  const byId = new Map(graph.items.map((item) => [item.id, item]));
+  const memo = new Map<string, { length: number; via: string | null }>();
+  const duration = (item: ScheduleItem) => dayNumber(item.end) - dayNumber(item.start) + 1;
+  const visit = (id: string, trail: Set<string>): number => {
+    const known = memo.get(id);
+    if (known) return known.length;
+    const item = byId.get(id);
+    if (!item || trail.has(id)) return 0;
+    trail.add(id);
+    let best = 0;
+    let via: string | null = null;
+    for (const link of graph.links) {
+      if (link.successorId !== id || !byId.has(link.predecessorId)) continue;
+      const length = visit(link.predecessorId, trail) + Math.max(0, link.lagDays);
+      if (length > best) {
+        best = length;
+        via = link.predecessorId;
+      }
+    }
+    trail.delete(id);
+    const total = best + duration(item);
+    memo.set(id, { length: total, via });
+    return total;
+  };
+  const milestones = graph.items.filter((item) => item.kind === "milestone").sort((a, b) => a.end.localeCompare(b.end));
+  const end =
+    milestones.at(-1) ?? [...graph.items].sort((a, b) => a.end.localeCompare(b.end)).at(-1);
+  if (!end) return [];
+  visit(end.id, new Set());
+  const path: string[] = [];
+  for (let id: string | null = end.id; id; id = memo.get(id)?.via ?? null) path.unshift(id);
+  return path;
+}
+
 export interface MockProjectScheduleOptions {
   store: ProjectWorkStore;
   respond<T>(value: T): Promise<T>;
@@ -149,6 +202,31 @@ export function createMockProjectSchedule({
   canEditTask,
 }: MockProjectScheduleOptions) {
   const starts = new Map<string, string>();
+  /** Links per project, seeded on first use from `blockedBy` + the sample links, then edited in place. */
+  const linkStore = new Map<string, ScheduleLink[]>();
+  let linkCounter = 0;
+  const linksOf = (projectId: string): ScheduleLink[] => {
+    let list = linkStore.get(projectId);
+    if (!list) {
+      list = [
+        ...(store.tasks.get(projectId) ?? []).flatMap((task) =>
+          task.blockedBy.map((predecessorId) => ({
+            id: `dep:${predecessorId}>${task.id}`,
+            predecessorId,
+            successorId: task.id,
+            type: "FS" as const,
+            lagDays: 0,
+          })),
+        ),
+        ...sampleScheduleLinks.map((link) => ({ ...link })),
+      ];
+      linkStore.set(projectId, list);
+    }
+    return list;
+  };
+  const manageGuard = (projectId: string) => {
+    if (!canManageSchedule(projectId)) throw new RepositoryError("forbidden", "Manager+ only");
+  };
   const startOf = (task: ProjectTask) => starts.get(task.id) ?? defaultTaskStart(task);
 
   function graph(projectId: string): ScheduleGraph {
@@ -172,23 +250,44 @@ export function createMockProjectSchedule({
       })),
     ];
     const ids = new Set(items.map((item) => item.id));
-    const links: ScheduleLink[] = [
-      ...tasks.flatMap((task) =>
-        task.blockedBy.map((predecessorId) => ({
-          id: `dep:${predecessorId}>${task.id}`,
-          predecessorId,
-          successorId: task.id,
-          type: "FS" as const,
-          lagDays: 0,
-        })),
-      ),
-      ...sampleScheduleLinks,
-    ].filter((link) => ids.has(link.predecessorId) && ids.has(link.successorId));
+    const links = linksOf(projectId)
+      .filter((link) => ids.has(link.predecessorId) && ids.has(link.successorId))
+      .map((link) => ({ ...link }));
     return { items, links };
   }
 
   const schedule: ScheduleRepository = {
     graph: (projectId) => respond(graph(projectId)),
+    criticalPath: (projectId) => respond(computeCriticalPath(graph(projectId))),
+    async addLink(projectId, input) {
+      manageGuard(projectId);
+      const { items, links } = graph(projectId);
+      if (!items.some((item) => item.id === input.predecessorId) || !items.some((item) => item.id === input.successorId))
+        throw new RepositoryError("not-found", "Unknown item");
+      if (input.predecessorId === input.successorId || dependsOn(links, input.predecessorId, input.successorId))
+        throw new RepositoryError("invalid", "cycle");
+      if (links.some((link) => link.predecessorId === input.predecessorId && link.successorId === input.successorId))
+        throw new RepositoryError("invalid", "duplicate");
+      const link = { id: `link-${++linkCounter}`, ...input };
+      linksOf(projectId).push(link);
+      return respond(link);
+    },
+    async updateLink(projectId, linkId, { type, lagDays }) {
+      manageGuard(projectId);
+      const link = linksOf(projectId).find((item) => item.id === linkId);
+      if (!link) throw new RepositoryError("not-found", `No link ${linkId}`);
+      link.type = type;
+      link.lagDays = lagDays;
+      return respond({ ...link });
+    },
+    async removeLink(projectId, linkId) {
+      manageGuard(projectId);
+      const list = linksOf(projectId);
+      const index = list.findIndex((item) => item.id === linkId);
+      if (index < 0) throw new RepositoryError("not-found", `No link ${linkId}`);
+      list.splice(index, 1);
+      return respond(undefined);
+    },
     overlaps: (projectId) => {
       const workflow = store.workflow(projectId);
       const open = (store.tasks.get(projectId) ?? []).filter((task) => task.due !== null && !isTaskDone(task, workflow));

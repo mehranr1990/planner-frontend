@@ -15,6 +15,7 @@ import type {
   PhaseRow,
   ScheduleChange,
   ScheduleGraph,
+  ScheduleLink,
   ScheduleMode,
   ScheduleMove,
   SchedulePreview,
@@ -111,6 +112,16 @@ export interface ScheduleRepository {
   apply(projectId: string, moves: readonly ScheduleMove[]): Promise<void>;
   /** Overlapping open assignments per person (derived by the server). */
   overlaps(projectId: string): Promise<readonly AssigneeOverlap[]>;
+  /** Longest dependency chain to the final milestone (item ids, in order). */
+  criticalPath(projectId: string): Promise<readonly string[]>;
+  /**
+   * Manager+: "successor depends on predecessor". Rejects "invalid" with
+   * message "cycle" when the predecessor already depends on the successor,
+   * "duplicate" for an existing pair, "forbidden" without the right.
+   */
+  addLink(projectId: string, input: Omit<ScheduleLink, "id">): Promise<ScheduleLink>;
+  updateLink(projectId: string, linkId: string, patch: Pick<ScheduleLink, "type" | "lagDays">): Promise<ScheduleLink>;
+  removeLink(projectId: string, linkId: string): Promise<void>;
 }
 
 export interface WorkflowRepository {

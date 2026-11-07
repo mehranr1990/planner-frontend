@@ -20,6 +20,7 @@ import type {
   InviteRole,
   PendingInvite,
   ScheduleChange,
+  ScheduleLink,
   ScheduleMode,
   ScheduleMove,
 } from "./project-domain";
@@ -470,6 +471,15 @@ export function useAssigneeOverlaps(projectId: string, enabled = true) {
   );
 }
 
+export function useCriticalPath(projectId: string, enabled: boolean) {
+  const { schedule } = useRepositories();
+  const hydrated = useIsClient();
+  return afterHydration(
+    useQuery({ queryKey: scoped(projectId, "critical-path"), queryFn: () => schedule.criticalPath(projectId), enabled }),
+    hydrated,
+  );
+}
+
 export function useScheduleGraph(projectId: string) {
   const { schedule } = useRepositories();
   const hydrated = useIsClient();
@@ -499,7 +509,20 @@ export function useScheduleActions(projectId: string) {
   });
   const preview = (change: ScheduleChange, mode: ScheduleMode) => schedule.preview(projectId, change, mode);
   const graph = () => schedule.graph(projectId);
-  return { reorderPhases, renameMilestone, apply, preview, graph, refresh };
+  const addLink = useMutation({
+    mutationFn: (input: Omit<ScheduleLink, "id">) => schedule.addLink(projectId, input),
+    onSettled: refresh,
+  });
+  const updateLink = useMutation({
+    mutationFn: ({ linkId, type, lagDays }: Pick<ScheduleLink, "type" | "lagDays"> & { linkId: string }) =>
+      schedule.updateLink(projectId, linkId, { type, lagDays }),
+    onSettled: refresh,
+  });
+  const removeLink = useMutation({
+    mutationFn: (linkId: string) => schedule.removeLink(projectId, linkId),
+    onSettled: refresh,
+  });
+  return { reorderPhases, renameMilestone, apply, preview, graph, addLink, updateLink, removeLink, refresh };
 }
 
 // ── Project calendar (PJ-07) ─────────────────────────────────────────────

@@ -18,5 +18,37 @@
     "SS": "Start → start",
     "FF": "Finish → finish",
     "SF": "Start → finish"
+  },
+  "title": "Gantt",
+  "critical": "Critical path",
+  "depsToggle": "Dependencies list",
+  "columns": {
+    "task": "Task",
+    "who": "Who",
+    "start": "Start",
+    "end": "End",
+    "duration": "Dur."
+  },
+  "duration": "{n}d",
+  "hint": "Drag a bar to move · drag its end to resize · drag from the dot on a bar end to another bar to add a dependency (FS default; change type/lag in the task drawer)",
+  "chart": "Gantt chart of {project}",
+  "linkFrom": "Add a dependency from {title}",
+  "cycleTitle": "Cycle rejected",
+  "cycleDetail": "“{predecessor}” already depends on “{successor}” → this would create a loop.",
+  "deps": {
+    "title": "Dependencies list",
+    "task": "Task",
+    "dependsOn": "Depends on",
+    "type": "Type",
+    "lag": "Lag",
+    "edit": "Edit",
+    "remove": "Remove",
+    "save": "Save",
+    "cancel": "Cancel",
+    "add": "Add dependency",
+    "empty": "No dependencies yet",
+    "lagValue": "{sign}{n}d",
+    "editLabel": "Edit dependency of {task} on {predecessor}",
+    "removeLabel": "Remove dependency of {task} on {predecessor}"
   }
 }
