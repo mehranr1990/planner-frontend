@@ -9,25 +9,92 @@ import { FloatingRail } from "./floating-rail";
 
 describe("FloatingRail", () => {
   it("is a navigation landmark named after the URL's context", () => {
-    setMockPathname("/projects");
+    setMockPathname("/teams");
     renderWithProviders(<FloatingRail />);
-    const nav = screen.getByRole("navigation", { name: "Projects navigation" });
-    expect(nav).toHaveAttribute("data-scope", "project");
-    const entries = within(nav).getAllByRole("listitem");
-    expect(entries).toHaveLength(8);
+    const nav = screen.getByRole("navigation", { name: "Teams navigation" });
+    expect(nav).toHaveAttribute("data-scope", "team");
+    expect(within(nav).getAllByRole("listitem")).toHaveLength(7);
   });
 
-  it("marks the overview current and renders planned items as disabled non-links (Projects)", () => {
-    setMockPathname("/projects");
+  it("marks the overview current and renders planned items as disabled non-links (Teams)", () => {
+    setMockPathname("/teams");
     renderWithProviders(<FloatingRail />);
-    const nav = screen.getByRole("navigation", { name: "Projects navigation" });
+    const nav = screen.getByRole("navigation", { name: "Teams navigation" });
     const links = within(nav).getAllByRole("link");
     expect(links).toHaveLength(1);
     expect(links[0]).toHaveAccessibleName("Overview");
     expect(links[0]).toHaveAttribute("aria-current", "page");
-    const tasks = within(nav).getByRole("button", { name: "Tasks" });
-    expect(tasks).toHaveAttribute("aria-disabled", "true");
-    expect(tasks).toHaveAccessibleDescription("Coming soon");
+    const work = within(nav).getByRole("button", { name: "Work" });
+    expect(work).toHaveAttribute("aria-disabled", "true");
+    expect(work).toHaveAccessibleDescription("Coming soon");
+  });
+
+  describe("Projects (SH01)", () => {
+    it("collection: All projects, four recent projects and New project (D7)", async () => {
+      setMockPathname("/projects");
+      renderWithProviders(<FloatingRail />);
+      const nav = screen.getByRole("navigation", {
+        name: "Projects navigation",
+      });
+      expect(nav).toHaveAttribute("data-rail", "collection");
+      expect(within(nav).getByRole("link", { name: "All projects" })).toHaveAttribute("aria-current", "page");
+      const recent = await within(nav).findByRole("list", {
+        name: "Recent projects",
+      });
+      expect(
+        within(recent)
+          .getAllByRole("link")
+          .map((link) => link.getAttribute("href")),
+      ).toEqual([
+        "/projects/website-redesign",
+        "/projects/planner-app",
+        "/projects/mobile-onboarding",
+        "/projects/brand-refresh",
+      ]);
+      expect(within(nav).getByRole("button", { name: "New project" })).toHaveAttribute("aria-haspopup", "dialog");
+    });
+
+    it("inside a project: three groups + Settings, capability-aware, Risks badge", async () => {
+      setMockPathname("/projects/website-redesign/milestones");
+      renderWithProviders(<FloatingRail />);
+      const nav = screen.getByRole("navigation", {
+        name: "Projects navigation",
+      });
+      expect(nav).toHaveAttribute("data-rail", "grouped");
+      await within(nav).findByRole("link", { name: "Milestones" });
+      const hrefs = within(nav)
+        .getAllByRole("link")
+        .map((link) => link.getAttribute("href"));
+      // Manager: no Settings (Owner/Admin only); everything else in D2 order.
+      expect(hrefs).toEqual([
+        "/projects/website-redesign",
+        "/projects/website-redesign/tasks",
+        "/projects/website-redesign/timeline",
+        "/projects/website-redesign/gantt",
+        "/projects/website-redesign/calendar",
+        "/projects/website-redesign/milestones",
+        "/projects/website-redesign/risks",
+        "/projects/website-redesign/workload",
+        "/projects/website-redesign/members",
+        "/projects/website-redesign/files",
+        "/projects/website-redesign/analytics",
+      ]);
+      expect(within(nav).getByRole("link", { name: "Milestones" })).toHaveAttribute("aria-current", "page");
+      expect(within(nav).getByRole("link", { name: "Risks, 2 open high risks" })).toBeInTheDocument();
+    });
+
+    it("an owner sees Settings; Tasks stays current on the Board view route", async () => {
+      setMockPathname("/projects/mobile-onboarding/board");
+      renderWithProviders(<FloatingRail />);
+      const nav = screen.getByRole("navigation", {
+        name: "Projects navigation",
+      });
+      expect(await within(nav).findByRole("link", { name: "Settings" })).toHaveAttribute(
+        "href",
+        "/projects/mobile-onboarding/settings",
+      );
+      expect(within(nav).getByRole("link", { name: "Tasks" })).toHaveAttribute("aria-current", "page");
+    });
   });
 
   describe("Personal (P00PersonalIA)", () => {
@@ -39,7 +106,9 @@ describe("FloatingRail", () => {
     it("is icon-only with three groups and Settings at the bottom, every item a real link", () => {
       setMockPathname("/personal/my-day");
       renderWithProviders(<FloatingRail />);
-      const nav = screen.getByRole("navigation", { name: "Personal navigation" });
+      const nav = screen.getByRole("navigation", {
+        name: "Personal navigation",
+      });
       expect(nav).toHaveAttribute("data-rail", "grouped");
       expect(within(nav).queryByRole("button", { name: /navigation/ })).not.toBeInTheDocument();
       expect(groupsOf(nav)).toEqual([
@@ -56,7 +125,9 @@ describe("FloatingRail", () => {
     it("badges the Inbox with the untriaged count from the data seam", async () => {
       setMockPathname("/personal");
       renderWithProviders(<FloatingRail />);
-      const inbox = await screen.findByRole("link", { name: "Inbox, 6 to triage" });
+      const inbox = await screen.findByRole("link", {
+        name: "Inbox, 6 to triage",
+      });
       expect(inbox.querySelector('[data-slot="nav-badge"]')).toHaveTextContent("6");
     });
 
@@ -68,7 +139,9 @@ describe("FloatingRail", () => {
           modules: { ...DEFAULT_PLANNER_SETTINGS.modules, finance: false, journal: false, insights: false, goals: false },
         },
       });
-      const nav = screen.getByRole("navigation", { name: "Personal navigation" });
+      const nav = screen.getByRole("navigation", {
+        name: "Personal navigation",
+      });
       expect(groupsOf(nav)).toEqual([
         ["/personal", "/personal/my-day", "/personal/tasks", "/personal/calendar", "/personal/habits"],
         ["/personal/inbox", "/personal/brain-dump"],
@@ -97,7 +170,7 @@ describe("FloatingRail", () => {
   it("toggles expanded state with aria-expanded, aria-controls and visible labels (contexts with a flat rail)", async () => {
     const user = userEvent.setup();
     const onExpandedChange = vi.fn();
-    setMockPathname("/projects");
+    setMockPathname("/teams");
     renderWithProviders(<FloatingRail onExpandedChange={onExpandedChange} />);
 
     const toggle = screen.getByRole("button", { name: "Expand navigation" });
@@ -107,7 +180,9 @@ describe("FloatingRail", () => {
     expect(screen.getByRole("navigation")).toHaveClass("w-16");
 
     await user.click(toggle);
-    const collapse = screen.getByRole("button", { name: "Collapse navigation" });
+    const collapse = screen.getByRole("button", {
+      name: "Collapse navigation",
+    });
     expect(collapse).toBe(toggle);
     expect(collapse).toHaveAttribute("aria-expanded", "true");
     expect(collapse).toHaveFocus();

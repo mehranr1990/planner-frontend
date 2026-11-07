@@ -1,8 +1,8 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { defaultContextId, getAppContext } from "@/features/navigation/contexts";
 import type { ContextId } from "@/features/navigation/types";
+import { resolveContext } from "@/features/navigation/paths";
 import { useActiveContext } from "@/features/navigation/use-active-navigation";
 import { cn } from "@/lib/cn";
 import { NavLink } from "./nav-link";
@@ -24,7 +24,7 @@ export interface ContextNavListProps {
 export function ContextNavList({ context: contextProp, onNavigate, "aria-label": ariaLabel, className }: ContextNavListProps) {
   const t = useTranslations("Navigation");
   const urlContext = useActiveContext();
-  const context = getAppContext(contextProp ?? urlContext?.id ?? defaultContextId);
+  const context = resolveContext(contextProp, urlContext);
 
   return (
     <ul

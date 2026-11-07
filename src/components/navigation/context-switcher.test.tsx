@@ -34,7 +34,9 @@ describe("ContextSwitcherTrigger", () => {
     const user = userEvent.setup();
     const onClick = vi.fn();
     renderWithProviders(<ContextSwitcherTrigger context="project" workspaceName="Website Redesign" onClick={onClick} />);
-    const trigger = screen.getByRole("button", { name: /Projects\s*Website Redesign/ });
+    const trigger = screen.getByRole("button", {
+      name: /Projects\s*Website Redesign/,
+    });
     expect(trigger).toHaveAttribute("aria-haspopup", "dialog");
     expect(trigger).toHaveAttribute("data-scope", "project");
     await user.click(trigger);
@@ -78,18 +80,43 @@ describe("ContextSwitcherPanel", () => {
     expect(within(group).getByRole("button", { name: "Website Redesign" })).toHaveAttribute("aria-current", "true");
     expect(within(group).getByRole("button", { name: "Planner App" })).not.toHaveAttribute("aria-current");
     expect(projects).toHaveTextContent("Website Redesign · active");
-    expect(screen.getByRole("button", { name: /^Teams/ })).toHaveTextContent("2 workspaces");
+  });
+
+  it("keeps Teams and Companies visible but disabled until their phase (SH01)", async () => {
+    const user = userEvent.setup();
+    const onSelect = renderPanel();
+    const teams = screen.getByRole("button", { name: /^Teams/ });
+    expect(teams).toHaveAttribute("aria-disabled", "true");
+    expect(teams).toHaveAccessibleDescription("Phase 3 · not available yet");
+    expect(screen.getByRole("button", { name: /^Companies/ })).toHaveAccessibleDescription(
+      "Phase 4 · not available yet",
+    );
+    await user.click(teams);
+    expect(teams).not.toHaveAttribute("aria-expanded");
+    expect(screen.queryByText("Design Team")).not.toBeInTheDocument();
+    expect(onSelect).not.toHaveBeenCalled();
   });
 
   it("keeps a single context expanded at a time", async () => {
     const user = userEvent.setup();
     renderPanel();
-    await user.click(screen.getByRole("button", { name: /^Teams/ }));
-    expect(screen.getByRole("button", { name: /^Teams/ })).toHaveAttribute("aria-expanded", "true");
+    await user.click(screen.getByRole("button", { name: /^Personal/ }));
+    expect(screen.getByRole("button", { name: /^Personal/ })).toHaveAttribute("aria-expanded", "true");
     expect(screen.getByRole("button", { name: /^Projects/ })).toHaveAttribute("aria-expanded", "false");
     expect(screen.queryByRole("group", { name: "Projects workspaces" })).not.toBeInTheDocument();
-    await user.click(screen.getByRole("button", { name: /^Teams/ }));
-    expect(screen.getByRole("button", { name: /^Teams/ })).toHaveAttribute("aria-expanded", "false");
+  });
+
+  it("shows the Projects sections when given (Recent · Owned · Invitations · Archived)", () => {
+    renderWithProviders(
+      <ContextSwitcherPanel
+        activeContext="project"
+        workspaces={workspaces}
+        onSelect={vi.fn()}
+        projects={<p>Project sections</p>}
+      />,
+    );
+    expect(screen.getByText("Project sections")).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "New project" })).not.toBeInTheDocument();
   });
 
   it("selects a workspace with the keyboard (arrows + Enter/Space)", async () => {
@@ -103,16 +130,8 @@ describe("ContextSwitcherPanel", () => {
     await user.keyboard("{Enter}");
     expect(onSelect).toHaveBeenLastCalledWith("project", "app");
 
-    // Expand Teams by keyboard, then pick with Space.
     await user.keyboard("{End}");
-    await user.keyboard("{ArrowUp}");
-    expect(screen.getByRole("button", { name: /^Teams/ })).toHaveFocus();
-    await user.keyboard(" ");
-    await user.keyboard("{ArrowDown}");
-    expect(screen.getByRole("button", { name: "Design Team" })).toHaveFocus();
-    await user.keyboard(" ");
-    expect(onSelect).toHaveBeenLastCalledWith("team", "design");
-
+    expect(screen.getByRole("button", { name: /^Companies/ })).toHaveFocus();
     await user.keyboard("{Home}");
     expect(screen.getByRole("button", { name: /^Personal/ })).toHaveFocus();
   });
@@ -132,9 +151,11 @@ describe("ContextSwitcherPanel", () => {
   });
 
   it("renders Persian with localized digits", () => {
-    renderPanel(vi.fn(), { preferences: { locale: "fa", direction: "rtl", digits: "fa" } });
+    renderPanel(vi.fn(), {
+      preferences: { locale: "fa", direction: "rtl", digits: "fa" },
+    });
     expect(screen.getByRole("group", { name: "تغییر حوزه" })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /^تیم‌ها/ })).toHaveTextContent("۲ فضای کاری");
+    expect(screen.getByRole("button", { name: /^تیم‌ها/ })).toHaveTextContent("فاز ۳ · هنوز در دسترس نیست");
     expect(screen.getByRole("button", { name: "پروژه‌ی جدید" })).toHaveAttribute("aria-disabled", "true");
   });
 });

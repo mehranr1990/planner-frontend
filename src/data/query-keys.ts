@@ -33,7 +33,11 @@ export const taskKeys = {
     [
       ...taskKeys.all,
       "counts",
-      { day: query.day ?? null, filters: normalizeFilters(query.filters), search: searchKey(query.search) },
+      {
+        day: query.day ?? null,
+        filters: normalizeFilters(query.filters),
+        search: searchKey(query.search),
+      },
     ] as const,
   areas: () => [...taskKeys.all, "areas"] as const,
   /** Per range; the week range also depends on which day the week starts. */
@@ -102,4 +106,15 @@ export const financeKeys = {
 export const reviewKeys = {
   all: ["review"] as const,
   week: (week: string) => [...reviewKeys.all, week] as const,
+};
+
+/** Projects (Phase 2, mock adapters). Everything under one root so revocation clears it in one call. */
+export const projectKeys = {
+  all: ["projects"] as const,
+  directory: () => [...projectKeys.all, "directory"] as const,
+  invitations: () => [...projectKeys.all, "invitations"] as const,
+  /** One project's access answer; the demo preview role is part of the key. */
+  access: (id: string, preview: string | null = null) => [...projectKeys.all, "access", id, preview] as const,
+  /** Everything scoped to one project (cleared on revoke / context switch). */
+  scope: (id: string) => [...projectKeys.all, "scope", id] as const,
 };

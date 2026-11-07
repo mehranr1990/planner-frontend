@@ -1,4 +1,4 @@
-import { appContexts, getAppContext } from "./contexts";
+import { appContexts, defaultContextId, getAppContext, getProjectContext } from "./contexts";
 import type { AppContext, ContextId, NavItem } from "./types";
 
 /*
@@ -20,9 +20,33 @@ function isWithin(pathname: string, base: string): boolean {
   return pathname === base || pathname.startsWith(`${base}/`);
 }
 
+/** The project id in /projects/[id]/…, or undefined on the collection and outside Projects. */
+export function getProjectIdFromPathname(pathname: string | null | undefined): string | undefined {
+  const match = /^\/projects\/([^/]+)/.exec(normalizePathname(pathname));
+  if (!match) return undefined;
+  try {
+    return decodeURIComponent(match[1]!);
+  } catch {
+    return match[1];
+  }
+}
+
+/** The context for a URL; inside a project it is that project's context (hrefs carry the id, D1). */
 export function getContextFromPathname(pathname: string | null | undefined): AppContext | undefined {
   const path = normalizePathname(pathname);
-  return appContexts.find((context) => isWithin(path, context.basePath));
+  const context = appContexts.find((candidate) => isWithin(path, candidate.basePath));
+  if (context?.id !== "project") return context;
+  const projectId = getProjectIdFromPathname(path);
+  return projectId ? getProjectContext(projectId) : context;
+}
+
+/**
+ * The context a navigation component shows: the URL context when no other
+ * context is asked for (it carries the project id), else the asked context.
+ */
+export function resolveContext(requested: ContextId | undefined, urlContext: AppContext | undefined): AppContext {
+  if (urlContext && (requested === undefined || requested === urlContext.id)) return urlContext;
+  return getAppContext(requested ?? defaultContextId);
 }
 
 /**

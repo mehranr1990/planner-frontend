@@ -5,9 +5,9 @@ import { useActiveContext, useActiveNavItem } from "./use-active-navigation";
 
 describe("useActiveContext / useActiveNavItem", () => {
   it("reads the context and item from the pathname", () => {
-    setMockPathname("/projects/board/");
+    setMockPathname("/projects/website-redesign/milestones/");
     expect(renderHook(() => useActiveContext()).result.current?.id).toBe("project");
-    expect(renderHook(() => useActiveNavItem()).result.current?.id).toBe("board");
+    expect(renderHook(() => useActiveNavItem()).result.current?.id).toBe("milestones");
   });
 
   it("returns undefined outside every context", () => {

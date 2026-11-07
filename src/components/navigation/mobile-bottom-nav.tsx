@@ -5,8 +5,7 @@ import { useTranslations } from "next-intl";
 import { Slot } from "radix-ui";
 import type { CSSProperties, ReactElement } from "react";
 import { Icon } from "@/components/ui/icon";
-import { defaultContextId, getAppContext } from "@/features/navigation/contexts";
-import { getMobileNavItems } from "@/features/navigation/paths";
+import { getMobileNavItems, resolveContext } from "@/features/navigation/paths";
 import type { ContextId, NavItemId } from "@/features/navigation/types";
 import { useActiveContext } from "@/features/navigation/use-active-navigation";
 import { cn } from "@/lib/cn";
@@ -82,7 +81,7 @@ export function MobileBottomNav({
   const t = useTranslations("Navigation");
   const tCommon = useTranslations("Common");
   const urlContext = useActiveContext();
-  const context = getAppContext(contextProp ?? urlContext?.id ?? defaultContextId);
+  const context = resolveContext(contextProp, urlContext);
   const [first, second, third] = getMobileNavItems(context);
 
   const plus = <Icon icon={Plus} size={22} />;

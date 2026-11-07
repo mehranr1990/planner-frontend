@@ -17,7 +17,32 @@ export interface BreadcrumbsProps {
   /** Shows the context's scope dot before the trail (Shell board). */
   scope?: ContextId;
   "aria-label"?: string;
+  /**
+   * Long names truncate in the middle below lg ("Website Re…ign", SH01);
+   * the full name stays available to assistive tech.
+   */
+  middleTruncate?: boolean;
   className?: string;
+}
+
+/** "Website Redesign" → "Website Re…ign" when longer than `max` characters. */
+export function truncateMiddle(label: string, max = 14, tail = 3): string {
+  const chars = Array.from(label);
+  if (chars.length <= max) return label;
+  return `${chars.slice(0, max - tail - 1).join("")}…${chars.slice(-tail).join("")}`;
+}
+
+function Label({ text, middle }: { text: string; middle: boolean }) {
+  const short = middle ? truncateMiddle(text) : text;
+  if (short === text) return <bdi>{text}</bdi>;
+  return (
+    <>
+      <bdi aria-hidden="true" className="lg:hidden">
+        {short}
+      </bdi>
+      <bdi className="max-lg:sr-only">{text}</bdi>
+    </>
+  );
 }
 
 /**
@@ -25,7 +50,13 @@ export interface BreadcrumbsProps {
  * narrow widths; the current page keeps its room. Separators mirror in RTL.
  * Server-compatible (no client hooks).
  */
-export function Breadcrumbs({ items, scope, "aria-label": ariaLabel, className }: BreadcrumbsProps) {
+export function Breadcrumbs({
+  items,
+  scope,
+  "aria-label": ariaLabel,
+  middleTruncate = false,
+  className,
+}: BreadcrumbsProps) {
   const t = useTranslations("Navigation");
   if (items.length === 0) return null;
 
@@ -39,15 +70,15 @@ export function Breadcrumbs({ items, scope, "aria-label": ariaLabel, className }
             <li key={`${index}-${item.label}`} className={cn("flex min-w-0 items-center gap-1", last ? "max-w-[70%] shrink-0" : "shrink")}>
               {last ? (
                 <span aria-current="page" className="truncate font-bold text-fg">
-                  <bdi>{item.label}</bdi>
+                  <Label text={item.label} middle={middleTruncate && !last} />
                 </span>
               ) : item.href ? (
                 <Link href={item.href} className="truncate rounded-pill transition-colors hover:text-fg">
-                  <bdi>{item.label}</bdi>
+                  <Label text={item.label} middle={middleTruncate && !last} />
                 </Link>
               ) : (
                 <span className="truncate">
-                  <bdi>{item.label}</bdi>
+                  <Label text={item.label} middle={middleTruncate && !last} />
                 </span>
               )}
               {last ? null : <Icon icon={ChevronRight} mirror size={14} className="shrink-0 text-icon-muted" />}

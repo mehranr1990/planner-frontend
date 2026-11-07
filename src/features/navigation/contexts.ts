@@ -9,8 +9,8 @@ import {
   ChartNoAxesGantt,
   CircleCheck,
   CreditCard,
+  Flag,
   FileChartColumn,
-  FileText,
   Folder,
   FolderKanban,
   House,
@@ -24,11 +24,14 @@ import {
   RefreshCw,
   Route,
   Settings,
+  ShieldAlert,
   SquareCheck,
   Sun,
   Target,
+  UserRoundCog,
   User,
   Users,
+  UsersRound,
   type LucideIcon,
 } from "lucide-react";
 import type { AppContext, ContextId, NavItem, NavItemId } from "./types";
@@ -57,8 +60,11 @@ export const navItemIcons: Record<NavItemId, LucideIcon> = {
   timeline: ChartNoAxesGantt,
   gantt: ChartGantt,
   flow: Route,
-  docs: FileText,
   analytics: ChartNoAxesColumn,
+  milestones: Flag,
+  risks: ShieldAlert,
+  workload: UserRoundCog,
+  members: UsersRound,
   work: Briefcase,
   people: Users,
   checkins: MessageSquareCheck,
@@ -87,9 +93,12 @@ const segments: Record<Exclude<NavItemId, "overview">, string> = {
   board: "board",
   timeline: "timeline",
   gantt: "gantt",
-  flow: "case-flow",
-  docs: "docs",
+  flow: "flow",
   analytics: "analytics",
+  milestones: "milestones",
+  risks: "risks",
+  workload: "workload",
+  members: "members",
   work: "work",
   people: "people",
   checkins: "check-ins",
@@ -109,10 +118,11 @@ interface ContextSpec {
   canAddWorkspace: boolean;
   nav: readonly NavItemId[];
   /** Bottom-bar items in slot order (the FAB sits after the second). */
-  mobile: readonly [NavItemId, NavItemId, NavItemId];
+  mobile: readonly NavItemId[];
   /** Items with real routes; the rest render as "Coming soon". Defaults to the overview only. */
   available?: "all" | "overview";
   rail?: AppContext["rail"];
+  collection?: boolean;
   /** Replaces the bottom-bar items (built from `mobile` otherwise). */
   mobileNav?: (basePath: string) => readonly NavItem[];
 }
@@ -132,6 +142,7 @@ function navItem(
     status: available === "all" || id === "overview" ? "available" : "planned",
     ...(slot >= 0 ? { mobileOrder: slot + 1 } : {}),
     ...(id === "inbox" ? { badge: "inbox" as const } : {}),
+    ...(id === "risks" ? { badge: "risks" as const } : {}),
   };
 }
 
@@ -144,6 +155,7 @@ function defineContext({
   mobile,
   available,
   rail,
+  collection,
   mobileNav,
 }: ContextSpec): AppContext {
   return {
@@ -156,6 +168,7 @@ function defineContext({
     icon,
     nav: nav.map((itemId) => navItem(itemId, basePath, mobile, available)),
     ...(rail ? { rail } : {}),
+    ...(collection ? { collection } : {}),
     ...(mobileNav ? { mobileNav: mobileNav(basePath) } : {}),
   };
 }
@@ -180,6 +193,8 @@ const personalMobileNav = (basePath: string): NavItem[] => [
   { ...navItem("tasks", basePath, [], "all"), mobileOrder: 2 },
   { ...navItem("calendar", basePath, [], "all"), mobileOrder: 3 },
 ];
+
+const PROJECTS_BASE = "/projects";
 
 /** Contexts in display order: Personal, Projects, Teams, Companies. */
 export const appContexts: readonly AppContext[] = [
@@ -214,13 +229,26 @@ export const appContexts: readonly AppContext[] = [
     },
     mobileNav: personalMobileNav,
   }),
+  // The collection (/projects, D7): "All projects"; the rail lists projects instead.
   defineContext({
     id: "project",
-    basePath: "/projects",
+    basePath: PROJECTS_BASE,
     icon: FolderKanban,
     canAddWorkspace: true,
-    nav: ["overview", "tasks", "board", "timeline", "gantt", "flow", "docs", "analytics"],
-    mobile: ["overview", "tasks", "flow"],
+    nav: ["overview"],
+    mobile: ["overview"],
+    available: "all",
+    collection: true,
+    mobileNav: (basePath) => [
+      {
+        id: "overview",
+        labelKey: "items.allProjects",
+        icon: FolderKanban,
+        href: basePath,
+        status: "available",
+        mobileOrder: 1,
+      },
+    ],
   }),
   defineContext({
     id: "team",
@@ -250,3 +278,56 @@ export function getAppContext(id: ContextId): AppContext {
 
 /** The context shown when the URL is outside every context (e.g. "/"). */
 export const defaultContextId: ContextId = "personal";
+
+/*
+ * Inside a project (SH01, D1–D3, D6, D8): routes are /projects/[id]/…, the
+ * rail is three groups + Settings, List/Board/Flow are view modes of Tasks
+ * (their routes stay and keep Tasks current), and the bottom bar is
+ * Overview · Tasks · (+) · Calendar · More. Built per project id, cached.
+ */
+export const projectRail = {
+  groups: [
+    ["overview", "tasks", "timeline", "gantt", "calendar"],
+    ["milestones", "risks", "workload"],
+    ["members", "files", "analytics"],
+  ],
+  footer: ["settings"],
+} as const satisfies AppContext["rail"];
+
+const projectNavIds: readonly NavItemId[] = [...projectRail.groups.flat(), ...projectRail.footer];
+const projectContexts = new Map<string, AppContext>();
+
+/** The project context for one project id (nav hrefs carry the id). */
+export function getProjectContext(projectId: string): AppContext {
+  const cached = projectContexts.get(projectId);
+  if (cached) return cached;
+  const base = getAppContext("project");
+  const basePath = `${PROJECTS_BASE}/${encodeURIComponent(projectId)}`;
+  const mobile: NavItemId[] = ["overview", "tasks", "calendar"];
+  const nav = projectNavIds.map((id) => {
+    const item = navItem(id, basePath, mobile, "all");
+    return id === "tasks"
+      ? {
+          ...item,
+          alsoActiveOn: [`${basePath}/${segments.board}`, `${basePath}/${segments.flow}`],
+        }
+      : item;
+  });
+  const context: AppContext = {
+    ...base,
+    basePath,
+    nav,
+    rail: projectRail,
+    workspaceId: projectId,
+  };
+  delete context.collection;
+  delete context.mobileNav;
+  projectContexts.set(projectId, context);
+  return context;
+}
+
+/** Route of a project module (overview = the project root). */
+export function projectHref(projectId: string, item: NavItemId | "board" = "overview"): string {
+  const basePath = `${PROJECTS_BASE}/${encodeURIComponent(projectId)}`;
+  return item === "overview" ? basePath : `${basePath}/${segments[item]}`;
+}

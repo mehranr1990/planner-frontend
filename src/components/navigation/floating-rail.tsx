@@ -1,16 +1,21 @@
 "use client";
 
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, FolderKanban, Plus } from "lucide-react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useId } from "react";
 import { Icon } from "@/components/ui/icon";
 import { Tooltip } from "@/components/ui/tooltip";
-import { defaultContextId, getAppContext } from "@/features/navigation/contexts";
 import type { AppContext, ContextId, NavItem, NavItemId } from "@/features/navigation/types";
+import { resolveContext } from "@/features/navigation/paths";
 import { useActiveContext } from "@/features/navigation/use-active-navigation";
 import { useNavBadge, useNavItemFilter } from "@/features/navigation/use-nav-state";
 import { usePreferences } from "@/features/preferences/use-preferences";
 import { cn } from "@/lib/cn";
+import { useProjectDirectory } from "@/data/project-queries";
+import { projectHref } from "@/features/navigation/contexts";
+import { useOpenProjectSheet } from "@/features/projects/sheets/project-sheet-params";
 import { NavLink } from "./nav-link";
 import { useControllableState } from "./use-controllable-state";
 
@@ -57,7 +62,7 @@ export function FloatingRail({
   const t = useTranslations("Navigation");
   const { direction } = usePreferences();
   const urlContext = useActiveContext();
-  const context = getAppContext(contextProp ?? urlContext?.id ?? defaultContextId);
+  const context = resolveContext(contextProp, urlContext);
   const listId = useId();
   const [expanded, setExpanded] = useControllableState({
     value: expandedProp,
@@ -67,6 +72,16 @@ export function FloatingRail({
 
   // Tooltips open toward the content: inline-end of the rail.
   const inlineEnd = direction === "rtl" ? "left" : "right";
+
+  if (context.collection) {
+    return (
+      <CollectionRail
+        ariaLabel={ariaLabel ?? t("rail.landmark", { context: t(context.labelKey) })}
+        tooltipSide={inlineEnd}
+        className={className}
+      />
+    );
+  }
 
   if (context.rail) {
     return (
@@ -211,6 +226,104 @@ function GroupedRail({
           ))}
         </ul>
       ) : null}
+    </nav>
+  );
+}
+
+const RECENT_IN_RAIL = 4;
+
+/**
+ * Projects collection rail (/projects, D7 · SH01 "Rails · 3 modes"): All
+ * projects, the four most recent projects as initials tiles, New project.
+ * Project names come from the directory (server-filtered to what the user
+ * can see); nothing shows while it loads.
+ */
+function CollectionRail({
+  ariaLabel,
+  tooltipSide,
+  className,
+}: {
+  ariaLabel: string;
+  tooltipSide: "left" | "right";
+  className?: string;
+}) {
+  const t = useTranslations("Navigation");
+  const tShell = useTranslations("ContextShell");
+  const pathname = usePathname();
+  const directory = useProjectDirectory();
+  const openSheet = useOpenProjectSheet();
+  const byId = new Map((directory.data?.projects ?? []).map((project) => [project.id, project]));
+  const recent = (directory.data?.recentIds ?? [])
+    .map((id) => byId.get(id))
+    .filter((project) => project !== undefined)
+    .slice(0, RECENT_IN_RAIL);
+  const allActive = pathname === "/projects";
+
+  return (
+    <nav
+      aria-label={ariaLabel}
+      data-scope="project"
+      data-rail="collection"
+      className={cn(
+        "flex max-h-full w-16 shrink-0 flex-col rounded-card bg-surface p-1 text-fg shadow-island",
+        className,
+      )}
+    >
+      <div className="flex min-h-0 flex-col overflow-y-auto overscroll-contain p-1 [scrollbar-width:thin]">
+        <Tooltip side={tooltipSide} content={t("items.allProjects")}>
+          <Link
+            href="/projects"
+            aria-current={allActive ? "page" : undefined}
+            className={cn(
+              "flex h-12 w-full items-center justify-center rounded-pill transition-colors",
+              allActive ? "bg-scope-soft text-scope-deep" : "text-fg-secondary hover:bg-subtle",
+            )}
+          >
+            <Icon icon={FolderKanban} />
+            <span className="sr-only">{t("items.allProjects")}</span>
+          </Link>
+        </Tooltip>
+        {recent.length > 0 ? (
+          <>
+            <span aria-hidden="true" data-slot="rail-separator" className="mx-2 my-1.5 h-px bg-line" />
+            <ul aria-label={tShell("rail.recent")} className="flex flex-col gap-1">
+              {recent.map((project) => (
+                <li key={project.id}>
+                  <Tooltip side={tooltipSide} content={project.name}>
+                    <Link
+                      href={projectHref(project.id)}
+                      className="flex h-12 w-full items-center justify-center rounded-pill transition-colors hover:bg-subtle"
+                    >
+                      <span
+                        aria-hidden="true"
+                        className="inline-flex size-9 items-center justify-center rounded-tile bg-scope-soft text-xs font-bold text-scope-deep"
+                      >
+                        <bdi>{project.initials}</bdi>
+                      </span>
+                      <span className="sr-only">
+                        <bdi>{project.name}</bdi>
+                      </span>
+                    </Link>
+                  </Tooltip>
+                </li>
+              ))}
+            </ul>
+          </>
+        ) : null}
+      </div>
+      <div className="mt-auto flex shrink-0 flex-col gap-1 px-1 pt-3 pb-1">
+        <Tooltip side={tooltipSide} content={t("contexts.project.add")}>
+          <button
+            type="button"
+            aria-haspopup="dialog"
+            onClick={() => openSheet("project-new")}
+            className="flex h-12 w-full items-center justify-center rounded-pill bg-raised text-fg-secondary transition-colors hover:bg-secondary-hover hover:text-fg"
+          >
+            <Icon icon={Plus} />
+            <span className="sr-only">{t("contexts.project.add")}</span>
+          </button>
+        </Tooltip>
+      </div>
     </nav>
   );
 }

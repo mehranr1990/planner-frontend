@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { scopes } from "@/design-system/tokens/colors";
 import enNavigation from "@/messages/en/navigation.json";
 import faNavigation from "@/messages/fa/navigation.json";
-import { appContexts, getAppContext } from "./contexts";
+import { appContexts, getAppContext, getProjectContext, projectHref } from "./contexts";
 import { navItemIds } from "./types";
 
 type Tree = { [key: string]: string | Tree };
@@ -14,7 +14,10 @@ function lookup(tree: Tree, path: string): string | Tree | undefined {
   );
 }
 
-const catalogues = { en: enNavigation as unknown as Tree, fa: faNavigation as unknown as Tree };
+const catalogues = {
+  en: enNavigation as unknown as Tree,
+  fa: faNavigation as unknown as Tree,
+};
 
 describe("navigation contexts", () => {
   it("lists the four scopes in display order", () => {
@@ -44,7 +47,8 @@ describe("navigation contexts", () => {
         "braindump",
         "settings",
       ],
-      project: ["overview", "tasks", "board", "timeline", "gantt", "flow", "docs", "analytics"],
+      // The collection (/projects, D7); a project's own nav comes from getProjectContext.
+      project: ["overview"],
       team: ["overview", "work", "people", "calendar", "checkins", "activity", "files"],
       company: ["overview", "departments", "projects", "people", "goals", "finance", "assets", "approvals", "reports"],
     });
@@ -65,11 +69,15 @@ describe("navigation contexts", () => {
         expect(item.href).not.toMatch(/\/$/);
         expect(item.status).toBe(context.id === "personal" || item.id === "overview" ? "available" : "planned");
       }
-      expect(context.nav[0]).toMatchObject({ id: "overview", href: context.basePath, status: "available" });
+      expect(context.nav[0]).toMatchObject({
+        id: "overview",
+        href: context.basePath,
+        status: "available",
+      });
     },
   );
 
-  it.each(appContexts.map((context) => [context.id, context] as const))(
+  it.each(appContexts.filter((context) => !context.collection).map((context) => [context.id, context] as const))(
     "%s has exactly three mobile slots in ascending order",
     (_, context) => {
       const slots = context.nav.flatMap((item) => (item.mobileOrder === undefined ? [] : [item.mobileOrder]));
@@ -92,6 +100,7 @@ describe("navigation contexts", () => {
     expect([...railIds].sort()).toEqual(personal.nav.map((item) => item.id).sort());
     expect(personal.nav.find((item) => item.id === "inbox")?.badge).toBe("inbox");
     for (const id of ["project", "team", "company"] as const) expect(getAppContext(id).rail).toBeUndefined();
+    expect(getAppContext("project").collection).toBe(true);
   });
 
   it("gives Personal the PM01 bottom bar: Today (Overview + My Day) · Tasks · Calendar", () => {
@@ -123,6 +132,44 @@ describe("navigation contexts", () => {
       expect(context.icon).toBeTruthy();
       for (const item of context.nav) expect(item.icon, item.id).toBeTruthy();
     }
+  });
+
+  it("builds a project's context from its id (SH01 · D1, D2, D3, D6, D8)", () => {
+    const project = getProjectContext("website-redesign");
+    expect(project.basePath).toBe("/projects/website-redesign");
+    expect(project.workspaceId).toBe("website-redesign");
+    expect(project.collection).toBeUndefined();
+    expect(project.rail).toEqual({
+      groups: [
+        ["overview", "tasks", "timeline", "gantt", "calendar"],
+        ["milestones", "risks", "workload"],
+        ["members", "files", "analytics"],
+      ],
+      footer: ["settings"],
+    });
+    expect(project.nav.map((item) => [item.id, item.href])).toEqual([
+      ["overview", "/projects/website-redesign"],
+      ["tasks", "/projects/website-redesign/tasks"],
+      ["timeline", "/projects/website-redesign/timeline"],
+      ["gantt", "/projects/website-redesign/gantt"],
+      ["calendar", "/projects/website-redesign/calendar"],
+      ["milestones", "/projects/website-redesign/milestones"],
+      ["risks", "/projects/website-redesign/risks"],
+      ["workload", "/projects/website-redesign/workload"],
+      ["members", "/projects/website-redesign/members"],
+      ["files", "/projects/website-redesign/files"],
+      ["analytics", "/projects/website-redesign/analytics"],
+      ["settings", "/projects/website-redesign/settings"],
+    ]);
+    expect(project.nav.every((item) => item.status === "available")).toBe(true);
+    // Board and Flow are Tasks view modes: their routes keep Tasks current.
+    expect(project.nav.find((item) => item.id === "tasks")?.alsoActiveOn).toEqual([
+      "/projects/website-redesign/board",
+      "/projects/website-redesign/flow",
+    ]);
+    expect(project.nav.find((item) => item.id === "risks")?.badge).toBe("risks");
+    expect(getProjectContext("website-redesign")).toBe(project);
+    expect(projectHref("a b", "board")).toBe("/projects/a%20b/board");
   });
 
   it("looks contexts up by id", () => {

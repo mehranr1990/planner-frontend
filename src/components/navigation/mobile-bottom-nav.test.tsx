@@ -34,21 +34,36 @@ describe("MobileBottomNav", () => {
     expect(screen.getByRole("link", { name: "Tasks" })).not.toHaveAttribute("aria-current");
   });
 
-  it("marks the active item and disables planned ones (Projects)", () => {
-    setMockPathname("/projects");
+  it("marks the active item and disables planned ones (Teams)", () => {
+    setMockPathname("/teams");
     renderWithProviders(<MobileBottomNav fabLabel="Quick add" />);
     expect(screen.getByRole("link", { name: "Overview" })).toHaveAttribute("aria-current", "page");
-    const tasks = screen.getByRole("button", { name: "Tasks" });
-    expect(tasks).toHaveAttribute("aria-disabled", "true");
-    expect(tasks).toHaveAccessibleDescription("Coming soon");
+    const work = screen.getByRole("button", { name: "Work" });
+    expect(work).toHaveAttribute("aria-disabled", "true");
+    expect(work).toHaveAccessibleDescription("Coming soon");
   });
 
-  it("follows the context in the URL", () => {
-    setMockPathname("/projects/board");
+  it("follows the project in the URL: Overview · Tasks · Calendar (D8)", () => {
+    setMockPathname("/projects/website-redesign/board");
     renderWithProviders(<MobileBottomNav fabLabel="New task" />);
     const nav = screen.getByRole("navigation", { name: "Primary" });
     expect(nav).toHaveAttribute("data-scope", "project");
-    expect(within(nav).getByRole("button", { name: "Case flow" })).toBeInTheDocument();
+    expect(
+      within(nav)
+        .getAllByRole("link")
+        .map((link) => link.getAttribute("href")),
+    ).toEqual([
+      "/projects/website-redesign",
+      "/projects/website-redesign/tasks",
+      "/projects/website-redesign/calendar",
+    ]);
+    expect(within(nav).getByRole("link", { name: "Tasks" })).toHaveAttribute("aria-current", "page");
+  });
+
+  it("shows All projects on the collection", () => {
+    setMockPathname("/projects");
+    renderWithProviders(<MobileBottomNav fabLabel="New task" />);
+    expect(screen.getByRole("link", { name: "All projects" })).toHaveAttribute("aria-current", "page");
   });
 
   it("calls the FAB and More callbacks", async () => {

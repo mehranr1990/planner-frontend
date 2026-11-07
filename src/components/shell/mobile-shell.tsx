@@ -8,6 +8,9 @@ import { MobileBottomNav } from "@/components/navigation/mobile-bottom-nav";
 import { Icon } from "@/components/ui/icon";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { getAppContext } from "@/features/navigation/contexts";
+import { useActiveContext } from "@/features/navigation/use-active-navigation";
+import { ProjectMoreContent } from "@/features/projects/shell/project-mobile";
+import { ProjectQuickAddSheet } from "@/features/projects/shell/project-quick-create";
 import { usePreferenceActions, usePreferences } from "@/features/preferences/use-preferences";
 import { cn } from "@/lib/cn";
 import { AssistantSheet } from "./assistant-panel";
@@ -15,6 +18,7 @@ import { NotificationsPopover } from "./notifications-popover";
 import { PersonalMobileHeader, PersonalMoreContent, usePersonalFab } from "./personal-mobile";
 import { ProfileMenu } from "./profile-menu";
 import { QuickAddSheet } from "./quick-create";
+import { ShellContextSwitcher } from "./shell-context-switcher";
 import { useActiveWorkspace } from "./shell-provider";
 import { useReturnFocus, useRouteScopedOpen, useShellScope } from "./use-shell-ui";
 
@@ -58,7 +62,20 @@ export function MobileHeader() {
   const scope = useShellScope();
   // Personal (PM01): account · name · bell; no context chips, no digits toggle.
   if (scope === "personal") return <PersonalMobileHeader />;
+  if (scope === "project") return <ProjectMobileHeader />;
   return <ContextMobileHeader />;
+}
+
+/** Projects (SH01 Mobile): the header identity opens the context & project switcher sheet. */
+function ProjectMobileHeader() {
+  return (
+    <div className="flex min-w-0 items-center gap-3">
+      <ProfileMenu align="start" />
+      <ShellContextSwitcher variant="sheet" />
+      <DigitsToggle />
+      <NotificationsPopover triggerClassName="bg-surface shadow-island hover:bg-subtle" />
+    </div>
+  );
 }
 
 function ContextMobileHeader() {
@@ -84,7 +101,60 @@ function ContextMobileHeader() {
 
 export function MobileShellNav() {
   const scope = useShellScope();
-  return scope === "personal" ? <PersonalMobileNav /> : <ContextMobileNav />;
+  if (scope === "personal") return <PersonalMobileNav />;
+  if (scope === "project") return <ProjectMobileNav />;
+  return <ContextMobileNav />;
+}
+
+/**
+ * Projects bottom bar (SH01 Mobile, D8): Overview · Tasks · (+) · Calendar ·
+ * More inside a project (All projects on the collection). (+) opens Quick
+ * Create with an explicit target; More lists the remaining project modules.
+ * No Assistant.
+ */
+function ProjectMobileNav() {
+  const t = useTranslations("Shell");
+  const tNav = useTranslations("Navigation");
+  const context = useActiveContext() ?? getAppContext("project");
+  const [moreOpen, setMoreOpen] = useRouteScopedOpen();
+  const [quickAddOpen, setQuickAddOpen] = useRouteScopedOpen();
+  const { capture, onCloseAutoFocus } = useReturnFocus();
+
+  return (
+    <>
+      <MobileBottomNav
+        className="mx-auto max-w-md p-0"
+        fabLabel={t("quickAdd.title")}
+        fab={
+          <button
+            type="button"
+            aria-haspopup="dialog"
+            aria-expanded={quickAddOpen}
+            onClick={() => {
+              capture();
+              setQuickAddOpen(true);
+            }}
+          />
+        }
+        onMoreClick={() => {
+          capture();
+          setMoreOpen(true);
+        }}
+        moreExpanded={moreOpen}
+      />
+      <ProjectQuickAddSheet open={quickAddOpen} onOpenChange={setQuickAddOpen} onCloseAutoFocus={onCloseAutoFocus} />
+      <Sheet open={moreOpen} onOpenChange={setMoreOpen}>
+        <SheetContent
+          side="bottom"
+          title={t("mobile.moreTitle", { context: tNav(context.labelKey) })}
+          data-scope="project"
+          onCloseAutoFocus={onCloseAutoFocus}
+        >
+          <ProjectMoreContent context={context} onNavigate={() => setMoreOpen(false)} />
+        </SheetContent>
+      </Sheet>
+    </>
+  );
 }
 
 /**
@@ -116,7 +186,9 @@ function PersonalMobileNav() {
       <Sheet open={moreOpen} onOpenChange={setMoreOpen}>
         <SheetContent
           side="bottom"
-          title={t("mobile.moreTitle", { context: tNav("contexts.personal.label") })}
+          title={t("mobile.moreTitle", {
+            context: tNav("contexts.personal.label"),
+          })}
           data-scope="personal"
           onCloseAutoFocus={onCloseAutoFocus}
         >
@@ -167,7 +239,9 @@ function ContextMobileNav() {
       <Sheet open={moreOpen} onOpenChange={setMoreOpen}>
         <SheetContent
           side="bottom"
-          title={t("mobile.moreTitle", { context: tNav(getAppContext(scope).labelKey) })}
+          title={t("mobile.moreTitle", {
+            context: tNav(getAppContext(scope).labelKey),
+          })}
           data-scope={scope}
           onCloseAutoFocus={(event) => {
             // Moving on to the assistant sheet: let that sheet take focus.

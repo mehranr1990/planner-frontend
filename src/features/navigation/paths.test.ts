@@ -1,12 +1,14 @@
 import { describe, expect, it } from "vitest";
-import { getAppContext } from "./contexts";
+import { getAppContext, getProjectContext } from "./contexts";
 import {
   contextHref,
   getContextFromPathname,
   getMobileNavItems,
   getNavItemForPathname,
+  getProjectIdFromPathname,
   isNavItemActive,
   normalizePathname,
+  resolveContext,
 } from "./paths";
 
 describe("normalizePathname", () => {
@@ -32,7 +34,7 @@ describe("getContextFromPathname", () => {
     ["/personal/", "personal"],
     ["/personal/my-day", "personal"],
     ["/projects", "project"],
-    ["/projects/board/42", "project"],
+    ["/projects/website-redesign/tasks/42", "project"],
     ["/teams/people", "team"],
     ["/companies/", "company"],
   ])("%s → %s", (pathname, id) => {
@@ -55,14 +57,17 @@ describe("getNavItemForPathname", () => {
 
   it("maps item routes and their nested routes", () => {
     expect(getNavItemForPathname("/personal/my-day")?.item?.id).toBe("myday");
-    expect(getNavItemForPathname("/projects/board/42")?.item?.id).toBe("board");
+    expect(getNavItemForPathname("/projects/website-redesign/milestones")?.item?.id).toBe("milestones");
+    expect(getNavItemForPathname("/projects/website-redesign/board")?.item?.id).toBe("tasks");
+    expect(getNavItemForPathname("/projects/website-redesign")?.item?.id).toBe("overview");
+    expect(getNavItemForPathname("/projects")?.item?.id).toBe("overview");
     expect(getNavItemForPathname("/teams/check-ins/")?.item?.id).toBe("checkins");
     expect(getNavItemForPathname("/companies/approvals?filter=open")?.item?.id).toBe("approvals");
   });
 
   it("keeps the context but no item for unknown routes inside a context", () => {
-    const result = getNavItemForPathname("/projects/unknown");
-    expect(result?.context.id).toBe("project");
+    const result = getNavItemForPathname("/teams/unknown");
+    expect(result?.context.id).toBe("team");
     expect(result?.item).toBeUndefined();
   });
 
@@ -72,8 +77,19 @@ describe("getNavItemForPathname", () => {
   });
 
   it("does not leak items between contexts", () => {
-    // "board" exists only under Projects.
-    expect(getNavItemForPathname("/personal/board")?.item).toBeUndefined();
+    // "milestones" exists only inside a project.
+    expect(getNavItemForPathname("/personal/milestones")?.item).toBeUndefined();
+  });
+
+  it("reads the project id from the URL and resolves its context (D1)", () => {
+    expect(getProjectIdFromPathname("/projects")).toBeUndefined();
+    expect(getProjectIdFromPathname("/projects/website-redesign/tasks")).toBe("website-redesign");
+    expect(getProjectIdFromPathname("/personal")).toBeUndefined();
+    expect(getContextFromPathname("/projects/planner-app")?.basePath).toBe("/projects/planner-app");
+    expect(getContextFromPathname("/projects")?.collection).toBe(true);
+    const url = getContextFromPathname("/projects/planner-app");
+    expect(resolveContext(undefined, url)).toBe(url);
+    expect(resolveContext("team", url).id).toBe("team");
   });
 });
 
@@ -104,6 +120,7 @@ describe("contextHref / getMobileNavItems", () => {
 
   it("returns the bottom-bar items in slot order", () => {
     expect(getMobileNavItems(getAppContext("personal")).map((item) => item.id)).toEqual(["overview", "tasks", "calendar"]);
-    expect(getMobileNavItems(getAppContext("project")).map((item) => item.id)).toEqual(["overview", "tasks", "flow"]);
+    expect(getMobileNavItems(getProjectContext("p")).map((item) => item.id)).toEqual(["overview", "tasks", "calendar"]);
+    expect(getMobileNavItems(getAppContext("project")).map((item) => item.labelKey)).toEqual(["items.allProjects"]);
   });
 });

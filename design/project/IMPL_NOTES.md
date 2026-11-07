@@ -71,3 +71,4 @@ Design order: `design/project/README.md` → `../shared/SHARED.md` (by section) 
 - **21 QA B+C**.
 
 ## Learned during implementation (append one line each)
+- P1: project nav = `getProjectContext(id)`/`projectHref(id, item)` (contexts.ts) + `getProjectIdFromPathname`/`resolveContext` (paths.ts); project data seam = `data/project-{domain,repositories,queries}.ts` + `data/mock/mock-projects.ts` + `fixtures/projects.ts`; every `/projects/[id]` page renders inside `features/projects/project-gate.tsx` (`useProject()` → project + capabilities + `demo`), header = `ProjectPageHeader` (breadcrumb + SH-02 banner), `?state=` demo switch, `AccessState`/`AccessBanner` in `components/feedback/`; project sheets use `features/projects/sheets/project-sheet-params.ts`. Never run prettier on existing files (repo is not prettier-formatted; use `--print-width 120` on new files only).

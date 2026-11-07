@@ -30,10 +30,10 @@ describe("ContextNavList", () => {
   });
 
   it("accepts a custom accessible name and translates", () => {
-    renderWithProviders(<ContextNavList context="project" aria-label="Jump to" />, {
+    renderWithProviders(<ContextNavList context="team" aria-label="Jump to" />, {
       preferences: { locale: "fa", direction: "rtl", digits: "fa" },
     });
     const list = screen.getByRole("list", { name: "Jump to" });
-    expect(within(list).getByRole("button", { name: "بورد" })).toHaveAccessibleDescription("به‌زودی");
+    expect(within(list).getByRole("button", { name: "کارهای تیم" })).toHaveAccessibleDescription("به‌زودی");
   });
 });

@@ -1,8 +1,10 @@
 import type { Locale } from "@/lib/locale/config";
+import enAccess from "./en/access.json";
 import enAuth from "./en/auth.json";
 import enBrainDump from "./en/brainDump.json";
 import enCalendar from "./en/calendar.json";
 import enCommon from "./en/common.json";
+import enContextShell from "./en/contextShell.json";
 import enFeedback from "./en/feedback.json";
 import enFinance from "./en/finance.json";
 import enFocus from "./en/focus.json";
@@ -21,10 +23,12 @@ import enReview from "./en/review.json";
 import enShutdown from "./en/shutdown.json";
 import enTasks from "./en/tasks.json";
 import enUi from "./en/ui.json";
+import faAccess from "./fa/access.json";
 import faAuth from "./fa/auth.json";
 import faBrainDump from "./fa/brainDump.json";
 import faCalendar from "./fa/calendar.json";
 import faCommon from "./fa/common.json";
+import faContextShell from "./fa/contextShell.json";
 import faFeedback from "./fa/feedback.json";
 import faFinance from "./fa/finance.json";
 import faFocus from "./fa/focus.json";
@@ -76,6 +80,8 @@ const en = {
   Insights: enInsights,
   Journal: enJournal,
   Review: enReview,
+  Access: enAccess,
+  ContextShell: enContextShell,
 };
 
 export type ClientMessages = typeof en;
@@ -103,6 +109,8 @@ const fa: ClientMessages = {
   Insights: faInsights,
   Journal: faJournal,
   Review: faReview,
+  Access: faAccess,
+  ContextShell: faContextShell,
 };
 
 export const clientMessages: Record<Locale, ClientMessages> = { en, fa };

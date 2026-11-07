@@ -8,6 +8,7 @@ import { useOpenSheet } from "@/features/sheets/sheet-params";
 import { cn } from "@/lib/cn";
 import { NotificationsPopover } from "./notifications-popover";
 import { ProfileMenu } from "./profile-menu";
+import { ProjectQuickCreateMenu } from "@/features/projects/shell/project-quick-create";
 import { QuickCreateMenu } from "./quick-create";
 import { useShell } from "./shell-provider";
 import { shellIslandClassName } from "./shell-island";
@@ -59,7 +60,13 @@ export function ShellActions({ className }: { className?: string }) {
   return (
     <div role="group" aria-label={t("actions")} className={cn(shellIslandClassName, className)}>
       <ShellSearchButton />
-      {scope === "personal" ? <PersonalQuickAddButton /> : <QuickCreateMenu />}
+      {scope === "personal" ? (
+        <PersonalQuickAddButton />
+      ) : scope === "project" ? (
+        <ProjectQuickCreateMenu />
+      ) : (
+        <QuickCreateMenu />
+      )}
       <NotificationsPopover />
       <ProfileMenu />
     </div>

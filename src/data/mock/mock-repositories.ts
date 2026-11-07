@@ -1,4 +1,5 @@
 import { personalFixtures } from "@/fixtures/personal";
+import { createMockProjects, projectRepositories } from "./mock-projects";
 import type { SampleFinance } from "@/fixtures/personal/finance";
 import { SAMPLE_NOW } from "@/fixtures/personal/sample-day";
 import {
@@ -802,6 +803,7 @@ export function createMockRepositories({ fixtures, latencyMs = 0 }: MockReposito
       moods: source.moods ?? [],
       respond,
     }),
+    ...projectRepositories(createMockProjects({ respond })),
     review: createMockReview({ reviews: source.reviews ?? [], now: nowInstant, respond }),
     brainDump: createMockBrainDump({
       pages: source.brainDump ?? [],

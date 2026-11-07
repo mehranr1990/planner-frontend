@@ -1,3 +1,4 @@
+import type { ProjectRepositories } from "./project-repositories";
 import type {
   Area,
   BrainDumpDestination,
@@ -538,7 +539,7 @@ export interface ReviewRepository {
   save(week: string, patch: WeeklyReviewPatch): Promise<WeeklyReview>;
 }
 
-export interface Repositories {
+export interface Repositories extends ProjectRepositories {
   tasks: TasksRepository;
   blocks: BlocksRepository;
   inbox: InboxRepository;

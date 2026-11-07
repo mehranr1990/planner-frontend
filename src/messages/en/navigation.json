@@ -37,8 +37,7 @@
     "board": "Board",
     "timeline": "Timeline",
     "gantt": "Gantt",
-    "flow": "Case flow",
-    "docs": "Docs",
+    "flow": "Flow",
     "analytics": "Analytics",
     "work": "Work",
     "people": "People",
@@ -50,7 +49,12 @@
     "assets": "Assets",
     "approvals": "Approvals",
     "reports": "Reports",
-    "today": "Today"
+    "today": "Today",
+    "allProjects": "All projects",
+    "milestones": "Milestones",
+    "risks": "Risks",
+    "workload": "Workload",
+    "members": "Members"
   },
   "rail": {
     "landmark": "{context} navigation",
@@ -60,7 +64,8 @@
   },
   "badges": {
     "inbox": "{count} to triage",
-    "withCount": "{label}, {count}"
+    "withCount": "{label}, {count}",
+    "risks": "{count} open high risks"
   },
   "switcher": {
     "title": "Context",

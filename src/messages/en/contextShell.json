@@ -1,0 +1,63 @@
+{
+  "roles": {
+    "owner": "Owner",
+    "admin": "Admin",
+    "manager": "Manager",
+    "member": "Member",
+    "viewer": "Viewer",
+    "guest": "Guest"
+  },
+  "health": {
+    "on-track": "On track",
+    "at-risk": "At risk",
+    "off-track": "Off track"
+  },
+  "lifecycle": {
+    "active": "Active",
+    "paused": "Paused",
+    "archived": "Archived"
+  },
+  "switcher": {
+    "find": "Find a project",
+    "recent": "Recent",
+    "owned": "Owned by you",
+    "member": "Member of",
+    "invitations": "Invitations",
+    "archived": "Archived",
+    "invitedBy": "Invited by {name} as {role}",
+    "review": "Review",
+    "archivedOn": "Archived {date}",
+    "readOnly": "Read-only",
+    "noMatch": "No projects match.",
+    "allProjects": "All projects",
+    "newProject": "New project",
+    "phase3": "Phase 3 · not available yet",
+    "phase4": "Phase 4 · not available yet",
+    "soon": "Soon"
+  },
+  "rail": { "recent": "Recent projects" },
+  "quickCreate": {
+    "label": "Create",
+    "title": "Create",
+    "task": "Task",
+    "inProject": "in {project}",
+    "milestone": "Milestone",
+    "risk": "Risk / issue",
+    "file": "File",
+    "invite": "Invite member",
+    "managerPlus": "Manager+",
+    "memberPlus": "Member+",
+    "reasonInvite": "Your role can’t invite — ask an Admin",
+    "reasonViewer": "Your role can’t create tasks",
+    "personalInstead": "Personal task instead",
+    "newProject": "New project"
+  },
+  "more": {
+    "phoneHint": "Timeline and Gantt open as read-only lists on phones (editing on ≥1024px)."
+  },
+  "breadcrumb": { "projects": "Projects" },
+  "comingSoon": {
+    "title": "{module} is coming soon",
+    "description": "This part of the project is designed and arrives in a later step."
+  }
+}

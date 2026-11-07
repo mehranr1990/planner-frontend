@@ -1,7 +1,7 @@
 import { screen, within } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { renderWithProviders } from "@/test/render";
-import { Breadcrumbs } from "./breadcrumbs";
+import { Breadcrumbs, truncateMiddle } from "./breadcrumbs";
 
 const trail = [
   { label: "Personal", href: "/personal" },
@@ -37,5 +37,18 @@ describe("Breadcrumbs", () => {
   it("renders nothing without items", () => {
     const { container } = renderWithProviders(<Breadcrumbs items={[]} />);
     expect(container.querySelector("nav")).toBeNull();
+  });
+
+  it("truncates long ancestor names in the middle on phones, keeping the full name for AT (SH01)", () => {
+    expect(truncateMiddle("Website Redesign")).toBe("Website Re…ign");
+    expect(truncateMiddle("Tasks")).toBe("Tasks");
+    renderWithProviders(
+      <Breadcrumbs
+        middleTruncate
+        items={[{ label: "Projects", href: "/projects" }, { label: "Website Redesign", href: "/projects/w" }, { label: "Tasks" }]}
+      />,
+    );
+    const link = screen.getByRole("link", { name: "Website Redesign" });
+    expect(link).toHaveTextContent("Website Re…ign");
   });
 });

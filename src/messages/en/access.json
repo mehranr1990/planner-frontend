@@ -1,0 +1,99 @@
+{
+  "states": {
+    "loading": {
+      "title": "Loading",
+      "description": "Loading this page…",
+      "still": "Still loading…",
+      "retry": "Try again"
+    },
+    "empty": {
+      "title": "No projects yet",
+      "description": "Projects keep shared work, people and files together. Create one or wait for an invitation.",
+      "action": "New project"
+    },
+    "filtered": {
+      "title": "Nothing matches",
+      "description": "No results for these filters. Counts only include items you can see.",
+      "action": "Clear filters"
+    },
+    "error": {
+      "title": "Couldn’t load this page",
+      "description": "Something went wrong on our side. Your changes are safe.",
+      "ref": "Ref: {ref}",
+      "action": "Try again"
+    },
+    "offline": {
+      "title": "You’re offline",
+      "description": "Showing the last loaded version. Edits are paused until you reconnect."
+    },
+    "unauthenticated": {
+      "title": "Sign in to continue",
+      "description": "Your session ended. Sign in again to open this project.",
+      "action": "Sign in"
+    },
+    "notAvailable": {
+      "title": "This project isn’t available",
+      "description": "It may not exist, or you don’t have access. Ask the person who shared the link.",
+      "action": "Go to my projects"
+    },
+    "invite": {
+      "title": "You’re invited to “{project}”",
+      "description": "{inviter} invited you as {role}. Accept to see tasks and files. You need a verified account.",
+      "accept": "Accept",
+      "decline": "Decline"
+    },
+    "guest": {
+      "title": "Limited access",
+      "description": "You can see the {count} tasks shared with you. Other project content stays hidden."
+    },
+    "revoked": {
+      "title": "Your access was removed",
+      "description": "You’re no longer a member of this project. Cached content was cleared from this device.",
+      "action": "Go to my projects"
+    },
+    "archived": {
+      "title": "Archived · read-only",
+      "description": "This project was archived on {date}. You can view and export, not edit.",
+      "restore": "Restore",
+      "export": "Export"
+    },
+    "readOnly": {
+      "title": "View only",
+      "description": "Your role is Viewer. Ask an Admin if you need to edit."
+    },
+    "conflict": {
+      "title": "This changed while you were editing",
+      "description": "{person} moved “{task}” to {status}. Compare and choose which to keep.",
+      "compare": "Compare",
+      "reload": "Reload"
+    },
+    "deleted": {
+      "title": "This task was deleted",
+      "description": "It was removed by a project Admin. It can’t be opened anymore.",
+      "action": "Back to tasks"
+    },
+    "pending": {
+      "title": "Pending approval",
+      "description": "Your change is waiting for a Manager to approve it."
+    },
+    "quota": {
+      "title": "Limit reached",
+      "description": "Future only — no quota is enforced while all features are free."
+    }
+  },
+  "banners": {
+    "archived": "Archived {date} · read-only",
+    "restore": "Restore",
+    "readOnly": "You’re a Viewer in this project · editing is off",
+    "guest": "Limited access · you see {count} shared tasks only",
+    "offline": "Offline · showing last loaded version",
+    "retry": "Retry",
+    "conflict": "Updated by {person} a moment ago",
+    "reload": "Reload"
+  },
+  "demo": {
+    "label": "Demo state",
+    "none": "Real data",
+    "hint": "Mock data · demo states for review"
+  }
+}

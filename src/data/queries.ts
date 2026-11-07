@@ -72,7 +72,7 @@ import type {
  * server prefetch (HydrationBoundary) replaces this when the API client lands.
  */
 
-function afterHydration<TData, TError>(
+export function afterHydration<TData, TError>(
   result: UseQueryResult<TData, TError>,
   hydrated: boolean,
 ): UseQueryResult<TData, TError> {

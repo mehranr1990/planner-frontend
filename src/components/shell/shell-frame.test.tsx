@@ -37,7 +37,7 @@ describe("ScopeBoundary", () => {
     ["/", "personal"],
     ["/personal", "personal"],
     ["/projects", "project"],
-    ["/projects/board/42", "project"],
+    ["/projects/website-redesign/tasks", "project"],
     ["/teams", "team"],
     ["/companies", "company"],
   ])("tints the shell for %s as %s", (pathname, scope) => {
@@ -76,18 +76,20 @@ describe("desktop top bar", () => {
     const { topBar, rerender } = renderFrame();
     await user.click(within(topBar()).getByRole("button", { name: /Switch context/ }));
     const panel = await screen.findByRole("dialog", { name: "Switch context" });
-    await user.click(within(panel).getByRole("button", { name: /^Teams/ }));
-    await user.click(within(panel).getByRole("button", { name: "Engineering" }));
-    expect(routerPush).toHaveBeenCalledWith("/teams");
+    await user.click(within(panel).getByRole("button", { name: /^Projects/ }));
+    // Sections from the project repository (SH01).
+    const recent = await within(panel).findByRole("group", { name: "Recent" });
+    expect(within(panel).getByRole("group", { name: "Invitations" })).toHaveTextContent("Invited by Sara P. as Member");
+    expect(within(panel).getByRole("group", { name: "Archived" })).toHaveTextContent("Read-only");
+    await user.click(within(recent).getByRole("button", { name: /Planner App/ }));
+    expect(routerPush).toHaveBeenCalledWith("/projects/planner-app");
     await waitFor(() => expect(screen.queryByRole("dialog", { name: "Switch context" })).not.toBeInTheDocument());
 
-    setMockPathname("/teams");
+    setMockPathname("/projects/planner-app");
     rerender(<Frame />);
     const trigger = within(topBar()).getByRole("button", { name: /Switch context/ });
-    expect(trigger).toHaveTextContent("Teams");
-    expect(trigger).toHaveTextContent("Engineering");
-    // The mobile header follows the same choice.
-    expect(screen.getAllByText("Engineering").length).toBeGreaterThanOrEqual(2);
+    expect(trigger).toHaveTextContent("Projects");
+    await waitFor(() => expect(trigger).toHaveTextContent("Planner App"));
   });
 
   it("shows the notifications empty state without an unread badge", async () => {
@@ -108,9 +110,25 @@ describe("desktop top bar", () => {
     expect(routerPush).toHaveBeenCalledWith("/personal/tasks?sheet=quick-add", { scroll: false });
   });
 
-  it("lists quick create entries, all disabled as coming soon (Projects)", async () => {
+  it("Projects Quick create names its target and gates by capability (SH01)", async () => {
     const user = userEvent.setup();
-    setMockPathname("/projects");
+    setMockPathname("/projects/website-redesign");
+    const { topBar } = renderFrame();
+    await user.click(within(topBar()).getByRole("button", { name: "Create" }));
+    const menu = await screen.findByRole("menu");
+    await within(menu).findByRole("menuitem", { name: /Task/ });
+    const items = within(menu).getAllByRole("menuitem");
+    expect(items[0]).toHaveTextContent("in Website Redesign");
+    // Manager: cannot invite (Owner/Admin), with the reason.
+    const invite = within(menu).getByRole("menuitem", { name: /Invite member/ });
+    expect(invite).toHaveAttribute("aria-disabled", "true");
+    expect(invite).toHaveTextContent("Your role can’t invite — ask an Admin");
+    expect(within(menu).getByRole("menuitem", { name: "Personal task instead" })).toBeInTheDocument();
+  });
+
+  it("lists quick create entries, all disabled as coming soon (Teams)", async () => {
+    const user = userEvent.setup();
+    setMockPathname("/teams");
     const { topBar } = renderFrame();
     await user.click(within(topBar()).getByRole("button", { name: "Quick create" }));
     const menu = await screen.findByRole("menu");
@@ -133,9 +151,15 @@ describe("desktop top bar", () => {
     expect(screen.queryByRole("complementary", { name: "Assistant" })).not.toBeInTheDocument();
   });
 
+  it("has no Assistant on Project routes (AI deferred)", () => {
+    setMockPathname("/projects/website-redesign/tasks");
+    renderFrame();
+    expect(screen.queryByRole("button", { name: "Assistant" })).not.toBeInTheDocument();
+  });
+
   it("opens the assistant panel with the later-step notice (other contexts)", async () => {
     const user = userEvent.setup();
-    setMockPathname("/projects");
+    setMockPathname("/teams");
     renderFrame();
     await user.click(screen.getByRole("button", { name: "Assistant" }));
     const panel = await screen.findByRole("dialog", { name: "Assistant" });
@@ -148,7 +172,7 @@ describe("desktop top bar", () => {
 
 describe("landmarks and sample data", () => {
   it("keeps the floating assistant inside a complementary landmark (other contexts)", () => {
-    setMockPathname("/projects");
+    setMockPathname("/teams");
     renderFrame();
     const aside = screen.getByRole("complementary", { name: "Assistant" });
     expect(within(aside).getByRole("button", { name: "Assistant" })).toBeInTheDocument();
@@ -218,9 +242,9 @@ describe("profile menu", () => {
     expect(trigger).toHaveFocus();
   });
 
-  it("keeps quick create non-modal too (Projects)", async () => {
+  it("keeps quick create non-modal too (Teams)", async () => {
     const user = userEvent.setup();
-    setMockPathname("/projects");
+    setMockPathname("/teams");
     const { topBar } = renderFrame();
     const trigger = within(topBar()).getByRole("button", { name: "Quick create" });
     await user.click(trigger);
@@ -286,9 +310,9 @@ describe("command palette", () => {
     expect(within(listbox).getAllByRole("group")).toHaveLength(4);
     const personalGoals = within(listbox).getAllByRole("option", { name: /Goals/ })[0]!;
     expect(personalGoals).not.toHaveAttribute("aria-disabled");
-    const board = within(listbox).getByRole("option", { name: /Board/ });
-    expect(board).toHaveAttribute("aria-disabled", "true");
-    expect(board).toHaveTextContent("Coming soon");
+    const work = within(listbox).getByRole("option", { name: /Work/ });
+    expect(work).toHaveAttribute("aria-disabled", "true");
+    expect(work).toHaveTextContent("Coming soon");
 
     await user.type(input, "teams");
     const options = within(dialog).getAllByRole("option");
@@ -383,14 +407,26 @@ describe("command palette", () => {
 });
 
 describe("mobile chrome", () => {
+  it("Projects header: the identity opens the context & project switcher sheet", async () => {
+    const user = userEvent.setup();
+    setMockPathname("/projects/website-redesign");
+    const { mobileHeader } = renderFrame();
+    const identity = mobileHeader().querySelector<HTMLElement>('[data-slot="mobile-context"]')!;
+    await waitFor(() => expect(identity).toHaveTextContent("Website Redesign"));
+    expect(within(mobileHeader()).queryByRole("navigation", { name: "Contexts" })).not.toBeInTheDocument();
+    await user.click(identity);
+    const sheet = await screen.findByRole("dialog", { name: "Switch context" });
+    expect(await within(sheet).findByRole("group", { name: "Recent" })).toBeInTheDocument();
+  });
+
   it("renders the header: account, context and workspace, bell, chips", () => {
-    setMockPathname("/projects");
+    setMockPathname("/teams");
     const { mobileHeader } = renderFrame();
     const header = within(mobileHeader());
     expect(header.getByRole("button", { name: "Account menu" })).toBeInTheDocument();
     const label = mobileHeader().querySelector("[data-slot=\"mobile-context\"]")!;
-    expect(label.firstElementChild).toHaveTextContent("Projects");
-    expect(label.lastElementChild).toHaveTextContent("Website Redesign");
+    expect(label.firstElementChild).toHaveTextContent("Teams");
+    expect(label.lastElementChild).toHaveTextContent("Design Team");
     expect(header.getByRole("button", { name: "Notifications" })).toBeInTheDocument();
     expect(header.getByRole("navigation", { name: "Contexts" })).toBeInTheDocument();
   });
@@ -443,18 +479,40 @@ describe("mobile chrome", () => {
     expect(within(grid).getAllByRole("link")).toHaveLength(6);
   });
 
-  it("More opens the context's pages and closes on navigation (Projects)", async () => {
+  it("Projects More lists every project module not in the bar, no Assistant (SH01)", async () => {
     const user = userEvent.setup();
-    setMockPathname("/projects");
+    setMockPathname("/projects/website-redesign");
+    const { mobileNav } = renderFrame();
+    await user.click(within(mobileNav()).getByRole("button", { name: "More" }));
+    const sheet = await screen.findByRole("dialog", { name: "Projects pages" });
+    const list = within(sheet).getByRole("list", { name: "All Projects pages" });
+    await within(list).findByRole("link", { name: "Timeline" });
+    expect(within(list).getAllByRole("link").map((link) => link.textContent)).toEqual([
+      "Timeline",
+      "Gantt",
+      "Milestones",
+      "Risks",
+      "Workload",
+      "Members",
+      "Files",
+      "Analytics",
+    ]);
+    expect(within(sheet).getByText("Website Redesign")).toBeInTheDocument();
+    expect(within(sheet).queryByRole("button", { name: /Assistant/ })).not.toBeInTheDocument();
+  });
+
+  it("More opens the context's pages and closes on navigation (Teams)", async () => {
+    const user = userEvent.setup();
+    setMockPathname("/teams");
     const { mobileNav } = renderFrame();
     const more = within(mobileNav()).getByRole("button", { name: "More" });
     await user.click(more);
-    const sheet = await screen.findByRole("dialog", { name: "Projects pages" });
-    const list = within(sheet).getByRole("list", { name: "All Projects pages" });
-    expect(within(list).getAllByRole("listitem")).toHaveLength(8);
+    const sheet = await screen.findByRole("dialog", { name: "Teams pages" });
+    const list = within(sheet).getByRole("list", { name: "All Teams pages" });
+    expect(within(list).getAllByRole("listitem")).toHaveLength(7);
     expect(within(sheet).getByRole("button", { name: /Assistant/ })).toBeInTheDocument();
     await user.click(within(list).getByRole("link", { name: "Overview" }));
-    await waitFor(() => expect(screen.queryByRole("dialog", { name: "Projects pages" })).not.toBeInTheDocument());
+    await waitFor(() => expect(screen.queryByRole("dialog", { name: "Teams pages" })).not.toBeInTheDocument());
   });
 
   it("closes an open sheet when the pathname changes", async () => {
@@ -474,10 +532,10 @@ describe("mobile chrome", () => {
 
   it("opens the assistant sheet from More (other contexts)", async () => {
     const user = userEvent.setup();
-    setMockPathname("/projects");
+    setMockPathname("/teams");
     const { mobileNav } = renderFrame();
     await user.click(within(mobileNav()).getByRole("button", { name: "More" }));
-    const sheet = await screen.findByRole("dialog", { name: "Projects pages" });
+    const sheet = await screen.findByRole("dialog", { name: "Teams pages" });
     await user.click(within(sheet).getByRole("button", { name: /Assistant/ }));
     const assistant = await screen.findByRole("dialog", { name: "Assistant" });
     expect(within(assistant).getByRole("status")).toHaveTextContent("The assistant arrives in a later step");
@@ -496,9 +554,19 @@ describe("mobile chrome", () => {
     expect(routerPush).toHaveBeenLastCalledWith("/personal?sheet=voice", { scroll: false });
   });
 
+  it("Projects FAB opens Quick create with an explicit target", async () => {
+    const user = userEvent.setup();
+    setMockPathname("/projects/website-redesign");
+    const { mobileNav } = renderFrame();
+    await user.click(within(mobileNav()).getByRole("button", { name: "Quick add" }));
+    const sheet = await screen.findByRole("dialog", { name: "Create" });
+    expect(await within(sheet).findByText("in Website Redesign")).toBeInTheDocument();
+    expect(within(sheet).getByRole("button", { name: "Personal task instead" })).toBeInTheDocument();
+  });
+
   it("the FAB opens Quick add with six disabled tiles (other contexts)", async () => {
     const user = userEvent.setup();
-    setMockPathname("/projects");
+    setMockPathname("/teams");
     const { mobileNav } = renderFrame();
     const fab = within(mobileNav()).getByRole("button", { name: "Quick add" });
     expect(fab).toHaveAttribute("aria-haspopup", "dialog");

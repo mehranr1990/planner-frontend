@@ -21,8 +21,11 @@ export const navItemIds = [
   "timeline",
   "gantt",
   "flow",
-  "docs",
   "analytics",
+  "milestones",
+  "risks",
+  "workload",
+  "members",
   "work",
   "people",
   "checkins",
@@ -44,7 +47,7 @@ export type NavItemId = (typeof navItemIds)[number];
 export type NavItemStatus = "available" | "planned";
 
 /** Translation keys are relative to the "Navigation" namespace. */
-export type NavItemLabelKey = `items.${NavItemId | "today"}`;
+export type NavItemLabelKey = `items.${NavItemId | "today" | "allProjects"}`;
 
 export interface NavItem {
   id: NavItemId;
@@ -60,7 +63,7 @@ export interface NavItem {
   /** Other routes that also make this item current (mobile "Today" covers My Day too). */
   alsoActiveOn?: readonly string[];
   /** A live count shown on the item (Personal Inbox: untriaged items, P07). */
-  badge?: "inbox";
+  badge?: "inbox" | "risks";
 }
 
 /**
@@ -86,6 +89,13 @@ export interface AppContext {
   icon: LucideIcon;
   nav: readonly NavItem[];
   rail?: RailLayout;
+  /**
+   * Projects collection (/projects, D7): the rail lists All projects, recent
+   * projects and New project instead of nav groups.
+   */
+  collection?: boolean;
+  /** The workspace in the URL (/projects/[id]/…, D1); nav hrefs are built from it. */
+  workspaceId?: string;
   /** Bottom-bar items when they differ from the nav (Personal "Today"). */
   mobileNav?: readonly NavItem[];
 }

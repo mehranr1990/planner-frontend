@@ -1,0 +1,59 @@
+{
+  "roles": {
+    "owner": "مالک",
+    "admin": "ادمین",
+    "manager": "مدیر",
+    "member": "عضو",
+    "viewer": "بیننده",
+    "guest": "مهمان"
+  },
+  "health": {
+    "on-track": "طبق برنامه",
+    "at-risk": "در خطر",
+    "off-track": "عقب از برنامه"
+  },
+  "lifecycle": { "active": "فعال", "paused": "متوقف", "archived": "بایگانی" },
+  "switcher": {
+    "find": "پیدا کردن پروژه",
+    "recent": "اخیر",
+    "owned": "متعلق به شما",
+    "member": "عضو هستید",
+    "invitations": "دعوت‌ها",
+    "archived": "بایگانی",
+    "invitedBy": "دعوت از {name} به‌عنوان {role}",
+    "review": "بررسی",
+    "archivedOn": "بایگانی‌شده در {date}",
+    "readOnly": "فقط خواندنی",
+    "noMatch": "پروژه‌ای پیدا نشد.",
+    "allProjects": "همه‌ی پروژه‌ها",
+    "newProject": "پروژه‌ی جدید",
+    "phase3": "فاز ۳ · هنوز در دسترس نیست",
+    "phase4": "فاز ۴ · هنوز در دسترس نیست",
+    "soon": "به‌زودی"
+  },
+  "rail": { "recent": "پروژه‌های اخیر" },
+  "quickCreate": {
+    "label": "ایجاد",
+    "title": "ایجاد",
+    "task": "کار",
+    "inProject": "در {project}",
+    "milestone": "نقطه‌ی عطف",
+    "risk": "ریسک / مسئله",
+    "file": "فایل",
+    "invite": "دعوت عضو",
+    "managerPlus": "مدیر به بالا",
+    "memberPlus": "عضو به بالا",
+    "reasonInvite": "نقش شما اجازه‌ی دعوت ندارد؛ از ادمین بخواهید",
+    "reasonViewer": "نقش شما اجازه‌ی ساخت کار ندارد",
+    "personalInstead": "به‌جایش کار شخصی",
+    "newProject": "پروژه‌ی جدید"
+  },
+  "more": {
+    "phoneHint": "تایم‌لاین و گانت روی گوشی به‌صورت فهرست فقط‌خواندنی باز می‌شوند (ویرایش از ۱۰۲۴ پیکسل)."
+  },
+  "breadcrumb": { "projects": "پروژه‌ها" },
+  "comingSoon": {
+    "title": "{module} به‌زودی",
+    "description": "این بخش از پروژه طراحی شده و در مرحله‌ی بعد اضافه می‌شود."
+  }
+}

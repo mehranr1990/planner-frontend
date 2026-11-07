@@ -37,8 +37,7 @@
     "board": "بورد",
     "timeline": "خط زمانی",
     "gantt": "گانت",
-    "flow": "جریان پرونده",
-    "docs": "اسناد",
+    "flow": "جریان",
     "analytics": "تحلیل‌ها",
     "work": "کارهای تیم",
     "people": "افراد",
@@ -50,7 +49,12 @@
     "assets": "دارایی‌ها",
     "approvals": "تأییدها",
     "reports": "گزارش‌ها",
-    "today": "امروز"
+    "today": "امروز",
+    "allProjects": "همه‌ی پروژه‌ها",
+    "milestones": "نقاط عطف",
+    "risks": "ریسک‌ها",
+    "workload": "بار کاری",
+    "members": "اعضا"
   },
   "rail": {
     "landmark": "ناوبری {context}",
@@ -60,7 +64,8 @@
   },
   "badges": {
     "inbox": "{count} مورد برای بررسی",
-    "withCount": "{label}، {count}"
+    "withCount": "{label}، {count}",
+    "risks": "{count} ریسک بالای باز"
   },
   "switcher": {
     "title": "حوزه",
