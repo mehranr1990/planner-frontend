@@ -241,7 +241,7 @@ export function ProjectTaskRow({
 
         <div className="flex items-center justify-end max-lg:col-start-3 max-lg:row-span-2 max-lg:row-start-1 lg:justify-start">
           {visibleAssignees.length > 0 ? (
-            <span className="flex items-center -space-x-1.5 rtl:space-x-reverse">
+            <span className="flex items-center [&>*+*]:-ms-1.5">
               {visibleAssignees.map((assignee) => (
                 <AssigneeAvatar key={assignee.person.id} assignee={assignee} />
               ))}

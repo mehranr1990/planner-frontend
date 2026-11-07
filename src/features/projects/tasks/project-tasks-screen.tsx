@@ -284,6 +284,8 @@ export function ProjectTasksScreen() {
             ]}
             className="max-sm:hidden"
           />
+          {/* Phones (PJM01): Board is one tap away; Flow is not on phones (D18). */}
+          <IconButton icon={Kanban} label={t("view.board")} className="bg-surface sm:hidden" onClick={() => router.push(viewHref("board"))} />
           {canAdd ? (
             <Button size="lg" onClick={() => addRef.current?.focus()}>
               <Icon icon={Plus} size={18} />

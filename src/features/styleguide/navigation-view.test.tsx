@@ -92,12 +92,14 @@ describe("NavigationView", { timeout: 30_000 }, () => {
     const user = userEvent.setup();
     renderWithProviders(<NavigationView />);
     const switcher = screen.getByRole("region", { name: "Context switcher" });
-    await user.click(within(switcher).getByRole("button", { name: /^Teams/ }));
-    await user.click(within(switcher).getByRole("button", { name: "Engineering" }));
+    // Teams / Companies stay disabled until their phase (SH01); pick another project.
+    expect(within(switcher).getByRole("button", { name: /^Teams/ })).toHaveAttribute("aria-disabled", "true");
+    await user.click(within(switcher).getByRole("button", { name: /^Projects\s*\d/ }));
+    await user.click(within(switcher).getByRole("button", { name: "Planner App" }));
 
-    expect(screen.getByRole("radio", { name: "Teams" })).toHaveAttribute("aria-checked", "true");
-    expect(within(switcher).getByRole("button", { name: /^Teams\s*Engineering\s*Switch context$/ })).toHaveAttribute("aria-expanded", "true");
-    expect(within(switcher).getByRole("button", { name: "Engineering" })).toHaveAttribute("aria-current", "true");
+    expect(screen.getByRole("radio", { name: "Projects" })).toHaveAttribute("aria-checked", "true");
+    expect(within(switcher).getByRole("button", { name: /^Projects\s*Planner App\s*Switch context$/ })).toHaveAttribute("aria-expanded", "true");
+    expect(within(switcher).getByRole("button", { name: "Planner App" })).toHaveAttribute("aria-current", "true");
   });
 
   it("contains the mobile bar in its phone frame and opens More as a sheet", async () => {
