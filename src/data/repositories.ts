@@ -62,7 +62,8 @@ import type { WeekConfig } from "@/lib/dates/week";
  */
 export type RepositoryErrorCode = "not-found" | "invalid" | "forbidden" | "unsupported" | "partial" | "conflict";
 
-export type PartialField = "duration" | "labels" | "checklist" | "note" | "recurrence" | "plan";
+/** "time": a calendar block saved but its Task's day/time/estimate did not follow (Phase 04). */
+export type PartialField = "duration" | "labels" | "checklist" | "note" | "recurrence" | "plan" | "time";
 
 export class RepositoryError extends Error {
   readonly code: RepositoryErrorCode;

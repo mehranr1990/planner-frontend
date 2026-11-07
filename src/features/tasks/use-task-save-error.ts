@@ -21,6 +21,7 @@ const PATCH_KEYS: Record<PartialField, keyof TaskPatch | null> = {
   note: null,
   recurrence: "recurring",
   plan: null,
+  time: "time",
 };
 
 /** The part of an edit that failed, ready to re-send. */

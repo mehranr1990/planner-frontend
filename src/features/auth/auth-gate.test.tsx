@@ -112,7 +112,8 @@ describe("AuthGate — live mode", () => {
     );
     renderWithProviders(<AuthGate><Probe /></AuthGate>);
     await waitFor(() => expect(api.find("GET", "/api/v1/me/settings")).toHaveLength(1));
-    await userEvent.click(screen.getByRole("button", { name: "use jalali" }));
+    // AccountProvider keeps the app behind a spinner until the account zone (settings) is applied.
+    await userEvent.click(await screen.findByRole("button", { name: "use jalali" }));
     await waitFor(() => expect(api.find("PATCH", "/api/v1/me/settings")).toHaveLength(2));
     const [first, second] = api.find("PATCH", "/api/v1/me/settings");
     expect(first!.headers.get("If-Match")).toBe('"s-1"');

@@ -49,6 +49,8 @@ function fakeBackend() {
     };
 
     if (parts[0] === "labels" && method === "GET") return json(page([...labels.values()]));
+    // Every list load reads the recurrence series first (Phase 02); this fake has none.
+    if (parts[0] === "task-recurrences" && parts.length === 1 && method === "GET") return json(page([]));
     if (parts[0] === "notes" && method === "GET") return json(page(notes.filter((note) => note.taskId === url.searchParams.get("taskId"))));
     if (parts[0] === "notes" && method === "POST") {
       const note = { id: `n${++seq}`, ...body, createdAt: now };
@@ -271,10 +273,11 @@ describe("createApiTasksRepository", () => {
     const { repo, writes } = setup();
     const { id } = await repo.create({ title: "A" });
     const before = writes().length;
-    for (const patch of [{ energy: "high" as const }, { area: { id: "a", name: "Work" } }, { project: "P" }, { scope: "team" as const }, { goalId: "g1" }, { recurring: true }]) {
+    for (const patch of [{ energy: "high" as const }, { area: { id: "a", name: "Work" } }, { project: "P" }, { scope: "team" as const }, { goalId: "g1" }]) {
       await expect(repo.update(id, patch)).rejects.toMatchObject({ code: "unsupported" });
     }
     await expect(repo.create({ title: "B", energy: "low" })).rejects.toMatchObject({ code: "unsupported" });
+    // Repeat is supported since Phase 02 (api-tasks-recurrence.test.ts); manual order needs Day plans (Phase 03), absent here.
     await expect(repo.reorder({ ids: [id] })).rejects.toMatchObject({ code: "unsupported" });
     expect(writes()).toHaveLength(before);
   });

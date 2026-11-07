@@ -211,7 +211,8 @@
       "checklist": "subtasks",
       "note": "note",
       "recurrence": "repeat",
-      "plan": "My Day plan"
+      "plan": "My Day plan",
+      "time": "task time"
     },
     "unavailable": "Not available yet",
     "bulkPartial": "{n} tasks weren’t updated."
