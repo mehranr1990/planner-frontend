@@ -117,6 +117,8 @@ export interface ProjectCapabilities {
   /** Close / resolve / convert to issue (Manager+). */
   closeRisk: boolean;
   uploadFile: boolean;
+  /** Move / rename / version / restore any file (Manager+); own files need only `uploadFile`. */
+  manageFiles: boolean;
   restore: boolean;
   export: boolean;
 }
@@ -548,4 +550,59 @@ export interface ProjectEvent {
   day: string;
   time: string;
   invited: number;
+}
+
+// ── Files (PJ-10) ────────────────────────────────────────────────────────
+
+/** One level of folders per project (D14). "Shared with guests" is the guest-visible folder. */
+export interface FileFolder {
+  id: string;
+  name: string;
+  /** Guests see this folder (and files linked to their granted tasks) only. */
+  sharedWithGuests?: boolean;
+}
+
+/** Upload lifecycle: queued → uploading → scanning (download off) → ready; or blocked / failed. */
+export type FileState = "queued" | "uploading" | "scanning" | "ready" | "blocked" | "failed";
+
+export interface ProjectFileVersion {
+  version: number;
+  by: ProjectPerson;
+  at: string;
+  /** Short note the uploader gave (user text). */
+  note?: string;
+  /** Restoring an older version creates a new one. */
+  restoredFrom?: number;
+}
+
+export interface ProjectFile {
+  id: string;
+  name: string;
+  folderId: string | null;
+  sizeBytes: number;
+  /** Media class used by the smart filters and the preview rule (images & PDF inline). */
+  media: "image" | "pdf" | "doc" | "sheet" | "design" | "other";
+  state: FileState;
+  /** 0–100 while uploading. */
+  progress?: number;
+  /** Why the server blocked it (limits come from the server). */
+  blockReason?: "scan" | "type" | "size";
+  failReason?: "connection";
+  version: number;
+  versions: readonly ProjectFileVersion[];
+  uploadedBy: ProjectPerson;
+  updatedAt: string;
+  taskIds: readonly string[];
+}
+
+/** Technical limits returned by the server (no quotas, no storage meter). */
+export interface FileServerConfig {
+  maxBytes: number;
+  blockedExtensions: readonly string[];
+}
+
+export interface FileLibrary {
+  folders: readonly (FileFolder & { count: number })[];
+  files: readonly ProjectFile[];
+  total: number;
 }

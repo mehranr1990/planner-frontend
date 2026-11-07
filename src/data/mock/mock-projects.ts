@@ -19,6 +19,7 @@ import type {
 } from "../project-domain";
 import type {
   CommentRepository,
+  FileRepository,
   DependencyRepository,
   InvitationRepository,
   MemberInviteRepository,
@@ -37,6 +38,7 @@ import { createMockProjectSheets } from "./mock-project-sheets";
 import { createMockProjectSchedule } from "./mock-project-schedule";
 import { createMockProjectCalendar } from "./mock-project-calendar";
 import { RepositoryError } from "../repositories";
+import { createMockFiles } from "./mock-project-files";
 import { computeKpis, createMockProjectWork, createProjectWorkStore, type ProjectWorkStore } from "./mock-project-work";
 
 /*
@@ -107,6 +109,7 @@ export function mockCapabilities(role: ProjectRole, lifecycle: ProjectLifecycle)
     editAnyRisk: editable && rank >= RANK.manager,
     closeRisk: editable && rank >= RANK.manager,
     uploadFile: editable && rank >= RANK.member,
+    manageFiles: editable && rank >= RANK.manager,
     restore: lifecycle === "archived" && rank >= RANK.admin,
     export: !guest,
   };
@@ -147,6 +150,9 @@ export interface MockProjectsStore extends ReturnType<typeof createMockProjectWo
   calendar: ProjectCalendarRepository;
   projects: ProjectRepository;
   invitations: InvitationRepository;
+  files: FileRepository;
+  /** Mock-only: advance in-flight uploads one lifecycle step. */
+  tickFiles(): void;
   /** Mock-only: the shared task store (PJ-02 / PJ-15 mocks). */
   work: ProjectWorkStore;
   /** Mock-only: the live store, for other project mocks (tasks, assignments). */
@@ -231,6 +237,15 @@ export function createMockProjects({
       return found ? (options?.previewRole ?? found.role) : undefined;
     },
     withCan: (task, options) => tasksMock.withCan(task, options),
+  });
+  const filesMock = createMockFiles({
+    store: work,
+    respond,
+    now,
+    roleOf: (id, options) => {
+      const found = find(id);
+      return found ? (options?.previewRole ?? found.role) : undefined;
+    },
   });
   const taskDetail = createMockTaskDetail({
     store: work,
@@ -374,6 +389,8 @@ export function createMockProjects({
     projectTasks,
     schedule,
     calendar,
+    files: filesMock.files,
+    tickFiles: filesMock.tick,
     ...sheets,
     taskDetails: taskDetail.taskDetails,
     comments: taskDetail.comments,
@@ -394,6 +411,7 @@ export function projectRepositories(store: MockProjectsStore): ProjectRepositori
     workflows: store.workflows,
     activity: store.activity,
     risks: store.risks,
+    files: store.files,
     workload: store.workload,
     assignments: store.assignments,
     projectTasks: store.projectTasks,

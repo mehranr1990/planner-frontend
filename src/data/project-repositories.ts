@@ -27,6 +27,9 @@ import type {
   ProjectPhase,
   ProjectPriority,
   ProjectRisk,
+  FileLibrary,
+  FileServerConfig,
+  ProjectFile,
   RiskCloseReason,
   RiskHistoryEntry,
   RiskProbability,
@@ -175,6 +178,30 @@ export interface RiskRepository {
   convert(riskId: string, revision: number): Promise<ProjectRisk>;
 }
 
+export interface FileUploadInput {
+  name: string;
+  sizeBytes: number;
+  folderId: string | null;
+  /** Same name as an existing file: upload as its next version. */
+  asNewVersionOf?: string;
+}
+
+/** PJ-10 (D14): one folder level, versions by re-upload, scan before download, limits from the server. */
+export interface FileRepository {
+  /** Guests get only guest-shared folders and files linked to their tasks. */
+  list(projectId: string, options?: ProjectAccessOptions): Promise<FileLibrary>;
+  /** Technical limits from the server (never hard-coded in the UI). */
+  config(projectId: string): Promise<FileServerConfig>;
+  /** Starts the signed upload; blocked at once when the type / size is not allowed. */
+  upload(projectId: string, input: FileUploadInput): Promise<ProjectFile>;
+  cancel(fileId: string): Promise<void>;
+  retry(fileId: string): Promise<ProjectFile>;
+  /** Restoring an older version creates a new version. */
+  restoreVersion(fileId: string, version: number): Promise<ProjectFile>;
+  /** Rejects "invalid" until the file is scanned and ready. */
+  download(fileId: string): Promise<Blob>;
+}
+
 export interface WorkloadRepository {
   /** This week's estimates per member (D13); empty without the capability. */
   week(projectId: string): Promise<readonly WorkloadEntry[]>;
@@ -206,6 +233,7 @@ export interface ProjectRepositories {
   workflows: WorkflowRepository;
   activity: ActivityRepository;
   risks: RiskRepository;
+  files: FileRepository;
   workload: WorkloadRepository;
   assignments: AssignmentRepository;
   projectTasks: ProjectTaskRepository;

@@ -1,0 +1,66 @@
+{
+  "title": "Files",
+  "upload": "Upload",
+  "scanning": "Scanning… download off",
+  "blocked": "Blocked by scan",
+  "newVersion": "Upload new version",
+  "drop": "Drop files here",
+  "dropHint": "Size and type limits come from the server; files are scanned before anyone can download them.",
+  "empty": "No files yet",
+  "emptyBody": "Upload specs, designs and exports. Files can be linked to tasks.",
+  "folders": "Folders",
+  "allFiles": "All files",
+  "newFolder": "New folder",
+  "view": {
+    "label": "View",
+    "list": "List",
+    "grid": "Grid"
+  },
+  "filters": {
+    "label": "Filter files",
+    "all": "All",
+    "images": "Images",
+    "docs": "Docs",
+    "linked": "Linked to tasks"
+  },
+  "search": "Search files",
+  "queued": "Queued",
+  "uploading": "Uploading · {percent}",
+  "failed": "{name} failed · connection lost",
+  "failedShort": "Upload failed",
+  "retry": "Retry",
+  "cancel": "Cancel upload",
+  "blockedType": "Not allowed type",
+  "blockedSize": "Too large",
+  "meta": "{folder} · {size}",
+  "unfiled": "No folder",
+  "linkedCount": "linked to {n, plural, one {# task} other {# tasks}}",
+  "linkedTo": "linked to {title}",
+  "size": {
+    "mb": "{n} MB",
+    "kb": "{n} KB"
+  },
+  "preview": {
+    "label": "File",
+    "hint": "Preview (images & PDF only)",
+    "noPreview": "No inline preview for this type",
+    "download": "Download",
+    "downloadOff": "Download is off until the scan finishes",
+    "downloadBlocked": "Blocked files can’t be downloaded",
+    "versions": "Versions",
+    "restore": "Restore",
+    "restoreLabel": "Restore v{n}",
+    "restored": "Restored as v{n}",
+    "restoredFrom": "restored v{n}",
+    "linkedTasks": "Linked tasks",
+    "noLinks": "Not linked to tasks",
+    "back": "Back to files"
+  },
+  "versionPrompt": {
+    "title": "Upload as new version?",
+    "body": "“{name}” already exists. This upload becomes v{n}; older versions stay in the list.",
+    "cancel": "Cancel"
+  },
+  "guest": "Shown: files shared with guests and files linked to your tasks.",
+  "noMatch": "No files match these filters"
+}

@@ -12,6 +12,7 @@ import type {
   ProjectTaskQuery,
   ReassignInput,
   RiskPatch,
+  FileUploadInput,
 } from "./project-repositories";
 import { useRepositories } from "./provider";
 import { RepositoryError } from "./repositories";
@@ -647,5 +648,50 @@ export function useRiskActions(projectId: string) {
       mutationFn: ({ riskId, body }: { riskId: string; body: string }) => risks.addComment(riskId, body),
       onSettled: refresh,
     }),
+  };
+}
+
+// ── Files (PJ-10) ────────────────────────────────────────────────────────
+
+const IN_FLIGHT = new Set(["queued", "uploading", "scanning"]);
+
+/** The project's folders + files; polls while an upload or scan is in flight. */
+export function useFileLibrary(projectId: string, preview: ProjectAccessOptions = {}) {
+  const { files } = useRepositories();
+  const hydrated = useIsClient();
+  const role = preview.previewRole ?? null;
+  return afterHydration(
+    useQuery({
+      queryKey: scoped(projectId, "files", role),
+      queryFn: () => files.list(projectId, preview),
+      refetchInterval: (query) =>
+        query.state.data?.files.some((file) => IN_FLIGHT.has(file.state)) ? 500 : false,
+    }),
+    hydrated,
+  );
+}
+
+export function useFileConfig(projectId: string) {
+  const { files } = useRepositories();
+  const hydrated = useIsClient();
+  return afterHydration(
+    useQuery({ queryKey: scoped(projectId, "files-config"), queryFn: () => files.config(projectId), staleTime: Infinity }),
+    hydrated,
+  );
+}
+
+export function useFileActions(projectId: string) {
+  const { files } = useRepositories();
+  const client = useQueryClient();
+  const refresh = () => client.invalidateQueries({ queryKey: scoped(projectId, "files") });
+  return {
+    upload: useMutation({ mutationFn: (input: FileUploadInput) => files.upload(projectId, input), onSettled: refresh }),
+    cancel: useMutation({ mutationFn: (fileId: string) => files.cancel(fileId), onSettled: refresh }),
+    retry: useMutation({ mutationFn: (fileId: string) => files.retry(fileId), onSettled: refresh }),
+    restoreVersion: useMutation({
+      mutationFn: ({ fileId, version }: { fileId: string; version: number }) => files.restoreVersion(fileId, version),
+      onSettled: refresh,
+    }),
+    download: (fileId: string) => files.download(fileId),
   };
 }
