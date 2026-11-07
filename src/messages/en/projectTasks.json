@@ -1,0 +1,142 @@
+{
+  "title": "Tasks",
+  "newTask": "New task",
+  "view": {
+    "label": "Tasks view",
+    "list": "List",
+    "board": "Board",
+    "flow": "Flow"
+  },
+  "tab": {
+    "label": "Task views",
+    "all": "All",
+    "mine": "My tasks",
+    "unassigned": "Unassigned",
+    "overdue": "Overdue",
+    "completed": "Completed"
+  },
+  "search": "Search tasks",
+  "filters": {
+    "button": "Filters",
+    "title": "Filter tasks",
+    "status": "Status",
+    "assignee": "Assignee",
+    "priority": "Priority",
+    "milestone": "Milestone",
+    "unassigned": "Unassigned",
+    "active": "Filtered by",
+    "chip": "{label}: {value}",
+    "remove": "Remove filter {value}",
+    "clear": "Clear"
+  },
+  "group": {
+    "label": "Group: {group}",
+    "menu": "Group tasks by",
+    "phase": "Phase",
+    "status": "Status",
+    "assignee": "Assignee",
+    "milestone": "Milestone",
+    "none": "None",
+    "noPhase": "No phase",
+    "nobody": "Unassigned",
+    "noMilestone": "No milestone",
+    "all": "All tasks",
+    "meta": "{open} open · {done} done",
+    "allDone": "{n} · all done",
+    "count": "{n}",
+    "starts": "starts {date}",
+    "collapsed": "collapsed",
+    "toggle": "Show or hide {group}"
+  },
+  "columns": {
+    "task": "Task",
+    "status": "Status",
+    "assignee": "Assignee",
+    "due": "Due",
+    "est": "Est.",
+    "priority": "Priority"
+  },
+  "priority": {
+    "urgent": "Urgent",
+    "high": "High",
+    "medium": "Medium",
+    "low": "Low"
+  },
+  "row": {
+    "select": "Select {title}",
+    "subtasks": "{done}/{total}",
+    "comments": "{n} comments",
+    "milestone": "Milestone · {title}",
+    "pendingMe": "Waiting for you to accept",
+    "unassigned": "Unassigned",
+    "est": "{h}h",
+    "changeStatus": "Change status of {title}",
+    "noMoves": "No allowed moves for your role",
+    "pending": "{name}, pending",
+    "declinedBadge": "{name}, declined",
+    "overdue": "Overdue"
+  },
+  "assign": {
+    "pending": "Waiting for {name} to accept",
+    "declined": "Declined by {name} · needs reassignment",
+    "declinedNote": "Declined by {name} · “{note}” · needs reassignment"
+  },
+  "dep": {
+    "blocked": "blocked by {n}"
+  },
+  "add": {
+    "label": "Add task",
+    "placeholder": "Add task to {phase}… try “Fix login @kian !high due 25 Oct ~3h”",
+    "added": "Task added to {phase}",
+    "pendingFor": "{name} gets a pending assignment",
+    "assignee": "@{name}",
+    "due": "Due {date}",
+    "estimate": "~{h}h"
+  },
+  "bulk": {
+    "toolbar": "Bulk actions",
+    "selected": "{count} selected",
+    "assign": "Assign",
+    "status": "Status",
+    "phase": "Move to phase",
+    "due": "Due date",
+    "delete": "Delete",
+    "clear": "Clear selection",
+    "partial": "You can change {n} of {total} selected",
+    "updated": "{n} tasks updated",
+    "deleted": "{n} tasks deleted",
+    "undo": "Undo",
+    "today": "Today",
+    "tomorrow": "Tomorrow",
+    "nextWeek": "Next week",
+    "noDate": "No date",
+    "more": "More bulk actions",
+    "undoAlt": "Select the tasks again to change them back"
+  },
+  "more": {
+    "label": "More task actions",
+    "import": "Import CSV",
+    "export": "Export CSV",
+    "templates": "Templates"
+  },
+  "compare": {
+    "title": "Compare changes",
+    "field": "Field",
+    "mine": "Mine",
+    "theirs": "Theirs",
+    "keepMine": "Keep mine",
+    "keepTheirs": "Keep theirs"
+  },
+  "conflictRow": "{person} changed “{task}” while you were editing.",
+  "empty": {
+    "title": "No tasks yet",
+    "description": "Add the first task to this project. Assignees get a pending assignment to accept."
+  },
+  "filtered": {
+    "title": "No tasks match",
+    "description": "No tasks for these filters. Counts only include tasks you can see."
+  },
+  "viewer": "View only · your role can’t edit tasks",
+  "loading": "Loading tasks",
+  "error": "Couldn’t save the change"
+}

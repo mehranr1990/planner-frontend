@@ -5,7 +5,9 @@ import type {
   ProjectActivity,
   ProjectKpis,
   ProjectMilestone,
+  ProjectPerson,
   ProjectPhase,
+  ProjectPriority,
   ProjectRisk,
   ProjectTask,
   ProjectWorkflow,
@@ -106,4 +108,68 @@ export interface ProjectRepositories {
   risks: RiskRepository;
   workload: WorkloadRepository;
   assignments: AssignmentRepository;
+  projectTasks: ProjectTaskRepository;
+}
+
+// ── Project tasks (PJ-02) ────────────────────────────────────────────────
+
+export type ProjectTaskView = "all" | "mine" | "unassigned" | "overdue" | "completed";
+
+export interface ProjectTaskFilters {
+  statusIds?: readonly string[];
+  assigneeIds?: readonly string[];
+  priorities?: readonly ProjectPriority[];
+  milestoneIds?: readonly string[];
+}
+
+export interface ProjectTaskQuery {
+  view?: ProjectTaskView;
+  filters?: ProjectTaskFilters;
+  search?: string;
+}
+
+export interface ProjectTaskList {
+  tasks: readonly ProjectTask[];
+  /** Server counts per view pill (after filters and search, only what the user can see). */
+  counts: Readonly<Record<ProjectTaskView, number>>;
+}
+
+export interface NewProjectTaskInput {
+  title: string;
+  phaseId: string;
+  assigneeId?: string;
+  priority?: ProjectPriority;
+  due?: string;
+  estimateHours?: number;
+}
+
+export interface ProjectTaskPatch {
+  title?: string;
+  statusId?: string;
+  phaseId?: string;
+  milestoneId?: string | null;
+  priority?: ProjectPriority;
+  due?: string | null;
+  estimateHours?: number | null;
+  /** Replaces the assignees; new people get a pending assignment. */
+  assigneeIds?: readonly string[];
+}
+
+export interface BulkUpdateResult {
+  updated: readonly ProjectTask[];
+  /** Tasks the user cannot change with this patch (nothing applied to them). */
+  failedIds: readonly string[];
+}
+
+export interface ProjectTaskRepository {
+  list(projectId: string, query?: ProjectTaskQuery, options?: ProjectAccessOptions): Promise<ProjectTaskList>;
+  get(taskId: string, options?: ProjectAccessOptions): Promise<ProjectTask>;
+  /** People who can hold tasks in the project (assignee picker, @mentions). */
+  members(projectId: string): Promise<readonly ProjectPerson[]>;
+  create(projectId: string, input: NewProjectTaskInput): Promise<ProjectTask>;
+  /** If-Match: rejects with code "conflict" when `revision` is stale. */
+  update(taskId: string, patch: ProjectTaskPatch, revision: number): Promise<ProjectTask>;
+  /** All-or-nothing per task: tasks the user cannot change come back in failedIds. */
+  bulkUpdate(projectId: string, taskIds: readonly string[], patch: ProjectTaskPatch): Promise<BulkUpdateResult>;
+  remove(taskIds: readonly string[]): Promise<void>;
 }

@@ -1,8 +1,15 @@
 "use client";
 
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useIsClient } from "@/hooks/use-is-client";
-import type { AssignmentDeclineInput, ProjectAccessOptions, ProjectStatusInput } from "./project-repositories";
+import type {
+  AssignmentDeclineInput,
+  NewProjectTaskInput,
+  ProjectAccessOptions,
+  ProjectStatusInput,
+  ProjectTaskPatch,
+  ProjectTaskQuery,
+} from "./project-repositories";
 import { useRepositories } from "./provider";
 import { afterHydration } from "./queries";
 import { projectKeys } from "./query-keys";
@@ -195,4 +202,55 @@ export function useAssignmentActions() {
     onSettled: refresh,
   });
   return { accept, decline };
+}
+
+// ── Project tasks (PJ-02) ────────────────────────────────────────────────
+
+export function useProjectTasks(projectId: string, query: ProjectTaskQuery, preview: ProjectAccessOptions = {}) {
+  const { projectTasks } = useRepositories();
+  const hydrated = useIsClient();
+  return afterHydration(
+    useQuery({
+      queryKey: scoped(projectId, "tasks", query, preview.previewRole ?? null, preview.previewArchived ?? false),
+      queryFn: () => projectTasks.list(projectId, query, preview),
+      placeholderData: keepPreviousData,
+    }),
+    hydrated,
+  );
+}
+
+export function useProjectMembers(projectId: string) {
+  const { projectTasks } = useRepositories();
+  const hydrated = useIsClient();
+  return afterHydration(
+    useQuery({ queryKey: scoped(projectId, "members"), queryFn: () => projectTasks.members(projectId) }),
+    hydrated,
+  );
+}
+
+/** Task writes; every success refreshes the project's scoped queries (lists, counts, For you, KPIs). */
+export function useProjectTaskActions(projectId: string) {
+  const { projectTasks } = useRepositories();
+  const client = useQueryClient();
+  const refresh = () => client.invalidateQueries({ queryKey: projectKeys.scope(projectId) });
+  const create = useMutation({
+    mutationFn: (input: NewProjectTaskInput) => projectTasks.create(projectId, input),
+    onSettled: refresh,
+  });
+  const update = useMutation({
+    mutationFn: ({ taskId, patch, revision }: { taskId: string; patch: ProjectTaskPatch; revision: number }) =>
+      projectTasks.update(taskId, patch, revision),
+    onSettled: refresh,
+  });
+  const bulkUpdate = useMutation({
+    mutationFn: ({ taskIds, patch }: { taskIds: readonly string[]; patch: ProjectTaskPatch }) =>
+      projectTasks.bulkUpdate(projectId, taskIds, patch),
+    onSettled: refresh,
+  });
+  const remove = useMutation({
+    mutationFn: (taskIds: readonly string[]) => projectTasks.remove(taskIds),
+    onSettled: refresh,
+  });
+  const fetchTask = (taskId: string) => projectTasks.get(taskId);
+  return { create, update, bulkUpdate, remove, fetchTask };
 }

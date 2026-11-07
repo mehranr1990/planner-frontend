@@ -1,0 +1,142 @@
+{
+  "title": "کارها",
+  "newTask": "کار جدید",
+  "view": {
+    "label": "نمای کارها",
+    "list": "فهرست",
+    "board": "تخته",
+    "flow": "جریان"
+  },
+  "tab": {
+    "label": "نماهای کار",
+    "all": "همه",
+    "mine": "کارهای من",
+    "unassigned": "بدون مسئول",
+    "overdue": "عقب‌افتاده",
+    "completed": "انجام‌شده"
+  },
+  "search": "جست‌وجوی کارها",
+  "filters": {
+    "button": "فیلترها",
+    "title": "فیلتر کارها",
+    "status": "وضعیت",
+    "assignee": "مسئول",
+    "priority": "اولویت",
+    "milestone": "نقطه‌ی عطف",
+    "unassigned": "بدون مسئول",
+    "active": "فیلتر شده با",
+    "chip": "{label}: {value}",
+    "remove": "حذف فیلتر {value}",
+    "clear": "پاک کردن"
+  },
+  "group": {
+    "label": "گروه: {group}",
+    "menu": "گروه‌بندی کارها بر اساس",
+    "phase": "فاز",
+    "status": "وضعیت",
+    "assignee": "مسئول",
+    "milestone": "نقطه‌ی عطف",
+    "none": "هیچ",
+    "noPhase": "بدون فاز",
+    "nobody": "بدون مسئول",
+    "noMilestone": "بدون نقطه‌ی عطف",
+    "all": "همه‌ی کارها",
+    "meta": "{open} باز · {done} انجام‌شده",
+    "allDone": "{n} · همه انجام شد",
+    "count": "{n}",
+    "starts": "شروع {date}",
+    "collapsed": "بسته",
+    "toggle": "نمایش یا پنهان کردن {group}"
+  },
+  "columns": {
+    "task": "کار",
+    "status": "وضعیت",
+    "assignee": "مسئول",
+    "due": "موعد",
+    "est": "تخمین",
+    "priority": "اولویت"
+  },
+  "priority": {
+    "urgent": "فوری",
+    "high": "بالا",
+    "medium": "متوسط",
+    "low": "کم"
+  },
+  "row": {
+    "select": "انتخاب {title}",
+    "subtasks": "{done}/{total}",
+    "comments": "{n} نظر",
+    "milestone": "نقطه‌ی عطف · {title}",
+    "pendingMe": "منتظر پذیرش شما",
+    "unassigned": "بدون مسئول",
+    "est": "{h} ساعت",
+    "changeStatus": "تغییر وضعیت {title}",
+    "noMoves": "نقش شما جابه‌جایی مجازی ندارد",
+    "pending": "{name}، در انتظار",
+    "declinedBadge": "{name}، نپذیرفت",
+    "overdue": "عقب‌افتاده"
+  },
+  "assign": {
+    "pending": "منتظر پذیرش {name}",
+    "declined": "{name} نپذیرفت · نیاز به واگذاری دوباره",
+    "declinedNote": "{name} نپذیرفت · «{note}» · نیاز به واگذاری دوباره"
+  },
+  "dep": {
+    "blocked": "مسدود توسط {n}"
+  },
+  "add": {
+    "label": "افزودن کار",
+    "placeholder": "افزودن کار به {phase}… مثلاً «Fix login @kian !high due 25 Oct ~3h»",
+    "added": "کار به {phase} اضافه شد",
+    "pendingFor": "{name} یک واگذاری در انتظار دریافت می‌کند",
+    "assignee": "@{name}",
+    "due": "موعد {date}",
+    "estimate": "~{h} ساعت"
+  },
+  "bulk": {
+    "toolbar": "اقدام گروهی",
+    "selected": "{count} انتخاب‌شده",
+    "assign": "واگذاری",
+    "status": "وضعیت",
+    "phase": "انتقال به فاز",
+    "due": "موعد",
+    "delete": "حذف",
+    "clear": "لغو انتخاب",
+    "partial": "می‌توانید {n} مورد از {total} مورد انتخاب‌شده را تغییر دهید",
+    "updated": "{n} کار به‌روز شد",
+    "deleted": "{n} کار حذف شد",
+    "undo": "بازگردانی",
+    "today": "امروز",
+    "tomorrow": "فردا",
+    "nextWeek": "هفته‌ی بعد",
+    "noDate": "بدون تاریخ",
+    "more": "اقدام‌های گروهی بیشتر",
+    "undoAlt": "برای برگرداندن، کارها را دوباره انتخاب و تغییر دهید"
+  },
+  "more": {
+    "label": "اقدام‌های بیشتر",
+    "import": "ورود CSV",
+    "export": "خروجی CSV",
+    "templates": "الگوها"
+  },
+  "compare": {
+    "title": "مقایسه‌ی تغییرات",
+    "field": "فیلد",
+    "mine": "نسخه‌ی من",
+    "theirs": "نسخه‌ی آن‌ها",
+    "keepMine": "نسخه‌ی من بماند",
+    "keepTheirs": "نسخه‌ی آن‌ها بماند"
+  },
+  "conflictRow": "{person} هم‌زمان «{task}» را تغییر داد.",
+  "empty": {
+    "title": "هنوز کاری نیست",
+    "description": "اولین کار این پروژه را اضافه کنید. مسئول‌ها یک واگذاری برای پذیرش دریافت می‌کنند."
+  },
+  "filtered": {
+    "title": "کاری پیدا نشد",
+    "description": "با این فیلترها کاری نیست. شمارش‌ها فقط کارهایی را که می‌بینید شامل می‌شوند."
+  },
+  "viewer": "فقط مشاهده · نقش شما اجازه‌ی ویرایش کارها را ندارد",
+  "loading": "در حال بارگذاری کارها",
+  "error": "تغییر ذخیره نشد"
+}

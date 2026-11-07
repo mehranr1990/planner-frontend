@@ -16,14 +16,15 @@ import type {
   ProjectRole,
   ProjectSummary,
 } from "../project-domain";
-import type { InvitationRepository, ProjectRepositories, ProjectRepository } from "../project-repositories";
+import type {
+  InvitationRepository,
+  ProjectRepositories,
+  ProjectRepository,
+  ProjectTaskRepository,
+} from "../project-repositories";
+import { createMockProjectTasks } from "./mock-project-tasks";
 import { RepositoryError } from "../repositories";
-import {
-  computeKpis,
-  createMockProjectWork,
-  createProjectWorkStore,
-  type ProjectWorkStore,
-} from "./mock-project-work";
+import { computeKpis, createMockProjectWork, createProjectWorkStore, type ProjectWorkStore } from "./mock-project-work";
 
 /*
  * Projects mock adapter (SH-01/SH-02, PJ-00): the directory, per-project
@@ -74,7 +75,12 @@ export function mockCapabilities(role: ProjectRole, lifecycle: ProjectLifecycle)
     editStatus: editable && rank >= RANK.manager,
     invite: editable && rank >= RANK.admin,
     createTask: editable && rank >= RANK.member,
-    editTasks: editable && rank >= RANK.member,
+    editTasks: editable && (rank >= RANK.member || guest),
+    editAnyTask: editable && rank >= RANK.manager,
+    changeStatus: editable && (rank >= RANK.member || guest),
+    deleteTasks: editable && rank >= RANK.admin,
+    bulkEdit: editable && rank >= RANK.manager,
+    importCsv: editable && rank >= RANK.manager,
     assignTasks: editable && rank >= RANK.manager,
     manageAssignments: editable && rank >= RANK.manager,
     acceptAssignments: editable && (rank >= RANK.member || guest),
@@ -96,6 +102,7 @@ export interface MockProjectsOptions {
 }
 
 export interface MockProjectsStore extends ReturnType<typeof createMockProjectWork> {
+  projectTasks: ProjectTaskRepository;
   projects: ProjectRepository;
   invitations: InvitationRepository;
   /** Mock-only: the shared task store (PJ-02 / PJ-15 mocks). */
@@ -128,6 +135,18 @@ export function createMockProjects({
       const project = find(id);
       if (project) project.forYou = Math.max(0, project.forYou + delta);
     },
+  });
+
+  const projectTasks = createMockProjectTasks({
+    store: work,
+    today,
+    now,
+    respond,
+    roleOf: (id) => {
+      const project = find(id);
+      return project ? { role: project.role, archived: project.lifecycle === "archived" } : undefined;
+    },
+    membersOf: (id) => find(id)?.members ?? [],
   });
 
   function counts(): Record<ProjectFilter, number> {
@@ -241,6 +260,7 @@ export function createMockProjects({
 
   return {
     ...workRepos,
+    projectTasks,
     projects: projectRepo,
     invitations: invitationRepo,
     work,
@@ -259,5 +279,6 @@ export function projectRepositories(store: MockProjectsStore): ProjectRepositori
     risks: store.risks,
     workload: store.workload,
     assignments: store.assignments,
+    projectTasks: store.projectTasks,
   };
 }

@@ -87,7 +87,15 @@ export interface ProjectCapabilities {
   editStatus: boolean;
   invite: boolean;
   createTask: boolean;
+  /** Edit tasks assigned to me. */
   editTasks: boolean;
+  /** Create / edit any task (Manager+). */
+  editAnyTask: boolean;
+  /** Change status within the workflow rules. */
+  changeStatus: boolean;
+  deleteTasks: boolean;
+  bulkEdit: boolean;
+  importCsv: boolean;
   /** Assign / change assignee on tasks. */
   assignTasks: boolean;
   /** Remind / reassign a pending assignee (Manager+). */
@@ -201,6 +209,15 @@ export interface ProjectTask {
   /** Optimistic concurrency token (If-Match on writes). */
   revision: number;
   updatedAt: string;
+  /** What the current user may do to this task (server-computed per request). */
+  can?: TaskCan;
+}
+
+export interface TaskCan {
+  edit: boolean;
+  status: boolean;
+  assign: boolean;
+  delete: boolean;
 }
 
 export interface ProjectPhase {
