@@ -64,3 +64,6 @@
 - PJ-11 Workload adds the board's two segmented switches (labels/copy from the PJ11 screenshot):
   - **Weeks / Months**: Months sums the member's hours per calendar month (the user's calendar setting: Jalali months in Shamsi, Gregorian otherwise); capacity = weekly capacity × weeks of that month in range; same blue/rose rule.
   - **Estimates / Task count**: Task count shows the number of open assigned tasks per member-period (pending assignments counted, as D13); no capacity percent and no rose over-capacity colouring in this mode (capacity is in hours). Estimates stays the default.
+- Workload Months: capacity = weekly capacity × days in month ÷ 7; 3 months shown; Task count counts a task in every period it spans.
+- Dark: where a *Dark board draws light surfaces (PJM03 board column, High risk chips/heat cells/"High+" tile, Blocked column) the dark tokens win (board error).
+- Destructive buttons keep the shared soft-rose dark style (PJ-13 Remove not overridden).
