@@ -288,3 +288,44 @@ export interface MyProjectWork {
   pending: readonly ProjectTask[];
   open: readonly ProjectTask[];
 }
+
+// ── Task detail (PJ-15) ──────────────────────────────────────────────────
+
+export type DependencyType = "FS" | "SS" | "FF" | "SF";
+
+/** "This task depends on {predecessor}" with a type and a lag in days. */
+export interface TaskDependency {
+  id: string;
+  predecessorId: string;
+  predecessorTitle: string;
+  type: DependencyType;
+  lagDays: number;
+}
+
+export interface TaskComment {
+  id: string;
+  author: ProjectPerson;
+  at: string;
+  body: string;
+}
+
+export type ProjectTaskActivity =
+  | { id: string; at: string; actor: ProjectPerson; kind: "created" }
+  | { id: string; at: string; actor: ProjectPerson; kind: "assigned"; person: string }
+  | { id: string; at: string; actor: ProjectPerson; kind: "status"; statusId: string };
+
+export interface ProjectTaskDetail {
+  task: ProjectTask;
+  start: string | null;
+  section: string | null;
+  customFields: readonly { label: string; value: string }[];
+  loggedHours: number;
+  subtasks: readonly { id: string; title: string; done: boolean }[];
+  dependencies: readonly TaskDependency[];
+  files: readonly { id: string; name: string }[];
+  activity: readonly ProjectTaskActivity[];
+  comments: readonly TaskComment[];
+  unreadComments: number;
+  /** My projection into My Calendar (assignee only; on after accept by default). */
+  showInCalendar: boolean;
+}

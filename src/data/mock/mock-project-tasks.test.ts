@@ -11,7 +11,7 @@ describe("mock project tasks (PJ-02)", () => {
     expect(list.counts).toEqual({ all: 41, mine: 5, unassigned: 3, overdue: 2, completed: 24 });
     expect(list.tasks[0]!.can).toEqual({ edit: true, status: true, assign: true, delete: false });
     const mine = await projectTasks.list("website-redesign", { view: "mine", filters: { milestoneIds: ["beta"] } });
-    expect(mine.tasks.map((task) => task.id)).toEqual(["api-integration", "error-states"]);
+    expect(mine.tasks.map((task) => task.id)).toEqual(["api-integration", "payment-errors-copy", "error-states"]);
   });
 
   it("guests only see tasks shared with them; viewers can't change anything", async () => {

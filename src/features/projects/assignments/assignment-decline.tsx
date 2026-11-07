@@ -18,14 +18,18 @@ import { DESKTOP_QUERY, useMediaQuery } from "../use-media";
  */
 
 const REASONS: readonly DeclineReason[] = ["no-capacity", "not-my-area", "missing-info", "other"];
-const REASON_KEY: Record<DeclineReason, "noCapacity" | "notMyArea" | "missingInfo" | "other"> = {
-  "no-capacity": "noCapacity",
+const REASON_KEY: Record<DeclineReason, "capacity" | "notMyArea" | "missingInfo" | "other"> = {
+  "no-capacity": "capacity",
   "not-my-area": "notMyArea",
   "missing-info": "missingInfo",
   other: "other",
 };
 
+/** Copy set: the overview card (Project.decline) or the task detail (ProjectTask.decline, PJ-15). */
+export type DeclineCopy = "Project.decline" | "ProjectTask.decline";
+
 export interface AssignmentDeclineProps {
+  copy?: DeclineCopy;
   /** Who assigned the task ("Tell Sara why"). */
   assignerName: string;
   /** The Decline button that opens it. */
@@ -34,15 +38,23 @@ export interface AssignmentDeclineProps {
   onDecline: (reason: DeclineReason, note: string) => void;
 }
 
-export function AssignmentDecline({ assignerName, trigger, busy = false, onDecline }: AssignmentDeclineProps) {
-  const t = useTranslations("Project.decline");
+export function AssignmentDecline({
+  copy = "Project.decline",
+  assignerName,
+  trigger,
+  busy = false,
+  onDecline,
+}: AssignmentDeclineProps) {
+  const t = useTranslations(copy as "Project.decline");
   const desktop = useMediaQuery(DESKTOP_QUERY);
   const [open, setOpen] = useState(false);
 
   const form = (
     <DeclineForm
+      copy={copy}
       assignerName={assignerName}
       busy={busy}
+      onCancel={() => setOpen(false)}
       onSubmit={(reason, note) => {
         setOpen(false);
         onDecline(reason, note);
@@ -76,15 +88,19 @@ export function AssignmentDecline({ assignerName, trigger, busy = false, onDecli
 }
 
 function DeclineForm({
+  copy,
   assignerName,
   busy,
+  onCancel,
   onSubmit,
 }: {
+  copy: DeclineCopy;
   assignerName: string;
   busy: boolean;
+  onCancel: () => void;
   onSubmit: (reason: DeclineReason, note: string) => void;
 }) {
-  const t = useTranslations("Project.decline");
+  const t = useTranslations(copy as "Project.decline");
   const [reason, setReason] = useState<DeclineReason>("no-capacity");
   const [note, setNote] = useState("");
   const noteId = useId();
@@ -98,10 +114,10 @@ function DeclineForm({
     >
       <p className="text-sm text-fg-secondary">{t("why", { name: assignerName })}</p>
       <PillGroup
-        label={t("reason")}
+        label={t("reasonLabel")}
         value={reason}
         onValueChange={setReason}
-        options={REASONS.map((value) => ({ value, label: t(REASON_KEY[value]) }))}
+        options={REASONS.map((value) => ({ value, label: t(`reason.${REASON_KEY[value]}`) }))}
       />
       <label htmlFor={noteId} className="sr-only">
         {t("note")}
@@ -113,9 +129,14 @@ function DeclineForm({
         onChange={(event) => setNote(event.target.value)}
         placeholder={t("notePlaceholder")}
       />
-      <Button type="submit" disabled={busy} className="w-full">
-        {t("submit")}
-      </Button>
+      <div className="flex justify-end gap-2">
+        <Button type="button" variant="secondary" onClick={onCancel}>
+          {t("cancel")}
+        </Button>
+        <Button type="submit" disabled={busy}>
+          {t("submit")}
+        </Button>
+      </div>
     </form>
   );
 }

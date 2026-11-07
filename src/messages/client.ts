@@ -19,6 +19,7 @@ import enOverview from "./en/overview.json";
 import enPersonal from "./en/personal.json";
 import enProject from "./en/project.json";
 import enProjects from "./en/projects.json";
+import enProjectTask from "./en/projectTask.json";
 import enProjectTasks from "./en/projectTasks.json";
 import enSettings from "./en/settings.json";
 import enShell from "./en/shell.json";
@@ -46,6 +47,7 @@ import faOverview from "./fa/overview.json";
 import faPersonal from "./fa/personal.json";
 import faProject from "./fa/project.json";
 import faProjects from "./fa/projects.json";
+import faProjectTask from "./fa/projectTask.json";
 import faProjectTasks from "./fa/projectTasks.json";
 import faSettings from "./fa/settings.json";
 import faShell from "./fa/shell.json";
@@ -91,6 +93,7 @@ const en = {
   Projects: enProjects,
   Project: enProject,
   ProjectTasks: enProjectTasks,
+  ProjectTask: enProjectTask,
 };
 
 export type ClientMessages = typeof en;
@@ -123,6 +126,7 @@ const fa: ClientMessages = {
   Projects: faProjects,
   Project: faProject,
   ProjectTasks: faProjectTasks,
+  ProjectTask: faProjectTask,
 };
 
 export const clientMessages: Record<Locale, ClientMessages> = { en, fa };

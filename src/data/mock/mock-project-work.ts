@@ -116,6 +116,8 @@ export interface MockProjectWorkOptions {
   canSeeTeamLoad(projectId: string): boolean;
   /** Called after my assignments change (the directory's "n for you"). */
   onAssignmentsChanged(projectId: string, delta: number): void;
+  /** My acceptance changed: the task enters / leaves my Personal projection. */
+  onAcceptance?(task: ProjectTask, accepted: boolean): void;
 }
 
 export function createMockProjectWork({
@@ -124,6 +126,7 @@ export function createMockProjectWork({
   respond,
   canSeeTeamLoad,
   onAssignmentsChanged,
+  onAcceptance,
 }: MockProjectWorkOptions) {
   const milestones: MilestoneRepository = {
     listPhases: (projectId) => respond(store.phases.get(projectId) ?? []),
@@ -150,13 +153,13 @@ export function createMockProjectWork({
     week: (projectId) => respond(canSeeTeamLoad(projectId) ? (store.workload.get(projectId) ?? []) : []),
   };
 
-  function myAssignment(taskId: string, revision: number) {
+  function myAssignment(taskId: string, revision: number, expected: "pending" | "accepted" = "pending") {
     const task = store.findTask(taskId);
     if (!task) throw new RepositoryError("not-found", `No task ${taskId}`);
     if (task.revision !== revision)
       throw new RepositoryError("conflict", `Task ${taskId} changed (revision ${task.revision})`);
     const index = task.assignees.findIndex((assignee) => assignee.person.id === CURRENT_USER_ID);
-    if (index < 0 || task.assignees[index]!.state !== "pending") {
+    if (index < 0 || task.assignees[index]!.state !== expected) {
       throw new RepositoryError("forbidden", "No pending assignment for you");
     }
     return { task, index };
@@ -181,7 +184,26 @@ export function createMockProjectWork({
       task.revision += 1;
       task.updatedAt = now;
       onAssignmentsChanged(task.projectId, 0);
+      onAcceptance?.(task, true);
       return respond(task);
+    },
+    async revertAccept(taskId, revision) {
+      const { task, index } = myAssignment(taskId, revision, "accepted");
+      task.assignees = task.assignees.map((assignee, at) =>
+        at === index ? { ...assignee, state: "pending" } : assignee,
+      );
+      task.revision += 1;
+      task.updatedAt = now;
+      onAcceptance?.(task, false);
+      return respond(task);
+    },
+    async remind(taskId) {
+      const task = store.findTask(taskId);
+      if (!task) throw new RepositoryError("not-found", `No task ${taskId}`);
+      if (!task.assignees.some((assignee) => assignee.state === "pending")) {
+        throw new RepositoryError("invalid", "Nobody is pending");
+      }
+      return respond(undefined);
     },
     async decline(taskId, { reason, note, revision }) {
       const { task, index } = myAssignment(taskId, revision);

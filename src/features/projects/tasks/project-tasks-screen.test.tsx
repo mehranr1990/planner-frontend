@@ -80,7 +80,7 @@ describe("PJ-02 · Project tasks (List)", () => {
     await screen.findByRole("link", { name: "API integration" });
     expect(screen.getByText("Milestone: Beta")).toBeInTheDocument();
     expect(screen.queryByRole("link", { name: "Checkout flow" })).not.toBeInTheDocument();
-    expect(screen.getByRole("radio", { name: "All 3" })).toBeInTheDocument();
+    expect(screen.getByRole("radio", { name: "All 4" })).toBeInTheDocument();
   });
 
   it("quick add parses @person !priority due ~estimate into the current phase", async () => {

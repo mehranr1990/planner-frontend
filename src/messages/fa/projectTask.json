@@ -1,0 +1,104 @@
+{
+  "title": "کار",
+  "close": "بستن",
+  "markDone": "انجام شد",
+  "doneReason": "در این گردش‌کار از {status} نمی‌توان به انجام‌شده رفت",
+  "copyLink": "کپی پیوند",
+  "copied": "پیوند کپی شد",
+  "viewer": "فقط مشاهده · نظر دادن در صورت اجازه‌ی تنظیمات پروژه",
+  "due": "موعد {date}",
+  "milestone": "نقطه‌ی عطف · {title}",
+  "assign": {
+    "banner": "{name} این کار را به شما سپرد",
+    "meta": "{time} · با پذیرش، به کارهای شخصی و نمای تقویم شما اضافه می‌شود",
+    "accept": "می‌پذیرم",
+    "decline": "نمی‌پذیرم…",
+    "accepted": "پذیرفته شد · به کارهای شما اضافه شد",
+    "undo": "بازگردانی",
+    "undoAlt": "برای بازگردانی، واگذاری را از خود کار رد کنید",
+    "managerPending": "در انتظار · {name}",
+    "remind": "یادآوری",
+    "reminded": "یادآوری برای {name} فرستاده شد",
+    "reassign": "واگذاری دوباره"
+  },
+  "decline": {
+    "title": "نپذیرفتن کار",
+    "why": "به {name} بگویید چرا؛ به واگذاری دوباره کمک می‌کند.",
+    "reasonLabel": "دلیل",
+    "reason": {
+      "capacity": "ظرفیت ندارم",
+      "notMyArea": "حوزه‌ی من نیست",
+      "missingInfo": "اطلاعات ناقص است",
+      "other": "دیگر"
+    },
+    "note": "یادداشت",
+    "notePlaceholder": "یادداشتی بنویسید (اختیاری)",
+    "cancel": "انصراف",
+    "submit": "نمی‌پذیرم",
+    "done": "واگذاری رد شد"
+  },
+  "props": {
+    "label": "ویژگی‌های کار",
+    "status": "وضعیت",
+    "moves": "← {list}",
+    "assignee": "مسئول",
+    "you": "شما",
+    "pending": "در انتظار",
+    "declined": "نپذیرفت",
+    "contributor": "+ همکار",
+    "nobody": "بدون مسئول",
+    "dates": "تاریخ‌ها",
+    "start": "شروع {date}",
+    "dueOnly": "موعد {date}",
+    "noDates": "بدون تاریخ",
+    "estimate": "تخمین",
+    "hours": "{h} ساعت",
+    "logged": "ثبت‌شده {h} ساعت",
+    "phase": "فاز · بخش",
+    "milestoneLabel": "نقطه‌ی عطف",
+    "fields": "فیلدهای سفارشی",
+    "calendar": "نمایش در تقویم من",
+    "calendarHint": "پس از پذیرش روشن",
+    "none": "—"
+  },
+  "tabs": {
+    "label": "بخش‌های کار",
+    "comments": "نظرها",
+    "subtasks": "زیرکارها",
+    "links": "پیوندها",
+    "activity": "فعالیت"
+  },
+  "comments": {
+    "placeholder": "نظری بنویسید… ‎@نام",
+    "label": "نظر",
+    "send": "ارسال",
+    "empty": "هنوز نظری نیست"
+  },
+  "subtasks": { "empty": "زیرکاری نیست", "toggle": "{title}" },
+  "links": {
+    "dependsOn": "وابسته به",
+    "files": "فایل‌ها",
+    "type": {
+      "FS": "پایان به شروع",
+      "SS": "شروع به شروع",
+      "FF": "پایان به پایان",
+      "SF": "شروع به پایان"
+    },
+    "lag": "{n} روز فاصله",
+    "add": "افزودن وابستگی",
+    "predecessor": "کار",
+    "typeLabel": "نوع",
+    "lagLabel": "فاصله (روز)",
+    "submit": "افزودن",
+    "remove": "حذف وابستگی به {title}",
+    "noDependencies": "وابستگی‌ای نیست",
+    "noFiles": "فایلی نیست"
+  },
+  "dep": { "cycle": "این کار یک چرخه می‌سازد" },
+  "calendar": "نمایش در تقویم من",
+  "activity": {
+    "assigned": "{actor} کار را به {person} سپرد",
+    "status": "{actor} · وضعیت {status}",
+    "created": "{actor} کار را ساخت"
+  }
+}

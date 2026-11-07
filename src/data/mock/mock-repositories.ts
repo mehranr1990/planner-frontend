@@ -803,7 +803,38 @@ export function createMockRepositories({ fixtures, latencyMs = 0 }: MockReposito
       moods: source.moods ?? [],
       respond,
     }),
-    ...projectRepositories(createMockProjects({ respond, today, now: nowInstant })),
+    ...projectRepositories(
+      createMockProjects({
+        respond,
+        today,
+        now: nowInstant,
+        // Accepted project assignments appear in Personal Tasks / My Calendar as projections.
+        onProjection: (projectTaskId, projection) => {
+          const id = `project-${projectTaskId}`;
+          const index = tasks.findIndex((item) => item.id === id);
+          if (!projection) {
+            if (index >= 0) tasks.splice(index, 1);
+            return;
+          }
+          const projected: Task = {
+            id,
+            title: projection.title,
+            scope: "project",
+            project: projection.projectName,
+            priority: projection.priority,
+            energy: null,
+            durationMinutes: projection.estimateHours === null ? null : Math.round(projection.estimateHours * 60),
+            date: projection.showInCalendar ? projection.due : null,
+            time: null,
+            ...(projection.due ? { deadline: projection.due } : {}),
+            status: "open",
+            createdAt: nowInstant,
+          };
+          if (index >= 0) tasks[index] = projected;
+          else tasks.push(projected);
+        },
+      }),
+    ),
     review: createMockReview({ reviews: source.reviews ?? [], now: nowInstant, respond }),
     brainDump: createMockBrainDump({
       pages: source.brainDump ?? [],

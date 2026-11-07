@@ -1,5 +1,9 @@
 import type {
   DeclineReason,
+  DependencyType,
+  ProjectTaskDetail,
+  TaskComment,
+  TaskDependency,
   MyProjectWork,
   ProjectAccess,
   ProjectActivity,
@@ -96,6 +100,10 @@ export interface AssignmentRepository {
   listMine(projectId: string): Promise<MyProjectWork>;
   accept(taskId: string, revision: number): Promise<ProjectTask>;
   decline(taskId: string, input: AssignmentDeclineInput): Promise<ProjectTask>;
+  /** Undo of Accept: back to pending (the projection leaves Personal). */
+  revertAccept(taskId: string, revision: number): Promise<ProjectTask>;
+  /** Manager+: nudge a pending assignee. */
+  remind(taskId: string): Promise<void>;
 }
 
 /** The Projects part of the `Repositories` aggregate (mock adapters only). */
@@ -109,6 +117,9 @@ export interface ProjectRepositories {
   workload: WorkloadRepository;
   assignments: AssignmentRepository;
   projectTasks: ProjectTaskRepository;
+  taskDetails: TaskDetailRepository;
+  comments: CommentRepository;
+  dependencies: DependencyRepository;
 }
 
 // ── Project tasks (PJ-02) ────────────────────────────────────────────────
@@ -172,4 +183,23 @@ export interface ProjectTaskRepository {
   /** All-or-nothing per task: tasks the user cannot change come back in failedIds. */
   bulkUpdate(projectId: string, taskIds: readonly string[], patch: ProjectTaskPatch): Promise<BulkUpdateResult>;
   remove(taskIds: readonly string[]): Promise<void>;
+}
+
+// ── Task detail (PJ-15) ──────────────────────────────────────────────────
+
+export interface TaskDetailRepository {
+  get(taskId: string, options?: ProjectAccessOptions): Promise<ProjectTaskDetail>;
+  toggleSubtask(taskId: string, subtaskId: string): Promise<ProjectTaskDetail>;
+  /** My own projection setting (never visible to the project). */
+  setShowInCalendar(taskId: string, on: boolean): Promise<ProjectTaskDetail>;
+}
+
+export interface CommentRepository {
+  add(taskId: string, body: string): Promise<TaskComment>;
+}
+
+export interface DependencyRepository {
+  /** Rejects with code "invalid" + message "cycle" when it would create a loop. */
+  add(taskId: string, input: { predecessorId: string; type: DependencyType; lagDays: number }): Promise<TaskDependency>;
+  remove(taskId: string, dependencyId: string): Promise<void>;
 }

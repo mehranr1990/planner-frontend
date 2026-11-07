@@ -62,13 +62,16 @@
   "decline": {
     "title": "Decline assignment",
     "why": "Tell {name} why — it helps reassign.",
-    "reason": "Reason",
-    "noCapacity": "No capacity",
-    "notMyArea": "Not my area",
-    "missingInfo": "Missing info",
-    "other": "Other",
+    "reasonLabel": "Reason",
+    "reason": {
+      "capacity": "No capacity",
+      "notMyArea": "Not my area",
+      "missingInfo": "Missing info",
+      "other": "Other"
+    },
     "note": "Note",
     "notePlaceholder": "Add a note (optional)",
+    "cancel": "Cancel",
     "submit": "Decline"
   },
   "phases": {
@@ -110,8 +113,17 @@
     "blocks": "blocks {n} tasks",
     "mitigation": "mitigation: {text}",
     "probability": "probability {level}",
-    "severity": { "low": "Low", "medium": "Medium", "high": "High", "critical": "Critical" },
-    "level": { "low": "low", "medium": "medium", "high": "high" },
+    "severity": {
+      "low": "Low",
+      "medium": "Medium",
+      "high": "High",
+      "critical": "Critical"
+    },
+    "level": {
+      "low": "low",
+      "medium": "medium",
+      "high": "high"
+    },
     "owner": "Owner: {name}",
     "empty": "No open risks or blockers"
   },

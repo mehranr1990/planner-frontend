@@ -15,14 +15,19 @@ import type {
   ProjectModule,
   ProjectRole,
   ProjectSummary,
+  ProjectTask,
 } from "../project-domain";
 import type {
+  CommentRepository,
+  DependencyRepository,
   InvitationRepository,
+  TaskDetailRepository,
   ProjectRepositories,
   ProjectRepository,
   ProjectTaskRepository,
 } from "../project-repositories";
 import { createMockProjectTasks } from "./mock-project-tasks";
+import { createMockTaskDetail } from "./mock-project-task-detail";
 import { RepositoryError } from "../repositories";
 import { computeKpis, createMockProjectWork, createProjectWorkStore, type ProjectWorkStore } from "./mock-project-work";
 
@@ -99,10 +104,29 @@ export interface MockProjectsOptions {
   /** Mock "today" ("YYYY-MM-DD") and now (instant) for counts and writes. */
   today?: string;
   now?: string;
+  /**
+   * The accepted-assignment bridge into Personal (README #8): called with the
+   * projection when one of my tasks is accepted (or its calendar setting
+   * changes) and with null when it leaves (Undo of Accept).
+   */
+  onProjection?: (taskId: string, projection: PersonalProjection | null) => void;
+}
+
+/** What Personal shows for an accepted project task: a projection, never an editable copy. */
+export interface PersonalProjection {
+  title: string;
+  projectName: string;
+  due: string | null;
+  priority: ProjectTask["priority"];
+  estimateHours: number | null;
+  showInCalendar: boolean;
 }
 
 export interface MockProjectsStore extends ReturnType<typeof createMockProjectWork> {
   projectTasks: ProjectTaskRepository;
+  taskDetails: TaskDetailRepository;
+  comments: CommentRepository;
+  dependencies: DependencyRepository;
   projects: ProjectRepository;
   invitations: InvitationRepository;
   /** Mock-only: the shared task store (PJ-02 / PJ-15 mocks). */
@@ -115,6 +139,7 @@ export function createMockProjects({
   respond,
   today = "2026-10-13",
   now = "2026-10-13T14:35:00+03:30",
+  onProjection,
 }: MockProjectsOptions): MockProjectsStore {
   const projects: ProjectSummary[] = structuredClone([...projectFixtures]);
   const invitations: ProjectInvitation[] = structuredClone([...invitationFixtures]);
@@ -131,13 +156,31 @@ export function createMockProjects({
       return project ? mockCapabilities(project.role, project.lifecycle).seeTeamLoad : false;
     },
     // "n for you" = my open accepted + pending assignments (server-side count): a decline drops one.
+    onAcceptance: (task, accepted) => project(task, accepted),
     onAssignmentsChanged: (id, delta) => {
       const project = find(id);
       if (project) project.forYou = Math.max(0, project.forYou + delta);
     },
   });
 
-  const projectTasks = createMockProjectTasks({
+  function project(task: ProjectTask, present: boolean) {
+    const name = find(task.projectId)?.name ?? "";
+    onProjection?.(
+      task.id,
+      present
+        ? {
+            title: task.title,
+            projectName: name,
+            due: task.due,
+            priority: task.priority,
+            estimateHours: task.estimateHours,
+            showInCalendar: taskDetail.showInCalendar(task.id),
+          }
+        : null,
+    );
+  }
+
+  const tasksMock = createMockProjectTasks({
     store: work,
     today,
     now,
@@ -147,6 +190,17 @@ export function createMockProjects({
       return project ? { role: project.role, archived: project.lifecycle === "archived" } : undefined;
     },
     membersOf: (id) => find(id)?.members ?? [],
+  });
+  const projectTasks = tasksMock.repo;
+  const taskDetail = createMockTaskDetail({
+    store: work,
+    now,
+    respond,
+    withCan: tasksMock.withCan,
+    onCalendarChanged: (task) => {
+      const mine = task.assignees.find((assignee) => assignee.person.id === "me");
+      if (mine?.state === "accepted") project(task, true);
+    },
   });
 
   function counts(): Record<ProjectFilter, number> {
@@ -261,6 +315,9 @@ export function createMockProjects({
   return {
     ...workRepos,
     projectTasks,
+    taskDetails: taskDetail.taskDetails,
+    comments: taskDetail.comments,
+    dependencies: taskDetail.dependencies,
     projects: projectRepo,
     invitations: invitationRepo,
     work,
@@ -280,5 +337,8 @@ export function projectRepositories(store: MockProjectsStore): ProjectRepositori
     workload: store.workload,
     assignments: store.assignments,
     projectTasks: store.projectTasks,
+    taskDetails: store.taskDetails,
+    comments: store.comments,
+    dependencies: store.dependencies,
   };
 }

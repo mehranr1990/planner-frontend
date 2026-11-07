@@ -11,8 +11,10 @@ import type {
   ProjectTaskQuery,
 } from "./project-repositories";
 import { useRepositories } from "./provider";
+import { RepositoryError } from "./repositories";
 import { afterHydration } from "./queries";
-import { projectKeys } from "./query-keys";
+import type { DependencyType } from "./project-domain";
+import { projectKeys, taskKeys } from "./query-keys";
 
 /*
  * React Query hooks for Projects (Phase 2). The UI never fetches: it reads
@@ -191,7 +193,12 @@ export function useMyProjectWork(projectId: string) {
 export function useAssignmentActions() {
   const { assignments } = useRepositories();
   const client = useQueryClient();
-  const refresh = () => client.invalidateQueries({ queryKey: projectKeys.all });
+  // Accepting projects the task into Personal Tasks / My Calendar: refresh those too.
+  const refresh = () =>
+    Promise.all([
+      client.invalidateQueries({ queryKey: projectKeys.all }),
+      client.invalidateQueries({ queryKey: taskKeys.all }),
+    ]);
   const accept = useMutation({
     mutationFn: ({ taskId, revision }: { taskId: string; revision: number }) => assignments.accept(taskId, revision),
     onSettled: refresh,
@@ -201,7 +208,13 @@ export function useAssignmentActions() {
       assignments.decline(taskId, input),
     onSettled: refresh,
   });
-  return { accept, decline };
+  const revertAccept = useMutation({
+    mutationFn: ({ taskId, revision }: { taskId: string; revision: number }) =>
+      assignments.revertAccept(taskId, revision),
+    onSettled: refresh,
+  });
+  const remind = useMutation({ mutationFn: (taskId: string) => assignments.remind(taskId) });
+  return { accept, decline, revertAccept, remind };
 }
 
 // ── Project tasks (PJ-02) ────────────────────────────────────────────────
@@ -253,4 +266,52 @@ export function useProjectTaskActions(projectId: string) {
   });
   const fetchTask = (taskId: string) => projectTasks.get(taskId);
   return { create, update, bulkUpdate, remove, fetchTask };
+}
+
+// ── Task detail (PJ-15) ──────────────────────────────────────────────────
+
+const detailKey = (taskId: string) => [...projectKeys.all, "task-detail", taskId];
+
+export function useProjectTaskDetail(taskId: string, preview: ProjectAccessOptions = {}) {
+  const { taskDetails } = useRepositories();
+  const hydrated = useIsClient();
+  return afterHydration(
+    useQuery({
+      queryKey: [...detailKey(taskId), preview.previewRole ?? null, preview.previewArchived ?? false],
+      queryFn: () => taskDetails.get(taskId, preview),
+      // A deleted / unknown task will not come back: show the deleted state at once.
+      retry: (count, error) => !(error instanceof RepositoryError && error.code === "not-found") && count < 2,
+    }),
+    hydrated,
+  );
+}
+
+/** Detail writes. Calendar / acceptance changes also refresh Personal tasks (the projection). */
+export function useTaskDetailActions(taskId: string) {
+  const { taskDetails, comments, dependencies } = useRepositories();
+  const client = useQueryClient();
+  const refresh = () => {
+    void client.invalidateQueries({ queryKey: projectKeys.all });
+    void client.invalidateQueries({ queryKey: taskKeys.all });
+  };
+  return {
+    toggleSubtask: useMutation({
+      mutationFn: (subtaskId: string) => taskDetails.toggleSubtask(taskId, subtaskId),
+      onSettled: refresh,
+    }),
+    setShowInCalendar: useMutation({
+      mutationFn: (on: boolean) => taskDetails.setShowInCalendar(taskId, on),
+      onSettled: refresh,
+    }),
+    addComment: useMutation({ mutationFn: (body: string) => comments.add(taskId, body), onSettled: refresh }),
+    addDependency: useMutation({
+      mutationFn: (input: { predecessorId: string; type: DependencyType; lagDays: number }) =>
+        dependencies.add(taskId, input),
+      onSettled: refresh,
+    }),
+    removeDependency: useMutation({
+      mutationFn: (dependencyId: string) => dependencies.remove(taskId, dependencyId),
+      onSettled: refresh,
+    }),
+  };
 }

@@ -1,0 +1,104 @@
+{
+  "title": "Task",
+  "close": "Close",
+  "markDone": "Mark done",
+  "doneReason": "Done isn’t allowed from {status} in this workflow",
+  "copyLink": "Copy link",
+  "copied": "Link copied",
+  "viewer": "View only · comments allowed if project setting permits",
+  "due": "Due {date}",
+  "milestone": "Milestone · {title}",
+  "assign": {
+    "banner": "{name} assigned this to you",
+    "meta": "{time} · accepting adds it to your Personal tasks and calendar view",
+    "accept": "Accept",
+    "decline": "Decline…",
+    "accepted": "Accepted · added to your tasks",
+    "undo": "Undo",
+    "undoAlt": "Decline the assignment from the task to undo",
+    "managerPending": "Pending · {name}",
+    "remind": "Remind",
+    "reminded": "Reminder sent to {name}",
+    "reassign": "Reassign"
+  },
+  "decline": {
+    "title": "Decline assignment",
+    "why": "Tell {name} why — it helps reassign.",
+    "reasonLabel": "Reason",
+    "reason": {
+      "capacity": "No capacity",
+      "notMyArea": "Not my area",
+      "missingInfo": "Missing information",
+      "other": "Other"
+    },
+    "note": "Note",
+    "notePlaceholder": "Add a note (optional)",
+    "cancel": "Cancel",
+    "submit": "Decline",
+    "done": "Assignment declined"
+  },
+  "props": {
+    "label": "Task properties",
+    "status": "Status",
+    "moves": "→ {list}",
+    "assignee": "Assignee",
+    "you": "You",
+    "pending": "pending",
+    "declined": "declined",
+    "contributor": "+ contributor",
+    "nobody": "Unassigned",
+    "dates": "Dates",
+    "start": "Start {date}",
+    "dueOnly": "Due {date}",
+    "noDates": "No dates",
+    "estimate": "Estimate",
+    "hours": "{h}h",
+    "logged": "logged {h}h",
+    "phase": "Phase · section",
+    "milestoneLabel": "Milestone",
+    "fields": "Custom fields",
+    "calendar": "Show in My Calendar",
+    "calendarHint": "on after accept",
+    "none": "—"
+  },
+  "tabs": {
+    "label": "Task sections",
+    "comments": "Comments",
+    "subtasks": "Subtasks",
+    "links": "Links",
+    "activity": "Activity"
+  },
+  "comments": {
+    "placeholder": "Write a comment… @mention",
+    "label": "Comment",
+    "send": "Send",
+    "empty": "No comments yet"
+  },
+  "subtasks": { "empty": "No subtasks", "toggle": "{title}" },
+  "links": {
+    "dependsOn": "Depends on",
+    "files": "Files",
+    "type": {
+      "FS": "Finish → start",
+      "SS": "Start → start",
+      "FF": "Finish → finish",
+      "SF": "Start → finish"
+    },
+    "lag": "+{n}d lag",
+    "add": "Add dependency",
+    "predecessor": "Task",
+    "typeLabel": "Type",
+    "lagLabel": "Lag (days)",
+    "submit": "Add",
+    "remove": "Remove dependency on {title}",
+    "noDependencies": "No dependencies",
+    "noFiles": "No files"
+  },
+  "dep": { "cycle": "This would create a loop" },
+  "calendar": "Show in My Calendar",
+  "activity": {
+    "assigned": "{actor} assigned {person}",
+    "status": "{actor} · status {status}",
+    "created": "{actor} created the task"
+  }
+}

@@ -182,6 +182,7 @@ export const sampleTasks: readonly ProjectTask[] = [
     title: "Payment errors copy",
     statusId: "todo",
     phaseId: "build",
+    milestoneId: "beta",
     assignees: [{ person: me, state: "pending", by: sara }],
     priority: "medium",
     due: "2026-10-24",
@@ -305,7 +306,7 @@ export const sampleTasks: readonly ProjectTask[] = [
     statusId: "todo",
     phaseId: "qa",
     milestoneId: "payment-go-live",
-    assignees: [accepted(kian)],
+    assignees: [{ person: kian, state: "pending", by: sara }],
     priority: "high",
     due: "2026-12-08",
     estimateHours: 2,
@@ -415,5 +416,71 @@ export const projectWorkFixtures: Readonly<
     risks: sampleRisks,
     activity: sampleActivity,
     workload: sampleWorkload,
+  },
+};
+
+/** Detail extras per task (PJ-15); tasks without an entry get an empty detail. */
+export interface TaskDetailSeed {
+  start?: string;
+  section?: string;
+  customFields?: { label: string; value: string }[];
+  loggedHours?: number;
+  subtasks?: { id: string; title: string; done: boolean }[];
+  dependencies?: { id: string; predecessorId: string; type: "FS" | "SS" | "FF" | "SF"; lagDays: number }[];
+  files?: { id: string; name: string }[];
+  comments?: { id: string; author: (typeof projectPeople)[keyof typeof projectPeople]; at: string; body: string }[];
+  unreadComments?: number;
+  assignedAt?: string;
+}
+
+export const sampleTaskDetails: Readonly<Record<string, TaskDetailSeed>> = {
+  "payment-errors-copy": {
+    start: "2026-10-20",
+    section: "Checkout",
+    customFields: [
+      { label: "Platform", value: "Web" },
+      { label: "Story points", value: "2" },
+    ],
+    loggedHours: 0,
+    subtasks: [
+      { id: "st-1", title: "Card declined", done: false },
+      { id: "st-2", title: "Card expired", done: false },
+      { id: "st-3", title: "3DS failed", done: false },
+    ],
+    dependencies: [{ id: "dep-1", predecessorId: "checkout-flow", type: "FS", lagDays: 0 }],
+    files: [
+      { id: "file-1", name: "payments-errors.csv" },
+      { id: "file-2", name: "checkout-copy.docx" },
+    ],
+    comments: [
+      {
+        id: "c-1",
+        author: sara,
+        at: "2026-10-13T12:35:00+03:30",
+        body: "Copy for card declined / expired / 3DS fail. Tone: calm, one action each.",
+      },
+      {
+        id: "c-2",
+        author: kian,
+        at: "2026-10-13T13:35:00+03:30",
+        body: "Error codes list is in Files › payments-errors.csv",
+      },
+    ],
+    unreadComments: 2,
+    assignedAt: "2026-10-13T12:35:00+03:30",
+  },
+  "checkout-flow": {
+    start: "2026-10-11",
+    section: "Checkout",
+    loggedHours: 5,
+    subtasks: [
+      { id: "cf-1", title: "Cart summary", done: true },
+      { id: "cf-2", title: "Address form", done: false },
+      { id: "cf-3", title: "Shipping options", done: false },
+      { id: "cf-4", title: "Payment step", done: false },
+      { id: "cf-5", title: "Review step", done: false },
+      { id: "cf-6", title: "Confirmation", done: false },
+    ],
+    dependencies: [{ id: "dep-2", predecessorId: "payment-api-keys", type: "FS", lagDays: 0 }],
   },
 };

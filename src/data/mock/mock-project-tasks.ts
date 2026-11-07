@@ -236,5 +236,5 @@ export function createMockProjectTasks({ store, today, now, respond, roleOf, mem
       return respond(undefined);
     },
   };
-  return repo;
+  return { repo, withCan: (task: ProjectTask) => withCan(task) };
 }

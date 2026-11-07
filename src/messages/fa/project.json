@@ -60,15 +60,18 @@
     "conflict": "این واگذاری تغییر کرده است. برای دیدن آخرین نسخه بارگذاری دوباره کنید."
   },
   "decline": {
-    "title": "رد واگذاری",
+    "title": "نپذیرفتن کار",
     "why": "به {name} بگویید چرا؛ به واگذاری دوباره کمک می‌کند.",
-    "reason": "دلیل",
-    "noCapacity": "ظرفیت ندارم",
-    "notMyArea": "حوزه‌ی من نیست",
-    "missingInfo": "اطلاعات ناقص",
-    "other": "دیگر",
+    "reasonLabel": "دلیل",
+    "reason": {
+      "capacity": "ظرفیت ندارم",
+      "notMyArea": "حوزه‌ی من نیست",
+      "missingInfo": "اطلاعات ناقص",
+      "other": "دیگر"
+    },
     "note": "یادداشت",
     "notePlaceholder": "یادداشتی بنویسید (اختیاری)",
+    "cancel": "انصراف",
     "submit": "نمی‌پذیرم"
   },
   "phases": {
@@ -110,8 +113,17 @@
     "blocks": "{n} کار را مسدود کرده",
     "mitigation": "کاهش: {text}",
     "probability": "احتمال {level}",
-    "severity": { "low": "کم", "medium": "متوسط", "high": "بالا", "critical": "بحرانی" },
-    "level": { "low": "کم", "medium": "متوسط", "high": "بالا" },
+    "severity": {
+      "low": "کم",
+      "medium": "متوسط",
+      "high": "بالا",
+      "critical": "بحرانی"
+    },
+    "level": {
+      "low": "کم",
+      "medium": "متوسط",
+      "high": "بالا"
+    },
     "owner": "مسئول: {name}",
     "empty": "ریسک یا مانع بازی نیست"
   },
