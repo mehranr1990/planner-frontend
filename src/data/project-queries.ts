@@ -489,5 +489,35 @@ export function useScheduleActions(projectId: string) {
     onSettled: refresh,
   });
   const preview = (change: ScheduleChange, mode: ScheduleMode) => schedule.preview(projectId, change, mode);
-  return { reorderPhases, renameMilestone, apply, preview, refresh };
+  const graph = () => schedule.graph(projectId);
+  return { reorderPhases, renameMilestone, apply, preview, graph, refresh };
+}
+
+// ── Project calendar (PJ-07) ─────────────────────────────────────────────
+
+export function useProjectCalendar(projectId: string, from: string, to: string, preview: ProjectAccessOptions = {}) {
+  const { calendar } = useRepositories();
+  const hydrated = useIsClient();
+  return afterHydration(
+    useQuery({
+      queryKey: scoped(projectId, "calendar", from, to, preview.previewRole ?? null),
+      queryFn: () => calendar.range(projectId, from, to, preview),
+      placeholderData: keepPreviousData,
+    }),
+    hydrated,
+  );
+}
+
+/** The current user's own untitled busy blocks (only fetched while the overlay is on). */
+export function useMyBusy(from: string, to: string, enabled: boolean) {
+  const { calendar } = useRepositories();
+  const hydrated = useIsClient();
+  return afterHydration(
+    useQuery({
+      queryKey: [...projectKeys.all, "my-busy", from, to],
+      queryFn: () => calendar.myBusy(from, to),
+      enabled,
+    }),
+    hydrated,
+  );
 }

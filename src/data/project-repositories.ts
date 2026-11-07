@@ -9,6 +9,8 @@ import type {
   TaskDependency,
   MyProjectWork,
   MilestoneRow,
+  BusySlot,
+  ProjectCalendarItem,
   PhaseRow,
   ScheduleChange,
   ScheduleGraph,
@@ -88,6 +90,13 @@ export interface MilestoneRepository {
   updateMilestone(milestoneId: string, patch: { title: string }, revision: number): Promise<ProjectMilestone>;
 }
 
+export interface ProjectCalendarRepository {
+  /** Task due dates, milestones and project events between two days (inclusive). No other sources. */
+  range(projectId: string, from: string, to: string, options?: ProjectAccessOptions): Promise<readonly ProjectCalendarItem[]>;
+  /** The current user's own busy blocks only, untitled (A07 projection). */
+  myBusy(from: string, to: string): Promise<readonly BusySlot[]>;
+}
+
 export interface ScheduleRepository {
   /** Dated tasks, milestones and their dependency links. */
   graph(projectId: string): Promise<ScheduleGraph>;
@@ -157,6 +166,7 @@ export interface ProjectRepositories {
   memberInvites: MemberInviteRepository;
   reassign: ReassignRepository;
   schedule: ScheduleRepository;
+  calendar: ProjectCalendarRepository;
 }
 
 // ── Project tasks (PJ-02) ────────────────────────────────────────────────

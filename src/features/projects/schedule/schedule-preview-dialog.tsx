@@ -21,7 +21,9 @@ import { daysBetween, useProjectFormat } from "../format";
  * opens it. Ghost (old) vs new bars, the list of moved items, milestone
  * impact, the choice "Move dependent tasks too" / "Move only this task", and
  * one apply with every expected revision. Nothing is saved until Apply; a
- * stale revision shows the SH-02 conflict with Reload. Bars mirror in RTL by
+ * stale revision shows the SH-02 conflict with Reload. Members (own task
+ * with dependents) get only "Move only this task"; the cascade option stays
+ * visible, disabled, with "Manager+ can move dependent tasks" (owner rule). Bars mirror in RTL by
  * coordinates (x → width − x), never a CSS flip.
  */
 
@@ -138,7 +140,12 @@ export function SchedulePreviewDialog({ projectId, change, title, canCascade, on
                         onChange={() => setMode(value)}
                         className="size-4 accent-[var(--color-primary)]"
                       />
-                      {t(value)}
+                      <span className="flex flex-col">
+                        {t(value)}
+                        {value === "cascade" && !canCascade ? (
+                          <span className="text-xs font-medium text-fg-secondary">{t("cascadeReason")}</span>
+                        ) : null}
+                      </span>
                     </label>
                   ))}
                 </div>

@@ -444,3 +444,31 @@ export interface SchedulePreview {
   /** Whether other items depend on the changed one at all. */
   hasDependents: boolean;
 }
+
+// ── Project calendar (PJ-07) ─────────────────────────────────────────────
+
+/** One item of the project's single (blue) scope layer. Days are Gregorian. */
+export type ProjectCalendarItem =
+  | { id: string; kind: "task"; day: string; title: string; task: ProjectTask }
+  | { id: string; kind: "milestone"; day: string; title: string; milestoneId: string }
+  | { id: string; kind: "event"; day: string; title: string; time: string; invited: number };
+
+/**
+ * One of the current user's own busy blocks, without title or source: the
+ * privacy-safe overlay (never another person's, never visible to others).
+ */
+export interface BusySlot {
+  day: string;
+  /** "HH:mm" wall-clock times (LTR). */
+  start: string;
+  end: string;
+}
+
+/** Project events (meeting basics; full meetings come later). */
+export interface ProjectEvent {
+  id: string;
+  title: string;
+  day: string;
+  time: string;
+  invited: number;
+}

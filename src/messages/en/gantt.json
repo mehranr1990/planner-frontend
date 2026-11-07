@@ -9,7 +9,8 @@
     "milestone": "{title} milestone ({from}) would move to {to}",
     "cascade": "Move dependent tasks too",
     "only": "Move only this task (dependencies become conflicts)",
-    "range": "{from} → {to}"
+    "range": "{from} → {to}",
+    "cascadeReason": "Manager+ can move dependent tasks"
   },
   "cycle": "This would create a loop",
   "dep": {

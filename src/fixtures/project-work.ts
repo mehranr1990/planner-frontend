@@ -14,6 +14,8 @@ import type {
   ProjectRisk,
   ProjectTask,
   ProjectWorkflow,
+  ProjectEvent,
+  BusySlot,
   ScheduleLink,
   TaskAssignee,
   WorkloadEntry,
@@ -369,6 +371,23 @@ export const sampleScheduleLinks: readonly ScheduleLink[] = [
   { id: "sl-4", predecessorId: "cross-browser", successorId: "bug-bash", type: "FS", lagDays: 0 },
   { id: "sl-5", predecessorId: "bug-bash", successorId: "uat-signoff", type: "FS", lagDays: 0 },
   { id: "sl-6", predecessorId: "launch-checklist", successorId: "launch", type: "FS", lagDays: 1 },
+];
+
+/** Project events (PJ-07). */
+export const sampleProjectEvents: readonly ProjectEvent[] = [
+  { id: "ev-sprint-review", title: "Sprint review", day: "2026-10-13", time: "10:00", invited: 6 },
+  { id: "ev-beta-demo", title: "Beta demo", day: "2026-11-10", time: "15:00", invited: 8 },
+];
+
+/**
+ * The current user's own busy blocks as the privacy-safe projection would
+ * serve them: day + times only, no titles or sources (PJ-07 overlay).
+ */
+export const sampleMyBusy: readonly BusySlot[] = [
+  { day: "2026-10-13", start: "14:00", end: "16:00" },
+  { day: "2026-10-14", start: "09:00", end: "11:00" },
+  { day: "2026-10-15", start: "13:00", end: "15:30" },
+  { day: "2026-10-20", start: "10:00", end: "12:00" },
 ];
 
 export const sampleRisks: readonly ProjectRisk[] = [

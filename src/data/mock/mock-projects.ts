@@ -25,6 +25,7 @@ import type {
   ProjectCreateRepository,
   ReassignRepository,
   ScheduleRepository,
+  ProjectCalendarRepository,
   TaskDetailRepository,
   ProjectRepositories,
   ProjectRepository,
@@ -34,6 +35,7 @@ import { createMockProjectTasks } from "./mock-project-tasks";
 import { createMockTaskDetail } from "./mock-project-task-detail";
 import { createMockProjectSheets } from "./mock-project-sheets";
 import { createMockProjectSchedule } from "./mock-project-schedule";
+import { createMockProjectCalendar } from "./mock-project-calendar";
 import { RepositoryError } from "../repositories";
 import { computeKpis, createMockProjectWork, createProjectWorkStore, type ProjectWorkStore } from "./mock-project-work";
 
@@ -139,6 +141,7 @@ export interface MockProjectsStore extends ReturnType<typeof createMockProjectWo
   memberInvites: MemberInviteRepository;
   reassign: ReassignRepository;
   schedule: ScheduleRepository;
+  calendar: ProjectCalendarRepository;
   projects: ProjectRepository;
   invitations: InvitationRepository;
   /** Mock-only: the shared task store (PJ-02 / PJ-15 mocks). */
@@ -216,6 +219,15 @@ export function createMockProjects({
     now,
     canManageSchedule: manageSchedule,
     canEditTask: (task) => tasksMock.withCan(task).can?.edit === true,
+  });
+  const { calendar } = createMockProjectCalendar({
+    store: work,
+    respond,
+    roleOf: (id, options) => {
+      const found = find(id);
+      return found ? (options?.previewRole ?? found.role) : undefined;
+    },
+    withCan: (task, options) => tasksMock.withCan(task, options),
   });
   const taskDetail = createMockTaskDetail({
     store: work,
@@ -358,6 +370,7 @@ export function createMockProjects({
     ...workRepos,
     projectTasks,
     schedule,
+    calendar,
     ...sheets,
     taskDetails: taskDetail.taskDetails,
     comments: taskDetail.comments,
@@ -388,5 +401,6 @@ export function projectRepositories(store: MockProjectsStore): ProjectRepositori
     memberInvites: store.memberInvites,
     reassign: store.reassign,
     schedule: store.schedule,
+    calendar: store.calendar,
   };
 }

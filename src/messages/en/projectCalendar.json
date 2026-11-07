@@ -1,0 +1,21 @@
+{
+  "title": "Calendar",
+  "layers": {
+    "label": "Layers",
+    "tasks": "Task due dates",
+    "milestones": "Milestones",
+    "events": "Project events",
+    "busyOn": "My personal busy · on",
+    "busyOff": "My personal busy · off"
+  },
+  "today": "Today · {date}",
+  "event": "Project event · {n} invited",
+  "task": "Task · {name} · {status}",
+  "taskUnassigned": "Task · {status}",
+  "overdue": "{title} · overdue",
+  "milestone": "Milestone",
+  "busy": "Busy",
+  "privacy": "Only this project’s items. Members’ personal calendars are never shown; “My personal busy” overlays only YOUR busy blocks, without titles, and only for you.",
+  "newEvent": "Project event",
+  "move": "Move {title}"
+}
