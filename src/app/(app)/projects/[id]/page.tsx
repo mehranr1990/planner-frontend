@@ -1,10 +1,10 @@
-import { ProjectModulePlaceholder } from "@/features/projects/project-module-placeholder";
+import { ProjectOverviewScreen } from "@/features/projects/overview/overview-screen";
 
 // Localised from the preferences cookie, like every shell route: opt out of
 // instant validation (see the root layout).
 export const instant = false;
 
-/** PJ-01 · Project overview: /projects/[id] (coming soon until its prompt). */
+/** PJ-01 · Project overview: /projects/[id] (inside the project gate). */
 export default function ProjectOverviewPage() {
-  return <ProjectModulePlaceholder module="overview" />;
+  return <ProjectOverviewScreen />;
 }

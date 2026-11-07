@@ -80,7 +80,7 @@ describe("FloatingRail", () => {
         "/projects/website-redesign/analytics",
       ]);
       expect(within(nav).getByRole("link", { name: "Milestones" })).toHaveAttribute("aria-current", "page");
-      expect(within(nav).getByRole("link", { name: "Risks, 2 open high risks" })).toBeInTheDocument();
+      expect(within(nav).getByRole("link", { name: "Risks, open high risks: 1" })).toBeInTheDocument();
     });
 
     it("an owner sees Settings; Tasks stays current on the Board view route", async () => {

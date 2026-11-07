@@ -35,7 +35,9 @@
     "phase4": "Phase 4 · not available yet",
     "soon": "Soon"
   },
-  "rail": { "recent": "Recent projects" },
+  "rail": {
+    "recent": "Recent projects"
+  },
   "quickCreate": {
     "label": "Create",
     "title": "Create",
@@ -55,9 +57,18 @@
   "more": {
     "phoneHint": "Timeline and Gantt open as read-only lists on phones (editing on ≥1024px)."
   },
-  "breadcrumb": { "projects": "Projects" },
+  "breadcrumb": {
+    "projects": "Projects"
+  },
   "comingSoon": {
     "title": "{module} is coming soon",
     "description": "This part of the project is designed and arrives in a later step."
+  },
+  "workflow": {
+    "todo": "To do",
+    "in-progress": "In progress",
+    "in-review": "In review",
+    "blocked": "Blocked",
+    "done": "Done"
   }
 }

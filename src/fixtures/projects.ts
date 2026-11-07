@@ -54,7 +54,7 @@ export const projectFixtures: readonly ProjectFixture[] = [
     members: [kamran, jonathan, sara, kian, maryam, arash, me],
     memberCount: 7,
     forYou: 3,
-    openHighRisks: 2,
+    openHighRisks: 1,
     updatedAt: "2026-10-13T12:35:00+03:30",
   },
   {

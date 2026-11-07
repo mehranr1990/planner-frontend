@@ -1,0 +1,125 @@
+{
+  "status": {
+    "onTrack": "On track",
+    "atRisk": "At risk",
+    "offTrack": "Off track",
+    "change": "Change status",
+    "title": "Project status",
+    "note": "Status note",
+    "notePlaceholder": "What should the team know? (280 characters)",
+    "save": "Save status",
+    "saved": "Status updated",
+    "readOnly": "Set by a Manager"
+  },
+  "header": {
+    "you": "You · {role}",
+    "invite": "Invite",
+    "inviteReason": "Only Owners and Admins can invite",
+    "newTask": "New task"
+  },
+  "hero": {
+    "label": "Project status",
+    "noteBy": "Status note by {name} · {time}",
+    "noNote": "No status note yet",
+    "done": "{done} of {total} tasks done",
+    "expected": "Expected today: {pct}",
+    "ends": "Ends {date} · {days} days left",
+    "ended": "Ended {date}",
+    "progress": "Tasks done",
+    "openTasks": "Open tasks"
+  },
+  "kpi": {
+    "label": "Project status figures",
+    "milestones": "Milestones",
+    "milestonesHint": "{title} next · {date}",
+    "milestonesNone": "No milestone ahead",
+    "overdue": "Overdue tasks",
+    "overdueHint": "oldest {days} days",
+    "overdueNone": "none",
+    "risks": "Open risks",
+    "risksHint": "{n} high",
+    "dueWeek": "Due this week",
+    "dueWeekHint": "of {n} open"
+  },
+  "forYou": {
+    "title": "For you",
+    "waiting": "{n} waiting",
+    "myTasks": "My tasks here",
+    "toAccept": "Assignments to accept",
+    "assignedBy": "{name} assigned you · due {date}",
+    "assignedByNoDue": "{name} assigned you",
+    "myOpen": "My open tasks · {n}",
+    "projection": "Accepted tasks also appear in Personal → Tasks and My Calendar (read-only projection; optional private time block).",
+    "accepted": "Added to your tasks",
+    "declined": "Assignment declined",
+    "shared": "Your shared tasks"
+  },
+  "assign": {
+    "accept": "Accept",
+    "decline": "Decline",
+    "conflict": "This assignment changed. Reload to see the latest."
+  },
+  "decline": {
+    "title": "Decline assignment",
+    "why": "Tell {name} why — it helps reassign.",
+    "reason": "Reason",
+    "noCapacity": "No capacity",
+    "notMyArea": "Not my area",
+    "missingInfo": "Missing info",
+    "other": "Other",
+    "note": "Note",
+    "notePlaceholder": "Add a note (optional)",
+    "submit": "Decline"
+  },
+  "phases": {
+    "title": "Phases & timeline",
+    "ends": "{phase} ends {date}",
+    "open": "Open timeline",
+    "behind": "{days}d behind",
+    "done": "Done",
+    "now": "Today",
+    "chart": "Phases from {start} to {end}"
+  },
+  "milestones": {
+    "title": "Next milestones",
+    "all": "Milestones",
+    "tasksLeft": "{n} tasks left · {phase}",
+    "blocked": "blocked by {what}",
+    "phase": "{phase} phase",
+    "empty": "No upcoming milestones"
+  },
+  "tabs": {
+    "label": "Project sections",
+    "activity": "Activity",
+    "risks": "Risks & blockers",
+    "risksCount": "{n} open",
+    "load": "Team load",
+    "loadHint": "this week"
+  },
+  "activity": {
+    "status": "{actor} set status to {status} · “{note}”",
+    "moved": "{actor} moved {task} to {status}",
+    "completed": "{actor} completed {task}",
+    "milestone": "{actor} added milestone {title} · {date}",
+    "you": "You",
+    "empty": "No activity yet"
+  },
+  "risks": {
+    "issue": "Issue",
+    "risk": "Risk",
+    "blocks": "blocks {n} tasks",
+    "mitigation": "mitigation: {text}",
+    "probability": "probability {level}",
+    "severity": { "low": "Low", "medium": "Medium", "high": "High", "critical": "Critical" },
+    "level": { "low": "low", "medium": "medium", "high": "high" },
+    "owner": "Owner: {name}",
+    "empty": "No open risks or blockers"
+  },
+  "load": {
+    "note": "From task estimates in this project only",
+    "hours": "{hours}h / {capacity}h week",
+    "over": "Over capacity",
+    "row": "{name}: {hours} of {capacity} hours this week",
+    "empty": "No estimates this week"
+  }
+}

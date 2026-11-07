@@ -17,6 +17,7 @@ import enMyDay from "./en/myDay.json";
 import enNavigation from "./en/navigation.json";
 import enOverview from "./en/overview.json";
 import enPersonal from "./en/personal.json";
+import enProject from "./en/project.json";
 import enProjects from "./en/projects.json";
 import enSettings from "./en/settings.json";
 import enShell from "./en/shell.json";
@@ -42,6 +43,7 @@ import faMyDay from "./fa/myDay.json";
 import faNavigation from "./fa/navigation.json";
 import faOverview from "./fa/overview.json";
 import faPersonal from "./fa/personal.json";
+import faProject from "./fa/project.json";
 import faProjects from "./fa/projects.json";
 import faSettings from "./fa/settings.json";
 import faShell from "./fa/shell.json";
@@ -85,6 +87,7 @@ const en = {
   Access: enAccess,
   ContextShell: enContextShell,
   Projects: enProjects,
+  Project: enProject,
 };
 
 export type ClientMessages = typeof en;
@@ -115,6 +118,7 @@ const fa: ClientMessages = {
   Access: faAccess,
   ContextShell: faContextShell,
   Projects: faProjects,
+  Project: faProject,
 };
 
 export const clientMessages: Record<Locale, ClientMessages> = { en, fa };

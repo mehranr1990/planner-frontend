@@ -65,7 +65,7 @@
   "badges": {
     "inbox": "{count} to triage",
     "withCount": "{label}, {count}",
-    "risks": "{count} open high risks"
+    "risks": "open high risks: {count}"
   },
   "switcher": {
     "title": "Context",

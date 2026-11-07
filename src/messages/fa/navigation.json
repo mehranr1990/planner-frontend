@@ -65,7 +65,7 @@
   "badges": {
     "inbox": "{count} مورد برای بررسی",
     "withCount": "{label}، {count}",
-    "risks": "{count} ریسک بالای باز"
+    "risks": "ریسک بالای باز: {count}"
   },
   "switcher": {
     "title": "حوزه",

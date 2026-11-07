@@ -18,6 +18,12 @@ import type {
 } from "../project-domain";
 import type { InvitationRepository, ProjectRepositories, ProjectRepository } from "../project-repositories";
 import { RepositoryError } from "../repositories";
+import {
+  computeKpis,
+  createMockProjectWork,
+  createProjectWorkStore,
+  type ProjectWorkStore,
+} from "./mock-project-work";
 
 /*
  * Projects mock adapter (SH-01/SH-02, PJ-00): the directory, per-project
@@ -84,21 +90,45 @@ export function mockCapabilities(role: ProjectRole, lifecycle: ProjectLifecycle)
 
 export interface MockProjectsOptions {
   respond<T>(value: T): Promise<T>;
+  /** Mock "today" ("YYYY-MM-DD") and now (instant) for counts and writes. */
+  today?: string;
+  now?: string;
 }
 
-export interface MockProjectsStore {
+export interface MockProjectsStore extends ReturnType<typeof createMockProjectWork> {
   projects: ProjectRepository;
   invitations: InvitationRepository;
+  /** Mock-only: the shared task store (PJ-02 / PJ-15 mocks). */
+  work: ProjectWorkStore;
   /** Mock-only: the live store, for other project mocks (tasks, assignments). */
   findProject(id: string): ProjectSummary | undefined;
 }
 
-export function createMockProjects({ respond }: MockProjectsOptions): MockProjectsStore {
+export function createMockProjects({
+  respond,
+  today = "2026-10-13",
+  now = "2026-10-13T14:35:00+03:30",
+}: MockProjectsOptions): MockProjectsStore {
   const projects: ProjectSummary[] = structuredClone([...projectFixtures]);
   const invitations: ProjectInvitation[] = structuredClone([...invitationFixtures]);
   const recent: string[] = [...recentProjectIds];
 
   const find = (id: string) => projects.find((project) => project.id === id);
+  const work = createProjectWorkStore();
+  const workRepos = createMockProjectWork({
+    store: work,
+    now,
+    respond,
+    canSeeTeamLoad: (id) => {
+      const project = find(id);
+      return project ? mockCapabilities(project.role, project.lifecycle).seeTeamLoad : false;
+    },
+    // "n for you" = my open accepted + pending assignments (server-side count): a decline drops one.
+    onAssignmentsChanged: (id, delta) => {
+      const project = find(id);
+      if (project) project.forYou = Math.max(0, project.forYou + delta);
+    },
+  });
 
   function counts(): Record<ProjectFilter, number> {
     const live = projects.filter((project) => project.lifecycle !== "archived");
@@ -170,6 +200,10 @@ export function createMockProjects({ respond }: MockProjectsOptions): MockProjec
         : null;
       return respond(structuredClone(project));
     },
+    async summary(id) {
+      if (!find(id)) throw new RepositoryError("not-found", `No project ${id}`);
+      return respond(computeKpis(work, id, today));
+    },
     async restore(id) {
       const project = find(id);
       if (!project) throw new RepositoryError("not-found", `No project ${id}`);
@@ -206,13 +240,24 @@ export function createMockProjects({ respond }: MockProjectsOptions): MockProjec
   };
 
   return {
+    ...workRepos,
     projects: projectRepo,
     invitations: invitationRepo,
+    work,
     findProject: find,
   };
 }
 
 /** The aggregate slice (drops the mock-only helpers). */
 export function projectRepositories(store: MockProjectsStore): ProjectRepositories {
-  return { projects: store.projects, invitations: store.invitations };
+  return {
+    projects: store.projects,
+    invitations: store.invitations,
+    milestones: store.milestones,
+    workflows: store.workflows,
+    activity: store.activity,
+    risks: store.risks,
+    workload: store.workload,
+    assignments: store.assignments,
+  };
 }

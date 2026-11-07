@@ -1,5 +1,15 @@
 import type {
+  DeclineReason,
+  MyProjectWork,
   ProjectAccess,
+  ProjectActivity,
+  ProjectKpis,
+  ProjectMilestone,
+  ProjectPhase,
+  ProjectRisk,
+  ProjectTask,
+  ProjectWorkflow,
+  WorkloadEntry,
   ProjectDirectory,
   ProjectHealth,
   ProjectInvitation,
@@ -35,6 +45,8 @@ export interface ProjectRepository {
   access(id: string, options?: ProjectAccessOptions): Promise<ProjectAccess>;
   /** Manager+: status chip + short note (D9). */
   setStatus(id: string, input: ProjectStatusInput): Promise<ProjectSummary>;
+  /** PJ-01 status-card KPIs (server counts). */
+  summary(id: string): Promise<ProjectKpis>;
   /** Owner/Admin: archived → active. */
   restore(id: string): Promise<ProjectSummary>;
 }
@@ -47,8 +59,51 @@ export interface InvitationRepository {
   decline(id: string, note?: string): Promise<void>;
 }
 
+export interface MilestoneRepository {
+  listPhases(projectId: string): Promise<readonly ProjectPhase[]>;
+  listMilestones(projectId: string): Promise<readonly ProjectMilestone[]>;
+}
+
+export interface WorkflowRepository {
+  /** The published workflow version tasks are on (D16), transitions for my role. */
+  published(projectId: string): Promise<ProjectWorkflow>;
+}
+
+export interface ActivityRepository {
+  list(projectId: string, options?: { limit?: number }): Promise<readonly ProjectActivity[]>;
+}
+
+export interface RiskRepository {
+  list(projectId: string, options?: { open?: boolean }): Promise<readonly ProjectRisk[]>;
+}
+
+export interface WorkloadRepository {
+  /** This week's estimates per member (D13); empty without the capability. */
+  week(projectId: string): Promise<readonly WorkloadEntry[]>;
+}
+
+export interface AssignmentDeclineInput {
+  reason: DeclineReason;
+  note?: string;
+  /** If-Match: the task revision the user saw. */
+  revision: number;
+}
+
+export interface AssignmentRepository {
+  /** My pending assignments and accepted open tasks in one project. */
+  listMine(projectId: string): Promise<MyProjectWork>;
+  accept(taskId: string, revision: number): Promise<ProjectTask>;
+  decline(taskId: string, input: AssignmentDeclineInput): Promise<ProjectTask>;
+}
+
 /** The Projects part of the `Repositories` aggregate (mock adapters only). */
 export interface ProjectRepositories {
   projects: ProjectRepository;
   invitations: InvitationRepository;
+  milestones: MilestoneRepository;
+  workflows: WorkflowRepository;
+  activity: ActivityRepository;
+  risks: RiskRepository;
+  workload: WorkloadRepository;
+  assignments: AssignmentRepository;
 }

@@ -803,7 +803,7 @@ export function createMockRepositories({ fixtures, latencyMs = 0 }: MockReposito
       moods: source.moods ?? [],
       respond,
     }),
-    ...projectRepositories(createMockProjects({ respond })),
+    ...projectRepositories(createMockProjects({ respond, today, now: nowInstant })),
     review: createMockReview({ reviews: source.reviews ?? [], now: nowInstant, respond }),
     brainDump: createMockBrainDump({
       pages: source.brainDump ?? [],

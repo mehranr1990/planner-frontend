@@ -141,3 +141,133 @@ export interface ProjectDirectory {
   /** Most recently opened first (switcher "Recent", max 3; collection rail, max 4). */
   recentIds: readonly string[];
 }
+
+// ── Work inside a project (PJ-01, PJ-02, PJ-15) ──────────────────────────
+
+/** What a workflow status means for counts and views (never shown by itself). */
+export type WorkflowCategory = "todo" | "active" | "review" | "blocked" | "done";
+
+/** Statuses of the shipped workflow carry a key, so the UI can show its translation. */
+export type DefaultStatusKey = "todo" | "in-progress" | "in-review" | "blocked" | "done";
+
+export interface WorkflowStatus {
+  id: string;
+  /** As entered by the project (custom statuses are shown verbatim). */
+  name: string;
+  key?: DefaultStatusKey;
+  category: WorkflowCategory;
+}
+
+/** The published workflow version tasks are on (D16). */
+export interface ProjectWorkflow {
+  version: number;
+  statuses: readonly WorkflowStatus[];
+  /** Allowed moves per status id, for the current user's role. */
+  transitions: Readonly<Record<string, readonly string[]>>;
+}
+
+export type ProjectPriority = "urgent" | "high" | "medium" | "low";
+
+/** Independent from the task status (owner documents). */
+export type AssignmentState = "pending" | "accepted" | "declined";
+
+export type DeclineReason = "no-capacity" | "not-my-area" | "missing-info" | "other";
+
+export interface TaskAssignee {
+  person: ProjectPerson;
+  state: AssignmentState;
+  /** Who assigned it (shown on pending / declined). */
+  by?: ProjectPerson;
+  reason?: DeclineReason;
+  note?: string;
+}
+
+export interface ProjectTask {
+  id: string;
+  projectId: string;
+  title: string;
+  statusId: string;
+  phaseId: string;
+  milestoneId: string | null;
+  assignees: readonly TaskAssignee[];
+  priority: ProjectPriority;
+  /** Gregorian day or null. */
+  due: string | null;
+  estimateHours: number | null;
+  /** Tasks this one waits for (FS by default). */
+  blockedBy: readonly string[];
+  subtasks: { done: number; total: number };
+  commentCount: number;
+  /** Optimistic concurrency token (If-Match on writes). */
+  revision: number;
+  updatedAt: string;
+}
+
+export interface ProjectPhase {
+  id: string;
+  name: string;
+  start: string;
+  end: string;
+  /** Share of the phase's tasks done (0–100). */
+  progress: number;
+  done: boolean;
+  /** Days behind plan (current phase only), 0 when on plan. */
+  behindDays: number;
+}
+
+export interface ProjectMilestone {
+  id: string;
+  title: string;
+  due: string;
+  phaseId: string;
+  done: boolean;
+  tasksLeft: number;
+  /** Short blocker line when blocked ("API access"). */
+  blockedBy?: string;
+}
+
+export type RiskSeverity = "low" | "medium" | "high" | "critical";
+
+export interface ProjectRisk {
+  id: string;
+  kind: "risk" | "issue";
+  title: string;
+  severity: RiskSeverity;
+  probability: "low" | "medium" | "high";
+  open: boolean;
+  owner: ProjectPerson;
+  blocksTasks: number;
+  mitigation?: string;
+}
+
+export type ProjectActivity =
+  | { id: string; kind: "status"; actor: ProjectPerson; at: string; health: ProjectHealth; note: string }
+  | { id: string; kind: "moved"; actor: ProjectPerson; at: string; task: string; status: string }
+  | { id: string; kind: "completed"; actor: ProjectPerson; at: string; task: string }
+  | { id: string; kind: "milestone"; actor: ProjectPerson; at: string; title: string; due: string };
+
+/** Team load (D13): estimates of open tasks in this project only vs weekly project capacity. */
+export interface WorkloadEntry {
+  person: ProjectPerson;
+  hours: number;
+  capacity: number;
+}
+
+/** PJ-01 status-card KPIs, counted by the server. */
+export interface ProjectKpis {
+  milestonesDone: number;
+  milestonesTotal: number;
+  nextMilestone: ProjectMilestoneRef | null;
+  overdueTasks: number;
+  oldestOverdueDays: number;
+  openRisks: number;
+  highRisks: number;
+  dueThisWeek: number;
+  openTasks: number;
+}
+
+/** "For you" (PJ-01): my pending assignments and my accepted open tasks. */
+export interface MyProjectWork {
+  pending: readonly ProjectTask[];
+  open: readonly ProjectTask[];
+}

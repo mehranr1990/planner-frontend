@@ -1,0 +1,125 @@
+{
+  "status": {
+    "onTrack": "طبق برنامه",
+    "atRisk": "در خطر",
+    "offTrack": "عقب از برنامه",
+    "change": "تغییر وضعیت",
+    "title": "وضعیت پروژه",
+    "note": "یادداشت وضعیت",
+    "notePlaceholder": "تیم چه باید بداند؟ (۲۸۰ نویسه)",
+    "save": "ذخیره‌ی وضعیت",
+    "saved": "وضعیت به‌روز شد",
+    "readOnly": "توسط مدیر تعیین می‌شود"
+  },
+  "header": {
+    "you": "شما · {role}",
+    "invite": "دعوت",
+    "inviteReason": "فقط مالک و ادمین می‌توانند دعوت کنند",
+    "newTask": "کار جدید"
+  },
+  "hero": {
+    "label": "وضعیت پروژه",
+    "noteBy": "یادداشت وضعیت از {name} · {time}",
+    "noNote": "هنوز یادداشت وضعیتی نیست",
+    "done": "{done} از {total} کار انجام شد",
+    "expected": "انتظار تا امروز: {pct}",
+    "ends": "پایان {date} · {days} روز مانده",
+    "ended": "پایان‌یافته {date}",
+    "progress": "کارهای انجام‌شده",
+    "openTasks": "باز کردن کارها"
+  },
+  "kpi": {
+    "label": "ارقام وضعیت پروژه",
+    "milestones": "نقاط عطف",
+    "milestonesHint": "بعدی {title} · {date}",
+    "milestonesNone": "نقطه‌ی عطفی در پیش نیست",
+    "overdue": "کارهای عقب‌افتاده",
+    "overdueHint": "قدیمی‌ترین {days} روز",
+    "overdueNone": "هیچ",
+    "risks": "ریسک‌های باز",
+    "risksHint": "{n} بالا",
+    "dueWeek": "موعد این هفته",
+    "dueWeekHint": "از {n} کار باز"
+  },
+  "forYou": {
+    "title": "برای شما",
+    "waiting": "{n} در انتظار",
+    "myTasks": "کارهای من در اینجا",
+    "toAccept": "واگذاری‌های منتظر پذیرش",
+    "assignedBy": "{name} به شما سپرد · موعد {date}",
+    "assignedByNoDue": "{name} به شما سپرد",
+    "myOpen": "کارهای باز من · {n}",
+    "projection": "کارهای پذیرفته در «شخصی ← کارها» و «تقویم من» هم دیده می‌شوند (نمایش فقط‌خواندنی؛ بلوک زمانی خصوصی اختیاری).",
+    "accepted": "به کارهای شما اضافه شد",
+    "declined": "واگذاری رد شد",
+    "shared": "کارهای اشتراکی شما"
+  },
+  "assign": {
+    "accept": "می‌پذیرم",
+    "decline": "نمی‌پذیرم",
+    "conflict": "این واگذاری تغییر کرده است. برای دیدن آخرین نسخه بارگذاری دوباره کنید."
+  },
+  "decline": {
+    "title": "رد واگذاری",
+    "why": "به {name} بگویید چرا؛ به واگذاری دوباره کمک می‌کند.",
+    "reason": "دلیل",
+    "noCapacity": "ظرفیت ندارم",
+    "notMyArea": "حوزه‌ی من نیست",
+    "missingInfo": "اطلاعات ناقص",
+    "other": "دیگر",
+    "note": "یادداشت",
+    "notePlaceholder": "یادداشتی بنویسید (اختیاری)",
+    "submit": "نمی‌پذیرم"
+  },
+  "phases": {
+    "title": "فازها و زمان‌بندی",
+    "ends": "پایان {phase} {date}",
+    "open": "باز کردن تایم‌لاین",
+    "behind": "{days} روز عقب",
+    "done": "انجام شد",
+    "now": "امروز",
+    "chart": "فازها از {start} تا {end}"
+  },
+  "milestones": {
+    "title": "نقاط عطف بعدی",
+    "all": "نقاط عطف",
+    "tasksLeft": "{n} کار مانده · {phase}",
+    "blocked": "مسدود به‌خاطر {what}",
+    "phase": "فاز {phase}",
+    "empty": "نقطه‌ی عطفی در پیش نیست"
+  },
+  "tabs": {
+    "label": "بخش‌های پروژه",
+    "activity": "فعالیت",
+    "risks": "ریسک‌ها و موانع",
+    "risksCount": "{n} باز",
+    "load": "بار تیم",
+    "loadHint": "این هفته"
+  },
+  "activity": {
+    "status": "{actor} وضعیت را {status} کرد · «{note}»",
+    "moved": "{actor} {task} را به {status} برد",
+    "completed": "{actor} {task} را انجام داد",
+    "milestone": "{actor} نقطه‌ی عطف {title} را افزود · {date}",
+    "you": "شما",
+    "empty": "هنوز فعالیتی نیست"
+  },
+  "risks": {
+    "issue": "مسئله",
+    "risk": "ریسک",
+    "blocks": "{n} کار را مسدود کرده",
+    "mitigation": "کاهش: {text}",
+    "probability": "احتمال {level}",
+    "severity": { "low": "کم", "medium": "متوسط", "high": "بالا", "critical": "بحرانی" },
+    "level": { "low": "کم", "medium": "متوسط", "high": "بالا" },
+    "owner": "مسئول: {name}",
+    "empty": "ریسک یا مانع بازی نیست"
+  },
+  "load": {
+    "note": "فقط از تخمین کارهای همین پروژه",
+    "hours": "{hours} / {capacity} ساعت در هفته",
+    "over": "بیش از ظرفیت",
+    "row": "{name}: {hours} از {capacity} ساعت این هفته",
+    "empty": "این هفته تخمینی ثبت نشده"
+  }
+}

@@ -60,7 +60,7 @@ import type { WeekConfig } from "@/lib/dates/week";
  * - partial: the main write succeeded but follow-up writes failed; `task` is the saved state
  *   and `failed` names what was not saved, so the UI can keep the edit and offer a retry.
  */
-export type RepositoryErrorCode = "not-found" | "invalid" | "forbidden" | "unsupported" | "partial";
+export type RepositoryErrorCode = "not-found" | "invalid" | "forbidden" | "unsupported" | "partial" | "conflict";
 
 export type PartialField = "duration" | "labels" | "checklist" | "note" | "recurrence" | "plan";
 
