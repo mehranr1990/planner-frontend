@@ -1,0 +1,8 @@
+{
+  "notAllowed": "مجاز نیست: {from} ← {to}",
+  "wip": "در جریان {n} از {max}",
+  "rejected": "این جابه‌جایی پذیرفته نشد: {reason}",
+  "swimlanes": "ردیف‌بندی",
+  "workflowVersion": "گردش‌کار نسخه‌ی {version} · منتشرشده {date}",
+  "doneMore": "+ {n} مورد دیگر · بعد از {days} روز جمع می‌شود"
+}

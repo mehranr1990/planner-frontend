@@ -106,6 +106,10 @@ export interface ProjectCapabilities {
   comment: boolean;
   seeTeamLoad: boolean;
   createMilestone: boolean;
+  /** Board: drop past a WIP limit after confirming (Manager+). */
+  exceedWip: boolean;
+  /** Board: manual order within a column (Manager+). */
+  reorderTasks: boolean;
   createRisk: boolean;
   uploadFile: boolean;
   restore: boolean;
@@ -174,6 +178,10 @@ export interface ProjectWorkflow {
   statuses: readonly WorkflowStatus[];
   /** Allowed moves per status id, for the current user's role. */
   transitions: Readonly<Record<string, readonly string[]>>;
+  /** When this version was published (instant with offset). */
+  publishedAt?: string;
+  /** Optional WIP limit per status id (Settings › Workflow). */
+  wipLimits?: Readonly<Record<string, number>>;
 }
 
 export type ProjectPriority = "urgent" | "high" | "medium" | "low";
@@ -211,6 +219,8 @@ export interface ProjectTask {
   /** Optimistic concurrency token (If-Match on writes). */
   revision: number;
   updatedAt: string;
+  /** When the task entered a done status (instant); absent while open. */
+  completedAt?: string;
   /** What the current user may do to this task (server-computed per request). */
   can?: TaskCan;
 }

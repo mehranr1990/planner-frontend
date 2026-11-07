@@ -234,6 +234,19 @@ export function useProjectTasks(projectId: string, query: ProjectTaskQuery, prev
   );
 }
 
+/** Tasks per status id (Flow counts). */
+export function useProjectStatusCounts(projectId: string, preview: ProjectAccessOptions = {}) {
+  const { projectTasks } = useRepositories();
+  const hydrated = useIsClient();
+  return afterHydration(
+    useQuery({
+      queryKey: scoped(projectId, "status-counts", preview.previewRole ?? null),
+      queryFn: () => projectTasks.countByStatus(projectId, preview),
+    }),
+    hydrated,
+  );
+}
+
 export function useProjectMembers(projectId: string) {
   const { projectTasks } = useRepositories();
   const hydrated = useIsClient();
@@ -266,8 +279,26 @@ export function useProjectTaskActions(projectId: string) {
     mutationFn: (taskIds: readonly string[]) => projectTasks.remove(taskIds),
     onSettled: refresh,
   });
+  const transition = useMutation({
+    mutationFn: ({
+      taskId,
+      toStatusId,
+      revision,
+      exceedWip,
+    }: {
+      taskId: string;
+      toStatusId: string;
+      revision: number;
+      exceedWip?: boolean;
+    }) => projectTasks.transition(taskId, toStatusId, revision, { exceedWip }),
+    onSettled: refresh,
+  });
+  const reorder = useMutation({
+    mutationFn: (orderedIds: readonly string[]) => projectTasks.reorder(projectId, orderedIds),
+    onSettled: refresh,
+  });
   const fetchTask = (taskId: string) => projectTasks.get(taskId);
-  return { create, update, bulkUpdate, remove, fetchTask };
+  return { create, update, bulkUpdate, remove, transition, reorder, fetchTask, refresh };
 }
 
 // ── Task detail (PJ-15) ──────────────────────────────────────────────────

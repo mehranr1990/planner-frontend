@@ -38,6 +38,8 @@ export const sampleWorkflow: ProjectWorkflow = {
     done: ["in-review"],
     blocked: ["in-progress", "todo"],
   },
+  publishedAt: "2026-10-02T09:00:00+03:30",
+  wipLimits: { "in-progress": 5, "in-review": 3 },
 };
 
 export const samplePhases: readonly ProjectPhase[] = [
@@ -88,6 +90,7 @@ interface TaskSeed {
   blockedBy?: string[];
   subtasks?: { done: number; total: number };
   commentCount?: number;
+  completedAt?: string;
 }
 
 const task = (seed: TaskSeed): ProjectTask => ({
@@ -105,9 +108,17 @@ const task = (seed: TaskSeed): ProjectTask => ({
   ...seed,
 });
 
+/** When each phase's finished tasks were completed (Done collapses cards older than 7 days). */
+const COMPLETED_AT: Record<string, string> = {
+  planning: "2026-09-14T17:00:00+03:30",
+  design: "2026-10-10T17:00:00+03:30",
+  build: "2026-10-12T10:00:00+03:30",
+};
+
 const doneTasks = (phaseId: string, titles: readonly string[], who: TaskAssignee["person"]) =>
   titles.map((title, index) =>
     task({
+      completedAt: COMPLETED_AT[phaseId],
       id: `${phaseId}-${index + 1}`,
       title,
       statusId: "done",

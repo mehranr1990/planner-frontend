@@ -189,6 +189,22 @@ export interface ProjectTaskRepository {
   /** All-or-nothing per task: tasks the user cannot change come back in failedIds. */
   bulkUpdate(projectId: string, taskIds: readonly string[], patch: ProjectTaskPatch): Promise<BulkUpdateResult>;
   remove(taskIds: readonly string[]): Promise<void>;
+  /**
+   * Board drop = workflow transition with If-Match. Rejects "conflict" (stale
+   * revision), "forbidden" (not your card / role), or "invalid" with message
+   * "transition" (not allowed by the workflow) or "wip-limit" (over the
+   * status limit without `exceedWip`, or without the capability).
+   */
+  transition(
+    taskId: string,
+    toStatusId: string,
+    revision: number,
+    options?: { exceedWip?: boolean },
+  ): Promise<ProjectTask>;
+  /** Manager+: per-project manual order of these tasks (board column order). */
+  reorder(projectId: string, orderedIds: readonly string[]): Promise<void>;
+  /** Tasks per status id among the tasks the user can see (Flow counts). */
+  countByStatus(projectId: string, options?: ProjectAccessOptions): Promise<Readonly<Record<string, number>>>;
 }
 
 // ── Task detail (PJ-15) ──────────────────────────────────────────────────

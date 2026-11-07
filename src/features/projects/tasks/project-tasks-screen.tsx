@@ -5,16 +5,10 @@ import {
   ChevronDown,
   ChevronRight,
   Ellipsis,
-  Filter,
-  GitBranch,
-  Kanban,
-  List,
   Plus,
-  X,
 } from "lucide-react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { AccessLoading, AccessState } from "@/components/feedback/access-state";
 import { EmptyState, NoResultsState } from "@/components/feedback/state-views";
 import { Button, IconButton } from "@/components/ui/button";
@@ -29,11 +23,9 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Icon } from "@/components/ui/icon";
 import { PillGroup } from "@/components/ui/pills";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { SearchField } from "@/components/ui/search-field";
-import { Segmented } from "@/components/ui/segmented";
 import { toast } from "@/components/ui/toast";
-import type { ProjectPriority, ProjectTask } from "@/data/project-domain";
+import type { ProjectTask } from "@/data/project-domain";
 import {
   useProjectMembers,
   useProjectMilestones,
@@ -42,10 +34,9 @@ import {
   useProjectTasks,
   useProjectWorkflow,
 } from "@/data/project-queries";
-import type { ProjectTaskFilters, ProjectTaskPatch, ProjectTaskView } from "@/data/project-repositories";
+import type { ProjectTaskPatch } from "@/data/project-repositories";
 import { RepositoryError } from "@/data/repositories";
 import { getPlannerToday } from "@/data/clock";
-import { projectHref } from "@/features/navigation/contexts";
 import { cn } from "@/lib/cn";
 import { demoAccessOptions } from "../demo-state";
 import { useProjectFormat } from "../format";
@@ -55,6 +46,7 @@ import { useWorkflowStatusLabel } from "../workflow-status-chip";
 import { ProjectBulkBar } from "./project-bulk-bar";
 import { ProjectTaskAdd } from "./project-task-add";
 import { GROUP_OPTIONS, groupProjectTasks, type ProjectTaskGroupBy } from "./project-task-groups";
+import { ActiveTaskFilters, TASK_VIEWS, TaskFiltersPopover, TaskViewSwitch, useTasksUrlState } from "./task-view-shared";
 import { PROJECT_ROW_GRID, ProjectTaskRow } from "./project-task-row";
 
 /*
@@ -69,69 +61,17 @@ import { PROJECT_ROW_GRID, ProjectTaskRow } from "./project-task-row";
  * only granted tasks, no grouping by people.
  */
 
-const VIEWS: readonly ProjectTaskView[] = ["all", "mine", "unassigned", "overdue", "completed"];
-const PRIORITIES: readonly ProjectPriority[] = ["urgent", "high", "medium", "low"];
-const FILTER_KEYS = ["status", "assignee", "priority", "milestone"] as const;
-type FilterKey = (typeof FILTER_KEYS)[number];
-
-function listParam(params: URLSearchParams, key: string): string[] {
-  return (params.get(key) ?? "").split(",").filter(Boolean);
-}
-
-/** URL-held list state (view, search, group, filters) so Board / Flow keep it. */
-function useTasksUrlState() {
-  const router = useRouter();
-  const pathname = usePathname();
-  const params = useSearchParams();
-  const viewParam = params.get("view");
-  const view: ProjectTaskView = (VIEWS as readonly string[]).includes(viewParam ?? "")
-    ? (viewParam as ProjectTaskView)
-    : "all";
-  const groupParam = params.get("group");
-  const group: ProjectTaskGroupBy = (GROUP_OPTIONS as readonly string[]).includes(groupParam ?? "")
-    ? (groupParam as ProjectTaskGroupBy)
-    : "phase";
-  const filters: Record<FilterKey, string[]> = {
-    status: listParam(params, "status"),
-    assignee: listParam(params, "assignee"),
-    priority: listParam(params, "priority"),
-    milestone: listParam(params, "milestone"),
-  };
-  const set = (changes: Record<string, string | null>) => {
-    const next = new URLSearchParams(params.toString());
-    for (const [key, value] of Object.entries(changes)) {
-      if (value === null || value === "") next.delete(key);
-      else next.set(key, value);
-    }
-    const query = next.toString();
-    router.replace(query ? `${pathname}?${query}` : pathname, { scroll: false });
-  };
-  return {
-    view,
-    group,
-    filters,
-    search: params.get("q") ?? "",
-    add: params.get("add") === "1",
-    query: params.toString(),
-    set,
-  };
-}
+const VIEWS = TASK_VIEWS;
 
 export function ProjectTasksScreen() {
   const t = useTranslations("ProjectTasks");
-  const router = useRouter();
   const format = useProjectFormat();
   const statusLabel = useWorkflowStatusLabel();
   const { project, capabilities, demo } = useProject();
   const url = useTasksUrlState();
   const [searchText, setSearchText] = useState(url.search);
   const preview = demoAccessOptions(demo);
-  const taskFilters: ProjectTaskFilters = {
-    statusIds: url.filters.status,
-    assigneeIds: url.filters.assignee,
-    priorities: url.filters.priority as ProjectPriority[],
-    milestoneIds: url.filters.milestone,
-  };
+  const taskFilters = url.taskFilters;
   const list = useProjectTasks(project.id, { view: url.view, filters: taskFilters, search: url.search }, preview);
   const workflow = useProjectWorkflow(project.id);
   const phases = useProjectPhases(project.id);
@@ -183,9 +123,6 @@ export function ProjectTasksScreen() {
     phases.data?.find((phase) => !phase.done && today >= phase.start && today <= phase.end) ??
     phases.data?.find((phase) => !phase.done);
 
-  const viewHref = (segment: "tasks" | "board" | "flow") =>
-    `${projectHref(project.id, segment === "tasks" ? "tasks" : segment)}${url.query ? `?${url.query}` : ""}`;
-
   const saveStatus = (task: ProjectTask, statusId: string) => {
     const patch = { statusId };
     actions.update.mutate(
@@ -224,21 +161,7 @@ export function ProjectTasksScreen() {
     );
   };
 
-  const filterCount = FILTER_KEYS.reduce((sum, key) => sum + url.filters[key].length, 0);
-  const memberName = (id: string) =>
-    id === "none" ? t("filters.unassigned") : (members.data?.find((person) => person.id === id)?.name ?? id);
-  const filterValueLabel = (key: FilterKey, value: string) => {
-    if (key === "status") return statusLabel(workflow.data?.statuses.find((status) => status.id === value)) || value;
-    if (key === "assignee") return memberName(value);
-    if (key === "priority") return t(`priority.${value as ProjectPriority}`);
-    return milestones.data?.find((milestone) => milestone.id === value)?.title ?? value;
-  };
-  const toggleFilter = (key: FilterKey, value: string) => {
-    const current = url.filters[key];
-    const next = current.includes(value) ? current.filter((item) => item !== value) : [...current, value];
-    url.set({ [key]: next.join(",") || null });
-  };
-  const clearFilters = () => url.set({ status: null, assignee: null, priority: null, milestone: null, q: null });
+  const filterCount = url.filterCount;
 
   const header = (
     <ProjectPageHeader
@@ -246,46 +169,7 @@ export function ProjectTasksScreen() {
       title={t("title")}
       actions={
         <>
-          <Segmented
-            label={t("view.label")}
-            value="list"
-            onValueChange={(value) => {
-              if (value !== "list") router.push(viewHref(value === "board" ? "board" : "flow"));
-            }}
-            options={[
-              {
-                value: "list",
-                label: (
-                  <>
-                    <Icon icon={List} size={16} />
-                    {t("view.list")}
-                  </>
-                ),
-              },
-              {
-                value: "board",
-                label: (
-                  <>
-                    <Icon icon={Kanban} size={16} />
-                    {t("view.board")}
-                  </>
-                ),
-              },
-              // Flow is not on phones (D18).
-              {
-                value: "flow",
-                label: (
-                  <>
-                    <Icon icon={GitBranch} size={16} />
-                    {t("view.flow")}
-                  </>
-                ),
-              },
-            ]}
-            className="max-sm:hidden"
-          />
-          {/* Phones (PJM01): Board is one tap away; Flow is not on phones (D18). */}
-          <IconButton icon={Kanban} label={t("view.board")} className="bg-surface sm:hidden" onClick={() => router.push(viewHref("board"))} />
+          <TaskViewSwitch projectId={project.id} current="list" query={url.query} />
           {canAdd ? (
             <Button size="lg" onClick={() => addRef.current?.focus()}>
               <Icon icon={Plus} size={18} />
@@ -351,69 +235,13 @@ export function ProjectTasksScreen() {
           aria-label={t("search")}
           className="min-w-44 flex-1 max-sm:order-last max-sm:basis-full"
         />
-        <Popover>
-          <PopoverTrigger asChild>
-            <Button variant="secondary" size="sm" className="gap-2 bg-surface">
-              <Icon icon={Filter} size={16} />
-              {t("filters.button")}
-              {filterCount > 0 ? (
-                <span className="rounded-pill bg-scope-soft px-1.5 text-xs font-bold text-scope-deep">
-                  {format.number(filterCount)}
-                </span>
-              ) : null}
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent align="end" aria-label={t("filters.title")} className="w-80" data-scope="project">
-            <div className="flex flex-col gap-3">
-              <FilterSection label={t("filters.status")}>
-                {workflow.data.statuses.map((status) => (
-                  <FilterChip
-                    key={status.id}
-                    pressed={url.filters.status.includes(status.id)}
-                    onClick={() => toggleFilter("status", status.id)}
-                  >
-                    {statusLabel(status)}
-                  </FilterChip>
-                ))}
-              </FilterSection>
-              {!guest ? (
-                <FilterSection label={t("filters.assignee")}>
-                  {[...(members.data ?? []).map((person) => person.id), "none"].map((id) => (
-                    <FilterChip
-                      key={id}
-                      pressed={url.filters.assignee.includes(id)}
-                      onClick={() => toggleFilter("assignee", id)}
-                    >
-                      {memberName(id)}
-                    </FilterChip>
-                  ))}
-                </FilterSection>
-              ) : null}
-              <FilterSection label={t("filters.priority")}>
-                {PRIORITIES.map((priority) => (
-                  <FilterChip
-                    key={priority}
-                    pressed={url.filters.priority.includes(priority)}
-                    onClick={() => toggleFilter("priority", priority)}
-                  >
-                    {t(`priority.${priority}`)}
-                  </FilterChip>
-                ))}
-              </FilterSection>
-              <FilterSection label={t("filters.milestone")}>
-                {milestones.data.map((milestone) => (
-                  <FilterChip
-                    key={milestone.id}
-                    pressed={url.filters.milestone.includes(milestone.id)}
-                    onClick={() => toggleFilter("milestone", milestone.id)}
-                  >
-                    {milestone.title}
-                  </FilterChip>
-                ))}
-              </FilterSection>
-            </div>
-          </PopoverContent>
-        </Popover>
+        <TaskFiltersPopover
+          url={url}
+          workflow={workflow.data}
+          members={members.data ?? []}
+          milestones={milestones.data}
+          guest={guest}
+        />
         <DropdownMenu modal={false}>
           <DropdownMenuTrigger asChild>
             <Button variant="secondary" size="sm" className="gap-2 bg-surface">
@@ -436,32 +264,7 @@ export function ProjectTasksScreen() {
         </DropdownMenu>
       </div>
 
-      {filterCount > 0 ? (
-        <div className="flex flex-wrap items-center gap-2 px-1 text-xs font-semibold text-fg-secondary">
-          <span>{t("filters.active")}</span>
-          {FILTER_KEYS.flatMap((key) =>
-            url.filters[key].map((value) => (
-              <span
-                key={`${key}-${value}`}
-                className="inline-flex items-center gap-1 rounded-pill bg-scope-soft py-0.5 ps-2.5 pe-1 text-scope-deep"
-              >
-                <bdi>{t("filters.chip", { label: t(`filters.${key}`), value: filterValueLabel(key, value) })}</bdi>
-                <button
-                  type="button"
-                  aria-label={t("filters.remove", { value: filterValueLabel(key, value) })}
-                  onClick={() => toggleFilter(key, value)}
-                  className="inline-flex size-5 items-center justify-center rounded-full hover:bg-surface"
-                >
-                  <Icon icon={X} size={12} />
-                </button>
-              </span>
-            )),
-          )}
-          <button type="button" onClick={clearFilters} className="font-bold text-fg underline underline-offset-2">
-            {t("filters.clear")}
-          </button>
-        </div>
-      ) : null}
+      <ActiveTaskFilters url={url} workflow={workflow.data} members={members.data ?? []} milestones={milestones.data} />
 
       {demo === "pending" || demo === "quota" ? <AccessState kind={demo} titleAs="h2" /> : null}
 
@@ -473,7 +276,7 @@ export function ProjectTasksScreen() {
           title={t("filtered.title")}
           description={t("filtered.description")}
           primaryAction={
-            <Button variant="secondary" onClick={clearFilters}>
+            <Button variant="secondary" onClick={url.clearFilters}>
               {t("filters.clear")}
             </Button>
           }
@@ -734,31 +537,6 @@ function exportCsv(tasks: readonly ProjectTask[], projectName: string, status: (
   link.download = `${projectName} tasks.csv`;
   link.click();
   URL.revokeObjectURL(link.href);
-}
-
-function FilterSection({ label, children }: { label: string; children: ReactNode }) {
-  return (
-    <div role="group" aria-label={label} className="flex flex-col gap-1.5">
-      <p className="text-xs font-bold text-fg-secondary">{label}</p>
-      <div className="flex flex-wrap gap-1.5">{children}</div>
-    </div>
-  );
-}
-
-function FilterChip({ pressed, onClick, children }: { pressed: boolean; onClick: () => void; children: ReactNode }) {
-  return (
-    <button
-      type="button"
-      aria-pressed={pressed}
-      onClick={onClick}
-      className={cn(
-        "inline-flex min-h-8 items-center rounded-pill px-3 text-xs font-semibold transition-colors",
-        pressed ? "bg-scope-soft text-scope-deep" : "text-fg-secondary inset-ring inset-ring-outline hover:text-fg",
-      )}
-    >
-      <bdi>{children}</bdi>
-    </button>
-  );
 }
 
 /** SH-02 conflict notice on a row: never overwrite silently — Compare or Reload. */

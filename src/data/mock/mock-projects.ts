@@ -96,6 +96,8 @@ export function mockCapabilities(role: ProjectRole, lifecycle: ProjectLifecycle)
     comment: editable && (rank >= RANK.member || guest),
     seeTeamLoad: rank >= RANK.member,
     createMilestone: editable && rank >= RANK.manager,
+    exceedWip: editable && rank >= RANK.manager,
+    reorderTasks: editable && rank >= RANK.manager,
     createRisk: editable && rank >= RANK.member,
     uploadFile: editable && rank >= RANK.member,
     restore: lifecycle === "archived" && rank >= RANK.admin,

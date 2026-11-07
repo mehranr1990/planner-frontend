@@ -1,0 +1,8 @@
+{
+  "notAllowed": "Not allowed: {from} → {to}",
+  "wip": "WIP {n} / {max}",
+  "rejected": "The server didn’t accept this move: {reason}",
+  "swimlanes": "Swimlanes",
+  "workflowVersion": "Workflow v{version} · published {date}",
+  "doneMore": "+ {n} more · collapsed after {days} days"
+}

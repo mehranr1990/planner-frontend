@@ -47,7 +47,7 @@ export interface ProjectTaskRowProps {
   conflict?: ReactNode;
 }
 
-function AssigneeAvatar({ assignee }: { assignee: TaskAssignee }) {
+export function AssigneeAvatar({ assignee }: { assignee: TaskAssignee }) {
   const t = useTranslations("ProjectTasks.row");
   const name =
     assignee.state === "pending"

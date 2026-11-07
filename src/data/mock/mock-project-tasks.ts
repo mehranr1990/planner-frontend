@@ -87,6 +87,11 @@ export function createMockProjectTasks({ store, today, now, respond, roleOf, mem
       if (!workflow.statuses.some((status) => status.id === patch.statusId)) {
         throw new RepositoryError("invalid", `Unknown status ${patch.statusId}`);
       }
+      if (patch.statusId !== task.statusId) {
+        const done = workflow.statuses.find((status) => status.id === patch.statusId)?.category === "done";
+        if (done) task.completedAt = now;
+        else delete task.completedAt;
+      }
       task.statusId = patch.statusId;
     }
     if (patch.title !== undefined) {
@@ -220,6 +225,48 @@ export function createMockProjectTasks({ store, today, now, respond, roleOf, mem
         updated.push(withCan(task));
       }
       return respond({ updated, failedIds });
+    },
+    async transition(taskId, toStatusId, revision, { exceedWip = false } = {}) {
+      const task = taskOrThrow(taskId);
+      if (task.revision !== revision) throw new RepositoryError("conflict", `Task ${taskId} changed`, {});
+      const { role, archived } = access(task.projectId);
+      if (!taskCan(task, role, archived).status) throw new RepositoryError("forbidden", "Not allowed for your role");
+      const workflow = store.workflow(task.projectId);
+      if (toStatusId !== task.statusId) {
+        if (!(workflow.transitions[task.statusId] ?? []).includes(toStatusId)) {
+          throw new RepositoryError("invalid", "transition");
+        }
+        const limit = workflow.wipLimits?.[toStatusId];
+        const inStatus = (store.tasks.get(task.projectId) ?? []).filter((item) => item.statusId === toStatusId).length;
+        if (limit !== undefined && inStatus + 1 > limit && (!exceedWip || archived || RANK[role] < RANK.manager)) {
+          throw new RepositoryError("invalid", "wip-limit");
+        }
+      }
+      applyPatch(task, { statusId: toStatusId });
+      return respond(withCan(task));
+    },
+    async reorder(projectId, orderedIds) {
+      const { role, archived } = access(projectId);
+      if (archived || RANK[role] < RANK.manager) throw new RepositoryError("forbidden", "Manager+ only");
+      const list = store.tasks.get(projectId) ?? [];
+      const slots = list.flatMap((task, index) => (orderedIds.includes(task.id) ? [index] : []));
+      const moved = orderedIds.map((id) => list.find((task) => task.id === id)).filter((task) => task !== undefined);
+      if (moved.length !== slots.length) throw new RepositoryError("invalid", "Unknown task in order");
+      slots.forEach((slot, at) => {
+        list[slot] = moved[at]!;
+      });
+      return respond(undefined);
+    },
+    countByStatus(projectId, options = {}) {
+      const { role } = access(projectId, options);
+      const counts: Record<string, number> = Object.fromEntries(
+        store.workflow(projectId).statuses.map((status) => [status.id, 0]),
+      );
+      for (const task of store.tasks.get(projectId) ?? []) {
+        if (role === "guest" && !isMine(task)) continue;
+        counts[task.statusId] = (counts[task.statusId] ?? 0) + 1;
+      }
+      return respond(counts);
     },
     async remove(taskIds) {
       for (const id of taskIds) {
