@@ -1,3 +1,4 @@
+import type { CalendarSystem } from "@/lib/dates/format";
 import type {
   DeclineReason,
   InviteRole,
@@ -41,6 +42,7 @@ import type {
   ProjectWorkflow,
   WorkloadEntry,
   WorkloadGrid,
+  WorkloadPeriodUnit,
   AnalyticsRange,
   AnalyticsSummary,
   CustomField,
@@ -301,6 +303,16 @@ export interface WorkloadRepository {
    * every member; a Member gets only their own row (no Unassigned row).
    */
   byWeek(projectId: string, range: { from: string; weeks: number }, options?: ProjectAccessOptions): Promise<WorkloadGrid>;
+  /**
+   * Same grid by Iran weeks or by calendar months (`calendar` = the user's
+   * setting: Jalali months in Shamsi, Gregorian otherwise), `count` columns
+   * from the period containing `from`.
+   */
+  byPeriod(
+    projectId: string,
+    range: { from: string; unit: WorkloadPeriodUnit; count: number; calendar: CalendarSystem },
+    options?: ProjectAccessOptions,
+  ): Promise<WorkloadGrid>;
 }
 
 export interface AssignmentDeclineInput {

@@ -4,17 +4,17 @@
   "noCapacity": "no capacity set",
   "reassign": "Reassign a task",
   "unestimated": "{n} tasks without estimate",
-  "table": "Estimated hours per member and week",
+  "table": "{measure, select, count {Open tasks} other {Estimated hours}} per member and {unit, select, month {month} other {week}}",
   "person": "Member",
   "perWeek": "{n}h / week",
   "guest": "{name} · guest",
-  "week": "Week of {date}",
+  "week": "week of {date}",
   "thisWeek": "This week",
   "nextWeek": "Next week",
   "hours": "{n}h",
   "percent": "{n}",
-  "cell": "{name}, week of {date}: {hours}h of {capacity}h ({percent})",
-  "cellNoCapacity": "{name}, week of {date}: {hours}h, no capacity set",
+  "cell": "{name}, {period}: {hours}h of {capacity}h ({percent})",
+  "cellNoCapacity": "{name}, {period}: {hours}h, no capacity set",
   "unassigned": "Unassigned",
   "unassignedCell": "{n, plural, one {# task} other {# tasks}} · {hours}h",
   "none": "—",
@@ -23,18 +23,32 @@
     "low": "< 50%",
     "mid": "50–90%",
     "high": "90–100%",
-    "over": "Over capacity"
+    "over": "Over capacity",
+    "count": "Task count · no percent or over-capacity colour (capacity is in hours)"
   },
   "footnote": "Estimates of open tasks spread over their dates · pending assignments included (counted for the assignee)",
   "detail": {
     "title": "{name} · {date}",
     "summary": "{hours}h estimated of {capacity}h capacity",
     "summaryNoCapacity": "{hours}h estimated · no capacity set",
-    "tasks": "Tasks this week",
-    "empty": "No estimated tasks this week",
+    "tasks": "{unit, select, month {Tasks this month} other {Tasks this week}}",
+    "empty": "{measure, select, count {No open tasks} other {No estimated tasks}} this {unit, select, month {month} other {week}}",
     "pick": "Pick a task, then Reassign a task",
     "noTask": "Pick a task to reassign",
-    "privacy": "Only this project’s tasks. {name}’s personal calendar and other projects are never shown."
+    "privacy": "Only this project’s tasks. {name}’s personal calendar and other projects are never shown.",
+    "summaryCount": "{n, plural, one {# open task} other {# open tasks}}",
+    "noEstimate": "No estimate"
   },
-  "ownRow": "You see your own row; Managers see the whole team."
+  "ownRow": "You see your own row; Managers see the whole team.",
+  "switch": {
+    "period": "Columns",
+    "weeks": "Weeks",
+    "months": "Months",
+    "measure": "Measure",
+    "estimates": "Estimates",
+    "count": "Task count"
+  },
+  "cellCount": "{name}, {period}: {n, plural, one {# open task} other {# open tasks}}",
+  "tasksCount": "{n, plural, one {# task} other {# tasks}}",
+  "footnoteCount": "Open assigned tasks active in each period · pending assignments included (counted for the assignee)"
 }

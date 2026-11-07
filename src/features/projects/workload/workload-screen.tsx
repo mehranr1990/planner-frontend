@@ -6,9 +6,10 @@ import { useTranslations } from "next-intl";
 import { useId } from "react";
 import { AccessLoading, AccessState } from "@/components/feedback/access-state";
 import { Avatar } from "@/components/ui/avatar";
+import { Segmented } from "@/components/ui/segmented";
 import { Progress } from "@/design-system/feedback/progress";
 import { SignatureCard, SignatureCardAction } from "@/design-system/surfaces/signature-card";
-import type { WorkloadCell, WorkloadGrid, WorkloadRow } from "@/data/project-domain";
+import type { WorkloadCell, WorkloadGrid, WorkloadPeriod, WorkloadPeriodUnit, WorkloadRow } from "@/data/project-domain";
 import { useProjectWorkflow, useWorkloadGrid } from "@/data/project-queries";
 import { getPlannerToday } from "@/data/clock";
 import { cn } from "@/lib/cn";
@@ -29,10 +30,26 @@ import { useWorkflowStatusLabel, WorkflowStatusChip } from "../workflow-status-c
  * "Reassign a task" (?sheet=assignment-reassign, Manager+). Only this
  * project's estimates (D13): Personal data is never read. Members see only
  * their own row. Phones (PJM03): per member this week + next week bars.
- * `?cell=<personId>:<week>` keeps the selection.
+ * `?cell=<personId>:<index>` keeps the selection.
+ *
+ * Owner decision (after Batch C): two segmented switches from the board.
+ * Weeks / Months (`?period=months`): months follow the user's calendar
+ * (Jalali months in Shamsi, Gregorian otherwise) and capacity = weekly
+ * capacity × weeks of that month (days / 7), same blue/rose rule.
+ * Estimates / Task count (`?measure=count`): open assigned tasks per
+ * member-period (pending counted, D13), no percent and no rose (capacity is
+ * in hours). Phones keep the PJM03 view (this/next week hours, no switches).
  */
 
 const WEEKS = 6;
+const MONTHS = 3;
+
+export type WorkloadMeasure = "hours" | "count";
+
+/** Weekly capacity scaled to one column (a week, or a month = days / 7 weeks). */
+export function periodCapacity(capacity: number | null, period: Pick<WorkloadPeriod, "weeks">): number | null {
+  return capacity ? capacity * period.weeks : capacity;
+}
 
 export type LoadTier = "none" | "low" | "mid" | "high" | "over";
 
@@ -61,10 +78,57 @@ export function WorkloadScreen() {
   const format = useProjectFormat();
   const { project, capabilities, demo } = useProject();
   const phone = useMediaQuery("(max-width: 39.99rem)");
-  const grid = useWorkloadGrid(project.id, getPlannerToday(), WEEKS, demoAccessOptions(demo));
+  // Phones keep the PJM03 view: this week + next week hours, no switches.
+  const unit: WorkloadPeriodUnit = !phone && params.get("period") === "months" ? "month" : "week";
+  const measure: WorkloadMeasure = !phone && params.get("measure") === "count" ? "count" : "hours";
+  const grid = useWorkloadGrid(
+    project.id,
+    getPlannerToday(),
+    { unit, count: unit === "month" ? MONTHS : WEEKS, calendar: format.calendar },
+    demoAccessOptions(demo),
+  );
   const workflow = useProjectWorkflow(project.id);
 
-  const header = <ProjectPageHeader module="workload" title={t("title")} />;
+  const setParam = (key: "period" | "measure", value: string | null, resetCell: boolean) => {
+    const next = new URLSearchParams(params.toString());
+    if (value) next.set(key, value);
+    else next.delete(key);
+    // Column indexes change meaning with the period, so the selection resets.
+    if (resetCell) next.delete("cell");
+    next.delete("pick");
+    const query = next.toString();
+    router.replace(query ? `${pathname}?${query}` : pathname, { scroll: false });
+  };
+  const header = (
+    <ProjectPageHeader
+      module="workload"
+      title={t("title")}
+      actions={
+        phone ? undefined : (
+          <>
+            <Segmented
+              label={t("switch.period")}
+              value={unit}
+              onValueChange={(value) => setParam("period", value === "month" ? "months" : null, true)}
+              options={[
+                { value: "week", label: t("switch.weeks") },
+                { value: "month", label: t("switch.months") },
+              ]}
+            />
+            <Segmented
+              label={t("switch.measure")}
+              value={measure}
+              onValueChange={(value) => setParam("measure", value === "count" ? "count" : null, false)}
+              options={[
+                { value: "hours", label: t("switch.estimates") },
+                { value: "count", label: t("switch.count") },
+              ]}
+            />
+          </>
+        )
+      }
+    />
+  );
   // Viewers and guests have no Workload (hidden, forbidden = not found).
   if (grid.isError) return <AccessState kind="not-available" titleAs="h1" />;
   if (!grid.data || !workflow.data) {
@@ -77,7 +141,13 @@ export function WorkloadScreen() {
   }
 
   const data = grid.data;
-  const selected = parseCell(params.get("cell"), data) ?? defaultCell(data);
+  const selected = parseCell(params.get("cell"), data) ?? defaultCell(data, measure);
+  const tableName = t("table", { measure, unit: data.unit });
+  const periodLabel = (index: number) => {
+    const start = data.weeks[index]!;
+    if (data.unit === "month") return format.day(start, "monthYear");
+    return index === 0 ? t("thisWeek") : format.day(start);
+  };
   const select = (personId: string, week: number) => {
     const next = new URLSearchParams(params.toString());
     next.set("cell", `${personId}:${week}`);
@@ -90,15 +160,15 @@ export function WorkloadScreen() {
       {!capabilities.seeAllWorkload ? <p className="text-xs font-medium text-fg-secondary">{t("ownRow")}</p> : null}
       <div className="grid gap-4 min-[1180px]:grid-cols-[minmax(0,1fr)_minmax(300px,360px)]">
         {phone ? (
-          <PhoneList grid={data} />
+          <PhoneList grid={data} label={tableName} />
         ) : (
           <section aria-labelledby="workload-table" className="flex min-w-0 flex-col gap-3 rounded-[28px] bg-surface p-4">
             <h2 id="workload-table" className="sr-only">
-              {t("table")}
+              {tableName}
             </h2>
             <div className="overflow-x-auto">
               <table className="w-full min-w-[640px] border-separate border-spacing-1.5 text-sm">
-                <caption className="sr-only">{t("table")}</caption>
+                <caption className="sr-only">{tableName}</caption>
                 <thead>
                   <tr>
                     <th scope="col" className="w-40 text-start text-xs font-semibold text-fg-secondary">
@@ -106,7 +176,7 @@ export function WorkloadScreen() {
                     </th>
                     {data.weeks.map((week, index) => (
                       <th key={week} scope="col" className="text-center text-xs font-semibold text-fg-secondary">
-                        {index === 0 ? t("thisWeek") : format.day(week)}
+                        {periodLabel(index)}
                       </th>
                     ))}
                   </tr>
@@ -122,7 +192,9 @@ export function WorkloadScreen() {
                           <CellButton
                             row={row}
                             cell={cell}
-                            week={data.weeks[index]!}
+                            period={data.periods[index]!}
+                            unit={data.unit}
+                            measure={measure}
                             selected={selected?.personId === row.person.id && selected.week === index}
                             onSelect={() => select(row.person.id, index)}
                           />
@@ -137,9 +209,13 @@ export function WorkloadScreen() {
                       </th>
                       {data.unassigned.map((cell, index) => (
                         <td key={data.weeks[index]} className="pt-2 text-center text-xs font-semibold text-fg-secondary">
-                          {cell.tasks > 0
-                            ? t("unassignedCell", { n: cell.tasks, hours: format.number(cell.hours) })
-                            : t("none")}
+                          {measure === "count"
+                            ? cell.count > 0
+                              ? t("tasksCount", { n: cell.count })
+                              : t("none")
+                            : cell.tasks > 0
+                              ? t("unassignedCell", { n: cell.tasks, hours: format.number(cell.hours) })
+                              : t("none")}
                         </td>
                       ))}
                     </tr>
@@ -147,14 +223,23 @@ export function WorkloadScreen() {
                 </tbody>
               </table>
             </div>
-            <Legend />
-            <p className="text-end text-xs font-medium text-fg-secondary">{t("footnote")}</p>
+            {measure === "count" ? (
+              <p className="text-xs font-medium text-fg-secondary">{t("legend.count")}</p>
+            ) : (
+              <Legend />
+            )}
+            <p className="text-end text-xs font-medium text-fg-secondary">
+              {measure === "count" ? t("footnoteCount") : t("footnote")}
+            </p>
           </section>
         )}
         {selected && !phone ? (
-          <MemberWeekCard
+          <MemberPeriodCard
             row={data.rows.find((row) => row.person.id === selected.personId)!}
-            week={data.weeks[selected.week]!}
+            period={data.periods[selected.week]!}
+            label={data.unit === "month" ? periodLabel(selected.week) : format.day(data.weeks[selected.week]!)}
+            unit={data.unit}
+            measure={measure}
             cell={data.rows.find((row) => row.person.id === selected.personId)!.cells[selected.week]!}
           />
         ) : null}
@@ -171,13 +256,15 @@ function parseCell(value: string | null, grid: WorkloadGrid) {
   return grid.rows.some((row) => row.person.id === personId) ? { personId, week: index } : null;
 }
 
-/** The busiest member-week by share of capacity (over capacity first). */
-function defaultCell(grid: WorkloadGrid) {
+/** The busiest member-period: by share of capacity (over capacity first), or by task count. */
+function defaultCell(grid: WorkloadGrid, measure: WorkloadMeasure) {
   let best: { personId: string; week: number; score: number } | null = null;
   for (const row of grid.rows) {
     row.cells.forEach((cell, week) => {
-      const score = row.capacity ? cell.hours / row.capacity : cell.hours / 1000;
-      if (cell.hours > 0 && (!best || score > best.score)) best = { personId: row.person.id, week, score };
+      const capacity = periodCapacity(row.capacity, grid.periods[week]!);
+      const value = measure === "count" ? cell.count : cell.hours;
+      const score = measure === "count" ? cell.count : capacity ? cell.hours / capacity : cell.hours / 1000;
+      if (value > 0 && (!best || score > best.score)) best = { personId: row.person.id, week, score };
     });
   }
   const first = grid.rows[0];
@@ -210,30 +297,39 @@ function RowHeader({ row }: { row: WorkloadRow }) {
 function CellButton({
   row,
   cell,
-  week,
+  period,
+  unit,
+  measure,
   selected,
   onSelect,
 }: {
   row: WorkloadRow;
   cell: WorkloadCell;
-  week: string;
+  period: WorkloadPeriod;
+  unit: WorkloadPeriodUnit;
+  measure: WorkloadMeasure;
   selected: boolean;
   onSelect: () => void;
 }) {
   const t = useTranslations("Workload");
   const format = useProjectFormat();
-  const tier = loadTier(cell.hours, row.capacity);
-  const percent = row.capacity ? Math.round((cell.hours / row.capacity) * 100) : null;
+  const capacity = periodCapacity(row.capacity, period);
+  // Task count mode: capacity is in hours, so no tiers, no percent, no rose.
+  const tier = measure === "count" ? "none" : loadTier(cell.hours, capacity);
+  const percent = measure === "hours" && capacity ? Math.round((cell.hours / capacity) * 100) : null;
+  const periodName = unit === "month" ? format.day(period.start, "monthYear") : t("week", { date: format.day(period.start) });
   const label =
-    percent !== null
-      ? t("cell", {
-          name: row.person.name,
-          date: format.day(week),
-          hours: format.number(cell.hours),
-          capacity: format.number(row.capacity!),
-          percent: format.percent(percent),
-        })
-      : t("cellNoCapacity", { name: row.person.name, date: format.day(week), hours: format.number(cell.hours) });
+    measure === "count"
+      ? t("cellCount", { name: row.person.name, period: periodName, n: cell.count })
+      : percent !== null
+        ? t("cell", {
+            name: row.person.name,
+            period: periodName,
+            hours: format.number(cell.hours),
+            capacity: format.number(Math.round(capacity!)),
+            percent: format.percent(percent),
+          })
+        : t("cellNoCapacity", { name: row.person.name, period: periodName, hours: format.number(cell.hours) });
   return (
     <button
       type="button"
@@ -247,7 +343,9 @@ function CellButton({
         selected && "inset-ring-2 inset-ring-scope-deep",
       )}
     >
-      <span className="text-base font-bold">{t("hours", { n: format.number(cell.hours) })}</span>
+      <span className="text-base font-bold">
+        {measure === "count" ? format.number(cell.count) : t("hours", { n: format.number(cell.hours) })}
+      </span>
       {percent !== null ? <span className="text-[0.6875rem] font-semibold">{format.percent(percent)}</span> : null}
     </button>
   );
@@ -273,7 +371,21 @@ function Legend() {
   );
 }
 
-function MemberWeekCard({ row, week, cell }: { row: WorkloadRow; week: string; cell: WorkloadCell }) {
+function MemberPeriodCard({
+  row,
+  period,
+  label,
+  unit,
+  measure,
+  cell,
+}: {
+  row: WorkloadRow;
+  period: WorkloadPeriod;
+  label: string;
+  unit: WorkloadPeriodUnit;
+  measure: WorkloadMeasure;
+  cell: WorkloadCell;
+}) {
   const t = useTranslations("Workload");
   const format = useProjectFormat();
   const statusLabel = useWorkflowStatusLabel();
@@ -285,8 +397,14 @@ function MemberWeekCard({ row, week, cell }: { row: WorkloadRow; week: string; c
   const params = useSearchParams();
   const headingId = useId();
   const reasonId = useId();
-  const over = loadTier(cell.hours, row.capacity) === "over";
-  const picked = cell.tasks.find((task) => task.taskId === params.get("pick")) ?? cell.tasks[0];
+  const capacity = periodCapacity(row.capacity, period);
+  const shownCapacity = capacity !== null ? Math.round(capacity) : null;
+  const over = measure === "hours" && loadTier(cell.hours, capacity) === "over";
+  // Estimates list the estimated tasks; Task count lists every open assigned task.
+  const tasks = measure === "count" ? cell.tasks : cell.tasks.filter((task) => task.hours !== null);
+  const picked = tasks.find((task) => task.taskId === params.get("pick")) ?? tasks[0];
+  const hoursText = (hours: number | null) =>
+    hours === null ? t("detail.noEstimate") : t("hours", { n: format.number(hours) });
   const pick = (taskId: string) => {
     const next = new URLSearchParams(params.toString());
     next.set("pick", taskId);
@@ -297,34 +415,41 @@ function MemberWeekCard({ row, week, cell }: { row: WorkloadRow; week: string; c
       <div className="flex flex-col gap-1">
         {over ? <p className="text-xs font-bold tracking-[0.08em] text-danger-text uppercase">{t("over")}</p> : null}
         <h2 id={headingId} className="type-title text-fg">
-          <bdi>{t("detail.title", { name: row.person.name, date: format.day(week) })}</bdi>
+          <bdi>{t("detail.title", { name: row.person.name, date: label })}</bdi>
         </h2>
         <p className="text-xs font-medium text-fg-secondary">
-          {row.capacity !== null
-            ? t("detail.summary", { hours: format.number(cell.hours), capacity: format.number(row.capacity) })
-            : t("detail.summaryNoCapacity", { hours: format.number(cell.hours) })}
+          {measure === "count"
+            ? t("detail.summaryCount", { n: cell.count })
+            : shownCapacity !== null
+              ? t("detail.summary", { hours: format.number(cell.hours), capacity: format.number(shownCapacity) })
+              : t("detail.summaryNoCapacity", { hours: format.number(cell.hours) })}
         </p>
-        {row.capacity ? (
+        {measure === "hours" && capacity && shownCapacity !== null ? (
           <Progress
-            value={(cell.hours / row.capacity) * 100}
-            label={t("detail.summary", { hours: format.number(cell.hours), capacity: format.number(row.capacity) })}
+            value={(cell.hours / capacity) * 100}
+            label={t("detail.summary", { hours: format.number(cell.hours), capacity: format.number(shownCapacity) })}
             size="sm"
             indicatorClassName={over ? "bg-danger" : undefined}
           />
         ) : null}
       </div>
-      {cell.tasks.length === 0 ? (
-        <p className="text-sm text-fg-muted">{t("detail.empty")}</p>
+      {tasks.length === 0 ? (
+        <p className="text-sm text-fg-muted">{t("detail.empty", { measure, unit })}</p>
       ) : (
-        <ul aria-label={t("detail.tasks")} className="flex flex-col gap-1.5">
-          {cell.tasks.map((task) => {
+        <ul aria-label={t("detail.tasks", { unit })} className="flex flex-col gap-1.5">
+          {tasks.map((task) => {
             const status = workflow.data?.statuses.find((candidate) => candidate.id === task.statusId);
             const content = (
               <>
                 <bdi className="min-w-0 flex-1 truncate text-sm font-bold text-fg">{task.title}</bdi>
                 {status ? <WorkflowStatusChip status={status} /> : null}
-                <span className="w-10 text-end text-xs font-semibold text-fg">
-                  {t("hours", { n: format.number(task.hours) })}
+                <span
+                  className={cn(
+                    "text-end text-xs font-semibold",
+                    task.hours === null ? "text-fg-secondary" : "w-10 text-fg",
+                  )}
+                >
+                  {hoursText(task.hours)}
                 </span>
               </>
             );
@@ -334,7 +459,7 @@ function MemberWeekCard({ row, week, cell }: { row: WorkloadRow; week: string; c
                   <button
                     type="button"
                     aria-pressed={picked?.taskId === task.taskId}
-                    aria-label={`${task.title} · ${statusLabel(status)} · ${t("hours", { n: format.number(task.hours) })}`}
+                    aria-label={`${task.title} · ${statusLabel(status)} · ${hoursText(task.hours)}`}
                     onClick={() => pick(task.taskId)}
                     className={cn(
                       "flex w-full items-center gap-2 rounded-row bg-subtle px-3 py-2.5 text-start focus-visible:focus-ring",
@@ -392,11 +517,11 @@ function MemberWeekCard({ row, week, cell }: { row: WorkloadRow; week: string; c
   );
 }
 
-function PhoneList({ grid }: { grid: WorkloadGrid }) {
+function PhoneList({ grid, label: listLabel }: { grid: WorkloadGrid; label: string }) {
   const t = useTranslations("Workload");
   const format = useProjectFormat();
   return (
-    <ul aria-label={t("table")} className="flex flex-col gap-3">
+    <ul aria-label={listLabel} className="flex flex-col gap-3">
       {grid.rows.map((row) => (
         <li key={row.person.id} className="flex flex-col gap-2 rounded-[24px] bg-surface p-4">
           <span className="flex items-center gap-2">

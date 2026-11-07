@@ -4,7 +4,7 @@
   "noCapacity": "ظرفیتی تعیین نشده",
   "reassign": "واگذاری دوباره‌ی یک کار",
   "unestimated": "{n} کار بدون تخمین",
-  "table": "ساعت تخمینی هر عضو در هر هفته",
+  "table": "{measure, select, count {کارهای باز} other {ساعت تخمینی}} هر عضو در هر {unit, select, month {ماه} other {هفته}}",
   "person": "عضو",
   "perWeek": "{n} ساعت / هفته",
   "guest": "{name} · مهمان",
@@ -13,8 +13,8 @@
   "nextWeek": "هفته‌ی بعد",
   "hours": "{n} ساعت",
   "percent": "{n}",
-  "cell": "{name}، هفته‌ی {date}: {hours} از {capacity} ساعت ({percent})",
-  "cellNoCapacity": "{name}، هفته‌ی {date}: {hours} ساعت، ظرفیتی تعیین نشده",
+  "cell": "{name}، {period}: {hours} از {capacity} ساعت ({percent})",
+  "cellNoCapacity": "{name}، {period}: {hours} ساعت، ظرفیتی تعیین نشده",
   "unassigned": "بدون مسئول",
   "unassignedCell": "{n, plural, other {# کار}} · {hours} ساعت",
   "none": "—",
@@ -23,18 +23,32 @@
     "low": "کمتر از ۵۰٪",
     "mid": "۵۰ تا ۹۰٪",
     "high": "۹۰ تا ۱۰۰٪",
-    "over": "بیش از ظرفیت"
+    "over": "بیش از ظرفیت",
+    "count": "تعداد کار · بدون درصد و رنگ بیش از ظرفیت (ظرفیت به ساعت است)"
   },
   "footnote": "تخمین کارهای باز روی تاریخ‌هایشان پخش شده · واگذاری‌های در انتظار هم شمرده می‌شوند (برای مسئول)",
   "detail": {
     "title": "{name} · {date}",
     "summary": "{hours} ساعت تخمین از {capacity} ساعت ظرفیت",
     "summaryNoCapacity": "{hours} ساعت تخمین · ظرفیتی تعیین نشده",
-    "tasks": "کارهای این هفته",
-    "empty": "این هفته کار تخمین‌داری نیست",
+    "tasks": "{unit, select, month {کارهای این ماه} other {کارهای این هفته}}",
+    "empty": "{measure, select, count {این {unit, select, month {ماه} other {هفته}} کار بازی نیست} other {این {unit, select, month {ماه} other {هفته}} کار تخمین‌داری نیست}}",
     "pick": "یک کار را انتخاب کن، بعد «واگذاری دوباره‌ی یک کار»",
     "noTask": "کاری برای واگذاری انتخاب کن",
-    "privacy": "فقط کارهای همین پروژه. تقویم شخصی {name} و پروژه‌های دیگر هرگز نشان داده نمی‌شوند."
+    "privacy": "فقط کارهای همین پروژه. تقویم شخصی {name} و پروژه‌های دیگر هرگز نشان داده نمی‌شوند.",
+    "summaryCount": "{n, plural, other {# کار باز}}",
+    "noEstimate": "بدون تخمین"
   },
-  "ownRow": "فقط ردیف خودت را می‌بینی؛ مدیرها کل تیم را می‌بینند."
+  "ownRow": "فقط ردیف خودت را می‌بینی؛ مدیرها کل تیم را می‌بینند.",
+  "switch": {
+    "period": "ستون‌ها",
+    "weeks": "هفته‌ها",
+    "months": "ماه‌ها",
+    "measure": "معیار",
+    "estimates": "تخمین‌ها",
+    "count": "تعداد کار"
+  },
+  "cellCount": "{name}، {period}: {n, plural, other {# کار باز}}",
+  "tasksCount": "{n, plural, other {# کار}}",
+  "footnoteCount": "کارهای باز واگذارشده در هر بازه · واگذاری‌های در انتظار هم شمرده می‌شوند (برای مسئول)"
 }

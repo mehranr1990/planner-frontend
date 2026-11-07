@@ -48,7 +48,7 @@ import { createMockProjectCalendar } from "./mock-project-calendar";
 import { RepositoryError } from "../repositories";
 import { createMockFiles } from "./mock-project-files";
 import { createMockMembers } from "./mock-project-members";
-import { computeWorkloadGrid } from "./mock-project-workload";
+import { computeWorkloadGrid, workloadPeriods } from "./mock-project-workload";
 import { computeAnalytics } from "./mock-project-reports";
 import { createMockSettings } from "./mock-project-settings";
 import { computeKpis, createMockProjectWork, createProjectWorkStore, type ProjectWorkStore } from "./mock-project-work";
@@ -440,6 +440,28 @@ export function createMockProjects({
     },
   };
 
+  const workloadByPeriod: WorkloadRepository["byPeriod"] = async (projectId, { from, unit, count, calendar }, options = {}) => {
+    const found = find(projectId);
+    if (!found) throw new RepositoryError("not-found", `No project ${projectId}`);
+    const role = options.previewRole ?? found.role;
+    if (RANK[role] < RANK.member) throw new RepositoryError("forbidden", "Members and up");
+    const grid = computeWorkloadGrid({
+      periods: workloadPeriods(from, unit, count, calendar),
+      unit,
+      tasks: work.tasks.get(projectId) ?? [],
+      workflow: work.workflow(projectId),
+      members: await membersMock.members.list(projectId),
+      startOf,
+    });
+    // Members see only their own row (SPEC PJ-11 Permissions).
+    const all = RANK[role] >= RANK.manager;
+    return respond(
+      all
+        ? grid
+        : { ...grid, rows: grid.rows.filter((row) => row.person.id === "me"), unassigned: [] },
+    );
+  };
+
   return {
     ...workRepos,
     projectTasks,
@@ -473,27 +495,9 @@ export function createMockProjects({
     } satisfies ReportRepository,
     workload: {
       ...workRepos.workload,
-      async byWeek(projectId, { from, weeks }, options = {}) {
-        const found = find(projectId);
-        if (!found) throw new RepositoryError("not-found", `No project ${projectId}`);
-        const role = options.previewRole ?? found.role;
-        if (RANK[role] < RANK.member) throw new RepositoryError("forbidden", "Members and up");
-        const grid = computeWorkloadGrid({
-          from,
-          weeks,
-          tasks: work.tasks.get(projectId) ?? [],
-          workflow: work.workflow(projectId),
-          members: await membersMock.members.list(projectId),
-          startOf,
-        });
-        // Members see only their own row (SPEC PJ-11 Permissions).
-        const all = RANK[role] >= RANK.manager;
-        return respond(
-          all
-            ? grid
-            : { ...grid, rows: grid.rows.filter((row) => row.person.id === "me"), unassigned: [] },
-        );
-      },
+      byWeek: (projectId, { from, weeks }, options = {}) =>
+        workloadByPeriod(projectId, { from, unit: "week", count: weeks, calendar: "gregorian" }, options),
+      byPeriod: workloadByPeriod,
     } satisfies WorkloadRepository,
     members: membersMock.members,
     grants: membersMock.grants,

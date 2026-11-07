@@ -1,6 +1,7 @@
 "use client";
 
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import type { CalendarSystem } from "@/lib/dates/format";
 import { useIsClient } from "@/hooks/use-is-client";
 import type {
   AssignmentDeclineInput,
@@ -33,6 +34,7 @@ import type {
   ScheduleLink,
   ScheduleMode,
   ScheduleMove,
+  WorkloadPeriodUnit,
 } from "./project-domain";
 import { projectKeys, taskKeys } from "./query-keys";
 
@@ -751,14 +753,19 @@ export function useMemberActions(projectId: string) {
 
 // ── Workload (PJ-11) ─────────────────────────────────────────────────────
 
-export function useWorkloadGrid(projectId: string, from: string, weeks: number, preview: ProjectAccessOptions = {}) {
+export function useWorkloadGrid(
+  projectId: string,
+  from: string,
+  period: { unit: WorkloadPeriodUnit; count: number; calendar: CalendarSystem },
+  preview: ProjectAccessOptions = {},
+) {
   const { workload } = useRepositories();
   const hydrated = useIsClient();
   const role = preview.previewRole ?? null;
   return afterHydration(
     useQuery({
-      queryKey: scoped(projectId, "workload-grid", from, weeks, role),
-      queryFn: () => workload.byWeek(projectId, { from, weeks }, preview),
+      queryKey: scoped(projectId, "workload-grid", from, period.unit, period.count, period.calendar, role),
+      queryFn: () => workload.byPeriod(projectId, { from, ...period }, preview),
       retry: (count, error) => !(error instanceof RepositoryError && error.code === "forbidden") && count < 2,
     }),
     hydrated,

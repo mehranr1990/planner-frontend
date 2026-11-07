@@ -654,10 +654,28 @@ export interface GuestGrant {
 
 // ── Workload (PJ-11) ─────────────────────────────────────────────────────
 
-/** One member-week: hours of open estimates spread start→due (D13), and which tasks make them up. */
+/** Workload columns: Iran weeks (Sat–Fri) or calendar months (Jalali / Gregorian, the user's setting). */
+export type WorkloadPeriodUnit = "week" | "month";
+
+/** One column of the grid. `weeks` = days / 7, the multiplier for weekly capacity. */
+export interface WorkloadPeriod {
+  /** First day (Gregorian). */
+  start: string;
+  /** Last day (Gregorian, inclusive). */
+  end: string;
+  weeks: number;
+}
+
+/**
+ * One member-period: hours of open estimates spread start→due (D13), and the
+ * open assigned tasks active in it. `hours: null` = task without an estimate
+ * (counted in Task count mode only; never adds hours).
+ */
 export interface WorkloadCell {
   hours: number;
-  tasks: readonly { taskId: string; title: string; statusId: string; hours: number }[];
+  /** Open assigned tasks active in this period (pending assignments counted, D13). */
+  count: number;
+  tasks: readonly { taskId: string; title: string; statusId: string; hours: number | null }[];
 }
 
 export interface WorkloadRow {
@@ -670,13 +688,15 @@ export interface WorkloadRow {
   unestimated: number;
 }
 
-/** Members × weeks (weeks start Saturday, Iran week); only this project's tasks, never Personal data. */
+/** Members × periods (weeks start Saturday, Iran week; or calendar months); only this project's tasks, never Personal data. */
 export interface WorkloadGrid {
-  /** Start day (Gregorian) of each week column. */
+  unit: WorkloadPeriodUnit;
+  /** Start day (Gregorian) of each column (= `periods[i].start`). */
   weeks: readonly string[];
+  periods: readonly WorkloadPeriod[];
   rows: readonly WorkloadRow[];
-  /** Unassigned open tasks per week (count + hours). */
-  unassigned: readonly { tasks: number; hours: number }[];
+  /** Unassigned open tasks per period: estimated tasks + their hours; `count` = all of them (incl. unestimated). */
+  unassigned: readonly { tasks: number; hours: number; count: number }[];
 }
 
 // ── Analytics (PJ-12) ────────────────────────────────────────────────────
