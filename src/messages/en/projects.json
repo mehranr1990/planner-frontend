@@ -2,7 +2,11 @@
   "title": "Projects",
   "mobileTitle": "All projects",
   "new": "New project",
-  "view": { "label": "View", "grid": "Grid", "list": "List" },
+  "view": {
+    "label": "View",
+    "grid": "Grid",
+    "list": "List"
+  },
   "filter": {
     "label": "Filter projects",
     "all": "All",
@@ -33,7 +37,10 @@
     "members": "Members of {project}",
     "open": "Open {project}"
   },
-  "newCard": { "title": "New project", "hint": "Blank or from a template" },
+  "newCard": {
+    "title": "New project",
+    "hint": "Blank or from a template"
+  },
   "invite": {
     "title": "Invitation · {project}",
     "line": "{name} invited you as {role}",
@@ -61,7 +68,10 @@
     "clear": "Clear filters"
   },
   "noInvites": "No pending invitations.",
-  "error": { "title": "Couldn’t load your projects", "retry": "Try again" },
+  "error": {
+    "title": "Couldn’t load your projects",
+    "retry": "Try again"
+  },
   "archived": {
     "line": "Archived {date} · read-only",
     "restore": "Restore",
@@ -78,5 +88,93 @@
     "role": "My role",
     "forYou": "For you"
   },
-  "loading": "Loading projects"
+  "loading": "Loading projects",
+  "sheets": {
+    "close": "Close",
+    "cancel": "Cancel",
+    "new": {
+      "title": "New project",
+      "name": "Project name",
+      "namePlaceholder": "Project name",
+      "description": "Short description (optional)",
+      "start": "Start {date}",
+      "end": "End {date}",
+      "startLabel": "Start date",
+      "endLabel": "End date",
+      "template": "Start from",
+      "templates": {
+        "blank": "Blank",
+        "product-launch": "Product launch",
+        "website": "Website",
+        "event": "Event"
+      },
+      "owner": "Owner: You · independent project",
+      "association": "Belongs to a team or company",
+      "associationHint": "Available in a later phase",
+      "submit": "Create & invite",
+      "created": "{name} created",
+      "undo": "Undo",
+      "undoAlt": "Archive the project from Settings to undo",
+      "nameRequired": "Give the project a name",
+      "datesInvalid": "The end date is before the start date"
+    },
+    "invite": {
+      "title": "Invite to {project}",
+      "emails": "Emails",
+      "addEmail": "Add email…",
+      "removeEmail": "Remove {email}",
+      "role": "Role",
+      "roles": {
+        "admin": {
+          "label": "Admin",
+          "description": "Everything except deleting the project or transferring ownership"
+        },
+        "manager": {
+          "label": "Manager",
+          "description": "Plan work, assign, edit all tasks, manage milestones and risks"
+        },
+        "member": {
+          "label": "Member",
+          "description": "Work on tasks, comment, upload files"
+        },
+        "viewer": {
+          "label": "Viewer",
+          "description": "Read only"
+        },
+        "guest": {
+          "label": "Task-only access",
+          "description": "Verified person outside the project sees only tasks you share"
+        }
+      },
+      "verified": "Only verified accounts can join. If an email has no account, we send an invitation to sign up — we never say whether an account exists.",
+      "pending": "Pending · {n}",
+      "pendingMeta": "{role} · {time}",
+      "resend": "Resend",
+      "cancelInvite": "Cancel",
+      "resent": "Invitation sent again to {email}",
+      "cancelled": "Invitation to {email} cancelled",
+      "submit": "Send invitations",
+      "sent": "{n, plural, one {Invitation sent} other {# invitations sent}}",
+      "invalid": "Check the email addresses",
+      "noRight": "Your role can’t invite — ask an Admin",
+      "undo": "Undo",
+      "undoAlt": "Cancel the invitations from the pending list"
+    },
+    "reassign": {
+      "title": "Reassign “{task}”",
+      "declined": "Declined by {name}",
+      "pending": "Pending · {name}",
+      "newAssignee": "New assignee",
+      "load": "{hours}h / {capacity}h this week",
+      "over": "{hours}h / {capacity}h · over",
+      "noLoad": "No estimate this week",
+      "loadNote": "Load shows project estimates only.",
+      "note": "Note (optional)",
+      "submit": "Reassign",
+      "done": "Reassigned to {name}",
+      "undo": "Undo",
+      "undoAlt": "Reassign the task again from its detail",
+      "missing": "This task isn’t available"
+    }
+  }
 }

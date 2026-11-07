@@ -21,6 +21,9 @@ import type {
   CommentRepository,
   DependencyRepository,
   InvitationRepository,
+  MemberInviteRepository,
+  ProjectCreateRepository,
+  ReassignRepository,
   TaskDetailRepository,
   ProjectRepositories,
   ProjectRepository,
@@ -28,6 +31,7 @@ import type {
 } from "../project-repositories";
 import { createMockProjectTasks } from "./mock-project-tasks";
 import { createMockTaskDetail } from "./mock-project-task-detail";
+import { createMockProjectSheets } from "./mock-project-sheets";
 import { RepositoryError } from "../repositories";
 import { computeKpis, createMockProjectWork, createProjectWorkStore, type ProjectWorkStore } from "./mock-project-work";
 
@@ -127,6 +131,9 @@ export interface MockProjectsStore extends ReturnType<typeof createMockProjectWo
   taskDetails: TaskDetailRepository;
   comments: CommentRepository;
   dependencies: DependencyRepository;
+  projectCreate: ProjectCreateRepository;
+  memberInvites: MemberInviteRepository;
+  reassign: ReassignRepository;
   projects: ProjectRepository;
   invitations: InvitationRepository;
   /** Mock-only: the shared task store (PJ-02 / PJ-15 mocks). */
@@ -201,6 +208,23 @@ export function createMockProjects({
       const mine = task.assignees.find((assignee) => assignee.person.id === "me");
       if (mine?.state === "accepted") project(task, true);
     },
+  });
+
+  const sheets = createMockProjectSheets({
+    store: work,
+    now,
+    respond,
+    projects,
+    recent,
+    canInvite: (id) => {
+      const project = find(id);
+      return project ? mockCapabilities(project.role, project.lifecycle).invite : false;
+    },
+    canReassign: (id) => {
+      const project = find(id);
+      return project ? mockCapabilities(project.role, project.lifecycle).manageAssignments : false;
+    },
+    membersOf: (id) => find(id)?.members ?? [],
   });
 
   function counts(): Record<ProjectFilter, number> {
@@ -315,6 +339,7 @@ export function createMockProjects({
   return {
     ...workRepos,
     projectTasks,
+    ...sheets,
     taskDetails: taskDetail.taskDetails,
     comments: taskDetail.comments,
     dependencies: taskDetail.dependencies,
@@ -340,5 +365,8 @@ export function projectRepositories(store: MockProjectsStore): ProjectRepositori
     taskDetails: store.taskDetails,
     comments: store.comments,
     dependencies: store.dependencies,
+    projectCreate: store.projectCreate,
+    memberInvites: store.memberInvites,
+    reassign: store.reassign,
   };
 }

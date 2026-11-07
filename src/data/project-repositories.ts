@@ -1,5 +1,8 @@
 import type {
   DeclineReason,
+  InviteRole,
+  PendingInvite,
+  ProjectTemplate,
   DependencyType,
   ProjectTaskDetail,
   TaskComment,
@@ -120,6 +123,9 @@ export interface ProjectRepositories {
   taskDetails: TaskDetailRepository;
   comments: CommentRepository;
   dependencies: DependencyRepository;
+  projectCreate: ProjectCreateRepository;
+  memberInvites: MemberInviteRepository;
+  reassign: ReassignRepository;
 }
 
 // ── Project tasks (PJ-02) ────────────────────────────────────────────────
@@ -202,4 +208,44 @@ export interface DependencyRepository {
   /** Rejects with code "invalid" + message "cycle" when it would create a loop. */
   add(taskId: string, input: { predecessorId: string; type: DependencyType; lagDays: number }): Promise<TaskDependency>;
   remove(taskId: string, dependencyId: string): Promise<void>;
+}
+
+// ── Sheets (PJ-90) ───────────────────────────────────────────────────────
+
+export interface NewProjectInput {
+  name: string;
+  description?: string;
+  startDate: string;
+  endDate: string;
+  template: ProjectTemplate;
+}
+
+export interface ProjectCreateRepository {
+  /** Independent project owned by the current user (no Team/Company association in P2). */
+  create(input: NewProjectInput): Promise<ProjectSummary>;
+  /** Undo of create (Owner, right after creating). */
+  discard(projectId: string): Promise<void>;
+}
+
+export interface MemberInviteRepository {
+  listPending(projectId: string): Promise<readonly PendingInvite[]>;
+  /**
+   * Sends invitations. The answer never says whether an account exists for
+   * an email (verified-only: unknown emails get a sign-up invitation).
+   */
+  send(projectId: string, emails: readonly string[], role: InviteRole): Promise<readonly PendingInvite[]>;
+  resend(projectId: string, inviteId: string): Promise<PendingInvite>;
+  cancel(projectId: string, inviteId: string): Promise<void>;
+  /** Undo of cancel. */
+  restore(projectId: string, invite: PendingInvite): Promise<void>;
+}
+
+export interface ReassignInput {
+  personId: string;
+  note?: string;
+}
+
+export interface ReassignRepository {
+  /** Manager+: replaces the pending / declined assignee; the new person gets a pending assignment. */
+  reassign(taskId: string, input: ReassignInput): Promise<ProjectTask>;
 }

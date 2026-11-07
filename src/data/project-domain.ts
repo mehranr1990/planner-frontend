@@ -329,3 +329,17 @@ export interface ProjectTaskDetail {
   /** My projection into My Calendar (assignee only; on after accept by default). */
   showInCalendar: boolean;
 }
+
+// ── Sheets (PJ-90) ───────────────────────────────────────────────────────
+
+export type ProjectTemplate = "blank" | "product-launch" | "website" | "event";
+
+/** Roles an invitation can offer (Task-only = verified guest with a task grant). */
+export type InviteRole = "admin" | "manager" | "member" | "viewer" | "guest";
+
+export interface PendingInvite {
+  id: string;
+  email: string;
+  role: InviteRole;
+  sentAt: string;
+}

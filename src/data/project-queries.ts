@@ -4,16 +4,18 @@ import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tansta
 import { useIsClient } from "@/hooks/use-is-client";
 import type {
   AssignmentDeclineInput,
+  NewProjectInput,
   NewProjectTaskInput,
   ProjectAccessOptions,
   ProjectStatusInput,
   ProjectTaskPatch,
   ProjectTaskQuery,
+  ReassignInput,
 } from "./project-repositories";
 import { useRepositories } from "./provider";
 import { RepositoryError } from "./repositories";
 import { afterHydration } from "./queries";
-import type { DependencyType } from "./project-domain";
+import type { DependencyType, InviteRole, PendingInvite } from "./project-domain";
 import { projectKeys, taskKeys } from "./query-keys";
 
 /*
@@ -279,6 +281,7 @@ export function useProjectTaskDetail(taskId: string, preview: ProjectAccessOptio
     useQuery({
       queryKey: [...detailKey(taskId), preview.previewRole ?? null, preview.previewArchived ?? false],
       queryFn: () => taskDetails.get(taskId, preview),
+      enabled: taskId !== "",
       // A deleted / unknown task will not come back: show the deleted state at once.
       retry: (count, error) => !(error instanceof RepositoryError && error.code === "not-found") && count < 2,
     }),
@@ -314,4 +317,64 @@ export function useTaskDetailActions(taskId: string) {
       onSettled: refresh,
     }),
   };
+}
+
+// ── Sheets (PJ-90) ───────────────────────────────────────────────────────
+
+export function useCreateProject() {
+  const { projectCreate } = useRepositories();
+  const client = useQueryClient();
+  const refresh = () => client.invalidateQueries({ queryKey: projectKeys.all });
+  return {
+    create: useMutation({ mutationFn: (input: NewProjectInput) => projectCreate.create(input), onSettled: refresh }),
+    discard: useMutation({ mutationFn: (projectId: string) => projectCreate.discard(projectId), onSettled: refresh }),
+  };
+}
+
+export function usePendingInvites(projectId: string | undefined) {
+  const { memberInvites } = useRepositories();
+  const hydrated = useIsClient();
+  return afterHydration(
+    useQuery({
+      queryKey: scoped(projectId ?? "", "invites"),
+      queryFn: () => memberInvites.listPending(projectId!),
+      enabled: projectId !== undefined,
+    }),
+    hydrated,
+  );
+}
+
+export function useInviteActions(projectId: string) {
+  const { memberInvites } = useRepositories();
+  const client = useQueryClient();
+  const refresh = () => client.invalidateQueries({ queryKey: scoped(projectId, "invites") });
+  return {
+    send: useMutation({
+      mutationFn: ({ emails, role }: { emails: readonly string[]; role: InviteRole }) =>
+        memberInvites.send(projectId, emails, role),
+      onSettled: refresh,
+    }),
+    resend: useMutation({
+      mutationFn: (inviteId: string) => memberInvites.resend(projectId, inviteId),
+      onSettled: refresh,
+    }),
+    cancel: useMutation({
+      mutationFn: (inviteId: string) => memberInvites.cancel(projectId, inviteId),
+      onSettled: refresh,
+    }),
+    restore: useMutation({
+      mutationFn: (invite: PendingInvite) => memberInvites.restore(projectId, invite),
+      onSettled: refresh,
+    }),
+  };
+}
+
+export function useReassignTask(projectId: string) {
+  const { reassign } = useRepositories();
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: ({ taskId, ...input }: { taskId: string } & ReassignInput) => reassign.reassign(taskId, input),
+    onSettled: () => client.invalidateQueries({ queryKey: projectKeys.all }),
+    meta: { projectId },
+  });
 }
