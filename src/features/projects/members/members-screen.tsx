@@ -74,6 +74,7 @@ export function MembersScreen() {
   const params = useSearchParams();
   const { project, capabilities, demo } = useProject();
   const openSheet = useOpenProjectSheet();
+  const phone = useMediaQuery("(max-width: 39.99rem)");
   const members = useMemberList(project.id);
   const invites = usePendingInvites(project.id);
   const grants = useGuestGrants(project.id);
@@ -107,10 +108,17 @@ export function MembersScreen() {
             ]}
           />
           {capabilities.invite ? (
-            <Button size="lg" className="gap-2" onClick={() => openSheet("project-invite")}>
-              <Icon icon={Plus} size={18} />
-              {t("invite")}
-            </Button>
+            phone ? (
+              // PJM03: a round + on phones.
+              <IconButton label={t("invite")} onClick={() => openSheet("project-invite")}>
+                <Icon icon={Plus} size={18} />
+              </IconButton>
+            ) : (
+              <Button size="lg" className="gap-2" onClick={() => openSheet("project-invite")}>
+                <Icon icon={Plus} size={18} />
+                {t("invite")}
+              </Button>
+            )
           ) : null}
         </>
       }
@@ -239,7 +247,12 @@ function MemberRow({ member, grant }: { member: ProjectMember; grant?: GuestGran
       ? t("guestGrant", { n: format.number(grant.taskIds.length), date: format.day(grant.expires) })
       : phone
         ? member.capacityHours !== null
-          ? t("hoursPerWeek", { n: format.number(member.capacityHours) })
+          ? [
+              t("hoursPerWeek", { n: format.number(member.capacityHours) }),
+              member.openTasks > 0 ? t("openTasks", { n: format.number(member.openTasks) }) : null,
+            ]
+              .filter(Boolean)
+              .join(" · ")
           : member.role === "viewer"
             ? t("readOnly")
             : member.email

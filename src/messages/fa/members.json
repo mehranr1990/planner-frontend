@@ -19,7 +19,7 @@
   },
   "you": "{name} (تو)",
   "hours": "{n} ساعت",
-  "hoursPerWeek": "{n} ساعت / هفته",
+  "hoursPerWeek": "{n} ساعت در هفته",
   "noCapacity": "—",
   "openTasks": "{n} باز",
   "readOnly": "فقط مشاهده",
