@@ -41,6 +41,8 @@ import type {
   ProjectWorkflow,
   WorkloadEntry,
   WorkloadGrid,
+  AnalyticsRange,
+  AnalyticsSummary,
   ProjectDirectory,
   ProjectHealth,
   ProjectInvitation,
@@ -227,6 +229,15 @@ export interface GrantRepository {
   set(projectId: string, grant: GuestGrant): Promise<GuestGrant>;
 }
 
+/** PJ-12 reports; the mock computes them from the task store. */
+export interface ReportRepository {
+  summary(
+    projectId: string,
+    range: { range: AnalyticsRange; weekStartsOn: 0 | 1 | 2 | 3 | 4 | 5 | 6 },
+    options?: ProjectAccessOptions,
+  ): Promise<AnalyticsSummary>;
+}
+
 export interface WorkloadRepository {
   /** This week's estimates per member (D13); empty without the capability. */
   week(projectId: string): Promise<readonly WorkloadEntry[]>;
@@ -266,6 +277,7 @@ export interface ProjectRepositories {
   files: FileRepository;
   members: MemberRepository;
   grants: GrantRepository;
+  reports: ReportRepository;
   workload: WorkloadRepository;
   assignments: AssignmentRepository;
   projectTasks: ProjectTaskRepository;

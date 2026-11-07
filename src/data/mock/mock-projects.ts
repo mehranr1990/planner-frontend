@@ -23,6 +23,7 @@ import type {
   GrantRepository,
   MemberRepository,
   WorkloadRepository,
+  ReportRepository,
   DependencyRepository,
   InvitationRepository,
   MemberInviteRepository,
@@ -44,6 +45,7 @@ import { RepositoryError } from "../repositories";
 import { createMockFiles } from "./mock-project-files";
 import { createMockMembers } from "./mock-project-members";
 import { computeWorkloadGrid } from "./mock-project-workload";
+import { computeAnalytics } from "./mock-project-reports";
 import { computeKpis, createMockProjectWork, createProjectWorkStore, type ProjectWorkStore } from "./mock-project-work";
 
 /*
@@ -120,6 +122,7 @@ export function mockCapabilities(role: ProjectRole, lifecycle: ProjectLifecycle)
     editCapacity: editable && rank >= RANK.manager,
     manageGrants: editable && rank >= RANK.manager,
     seeAllWorkload: rank >= RANK.manager,
+    exportAnalytics: rank >= RANK.manager,
     restore: lifecycle === "archived" && rank >= RANK.admin,
     export: !guest,
   };
@@ -164,6 +167,7 @@ export interface MockProjectsStore extends ReturnType<typeof createMockProjectWo
   members: MemberRepository;
   grants: GrantRepository;
   workload: WorkloadRepository;
+  reports: ReportRepository;
   /** Mock-only: advance in-flight uploads one lifecycle step. */
   tickFiles(): void;
   /** Mock-only: the shared task store (PJ-02 / PJ-15 mocks). */
@@ -415,6 +419,26 @@ export function createMockProjects({
     schedule,
     calendar,
     files: filesMock.files,
+    reports: {
+      async summary(projectId, { range, weekStartsOn }, options = {}) {
+        const found = find(projectId);
+        if (!found) throw new RepositoryError("not-found", `No project ${projectId}`);
+        const role = options.previewRole ?? found.role;
+        if (role === "guest") throw new RepositoryError("forbidden", "No analytics for guests");
+        return respond(
+          computeAnalytics({
+            tasks: work.tasks.get(projectId) ?? [],
+            workflow: work.workflow(projectId),
+            role,
+            range,
+            weekStartsOn,
+            projectStart: found.startDate,
+            today,
+            now,
+          }),
+        );
+      },
+    } satisfies ReportRepository,
     workload: {
       ...workRepos.workload,
       async byWeek(projectId, { from, weeks }, options = {}) {
@@ -465,6 +489,7 @@ export function projectRepositories(store: MockProjectsStore): ProjectRepositori
     files: store.files,
     members: store.members,
     grants: store.grants,
+    reports: store.reports,
     workload: store.workload,
     assignments: store.assignments,
     projectTasks: store.projectTasks,

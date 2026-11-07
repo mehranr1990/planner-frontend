@@ -111,6 +111,7 @@ interface TaskSeed {
   subtasks?: { done: number; total: number };
   commentCount?: number;
   completedAt?: string;
+  startedAt?: string;
 }
 
 const task = (seed: TaskSeed): ProjectTask => ({
@@ -135,10 +136,15 @@ const COMPLETED_AT: Record<string, string> = {
   build: "2026-10-12T10:00:00+03:30",
 };
 
+const startedBefore = (instant: string, days: number) =>
+  new Date(Date.parse(instant) - days * 86_400_000).toISOString();
+
 const doneTasks = (phaseId: string, titles: readonly string[], who: TaskAssignee["person"]) =>
   titles.map((title, index) =>
     task({
       completedAt: COMPLETED_AT[phaseId],
+      // Sample status history: first In progress 1–5 days before done (cycle time).
+      startedAt: startedBefore(COMPLETED_AT[phaseId]!, 1 + ((index * 3) % 5)),
       id: `${phaseId}-${index + 1}`,
       title,
       statusId: "done",

@@ -128,6 +128,8 @@ export interface ProjectCapabilities {
   manageGrants: boolean;
   /** PJ-11: every member row (Manager+); Members see only their own row. */
   seeAllWorkload: boolean;
+  /** PJ-12: analytics export (Manager+) and the full per-assignee breakdown (Manager+; Members own row). */
+  exportAnalytics: boolean;
   restore: boolean;
   export: boolean;
 }
@@ -242,6 +244,8 @@ export interface ProjectTask {
   updatedAt: string;
   /** When the task entered a done status (instant); absent while open. */
   completedAt?: string;
+  /** When the task first entered an active (In progress) status (instant); cycle time = startedAt → completedAt. */
+  startedAt?: string;
   /** What the current user may do to this task (server-computed per request). */
   can?: TaskCan;
 }
@@ -667,4 +671,40 @@ export interface WorkloadGrid {
   rows: readonly WorkloadRow[];
   /** Unassigned open tasks per week (count + hours). */
   unassigned: readonly { tasks: number; hours: number }[];
+}
+
+// ── Analytics (PJ-12) ────────────────────────────────────────────────────
+
+export type AnalyticsRange = "4w" | "12w" | "all";
+
+/** Counts of project tasks only (every KPI states its numerator / denominator); no score, no AI. */
+export interface AnalyticsSummary {
+  /** Instant the numbers were computed. */
+  asOf: string;
+  kpis: {
+    done: number;
+    /** All non-deleted tasks (completion denominator). */
+    total: number;
+    /** Done on/before due among done tasks that had a due date. */
+    onTime: number;
+    doneWithDue: number;
+    /** Median days first In progress → Done; null without samples. */
+    cycleMedianDays: number | null;
+    cycleSample: number;
+    /** Open with due < today, and how many of those are blocked. */
+    overdue: number;
+    overdueBlocked: number;
+  };
+  /** Start day (Gregorian) of each week in the range; the last one is the current week. */
+  weeks: readonly string[];
+  /** Burn-up per week: scope (tasks existing) and done (cumulative). */
+  scope: readonly number[];
+  doneCumulative: readonly number[];
+  /** Tasks done per week. */
+  throughput: readonly number[];
+  byStatus: readonly { statusId: string; count: number }[];
+  /** Done per assignee; Members get only their own row; empty without the right. */
+  byAssignee: readonly { person: ProjectPerson; done: number }[];
+  /** False until a week with done tasks exists (charts show "Not enough data"). */
+  enoughData: boolean;
 }

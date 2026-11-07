@@ -20,6 +20,7 @@ import { afterHydration } from "./queries";
 import type {
   DependencyType,
   RiskCloseReason,
+  AnalyticsRange,
   GuestGrant,
   ProjectRole,
   InviteRole,
@@ -755,6 +756,26 @@ export function useWorkloadGrid(projectId: string, from: string, weeks: number, 
       queryKey: scoped(projectId, "workload-grid", from, weeks, role),
       queryFn: () => workload.byWeek(projectId, { from, weeks }, preview),
       retry: (count, error) => !(error instanceof RepositoryError && error.code === "forbidden") && count < 2,
+    }),
+    hydrated,
+  );
+}
+
+// ── Analytics (PJ-12) ────────────────────────────────────────────────────
+
+export function useAnalytics(
+  projectId: string,
+  range: AnalyticsRange,
+  weekStartsOn: 0 | 1 | 2 | 3 | 4 | 5 | 6,
+  preview: ProjectAccessOptions = {},
+) {
+  const { reports } = useRepositories();
+  const hydrated = useIsClient();
+  const role = preview.previewRole ?? null;
+  return afterHydration(
+    useQuery({
+      queryKey: scoped(projectId, "analytics", range, weekStartsOn, role),
+      queryFn: () => reports.summary(projectId, { range, weekStartsOn }, preview),
     }),
     hydrated,
   );

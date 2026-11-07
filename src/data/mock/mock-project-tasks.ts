@@ -91,6 +91,8 @@ export function createMockProjectTasks({ store, today, now, respond, roleOf, mem
         const done = workflow.statuses.find((status) => status.id === patch.statusId)?.category === "done";
         if (done) task.completedAt = now;
         else delete task.completedAt;
+        const active = workflow.statuses.find((status) => status.id === patch.statusId)?.category === "active";
+        if ((active || done) && !task.startedAt) task.startedAt = now;
       }
       task.statusId = patch.statusId;
     }
