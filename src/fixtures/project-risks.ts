@@ -110,6 +110,7 @@ export const sampleRisks: readonly ProjectRisk[] = [
     updatedAt: "2026-10-09T10:00:00+03:30",
     blocksTasks: 0,
     issueId: "staging-deploy",
+    issueCode: "I-02",
     closeReason: "became-issue",
     commentCount: 0,
     revision: 2,

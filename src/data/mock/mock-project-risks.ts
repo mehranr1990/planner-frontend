@@ -183,6 +183,7 @@ export function createMockRisks(store: ProjectWorkStore, { respond, now }: MockR
         risk.status = "closed";
         risk.closeReason = "became-issue";
         risk.issueId = issue.id;
+        risk.issueCode = code;
         return risk;
       });
       list.push(issue);

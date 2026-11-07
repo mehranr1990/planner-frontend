@@ -61,9 +61,9 @@ export function ProjectTaskDrawer({ taskId }: { taskId: string }) {
 
 /**
  * The @drawer slot keeps its last state on soft navigation; show it only
- * while the URL is a project task detail (/projects/[id]/tasks/[taskId]).
+ * while the URL is a project task or risk detail (/projects/[id]/tasks|risks/[itemId]).
  */
 export function ProjectDrawerGate({ children }: { children: ReactNode }) {
   const pathname = usePathname();
-  return /^\/projects\/[^/]+\/tasks\/[^/]+$/.test(pathname) ? children : null;
+  return /^\/projects\/[^/]+\/(tasks|risks)\/[^/]+$/.test(pathname) ? children : null;
 }

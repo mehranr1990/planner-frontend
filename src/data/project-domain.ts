@@ -345,6 +345,7 @@ export interface ProjectRisk {
   fromRiskCode?: string;
   /** Risk converted to an issue: the issue it became. */
   issueId?: string;
+  issueCode?: string;
   closeReason?: RiskCloseReason;
   closeNote?: string;
   commentCount: number;
