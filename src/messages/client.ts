@@ -21,6 +21,7 @@ import enProject from "./en/project.json";
 import enProjects from "./en/projects.json";
 import enProjectTask from "./en/projectTask.json";
 import enProjectTasks from "./en/projectTasks.json";
+import enTimeline from "./en/timeline.json";
 import enProjectCalendar from "./en/projectCalendar.json";
 import enGantt from "./en/gantt.json";
 import enMilestones from "./en/milestones.json";
@@ -53,6 +54,7 @@ import faProject from "./fa/project.json";
 import faProjects from "./fa/projects.json";
 import faProjectTask from "./fa/projectTask.json";
 import faProjectTasks from "./fa/projectTasks.json";
+import faTimeline from "./fa/timeline.json";
 import faProjectCalendar from "./fa/projectCalendar.json";
 import faGantt from "./fa/gantt.json";
 import faMilestones from "./fa/milestones.json";
@@ -102,6 +104,7 @@ const en = {
   Project: enProject,
   ProjectTasks: enProjectTasks,
   ProjectTask: enProjectTask,
+  Timeline: enTimeline,
   ProjectCalendar: enProjectCalendar,
   Gantt: enGantt,
   Milestones: enMilestones,
@@ -139,6 +142,7 @@ const fa: ClientMessages = {
   Project: faProject,
   ProjectTasks: faProjectTasks,
   ProjectTask: faProjectTask,
+  Timeline: faTimeline,
   ProjectCalendar: faProjectCalendar,
   Gantt: faGantt,
   Milestones: faMilestones,

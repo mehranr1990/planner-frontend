@@ -461,6 +461,15 @@ export function useMilestoneRisk(projectId: string, milestoneId: string | null) 
   );
 }
 
+export function useAssigneeOverlaps(projectId: string, enabled = true) {
+  const { schedule } = useRepositories();
+  const hydrated = useIsClient();
+  return afterHydration(
+    useQuery({ queryKey: scoped(projectId, "overlaps"), queryFn: () => schedule.overlaps(projectId), enabled }),
+    hydrated,
+  );
+}
+
 export function useScheduleGraph(projectId: string) {
   const { schedule } = useRepositories();
   const hydrated = useIsClient();

@@ -1,5 +1,7 @@
 import { sampleScheduleLinks } from "@/fixtures/project-work";
 import type {
+  AssigneeOverlap,
+  ProjectPerson,
   ProjectTask,
   ScheduleChange,
   ScheduleGraph,
@@ -11,7 +13,7 @@ import type {
 } from "../project-domain";
 import type { ScheduleRepository } from "../project-repositories";
 import { RepositoryError } from "../repositories";
-import type { ProjectWorkStore } from "./mock-project-work";
+import { isTaskDone, type ProjectWorkStore } from "./mock-project-work";
 
 /*
  * Schedule for the mock adapter (PJ-08 reschedule now, PJ-05 Gantt later):
@@ -26,10 +28,10 @@ export const dayNumber = (day: string) =>
   Date.UTC(+day.slice(0, 4), +day.slice(5, 7) - 1, +day.slice(8, 10)) / DAY;
 export const fromDayNumber = (n: number) => new Date(n * DAY).toISOString().slice(0, 10);
 
-/** Mock start of a dated task: its due minus a duration from the estimate (1 day per 6h, min 1). */
+/** Mock start of a dated task: its due minus a duration from the estimate (1 day per 2h on the project, min 1). */
 export function defaultTaskStart(task: Pick<ProjectTask, "due" | "estimateHours">): string | null {
   if (!task.due) return null;
-  const days = Math.max(1, Math.round((task.estimateHours ?? 6) / 6));
+  const days = Math.max(1, Math.round((task.estimateHours ?? 2) / 2));
   return fromDayNumber(dayNumber(task.due) - days + 1);
 }
 
@@ -187,6 +189,34 @@ export function createMockProjectSchedule({
 
   const schedule: ScheduleRepository = {
     graph: (projectId) => respond(graph(projectId)),
+    overlaps: (projectId) => {
+      const workflow = store.workflow(projectId);
+      const open = (store.tasks.get(projectId) ?? []).filter((task) => task.due !== null && !isTaskDone(task, workflow));
+      const byPerson = new Map<string, { person: ProjectPerson; tasks: ProjectTask[] }>();
+      for (const task of open)
+        for (const assignee of task.assignees) {
+          if (assignee.state === "declined") continue;
+          const entry = byPerson.get(assignee.person.id) ?? { person: assignee.person, tasks: [] };
+          entry.tasks.push(task);
+          byPerson.set(assignee.person.id, entry);
+        }
+      const result: AssigneeOverlap[] = [];
+      for (const { person, tasks } of byPerson.values()) {
+        const ids = new Set<string>();
+        let pairs = 0;
+        tasks.forEach((a, index) =>
+          tasks.slice(index + 1).forEach((b) => {
+            if (startOf(a)! <= b.due! && startOf(b)! <= a.due!) {
+              pairs += 1;
+              ids.add(a.id);
+              ids.add(b.id);
+            }
+          }),
+        );
+        if (pairs > 0) result.push({ person, taskIds: [...ids], pairs });
+      }
+      return respond(result);
+    },
     preview: async (projectId, change, mode) => respond(computePreview(graph(projectId), change, mode)),
     async apply(projectId, moves) {
       if (moves.length === 0) return respond(undefined);

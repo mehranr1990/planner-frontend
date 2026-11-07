@@ -1,0 +1,26 @@
+{
+  "title": "Timeline",
+  "zoom": {
+    "label": "Zoom",
+    "days": "Days",
+    "weeks": "Weeks",
+    "months": "Months",
+    "quarter": "Quarter"
+  },
+  "lanes": {
+    "label": "Lanes",
+    "phase": "By phase",
+    "assignee": "By assignee"
+  },
+  "legend": {
+    "label": "Legend",
+    "milestone": "Milestone"
+  },
+  "overlaps": "{n, plural, one {{count} overlap for {name}} other {{count} overlaps for {name}}}",
+  "today": "Today · {date} · {phase} phase",
+  "todayNoPhase": "Today · {date}",
+  "chart": "Timeline of {project}",
+  "resizeStart": "Change start of {title}",
+  "resizeEnd": "Change end of {title}",
+  "range": "{from} – {to}"
+}

@@ -407,6 +407,15 @@ export interface ScheduleLink {
   lagDays: number;
 }
 
+/** Open tasks of one assignee whose dates overlap (PJ-04 assignee lanes). */
+export interface AssigneeOverlap {
+  person: ProjectPerson;
+  /** Tasks involved in at least one overlap. */
+  taskIds: readonly string[];
+  /** Number of overlapping pairs. */
+  pairs: number;
+}
+
 export interface ScheduleGraph {
   items: readonly ScheduleItem[];
   links: readonly ScheduleLink[];

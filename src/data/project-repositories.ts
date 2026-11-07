@@ -9,6 +9,7 @@ import type {
   TaskDependency,
   MyProjectWork,
   MilestoneRow,
+  AssigneeOverlap,
   BusySlot,
   ProjectCalendarItem,
   PhaseRow,
@@ -108,6 +109,8 @@ export interface ScheduleRepository {
    * needs Manager+ ("forbidden").
    */
   apply(projectId: string, moves: readonly ScheduleMove[]): Promise<void>;
+  /** Overlapping open assignments per person (derived by the server). */
+  overlaps(projectId: string): Promise<readonly AssigneeOverlap[]>;
 }
 
 export interface WorkflowRepository {

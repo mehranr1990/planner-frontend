@@ -1,0 +1,26 @@
+{
+  "title": "تایم‌لاین",
+  "zoom": {
+    "label": "بزرگ‌نمایی",
+    "days": "روز",
+    "weeks": "هفته",
+    "months": "ماه",
+    "quarter": "فصل"
+  },
+  "lanes": {
+    "label": "ردیف‌ها",
+    "phase": "بر اساس فاز",
+    "assignee": "بر اساس مسئول"
+  },
+  "legend": {
+    "label": "راهنما",
+    "milestone": "نقطه‌ی عطف"
+  },
+  "overlaps": "{n, plural, other {{count} هم‌پوشانی برای {name}}}",
+  "today": "امروز · {date} · فاز {phase}",
+  "todayNoPhase": "امروز · {date}",
+  "chart": "تایم‌لاین {project}",
+  "resizeStart": "تغییر شروع {title}",
+  "resizeEnd": "تغییر پایان {title}",
+  "range": "{from} – {to}"
+}
