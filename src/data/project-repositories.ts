@@ -40,6 +40,7 @@ import type {
   ProjectTask,
   ProjectWorkflow,
   WorkloadEntry,
+  WorkloadGrid,
   ProjectDirectory,
   ProjectHealth,
   ProjectInvitation,
@@ -229,6 +230,11 @@ export interface GrantRepository {
 export interface WorkloadRepository {
   /** This week's estimates per member (D13); empty without the capability. */
   week(projectId: string): Promise<readonly WorkloadEntry[]>;
+  /**
+   * PJ-11 grid from the week containing `from`, `weeks` columns. Manager+ get
+   * every member; a Member gets only their own row (no Unassigned row).
+   */
+  byWeek(projectId: string, range: { from: string; weeks: number }, options?: ProjectAccessOptions): Promise<WorkloadGrid>;
 }
 
 export interface AssignmentDeclineInput {

@@ -228,7 +228,7 @@ export function createMockProjectWork({
 
   const risks = createMockRisks(store, { respond, now });
 
-  const workload: WorkloadRepository = {
+  const workload: Pick<WorkloadRepository, "week"> = {
     week: (projectId) => respond(canSeeTeamLoad(projectId) ? (store.workload.get(projectId) ?? []) : []),
   };
 

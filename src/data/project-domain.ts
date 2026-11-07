@@ -126,6 +126,8 @@ export interface ProjectCapabilities {
   /** Weekly capacity per member and guest grants (Manager+). */
   editCapacity: boolean;
   manageGrants: boolean;
+  /** PJ-11: every member row (Manager+); Members see only their own row. */
+  seeAllWorkload: boolean;
   restore: boolean;
   export: boolean;
 }
@@ -638,4 +640,31 @@ export interface GuestGrant {
   taskIds: readonly string[];
   /** Gregorian day the grant ends. */
   expires: string;
+}
+
+// ── Workload (PJ-11) ─────────────────────────────────────────────────────
+
+/** One member-week: hours of open estimates spread start→due (D13), and which tasks make them up. */
+export interface WorkloadCell {
+  hours: number;
+  tasks: readonly { taskId: string; title: string; statusId: string; hours: number }[];
+}
+
+export interface WorkloadRow {
+  person: ProjectPerson;
+  role: ProjectRole;
+  /** Weekly project hours from Members; null = no capacity set. */
+  capacity: number | null;
+  cells: readonly WorkloadCell[];
+  /** Open tasks without an estimate (counted separately). */
+  unestimated: number;
+}
+
+/** Members × weeks (weeks start Saturday, Iran week); only this project's tasks, never Personal data. */
+export interface WorkloadGrid {
+  /** Start day (Gregorian) of each week column. */
+  weeks: readonly string[];
+  rows: readonly WorkloadRow[];
+  /** Unassigned open tasks per week (count + hours). */
+  unassigned: readonly { tasks: number; hours: number }[];
 }

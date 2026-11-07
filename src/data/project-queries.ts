@@ -743,3 +743,19 @@ export function useMemberActions(projectId: string) {
     removalPreview: (personId: string) => members.removalPreview(projectId, personId),
   };
 }
+
+// ── Workload (PJ-11) ─────────────────────────────────────────────────────
+
+export function useWorkloadGrid(projectId: string, from: string, weeks: number, preview: ProjectAccessOptions = {}) {
+  const { workload } = useRepositories();
+  const hydrated = useIsClient();
+  const role = preview.previewRole ?? null;
+  return afterHydration(
+    useQuery({
+      queryKey: scoped(projectId, "workload-grid", from, weeks, role),
+      queryFn: () => workload.byWeek(projectId, { from, weeks }, preview),
+      retry: (count, error) => !(error instanceof RepositoryError && error.code === "forbidden") && count < 2,
+    }),
+    hydrated,
+  );
+}

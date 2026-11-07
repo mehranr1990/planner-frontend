@@ -352,5 +352,5 @@ export function createMockProjectSchedule({
       return respond(undefined);
     },
   };
-  return { schedule };
+  return { schedule, startOf };
 }
