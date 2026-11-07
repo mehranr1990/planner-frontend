@@ -1,0 +1,78 @@
+{
+  "title": "ریسک",
+  "issueTitle": "مسئله",
+  "close": "بستن ریسک",
+  "closeX": "بستن",
+  "reason": {
+    "label": "دلیل",
+    "mitigated": "کاهش یافت",
+    "notHappened": "رخ نداد",
+    "accepted": "پذیرفته شد",
+    "transferred": "واگذار شد",
+    "becameIssue": "به مسئله تبدیل شد",
+    "resolved": "حل شد"
+  },
+  "closeNote": "یادداشت بستن (اختیاری)",
+  "cancel": "انصراف",
+  "closed": "ریسک بسته شد",
+  "convert": "تبدیل به مسئله",
+  "convertBody": "مسئله‌ی {code} «{title}» با شدت {severity} ساخته می‌شود، به {risk} پیوند می‌خورد و {risk} با دلیل «به مسئله تبدیل شد» بسته می‌شود.",
+  "convertAction": "تبدیل",
+  "converted": "مسئله‌ی {code} ساخته شد",
+  "edit": "ویرایش",
+  "save": "ذخیره",
+  "titleField": "عنوان",
+  "issue": {
+    "resolve": "حل شد",
+    "resolution": "یادداشت راه‌حل",
+    "resolved": "مسئله حل شد",
+    "age": "باز · {n, plural, other {# روز}}"
+  },
+  "copyLink": "کپی پیوند",
+  "copied": "پیوند کپی شد",
+  "probability": "احتمال · {level}",
+  "closedAs": "بسته · {reason}",
+  "becameIssue": "به مسئله‌ی {code} تبدیل شد",
+  "fromRisk": "از ریسک {code}",
+  "props": {
+    "label": "ویژگی‌های ریسک",
+    "owner": "مسئول",
+    "reviewBy": "بازبینی تا",
+    "review": "{date} · هفتگی",
+    "tasks": "کارهای پیوندی",
+    "trigger": "نشانه",
+    "none": "—"
+  },
+  "tabs": {
+    "label": "بخش‌های ریسک",
+    "mitigation": "کاهش",
+    "history": "تاریخچه",
+    "comments": "نظرها"
+  },
+  "plan": "برنامه‌ی کاهش",
+  "noPlan": "هنوز برنامه‌ی کاهشی نیست",
+  "checklist": "گام‌های کاهش",
+  "doneBy": "{name} · {date}",
+  "dueBy": "{name} · موعد {date}",
+  "makeTask": "ساخت کار",
+  "taskMade": "کار ساخته شد",
+  "openTask": "کار",
+  "history": {
+    "created": "{actor} آن را ثبت کرد",
+    "severity": "{actor} شدت را از {from} به {to} تغییر داد",
+    "probability": "{actor} احتمال را از {from} به {to} تغییر داد",
+    "status": "{actor} وضعیت را از {from} به {to} تغییر داد",
+    "owner": "{actor} مسئول را از {from} به {to} تغییر داد",
+    "converted": "{actor} {from} را به مسئله‌ی {to} تبدیل کرد",
+    "closed": "{actor} آن را بست · {to}",
+    "empty": "هنوز تغییری نیست"
+  },
+  "comments": {
+    "empty": "هنوز نظری نیست",
+    "placeholder": "نظری بنویس",
+    "send": "ارسال نظر"
+  },
+  "you": "تو",
+  "error": "ذخیره نشد. دوباره امتحان کن.",
+  "viewer": "فقط مشاهده"
+}

@@ -26,6 +26,8 @@ import enProjectCalendar from "./en/projectCalendar.json";
 import enGantt from "./en/gantt.json";
 import enMilestones from "./en/milestones.json";
 import enProjectBoard from "./en/projectBoard.json";
+import enRisks from "./en/risks.json";
+import enRisk from "./en/risk.json";
 import enSettings from "./en/settings.json";
 import enShell from "./en/shell.json";
 import enReview from "./en/review.json";
@@ -59,6 +61,8 @@ import faProjectCalendar from "./fa/projectCalendar.json";
 import faGantt from "./fa/gantt.json";
 import faMilestones from "./fa/milestones.json";
 import faProjectBoard from "./fa/projectBoard.json";
+import faRisks from "./fa/risks.json";
+import faRisk from "./fa/risk.json";
 import faSettings from "./fa/settings.json";
 import faShell from "./fa/shell.json";
 import faReview from "./fa/review.json";
@@ -109,6 +113,8 @@ const en = {
   Gantt: enGantt,
   Milestones: enMilestones,
   ProjectBoard: enProjectBoard,
+  Risks: enRisks,
+  Risk: enRisk,
 };
 
 export type ClientMessages = typeof en;
@@ -147,6 +153,8 @@ const fa: ClientMessages = {
   Gantt: faGantt,
   Milestones: faMilestones,
   ProjectBoard: faProjectBoard,
+  Risks: faRisks,
+  Risk: faRisk,
 };
 
 export const clientMessages: Record<Locale, ClientMessages> = { en, fa };

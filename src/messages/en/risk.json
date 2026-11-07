@@ -1,0 +1,78 @@
+{
+  "title": "Risk",
+  "issueTitle": "Issue",
+  "close": "Close risk",
+  "closeX": "Close",
+  "reason": {
+    "label": "Reason",
+    "mitigated": "Mitigated",
+    "notHappened": "Did not happen",
+    "accepted": "Accepted",
+    "transferred": "Transferred",
+    "becameIssue": "Became issue",
+    "resolved": "Resolved"
+  },
+  "closeNote": "Closing note (optional)",
+  "cancel": "Cancel",
+  "closed": "Risk closed",
+  "convert": "Convert to issue",
+  "convertBody": "Creates issue {code} “{title}” with severity {severity}, links back to {risk}, and closes {risk} as “Became issue”.",
+  "convertAction": "Convert",
+  "converted": "Issue {code} created",
+  "edit": "Edit",
+  "save": "Save",
+  "titleField": "Title",
+  "issue": {
+    "resolve": "Resolve",
+    "resolution": "Resolution note",
+    "resolved": "Issue resolved",
+    "age": "Open · {n, plural, one {# day} other {# days}}"
+  },
+  "copyLink": "Copy link",
+  "copied": "Link copied",
+  "probability": "Probability · {level}",
+  "closedAs": "Closed · {reason}",
+  "becameIssue": "Became issue {code}",
+  "fromRisk": "From risk {code}",
+  "props": {
+    "label": "Risk properties",
+    "owner": "Owner",
+    "reviewBy": "Review by",
+    "review": "{date} · weekly",
+    "tasks": "Linked tasks",
+    "trigger": "Trigger",
+    "none": "—"
+  },
+  "tabs": {
+    "label": "Risk sections",
+    "mitigation": "Mitigation",
+    "history": "History",
+    "comments": "Comments"
+  },
+  "plan": "Mitigation plan",
+  "noPlan": "No mitigation plan yet",
+  "checklist": "Mitigation steps",
+  "doneBy": "{name} · {date}",
+  "dueBy": "{name} · due {date}",
+  "makeTask": "Make task",
+  "taskMade": "Task created",
+  "openTask": "Task",
+  "history": {
+    "created": "{actor} created it",
+    "severity": "{actor} changed severity {from} → {to}",
+    "probability": "{actor} changed probability {from} → {to}",
+    "status": "{actor} changed status {from} → {to}",
+    "owner": "{actor} changed owner {from} → {to}",
+    "converted": "{actor} converted {from} to issue {to}",
+    "closed": "{actor} closed it · {to}",
+    "empty": "No changes yet"
+  },
+  "comments": {
+    "empty": "No comments yet",
+    "placeholder": "Add a comment",
+    "send": "Comment"
+  },
+  "you": "You",
+  "error": "Couldn’t save. Try again.",
+  "viewer": "View only"
+}

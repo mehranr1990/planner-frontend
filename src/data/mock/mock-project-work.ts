@@ -15,11 +15,11 @@ import type {
   ActivityRepository,
   AssignmentRepository,
   MilestoneRepository,
-  RiskRepository,
   WorkflowRepository,
   WorkloadRepository,
 } from "../project-repositories";
 import { RepositoryError } from "../repositories";
+import { createMockRisks } from "./mock-project-risks";
 
 /*
  * Work inside a project for the mock adapter (PJ-01 now; PJ-02/PJ-15 reuse
@@ -95,7 +95,7 @@ export function computeKpis(store: ProjectWorkStore, projectId: string, today: s
   const [weekStart, weekEnd] = weekOf(today);
   const milestones = store.milestones.get(projectId) ?? [];
   const next = milestones.filter((milestone) => !milestone.done).sort((a, b) => a.due.localeCompare(b.due))[0];
-  const risks = (store.risks.get(projectId) ?? []).filter((risk) => risk.open);
+  const risks = (store.risks.get(projectId) ?? []).filter((risk) => risk.open && risk.kind === "risk");
   return {
     milestonesDone: milestones.filter((milestone) => milestone.done).length,
     milestonesTotal: milestones.length,
@@ -226,12 +226,7 @@ export function createMockProjectWork({
     },
   };
 
-  const risks: RiskRepository = {
-    list: (projectId, { open } = {}) =>
-      respond((store.risks.get(projectId) ?? []).filter((risk) => open === undefined || risk.open === open)),
-    byMilestone: (projectId, milestoneId) =>
-      respond((store.risks.get(projectId) ?? []).find((risk) => risk.open && risk.milestoneId === milestoneId) ?? null),
-  };
+  const risks = createMockRisks(store, { respond, now });
 
   const workload: WorkloadRepository = {
     week: (projectId) => respond(canSeeTeamLoad(projectId) ? (store.workload.get(projectId) ?? []) : []),

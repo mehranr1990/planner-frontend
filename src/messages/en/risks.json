@@ -1,0 +1,81 @@
+{
+  "title": "Risks & issues",
+  "new": "New risk",
+  "severity": "Severity",
+  "probability": "Probability",
+  "status": {
+    "open": "Open",
+    "mitigating": "Mitigating",
+    "watching": "Watching",
+    "closed": "Closed"
+  },
+  "convert": "Convert to issue",
+  "empty": "No risks yet",
+  "emptyBody": "List what could go wrong before it does. Owners and mitigation make risks useful.",
+  "emptyIssues": "No issues",
+  "level": {
+    "low": "Low",
+    "medium": "Medium",
+    "high": "High",
+    "critical": "Critical"
+  },
+  "probabilityShort": "P · {level}",
+  "view": {
+    "label": "Register",
+    "risks": "Risks",
+    "issues": "Issues"
+  },
+  "pills": {
+    "label": "Filter the register",
+    "open": "Open",
+    "mine": "Mine",
+    "high": "High+",
+    "closed": "Closed"
+  },
+  "filters": {
+    "button": "Owner · Milestone",
+    "owner": "Owner",
+    "milestone": "Milestone",
+    "any": "Any",
+    "clear": "Clear filters",
+    "cell": "{probability} probability · {severity} severity",
+    "clearCell": "Clear cell filter"
+  },
+  "sort": {
+    "label": "Sort",
+    "score": "Score",
+    "updated": "Updated",
+    "due": "Due"
+  },
+  "columns": {
+    "id": "ID",
+    "risk": "Risk",
+    "issue": "Issue",
+    "owner": "Owner",
+    "status": "Status",
+    "milestone": "Milestone",
+    "updated": "Upd."
+  },
+  "none": "—",
+  "heat": {
+    "title": "Heat map",
+    "caption": "open risks",
+    "label": "Open risks by probability and severity",
+    "axisProbability": "Probability",
+    "axisSeverity": "Severity",
+    "hint": "Click a cell to filter the register. Closed risks are not counted.",
+    "cell": "{probability} probability, {severity} severity: {n} open"
+  },
+  "summary": {
+    "label": "Open risks by severity",
+    "high": "High+",
+    "medium": "Medium",
+    "low": "Low"
+  },
+  "openIssues": "Open issues",
+  "raised": "raised {when}",
+  "from": "from {code}",
+  "issuesNote": "Issues = things that already happened: severity only (no probability), plus resolution.",
+  "viewer": "View only",
+  "noMatch": "No risks match these filters"
+}

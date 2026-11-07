@@ -21,6 +21,9 @@ import type {
   WorkloadEntry,
 } from "@/data/project-domain";
 import { projectPeople } from "./projects";
+import { sampleRisks } from "./project-risks";
+
+export { sampleRisks };
 
 const { me, sara, jonathan, kian, maryam, arash, nima } = projectPeople;
 
@@ -388,41 +391,6 @@ export const sampleMyBusy: readonly BusySlot[] = [
   { day: "2026-10-14", start: "09:00", end: "11:00" },
   { day: "2026-10-15", start: "13:00", end: "15:30" },
   { day: "2026-10-20", start: "10:00", end: "12:00" },
-];
-
-export const sampleRisks: readonly ProjectRisk[] = [
-  {
-    id: "payment-api-delay",
-    kind: "issue",
-    title: "Payment API access delayed",
-    severity: "high",
-    probability: "high",
-    open: true,
-    owner: sara,
-    blocksTasks: 2,
-    mitigation: "sandbox keys",
-    milestoneId: "payment-go-live",
-  },
-  {
-    id: "qa-capacity",
-    kind: "risk",
-    title: "QA capacity in November",
-    severity: "medium",
-    probability: "medium",
-    open: true,
-    owner: kian,
-    blocksTasks: 0,
-  },
-  {
-    id: "font-licence",
-    kind: "risk",
-    title: "Web font licence",
-    severity: "low",
-    probability: "low",
-    open: false,
-    owner: jonathan,
-    blocksTasks: 0,
-  },
 ];
 
 export const sampleActivity: readonly ProjectActivity[] = [

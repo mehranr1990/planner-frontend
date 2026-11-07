@@ -27,6 +27,11 @@ import type {
   ProjectPhase,
   ProjectPriority,
   ProjectRisk,
+  RiskCloseReason,
+  RiskHistoryEntry,
+  RiskProbability,
+  RiskSeverity,
+  RiskStatus,
   ProjectTask,
   ProjectWorkflow,
   WorkloadEntry,
@@ -133,10 +138,41 @@ export interface ActivityRepository {
   list(projectId: string, options?: { limit?: number }): Promise<readonly ProjectActivity[]>;
 }
 
+export interface RiskPatch {
+  title?: string;
+  severity?: RiskSeverity;
+  probability?: RiskProbability;
+  status?: Exclude<RiskStatus, "closed">;
+  ownerId?: string;
+  mitigation?: string;
+}
+
 export interface RiskRepository {
-  list(projectId: string, options?: { open?: boolean }): Promise<readonly ProjectRisk[]>;
+  /**
+   * The register. `kind` filters risks / issues; a risk that became an issue
+   * leaves the risk list (the issue links back). `open` filters by status.
+   */
+  list(projectId: string, options?: { open?: boolean; kind?: ProjectRisk["kind"] }): Promise<readonly ProjectRisk[]>;
   /** The open risk linked to a milestone, if any. */
   byMilestone(projectId: string, milestoneId: string): Promise<ProjectRisk | null>;
+  get(riskId: string): Promise<ProjectRisk>;
+  history(riskId: string): Promise<readonly RiskHistoryEntry[]>;
+  comments(riskId: string): Promise<readonly TaskComment[]>;
+  addComment(riskId: string, body: string): Promise<TaskComment>;
+  /** If-Match: rejects "conflict" when `revision` is stale. */
+  update(riskId: string, patch: RiskPatch, revision: number): Promise<ProjectRisk>;
+  setChecklistItem(
+    riskId: string,
+    itemId: string,
+    patch: { done?: boolean; taskId?: string },
+    revision: number,
+  ): Promise<ProjectRisk>;
+  /** Close a risk with a reason (optional note). */
+  close(riskId: string, input: { reason: RiskCloseReason; note?: string }, revision: number): Promise<ProjectRisk>;
+  /** Resolve an issue (resolution note required, else "invalid"). */
+  resolve(riskId: string, resolution: string, revision: number): Promise<ProjectRisk>;
+  /** Creates the issue (same title / severity, links back) and closes the risk as "became-issue"; returns the issue. */
+  convert(riskId: string, revision: number): Promise<ProjectRisk>;
 }
 
 export interface WorkloadRepository {

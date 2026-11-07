@@ -209,7 +209,7 @@ function RiskList({ risks }: { risks: readonly ProjectRisk[] }) {
         const parts = [risk.kind === "issue" ? t("issue") : t("risk")];
         if (risk.blocksTasks > 0) parts.push(t("blocks", { n: format.number(risk.blocksTasks) }));
         if (risk.mitigation) parts.push(t("mitigation", { text: risk.mitigation }));
-        if (risk.kind === "risk") parts.push(t("probability", { level: t(`level.${risk.probability}`) }));
+        if (risk.probability) parts.push(t("probability", { level: t(`level.${risk.probability}`) }));
         return (
           <li key={risk.id} className="flex items-center gap-3 rounded-row bg-subtle px-3.5 py-3">
             <span className={cn("shrink-0 rounded-pill px-2.5 py-1 text-xs font-bold", SEVERITY_CLASS[risk.severity])}>

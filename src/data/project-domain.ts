@@ -111,6 +111,11 @@ export interface ProjectCapabilities {
   /** Board: manual order within a column (Manager+). */
   reorderTasks: boolean;
   createRisk: boolean;
+  /** Edit risks I own (Member+); `editAnyRisk` = Manager+. */
+  editOwnRisk: boolean;
+  editAnyRisk: boolean;
+  /** Close / resolve / convert to issue (Manager+). */
+  closeRisk: boolean;
   uploadFile: boolean;
   restore: boolean;
   export: boolean;
@@ -282,18 +287,80 @@ export interface PhaseRow {
 
 export type RiskSeverity = "low" | "medium" | "high" | "critical";
 
+/** D11: probability Low · Medium · High (risks only; issues have none). */
+export type RiskProbability = "low" | "medium" | "high";
+
+/** Register status. Issues use open / closed only (closed = resolved). */
+export type RiskStatus = "open" | "mitigating" | "watching" | "closed";
+
+/** Why a risk or issue was closed (PJ-16 reason chips; "became-issue" after Convert, "resolved" for issues). */
+export type RiskCloseReason = "mitigated" | "not-happened" | "accepted" | "transferred" | "became-issue" | "resolved";
+
+/** One mitigation step (PJ-16); can become a project task ("Make task"). */
+export interface RiskChecklistItem {
+  id: string;
+  text: string;
+  done: boolean;
+  /** Who ticked it (with `doneOn`) or who holds it (with `due`); Gregorian days. */
+  person?: ProjectPerson;
+  doneOn?: string;
+  due?: string;
+  /** The project task made from this step. */
+  taskId?: string;
+}
+
 export interface ProjectRisk {
   id: string;
+  /** Register code shown in the ID column ("R-07", "I-02"). */
+  code: string;
   kind: "risk" | "issue";
   title: string;
   severity: RiskSeverity;
-  probability: "low" | "medium" | "high";
+  /** Risks only (issues have no probability). */
+  probability?: RiskProbability;
+  status: RiskStatus;
+  /** status !== "closed" (kept for the PJ-01 / PJ-08 readers). */
   open: boolean;
   owner: ProjectPerson;
+  /** Who raised it ("Mine" = owned or raised by me). */
+  raisedBy: ProjectPerson;
+  /** Instants with offset. */
+  raisedAt: string;
+  updatedAt: string;
   blocksTasks: number;
+  /** Plan text (PJ-16 Mitigation tab). */
   mitigation?: string;
+  checklist?: readonly RiskChecklistItem[];
   /** Milestone this risk threatens (PJ-08 linked risk). */
   milestoneId?: string;
+  /** Linked project tasks. */
+  taskIds?: readonly string[];
+  /** Next review (Gregorian day) and how often. */
+  reviewBy?: string;
+  reviewCadence?: "weekly";
+  /** What would turn the risk into an issue (user text). */
+  trigger?: string;
+  /** Issue made from a risk: link back (D12, keeps history). */
+  fromRiskId?: string;
+  fromRiskCode?: string;
+  /** Risk converted to an issue: the issue it became. */
+  issueId?: string;
+  closeReason?: RiskCloseReason;
+  closeNote?: string;
+  commentCount: number;
+  /** If-Match for writes (stale → "conflict"). */
+  revision: number;
+}
+
+/** PJ-16 History line: every change of severity, probability, status or owner (audit, never deleted). */
+export interface RiskHistoryEntry {
+  id: string;
+  at: string;
+  actor: ProjectPerson;
+  field: "created" | "severity" | "probability" | "status" | "owner" | "converted" | "closed";
+  /** Raw values (severity / probability / status ids, close reasons, person names, codes). */
+  from?: string;
+  to?: string;
 }
 
 export type ProjectActivity =

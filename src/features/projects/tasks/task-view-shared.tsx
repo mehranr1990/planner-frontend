@@ -255,7 +255,7 @@ export function ActiveTaskFilters({
   );
 }
 
-function FilterSection({ label, children }: { label: string; children: ReactNode }) {
+export function FilterSection({ label, children }: { label: string; children: ReactNode }) {
   return (
     <div role="group" aria-label={label} className="flex flex-col gap-1.5">
       <p className="text-xs font-bold text-fg-secondary">{label}</p>
@@ -264,7 +264,7 @@ function FilterSection({ label, children }: { label: string; children: ReactNode
   );
 }
 
-function FilterChip({ pressed, onClick, children }: { pressed: boolean; onClick: () => void; children: ReactNode }) {
+export function FilterChip({ pressed, onClick, children }: { pressed: boolean; onClick: () => void; children: ReactNode }) {
   return (
     <button
       type="button"

@@ -12,8 +12,8 @@ describe("mock project work (PJ-01)", () => {
       nextMilestone: { id: "beta", due: "2026-11-11" },
       overdueTasks: 2,
       oldestOverdueDays: 4,
-      openRisks: 2,
-      highRisks: 1,
+      openRisks: 4,
+      highRisks: 2,
       openTasks: 17,
     });
   });
@@ -51,7 +51,11 @@ describe("mock project work (PJ-01)", () => {
     expect(await store.workload.week("website-redesign")).toHaveLength(4);
     expect((await store.risks.list("website-redesign", { open: true })).map((risk) => risk.id)).toEqual([
       "payment-api-delay",
+      "legal-copy",
+      "consent-events",
       "qa-capacity",
+      "sandbox-keys",
+      "staging-deploy",
     ]);
     expect(await store.milestones.listPhases("planner-app")).toEqual([]);
   });

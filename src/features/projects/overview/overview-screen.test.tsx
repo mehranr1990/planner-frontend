@@ -32,7 +32,7 @@ describe("PJ-01 · Project overview", () => {
     const kpis = await within(status).findByRole("list", { name: "Project status figures" });
     expect(within(kpis).getAllByRole("listitem")).toHaveLength(4);
     expect(kpis).toHaveTextContent("Overdue tasks2oldest 4 days");
-    expect(kpis).toHaveTextContent("Open risks21 high");
+    expect(kpis).toHaveTextContent("Open risks42 high");
     // No ring anywhere: progress is number + linear bar.
     expect(screen.queryByRole("img", { name: /ring/i })).not.toBeInTheDocument();
   });
@@ -80,7 +80,7 @@ describe("PJ-01 · Project overview", () => {
     const names = within(tabs).getAllByRole("tab");
     expect(names).toHaveLength(3);
     expect(names[0]).toHaveTextContent("Activity");
-    await waitFor(() => expect(names[1]).toHaveTextContent("Risks & blockers 2 open"));
+    await waitFor(() => expect(names[1]).toHaveTextContent("Risks & blockers 6 open"));
     expect(names[2]).toHaveTextContent("Team load this week");
     expect(await screen.findByText(/Sara P\. set status to At risk/)).toBeInTheDocument();
     await user.click(within(tabs).getByRole("tab", { name: /Team load/ }));

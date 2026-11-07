@@ -11,12 +11,14 @@ import type {
   ProjectTaskPatch,
   ProjectTaskQuery,
   ReassignInput,
+  RiskPatch,
 } from "./project-repositories";
 import { useRepositories } from "./provider";
 import { RepositoryError } from "./repositories";
 import { afterHydration } from "./queries";
 import type {
   DependencyType,
+  RiskCloseReason,
   InviteRole,
   PendingInvite,
   ScheduleChange,
@@ -552,4 +554,98 @@ export function useMyBusy(from: string, to: string, enabled: boolean) {
     }),
     hydrated,
   );
+}
+
+// ── Risks & issues (PJ-09, PJ-16) ────────────────────────────────────────
+
+/** The register for one segment (risks or issues), open and closed. */
+export function useRiskRegister(projectId: string, kind: "risk" | "issue") {
+  const { risks } = useRepositories();
+  const hydrated = useIsClient();
+  return afterHydration(
+    useQuery({ queryKey: scoped(projectId, "risks", "register", kind), queryFn: () => risks.list(projectId, { kind }) }),
+    hydrated,
+  );
+}
+
+export function useRisk(projectId: string, riskId: string) {
+  const { risks } = useRepositories();
+  const hydrated = useIsClient();
+  return afterHydration(
+    useQuery({ queryKey: scoped(projectId, "risks", "detail", riskId), queryFn: () => risks.get(riskId), retry: false }),
+    hydrated,
+  );
+}
+
+export function useRiskHistory(projectId: string, riskId: string) {
+  const { risks } = useRepositories();
+  const hydrated = useIsClient();
+  return afterHydration(
+    useQuery({ queryKey: scoped(projectId, "risks", "history", riskId), queryFn: () => risks.history(riskId) }),
+    hydrated,
+  );
+}
+
+export function useRiskComments(projectId: string, riskId: string) {
+  const { risks } = useRepositories();
+  const hydrated = useIsClient();
+  return afterHydration(
+    useQuery({ queryKey: scoped(projectId, "risks", "comments", riskId), queryFn: () => risks.comments(riskId) }),
+    hydrated,
+  );
+}
+
+/** Risk writes (If-Match revisions); every change refreshes the project's caches (PJ-01, PJ-08 read risks too). */
+export function useRiskActions(projectId: string) {
+  const { risks } = useRepositories();
+  const client = useQueryClient();
+  const refresh = () => client.invalidateQueries({ queryKey: projectKeys.scope(projectId) });
+  return {
+    update: useMutation({
+      mutationFn: ({ riskId, patch, revision }: { riskId: string; patch: RiskPatch; revision: number }) =>
+        risks.update(riskId, patch, revision),
+      onSettled: refresh,
+    }),
+    setChecklistItem: useMutation({
+      mutationFn: ({
+        riskId,
+        itemId,
+        patch,
+        revision,
+      }: {
+        riskId: string;
+        itemId: string;
+        patch: { done?: boolean; taskId?: string };
+        revision: number;
+      }) => risks.setChecklistItem(riskId, itemId, patch, revision),
+      onSettled: refresh,
+    }),
+    close: useMutation({
+      mutationFn: ({
+        riskId,
+        reason,
+        note,
+        revision,
+      }: {
+        riskId: string;
+        reason: RiskCloseReason;
+        note?: string;
+        revision: number;
+      }) => risks.close(riskId, { reason, note }, revision),
+      onSettled: refresh,
+    }),
+    resolve: useMutation({
+      mutationFn: ({ riskId, resolution, revision }: { riskId: string; resolution: string; revision: number }) =>
+        risks.resolve(riskId, resolution, revision),
+      onSettled: refresh,
+    }),
+    convert: useMutation({
+      mutationFn: ({ riskId, revision }: { riskId: string; revision: number }) => risks.convert(riskId, revision),
+      onSettled: refresh,
+    }),
+    addComment: useMutation({
+      mutationFn: ({ riskId, body }: { riskId: string; body: string }) => risks.addComment(riskId, body),
+      onSettled: refresh,
+    }),
+  };
 }
