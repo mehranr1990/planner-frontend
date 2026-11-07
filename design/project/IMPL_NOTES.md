@@ -6,7 +6,7 @@ Design order: `design/project/README.md` → `../shared/SHARED.md` (by section) 
 ## Stack & gates
 - Next.js 16.4 App Router (Cache Components; route pages export `instant = false`), TS, Tailwind 4, React Query 5, next-intl 4, @dnd-kit (core/sortable), date-fns + date-fns-jalali, lucide-react, Vitest (jsdom).
 - Gates per prompt: `npm run typecheck` (= `next typegen && tsc --noEmit`), `npx eslint <touched paths>`, `npx vitest run <touched tests>`. No e2e / Playwright (user rule). No new dependencies.
-- **Working tree has large UNCOMMITTED backend-integration WIP** (see `git status`; e.g. `src/data/repositories.ts`, `provider.tsx`, `queries.ts`, `messages/client.ts`, `sheet-params.ts`, `shell-provider.tsx`, tasks list/board/detail). Commit with explicit `git add <paths>` only — never `git add -A` / `.`.
+- Integration WIP was committed in `1211962`; tree is clean except the untracked `chatgpt-context.zip` (never commit it). Commit with explicit `git add <paths>` only — never `git add -A` / `.`. Live-API adapters (`src/data/api/*`) must keep compiling; Projects use mock repos only.
 
 ## Key paths
 | Area | Path |
