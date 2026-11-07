@@ -3,19 +3,23 @@
 import { CalendarDays, Flag, UserRound, UsersRound } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { useId, useState } from "react";
+import { useId, useMemo, useState } from "react";
 import { InlineAlert } from "@/components/feedback/inline-alert";
 import { Button } from "@/components/ui/button";
 import { DatePicker } from "@/components/ui/date-picker";
+import { Field, FieldDescription, FieldError, FieldLabel } from "@/components/ui/field";
 import { Icon } from "@/components/ui/icon";
 import { Input } from "@/components/ui/input";
 import { PillGroup } from "@/components/ui/pills";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/components/ui/toast";
 import { getPlannerToday } from "@/data/clock";
 import type { ProjectTemplate } from "@/data/project-domain";
-import { useCreateProject } from "@/data/project-queries";
+import { isValidProjectKey, normalizeProjectKey, PROJECT_KEY_MAX, suggestProjectKey } from "@/data/project-key";
+import { useCreateProject, useProjectDirectory, useProjectKeyAvailable } from "@/data/project-queries";
+import { RepositoryError } from "@/data/repositories";
 import { projectHref } from "@/features/navigation/contexts";
 import { addDaysToDay } from "@/lib/dates/clock-time";
 import { dayToDate, useProjectFormat } from "../format";
@@ -25,6 +29,11 @@ import { projectSheetHref } from "./project-sheet-params";
  * ?sheet=project-new (PJ-90): name, short description, start / end, "Start
  * from" template, owner line (independent project). The Team/Company
  * association row is shown disabled — "available in a later phase" (P3/P4).
+ * Project key: suggested from the name until edited (project-key.ts rules),
+ * format checked here, uniqueness through the repository (backend
+ * authoritative later). Visibility: only Private — the backend handoff
+ * contract defines no visibility field or values yet, so it is display-only
+ * (not sent) and never bypasses membership or capabilities.
  * Create & invite opens the new project with the invite sheet; Undo discards.
  */
 
@@ -45,17 +54,38 @@ export function NewProjectSheet({ onDone }: { onDone: () => void }) {
   const [end, setEnd] = useState(addDaysToDay(today, 60));
   const [template, setTemplate] = useState<ProjectTemplate>("blank");
   const [error, setError] = useState<string | null>(null);
+  const [typedKey, setTypedKey] = useState<string | null>(null);
+  const [keyTouched, setKeyTouched] = useState(false);
+  const [takenKeys, setTakenKeys] = useState<readonly string[]>([]);
+  const directory = useProjectDirectory();
+  const knownKeys = useMemo(
+    () => new Set([...(directory.data?.projects.map((project) => project.key) ?? []), ...takenKeys]),
+    [directory.data, takenKeys],
+  );
+  const projectKey = typedKey ?? (name.trim() ? suggestProjectKey(name, (key) => knownKeys.has(key)) : "");
+  const keyValid = isValidProjectKey(projectKey);
+  const availability = useProjectKeyAvailable(projectKey, keyValid);
+  const keyTaken = keyValid && (takenKeys.includes(projectKey) || availability.data === false);
+  const keyError =
+    keyTouched && !keyValid ? t("new.keyInvalid") : keyTaken ? t("new.keyTaken") : null;
   const nameId = useId();
   const descriptionId = useId();
   const associationId = useId();
 
   const submit = () => {
     if (!name.trim()) return setError(t("new.nameRequired"));
+    setKeyTouched(true);
+    if (!keyValid || keyTaken) return setError(null);
     if (end < start) return setError(t("new.datesInvalid"));
     setError(null);
     create.mutate(
-      { name, description, startDate: start, endDate: end, template },
+      { name, key: projectKey, description, startDate: start, endDate: end, template },
       {
+        onError: (cause) => {
+          if (cause instanceof RepositoryError && cause.message === "key-taken")
+            setTakenKeys((keys) => [...keys, projectKey]);
+          else if (cause instanceof RepositoryError && cause.message === "key-format") setKeyTouched(true);
+        },
         onSuccess: (project) => {
           toast({
             title: t("new.created", { name: project.name }),
@@ -102,6 +132,22 @@ export function NewProjectSheet({ onDone }: { onDone: () => void }) {
         onChange={(event) => setDescription(event.target.value)}
         placeholder={t("new.description")}
       />
+      <Field invalid={keyError !== null}>
+        <FieldLabel>{t("new.key")}</FieldLabel>
+        <Input
+          dir="ltr"
+          value={projectKey}
+          maxLength={PROJECT_KEY_MAX}
+          autoCapitalize="characters"
+          autoComplete="off"
+          spellCheck={false}
+          className="font-semibold tracking-wide"
+          onChange={(event) => setTypedKey(normalizeProjectKey(event.target.value))}
+          onBlur={() => setKeyTouched(true)}
+        />
+        <FieldDescription>{t("new.keyHelp")}</FieldDescription>
+        {keyError ? <FieldError>{keyError}</FieldError> : null}
+      </Field>
       <div className="flex flex-wrap gap-2">
         <DateChip
           icon={CalendarDays}
@@ -127,6 +173,13 @@ export function NewProjectSheet({ onDone }: { onDone: () => void }) {
           options={TEMPLATES.map((value) => ({ value, label: t(`new.templates.${value}`) }))}
         />
       </div>
+      <Field>
+        <FieldLabel>{t("new.visibility")}</FieldLabel>
+        <RadioGroup value="private">
+          <RadioGroupItem value="private" label={t("new.private")} description={t("new.privateDescription")} />
+        </RadioGroup>
+        <FieldDescription>{t("new.visibilityHint")}</FieldDescription>
+      </Field>
       <p className="flex min-h-11 items-center gap-2 rounded-row bg-subtle px-3 text-sm font-semibold text-fg">
         <Icon icon={UserRound} size={16} className="text-fg-secondary" />
         {t("new.owner")}

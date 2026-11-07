@@ -331,6 +331,17 @@ export function useCreateProject() {
   };
 }
 
+/** PJ-90: is this (well-formed) project key free? Early feedback only; create re-checks. */
+export function useProjectKeyAvailable(key: string, enabled: boolean) {
+  const { projectCreate } = useRepositories();
+  return useQuery({
+    queryKey: projectKeys.keyAvailable(key),
+    queryFn: () => projectCreate.isKeyAvailable(key),
+    enabled,
+    staleTime: 30_000,
+  });
+}
+
 export function usePendingInvites(projectId: string | undefined) {
   const { memberInvites } = useRepositories();
   const hydrated = useIsClient();

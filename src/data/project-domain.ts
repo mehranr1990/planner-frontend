@@ -43,6 +43,8 @@ export interface ProjectMilestoneRef {
 export interface ProjectSummary {
   id: string;
   name: string;
+  /** Task prefix (e.g. WEB → WEB-12); unique, rules in `project-key.ts`. */
+  key: string;
   /** Initials tile (data, may be Latin or Persian). */
   initials: string;
   /** The project colour chosen by its owner (initials tile tint). */

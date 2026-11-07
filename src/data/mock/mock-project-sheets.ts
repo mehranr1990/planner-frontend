@@ -1,5 +1,7 @@
 import type { PendingInvite, ProjectPerson, ProjectSummary } from "../project-domain";
 import type { MemberInviteRepository, ProjectCreateRepository, ReassignRepository } from "../project-repositories";
+import { invitedProjectFixtures } from "@/fixtures/projects";
+import { isValidProjectKey } from "../project-key";
 import { RepositoryError } from "../repositories";
 import type { ProjectWorkStore } from "./mock-project-work";
 
@@ -52,10 +54,21 @@ export function createMockProjectSheets({
       .replace(/[^\p{L}\p{N}]+/gu, "-")
       .replace(/^-|-$/g, "") || "project";
 
+  // Keys are unique across all projects, including ones the user cannot see
+  // yet (pending invitations). The backend will own this check.
+  const keyTaken = (key: string) =>
+    projects.some((project) => project.key === key) ||
+    Object.values(invitedProjectFixtures).some((project) => project.key === key);
+
   const projectCreate: ProjectCreateRepository = {
-    async create({ name, description, startDate, endDate, template }) {
+    async isKeyAvailable(key) {
+      return respond(!keyTaken(key));
+    },
+    async create({ name, key, description, startDate, endDate, template }) {
       const title = name.trim();
       if (!title) throw new RepositoryError("invalid", "Name is required");
+      if (!isValidProjectKey(key)) throw new RepositoryError("invalid", "key-format");
+      if (keyTaken(key)) throw new RepositoryError("invalid", "key-taken");
       if (endDate < startDate) throw new RepositoryError("invalid", "End before start");
       let id = slug(title);
       while (projects.some((project) => project.id === id)) id = `${slug(title)}-${++counter}`;
@@ -69,6 +82,7 @@ export function createMockProjectSheets({
       const project: ProjectSummary = {
         id,
         name: title,
+        key,
         initials,
         tint: "blue",
         description: description?.trim() ?? "",

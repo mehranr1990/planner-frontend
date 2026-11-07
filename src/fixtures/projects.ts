@@ -35,6 +35,7 @@ export const projectFixtures: readonly ProjectFixture[] = [
   {
     id: "website-redesign",
     name: "Website Redesign",
+    key: "WEB",
     initials: "WR",
     tint: "blue",
     description: "New site + checkout for the spring launch.",
@@ -60,6 +61,7 @@ export const projectFixtures: readonly ProjectFixture[] = [
   {
     id: "planner-app",
     name: "Planner App",
+    key: "PLA",
     initials: "PA",
     tint: "indigo",
     description: "Personal planner, web and PWA.",
@@ -81,6 +83,7 @@ export const projectFixtures: readonly ProjectFixture[] = [
   {
     id: "mobile-onboarding",
     name: "Mobile Onboarding",
+    key: "MOB",
     initials: "MO",
     tint: "amber",
     description: "First-run flow and activation emails.",
@@ -102,6 +105,7 @@ export const projectFixtures: readonly ProjectFixture[] = [
   {
     id: "brand-refresh",
     name: "Brand Refresh",
+    key: "BRA",
     initials: "BR",
     tint: "purple",
     description: "Logo, type and colour update.",
@@ -125,6 +129,7 @@ export const projectFixtures: readonly ProjectFixture[] = [
   {
     id: "spring-campaign",
     name: "Spring Campaign",
+    key: "SPR",
     initials: "SC",
     tint: "blue",
     description: "Nowruz campaign landing pages and ads.",
@@ -166,6 +171,7 @@ export const invitedProjectFixtures: Readonly<Record<string, ProjectFixture>> = 
   "data-migration": {
     id: "data-migration",
     name: "Data Migration",
+    key: "DAT",
     initials: "DM",
     tint: "indigo",
     description: "Move customer records to the new CRM.",

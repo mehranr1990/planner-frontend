@@ -214,6 +214,8 @@ export interface DependencyRepository {
 
 export interface NewProjectInput {
   name: string;
+  /** Project key (task prefix). Rejected with "invalid" + message "key-format" / "key-taken". */
+  key: string;
   description?: string;
   startDate: string;
   endDate: string;
@@ -223,6 +225,8 @@ export interface NewProjectInput {
 export interface ProjectCreateRepository {
   /** Independent project owned by the current user (no Team/Company association in P2). */
   create(input: NewProjectInput): Promise<ProjectSummary>;
+  /** Uniqueness check for a project key (mock now; the backend stays authoritative). */
+  isKeyAvailable(key: string): Promise<boolean>;
   /** Undo of create (Owner, right after creating). */
   discard(projectId: string): Promise<void>;
 }

@@ -8,6 +8,7 @@ describe("mock project sheets (PJ-90)", () => {
     const store = createMockProjects({ respond });
     const created = await store.projectCreate.create({
       name: "Help Center",
+      key: "HC",
       startDate: "2026-10-13",
       endDate: "2026-12-01",
       template: "website",
@@ -16,6 +17,19 @@ describe("mock project sheets (PJ-90)", () => {
     expect((await store.projects.listAccessible()).recentIds[0]).toBe("help-center");
     await store.projectCreate.discard("help-center");
     expect((await store.projects.access("help-center")).status).toBe("not-available");
+  });
+
+  it("checks project key format and uniqueness (incl. projects behind pending invitations)", async () => {
+    const store = createMockProjects({ respond });
+    const input = { name: "Help Center", startDate: "2026-10-13", endDate: "2026-12-01", template: "blank" as const };
+    expect(await store.projectCreate.isKeyAvailable("WEB")).toBe(false);
+    expect(await store.projectCreate.isKeyAvailable("DAT")).toBe(false);
+    expect(await store.projectCreate.isKeyAvailable("HC")).toBe(true);
+    await expect(store.projectCreate.create({ ...input, key: "WEB" })).rejects.toThrow("key-taken");
+    await expect(store.projectCreate.create({ ...input, key: "1hc" })).rejects.toThrow("key-format");
+    const created = await store.projectCreate.create({ ...input, key: "HC" });
+    expect(created.key).toBe("HC");
+    expect(await store.projectCreate.isKeyAvailable("HC")).toBe(false);
   });
 
   it("invites without revealing accounts; only Owner/Admin may invite", async () => {

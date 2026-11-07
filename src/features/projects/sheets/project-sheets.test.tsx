@@ -1,6 +1,7 @@
 import { screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it } from "vitest";
+import { resetToasts } from "@/components/ui/toast";
 import { renderWithProviders } from "@/test/render";
 import { routerPush, setMockPathname, setMockSearch } from "@/test/setup";
 import { ProjectSheetHost } from "./project-sheet-host";
@@ -11,6 +12,8 @@ function renderHost(pathname: string, search: string) {
   setMockSearch(search);
   return renderWithProviders(<ProjectSheetHost />);
 }
+
+afterEach(() => resetToasts());
 
 describe("PJ-90 · project sheets", () => {
   it("builds sheet URLs that keep other params and drop the sheet's own on close", () => {
@@ -37,6 +40,42 @@ describe("PJ-90 · project sheets", () => {
     await user.click(within(sheet).getByRole("button", { name: "Create & invite" }));
     await waitFor(() => expect(routerPush).toHaveBeenCalledWith("/projects/help-center?sheet=project-invite"));
     expect(await screen.findByText("Help Center created")).toBeInTheDocument();
+  });
+
+  it("project-new: key suggested from the name, validated and checked for uniqueness; visibility defaults to Private", async () => {
+    const user = userEvent.setup();
+    renderHost("/projects", "sheet=project-new");
+    const sheet = await screen.findByRole("dialog", { name: "New project" });
+    const visibility = within(sheet).getByRole("radiogroup", { name: "Visibility" });
+    const radios = within(visibility).getAllByRole("radio");
+    expect(radios).toHaveLength(1);
+    expect(radios[0]).toHaveAccessibleName(/Private/);
+    expect(radios[0]).toBeChecked();
+    expect(within(sheet).getByText("More options come with Teams and Companies")).toBeInTheDocument();
+
+    const key = within(sheet).getByRole("textbox", { name: "Project key" });
+    expect(key).toHaveAccessibleDescription(/Used as the task prefix, e.g. WEB-12/);
+    await user.type(within(sheet).getByRole("textbox", { name: "Project name" }), "Website");
+    // WEB belongs to Website Redesign: the suggestion takes the first unused one.
+    expect(key).toHaveValue("WEB2");
+    await user.clear(key);
+    await user.type(key, "web");
+    expect(await within(sheet).findByText("Another project already uses this key")).toBeInTheDocument();
+    expect(key).toHaveAttribute("aria-invalid", "true");
+
+    await user.clear(key);
+    await user.type(key, "1");
+    await user.tab();
+    expect(within(sheet).getByText("Use 2–10 capital letters (A–Z) or digits, starting with a letter")).toBeInTheDocument();
+    await user.click(within(sheet).getByRole("button", { name: "Create & invite" }));
+    expect(routerPush).not.toHaveBeenCalledWith(expect.stringContaining("sheet=project-invite"));
+
+    await user.clear(key);
+    await user.type(key, "site2");
+    expect(key).toHaveValue("SITE2");
+    await waitFor(() => expect(key).not.toHaveAttribute("aria-invalid"));
+    await user.click(within(sheet).getByRole("button", { name: "Create & invite" }));
+    await waitFor(() => expect(routerPush).toHaveBeenCalledWith("/projects/website?sheet=project-invite"));
   });
 
   it("project-invite (Owner): roles with descriptions, verified-only copy, pending with resend / cancel", async () => {

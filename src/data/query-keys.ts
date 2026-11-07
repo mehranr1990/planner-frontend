@@ -113,6 +113,8 @@ export const projectKeys = {
   all: ["projects"] as const,
   directory: () => [...projectKeys.all, "directory"] as const,
   invitations: () => [...projectKeys.all, "invitations"] as const,
+  /** PJ-90 project key uniqueness answer. */
+  keyAvailable: (key: string) => [...projectKeys.all, "key-available", key] as const,
   /** One project's access answer; the demo preview role is part of the key. */
   access: (id: string, preview: string | null = null) => [...projectKeys.all, "access", id, preview] as const,
   /** Everything scoped to one project (cleared on revoke / context switch). */
