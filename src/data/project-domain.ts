@@ -17,6 +17,8 @@ export type ProjectHealth = "on-track" | "at-risk" | "off-track";
 /** Lifecycle comes from the project settings, not from the status chip. */
 export type ProjectLifecycle = "active" | "paused" | "archived";
 
+export type ProjectTint = "blue" | "indigo" | "amber" | "purple";
+
 export interface ProjectPerson {
   id: string;
   name: string;
@@ -43,14 +45,16 @@ export interface ProjectSummary {
   name: string;
   /** Initials tile (data, may be Latin or Persian). */
   initials: string;
+  /** The project colour chosen by its owner (initials tile tint). */
+  tint: ProjectTint;
   description: string;
   /** The current user's role. Display only: rights come from `ProjectCapabilities`. */
   role: ProjectRole;
   health: ProjectHealth;
   lifecycle: ProjectLifecycle;
   statusNote: ProjectStatusNote | null;
-  /** Tasks done / total, as the server counts them for this user. */
-  progress: { done: number; total: number };
+  /** Tasks done / total and the server-rounded percent. */
+  progress: { done: number; total: number; percent: number };
   /** Expected share done by today (0–100) for the pace marker. */
   expectedPercent: number;
   nextMilestone: ProjectMilestoneRef | null;
@@ -64,6 +68,8 @@ export interface ProjectSummary {
   /** Open high/critical risks (rail badge on Risks). */
   openHighRisks: number;
   updatedAt: string;
+  /** Directory only: whether the user may restore this archived project (Owner/Admin). */
+  restorable?: boolean;
   /** Verified guest only: how many tasks are shared with them. */
   sharedTaskCount?: number;
   /** Who paused / archived it and when (lifecycle lines). */

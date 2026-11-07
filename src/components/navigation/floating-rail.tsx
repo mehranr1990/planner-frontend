@@ -15,6 +15,7 @@ import { usePreferences } from "@/features/preferences/use-preferences";
 import { cn } from "@/lib/cn";
 import { useProjectDirectory } from "@/data/project-queries";
 import { projectHref } from "@/features/navigation/contexts";
+import { ProjectTile } from "@/features/projects/project-visuals";
 import { useOpenProjectSheet } from "@/features/projects/sheets/project-sheet-params";
 import { NavLink } from "./nav-link";
 import { useControllableState } from "./use-controllable-state";
@@ -294,12 +295,7 @@ function CollectionRail({
                       href={projectHref(project.id)}
                       className="flex h-12 w-full items-center justify-center rounded-pill transition-colors hover:bg-subtle"
                     >
-                      <span
-                        aria-hidden="true"
-                        className="inline-flex size-9 items-center justify-center rounded-tile bg-scope-soft text-xs font-bold text-scope-deep"
-                      >
-                        <bdi>{project.initials}</bdi>
-                      </span>
+                      <ProjectTile initials={project.initials} tint={project.tint} size="sm" />
                       <span className="sr-only">
                         <bdi>{project.name}</bdi>
                       </span>
@@ -317,7 +313,7 @@ function CollectionRail({
             type="button"
             aria-haspopup="dialog"
             onClick={() => openSheet("project-new")}
-            className="flex h-12 w-full items-center justify-center rounded-pill bg-raised text-fg-secondary transition-colors hover:bg-secondary-hover hover:text-fg"
+            className="flex h-12 w-full items-center justify-center rounded-pill bg-primary text-on-accent transition-colors hover:bg-primary-hover"
           >
             <Icon icon={Plus} />
             <span className="sr-only">{t("contexts.project.add")}</span>

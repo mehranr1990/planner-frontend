@@ -114,7 +114,10 @@ export function createMockProjects({ respond }: MockProjectsOptions): MockProjec
   const projectRepo: ProjectRepository = {
     listAccessible() {
       const directory: ProjectDirectory = {
-        projects,
+        projects: projects.map((project) => ({
+          ...project,
+          restorable: mockCapabilities(project.role, project.lifecycle).restore,
+        })),
         counts: counts(),
         recentIds: recent.filter((id) => find(id)?.lifecycle !== "archived"),
       };
@@ -161,7 +164,7 @@ export function createMockProjects({ respond }: MockProjectsOptions): MockProjec
       project.statusNote = text
         ? {
             text,
-            author: { id: "me", name: "Mehran", initials: "M" },
+            author: { id: "me", name: "Mehran R.", initials: "MR" },
             at: new Date().toISOString(),
           }
         : null;

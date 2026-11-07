@@ -3,7 +3,8 @@
 import { useCallback, useMemo } from "react";
 import { parseDay } from "@/lib/dates/clock-time";
 import { formatDate, formatDateRange, type DateStyle } from "@/lib/dates/format";
-import { formatNumber, formatPercent } from "@/lib/locale/digits";
+import { getPlannerNow } from "@/data/clock";
+import { convertDigits, formatNumber, formatPercent } from "@/lib/locale/digits";
 import { usePreferences } from "@/features/preferences/use-preferences";
 
 /*
@@ -32,5 +33,32 @@ export function useProjectFormat() {
   const number = useCallback((value: number) => formatNumber(value, digits), [digits]);
   /** 0–100 → "58%" / "۵۸٪". */
   const percent = useCallback((value: number) => formatPercent(value / 100, digits), [digits]);
-  return { day, range, number, percent, locale, digits, calendar };
+  /** "2h ago" / "yesterday" / "۲ هفته پیش" from the planner clock. */
+  const relative = useCallback(
+    (instant: string) => convertDigits(formatRelative(instant, getPlannerNow(), locale), digits),
+    [locale, digits],
+  );
+  /** Whole days from the planner day to `day` (negative = past). */
+  const daysFromToday = useCallback((value: string) => daysBetween(getPlannerNow().slice(0, 10), value), []);
+  return { day, range, number, percent, relative, daysFromToday, locale, digits, calendar };
+}
+
+const MINUTE = 60_000;
+const HOUR = 60 * MINUTE;
+const DAY = 24 * HOUR;
+
+/** Coarse relative time (minutes → weeks), as cards show it. */
+export function formatRelative(instant: string, now: string, locale: string): string {
+  const diff = Date.parse(instant) - Date.parse(now);
+  const format = new Intl.RelativeTimeFormat(locale === "fa" ? "fa-IR" : "en", { numeric: "auto", style: "narrow" });
+  const abs = Math.abs(diff);
+  if (abs < HOUR) return format.format(Math.round(diff / MINUTE), "minute");
+  if (abs < DAY) return format.format(Math.round(diff / HOUR), "hour");
+  if (abs < 7 * DAY) return format.format(Math.round(diff / DAY), "day");
+  return format.format(Math.round(diff / (7 * DAY)), "week");
+}
+
+/** Whole calendar days from `from` to `to` (both "YYYY-MM-DD"). */
+export function daysBetween(from: string, to: string): number {
+  return Math.round((dayToDate(to).getTime() - dayToDate(from).getTime()) / DAY);
 }

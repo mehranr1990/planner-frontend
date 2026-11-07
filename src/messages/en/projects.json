@@ -1,0 +1,82 @@
+{
+  "title": "Projects",
+  "mobileTitle": "All projects",
+  "new": "New project",
+  "view": { "label": "View", "grid": "Grid", "list": "List" },
+  "filter": {
+    "label": "Filter projects",
+    "all": "All",
+    "owned": "Owned by me",
+    "member": "Member",
+    "invites": "Invitations",
+    "archived": "Archived"
+  },
+  "search": "Search projects",
+  "sort": {
+    "label": "Sort",
+    "recent": "Recently active",
+    "name": "Name",
+    "due": "Due date",
+    "progress": "Progress"
+  },
+  "card": {
+    "you": "You · {role}",
+    "tasks": "{done} of {total} tasks",
+    "progress": "Progress of {project}",
+    "forYou": "{n} for you",
+    "updated": "Updated {time}",
+    "milestone": "{title} · {date}",
+    "overdue": "{title} · overdue {days}d",
+    "pausedByYou": "Paused by you",
+    "pausedBy": "Paused by {name}",
+    "none": "—",
+    "members": "Members of {project}",
+    "open": "Open {project}"
+  },
+  "newCard": { "title": "New project", "hint": "Blank or from a template" },
+  "invite": {
+    "title": "Invitation · {project}",
+    "line": "{name} invited you as {role}",
+    "meta": "{time} · you’ll see tasks and files after accepting",
+    "short": "Invited as {role}",
+    "accept": "Accept",
+    "decline": "Decline",
+    "review": "Review",
+    "declineTitle": "Decline the invitation to “{project}”?",
+    "declineDescription": "{name} will see that you declined. You can add a note.",
+    "note": "Note (optional)",
+    "notePlaceholder": "Add a short note for {name}",
+    "confirm": "Decline invitation",
+    "cancel": "Cancel",
+    "declined": "Invitation declined"
+  },
+  "empty": {
+    "title": "No projects yet",
+    "description": "Projects keep shared work, people and files together. Start one, or accept an invitation when it arrives.",
+    "action": "New project"
+  },
+  "filtered": {
+    "title": "Nothing matches",
+    "description": "No projects for these filters. Counts only include projects you can see.",
+    "clear": "Clear filters"
+  },
+  "noInvites": "No pending invitations.",
+  "error": { "title": "Couldn’t load your projects", "retry": "Try again" },
+  "archived": {
+    "line": "Archived {date} · read-only",
+    "restore": "Restore",
+    "view": "View",
+    "hint": "Restore needs Owner/Admin; others see “View”.",
+    "restored": "{project} restored"
+  },
+  "list": {
+    "label": "Projects",
+    "project": "Project",
+    "status": "Status",
+    "progress": "Progress",
+    "milestone": "Next milestone",
+    "role": "My role",
+    "forYou": "For you"
+  },
+  "loading": "Loading projects"
+}
