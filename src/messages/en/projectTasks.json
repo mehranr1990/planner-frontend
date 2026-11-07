@@ -138,5 +138,16 @@
   },
   "viewer": "View only · your role can’t edit tasks",
   "loading": "Loading tasks",
-  "error": "Couldn’t save the change"
+  "error": "Couldn’t save the change",
+  "flow": {
+    "title": "Workflow v{version} · {name}",
+    "published": "Published {date} by {name}",
+    "edit": "Edit in Settings",
+    "caption": "Counts are current tasks in each status. Arrows are allowed transitions. Click a status to open the List filtered by it.",
+    "table": "Accessible table (same data)",
+    "from": "From",
+    "to": "Allowed to",
+    "who": "Who",
+    "none": "—"
+  }
 }

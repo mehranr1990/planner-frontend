@@ -178,8 +178,13 @@ export interface ProjectWorkflow {
   statuses: readonly WorkflowStatus[];
   /** Allowed moves per status id, for the current user's role. */
   transitions: Readonly<Record<string, readonly string[]>>;
+  /** Workflow name as entered in Settings (user content). */
+  name?: string;
   /** When this version was published (instant with offset). */
   publishedAt?: string;
+  publishedBy?: ProjectPerson;
+  /** Who may move a task out of each status: its assignee (and Manager+) or Manager+ only. */
+  transitionRoles?: Readonly<Record<string, "assignee" | "manager">>;
   /** Optional WIP limit per status id (Settings › Workflow). */
   wipLimits?: Readonly<Record<string, number>>;
 }

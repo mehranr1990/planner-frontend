@@ -496,6 +496,8 @@ describe("mobile chrome", () => {
       "Members",
       "Files",
       "Analytics",
+      // Flow opens the workflow table on phones (D18).
+      "Flow",
     ]);
     expect(within(sheet).getByText("Website Redesign")).toBeInTheDocument();
     expect(within(sheet).queryByRole("button", { name: /Assistant/ })).not.toBeInTheDocument();

@@ -38,7 +38,10 @@ export const sampleWorkflow: ProjectWorkflow = {
     done: ["in-review"],
     blocked: ["in-progress", "todo"],
   },
+  name: "Website default",
   publishedAt: "2026-10-02T09:00:00+03:30",
+  publishedBy: sara,
+  transitionRoles: { todo: "assignee", "in-progress": "assignee", "in-review": "manager", blocked: "manager", done: "manager" },
   wipLimits: { "in-progress": 5, "in-review": 3 },
 };
 
