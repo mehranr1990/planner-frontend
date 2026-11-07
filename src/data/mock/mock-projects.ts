@@ -24,6 +24,10 @@ import type {
   MemberRepository,
   WorkloadRepository,
   ReportRepository,
+  WorkflowDraftRepository,
+  FieldRepository,
+  ImportRepository,
+  ProjectSettingsRepository,
   DependencyRepository,
   InvitationRepository,
   MemberInviteRepository,
@@ -46,6 +50,7 @@ import { createMockFiles } from "./mock-project-files";
 import { createMockMembers } from "./mock-project-members";
 import { computeWorkloadGrid } from "./mock-project-workload";
 import { computeAnalytics } from "./mock-project-reports";
+import { createMockSettings } from "./mock-project-settings";
 import { computeKpis, createMockProjectWork, createProjectWorkStore, type ProjectWorkStore } from "./mock-project-work";
 
 /*
@@ -86,7 +91,8 @@ export function mockCapabilities(role: ProjectRole, lifecycle: ProjectLifecycle)
   const modules = Object.fromEntries(
     ALL_MODULES.map((module) => {
       if (guest) return [module, false];
-      if (module === "settings") return [module, rank >= RANK.admin];
+      // SPEC PJ-14: Manager+ open Settings (General, Import); the rest is Admin+ / Owner per tab.
+      if (module === "settings") return [module, rank >= RANK.manager];
       // Viewer: no Workload unless granted (not granted in the mock).
       if (module === "workload") return [module, rank >= RANK.member];
       return [module, true];
@@ -123,6 +129,11 @@ export function mockCapabilities(role: ProjectRole, lifecycle: ProjectLifecycle)
     manageGrants: editable && rank >= RANK.manager,
     seeAllWorkload: rank >= RANK.manager,
     exportAnalytics: rank >= RANK.manager,
+    editGeneral: editable && rank >= RANK.manager,
+    editWorkflow: editable && rank >= RANK.admin,
+    editAccess: editable && rank >= RANK.admin,
+    archiveProject: editable && rank >= RANK.admin,
+    ownProject: role === "owner",
     restore: lifecycle === "archived" && rank >= RANK.admin,
     export: !guest,
   };
@@ -168,6 +179,12 @@ export interface MockProjectsStore extends ReturnType<typeof createMockProjectWo
   grants: GrantRepository;
   workload: WorkloadRepository;
   reports: ReportRepository;
+  workflowDrafts: WorkflowDraftRepository;
+  fields: FieldRepository;
+  imports: ImportRepository;
+  settings: ProjectSettingsRepository;
+  /** Mock-only: the successor accepts a pending ownership transfer. */
+  acceptTransfer(projectId: string): void;
   /** Mock-only: advance in-flight uploads one lifecycle step. */
   tickFiles(): void;
   /** Mock-only: the shared task store (PJ-02 / PJ-15 mocks). */
@@ -275,6 +292,16 @@ export function createMockProjects({
       if (at >= 0) recent.splice(at, 1);
     },
     onUnassignedFromMe: (taskId) => onProjection?.(taskId, null),
+  });
+  const settingsMock = createMockSettings({
+    store: work,
+    respond,
+    now,
+    projects,
+    recent,
+    find,
+    roleOf: async (id, personId) =>
+      (await membersMock.members.list(id)).find((member) => member.person.id === personId)?.role,
   });
   const taskDetail = createMockTaskDetail({
     store: work,
@@ -419,6 +446,11 @@ export function createMockProjects({
     schedule,
     calendar,
     files: filesMock.files,
+    workflowDrafts: settingsMock.workflowDrafts,
+    fields: settingsMock.fields,
+    imports: settingsMock.imports,
+    settings: settingsMock.settings,
+    acceptTransfer: settingsMock.acceptTransfer,
     reports: {
       async summary(projectId, { range, weekStartsOn }, options = {}) {
         const found = find(projectId);
@@ -490,6 +522,10 @@ export function projectRepositories(store: MockProjectsStore): ProjectRepositori
     members: store.members,
     grants: store.grants,
     reports: store.reports,
+    workflowDrafts: store.workflowDrafts,
+    fields: store.fields,
+    imports: store.imports,
+    settings: store.settings,
     workload: store.workload,
     assignments: store.assignments,
     projectTasks: store.projectTasks,

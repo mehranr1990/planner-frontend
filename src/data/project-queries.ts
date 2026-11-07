@@ -20,6 +20,10 @@ import { afterHydration } from "./queries";
 import type {
   DependencyType,
   RiskCloseReason,
+  ImportTarget,
+  ProjectAccessSettings,
+  ProjectGeneralPatch,
+  WorkflowDraft,
   AnalyticsRange,
   GuestGrant,
   ProjectRole,
@@ -779,4 +783,117 @@ export function useAnalytics(
     }),
     hydrated,
   );
+}
+
+// ── Settings (PJ-14) ─────────────────────────────────────────────────────
+
+export function useWorkflowDraft(projectId: string) {
+  const { workflowDrafts } = useRepositories();
+  const hydrated = useIsClient();
+  return afterHydration(
+    useQuery({ queryKey: scoped(projectId, "workflow-draft"), queryFn: () => workflowDrafts.draft(projectId) }),
+    hydrated,
+  );
+}
+
+export function useWorkflowPreview(projectId: string, enabled: boolean) {
+  const { workflowDrafts } = useRepositories();
+  const hydrated = useIsClient();
+  return afterHydration(
+    useQuery({
+      queryKey: scoped(projectId, "workflow-draft", "preview"),
+      queryFn: () => workflowDrafts.previewPublish(projectId),
+      enabled,
+    }),
+    hydrated,
+  );
+}
+
+export function useFieldList(projectId: string) {
+  const { fields } = useRepositories();
+  const hydrated = useIsClient();
+  return afterHydration(
+    useQuery({ queryKey: scoped(projectId, "fields"), queryFn: () => fields.list(projectId) }),
+    hydrated,
+  );
+}
+
+export function useAccessSettings(projectId: string) {
+  const { settings } = useRepositories();
+  const hydrated = useIsClient();
+  return afterHydration(
+    useQuery({ queryKey: scoped(projectId, "access-settings"), queryFn: () => settings.access(projectId) }),
+    hydrated,
+  );
+}
+
+export function useOwnershipTransfer(projectId: string) {
+  const { settings } = useRepositories();
+  const hydrated = useIsClient();
+  return afterHydration(
+    useQuery({ queryKey: scoped(projectId, "transfer"), queryFn: () => settings.transfer(projectId) }),
+    hydrated,
+  );
+}
+
+export function useImportConfig(projectId: string) {
+  const { imports } = useRepositories();
+  const hydrated = useIsClient();
+  return afterHydration(
+    useQuery({ queryKey: scoped(projectId, "import-config"), queryFn: () => imports.config(projectId) }),
+    hydrated,
+  );
+}
+
+/** Settings writes. Project-level changes (name, key, lifecycle) refresh every project query. */
+export function useSettingsActions(projectId: string) {
+  const { settings, workflowDrafts, fields, imports, projects } = useRepositories();
+  const client = useQueryClient();
+  const refresh = () => client.invalidateQueries({ queryKey: projectKeys.scope(projectId) });
+  const refreshAll = () => client.invalidateQueries({ queryKey: projectKeys.all });
+  return {
+    update: useMutation({ mutationFn: (patch: ProjectGeneralPatch) => settings.update(projectId, patch), onSettled: refreshAll }),
+    setAccess: useMutation({
+      mutationFn: (patch: Partial<ProjectAccessSettings>) => settings.setAccess(projectId, patch),
+      onSettled: refresh,
+    }),
+    saveTemplate: useMutation({ mutationFn: () => settings.saveTemplate(projectId) }),
+    archive: useMutation({ mutationFn: () => settings.archive(projectId), onSettled: refreshAll }),
+    restore: useMutation({ mutationFn: () => projects.restore(projectId), onSettled: refreshAll }),
+    requestTransfer: useMutation({
+      mutationFn: (personId: string) => settings.requestTransfer(projectId, personId),
+      onSettled: refresh,
+    }),
+    cancelTransfer: useMutation({ mutationFn: () => settings.cancelTransfer(projectId), onSettled: refresh }),
+    confirmTransfer: useMutation({
+      mutationFn: (password: string) => settings.confirmTransfer(projectId, password),
+      onSettled: refreshAll,
+    }),
+    remove: useMutation({
+      mutationFn: (confirm: { name: string; password: string }) => settings.remove(projectId, confirm),
+    }),
+    saveDraft: useMutation({
+      mutationFn: (input: Pick<WorkflowDraft, "statuses" | "transitions">) => workflowDrafts.saveDraft(projectId, input),
+      onSettled: refresh,
+    }),
+    discardDraft: useMutation({ mutationFn: () => workflowDrafts.discardDraft(projectId), onSettled: refresh }),
+    publish: useMutation({
+      mutationFn: (mapping: Readonly<Record<string, string>>) => workflowDrafts.publish(projectId, mapping),
+      onSettled: refresh,
+    }),
+    saveFields: useMutation({
+      mutationFn: (list: Parameters<typeof fields.save>[1]) => fields.save(projectId, list),
+      onSettled: refresh,
+    }),
+    removeField: useMutation({ mutationFn: (fieldId: string) => fields.remove(projectId, fieldId), onSettled: refresh }),
+    importInspect: (csv: string) => imports.inspect(projectId, csv),
+    importDryRun: (csv: string, mapping: Readonly<Record<ImportTarget, number | null>>) =>
+      imports.dryRun(projectId, csv, mapping),
+    importCommit: useMutation({
+      mutationFn: ({ csv, mapping }: { csv: string; mapping: Readonly<Record<ImportTarget, number | null>> }) =>
+        imports.commit(projectId, csv, mapping),
+      onSettled: refresh,
+    }),
+    importUndo: useMutation({ mutationFn: (batchId: string) => imports.undo(projectId, batchId), onSettled: refresh }),
+  };
 }

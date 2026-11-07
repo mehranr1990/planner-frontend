@@ -30,7 +30,8 @@ describe("mock projects (SH-01/SH-02, PJ-00)", () => {
     if (manager.status !== "ok") throw new Error("expected ok");
     expect(manager.capabilities.editStatus).toBe(true);
     expect(manager.capabilities.invite).toBe(false);
-    expect(manager.capabilities.modules.settings).toBe(false);
+    // PJ-14 Permissions: Managers open Settings (General, Import).
+    expect(manager.capabilities.modules.settings).toBe(true);
     expect((await projects.access("nope")).status).toBe("not-available");
     expect((await projects.access("data-migration")).status).toBe("invite-pending");
     expect((await projects.access("old-agency")).status).toBe("revoked");

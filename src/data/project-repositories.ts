@@ -43,6 +43,16 @@ import type {
   WorkloadGrid,
   AnalyticsRange,
   AnalyticsSummary,
+  CustomField,
+  ImportDryRun,
+  ImportInspection,
+  ImportResult,
+  ImportTarget,
+  OwnershipTransfer,
+  ProjectAccessSettings,
+  ProjectGeneralPatch,
+  WorkflowDraft,
+  WorkflowMigrationPreview,
   ProjectDirectory,
   ProjectHealth,
   ProjectInvitation,
@@ -238,6 +248,51 @@ export interface ReportRepository {
   ): Promise<AnalyticsSummary>;
 }
 
+/** PJ-14 Workflow (D16): edit a draft; Publish shows the migration preview and needs a target for removed statuses. */
+export interface WorkflowDraftRepository {
+  draft(projectId: string): Promise<WorkflowDraft | null>;
+  /** Creates the draft from the published version when none exists. */
+  saveDraft(projectId: string, input: Pick<WorkflowDraft, "statuses" | "transitions">): Promise<WorkflowDraft>;
+  discardDraft(projectId: string): Promise<void>;
+  previewPublish(projectId: string): Promise<WorkflowMigrationPreview>;
+  /** `mapping`: removed status id → kept status id (required for every removed status with tasks). */
+  publish(projectId: string, mapping: Readonly<Record<string, string>>): Promise<ProjectWorkflow>;
+}
+
+/** PJ-14 Fields: per project; the type can't change once values exist ("invalid" "type-locked"). */
+export interface FieldRepository {
+  list(projectId: string): Promise<readonly CustomField[]>;
+  /** Saves the whole list (Fields dirty bar); new fields have no id yet. */
+  save(projectId: string, fields: readonly (Omit<CustomField, "id" | "valueCount"> & { id?: string })[]): Promise<readonly CustomField[]>;
+  remove(projectId: string, fieldId: string): Promise<void>;
+}
+
+/** PJ-14 Import: CSV only; the mock parses locally. Dry run changes nothing. */
+export interface ImportRepository {
+  /** Server config: Undo window (DECISIONS proposed 10 minutes, shown on the board). */
+  config(projectId: string): Promise<{ undoMinutes: number }>;
+  inspect(projectId: string, csv: string): Promise<ImportInspection>;
+  dryRun(projectId: string, csv: string, mapping: Readonly<Record<ImportTarget, number | null>>): Promise<ImportDryRun>;
+  commit(projectId: string, csv: string, mapping: Readonly<Record<ImportTarget, number | null>>): Promise<ImportResult>;
+  undo(projectId: string, batchId: string): Promise<void>;
+}
+
+/** PJ-14 General, Access and Lifecycle. Reauth = the password (mock rejects empty and "wrong"). */
+export interface ProjectSettingsRepository {
+  update(projectId: string, patch: ProjectGeneralPatch): Promise<ProjectSummary>;
+  access(projectId: string): Promise<ProjectAccessSettings>;
+  setAccess(projectId: string, patch: Partial<ProjectAccessSettings>): Promise<ProjectAccessSettings>;
+  saveTemplate(projectId: string): Promise<{ name: string }>;
+  archive(projectId: string): Promise<ProjectSummary>;
+  transfer(projectId: string): Promise<OwnershipTransfer | null>;
+  requestTransfer(projectId: string, personId: string): Promise<OwnershipTransfer>;
+  cancelTransfer(projectId: string): Promise<void>;
+  /** After the successor accepted: the owner confirms with the password; they become Admin. */
+  confirmTransfer(projectId: string, password: string): Promise<void>;
+  /** Owner: type the project name + password. */
+  remove(projectId: string, confirm: { name: string; password: string }): Promise<void>;
+}
+
 export interface WorkloadRepository {
   /** This week's estimates per member (D13); empty without the capability. */
   week(projectId: string): Promise<readonly WorkloadEntry[]>;
@@ -278,6 +333,10 @@ export interface ProjectRepositories {
   members: MemberRepository;
   grants: GrantRepository;
   reports: ReportRepository;
+  workflowDrafts: WorkflowDraftRepository;
+  fields: FieldRepository;
+  imports: ImportRepository;
+  settings: ProjectSettingsRepository;
   workload: WorkloadRepository;
   assignments: AssignmentRepository;
   projectTasks: ProjectTaskRepository;

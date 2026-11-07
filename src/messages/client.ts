@@ -32,6 +32,7 @@ import enFiles from "./en/files.json";
 import enMembers from "./en/members.json";
 import enWorkload from "./en/workload.json";
 import enAnalytics from "./en/analytics.json";
+import enProjectSettings from "./en/projectSettings.json";
 import enSettings from "./en/settings.json";
 import enShell from "./en/shell.json";
 import enReview from "./en/review.json";
@@ -71,6 +72,7 @@ import faFiles from "./fa/files.json";
 import faMembers from "./fa/members.json";
 import faWorkload from "./fa/workload.json";
 import faAnalytics from "./fa/analytics.json";
+import faProjectSettings from "./fa/projectSettings.json";
 import faSettings from "./fa/settings.json";
 import faShell from "./fa/shell.json";
 import faReview from "./fa/review.json";
@@ -127,6 +129,7 @@ const en = {
   Members: enMembers,
   Workload: enWorkload,
   Analytics: enAnalytics,
+  ProjectSettings: enProjectSettings,
 };
 
 export type ClientMessages = typeof en;
@@ -171,6 +174,7 @@ const fa: ClientMessages = {
   Members: faMembers,
   Workload: faWorkload,
   Analytics: faAnalytics,
+  ProjectSettings: faProjectSettings,
 };
 
 export const clientMessages: Record<Locale, ClientMessages> = { en, fa };

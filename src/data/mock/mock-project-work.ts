@@ -38,6 +38,8 @@ export interface ProjectWorkStore {
   activity: Map<string, ProjectActivity[]>;
   workload: Map<string, WorkloadEntry[]>;
   workflow(projectId: string): ProjectWorkflow;
+  /** Publish a new workflow version (PJ-14). */
+  setWorkflow(projectId: string, workflow: ProjectWorkflow): void;
   findTask(taskId: string): ProjectTask | undefined;
 }
 
@@ -49,6 +51,7 @@ export function createProjectWorkStore(): ProjectWorkStore {
       (typeof projectWorkFixtures)[string][K] extends readonly (infer T)[] ? T[] : never
     >;
   const tasks = map("tasks");
+  const workflows = new Map<string, ProjectWorkflow>();
   return {
     phases: map("phases"),
     milestones: map("milestones"),
@@ -56,7 +59,10 @@ export function createProjectWorkStore(): ProjectWorkStore {
     risks: map("risks"),
     activity: map("activity"),
     workload: map("workload"),
-    workflow: () => sampleWorkflow,
+    workflow: (projectId) => workflows.get(projectId) ?? sampleWorkflow,
+    setWorkflow: (projectId, workflow) => {
+      workflows.set(projectId, workflow);
+    },
     findTask: (taskId) => {
       for (const list of tasks.values()) {
         const found = list.find((task) => task.id === taskId);

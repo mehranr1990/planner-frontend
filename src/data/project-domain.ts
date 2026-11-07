@@ -130,6 +130,12 @@ export interface ProjectCapabilities {
   seeAllWorkload: boolean;
   /** PJ-12: analytics export (Manager+) and the full per-assignee breakdown (Manager+; Members own row). */
   exportAnalytics: boolean;
+  /** PJ-14 per tab: General (Manager+), Workflow / Fields / Access (Admin+), archive / template (Admin+), transfer / delete (Owner). */
+  editGeneral: boolean;
+  editWorkflow: boolean;
+  editAccess: boolean;
+  archiveProject: boolean;
+  ownProject: boolean;
   restore: boolean;
   export: boolean;
 }
@@ -707,4 +713,100 @@ export interface AnalyticsSummary {
   byAssignee: readonly { person: ProjectPerson; done: number }[];
   /** False until a week with done tasks exists (charts show "Not enough data"). */
   enoughData: boolean;
+}
+
+// ── Settings (PJ-14) ─────────────────────────────────────────────────────
+
+/** Draft of the next workflow version (D16): tasks stay on the published one until Publish. */
+export interface WorkflowDraft {
+  version: number;
+  /** Published version the draft started from. */
+  basedOn: number;
+  statuses: readonly WorkflowStatus[];
+  transitions: Readonly<Record<string, readonly string[]>>;
+}
+
+/** What Publish does: removed / renamed / added statuses and where tasks go. */
+export interface WorkflowMigrationPreview {
+  version: number;
+  /** Removed statuses with their task counts; each needs a target (required mapping). */
+  removed: readonly { status: WorkflowStatus; tasks: number }[];
+  renamed: readonly { statusId: string; from: string; to: string }[];
+  added: readonly WorkflowStatus[];
+  addedTransitions: readonly (readonly [string, string])[];
+  /** Tasks per kept status (they stay). */
+  staying: readonly { statusId: string; tasks: number }[];
+}
+
+export type CustomFieldType = "text" | "number" | "date" | "single-select" | "multi-select" | "person" | "url" | "checkbox";
+
+export interface CustomField {
+  id: string;
+  name: string;
+  type: CustomFieldType;
+  /** Select options (user content). */
+  options?: readonly string[];
+  /** Number range. */
+  min?: number;
+  max?: number;
+  appliesTo: readonly ("tasks" | "risks")[];
+  required: boolean;
+  /** How many items have a value (type is locked once > 0; delete asks with this count). */
+  valueCount: number;
+}
+
+/** Settings › Access (values from the server; OPEN items use the SPEC defaults as mock config). */
+export interface ProjectAccessSettings {
+  defaultInviteRole: InviteRole;
+  allowGuests: boolean;
+  /** Default expiry of new guest grants, in days. */
+  guestGrantDays: number;
+  /** Members may invite Viewers. */
+  membersInviteViewers: boolean;
+}
+
+export type ImportTarget = "title" | "status" | "assignee" | "due" | "estimate";
+
+export interface ImportInspection {
+  headers: readonly string[];
+  rowCount: number;
+  /** Suggested column index per target (null = not mapped). */
+  suggested: Readonly<Record<ImportTarget, number | null>>;
+}
+
+export interface ImportRowError {
+  /** 1-based data row (header excluded). */
+  row: number;
+  column: ImportTarget;
+  problem: "required" | "date" | "member" | "status" | "number";
+  value: string;
+}
+
+export interface ImportDryRun {
+  rowsRead: number;
+  ready: number;
+  errors: readonly ImportRowError[];
+}
+
+export interface ImportResult {
+  created: number;
+  batchId: string;
+  /** Undo is possible until this instant. */
+  undoUntil: string;
+}
+
+/** D17: successor accepts, then the owner confirms with the password; the owner stays until then. */
+export interface OwnershipTransfer {
+  successor: ProjectPerson;
+  requestedAt: string;
+  accepted: boolean;
+}
+
+export interface ProjectGeneralPatch {
+  name?: string;
+  key?: string;
+  startDate?: string;
+  endDate?: string;
+  description?: string;
+  tint?: ProjectTint;
 }

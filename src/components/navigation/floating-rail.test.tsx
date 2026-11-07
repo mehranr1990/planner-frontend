@@ -65,7 +65,7 @@ describe("FloatingRail", () => {
       const hrefs = within(nav)
         .getAllByRole("link")
         .map((link) => link.getAttribute("href"));
-      // Manager: no Settings (Owner/Admin only); everything else in D2 order.
+      // Manager: everything in D2 order + Settings (PJ-14: Manager+ open Settings).
       expect(hrefs).toEqual([
         "/projects/website-redesign",
         "/projects/website-redesign/tasks",
@@ -78,6 +78,7 @@ describe("FloatingRail", () => {
         "/projects/website-redesign/members",
         "/projects/website-redesign/files",
         "/projects/website-redesign/analytics",
+        "/projects/website-redesign/settings",
       ]);
       expect(within(nav).getByRole("link", { name: "Milestones" })).toHaveAttribute("aria-current", "page");
       expect(within(nav).getByRole("link", { name: "Risks, open high risks: 1" })).toBeInTheDocument();

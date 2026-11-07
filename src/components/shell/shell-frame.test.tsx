@@ -496,6 +496,8 @@ describe("mobile chrome", () => {
       "Members",
       "Files",
       "Analytics",
+      // PJ-14: Managers open Settings.
+      "Settings",
       // Flow opens the workflow table on phones (D18).
       "Flow",
     ]);
