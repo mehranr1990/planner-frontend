@@ -17,6 +17,8 @@ const eslintConfig = defineConfig([
     "playwright-report/**",
     // Design package: reference boards, not production code
     "design/**",
+    // Generated from frontend-handoff/openapi.json (npm run api:types)
+    "src/api/generated/**",
   ]),
 ]);
 

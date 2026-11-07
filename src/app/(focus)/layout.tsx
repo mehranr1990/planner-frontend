@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { AuthGate } from "@/features/auth/auth-gate";
 
 /*
  * Focus mode (P09): "Rail and command bar retreat". This route group has no
@@ -8,7 +9,7 @@ import type { ReactNode } from "react";
 export default function FocusLayout({ children }: { children: ReactNode }) {
   return (
     <div data-scope="personal" data-slot="focus-shell" className="min-h-dvh bg-canvas text-fg">
-      {children}
+      <AuthGate>{children}</AuthGate>
     </div>
   );
 }

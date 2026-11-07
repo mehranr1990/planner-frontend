@@ -48,3 +48,4 @@ next-env.d.ts
 
 # design package drop folder (unpacked into design/)
 /New folder (4)/
+!.env.example

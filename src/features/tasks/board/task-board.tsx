@@ -27,6 +27,8 @@ import { SearchField } from "@/components/ui/search-field";
 import { Segmented } from "@/components/ui/segmented";
 import { toast } from "@/components/ui/toast";
 import { useReorderTasks } from "@/data/queries";
+import { useTaskFieldSupport } from "@/data/task-capabilities";
+import { useTaskSaveError } from "../use-task-save-error";
 import { usePlannerSettings } from "@/features/planner-settings/use-planner-settings";
 import { cn } from "@/lib/cn";
 import { DONE_COLUMN_ID, planBoardDrop, type BoardDropTarget, type BoardModel } from "../domain/board";
@@ -93,6 +95,13 @@ export function TaskBoard({ board, searchRef }: { board: BoardData; searchRef: R
   const { byId, actions } = useList();
   const { workHours } = usePlannerSettings();
   const reorder = useReorderTasks();
+  const support = useTaskFieldSupport();
+  const tUndo = useTranslations("Tasks.undo");
+  const saveError = useTaskSaveError();
+  // Manual order is persisted on the Day plan (live): a failed save is said, never shown as kept.
+  const reorderFailed = (error: unknown) => {
+    if (!saveError(error, {})) toast({ tone: "danger", title: tUndo("failed") });
+  };
   const [drag, setDrag] = useState<DragInfo | null>(null);
   const [target, setTarget] = useState<BoardDropTarget | null>(null);
   const [doneExpanded, setDoneExpanded] = useState(false);
@@ -155,7 +164,9 @@ export function TaskBoard({ board, searchRef }: { board: BoardData; searchRef: R
         actions.setDone(task, true);
         break;
       case "reorder":
-        reorder.mutate({ ids: plan.ids });
+        // Live API: manual order is a My Day plan (Phase 03).
+        if (support.manualOrder) reorder.mutate({ ids: plan.ids }, { onError: reorderFailed });
+        else toast({ tone: "info", title: tUndo("unsupported") });
         break;
       case "move":
         actions.update(task, plan.patch);

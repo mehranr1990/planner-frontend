@@ -54,7 +54,7 @@ export function sheetHref(pathname: string, search: string, id: SheetId | null, 
  * the URL (shared link, reload) has no entry to go back to and is closed by
  * replacing the URL. The marker remembers which URL the opener pushed.
  */
-const OPENED_KEY = "mp-sheet-opened";
+export const OPENED_KEY = "mp-sheet-opened";
 
 function rememberOpened(href: string) {
   try {

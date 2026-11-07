@@ -23,6 +23,8 @@ import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "@/components/ui/toast";
 import { UtilityCard, UtilityField } from "@/design-system/surfaces/utility-card";
+import { useAccount } from "@/features/auth/account-provider";
+import { AccountSettingsPanel } from "@/features/auth/account-settings-panel";
 import { optionalModuleIds } from "@/features/planner-settings/modules";
 import {
   cyclesBeforeLongBreakOptions,
@@ -694,6 +696,7 @@ function DataGroup() {
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [confirmText, setConfirmText] = useState("");
   const confirmId = useId();
+  const account = useAccount();
 
   const reset = () => {
     const previous = withoutVersion(settings);
@@ -713,18 +716,22 @@ function DataGroup() {
 
   return (
     <>
-      <UtilityField className="flex-col items-stretch gap-2 py-3">
-        <span>{t("account")}</span>
-        <p className="text-xs font-normal text-fg-muted">{t("accountHint")}</p>
-        <ul className="flex flex-col gap-1">
-          {(["google", "email", "magicLink"] as const).map((method) => (
-            <li key={method} className="flex items-center justify-between gap-3 text-sm">
-              <span>{t(method)}</span>
-              <span className="font-normal text-fg-muted">{t("notConnected")}</span>
-            </li>
-          ))}
-        </ul>
-      </UtilityField>
+      {account ? (
+        <AccountSettingsPanel />
+      ) : (
+        <UtilityField className="flex-col items-stretch gap-2 py-3">
+          <span>{t("account")}</span>
+          <p className="text-xs font-normal text-fg-muted">{t("accountHint")}</p>
+          <ul className="flex flex-col gap-1">
+            {(["google", "email", "magicLink"] as const).map((method) => (
+              <li key={method} className="flex items-center justify-between gap-3 text-sm">
+                <span>{t(method)}</span>
+                <span className="font-normal text-fg-muted">{t("notConnected")}</span>
+              </li>
+            ))}
+          </ul>
+        </UtilityField>
+      )}
       <PlaceholderRow label={t("import")} value={t("importValue")} />
       <PlaceholderRow label={t("export")} value={t("exportValue")} />
       <PlaceholderRow label={t("archive")} value={n(t("archiveValue"))} />

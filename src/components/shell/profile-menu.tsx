@@ -6,6 +6,7 @@ import {
   Coins,
   Hash,
   Languages,
+  LogOut,
   Palette,
   Settings,
   type LucideIcon,
@@ -27,6 +28,9 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { toast } from "@/components/ui/toast";
+import { useAccount } from "@/features/auth/account-provider";
+import { useSignOut } from "@/features/auth/session";
 import { usePreferenceActions, usePreferences } from "@/features/preferences/use-preferences";
 import { cn } from "@/lib/cn";
 import { useShell } from "./shell-provider";
@@ -127,6 +131,9 @@ export function ProfileMenu({ align = "end", className }: ProfileMenuProps) {
   const tCommon = useTranslations("Common");
   const scope = useShellScope();
   const { profile, sample } = useShell();
+  const account = useAccount();
+  const tAuth = useTranslations("Auth.account");
+  const signOut = useSignOut();
   const preferences = usePreferences();
   const { update, setLocale } = usePreferenceActions();
   const { theme, setTheme } = useTheme();
@@ -180,7 +187,7 @@ export function ProfileMenu({ align = "end", className }: ProfileMenuProps) {
           <div className="flex min-w-0 flex-1 flex-col">
             <span className="flex min-w-0 items-center gap-2">
               <bdi className="truncate text-body font-bold">{profile.name}</bdi>
-              {sample ? (
+              {sample && !account ? (
                 <span
                   data-slot="sample"
                   className="shrink-0 rounded-pill bg-raised px-2 py-0.5 text-[0.6875rem] font-semibold text-fg-muted"
@@ -260,6 +267,16 @@ export function ProfileMenu({ align = "end", className }: ProfileMenuProps) {
         <DropdownMenuItem icon={Settings} comingSoon>
           {t("settings")}
         </DropdownMenuItem>
+        {account ? (
+          <DropdownMenuItem
+            icon={LogOut}
+            onSelect={() => {
+              signOut().catch(() => toast({ id: "sign-out", title: tAuth("signOutFailed"), tone: "danger" }));
+            }}
+          >
+            {tAuth("signOut")}
+          </DropdownMenuItem>
+        ) : null}
       </DropdownMenuContent>
     </DropdownMenu>
   );

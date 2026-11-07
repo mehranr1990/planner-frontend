@@ -4,6 +4,8 @@ import { Plus } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { forwardRef, useId, useState } from "react";
 import { toast } from "@/components/ui/toast";
+import type { NewTaskInput } from "@/data/repositories";
+import { useTaskFieldSupport } from "@/data/task-capabilities";
 import { useCreateTask } from "@/data/queries";
 import { usePlannerSettings } from "@/features/planner-settings/use-planner-settings";
 import { addDaysToDay } from "@/lib/dates/clock-time";
@@ -11,6 +13,7 @@ import { quickParse } from "../domain/quick-parse";
 import type { TasksTab } from "../domain/types";
 import { useTasksState } from "../tasks-context";
 import { Kbd } from "./task-parts";
+import { useTaskSaveError } from "../use-task-save-error";
 
 /*
  * "＋ Add task to Today… try “call mom tomorrow 18:00 !high ~15m”" (N focuses
@@ -32,6 +35,8 @@ export const AddTaskRow = forwardRef<HTMLInputElement>(function AddTaskRow(_, re
   const { today, tab } = useTasksState();
   const { planning } = usePlannerSettings();
   const create = useCreateTask();
+  const support = useTaskFieldSupport();
+  const saveError = useTaskSaveError();
   const [value, setValue] = useState("");
   const hintId = useId();
   const placeholderTab = tab === "upcoming" ? "upcoming" : tab === "all" ? "all" : "today";
@@ -40,20 +45,20 @@ export const AddTaskRow = forwardRef<HTMLInputElement>(function AddTaskRow(_, re
     const parsed = quickParse(value, today);
     if (!parsed.title.trim()) return;
     const date = parsed.date ?? (parsed.time ? today : defaultDate(tab, today));
-    create.mutate(
-      {
-        title: parsed.title.trim(),
-        date: date ?? null,
-        time: date ? (parsed.time ?? null) : null,
-        priority: parsed.priority ?? null,
-        durationMinutes: parsed.durationMinutes ?? planning.defaultDurationMinutes,
-        energy: planning.defaultEnergy,
+    const input: NewTaskInput = {
+      title: parsed.title.trim(),
+      date: date ?? null,
+      time: date ? (parsed.time ?? null) : null,
+      priority: parsed.priority ?? null,
+      durationMinutes: parsed.durationMinutes ?? planning.defaultDurationMinutes,
+      ...(support.energy ? { energy: planning.defaultEnergy } : {}),
+    };
+    create.mutate(input, {
+      onSuccess: () => toast({ tone: "success", title: tUndo("created") }),
+      onError: (error) => {
+        if (!saveError(error, input)) toast({ tone: "danger", title: tUndo("failed") });
       },
-      {
-        onSuccess: () => toast({ tone: "success", title: tUndo("created") }),
-        onError: () => toast({ tone: "danger", title: tUndo("failed") }),
-      },
-    );
+    });
     setValue("");
   };
 

@@ -1,11 +1,13 @@
 "use client";
 
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { MutationCache, QueryCache, QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ThemeProvider } from "next-themes";
 import { useState, type ReactNode } from "react";
 import { Toaster } from "@/components/ui/toast";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { isLiveApi } from "@/api/runtime";
 import { DataProvider } from "@/data/provider";
+import { handleApiErrorGlobally } from "@/features/auth/session";
 import { MotionProvider } from "@/design-system/motion/motion-provider";
 import { DEFAULT_PLANNER_SETTINGS, type PlannerSettings } from "@/features/planner-settings/planner-settings";
 import { PlannerSettingsProvider } from "@/features/planner-settings/use-planner-settings";
@@ -13,11 +15,18 @@ import { LocaleRoot } from "@/features/preferences/locale-root";
 import type { Preferences } from "@/features/preferences/preferences-store";
 
 function createQueryClient() {
-  return new QueryClient({
+  // Live API: a 401 from any query or mutation ends the session (clears caches, goes to sign-in).
+  const onError = (error: unknown, meta?: Record<string, unknown>) => {
+    if (isLiveApi()) handleApiErrorGlobally(client, error, meta);
+  };
+  const client: QueryClient = new QueryClient({
+    queryCache: new QueryCache({ onError: (error, query) => onError(error, query.meta) }),
+    mutationCache: new MutationCache({ onError: (error, _variables, _context, mutation) => onError(error, mutation.meta) }),
     defaultOptions: {
       queries: { staleTime: 60_000, refetchOnWindowFocus: false },
     },
   });
+  return client;
 }
 
 interface ProvidersProps {

@@ -38,6 +38,7 @@ import { toast } from "@/components/ui/toast";
 import { getPlannerNow, getPlannerToday } from "@/data/clock";
 import type { Task } from "@/data/domain";
 import { useAreas, useCreateTask, useTask } from "@/data/queries";
+import { useTaskFieldSupport } from "@/data/task-capabilities";
 import type { TaskPatch } from "@/data/repositories";
 import { SignatureCard, SignatureCardAction } from "@/design-system/surfaces/signature-card";
 import { TASK_RESCHEDULE_OPTIONS } from "@/features/my-day/domain/reschedule";
@@ -108,6 +109,8 @@ function TaskDetailContent({ task, variant, closeControl, onDismiss }: TaskDetai
   const actions = useTaskActions();
   const createTask = useCreateTask();
   const { data: areas } = useAreas();
+  // Live API: energy, area and goal links cannot be stored yet; their rows are read-only and say so.
+  const support = useTaskFieldSupport();
   const today = getPlannerToday();
   const { apply: applyReschedule } = useRescheduleActions();
   const titleId = useId();
@@ -279,7 +282,7 @@ function TaskDetailContent({ task, variant, closeControl, onDismiss }: TaskDetai
           </Button>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button size="sm" variant="outline" className="gap-2 bg-surface">
+              <Button size="sm" variant="outline" className="gap-2 bg-surface" disabled={!support.area}>
                 <ArrowRight aria-hidden="true" size={15} className="rtl:-scale-x-100" />
                 {t("move")}
               </Button>
@@ -399,12 +402,15 @@ function TaskDetailContent({ task, variant, closeControl, onDismiss }: TaskDetai
                 t("none")
               )
             }
+            hint={support.energy ? undefined : tUndo("unavailable")}
           >
-            {ENERGIES.map((energy) => (
-              <DropdownMenuItem key={energy} onSelect={() => apply({ energy })}>
-                {format.energy(energy)}
-              </DropdownMenuItem>
-            ))}
+            {support.energy
+              ? ENERGIES.map((energy) => (
+                  <DropdownMenuItem key={energy} onSelect={() => apply({ energy })}>
+                    {format.energy(energy)}
+                  </DropdownMenuItem>
+                ))
+              : null}
           </PropertyRow>
           <PropertyRow icon={Flag} label={t("priority")} value={format.priority(task.priority)}>
             {[...PRIORITIES, null].map((value) => (
@@ -422,18 +428,24 @@ function TaskDetailContent({ task, variant, closeControl, onDismiss }: TaskDetai
                 t("noGoal")
               )
             }
+            hint={support.goal ? undefined : tUndo("unavailable")}
           />
           <PropertyRow
             icon={List}
             label={t("areaLabels")}
             value={[task.area?.name ?? tEdit("noArea"), ...(task.labels ?? [])].join(" · ")}
+            hint={support.area ? undefined : tUndo("unavailable")}
           >
-            {(areas ?? []).map((area) => (
-              <DropdownMenuItem key={area.id} onSelect={() => apply({ area })}>
-                {area.name}
-              </DropdownMenuItem>
-            ))}
-            <DropdownMenuItem onSelect={() => apply({ area: null })}>{tEdit("noArea")}</DropdownMenuItem>
+            {support.area ? (
+              <>
+                {(areas ?? []).map((area) => (
+                  <DropdownMenuItem key={area.id} onSelect={() => apply({ area })}>
+                    {area.name}
+                  </DropdownMenuItem>
+                ))}
+                <DropdownMenuItem onSelect={() => apply({ area: null })}>{tEdit("noArea")}</DropdownMenuItem>
+              </>
+            ) : null}
           </PropertyRow>
         </ul>
       </section>

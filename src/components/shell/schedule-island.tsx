@@ -8,7 +8,7 @@ import { FocusIslandChip } from "@/features/focus/focus-running";
 import { usePreferences } from "@/features/preferences/use-preferences";
 import { cn } from "@/lib/cn";
 import { formatDate, formatTime } from "@/lib/dates/format";
-import { APP_TIME_ZONE, toZonedTime } from "@/lib/dates/zone";
+import { getPlannerTimeZone, toZonedTime } from "@/lib/dates/zone";
 import {
   deriveScheduleBlocks,
   visibleScheduleBlocks,
@@ -25,7 +25,7 @@ import { shellIslandClassName } from "./shell-island";
  * Narrow tracks drop blocks through container queries (current stays).
  *
  * Time zones: every instant is shown as the planner's wall clock
- * (APP_TIME_ZONE) through toZonedTime, so the server render and the browser
+ * (getPlannerTimeZone()) through toZonedTime, so the server render and the browser
  * agree whatever zone either runs in. Times use the compact 24-hour form of
  * the boards ("14:00 – 16:00") in both languages, digits per preference.
  */
@@ -61,13 +61,13 @@ export function ScheduleIsland({ date, now, blocks, label, sample = false, class
 
   // Wall-clock copies for status, elapsed share and formatting; the original
   // instants stay available for the machine-readable <time dateTime> values.
-  const zonedDate = toZonedTime(date, APP_TIME_ZONE);
-  const zonedNow = toZonedTime(now, APP_TIME_ZONE);
+  const zonedDate = toZonedTime(date, getPlannerTimeZone());
+  const zonedNow = toZonedTime(now, getPlannerTimeZone());
   const instants = new Map(blocks.map((block) => [block.id, block.start]));
   const zonedBlocks = blocks.map((block) => ({
     ...block,
-    start: toZonedTime(block.start, APP_TIME_ZONE),
-    end: toZonedTime(block.end, APP_TIME_ZONE),
+    start: toZonedTime(block.start, getPlannerTimeZone()),
+    end: toZonedTime(block.end, getPlannerTimeZone()),
   }));
   const visible = visibleScheduleBlocks(deriveScheduleBlocks(zonedBlocks, zonedNow));
   const upcoming = visible.filter((block) => block.status === "upcoming");

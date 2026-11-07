@@ -1,20 +1,23 @@
+import { isLiveApi } from "@/api/runtime";
 import { SAMPLE_DAY, SAMPLE_NOW } from "@/fixtures/personal/sample-day";
+import { dayOfInstant } from "@/lib/dates/clock-time";
 
 /*
- * The planner's clock seam. Until real data exists, "today" is the boards'
- * sample day (Tue 21 Mehr 1405 · 13 Oct 2026, 14:35 Tehran), so server and
- * client render the same day and fixtures line up with it. Swap these for a
- * real clock (APP_TIME_ZONE wall time) together with the API client.
+ * The planner's clock seam. Mock mode: the boards' sample day (Tue 21 Mehr
+ * 1405 · 13 Oct 2026, 14:35 Tehran), so fixtures line up and server/client
+ * render the same day. Live API mode: the real clock in the planner zone (the
+ * account timezone, see lib/dates/zone.ts); private screens render only on
+ * the client behind the auth gate, so there is no server/client day mismatch.
  */
 
 /** Today as a local calendar day, "YYYY-MM-DD". */
 export function getPlannerToday(): string {
-  return SAMPLE_DAY;
+  return isLiveApi() ? dayOfInstant(new Date().toISOString()) : SAMPLE_DAY;
 }
 
 /** The current instant (ISO string with offset). */
 export function getPlannerNow(): string {
-  return SAMPLE_NOW;
+  return isLiveApi() ? new Date().toISOString() : SAMPLE_NOW;
 }
 
 /** Local midnight of a "YYYY-MM-DD" day. */

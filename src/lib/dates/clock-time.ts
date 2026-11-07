@@ -1,4 +1,4 @@
-import { APP_TIME_ZONE, toZonedTime } from "./zone";
+import { getPlannerTimeZone, toZonedTime } from "./zone";
 
 /*
  * Wall-clock arithmetic in the planner's time zone, without Date objects in
@@ -98,7 +98,7 @@ export function weekdayOfDay(day: string): 0 | 1 | 2 | 3 | 4 | 5 | 6 {
 
 /** Offset of the planner zone at a moment, in minutes east of UTC (Tehran: 210). */
 function zoneOffsetMinutes(ms: number): number {
-  const zoned = toZonedTime(new Date(ms), APP_TIME_ZONE);
+  const zoned = toZonedTime(new Date(ms), getPlannerTimeZone());
   const asUtc = Date.UTC(
     zoned.getFullYear(),
     zoned.getMonth(),
@@ -151,12 +151,12 @@ export function instantAtTime(day: string, time: string): string {
 
 /** Calendar day "YYYY-MM-DD" of an instant in the planner zone. */
 export function dayOfInstant(instant: string): string {
-  return localDateToDay(toZonedTime(new Date(instant), APP_TIME_ZONE));
+  return localDateToDay(toZonedTime(new Date(instant), getPlannerTimeZone()));
 }
 
 /** Minutes after the planner-zone midnight of the instant's own day (0..1439). */
 export function minutesOfInstant(instant: string): number {
-  const zoned = toZonedTime(new Date(instant), APP_TIME_ZONE);
+  const zoned = toZonedTime(new Date(instant), getPlannerTimeZone());
   return zoned.getHours() * 60 + zoned.getMinutes();
 }
 

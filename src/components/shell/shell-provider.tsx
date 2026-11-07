@@ -2,6 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import { createContext, use, useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
+import { useAccount } from "@/features/auth/account-provider";
 import { appContexts } from "@/features/navigation/contexts";
 import type { ContextId, Workspace } from "@/features/navigation/types";
 import { useOpenSheet } from "@/features/sheets/sheet-params";
@@ -80,7 +81,15 @@ export interface ShellProviderProps {
   children: ReactNode;
 }
 
-export function ShellProvider({ workspaces, profile, sample = false, children }: ShellProviderProps) {
+export function ShellProvider({ workspaces, profile: sampleProfile, sample = false, children }: ShellProviderProps) {
+  // Live API: the signed-in account replaces the sample profile (name + email).
+  const account = useAccount();
+  const accountName = account?.user.name;
+  const accountEmail = account?.user.email;
+  const profile = useMemo<ShellProfile>(
+    () => (accountEmail !== undefined ? { name: accountName ?? "", detail: accountEmail } : sampleProfile),
+    [accountName, accountEmail, sampleProfile],
+  );
   const [selected, setSelected] = useState<Partial<Record<ContextId, string>>>({});
   const [paletteOpen, setPaletteOpen] = useState(false);
   const { capture, onCloseAutoFocus } = useReturnFocus();

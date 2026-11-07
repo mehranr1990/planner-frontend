@@ -9,6 +9,8 @@ import { PillGroup } from "@/components/ui/pills";
 import { toast } from "@/components/ui/toast";
 import { getPlannerToday } from "@/data/clock";
 import { useAreas, useCreateTask, useRemoveTasks } from "@/data/queries";
+import { RepositoryError, type NewTaskInput } from "@/data/repositories";
+import { useTaskFieldSupport } from "@/data/task-capabilities";
 import { moduleForSheet, personalModuleHref } from "@/features/planner-settings/modules";
 import { isModuleVisible } from "@/features/planner-settings/planner-settings";
 import { usePlannerSettings } from "@/features/planner-settings/use-planner-settings";
@@ -18,6 +20,7 @@ import { Kbd } from "../list/task-parts";
 import { useTasksFormat } from "../ui/use-tasks-format";
 import { taskCreateHref } from "./create-draft";
 import { dayLabel, ParsedChips } from "./parsed-chips";
+import { useTaskSaveError } from "../use-task-save-error";
 
 /*
  * Universal Quick Add (P18 · H, PM01 centre +): one line, parsed live, Enter
@@ -57,7 +60,13 @@ export function QuickAdd({ onClose, initialText = "" }: { onClose(): void; /** P
   const hintId = useId();
   const errorId = useId();
 
-  const parsed = useMemo(() => quickParse(value, today, { areas }), [value, today, areas]);
+  const support = useTaskFieldSupport();
+  const saveError = useTaskSaveError();
+  // Live API: no Task area, so no area chip is parsed (it could not be saved).
+  const parsed = useMemo(
+    () => quickParse(value, today, { areas: support.area ? areas : [] }),
+    [value, today, areas, support.area],
+  );
   const types = TYPES.filter(({ sheet }) => {
     const owner = sheet ? moduleForSheet(sheet) : null;
     return owner === null || isModuleVisible(settings, owner);
@@ -93,16 +102,17 @@ export function QuickAdd({ onClose, initialText = "" }: { onClose(): void; /** P
     }
     // No date → Today's Unscheduled (P18 · H).
     const date = parsed.date ?? today;
+    const input: NewTaskInput = {
+      title,
+      date,
+      time: parsed.time ?? null,
+      priority: parsed.priority ?? null,
+      durationMinutes: parsed.durationMinutes ?? settings.planning.defaultDurationMinutes,
+      ...(support.energy ? { energy: settings.planning.defaultEnergy } : {}),
+      ...(support.area ? { area: parsed.area ?? null } : {}),
+    };
     create.mutate(
-      {
-        title,
-        date,
-        time: parsed.time ?? null,
-        priority: parsed.priority ?? null,
-        durationMinutes: parsed.durationMinutes ?? settings.planning.defaultDurationMinutes,
-        energy: settings.planning.defaultEnergy,
-        area: parsed.area ?? null,
-      },
+      input,
       {
         onSuccess: (task) => {
           const when = [dayLabel(format, date, today), parsed.time ? format.clock(parsed.time) : null].filter(Boolean).join(" · ");
@@ -119,7 +129,14 @@ export function QuickAdd({ onClose, initialText = "" }: { onClose(): void; /** P
           });
           onClose();
         },
-        onError: () => toast({ tone: "danger", title: tCreate("failed") }),
+        onError: (error) => {
+          if (!saveError(error, input)) {
+            toast({ tone: "danger", title: tCreate("failed") });
+            return;
+          }
+          // Partially saved: the task exists, so the sheet closes like on success.
+          if (error instanceof RepositoryError && error.code === "partial") onClose();
+        },
       },
     );
   };

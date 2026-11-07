@@ -201,7 +201,20 @@
     "updated": "{count, plural, one {Task updated} other {{n} tasks updated}}",
     "completedMany": "{count, plural, one {Task completed} other {{n} tasks completed}}",
     "created": "Task added",
-    "failed": "Couldn’t save the change"
+    "failed": "Couldn’t save the change",
+    "partialSaved": "Saved, but {fields} wasn’t saved.",
+    "partialRetry": "Retry",
+    "unsupported": "Not available yet in this version",
+    "partialFields": {
+      "duration": "duration",
+      "labels": "labels",
+      "checklist": "subtasks",
+      "note": "note",
+      "recurrence": "repeat",
+      "plan": "My Day plan"
+    },
+    "unavailable": "Not available yet",
+    "bulkPartial": "{n} tasks weren’t updated."
   },
   "keyboard": {
     "new": "N",

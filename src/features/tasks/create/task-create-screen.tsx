@@ -11,6 +11,9 @@ import { Input } from "@/components/ui/input";
 import { PillGroup } from "@/components/ui/pills";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Switch } from "@/components/ui/switch";
+import { RepositoryError, type NewTaskInput } from "@/data/repositories";
+import { useTaskFieldSupport, type TaskFieldSupport } from "@/data/task-capabilities";
+import { useTaskSaveError } from "../use-task-save-error";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/components/ui/toast";
 import { getPlannerNow, getPlannerToday } from "@/data/clock";
@@ -219,6 +222,9 @@ function CreateForm({ draft, setDraft, extras, setExtras, scheduled, setSchedule
   const { data: areas } = useAreas();
   const create = useCreateTask();
   const addNote = useAddTaskNote();
+  const support = useTaskFieldSupport();
+  const saveError = useTaskSaveError();
+  const tUndo = useTranslations("Tasks.undo");
   const [titleError, setTitleError] = useState(false);
   const titleId = useId();
   const titleErrorId = useId();
@@ -239,28 +245,49 @@ function CreateForm({ draft, setDraft, extras, setExtras, scheduled, setSchedule
       titleRef.current?.focus();
       return;
     }
-    create.mutate(
-      {
-        title,
-        scope: draft.scope,
-        date: draft.date,
-        time: draft.date ? draft.time : null,
-        durationMinutes: draft.durationMinutes,
-        priority: draft.priority,
-        energy: draft.energy,
-        area,
-        labels: labels.length ? labels : undefined,
-        recurring: extras.recurring || undefined,
+    // Live API: fields it cannot store are not sent (their controls are disabled).
+    const input: NewTaskInput = {
+      title,
+      ...(support.scope ? { scope: draft.scope } : {}),
+      date: draft.date,
+      time: draft.date ? draft.time : null,
+      durationMinutes: draft.durationMinutes,
+      priority: draft.priority,
+      ...(support.energy ? { energy: draft.energy } : {}),
+      ...(support.area ? { area } : {}),
+      labels: labels.length ? labels : undefined,
+      ...(support.recurring ? { recurring: extras.recurring || undefined } : {}),
+    };
+    const created = (task: Task) => {
+      const notes = extras.notes.trim();
+      if (notes) {
+        // A separate request: on failure the note text stays in this closure for Retry.
+        const saveNote = () =>
+          addNote.mutate(
+            { id: task.id, body: notes },
+            {
+              onError: () =>
+                toast({
+                  tone: "danger",
+                  title: tUndo("partialSaved", { fields: tUndo("partialFields.note") }),
+                  action: { label: tUndo("partialRetry"), altText: tUndo("partialRetry"), onClick: saveNote },
+                }),
+            },
+          );
+        saveNote();
+      }
+      onCreated(task);
+    };
+    create.mutate(input, {
+      onSuccess: created,
+      onError: (error) => {
+        if (!saveError(error, input)) {
+          toast({ tone: "danger", title: t("failed") });
+          return;
+        }
+        if (error instanceof RepositoryError && error.code === "partial" && error.task) created(error.task);
       },
-      {
-        onSuccess: (task) => {
-          const notes = extras.notes.trim();
-          if (notes) addNote.mutate({ id: task.id, body: notes });
-          onCreated(task);
-        },
-        onError: () => toast({ tone: "danger", title: t("failed") }),
-      },
-    );
+    });
   };
 
   return (
@@ -312,7 +339,7 @@ function CreateForm({ draft, setDraft, extras, setExtras, scheduled, setSchedule
               label={t("fields.context")}
               value={draft.scope}
               onValueChange={(scope) => patch({ scope })}
-              options={SCOPES.map((scope) => ({ value: scope, label: format.scope(scope) }))}
+              options={SCOPES.map((scope) => ({ value: scope, label: format.scope(scope), disabled: !support.scope && scope !== "personal" }))}
             />
           </Group>
 
@@ -350,13 +377,14 @@ function CreateForm({ draft, setDraft, extras, setExtras, scheduled, setSchedule
                   label={t("fields.energy")}
                   value={draft.energy ?? "medium"}
                   onValueChange={(energy) => patch({ energy })}
-                  options={ENERGIES.map((energy) => ({ value: energy, label: format.energy(energy) }))}
+                  options={ENERGIES.map((energy) => ({ value: energy, label: format.energy(energy), disabled: !support.energy }))}
                 />
+                {support.energy ? null : <p className="mt-1.5 text-xs text-fg-muted">{tUndo("unavailable")}</p>}
               </Group>
             </div>
           </div>
 
-          <MoreOptions draft={draft} patch={patch} extras={extras} setExtras={setExtras} areas={areas ?? []} />
+          <MoreOptions draft={draft} patch={patch} extras={extras} setExtras={setExtras} areas={areas ?? []} support={support} />
 
           <div className="flex flex-wrap items-center gap-3 border-t border-line pt-4">
             <Switch label={t("footer.createAnother")} checked={another} onCheckedChange={setAnother} wrapperClassName="me-auto" />
@@ -513,14 +541,17 @@ function MoreOptions({
   extras,
   setExtras,
   areas,
+  support,
 }: {
   draft: TaskDraft;
   patch(next: Partial<TaskDraft>): void;
   extras: Extras;
   setExtras: (update: (extras: Extras) => Extras) => void;
   areas: { id: string; name: string }[];
+  support: TaskFieldSupport;
 }) {
   const t = useTranslations("Tasks.create");
+  const tUndo = useTranslations("Tasks.undo");
   // Remembered open/closed (P05); read only after hydration so SSR and the first render agree.
   const hydrated = useIsClient();
   const [choice, setChoice] = useState<boolean | null>(null);
@@ -557,6 +588,8 @@ function MoreOptions({
       <div id={panelId} hidden={!open} className="flex flex-col gap-5 px-4 pb-4 pt-1">
         <Switch
           label={t("fields.repeat")}
+          description={support.recurring ? undefined : tUndo("unavailable")}
+          disabled={!support.recurring}
           checked={extras.recurring}
           onCheckedChange={(recurring) => setExtras((current) => ({ ...current, recurring }))}
         />
@@ -565,8 +598,12 @@ function MoreOptions({
             label={t("fields.area")}
             value={draft.areaId ?? "none"}
             onValueChange={(id) => patch({ areaId: id === "none" ? null : id })}
-            options={[{ value: "none", label: t("fields.noArea") }, ...areas.map((area) => ({ value: area.id, label: <bdi>{area.name}</bdi> }))]}
+            options={[
+              { value: "none", label: t("fields.noArea") },
+              ...areas.map((area) => ({ value: area.id, label: <bdi>{area.name}</bdi>, disabled: !support.area })),
+            ]}
           />
+          {support.area ? null : <p className="mt-1.5 text-xs text-fg-muted">{tUndo("unavailable")}</p>}
         </Group>
         <div>
           <label htmlFor={labelsId} className={sectionLabel}>

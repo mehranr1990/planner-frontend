@@ -14,6 +14,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useAreas } from "@/data/queries";
+import { taskFieldSupport } from "@/data/task-capabilities";
 import type { Task } from "@/data/domain";
 import { cn } from "@/lib/cn";
 import { PRIORITIES } from "../domain/filters";
@@ -46,8 +47,10 @@ export function BulkBar() {
     clearSelection();
   };
 
+  // Live API: no Task area yet, so "Move" items are shown disabled.
+  const support = taskFieldSupport();
   const moveItems = (areas ?? []).map((area) => (
-    <DropdownMenuItem key={area.id} onSelect={done(() => actions.updateMany(tasks, { area }))}>
+    <DropdownMenuItem key={area.id} disabled={!support.area} onSelect={done(() => actions.updateMany(tasks, { area }))}>
       {area.name}
     </DropdownMenuItem>
   ));

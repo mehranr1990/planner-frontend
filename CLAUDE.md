@@ -132,3 +132,30 @@ Active tab: 56px tall, 24px top radius, same surface as the panel, two **20px co
 - Matches its screenshot(s) incl. the tab screenshots; all states from its spec tabs in PERSONAL.md exist (empty, loading, error, selected…).
 - Light + dark, LTR + RTL, Persian + English digits, 390 / 1024 / 1440 widths, no overflow.
 - Interactions and motion as specified (reduced-motion fallback); keyboard accessible; no console errors.
+
+# Mehran Personal Planner — frontend/backend integration
+
+Scope: connect the EXISTING frontend to the IMPLEMENTED Phase 0/1 backend. Preserve approved UI/UX, locale/RTL/Jalali behavior, and existing frontend architecture. Do not implement Phase 2+, invent endpoints, or change backend code/contracts.
+
+## Authoritative sources (local files, not pasted into chat)
+- `docs/backend-handoff/openapi.json`: exact machine-readable API contract (OpenAPI 3.1, 293 operations, 189 paths).
+- `docs/backend-handoff/API_MODULE_REFERENCE.md`: route/module index.
+- `docs/backend-handoff/FRONTEND_INTEGRATION_GUIDE.md`: cookies, origin, auth, connectivity.
+- `docs/backend-handoff/FRONTEND_WORKFLOWS.md`: per-feature behavior.
+- `docs/backend-handoff/FRONTEND_TYPES_AND_STATE.md`: revisions, dates, currencies, caching, sync.
+- `docs/backend-handoff/FRONTEND_SECURITY_AND_FILES.md`: sensitive data and lifecycle.
+- `docs/backend-handoff/FRONTEND_INTEGRATION_CHECKLIST.md`: acceptance scenarios.
+If files live elsewhere, locate them once; do not duplicate or print their full contents. If missing, report precisely which files are missing.
+
+## Low-token working rules
+1. Inspect the relevant existing frontend feature and only the relevant document sections/OpenAPI operations before editing. Never read/dump the entire 4.86 MB JSON into model context. Use local code tools for schema/type generation and targeted programmatic lookup.
+2. Work ONE small module at a time. Avoid broad repository scans, dependency upgrades, UI redesigns, and verbose command output.
+3. Keep `docs/INTEGRATION_PROGRESS.md` as a brief persistent checklist with completed modules, changes, test evidence, blockers, next module. Read this file at the start of each session.
+4. Generate API types from the unchanged local handoff OpenAPI using an approved/pinned OpenAPI 3.1-capable tool in the FRONTEND only. Keep generated code in files; do not print it to chat. Do not handwrite guessed DTOs/routes.
+5. Use browser cookie sessions with `credentials: 'include'`, correctly configured API origin/CORS. Do not store auth tokens or expose secrets. Respect exact response status/media types, ETag/If-Match, Idempotency-Key, 401/403/409, and isolated private caches.
+6. Preserve server semantics: Gregorian transport/Jalali display, IANA timezones, exact decimal-string money, feature-specific weekday rules, streamed files, restricted offline sync subset. No new backend endpoint assumptions.
+7. For each module, implement + add/update relevant tests; run focused tests, typecheck/lint on touched scope (or project-wide if that's the only existing command), and build at integration checkpoints. Fix failures before marking complete.
+8. Final response for each module <= 12 concise lines: changed files, verified behavior, test summary, blockers, next module. No repeated documentation summaries.
+
+Design source: design/<context>/ (README → SCREENS → DECISIONS → only the needed SPEC section).
+   Never open boards/*.dc.html; use screenshots of the current screen only. One screen per task, commit, don't push, stop.

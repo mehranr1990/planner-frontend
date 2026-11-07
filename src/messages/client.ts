@@ -1,4 +1,5 @@
 import type { Locale } from "@/lib/locale/config";
+import enAuth from "./en/auth.json";
 import enBrainDump from "./en/brainDump.json";
 import enCalendar from "./en/calendar.json";
 import enCommon from "./en/common.json";
@@ -20,6 +21,7 @@ import enReview from "./en/review.json";
 import enShutdown from "./en/shutdown.json";
 import enTasks from "./en/tasks.json";
 import enUi from "./en/ui.json";
+import faAuth from "./fa/auth.json";
 import faBrainDump from "./fa/brainDump.json";
 import faCalendar from "./fa/calendar.json";
 import faCommon from "./fa/common.json";
@@ -53,6 +55,7 @@ import faUi from "./fa/ui.json";
  */
 const en = {
   Common: enCommon,
+  Auth: enAuth,
   UI: enUi,
   Feedback: enFeedback,
   Navigation: enNavigation,
@@ -79,6 +82,7 @@ export type ClientMessages = typeof en;
 
 const fa: ClientMessages = {
   Common: faCommon,
+  Auth: faAuth,
   UI: faUi,
   Feedback: faFeedback,
   Navigation: faNavigation,

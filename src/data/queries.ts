@@ -312,7 +312,8 @@ export function useCreateTask() {
   const client = useQueryClient();
   return useMutation<Task, Error, NewTaskInput>({
     mutationFn: (input) => tasks.create(input),
-    onSuccess: () => invalidateSchedule(client),
+    // Settled, not success: a partial save (RepositoryError "partial") still wrote data.
+    onSettled: () => invalidateSchedule(client),
   });
 }
 
@@ -321,7 +322,8 @@ export function useUpdateTask() {
   const client = useQueryClient();
   return useMutation<Task, Error, { id: string; patch: TaskPatch }>({
     mutationFn: ({ id, patch }) => tasks.update(id, patch),
-    onSuccess: () => invalidateSchedule(client),
+    // Settled, not success: a partial save (RepositoryError "partial") still wrote data.
+    onSettled: () => invalidateSchedule(client),
   });
 }
 
@@ -377,7 +379,8 @@ export function useBulkUpdateTasks() {
   const client = useQueryClient();
   return useMutation<Task[], Error, { ids: readonly string[]; patch: TaskPatch }>({
     mutationFn: ({ ids, patch }) => tasks.bulkUpdate(ids, patch),
-    onSuccess: () => invalidateSchedule(client),
+    // Settled, not success: a partial save (RepositoryError "partial") still wrote data.
+    onSettled: () => invalidateSchedule(client),
   });
 }
 

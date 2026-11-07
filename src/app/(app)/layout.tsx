@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { ShellFrame } from "@/components/shell/shell-frame";
+import { AuthGate } from "@/features/auth/auth-gate";
 import { getRequestPreferences } from "@/features/preferences/request-preferences";
 import { getSampleShellData, isSampleData } from "@/fixtures/shell";
 
@@ -17,13 +18,16 @@ import { getSampleShellData, isSampleData } from "@/fixtures/shell";
  * SAMPLE DATA: workspaces, profile and schedule come from src/fixtures/shell.ts,
  * in the request's UI language (a preference change refreshes this layout).
  * `sample` makes the shell label that content as sample data.
+ * AuthGate: in live API mode only an active session reaches the shell.
  */
 export default async function AppLayout({ children }: { children: ReactNode }) {
   const { locale } = await getRequestPreferences();
   const { workspaces, profile, schedule } = getSampleShellData(locale);
   return (
-    <ShellFrame workspaces={workspaces} profile={profile} schedule={schedule} sample={isSampleData}>
-      {children}
-    </ShellFrame>
+    <AuthGate>
+      <ShellFrame workspaces={workspaces} profile={profile} schedule={schedule} sample={isSampleData}>
+        {children}
+      </ShellFrame>
+    </AuthGate>
   );
 }

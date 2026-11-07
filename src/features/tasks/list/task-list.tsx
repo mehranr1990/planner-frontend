@@ -14,6 +14,9 @@ import { sortableKeyboardCoordinates } from "@dnd-kit/sortable";
 import { useTranslations } from "next-intl";
 import type { Ref } from "react";
 import { useReorderTasks, useUpdateTask } from "@/data/queries";
+import { useTaskFieldSupport } from "@/data/task-capabilities";
+import { useTaskSaveError } from "../use-task-save-error";
+import { toast } from "@/components/ui/toast";
 import { usePlannerSettings } from "@/features/planner-settings/use-planner-settings";
 import { cn } from "@/lib/cn";
 import type { TaskGroup } from "../domain/group";
@@ -53,6 +56,13 @@ export function TaskList({ addRef }: { addRef: Ref<HTMLInputElement> }) {
   const { data, openReschedule } = useList();
   const { workHours } = usePlannerSettings();
   const reorder = useReorderTasks();
+  const support = useTaskFieldSupport();
+  const tUndo = useTranslations("Tasks.undo");
+  const saveError = useTaskSaveError();
+  // Manual order is persisted on the Day plan (live): a failed save is said, never shown as kept.
+  const reorderFailed = (error: unknown) => {
+    if (!saveError(error, {})) toast({ tone: "danger", title: tUndo("failed") });
+  };
   const update = useUpdateTask();
   const sensors = useSensors(
     useSensor(MouseSensor, { activationConstraint: { distance: 4 } }),
@@ -69,11 +79,14 @@ export function TaskList({ addRef }: { addRef: Ref<HTMLInputElement> }) {
     const target = dropTarget(groups, String(over.id));
     if (!target) return;
     const plan = planDrop({ taskId: String(active.id), groups, target, day: today, workHours, basis });
-    if (plan.kind === "reorder") reorder.mutate({ ids: plan.ids });
-    else if (plan.kind === "move") {
+    // Live API: manual order is a My Day plan (Phase 03); say so instead of a reorder that cannot persist.
+    if (plan.kind === "reorder") {
+      if (support.manualOrder) reorder.mutate({ ids: plan.ids }, { onError: reorderFailed });
+      else toast({ tone: "info", title: tUndo("unsupported") });
+    } else if (plan.kind === "move") {
       update.mutate(
         { id: plan.id, patch: plan.patch },
-        { onSuccess: () => reorder.mutate({ ids: plan.orderIds }) },
+        { onSuccess: () => (support.manualOrder ? reorder.mutate({ ids: plan.orderIds }, { onError: reorderFailed }) : undefined) },
       );
     }
   };

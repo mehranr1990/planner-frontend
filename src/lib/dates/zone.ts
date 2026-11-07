@@ -6,8 +6,27 @@
  * and client output identical.
  */
 
-/** The planner's display time zone until a per-user setting exists. */
+/** The default planner time zone (mock mode, server render, before the account loads). */
 export const APP_TIME_ZONE = "Asia/Tehran";
+
+let plannerTimeZone = APP_TIME_ZONE;
+
+/** The zone that defines "today", day boundaries and wall-clock times: the account zone in live mode. */
+export function getPlannerTimeZone(): string {
+  return plannerTimeZone;
+}
+
+/** Live mode: the account settings zone (IANA). Invalid names are ignored. Returns whether it changed. */
+export function setPlannerTimeZone(timeZone: string): boolean {
+  try {
+    new Intl.DateTimeFormat("en-US", { timeZone });
+  } catch {
+    return false;
+  }
+  const changed = timeZone !== plannerTimeZone;
+  plannerTimeZone = timeZone;
+  return changed;
+}
 
 const partsFormatters = new Map<string, Intl.DateTimeFormat>();
 
@@ -34,7 +53,7 @@ function partsFormatter(timeZone: string): Intl.DateTimeFormat {
  * `timeZone`. Only for display and calendar arithmetic; never send it back
  * to a server as an instant.
  */
-export function toZonedTime(instant: Date, timeZone: string = APP_TIME_ZONE): Date {
+export function toZonedTime(instant: Date, timeZone: string = getPlannerTimeZone()): Date {
   const parts: Record<string, number> = {};
   for (const part of partsFormatter(timeZone).formatToParts(instant)) {
     if (part.type !== "literal") parts[part.type] = Number(part.value);

@@ -201,7 +201,20 @@
     "updated": "{n} کار به‌روز شد",
     "completedMany": "{n} کار انجام شد",
     "created": "کار افزوده شد",
-    "failed": "تغییر ذخیره نشد"
+    "failed": "تغییر ذخیره نشد",
+    "partialSaved": "ذخیره شد، اما {fields} ذخیره نشد.",
+    "partialRetry": "تلاش دوباره",
+    "unsupported": "در این نسخه هنوز در دسترس نیست",
+    "partialFields": {
+      "duration": "مدت",
+      "labels": "برچسب‌ها",
+      "checklist": "زیرکارها",
+      "note": "یادداشت",
+      "recurrence": "تکرار",
+      "plan": "برنامهٔ روز"
+    },
+    "unavailable": "هنوز در دسترس نیست",
+    "bulkPartial": "{n} کار به‌روز نشد."
   },
   "keyboard": {
     "new": "N",

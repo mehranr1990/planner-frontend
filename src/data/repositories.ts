@@ -53,16 +53,34 @@ import type { WeekConfig } from "@/lib/dates/week";
  * Filtering and ordering are the adapter's job, never the UI's.
  */
 
-/** Why a repository call was refused; the UI maps codes to copy, never message text. */
-export type RepositoryErrorCode = "not-found" | "invalid" | "forbidden";
+/**
+ * Why a repository call was refused; the UI maps codes to copy, never message text.
+ * - unsupported: the data source cannot store that field (live API gaps); nothing was written.
+ * - partial: the main write succeeded but follow-up writes failed; `task` is the saved state
+ *   and `failed` names what was not saved, so the UI can keep the edit and offer a retry.
+ */
+export type RepositoryErrorCode = "not-found" | "invalid" | "forbidden" | "unsupported" | "partial";
+
+export type PartialField = "duration" | "labels" | "checklist" | "note" | "recurrence" | "plan";
 
 export class RepositoryError extends Error {
   readonly code: RepositoryErrorCode;
+  readonly task?: Task;
+  readonly failed?: readonly PartialField[];
+  /** Bulk: the tasks that were not updated (the others were). */
+  readonly failedIds?: readonly string[];
 
-  constructor(code: RepositoryErrorCode, message: string) {
+  constructor(
+    code: RepositoryErrorCode,
+    message: string,
+    details: { task?: Task; failed?: readonly PartialField[]; failedIds?: readonly string[] } = {},
+  ) {
     super(message);
     this.name = "RepositoryError";
     this.code = code;
+    this.task = details.task;
+    this.failed = details.failed;
+    this.failedIds = details.failedIds;
   }
 }
 

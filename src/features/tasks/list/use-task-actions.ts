@@ -17,6 +17,7 @@ import { addDaysToDay, dayToLocalDate, localDateToDay } from "@/lib/dates/clock-
 import { nextWorkingDay } from "@/lib/dates/week";
 import { useCompletionLifecycle, type CompletionLifecycle } from "../use-completion";
 import { useTasksFormat } from "../ui/use-tasks-format";
+import { useTaskSaveError } from "../use-task-save-error";
 
 /*
  * Every mutation the list makes, each with its toast and Undo: complete /
@@ -111,6 +112,7 @@ export function useTaskActions(): TaskActions {
   const { reopen, complete } = lifecycle;
 
   const failed = useCallback(() => toast({ tone: "danger", title: t("failed") }), [t]);
+  const saveError = useTaskSaveError();
   const undoAction = useCallback(
     (onClick: () => void) => ({ label: t("action"), altText: t("action"), onClick }),
     [t],
@@ -175,9 +177,11 @@ export function useTaskActions(): TaskActions {
           duration: COMPLETE_TOAST_MS,
           action: undoAction(() => void updateAsync({ id: task.id, patch: back }).catch(failed)),
         });
-      }, failed);
+      }, (error: unknown) => {
+        if (!saveError(error, patch)) failed();
+      });
     },
-    [updateAsync, t, count, undoAction, failed],
+    [updateAsync, t, count, undoAction, failed, saveError],
   );
 
   const updateMany = useCallback(
@@ -192,10 +196,12 @@ export function useTaskActions(): TaskActions {
             duration: COMPLETE_TOAST_MS,
             action: undoAction(() => void Promise.all(backs.map((item) => updateAsync(item))).catch(failed)),
           }),
-        failed,
+        (error: unknown) => {
+          if (!saveError(error, patch)) failed();
+        },
       );
     },
-    [bulkAsync, updateAsync, t, count, undoAction, failed],
+    [bulkAsync, updateAsync, t, count, undoAction, failed, saveError],
   );
 
   const remove = useCallback(
