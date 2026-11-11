@@ -56,7 +56,7 @@ describe("TM-10 · Thanks & feedback", () => {
     await user.click(within(dialog).getByRole("button", { name: "Send feedback" }));
     expect(await screen.findByText("Feedback sent")).toBeInTheDocument();
 
-    await user.click(screen.getByRole("radio", { name: "Feedback" }));
+    await user.click(screen.getByRole("radio", { name: /^Feedback/ }));
     expect(await screen.findByText("Sent")).toBeInTheDocument();
     expect(screen.queryByText("Private to Sarah and Harry only.")).not.toBeInTheDocument();
     expect(screen.getByText(/Never shown to Leads by default/)).toBeInTheDocument();

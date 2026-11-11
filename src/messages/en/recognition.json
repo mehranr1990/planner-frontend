@@ -11,7 +11,8 @@
   "view": {
     "label": "Recognition view",
     "thanks": "Thanks",
-    "feedback": "Feedback"
+    "feedback": "Feedback",
+    "feedbackCount": "Feedback {n}"
   },
   "composerHint": "Specific beats general.",
   "send": "Send thanks",

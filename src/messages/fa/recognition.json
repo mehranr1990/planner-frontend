@@ -11,7 +11,8 @@
   "view": {
     "label": "نمای قدردانی",
     "thanks": "تشکرها",
-    "feedback": "بازخورد"
+    "feedback": "بازخورد",
+    "feedbackCount": "بازخورد {n}"
   },
   "composerHint": "مشخص بهتر از کلی است.",
   "send": "ارسال تشکر",

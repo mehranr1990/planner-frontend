@@ -55,6 +55,7 @@ type View = "thanks" | "feedback";
 
 export function RecognitionScreen() {
   const t = useTranslations("Recognition");
+  const format = useProjectFormat();
   const { team, capabilities, demo } = useTeam();
   const canWrite = capabilities.createTask;
   const feed = useThanksFeed(team.id, teamDemoAccessOptions(demo));
@@ -75,7 +76,13 @@ export function RecognitionScreen() {
             onValueChange={setView}
             options={[
               { value: "thanks", label: t("view.thanks") },
-              { value: "feedback", label: t("view.feedback") },
+              {
+                value: "feedback",
+                // Open requests asked of me (my own inbox; never a count per person).
+                label: inbox.data?.asked.length
+                  ? t("view.feedbackCount", { n: format.number(inbox.data.asked.length) })
+                  : t("view.feedback"),
+              },
             ]}
           />
         ) : null
