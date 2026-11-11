@@ -4,7 +4,7 @@ import { Download, FileText, Folder, Plus, RotateCcw, Upload, X } from "lucide-r
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { useId, useRef, useState, type DragEvent } from "react";
+import { createContext, useContext, useId, useRef, useState, type DragEvent, type ReactNode } from "react";
 import { AccessLoading, AccessState } from "@/components/feedback/access-state";
 import { EmptyState, NoResultsState } from "@/components/feedback/state-views";
 import { ComingSoonBadge } from "@/components/navigation/coming-soon-badge";
@@ -40,7 +40,38 @@ import { useMediaQuery } from "../use-media";
  * Guests see only guest-shared files (other folders are not listed).
  * `?folder=`, `?file=` keep the selection; phones: folder pills, list,
  * preview full screen.
+ *
+ * Scope seam (TM-11): `FilesView` takes a `FilesScope` (header, data hooks,
+ * rights, linked tasks) so Team files reuse this exact component; the
+ * project binding is `FilesScreen` below.
  */
+
+export interface FilesScope {
+  scope: "project" | "team";
+  /** The page header with these actions (upload, list/grid). */
+  header: (actions: ReactNode) => ReactNode;
+  library: { data: FileLibrary | undefined };
+  actions: ReturnType<typeof useFileActions>;
+  canUpload: boolean;
+  canManage: boolean;
+  guest: boolean;
+  /** Demo state (?state=): "empty" / "pending" / "quota" are handled here. */
+  demo: string | null;
+  /** Tasks the viewer can open (for "linked to" and the preview links). */
+  tasks: readonly { id: string; title: string }[] | undefined;
+  taskHref: (taskId: string) => string;
+  allFilesLabel?: string;
+  /** Under the folder list (e.g. "Project files stay in their projects."). */
+  folderNote?: string;
+}
+
+const FilesScopeContext = createContext<FilesScope | null>(null);
+
+function useFilesScope(): FilesScope {
+  const scope = useContext(FilesScopeContext);
+  if (!scope) throw new Error("FilesView missing");
+  return scope;
+}
 
 type FileFilter = "all" | "images" | "docs" | "linked";
 
@@ -67,23 +98,54 @@ function useFileSize() {
       : t("kb", { n: format.number(Math.max(1, Math.round(bytes / 1024))) });
 }
 
+/** PJ-10 binding: the project files. */
 export function FilesScreen() {
+  const t = useTranslations("Files");
+  const { project, capabilities, demo } = useProject();
+  const library = useFileLibrary(project.id, demoAccessOptions(demo));
+  const actions = useFileActions(project.id);
+  const tasks = useProjectTasks(project.id, {});
+  return (
+    <FilesView
+      scope={{
+        scope: "project",
+        header: (actions) => <ProjectPageHeader module="files" title={t("title")} actions={actions} />,
+        library,
+        actions,
+        canUpload: capabilities.uploadFile,
+        canManage: capabilities.manageFiles,
+        guest: project.role === "guest",
+        demo,
+        tasks: tasks.data?.tasks,
+        taskHref: (taskId) => `${projectHref(project.id, "tasks")}/${encodeURIComponent(taskId)}`,
+      }}
+    />
+  );
+}
+
+export function FilesView({ scope }: { scope: FilesScope }) {
+  return (
+    <FilesScopeContext.Provider value={scope}>
+      <FilesBody />
+    </FilesScopeContext.Provider>
+  );
+}
+
+function FilesBody() {
   const t = useTranslations("Files");
   const router = useRouter();
   const pathname = usePathname();
   const params = useSearchParams();
-  const { project, capabilities, demo } = useProject();
+  const scope = useFilesScope();
+  const { library, actions, demo, guest } = scope;
   const phone = useMediaQuery("(max-width: 39.99rem)");
-  const library = useFileLibrary(project.id, demoAccessOptions(demo));
-  const actions = useFileActions(project.id);
   const inputRef = useRef<HTMLInputElement>(null);
   const [layout, setLayout] = useState<"list" | "grid">("list");
   const [filter, setFilter] = useState<FileFilter>("all");
   const [search, setSearch] = useState("");
   const [pendingVersion, setPendingVersion] = useState<{ file: File; existing: ProjectFile } | null>(null);
   const [sheetOpen, setSheetOpen] = useState(false);
-  const guest = project.role === "guest";
-  const canUpload = capabilities.uploadFile && demo !== "empty";
+  const canUpload = scope.canUpload && demo !== "empty";
 
   const setParam = (key: string, value: string | null) => {
     const next = new URLSearchParams(params.toString());
@@ -108,11 +170,7 @@ export function FilesScreen() {
     for (const file of Array.from(list)) startUpload(file);
   };
 
-  const header = (
-    <ProjectPageHeader
-      module="files"
-      title={t("title")}
-      actions={
+  const header = scope.header(
         <>
           {!phone ? (
             <Segmented
@@ -149,9 +207,7 @@ export function FilesScreen() {
               event.target.value = "";
             }}
           />
-        </>
-      }
-    />
+        </>,
   );
 
   if (!data) {
@@ -174,7 +230,7 @@ export function FilesScreen() {
           description={t("emptyBody")}
           titleAs="h2"
           primaryAction={
-            capabilities.uploadFile ? (
+            scope.canUpload ? (
               <Button onClick={() => inputRef.current?.click()}>{t("upload")}</Button>
             ) : undefined
           }
@@ -214,7 +270,7 @@ export function FilesScreen() {
   const folderPicker = (
     <nav aria-label={t("folders")} className={cn(phone ? "" : "rounded-[28px] bg-surface p-3")}>
       <ul className={cn(phone ? "flex gap-1.5 overflow-x-auto pb-1" : "flex flex-col gap-1")}>
-        {[{ id: null as string | null, name: t("allFiles"), count: data.total }, ...data.folders].map((item) => {
+        {[{ id: null as string | null, name: scope.allFilesLabel ?? t("allFiles"), count: data.total }, ...data.folders].map((item) => {
           const active = (item.id ?? null) === (folder?.id ?? null);
           return (
             <li key={item.id ?? "all"} className="shrink-0">
@@ -241,7 +297,7 @@ export function FilesScreen() {
             </li>
           );
         })}
-        {!phone && capabilities.manageFiles ? (
+        {!phone && scope.canManage ? (
           <li>
             {/* Folder creation has no spec yet (one level, D14): coming soon. */}
             <button
@@ -256,6 +312,7 @@ export function FilesScreen() {
           </li>
         ) : null}
       </ul>
+      {scope.folderNote && !phone ? <p className="px-3 pt-3 text-xs font-medium text-fg-secondary">{scope.folderNote}</p> : null}
     </nav>
   );
 
@@ -268,7 +325,7 @@ export function FilesScreen() {
         {folderPicker}
         <section aria-labelledby="files-list" className="flex min-w-0 flex-col gap-3 sm:rounded-[28px] sm:bg-surface sm:p-4">
           <h2 id="files-list" className="sr-only">
-            {folder?.name ?? t("allFiles")}
+            {folder?.name ?? scope.allFilesLabel ?? t("allFiles")}
           </h2>
           <div className="flex flex-wrap items-center justify-between gap-2">
             <PillGroup
@@ -306,13 +363,13 @@ export function FilesScreen() {
               ))}
             </ul>
           )}
-          {capabilities.uploadFile && !phone ? <DropZone onFiles={onFiles} onPick={() => inputRef.current?.click()} /> : null}
+          {scope.canUpload && !phone ? <DropZone onFiles={onFiles} onPick={() => inputRef.current?.click()} /> : null}
         </section>
         {!phone && preview ? <div className="sm:col-span-2 min-[1180px]:col-span-1">{preview}</div> : null}
       </div>
       {phone && selected ? (
         <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
-          <SheetContent title={t("preview.back")} hideTitle side="end" mobileSide="fullscreen" data-scope="project">
+          <SheetContent title={t("preview.back")} hideTitle side="end" mobileSide="fullscreen" data-scope={scope.scope}>
             {preview}
           </SheetContent>
         </Sheet>
@@ -326,7 +383,7 @@ export function FilesScreen() {
               n: pendingVersion.existing.version + 1,
             })}
             size="sm"
-            data-scope="project"
+            data-scope={scope.scope}
           >
             <DialogFooter>
               <Button variant="secondary" onClick={() => setPendingVersion(null)}>
@@ -419,9 +476,8 @@ function FileRow({
   const t = useTranslations("Files");
   const format = useProjectFormat();
   const size = useFileSize();
-  const { project } = useProject();
-  const tasks = useProjectTasks(project.id, {});
-  const firstTask = tasks.data?.tasks.find((task) => task.id === file.taskIds[0]);
+  const { tasks } = useFilesScope();
+  const firstTask = tasks?.find((task) => task.id === file.taskIds[0]);
   const meta = [t("meta", { folder: folderName, size: size(file.sizeBytes) })];
   if (file.taskIds.length > 1) meta.push(t("linkedCount", { n: file.taskIds.length }));
   else if (firstTask) meta.push(t("linkedTo", { title: firstTask.title }));
@@ -531,16 +587,14 @@ function FilePreview({
   const t = useTranslations("Files");
   const format = useProjectFormat();
   const size = useFileSize();
-  const { project, capabilities } = useProject();
-  const actions = useFileActions(project.id);
-  const tasks = useProjectTasks(project.id, {});
+  const { actions, tasks, canManage, canUpload, taskHref } = useFilesScope();
   const reasonId = useId();
   const headingId = useId();
   const ready = file.state === "ready";
   const reason = ready ? null : file.state === "blocked" || file.state === "failed" ? t("preview.downloadBlocked") : t("preview.downloadOff");
-  const canVersion = capabilities.manageFiles || (capabilities.uploadFile && file.uploadedBy.id === "me");
+  const canVersion = canManage || (canUpload && file.uploadedBy.id === "me");
   const linked = file.taskIds
-    .map((id) => tasks.data?.tasks.find((task) => task.id === id))
+    .map((id) => tasks?.find((task) => task.id === id))
     .filter((task) => task !== undefined);
 
   const download = async () => {
@@ -651,7 +705,7 @@ function FilePreview({
             {linked.map((task) => (
               <li key={task.id}>
                 <Link
-                  href={`${projectHref(project.id, "tasks")}/${encodeURIComponent(task.id)}`}
+                  href={taskHref(task.id)}
                   className="inline-flex min-h-8 items-center rounded-pill bg-subtle px-3 text-xs font-semibold text-fg hover:text-scope-deep focus-visible:focus-ring"
                 >
                   <bdi>{task.title}</bdi>

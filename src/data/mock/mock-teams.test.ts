@@ -268,3 +268,16 @@ describe("mock team members + capacity (TM-08)", () => {
     expect(await store.teamMembers.invitations("mobile")).toEqual([]);
   });
 });
+
+describe("mock team files (TM-11)", () => {
+  it("lists team folders only (no project files) and runs the PJ-10 upload lifecycle", async () => {
+    const store = createMockTeams({ respond, fileStepMs: 0 });
+    const library = await store.teamFiles.list("design");
+    expect(library.folders.map((folder) => folder.name)).toEqual(["Critiques", "Research", "Brand assets"]);
+    expect(library.files.some((file) => file.name.startsWith("Checkout"))).toBe(false);
+    const file = await store.teamFiles.upload("design", { name: "notes.txt", sizeBytes: 100, folderId: "research" });
+    expect(file.uploadedBy.name).toBe("Mehran R.");
+    for (let step = 0; step < 8; step += 1) store.tickFiles();
+    expect((await store.teamFiles.list("design")).files.find((item) => item.id === file.id)?.state).toBe("ready");
+  });
+});

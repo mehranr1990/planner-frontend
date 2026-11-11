@@ -1,6 +1,6 @@
 import { projectPeople } from "@/fixtures/projects";
 import { sampleFileConfig, sampleFileFolders, sampleFiles } from "@/fixtures/project-files";
-import type { FileFolder, ProjectFile, ProjectRole } from "../project-domain";
+import type { FileFolder, ProjectFile, ProjectPerson, ProjectRole } from "../project-domain";
 import type { FileRepository, ProjectAccessOptions } from "../project-repositories";
 import { RepositoryError } from "../repositories";
 import { isMine, type ProjectWorkStore } from "./mock-project-work";
@@ -16,21 +16,37 @@ import { isMine, type ProjectWorkStore } from "./mock-project-work";
  */
 
 export interface MockFilesOptions {
-  store: ProjectWorkStore;
+  /** The project work store (guest visibility by linked tasks); teams have no guests. */
+  store?: ProjectWorkStore;
   respond<T>(value: T): Promise<T>;
   now: string;
   roleOf(projectId: string, options?: ProjectAccessOptions): ProjectRole | undefined;
   /** Milliseconds per lifecycle step (0 in tests = advance on demand via `tick`). */
   stepMs?: number;
+  /** Folders and files per owner (default: Website Redesign). TM-11 seeds team folders. */
+  seed?: { folders: Readonly<Record<string, readonly FileFolder[]>>; files: Readonly<Record<string, readonly ProjectFile[]>> };
+  /** Uploads that drop once with "connection lost" (default: the PJ-10 fixture). */
+  failOnce?: readonly string[];
+  /** Who uploads (default: the Projects "me"). */
+  me?: ProjectPerson;
 }
 
 const PROGRESS_STEP = 20;
 
-export function createMockFiles({ store, respond, now, roleOf, stepMs = 600 }: MockFilesOptions) {
-  const folders = new Map<string, FileFolder[]>([["website-redesign", structuredClone([...sampleFileFolders])]]);
-  const files = new Map<string, ProjectFile[]>([["website-redesign", structuredClone([...sampleFiles])]]);
+export function createMockFiles({
+  store,
+  respond,
+  now,
+  roleOf,
+  stepMs = 600,
+  seed = { folders: { "website-redesign": sampleFileFolders }, files: { "website-redesign": sampleFiles } },
+  failOnce: dropOnce = ["empty-states"],
+  me = projectPeople.me,
+}: MockFilesOptions) {
+  const folders = new Map<string, FileFolder[]>(Object.entries(seed.folders).map(([id, list]) => [id, structuredClone([...list])]));
+  const files = new Map<string, ProjectFile[]>(Object.entries(seed.files).map(([id, list]) => [id, structuredClone([...list])]));
   /** Fixture that drops once ("connection lost") so Retry is reachable. */
-  const failOnce = new Set(["empty-states"]);
+  const failOnce = new Set(dropOnce);
   let seq = 0;
   let timer: ReturnType<typeof setInterval> | null = null;
 
@@ -108,7 +124,7 @@ export function createMockFiles({ store, respond, now, roleOf, stepMs = 600 }: M
       const allFolders = folders.get(projectId) ?? [];
       const allFiles = files.get(projectId) ?? [];
       const guest = role === "guest";
-      const myTaskIds = new Set((store.tasks.get(projectId) ?? []).filter(isMine).map((task) => task.id));
+      const myTaskIds = new Set((store?.tasks.get(projectId) ?? []).filter(isMine).map((task) => task.id));
       const guestFolderIds = new Set(allFolders.filter((folder) => folder.sharedWithGuests).map((folder) => folder.id));
       const visible = guest
         ? allFiles.filter(
@@ -132,7 +148,6 @@ export function createMockFiles({ store, respond, now, roleOf, stepMs = 600 }: M
     },
     async upload(projectId, { name, sizeBytes, folderId, asNewVersionOf }) {
       project(projectId);
-      const me = projectPeople.me;
       const list = files.get(projectId) ?? [];
       files.set(projectId, list);
       const blockReason = sampleFileConfig.blockedExtensions.includes(extension(name))
@@ -193,7 +208,7 @@ export function createMockFiles({ store, respond, now, roleOf, stepMs = 600 }: M
       const old = file.versions.find((candidate) => candidate.version === version);
       if (!old || version === file.version) throw new RepositoryError("invalid", "Pick an older version");
       const next = file.version + 1;
-      file.versions = [{ version: next, by: projectPeople.me, at: now, restoredFrom: version }, ...file.versions];
+      file.versions = [{ version: next, by: me, at: now, restoredFrom: version }, ...file.versions];
       file.version = next;
       file.updatedAt = now;
       return respond(file);

@@ -47,7 +47,8 @@ import type {
 } from "./team-domain";
 
 import type { Weekday } from "@/lib/dates/week";
-import type { DeclineReason } from "./project-domain";
+import type { DeclineReason, FileLibrary } from "./project-domain";
+import type { FileRepository } from "./project-repositories";
 
 /*
  * Teams (Phase 3) repository interfaces. Backend Phase 3 is not built: only
@@ -208,6 +209,11 @@ export interface GiveThanksInput {
   link?: ThanksLink | null;
 }
 
+/** fileRepo with scope team (TM-11): the same file service as PJ-10, team folders; no guests, no quota. */
+export type TeamFileRepository = Omit<FileRepository, "list"> & {
+  list(teamId: string, options?: TeamAccessOptions): Promise<FileLibrary>;
+};
+
 /** feedbackRepo (TM-10): private 1:1, only writer and recipient (Leads don't see it, T9). */
 export interface TeamFeedbackRepository {
   inbox(teamId: string): Promise<FeedbackInbox>;
@@ -357,6 +363,7 @@ export interface TeamRepositories {
   teamCheckins: TeamCheckinRepository;
   teamRecognition: TeamRecognitionRepository;
   teamFeedback: TeamFeedbackRepository;
+  teamFiles: TeamFileRepository;
   teamTasks: TeamTaskRepository;
   teamSprints: TeamSprintRepository;
   projectAssociations: ProjectAssociationRepository;

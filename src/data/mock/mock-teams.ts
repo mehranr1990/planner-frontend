@@ -13,6 +13,7 @@ import {
 import {
   invitedTeamFixtures,
   teamJobTitles,
+  teamPeople,
   presenceFixtures,
   recentTeamIds,
   removedTeamIds,
@@ -24,6 +25,8 @@ import {
 import { RepositoryError } from "../repositories";
 import { createMockTeamCheckins } from "./mock-team-checkins";
 import { createMockTeamGoals } from "./mock-team-goals";
+import { createMockFiles } from "./mock-project-files";
+import { teamFileFolders, teamFiles as teamFileFixtures } from "@/fixtures/team-files";
 import { createMockTeamRecognition } from "./mock-team-recognition";
 import { createMockTeamSprints } from "./mock-team-sprints";
 import type {
@@ -54,7 +57,7 @@ import type {
   TeamRole,
   TeamSummary,
 } from "../team-domain";
-import type { ProjectAssociationRepository, TeamEventInput, TeamMemberRepository, TeamRepositories } from "../team-repositories";
+import type { ProjectAssociationRepository, TeamEventInput, TeamFileRepository, TeamMemberRepository, TeamRepositories } from "../team-repositories";
 import { IRAN_WEEK, type Weekday } from "@/lib/dates/week";
 
 /** Stored team event: the detail minus the per-viewer fields. */
@@ -112,6 +115,8 @@ export function teamCapabilities(role: TeamRole, lifecycle: TeamLifecycle): Team
     restore: lifecycle === "archived" && rank >= RANK.admin,
     linkProjects: editable && rank >= RANK.admin,
     createProject: editable && rank >= RANK.lead,
+    uploadFile: editable && rank >= RANK.member,
+    manageFiles: editable && rank >= RANK.lead,
   };
 }
 
@@ -131,6 +136,8 @@ export interface MockTeamsOptions {
    * when it leaves (Undo of Accept).
    */
   onProjection?: (taskId: string, projection: TeamPersonalProjection | null) => void;
+  /** TM-11 upload lifecycle step (0 in tests = advance with `tickFiles`). */
+  fileStepMs?: number;
 }
 
 /** What Personal shows for an accepted team task: a projection with the team as its source. */
@@ -154,6 +161,8 @@ export interface MockTeamsStore extends TeamRepositories {
   adoptProject(teamId: string, projectId: string): void;
   /** Mock-only: the live team fixtures (other team mocks read linked projects, lead, members). */
   findTeam(id: string): TeamFixture | undefined;
+  /** Mock-only: one upload lifecycle step for team files. */
+  tickFiles(): void;
   /** Mock-only: the linked projects the viewer can open. */
   openableProjectIds(id: string): readonly string[];
 }
@@ -181,6 +190,7 @@ export function createMockTeams({
   now = "2026-10-13T14:35:00+03:30",
   findProject = (id) => ({ id, name: id, percent: 0, health: "on-track", lifecycle: "active" }),
   onProjection,
+  fileStepMs,
 }: MockTeamsOptions): MockTeamsStore {
   const comments = new Map<string, TeamTaskComment[]>(
     Object.entries(teamTaskDetailFixtures).map(([id, extra]) => [id, structuredClone([...(extra.comments ?? [])])]),
@@ -591,6 +601,18 @@ export function createMockTeams({
     },
   });
 
+  // TM-11: the PJ-10 file mock with team folders (teams have no guests).
+  const filesMock = createMockFiles({
+    respond,
+    now,
+    roleOf: (teamId) => (find(teamId) ? "member" : undefined),
+    stepMs: fileStepMs,
+    seed: { folders: teamFileFolders, files: teamFileFixtures },
+    failOnce: [],
+    me: teamPeople.me,
+  });
+  const teamFiles: TeamFileRepository = { ...filesMock.files, list: (teamId) => filesMock.files.list(teamId) };
+
   const { teamRecognition, teamFeedback } = createMockTeamRecognition({
     respond,
     now,
@@ -928,6 +950,8 @@ export function createMockTeams({
     teamCheckins,
     teamRecognition,
     teamFeedback,
+    teamFiles,
+    tickFiles: filesMock.tick,
     teamTasks: {
       async list(teamId, query = {}, options = {}) {
         const team = memberOf(teamId);
@@ -1192,6 +1216,7 @@ export function teamRepositories(store: MockTeamsStore): TeamRepositories {
     teamCheckins: store.teamCheckins,
     teamRecognition: store.teamRecognition,
     teamFeedback: store.teamFeedback,
+    teamFiles: store.teamFiles,
     teamTasks: store.teamTasks,
     teamSprints: store.teamSprints,
     projectAssociations: store.projectAssociations,

@@ -107,6 +107,10 @@ export interface TeamCapabilities {
   linkProjects: boolean;
   /** TM-06: New team project (Lead+). */
   createProject: boolean;
+  /** TM-11: upload team files (Member+). */
+  uploadFile: boolean;
+  /** TM-11: versions of anyone’s files / restore (Lead+). */
+  manageFiles: boolean;
 }
 
 export type TeamAccess =

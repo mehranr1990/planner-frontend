@@ -78,5 +78,9 @@
     "team": "Team",
     "empty": "No thanks yet.",
     "open": "Open recognition"
+  },
+  "files": {
+    "all": "All team files",
+    "note": "Project files stay in their projects. Open them from Projects."
   }
 }

@@ -7,6 +7,7 @@ import { afterHydration } from "./queries";
 import { RepositoryError } from "./repositories";
 import { taskKeys, teamKeys } from "./query-keys";
 import type { DeclineReason } from "./project-domain";
+import type { FileUploadInput } from "./project-repositories";
 import type { Weekday } from "@/lib/dates/week";
 import type {
   CarryOverDecision,
@@ -546,5 +547,40 @@ export function useRecognitionActions(teamId: string) {
       mutationFn: (input: { toId: string; about: string; body: string; requestId?: string }) => teamFeedback.write(teamId, input),
       onSuccess: refresh,
     }),
+  };
+}
+
+// ── Team files (TM-11; the PJ-10 file service with scope team) ───────────
+
+const FILES_IN_FLIGHT = new Set(["queued", "uploading", "scanning"]);
+
+/** Same contract as Projects `useFileLibrary` (polls while uploads are in flight). */
+export function useTeamFileLibrary(teamId: string) {
+  const { teamFiles } = useRepositories();
+  const hydrated = useIsClient();
+  return afterHydration(
+    useQuery({
+      queryKey: teamScoped(teamId, "files"),
+      queryFn: () => teamFiles.list(teamId),
+      refetchInterval: (query) => (query.state.data?.files.some((file) => FILES_IN_FLIGHT.has(file.state)) ? 500 : false),
+    }),
+    hydrated,
+  );
+}
+
+/** Same shape as Projects `useFileActions`, bound to the team. */
+export function useTeamFileActions(teamId: string) {
+  const { teamFiles } = useRepositories();
+  const client = useQueryClient();
+  const refresh = () => client.invalidateQueries({ queryKey: teamScoped(teamId, "files") });
+  return {
+    upload: useMutation({ mutationFn: (input: FileUploadInput) => teamFiles.upload(teamId, input), onSettled: refresh }),
+    cancel: useMutation({ mutationFn: (fileId: string) => teamFiles.cancel(fileId), onSettled: refresh }),
+    retry: useMutation({ mutationFn: (fileId: string) => teamFiles.retry(fileId), onSettled: refresh }),
+    restoreVersion: useMutation({
+      mutationFn: ({ fileId, version }: { fileId: string; version: number }) => teamFiles.restoreVersion(fileId, version),
+      onSettled: refresh,
+    }),
+    download: (fileId: string) => teamFiles.download(fileId),
   };
 }
