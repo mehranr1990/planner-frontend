@@ -5,7 +5,7 @@ import { messages } from "@/messages";
 import { renderWithProviders } from "@/test/render";
 import CompaniesPage, { generateMetadata as companiesMetadata } from "./companies/page";
 import { generateMetadata as projectsMetadata } from "./projects/page";
-import TeamsPage, { generateMetadata as teamsMetadata } from "./teams/page";
+import { generateMetadata as teamsMetadata } from "./teams/page";
 
 // getTranslations needs the Next.js request; resolve it from the bundled catalogue instead.
 const locale = vi.hoisted(() => ({ current: "en" as "en" | "fa" }));
@@ -15,7 +15,6 @@ vi.mock("next-intl/server", () => ({
 }));
 
 const pages = [
-  ["teams", TeamsPage, teamsMetadata, "Teams overview", "Check in"],
   ["companies", CompaniesPage, companiesMetadata, "Companies overview", "Review approvals"],
 ] as const;
 
@@ -38,9 +37,14 @@ describe("context overview routes", () => {
     expect(await projectsMetadata()).toEqual({ title: "Projects" });
   });
 
+  it("titles /teams (TM-00 renders its own screen)", async () => {
+    locale.current = "en";
+    expect(await teamsMetadata()).toEqual({ title: "All teams" });
+  });
+
   it("translates the metadata title in Persian", async () => {
     locale.current = "fa";
-    expect(await teamsMetadata()).toEqual({ title: "نمای کلی تیم‌ها" });
+    expect(await companiesMetadata()).toEqual({ title: "نمای کلی شرکت‌ها" });
     locale.current = "en";
   });
 });

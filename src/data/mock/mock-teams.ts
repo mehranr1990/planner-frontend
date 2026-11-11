@@ -117,7 +117,11 @@ export function createMockTeams({
     const shown: Partial<TeamFixture> = structuredClone(team);
     delete shown.linkedProjectIds;
     delete shown.leadId;
-    return { ...(shown as Omit<TeamFixture, "linkedProjectIds" | "leadId">), projectCount: openable(team).length };
+    return {
+      ...(shown as Omit<TeamFixture, "linkedProjectIds" | "leadId">),
+      projectCount: openable(team).length,
+      restorable: teamCapabilities(team.role, team.lifecycle).restore,
+    };
   };
   const expired = (entry: TeamPresence) => entry.until !== null && Date.parse(entry.until) <= Date.parse(now);
   const visible = (entry: TeamPresence): TeamPresence =>

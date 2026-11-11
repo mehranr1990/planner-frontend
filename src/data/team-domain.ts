@@ -44,6 +44,8 @@ export interface TeamSummary {
   forYou: number;
   /** Linked projects the viewer can open (forbidden = not found, no hidden count). */
   projectCount: number;
+  /** Archived and the viewer may restore it (Owner/Admin, server flag). */
+  restorable: boolean;
   /** The viewer's check-in reply for this week is missing (rail badge). */
   checkinMissing: boolean;
   updatedAt: string;

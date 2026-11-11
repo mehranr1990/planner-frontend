@@ -5,7 +5,12 @@
   "empty": "No teams yet",
   "emptyDescription": "Teams plan the week together. Create one or accept an invitation.",
   "invite": {
-    "note": "Joining does not give project access by itself"
+    "note": "Joining does not give project access by itself",
+    "title": "{team} invited you as {role}",
+    "short": "Invited as {role}",
+    "accept": "Accept",
+    "decline": "Decline",
+    "declined": "Invitation declined"
   },
   "roles": {
     "owner": "Owner",
@@ -38,5 +43,49 @@
   "more": {
     "status": "Set status"
   },
-  "newTask": "New task"
+  "newTask": "New task",
+  "loading": "Loading teams",
+  "error": {
+    "title": "Couldn’t load your teams",
+    "retry": "Try again"
+  },
+  "noInvites": "No pending invitations.",
+  "noneHere": "No teams here.",
+  "filter": {
+    "label": "Filter teams",
+    "all": "All",
+    "lead": "Lead / Admin",
+    "member": "Member",
+    "viewer": "Viewer",
+    "invitations": "Invitations",
+    "archived": "Archived"
+  },
+  "view": {
+    "label": "View",
+    "grid": "Grid",
+    "list": "List"
+  },
+  "card": {
+    "openTasks": "{n} open tasks",
+    "openShort": "{n} open",
+    "projects": "{n} projects",
+    "members": "Members of {team}"
+  },
+  "list": {
+    "label": "Your teams",
+    "team": "Team",
+    "role": "Role",
+    "people": "People",
+    "open": "Open tasks",
+    "forYou": "For you",
+    "projects": "Projects",
+    "updated": "Updated"
+  },
+  "archived": {
+    "readOnly": "Read-only",
+    "restore": "Restore",
+    "view": "View",
+    "hint": "Restore: Owner/Admin only.",
+    "restored": "{team} restored"
+  }
 }
