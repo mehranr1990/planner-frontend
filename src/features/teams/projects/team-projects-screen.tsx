@@ -227,7 +227,7 @@ function PortfolioTable({ projects, canUnlink }: { projects: readonly TeamPortfo
               )}
             </span>
             <span
-              className="flex -space-x-1.5 rtl:space-x-reverse"
+              className="flex [&>*+*]:-ms-1.5"
               aria-label={
                 project.teamPeople.length ? project.teamPeople.map((person) => person.name).join(", ") : t("noPeople")
               }
