@@ -38,6 +38,8 @@ export interface TeamSummary {
   /** Member avatars for previews (server order). */
   members: readonly TeamPerson[];
   memberCount: number;
+  /** The team lead shown in the header ("Lead · Harry B."). */
+  lead: TeamPerson | null;
   /** Open team tasks. */
   openTasks: number;
   /** "n for you": my open + pending assignments in this team. */
@@ -130,6 +132,8 @@ export interface TeamPresence {
   allTeams: boolean;
   /** "Share what I'm working on" (owner update 10 Nov): off = "Not shared". */
   shareWorkingOn: boolean;
+  /** What the person works on; null unless they share it. */
+  workingOn: string | null;
 }
 
 export interface SetPresenceInput {
@@ -138,4 +142,132 @@ export interface SetPresenceInput {
   clearAfter: ClearAfter;
   allTeams: boolean;
   shareWorkingOn: boolean;
+}
+
+// ── Inside a team: people, week plan, capacity, calendar, activity (TM-01) ──
+
+export interface TeamMember {
+  person: TeamPerson;
+  role: TeamRole;
+  /** Job title (user content). */
+  title: string;
+}
+
+/** Linked project the viewer can open (never a hidden one). */
+export interface TeamProjectLink {
+  id: string;
+  name: string;
+  percent: number;
+  health: "on-track" | "at-risk" | "off-track";
+  lifecycle: "active" | "paused" | "archived";
+}
+
+/** planRepo.week: the published weekly plan's summary (week = its Saturday). */
+export interface TeamWeekPlan {
+  week: string;
+  weekNumber: number;
+  planned: number;
+  done: number;
+  /** Sat … Thu (Iran work week + Thursday half day). */
+  days: readonly { day: string; planned: number; done: number }[];
+  blocked: number;
+  carriedOver: number;
+  unplanned: number;
+  /** Focus set by a Lead: task titles (user content). */
+  focus: readonly string[];
+  focusBy: TeamPerson | null;
+  focusAt: string | null;
+}
+
+/** capacityRepo.week: booked = estimates of team + project work this week; never Personal data. */
+export interface TeamCapacityEntry {
+  personId: string;
+  bookedHours: number;
+  capacityHours: number;
+}
+
+export type TeamEventKind = "meeting" | "time-off" | "deadline" | "checkin";
+
+export interface TeamEvent {
+  id: string;
+  title: string;
+  kind: TeamEventKind;
+  day: string;
+  /** "HH:mm", or null for all-day. */
+  time: string | null;
+  personId?: string;
+}
+
+export type TeamActivityKind = "moved" | "flagged" | "shared" | "created" | "completed";
+
+export interface TeamActivity {
+  id: string;
+  actor: TeamPerson;
+  kind: TeamActivityKind;
+  /** The object (task title, file…; user content). */
+  subject: string;
+  /** For "moved": the new status. */
+  status?: TeamTaskStatus;
+  at: string;
+}
+
+/** The weekly check-in for the Overview tab: replies count only (no mood, no scores). */
+export interface TeamCheckinSummary {
+  week: string;
+  replied: number;
+  total: number;
+  closesAt: string;
+  mine: "missing" | "sent";
+}
+
+export interface TeamThanks {
+  id: string;
+  from: TeamPerson;
+  to: TeamPerson;
+  text: string;
+  visibility: "team" | "private";
+  at: string;
+}
+
+// ── Team work (TM-02 / TM-15) ─────────────────────────────────────────────
+
+/** Fixed team statuses (T4): no team workflow editor. */
+export type TeamTaskStatus = "todo" | "in-progress" | "review" | "blocked" | "done";
+
+export const teamTaskStatuses: readonly TeamTaskStatus[] = ["todo", "in-progress", "review", "blocked", "done"];
+
+export type TeamTaskPriority = "urgent" | "high" | "medium" | "low";
+
+export type TeamAssignmentState = "pending" | "accepted" | "declined";
+
+export interface TeamTaskAssignee {
+  person: TeamPerson;
+  state: TeamAssignmentState;
+  by?: TeamPerson;
+}
+
+/** Where the task lives: the team, or a project the viewer can open (never a hidden one). */
+export type TeamTaskSource = { kind: "team" } | { kind: "project"; projectId: string; projectName: string };
+
+export interface TeamTask {
+  id: string;
+  teamId: string;
+  title: string;
+  status: TeamTaskStatus;
+  priority: TeamTaskPriority;
+  due: string | null;
+  estimateHours: number | null;
+  assignees: readonly TeamTaskAssignee[];
+  source: TeamTaskSource;
+  /** The week plan it belongs to (Saturday), or null = not planned. */
+  planWeek: string | null;
+  /** Checklist progress 0–100. */
+  progress: number;
+  /** Tasks this one waits for (same team; finish-to-start). */
+  blockedBy: readonly string[];
+  goal: { id: string; title: string } | null;
+  /** Revision for If-Match style writes. */
+  revision: number;
+  updatedAt: string;
+  completedAt?: string;
 }

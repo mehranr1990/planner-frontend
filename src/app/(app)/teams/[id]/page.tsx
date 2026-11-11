@@ -1,9 +1,10 @@
-import { TeamModulePlaceholder } from "@/features/teams/team-module-placeholder";
+import { TeamOverviewScreen } from "@/features/teams/overview/overview-screen";
 
-// Localised from the preferences cookie, like every shell route.
+// Localised from the preferences cookie, like every shell route: opt out of
+// instant validation (see the root layout).
 export const instant = false;
 
-/** /teams/[id] — TM-01 Overview (T3). */
+/** TM-01 · Team overview: /teams/[id] (inside the team gate). */
 export default function TeamOverviewPage() {
-  return <TeamModulePlaceholder module="overview" />;
+  return <TeamOverviewScreen />;
 }

@@ -3,7 +3,12 @@ import { clearAt, createMockTeams, teamCapabilities } from "./mock-teams";
 
 const respond = <T,>(value: T) => Promise.resolve(structuredClone(value));
 const OPENABLE = new Set(["website-redesign", "planner-app", "brand-refresh", "mobile-onboarding", "spring-campaign"]);
-const make = () => createMockTeams({ respond, canOpenProject: (id) => OPENABLE.has(id) });
+const make = () =>
+  createMockTeams({
+    respond,
+    findProject: (id) =>
+      OPENABLE.has(id) ? { id, name: id, percent: 50, health: "on-track", lifecycle: "active" } : undefined,
+  });
 
 describe("mock teams (TS-01 / TM-00)", () => {
   it("lists my teams; project counts only include projects I can open", async () => {
@@ -97,5 +102,49 @@ describe("mock presence (manual status)", () => {
     expect(Date.parse(clearAt("hour", now, "2026-10-13")!)).toBe(Date.parse(now) + 3_600_000);
     expect(clearAt("week", now, "2026-10-13")).toBe("2026-10-16T23:59:00+03:30");
     expect(clearAt("week", now, "2026-10-16")).toBe("2026-10-16T23:59:00+03:30");
+  });
+});
+
+describe("mock team overview repos (TM-01)", () => {
+  it("members carry team role and job title; the header lead comes from the summary", async () => {
+    const { teams } = make();
+    const members = await teams.members("design");
+    expect(members.find((member) => member.person.id === "harry")).toMatchObject({ role: "lead", title: "Head of Design" });
+    expect(members.find((member) => member.person.id === "me")?.role).toBe("member");
+    const access = await teams.access("design");
+    expect(access.status === "ok" && access.team.lead?.name).toBe("Harry B.");
+  });
+
+  it("lists only linked projects the viewer can open", async () => {
+    const { teams } = make();
+    expect((await teams.projects("design")).map((project) => project.id)).toEqual([
+      "website-redesign",
+      "planner-app",
+      "brand-refresh",
+    ]);
+  });
+
+  it("booking is refused to Viewers; private thanks never reach the team feed", async () => {
+    const { teamCapacity, teamRecognition } = make();
+    expect(await teamCapacity.week("design")).toHaveLength(8);
+    await expect(teamCapacity.week("growth")).rejects.toMatchObject({ code: "forbidden" });
+    const thanks = await teamRecognition.recent("design");
+    expect(thanks.every((item) => item.visibility === "team")).toBe(true);
+  });
+
+  it("shares 'now working on' only when the person opted in", async () => {
+    const { presence } = make();
+    const list = await presence.list("design");
+    expect(list.find((entry) => entry.personId === "sarah")?.workingOn).toBe("Icon set v2 · review");
+    expect(list.find((entry) => entry.personId === "harry")?.workingOn).toBeNull();
+  });
+
+  it("team work includes project tasks only when asked and only for openable projects", async () => {
+    const { teamTasks } = make();
+    const all = await teamTasks.list("design");
+    expect(all.some((task) => task.source.kind === "project")).toBe(true);
+    const teamOnly = await teamTasks.list("design", { includeProjects: false });
+    expect(teamOnly.every((task) => task.source.kind === "team")).toBe(true);
+    expect(await teamTasks.list("design", { status: "blocked" })).toHaveLength(3);
   });
 });

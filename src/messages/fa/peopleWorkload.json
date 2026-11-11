@@ -1,0 +1,10 @@
+{
+  "legend": "راهنمای وضعیت",
+  "rows": "بار کاری این هفته",
+  "nowWorkingOn": "در حال کار روی",
+  "notShared": "به اشتراک گذاشته نشده",
+  "thisWeek": "این هفته · {percent} رزرو",
+  "bookedOf": "{name}، رزرو این هفته",
+  "more": "+{n}",
+  "moreLabel": "{n} نفر دیگر"
+}

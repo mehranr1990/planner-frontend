@@ -1,5 +1,15 @@
 import type {
   SetPresenceInput,
+  TeamActivity,
+  TeamCapacityEntry,
+  TeamCheckinSummary,
+  TeamEvent,
+  TeamMember,
+  TeamProjectLink,
+  TeamTask,
+  TeamTaskStatus,
+  TeamThanks,
+  TeamWeekPlan,
   TeamAccess,
   TeamDirectory,
   TeamInvitation,
@@ -30,6 +40,53 @@ export interface TeamRepository {
   access(id: string, options?: TeamAccessOptions): Promise<TeamAccess>;
   /** Owner/Admin: archived → active. */
   restore(id: string): Promise<TeamSummary>;
+  /** Members with team role and job title (A–Z is the UI's job). */
+  members(id: string): Promise<readonly TeamMember[]>;
+  /** Linked projects the viewer can open — never a hidden one or a hidden count. */
+  projects(id: string): Promise<readonly TeamProjectLink[]>;
+}
+
+/** planRepo */
+export interface TeamPlanRepository {
+  /** The week plan summary (week = Saturday; defaults to the current week). */
+  week(teamId: string, week?: string): Promise<TeamWeekPlan>;
+}
+
+/** capacityRepo — Viewers get "forbidden" (OPEN(DECISIONS): Viewer booking default off). */
+export interface TeamCapacityRepository {
+  week(teamId: string, week?: string, options?: TeamAccessOptions): Promise<readonly TeamCapacityEntry[]>;
+}
+
+/** teamCalendarRepo */
+export interface TeamCalendarRepository {
+  /** Team events between two days (inclusive). */
+  range(teamId: string, from: string, to: string): Promise<readonly TeamEvent[]>;
+}
+
+/** activityRepo */
+export interface TeamActivityRepository {
+  list(teamId: string, limit?: number): Promise<readonly TeamActivity[]>;
+}
+
+/** checkinRepo (Overview tab: replies count only). */
+export interface TeamCheckinRepository {
+  summary(teamId: string): Promise<TeamCheckinSummary>;
+}
+
+/** recognitionRepo (Overview tab: team-visible thanks only). */
+export interface TeamRecognitionRepository {
+  recent(teamId: string, limit?: number): Promise<readonly TeamThanks[]>;
+}
+
+export interface TeamTaskQuery {
+  /** T5: project tasks of members in projects the viewer can open (default on). */
+  includeProjects?: boolean;
+  status?: TeamTaskStatus;
+}
+
+/** teamTaskRepo */
+export interface TeamTaskRepository {
+  list(teamId: string, query?: TeamTaskQuery): Promise<readonly TeamTask[]>;
 }
 
 /** teamInvitationRepo */
@@ -57,4 +114,11 @@ export interface TeamRepositories {
   teams: TeamRepository;
   teamInvitations: TeamInvitationRepository;
   presence: PresenceRepository;
+  teamPlans: TeamPlanRepository;
+  teamCapacity: TeamCapacityRepository;
+  teamCalendar: TeamCalendarRepository;
+  teamActivity: TeamActivityRepository;
+  teamCheckins: TeamCheckinRepository;
+  teamRecognition: TeamRecognitionRepository;
+  teamTasks: TeamTaskRepository;
 }

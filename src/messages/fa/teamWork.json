@@ -1,0 +1,19 @@
+{
+  "title": "کارها",
+  "status": {
+    "todo": "برای انجام",
+    "in-progress": "در حال انجام",
+    "review": "بازبینی",
+    "blocked": "مسدود",
+    "done": "انجام‌شده"
+  },
+  "priority": {
+    "urgent": "فوری",
+    "high": "بالا",
+    "medium": "متوسط",
+    "low": "کم"
+  },
+  "source": {
+    "team": "تیم"
+  }
+}

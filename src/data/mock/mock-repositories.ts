@@ -1,6 +1,6 @@
 import { personalFixtures } from "@/fixtures/personal";
 import { createMockProjects, projectRepositories } from "./mock-projects";
-import { createMockTeams } from "./mock-teams";
+import { createMockTeams, teamRepositories } from "./mock-teams";
 import type { MockProjectsStore } from "./mock-projects";
 import type { TeamRepositories } from "../team-repositories";
 import type { SampleFinance } from "@/fixtures/personal/finance";
@@ -177,13 +177,22 @@ function projectsAndTeams(
   projects: MockProjectsStore,
   options: { respond<T>(value: T): Promise<T>; today: string; now: string },
 ): ReturnType<typeof projectRepositories> & TeamRepositories {
-  const teams = createMockTeams({ ...options, canOpenProject: (id) => projects.findProject(id) !== undefined });
-  return {
-    ...projectRepositories(projects),
-    teams: teams.teams,
-    teamInvitations: teams.teamInvitations,
-    presence: teams.presence,
-  };
+  const teams = createMockTeams({
+    ...options,
+    findProject: (id) => {
+      const project = projects.findProject(id);
+      return project
+        ? {
+            id: project.id,
+            name: project.name,
+            percent: project.progress.percent,
+            health: project.health,
+            lifecycle: project.lifecycle,
+          }
+        : undefined;
+    },
+  });
+  return { ...projectRepositories(projects), ...teamRepositories(teams) };
 }
 
 export function createMockRepositories({ fixtures, latencyMs = 0 }: MockRepositoriesOptions = {}): Repositories {

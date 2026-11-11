@@ -1,0 +1,19 @@
+{
+  "title": "Work",
+  "status": {
+    "todo": "To do",
+    "in-progress": "In progress",
+    "review": "Review",
+    "blocked": "Blocked",
+    "done": "Done"
+  },
+  "priority": {
+    "urgent": "Urgent",
+    "high": "High",
+    "medium": "Medium",
+    "low": "Low"
+  },
+  "source": {
+    "team": "Team"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "legend": "Status legend",
+  "rows": "Workload this week",
+  "nowWorkingOn": "Now working on",
+  "notShared": "Not shared",
+  "thisWeek": "This week · {percent} booked",
+  "bookedOf": "{name}, booked this week",
+  "more": "+{n}",
+  "moreLabel": "{n} more people"
+}

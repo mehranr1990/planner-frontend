@@ -6,7 +6,7 @@ import { useRepositories } from "./provider";
 import { afterHydration } from "./queries";
 import { teamKeys } from "./query-keys";
 import type { SetPresenceInput } from "./team-domain";
-import type { TeamAccessOptions } from "./team-repositories";
+import type { TeamAccessOptions, TeamTaskQuery } from "./team-repositories";
 
 /*
  * React Query hooks for Teams (Phase 3). The UI never fetches: it reads these
@@ -119,4 +119,57 @@ export function usePresenceActions(teamId: string) {
     set: useMutation({ mutationFn: (input: SetPresenceInput) => presence.set(teamId, input), onSuccess: refresh }),
     clear: useMutation({ mutationFn: () => presence.clear(teamId), onSuccess: refresh }),
   };
+}
+
+// ── Inside a team (TM-01) ────────────────────────────────────────────────
+
+function useTeamQuery<T>(teamId: string, part: string, fn: () => Promise<T>, enabled = true, ...rest: unknown[]) {
+  const hydrated = useIsClient();
+  return afterHydration(useQuery({ queryKey: teamScoped(teamId, part, ...rest), queryFn: fn, enabled }), hydrated);
+}
+
+export function useTeamMembers(teamId: string) {
+  const { teams } = useRepositories();
+  return useTeamQuery(teamId, "members", () => teams.members(teamId));
+}
+
+export function useTeamProjects(teamId: string) {
+  const { teams } = useRepositories();
+  return useTeamQuery(teamId, "projects", () => teams.projects(teamId));
+}
+
+export function useTeamWeekPlan(teamId: string) {
+  const { teamPlans } = useRepositories();
+  return useTeamQuery(teamId, "plan", () => teamPlans.week(teamId));
+}
+
+/** This week's booking; only requested when the viewer may see it. */
+export function useTeamCapacity(teamId: string, enabled: boolean) {
+  const { teamCapacity } = useRepositories();
+  return useTeamQuery(teamId, "capacity", () => teamCapacity.week(teamId), enabled);
+}
+
+export function useTeamCalendarRange(teamId: string, from: string, to: string) {
+  const { teamCalendar } = useRepositories();
+  return useTeamQuery(teamId, "calendar", () => teamCalendar.range(teamId, from, to), true, from, to);
+}
+
+export function useTeamActivity(teamId: string, limit?: number) {
+  const { teamActivity } = useRepositories();
+  return useTeamQuery(teamId, "activity", () => teamActivity.list(teamId, limit), true, limit);
+}
+
+export function useTeamCheckinSummary(teamId: string) {
+  const { teamCheckins } = useRepositories();
+  return useTeamQuery(teamId, "checkins", () => teamCheckins.summary(teamId));
+}
+
+export function useTeamRecognition(teamId: string, limit?: number) {
+  const { teamRecognition } = useRepositories();
+  return useTeamQuery(teamId, "recognition", () => teamRecognition.recent(teamId, limit), true, limit);
+}
+
+export function useTeamTasks(teamId: string, query: TeamTaskQuery = {}) {
+  const { teamTasks } = useRepositories();
+  return useTeamQuery(teamId, "tasks", () => teamTasks.list(teamId, query), true, query);
 }

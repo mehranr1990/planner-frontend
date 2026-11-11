@@ -1,5 +1,16 @@
 import {
+  capacityFixtures,
+  checkinSummaryFixtures,
+  teamActivityFixtures,
+  teamEventFixtures,
+  teamTaskFixtures,
+  thanksFixtures,
+  weekPlanFixtures,
+  workingOnFixtures,
+} from "@/fixtures/team-work";
+import {
   invitedTeamFixtures,
+  teamJobTitles,
   presenceFixtures,
   recentTeamIds,
   removedTeamIds,
@@ -13,8 +24,11 @@ import type {
   TeamCapabilities,
   TeamInvitation,
   TeamLifecycle,
+  TeamMember,
   TeamModule,
   TeamPresence,
+  TeamProjectLink,
+  TeamTask,
   TeamRole,
   TeamSummary,
 } from "../team-domain";
@@ -73,8 +87,11 @@ export interface MockTeamsOptions {
   /** Mock "today" ("YYYY-MM-DD") and now (instant). */
   today?: string;
   now?: string;
-  /** Whether the viewer can open a project (Projects mock); team membership never grants it. */
-  canOpenProject?: (projectId: string) => boolean;
+  /**
+   * A linked project as the viewer may see it (Projects mock), or undefined
+   * when the viewer cannot open it — team membership never grants access.
+   */
+  findProject?: (projectId: string) => TeamProjectLink | undefined;
 }
 
 export interface MockTeamsStore extends TeamRepositories {
@@ -99,15 +116,17 @@ export function createMockTeams({
   respond,
   today = "2026-10-13",
   now = "2026-10-13T14:35:00+03:30",
-  canOpenProject = () => true,
+  findProject = (id) => ({ id, name: id, percent: 0, health: "on-track", lifecycle: "active" }),
 }: MockTeamsOptions): MockTeamsStore {
+  const canOpenProject = (id: string) => findProject(id) !== undefined;
+  const tasks: TeamTask[] = structuredClone([...teamTaskFixtures]);
   const teams: TeamFixture[] = structuredClone([...teamFixtures]);
   const invitations: TeamInvitation[] = structuredClone([...teamInvitationFixtures]);
   const recent: string[] = [...recentTeamIds];
   const presence = new Map<string, TeamPresence[]>(
     Object.entries(presenceFixtures).map(([teamId, seeds]) => [
       teamId,
-      seeds.map((seed) => ({ allTeams: false, clearAfter: seed.until ? "today" : "never", ...seed })),
+      seeds.map((seed) => ({ allTeams: false, clearAfter: seed.until ? "today" : "never", workingOn: null, ...seed })),
     ]),
   );
 
@@ -120,12 +139,16 @@ export function createMockTeams({
     return {
       ...(shown as Omit<TeamFixture, "linkedProjectIds" | "leadId">),
       projectCount: openable(team).length,
+      lead: team.members.find((person) => person.id === team.leadId) ?? null,
       restorable: teamCapabilities(team.role, team.lifecycle).restore,
     };
   };
   const expired = (entry: TeamPresence) => entry.until !== null && Date.parse(entry.until) <= Date.parse(now);
-  const visible = (entry: TeamPresence): TeamPresence =>
-    expired(entry) ? { ...entry, status: null, note: "", until: null } : { ...entry };
+  const visible = (entry: TeamPresence): TeamPresence => {
+    // "Now working on" leaves the server only when the person shares it.
+    const workingOn = entry.shareWorkingOn ? (workingOnFixtures[entry.personId] ?? null) : null;
+    return expired(entry) ? { ...entry, status: null, note: "", until: null, workingOn } : { ...entry, workingOn };
+  };
   const memberOf = (teamId: string) => {
     const team = find(teamId);
     if (!team) throw new RepositoryError("not-found", `Team ${teamId} not found`);
@@ -135,7 +158,16 @@ export function createMockTeams({
     const list = presence.get(teamId) ?? [];
     let entry = list.find((item) => item.personId === "me");
     if (!entry) {
-      entry = { personId: "me", status: null, note: "", until: null, clearAfter: "never", allTeams: false, shareWorkingOn: false };
+      entry = {
+        personId: "me",
+        status: null,
+        note: "",
+        until: null,
+        clearAfter: "never",
+        allTeams: false,
+        shareWorkingOn: false,
+        workingOn: null,
+      };
       list.push(entry);
       presence.set(teamId, list);
     }
@@ -176,6 +208,80 @@ export function createMockTeams({
         team.lifecycle = "active";
         delete team.lifecycleAt;
         return respond(summary(team));
+      },
+      async members(id) {
+        const team = memberOf(id);
+        return respond(
+          team.members.map((person): TeamMember => ({
+            person,
+            role: person.id === "me" ? team.role : person.id === team.leadId ? "lead" : "member",
+            title: teamJobTitles[person.id] ?? "",
+          })),
+        );
+      },
+      async projects(id) {
+        const team = memberOf(id);
+        return respond(
+          team.linkedProjectIds.map((projectId) => findProject(projectId)).filter((link) => link !== undefined),
+        );
+      },
+    },
+    teamPlans: {
+      async week(teamId) {
+        memberOf(teamId);
+        const plan = weekPlanFixtures[teamId];
+        if (!plan) throw new RepositoryError("not-found", "No plan");
+        return respond(plan);
+      },
+    },
+    teamCapacity: {
+      async week(teamId, _week, options = {}) {
+        const team = memberOf(teamId);
+        const role = options.previewRole ?? team.role;
+        // OPEN(DECISIONS): whether Viewers may see this-week booking — default off.
+        if (!teamCapabilities(role, team.lifecycle).seeBooking) throw new RepositoryError("forbidden", "No booking rights");
+        return respond(capacityFixtures[teamId] ?? []);
+      },
+    },
+    teamCalendar: {
+      async range(teamId, from, to) {
+        memberOf(teamId);
+        return respond((teamEventFixtures[teamId] ?? []).filter((event) => event.day >= from && event.day <= to));
+      },
+    },
+    teamActivity: {
+      async list(teamId, limit = 10) {
+        memberOf(teamId);
+        return respond((teamActivityFixtures[teamId] ?? []).slice(0, limit));
+      },
+    },
+    teamCheckins: {
+      async summary(teamId) {
+        memberOf(teamId);
+        const summary = checkinSummaryFixtures[teamId];
+        if (!summary) throw new RepositoryError("not-found", "No check-in");
+        return respond(summary);
+      },
+    },
+    teamRecognition: {
+      async recent(teamId, limit = 5) {
+        memberOf(teamId);
+        // Private thanks stay between writer and recipient: never on the team feed.
+        return respond((thanksFixtures[teamId] ?? []).filter((thanks) => thanks.visibility === "team").slice(0, limit));
+      },
+    },
+    teamTasks: {
+      async list(teamId, query = {}) {
+        memberOf(teamId);
+        const includeProjects = query.includeProjects ?? true;
+        return respond(
+          tasks.filter(
+            (task) =>
+              task.teamId === teamId &&
+              (task.source.kind === "team" || (includeProjects && canOpenProject(task.source.projectId))) &&
+              (query.status === undefined || task.status === query.status),
+          ),
+        );
       },
     },
     teamInvitations: {
@@ -227,5 +333,21 @@ export function createMockTeams({
         return respond(visible(entry));
       },
     },
+  };
+}
+
+/** The repository surface of the team mock (mock-only helpers stay behind). */
+export function teamRepositories(store: MockTeamsStore): TeamRepositories {
+  return {
+    teams: store.teams,
+    teamInvitations: store.teamInvitations,
+    presence: store.presence,
+    teamPlans: store.teamPlans,
+    teamCapacity: store.teamCapacity,
+    teamCalendar: store.teamCalendar,
+    teamActivity: store.teamActivity,
+    teamCheckins: store.teamCheckins,
+    teamRecognition: store.teamRecognition,
+    teamTasks: store.teamTasks,
   };
 }

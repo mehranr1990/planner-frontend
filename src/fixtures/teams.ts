@@ -43,7 +43,7 @@ export const teamJobTitles: Readonly<Record<string, string>> = {
 };
 
 /** A team fixture plus the projects linked to it (some the viewer cannot open: never counted). */
-export interface TeamFixture extends Omit<TeamSummary, "projectCount" | "restorable"> {
+export interface TeamFixture extends Omit<TeamSummary, "projectCount" | "restorable" | "lead"> {
   linkedProjectIds: readonly string[];
   /** The team lead shown in the header ("Lead · Harry B."). */
   leadId: string;
@@ -167,7 +167,8 @@ export const invitedTeamFixtures: Readonly<Record<string, TeamFixture>> = {
   },
 };
 
-type PresenceSeed = Omit<TeamPresence, "allTeams" | "clearAfter"> & Partial<Pick<TeamPresence, "allTeams" | "clearAfter">>;
+type PresenceSeed = Omit<TeamPresence, "allTeams" | "clearAfter" | "workingOn"> &
+  Partial<Pick<TeamPresence, "allTeams" | "clearAfter">>;
 
 /** Manual statuses per team (set by each person; never inferred). */
 export const presenceFixtures: Readonly<Record<string, readonly PresenceSeed[]>> = {

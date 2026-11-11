@@ -6,5 +6,77 @@
     "away": "Away",
     "off": "Off today",
     "none": "No status"
+  },
+  "openPlan": "Open week plan",
+  "week": {
+    "title": "This week",
+    "done": "planned tasks done",
+    "label": "This week · W{n}",
+    "blocked": "{n} blocked",
+    "carried": "{n} carried over from W{week}",
+    "unplanned": "{n} unplanned added",
+    "focus": "Focus: <b>{items}</b> · set by {name} on {day}",
+    "days": "Done per day",
+    "day": "{day}: {done} of {planned} done",
+    "today": "today"
+  },
+  "header": {
+    "lead": "Lead · {name}",
+    "invite": "Invite",
+    "newTask": "New task"
+  },
+  "people": {
+    "title": "People & workload",
+    "footnote": "Sorted A–Z. Status is set by each person. Workload = booked estimates of team + project work this week ÷ capacity — never a ranking. “Now working on” shows only if that person turned on Share in their status.",
+    "message": "Message",
+    "messageSoon": "Messages arrive in a later phase",
+    "you": "You",
+    "tapToChange": "tap to change"
+  },
+  "work": {
+    "label": "Team work",
+    "inProgress": "In progress",
+    "review": "Review",
+    "blocked": "Blocked",
+    "empty": "Nothing here right now.",
+    "due": "Due {date}",
+    "progress": "{title}, checklist"
+  },
+  "calendar": {
+    "title": "Team calendar",
+    "empty": "No team events this week."
+  },
+  "projects": {
+    "title": "Projects",
+    "count": "{n} you can open",
+    "empty": "No linked projects you can open.",
+    "progress": "{project} progress"
+  },
+  "tabs": {
+    "label": "Team updates",
+    "activity": "Activity",
+    "checkins": "Check-ins",
+    "recognition": "Recognition"
+  },
+  "activity": {
+    "moved": "<b>{name}</b> moved {subject} to {status}",
+    "flagged": "<b>{name}</b> flagged {subject} as blocked",
+    "shared": "<b>{name}</b> shared {subject}",
+    "completed": "<b>{name}</b> completed {subject}",
+    "created": "<b>{name}</b> created {subject}",
+    "empty": "No activity yet."
+  },
+  "checkins": {
+    "replied": "{replied} of {total} replied · closes {day}",
+    "title": "Weekly check-in",
+    "reply": "Reply",
+    "open": "Open check-ins",
+    "sent": "Your check-in is sent."
+  },
+  "recognition": {
+    "thanked": "<b>{from}</b> thanked <b>{to}</b>",
+    "team": "Team",
+    "empty": "No thanks yet.",
+    "open": "Open recognition"
   }
 }
