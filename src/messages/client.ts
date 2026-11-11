@@ -49,6 +49,7 @@ import enTeamNew from "./en/teamNew.json";
 import enTeamInvite from "./en/teamInvite.json";
 import enTeamStatus from "./en/teamStatus.json";
 import enTeamCal from "./en/teamCal.json";
+import enPlanning from "./en/planning.json";
 import faAccess from "./fa/access.json";
 import faAuth from "./fa/auth.json";
 import faBrainDump from "./fa/brainDump.json";
@@ -99,6 +100,7 @@ import faTeamNew from "./fa/teamNew.json";
 import faTeamInvite from "./fa/teamInvite.json";
 import faTeamStatus from "./fa/teamStatus.json";
 import faTeamCal from "./fa/teamCal.json";
+import faPlanning from "./fa/planning.json";
 
 /*
  * The namespaces client components read outside the styleguide. The root
@@ -160,6 +162,7 @@ const en = {
   TeamInvite: enTeamInvite,
   TeamStatus: enTeamStatus,
   TeamCal: enTeamCal,
+  Planning: enPlanning,
 };
 
 export type ClientMessages = typeof en;
@@ -215,6 +218,7 @@ const fa: ClientMessages = {
   TeamInvite: faTeamInvite,
   TeamStatus: faTeamStatus,
   TeamCal: faTeamCal,
+  Planning: faPlanning,
 };
 
 export const clientMessages: Record<Locale, ClientMessages> = { en, fa };

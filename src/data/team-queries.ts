@@ -7,10 +7,11 @@ import { afterHydration } from "./queries";
 import { RepositoryError } from "./repositories";
 import { taskKeys, teamKeys } from "./query-keys";
 import type { DeclineReason } from "./project-domain";
-import type { SetPresenceInput, TeamRsvp, TeamTaskStatus } from "./team-domain";
+import type { CarryOverDecision, SetPresenceInput, TeamRsvp, TeamTaskStatus } from "./team-domain";
 import type {
   NewTeamInput,
   NewTeamTaskInput,
+  PlanTaskInput,
   TeamAccessOptions,
   TeamEventInput,
   TeamInviteInput,
@@ -147,9 +148,10 @@ export function useTeamProjects(teamId: string) {
   return useTeamQuery(teamId, "projects", () => teams.projects(teamId));
 }
 
-export function useTeamWeekPlan(teamId: string) {
+/** The week plan summary; `week` (Saturday) defaults to the current week. */
+export function useTeamWeekPlan(teamId: string, week?: string) {
   const { teamPlans } = useRepositories();
-  return useTeamQuery(teamId, "plan", () => teamPlans.week(teamId));
+  return useTeamQuery(teamId, "plan", () => teamPlans.week(teamId, week), true, week ?? "current");
 }
 
 /** This week's booking; only requested when the viewer may see it. */
@@ -290,6 +292,45 @@ export function useTeamEventActions(teamId: string) {
     }),
     rsvp: useMutation({
       mutationFn: ({ eventId, rsvp }: { eventId: string; rsvp: TeamRsvp }) => teamEvents.rsvp(eventId, rsvp),
+      onSuccess: refresh,
+    }),
+  };
+}
+
+// ── Weekly planning (TM-04) ──────────────────────────────────────────────
+
+export function useTeamUnplanned(teamId: string, preview: TeamAccessOptions = {}) {
+  const { teamTasks } = useRepositories();
+  return useTeamQuery(teamId, "tasks", () => teamTasks.unplanned(teamId, preview), true, "unplanned", preview);
+}
+
+export function useTeamWeekReview(teamId: string, week: string) {
+  const { teamPlans } = useRepositories();
+  return useTeamQuery(teamId, "review", () => teamPlans.review(teamId, week), true, week);
+}
+
+/** Plan + assign, publish, focus and carry-over decisions; every success refreshes the team's plan and work. */
+export function useTeamPlanActions(teamId: string) {
+  const { teamPlans } = useRepositories();
+  const client = useQueryClient();
+  const refresh = () => {
+    void client.invalidateQueries({ queryKey: teamKeys.scope(teamId) });
+    // Accepted assignments project into Personal Tasks.
+    void client.invalidateQueries({ queryKey: taskKeys.all });
+  };
+  return {
+    plan: useMutation({
+      mutationFn: ({ taskId, ...input }: { taskId: string } & PlanTaskInput) => teamPlans.plan(teamId, taskId, input),
+      onSettled: refresh,
+    }),
+    publish: useMutation({ mutationFn: (week: string) => teamPlans.publish(teamId, week), onSuccess: refresh }),
+    setFocus: useMutation({
+      mutationFn: ({ week, focus }: { week: string; focus: readonly string[] }) => teamPlans.setFocus(teamId, week, focus),
+      onSuccess: refresh,
+    }),
+    decide: useMutation({
+      mutationFn: ({ week, taskId, decision }: { week: string; taskId: string; decision: CarryOverDecision }) =>
+        teamPlans.decide(teamId, week, taskId, decision),
       onSuccess: refresh,
     }),
   };

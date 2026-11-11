@@ -1,0 +1,86 @@
+{
+  "title": "Planning",
+  "subtitle": "Weekly plan",
+  "tabs": { "label": "Planning view", "plan": "This week", "review": "Review last week" },
+  "week": {
+    "label": "Week",
+    "previous": "W{n}",
+    "current": "W{n} · {range}",
+    "next": "W{n}"
+  },
+  "focus": "Week focus",
+  "focusBy": "{name} · Lead",
+  "focusEmpty": "No focus set for this week",
+  "editFocus": "Edit week focus",
+  "focusHint": "One line per focus, up to 3.",
+  "save": "Save",
+  "cancel": "Cancel",
+  "toPlan": "To plan",
+  "toPlanTotal": "{n} · {hours}h",
+  "toPlanEmpty": "Nothing waiting to be planned.",
+  "filterCarried": "Carried over {n}",
+  "filterUnplanned": "Unplanned {n}",
+  "carried": "carried over",
+  "pending": "Pending",
+  "hours": "{n}h",
+  "booked": "{booked}/{capacity}h",
+  "bookedLabel": "{booked} of {capacity} hours booked",
+  "overCapacity": "Over capacity",
+  "dropFor": "Drop to plan for {name}",
+  "planFor": "Plan for…",
+  "planForTask": "Plan for… {title}",
+  "backToPlan": "Back to To plan",
+  "readOnly": "You can plan your own tasks; the rest of the plan is read-only.",
+  "summary": {
+    "draft": "W{n} plan · draft",
+    "published": "W{n} plan · published",
+    "tasks": "tasks · {hours}h of {capacity}h",
+    "overCapacity": "Over capacity",
+    "unassigned": "Unassigned in plan",
+    "carriedFrom": "Carried over from W{n}",
+    "none": "None",
+    "note": "Publishing notifies the team and adds planned tasks to “In this week’s plan”. Assignees still accept or decline.",
+    "publishedAt": "W{n} published {date} by {name}"
+  },
+  "publish": "Publish plan",
+  "openWork": "Open week work",
+  "openMine": "Open my tasks",
+  "empty": {
+    "title": "Nothing planned yet",
+    "body": "Drag tasks from “To plan” onto a person, or start from last week’s carry-overs.",
+    "action": "Start from W{n}"
+  },
+  "review": {
+    "planned": "W{n} planned done",
+    "carried": "carried over",
+    "unplanned": "unplanned added",
+    "accuracy": "estimate accuracy",
+    "unfinished": "Unfinished last week",
+    "decision": {
+      "this-week": "→ W{n}",
+      "to-plan": "→ backlog",
+      "close": "Closed",
+      "none": "Decide"
+    },
+    "decide": "Decide for {title}",
+    "options": {
+      "this-week": "Move to this week",
+      "to-plan": "Back to To plan",
+      "close": "Close"
+    },
+    "allDone": "Everything planned last week is done.",
+    "missing": "No review for this week.",
+    "note": "Weekly review = read-only summary of last week; each unfinished task: move to this week, back to To plan, or close. Numbers are task counts, never per-person scores."
+  },
+  "toast": {
+    "planned": "{title} planned for {name}",
+    "unplanned": "{title} is back in To plan",
+    "published": "Plan published",
+    "focusSaved": "Week focus saved",
+    "decided": "Saved",
+    "forbidden": "You can plan only your own tasks.",
+    "projectAssigned": "Project tasks are assigned in their project.",
+    "conflict": "This task changed. Try again.",
+    "failed": "Couldn’t save. Try again."
+  }
+}

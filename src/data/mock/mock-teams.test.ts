@@ -175,3 +175,37 @@ describe("mock team tasks (TM-02)", () => {
     await expect(teamTasks.create("growth", { title: "Z" })).rejects.toMatchObject({ code: "forbidden" });
   });
 });
+
+describe("mock team calendar + planning (TM-03 / TM-04)", () => {
+  it("events: RSVP and time off; overlays hide projects the viewer cannot open", async () => {
+    const { teamEvents, teamCalendar } = make();
+    const answered = await teamEvents.rsvp("ev-critique", "going");
+    expect(answered.myRsvp).toBe("going");
+    const off = await teamEvents.create("design", { kind: "time-off", title: "", day: "2026-10-12", time: "09:00", end: "10:00" });
+    expect(off).toMatchObject({ personId: "me", time: null, invitees: [] });
+    await expect(teamEvents.create("growth", { kind: "meeting", title: "X", day: "2026-10-12", time: null, end: null })).rejects.toMatchObject({
+      code: "forbidden",
+    });
+    const overlays = await teamCalendar.overlays("design", "2026-10-10", "2026-10-16");
+    expect(overlays.map((item) => item.title)).toContain("Client call");
+    expect(overlays.map((item) => item.title)).not.toContain("Partner sync");
+  });
+
+  it("plan + assign: Members only their own; Lead assigns others as Pending; carry-over decisions", async () => {
+    const { teamPlans, teamTasks } = make();
+    const toPlan = await teamTasks.unplanned("design");
+    const guide = toPlan.find((task) => task.id === "t-style-guide")!;
+    await expect(teamPlans.plan("design", guide.id, { week: "2026-10-10", assigneeId: "katy", revision: guide.revision })).rejects.toMatchObject({
+      code: "forbidden",
+    });
+    const mine = await teamPlans.plan("design", guide.id, { week: "2026-10-10", assigneeId: "me", revision: guide.revision });
+    expect(mine).toMatchObject({ planWeek: "2026-10-10", carriedFrom: null, assignees: [{ state: "accepted" }] });
+    const widgets = (await teamTasks.list("mobile")).find((task) => task.id === "m-widgets")!;
+    const moved = await teamPlans.plan("mobile", widgets.id, { week: "2026-10-10", assigneeId: "kian", revision: widgets.revision });
+    expect(moved.assignees[0]).toMatchObject({ person: { id: "kian" }, state: "pending" });
+    const published = await teamPlans.publish("mobile", "2026-10-17");
+    expect(published).toMatchObject({ status: "published", weekNumber: 43 });
+    await expect(teamPlans.decide("design", "2026-10-03", "t-proto-tests", "close")).rejects.toMatchObject({ code: "forbidden" });
+    expect((await teamPlans.review("design", "2026-10-03")).plannedDone).toBe(14);
+  });
+});

@@ -83,6 +83,9 @@ export const weekPlanFixtures: Readonly<Record<string, TeamWeekPlan>> = {
     focus: ["Checkout redesign hand-off", "icon set v2"],
     focusBy: harry,
     focusAt: "2026-10-10T09:10:00+03:30",
+    status: "draft",
+    publishedAt: null,
+    publishedBy: null,
   },
   mobile: {
     week: CURRENT_WEEK,
@@ -103,6 +106,9 @@ export const weekPlanFixtures: Readonly<Record<string, TeamWeekPlan>> = {
     focus: ["Release build 2.4"],
     focusBy: me,
     focusAt: "2026-10-10T09:00:00+03:30",
+    status: "published",
+    publishedAt: "2026-10-10T09:12:00+03:30",
+    publishedBy: me,
   },
   growth: {
     week: CURRENT_WEEK,
@@ -123,6 +129,9 @@ export const weekPlanFixtures: Readonly<Record<string, TeamWeekPlan>> = {
     focus: [],
     focusBy: null,
     focusAt: null,
+    status: "published",
+    publishedAt: "2026-10-10T10:00:00+03:30",
+    publishedBy: lena,
   },
 };
 

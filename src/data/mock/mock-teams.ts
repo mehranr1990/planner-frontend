@@ -1,4 +1,5 @@
 import { teamEventExtras, teamProjectEventFixtures } from "@/fixtures/team-calendar";
+import { planningTaskFixtures, weekReviewFixtures } from "@/fixtures/team-planning";
 import {
   capacityFixtures,
   checkinSummaryFixtures,
@@ -37,6 +38,8 @@ import type {
   TeamTask,
   TeamTaskActivity,
   TeamTaskComment,
+  TeamWeekPlan,
+  TeamWeekReview,
   TeamRole,
   TeamSummary,
 } from "../team-domain";
@@ -155,7 +158,42 @@ export function createMockTeams({
   );
   let commentCounter = 0;
   const canOpenProject = (id: string) => findProject(id) !== undefined;
-  const tasks: TeamTask[] = structuredClone([...teamTaskFixtures]);
+  const tasks: TeamTask[] = structuredClone([...teamTaskFixtures, ...planningTaskFixtures]);
+  // TM-04: plan state per team and week (draft/published, focus) and last week's reviews.
+  const planStates = new Map<string, Pick<TeamWeekPlan, "status" | "publishedAt" | "publishedBy" | "focus" | "focusBy" | "focusAt">>();
+  const reviews = new Map<string, TeamWeekReview>(Object.entries(structuredClone(weekReviewFixtures)));
+  const weekPlan = (teamId: string, week?: string): TeamWeekPlan => {
+    const base = weekPlanFixtures[teamId];
+    if (!base) throw new RepositoryError("not-found", "No plan");
+    const target = week ?? base.week;
+    const key = teamId + ":" + target;
+    if (target === base.week) return structuredClone({ ...base, ...planStates.get(key) });
+    const offset = Math.round((Date.parse(target) - Date.parse(base.week)) / (7 * 86_400_000));
+    const planned = tasks.filter((task) => task.teamId === teamId && task.planWeek === target);
+    return structuredClone({
+      week: target,
+      weekNumber: base.weekNumber + offset,
+      planned: planned.length,
+      done: planned.filter((task) => task.status === "done").length,
+      days: [],
+      blocked: planned.filter((task) => task.status === "blocked").length,
+      carriedOver: 0,
+      unplanned: 0,
+      focus: [],
+      focusBy: null,
+      focusAt: null,
+      status: "draft" as const,
+      publishedAt: null,
+      publishedBy: null,
+      ...planStates.get(key),
+    });
+  };
+  const leadOf = (teamId: string) => {
+    const team = memberOf(teamId);
+    if (!teamCapabilities(team.role, team.lifecycle).editWeekFocus) throw new RepositoryError("forbidden", "Lead+ only");
+    return team;
+  };
+  const meIn = (teamId: string): TeamPerson => memberOf(teamId).members.find((person) => person.id === "me")!;
   let taskCounter = 0;
   const bump = (task: TeamTask) => {
     task.revision += 1;
@@ -376,11 +414,79 @@ export function createMockTeams({
       },
     },
     teamPlans: {
-      async week(teamId) {
+      async week(teamId, week) {
         memberOf(teamId);
-        const plan = weekPlanFixtures[teamId];
-        if (!plan) throw new RepositoryError("not-found", "No plan");
-        return respond(plan);
+        return respond(weekPlan(teamId, week));
+      },
+      async plan(teamId, taskId, input) {
+        const team = memberOf(teamId);
+        const caps = teamCapabilities(team.role, team.lifecycle);
+        const task = tasks.find((item) => item.id === taskId && item.teamId === teamId);
+        if (!task) throw new RepositoryError("not-found", "Task not found");
+        if (task.revision !== input.revision) throw new RepositoryError("conflict", "Stale revision");
+        const holder = task.assignees.find((assignee) => assignee.state !== "declined");
+        const planAny = caps.editWeekFocus;
+        const own = !holder || holder.person.id === "me";
+        // Members plan only their own tasks, and only for themselves.
+        if (!caps.createTask || (!planAny && (!own || (input.assigneeId !== null && input.assigneeId !== "me")))) {
+          throw new RepositoryError("forbidden", "Cannot plan this task");
+        }
+        if (task.source.kind === "project") {
+          // Project tasks keep their project assignment (changed in the project only).
+          if (input.assigneeId !== null && input.assigneeId !== (holder?.person.id ?? null)) {
+            throw new RepositoryError("forbidden", "Project tasks are assigned in their project");
+          }
+        } else if (input.assigneeId === null) {
+          if (input.week !== null) task.assignees = [];
+        } else if (input.assigneeId !== holder?.person.id) {
+          const person = team.members.find((item) => item.id === input.assigneeId);
+          if (!person) throw new RepositoryError("invalid", "Not a member");
+          task.assignees =
+            person.id === "me" ? [{ person, state: "accepted" }] : [{ person, state: "pending", by: meIn(teamId) }];
+        }
+        task.planWeek = input.week;
+        if (input.week !== null) task.carriedFrom = null;
+        bump(task);
+        return respond(withCan(task, team.role, team.lifecycle));
+      },
+      async publish(teamId, week) {
+        leadOf(teamId);
+        const key = teamId + ":" + week;
+        planStates.set(key, { ...weekPlan(teamId, week), status: "published", publishedAt: now, publishedBy: meIn(teamId) });
+        return respond(weekPlan(teamId, week));
+      },
+      async setFocus(teamId, week, focus) {
+        leadOf(teamId);
+        const lines = focus.map((line) => line.trim()).filter(Boolean);
+        if (lines.some((line) => line.length > 80) || lines.length > 3) throw new RepositoryError("invalid", "Focus too long");
+        const key = teamId + ":" + week;
+        planStates.set(key, { ...weekPlan(teamId, week), focus: lines, focusBy: meIn(teamId), focusAt: now });
+        return respond(weekPlan(teamId, week));
+      },
+      async review(teamId, week) {
+        memberOf(teamId);
+        const review = reviews.get(teamId);
+        if (!review || review.week !== week) throw new RepositoryError("not-found", "No review for this week");
+        return respond(structuredClone(review));
+      },
+      async decide(teamId, week, taskId, decision) {
+        leadOf(teamId);
+        const review = reviews.get(teamId);
+        const row = review?.week === week ? review.unfinished.find((item) => item.taskId === taskId) : undefined;
+        const task = tasks.find((item) => item.id === taskId);
+        if (!review || !row || !task) throw new RepositoryError("not-found", "Not an unfinished task of that week");
+        (row as { decision: typeof decision }).decision = decision;
+        task.planWeek = null;
+        task.carriedFrom = decision === "this-week" ? week : null;
+        if (decision === "close") {
+          task.status = "done";
+          task.completedAt = now;
+        } else if (task.status === "done") {
+          task.status = "todo";
+          delete task.completedAt;
+        }
+        bump(task);
+        return respond(structuredClone(review));
       },
     },
     teamCapacity: {
@@ -512,6 +618,22 @@ export function createMockTeams({
                 task.teamId === teamId &&
                 (task.source.kind === "team" || (includeProjects && canOpenProject(task.source.projectId))) &&
                 (query.status === undefined || task.status === query.status),
+            )
+            .map((task) => withCan(task, role, lifecycle)),
+        );
+      },
+      async unplanned(teamId, options = {}) {
+        const team = memberOf(teamId);
+        const role = options.previewRole ?? team.role;
+        const lifecycle: TeamLifecycle = options.previewArchived ? "archived" : team.lifecycle;
+        return respond(
+          tasks
+            .filter(
+              (task) =>
+                task.teamId === teamId &&
+                task.planWeek === null &&
+                task.status !== "done" &&
+                (task.source.kind === "team" || canOpenProject(task.source.projectId)),
             )
             .map((task) => withCan(task, role, lifecycle)),
         );

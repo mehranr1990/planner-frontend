@@ -177,6 +177,28 @@ export interface TeamWeekPlan {
   focus: readonly string[];
   focusBy: TeamPerson | null;
   focusAt: string | null;
+  /** TM-04: a Lead publishes the draft; after publishing the plan can still change (shown in Activity). */
+  status: "draft" | "published";
+  publishedAt: string | null;
+  publishedBy: TeamPerson | null;
+}
+
+/** TM-04 Review last week: what happens to an unfinished task. */
+export type CarryOverDecision = "this-week" | "to-plan" | "close";
+
+export const carryOverDecisions: readonly CarryOverDecision[] = ["this-week", "to-plan", "close"];
+
+/** planRepo.review: last week's read-only summary — task counts, never per-person scores. */
+export interface TeamWeekReview {
+  week: string;
+  weekNumber: number;
+  planned: number;
+  plannedDone: number;
+  carriedOver: number;
+  unplannedAdded: number;
+  /** Estimated ÷ actual hours of done tasks, 0–100. */
+  estimateAccuracy: number;
+  unfinished: readonly { taskId: string; title: string; decision: CarryOverDecision | null }[];
 }
 
 /** capacityRepo.week: booked = estimates of team + project work this week; never Personal data. */
@@ -317,6 +339,8 @@ export interface TeamTask {
   revision: number;
   updatedAt: string;
   completedAt?: string;
+  /** TM-04: the week (Saturday) it was carried over from, when it waits in To plan as a carry-over. */
+  carriedFrom?: string | null;
   /** What the viewer may do (server-computed; project tasks are read-only on team surfaces). */
   can: { edit: boolean; status: boolean };
 }

@@ -17,6 +17,8 @@ import type {
   TeamTaskStatus,
   TeamThanks,
   TeamWeekPlan,
+  TeamWeekReview,
+  CarryOverDecision,
   TeamAccess,
   TeamDirectory,
   TeamInvitation,
@@ -62,6 +64,28 @@ export interface TeamRepository {
 export interface TeamPlanRepository {
   /** The week plan summary (week = Saturday; defaults to the current week). */
   week(teamId: string, week?: string): Promise<TeamWeekPlan>;
+  /**
+   * TM-04 plan + assign: put a task in a week (null = back to To plan) for a
+   * person (null = unassigned). Assigning someone else leaves a Pending
+   * assignment until they accept. Lead+ plan any task; Members only their
+   * own ("forbidden" otherwise); project tasks keep their project assignee.
+   * Rejects "conflict" on a stale revision.
+   */
+  plan(teamId: string, taskId: string, input: PlanTaskInput): Promise<TeamTask>;
+  /** Lead+: draft → published (notifies the team). The plan can still change afterwards. */
+  publish(teamId: string, week: string): Promise<TeamWeekPlan>;
+  /** Lead+: the week focus lines. */
+  setFocus(teamId: string, week: string, focus: readonly string[]): Promise<TeamWeekPlan>;
+  /** Review of a past week (task counts only, never per-person scores). */
+  review(teamId: string, week: string): Promise<TeamWeekReview>;
+  /** Lead+: move an unfinished task to this week (carry-over), back to To plan, or close it. */
+  decide(teamId: string, week: string, taskId: string, decision: CarryOverDecision): Promise<TeamWeekReview>;
+}
+
+export interface PlanTaskInput {
+  week: string | null;
+  assigneeId: string | null;
+  revision: number;
 }
 
 /** capacityRepo — Viewers get "forbidden" (OPEN(DECISIONS): Viewer booking default off). */
@@ -137,6 +161,8 @@ export interface TeamTaskRepository {
   list(teamId: string, query?: TeamTaskQuery, options?: TeamAccessOptions): Promise<readonly TeamTask[]>;
   /** Project tasks of team members in projects the viewer can open (read-through, never others). */
   projectRefs(teamId: string): Promise<readonly TeamTask[]>;
+  /** TM-04 To plan: open team tasks not in a week plan + member project tasks the viewer can open. */
+  unplanned(teamId: string, options?: TeamAccessOptions): Promise<readonly TeamTask[]>;
   create(teamId: string, input: NewTeamTaskInput): Promise<TeamTask>;
   /** Fixed team statuses (T4). Rejects "conflict" on a stale revision, "forbidden" without rights / for project tasks. */
   setStatus(taskId: string, status: TeamTaskStatus, revision: number): Promise<TeamTask>;

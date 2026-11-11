@@ -66,7 +66,11 @@ export function TeamWorkScreen() {
   const format = useProjectFormat();
   const { team, capabilities, demo } = useTeam();
   const view: WorkView = search.get("view") === "board" ? "board" : search.get("view") === "flow" ? "flow" : "list";
-  const [filter, setFilter] = useState<TeamWorkFilter>("all");
+  // ?filter=mine etc. (TM-04 "Open my tasks") sets the initial quick filter.
+  const [filter, setFilter] = useState<TeamWorkFilter>(() => {
+    const requested = search.get("filter");
+    return (teamWorkFilters as readonly string[]).includes(requested ?? "") ? (requested as TeamWorkFilter) : "all";
+  });
   const [grouping, setGrouping] = useState<TeamWorkGrouping>("plan");
   const [includeProjects, setIncludeProjects] = useState(true);
   const tasks = useTeamTasks(team.id, { includeProjects }, teamDemoAccessOptions(demo));
