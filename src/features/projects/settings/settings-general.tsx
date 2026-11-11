@@ -31,7 +31,8 @@ import { DirtyBar, useReportDirty, useSettingsError } from "./settings-shared";
  * local draft with the sticky dirty bar (Discard · Save).
  */
 
-const TINTS: readonly { tint: ProjectTint; className: string }[] = [
+/** Colour swatches (shared with TM-14 Team settings). */
+export const TINTS: readonly { tint: ProjectTint; className: string }[] = [
   { tint: "blue", className: "bg-project-dot" },
   { tint: "indigo", className: "bg-team-dot" },
   { tint: "amber", className: "bg-warning" },

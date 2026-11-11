@@ -145,15 +145,21 @@ export function LifecycleTab() {
   );
 }
 
-function ReauthDialog({
+/** Reauth (+ optional type-the-name) dialog; shared with TM-14 Team settings. */
+export function ReauthDialog({
   title,
   action,
   destructive,
   confirmName,
+  scope = "project",
+  nameLabel,
   onClose,
   onSubmit,
 }: {
   title: string;
+  scope?: "project" | "team";
+  /** Label of the type-the-name field (default: the project wording). */
+  nameLabel?: string;
   action: string;
   destructive?: boolean;
   confirmName?: string;
@@ -169,7 +175,7 @@ function ReauthDialog({
   const nameOk = confirmName === undefined || name.trim() === confirmName;
   return (
     <Dialog open onOpenChange={(open) => !open && onClose()}>
-      <DialogContent title={title} size="sm" data-scope="project">
+      <DialogContent title={title} size="sm" data-scope={scope}>
         <form
           className="flex flex-col gap-3"
           onSubmit={(event) => {
@@ -184,7 +190,7 @@ function ReauthDialog({
         >
           {confirmName !== undefined ? (
             <Field invalid={failed === "name"}>
-              <FieldLabel htmlFor={ids.name}>{t("typeName")}</FieldLabel>
+              <FieldLabel htmlFor={ids.name}>{nameLabel ?? t("typeName")}</FieldLabel>
               <Input id={ids.name} dir="auto" value={name} onChange={(event) => setName(event.target.value)} />
               {failed === "name" ? <FieldError>{t("nameMismatch")}</FieldError> : null}
             </Field>

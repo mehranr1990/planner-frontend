@@ -203,5 +203,15 @@ export function createMockTeamSprints({ respond, today, now, team, canOpenProjec
     },
   };
 
-  return { teamSprints, teamBacklog };
+  return {
+    teamSprints,
+    teamBacklog,
+    /** TM-14 (mock-only): a sprint is running (Sprints → Weekly needs it completed first). */
+    hasActiveSprint: (teamId: string) => (sprints.get(teamId) ?? null) !== null,
+    /** TM-14 (mock-only): Weekly → Sprints — this week's plan becomes the next sprint's draft. */
+    draftFromPlan: (teamId: string, items: readonly SprintItem[]) => {
+      const known = new Set((queued.get(teamId) ?? []).map((item) => item.taskId));
+      queued.set(teamId, [...(queued.get(teamId) ?? []), ...items.filter((item) => !known.has(item.taskId)).map((item) => ({ ...item }))]);
+    },
+  };
 }

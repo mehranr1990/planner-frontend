@@ -113,6 +113,12 @@ export interface TeamCapabilities {
   manageFiles: boolean;
   /** TM-12: export snapshot (Owner/Admin/Lead). */
   exportAnalytics: boolean;
+  /** TM-14: General + Access tabs (Owner/Admin). */
+  editGeneral: boolean;
+  /** TM-14: Planning tab (Lead+). */
+  editPlanning: boolean;
+  /** TM-14: transfer ownership / delete (Owner). */
+  ownTeam: boolean;
 }
 
 export type TeamAccess =
@@ -691,4 +697,35 @@ export interface TeamAnalyticsSummary {
   /** Done tasks by where they came from; `other` = projects the viewer cannot open (Lead/Admin only, else null). */
   mix: { team: number; projects: readonly { projectId: string; name: string; count: number }[]; other: number | null };
   asOf: string;
+}
+
+// ── Team settings (TM-14) ─────────────────────────────────────────────────
+
+export type TeamEstimateUnit = "hours" | "points";
+
+export interface TeamSettings {
+  name: string;
+  initials: string;
+  description: string;
+  tint: TeamTint;
+  planningMode: TeamPlanningMode;
+  /** null = each user's own week start; else fixed for the team. */
+  weekStart: Weekday | null;
+  estimateUnit: TeamEstimateUnit;
+  checkinsOn: boolean;
+  /** Manual status on/off for this team (nothing is ever inferred). */
+  statusOn: boolean;
+  defaultInviteRole: Exclude<TeamRole, "owner">;
+  /** On: Members may invite Viewers. */
+  membersMayInvite: boolean;
+  /** OPEN(DECISIONS): Viewers see this-week booking — default off. */
+  viewersSeeBooking: boolean;
+  revision: number;
+}
+
+/** P3-05 handover: the successor accepts, then the Owner confirms with the password. */
+export interface TeamTransfer {
+  successor: TeamPerson;
+  accepted: boolean;
+  requestedAt: string;
 }

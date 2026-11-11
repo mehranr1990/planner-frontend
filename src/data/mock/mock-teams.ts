@@ -23,9 +23,10 @@ import {
   type TeamFixture,
 } from "@/fixtures/teams";
 import { RepositoryError } from "../repositories";
-import { createMockTeamCheckins } from "./mock-team-checkins";
+import { checkinWeekOf, createMockTeamCheckins } from "./mock-team-checkins";
 import { createMockTeamGoals } from "./mock-team-goals";
 import { createMockTeamReports } from "./mock-team-reports";
+import { createMockTeamSettings, defaultTeamSettings, type StoredTeamSettings } from "./mock-team-settings";
 import { createMockFiles } from "./mock-project-files";
 import { teamFileFolders, teamFiles as teamFileFixtures } from "@/fixtures/team-files";
 import { createMockTeamRecognition } from "./mock-team-recognition";
@@ -93,25 +94,37 @@ const ALL_MODULES: readonly TeamModule[] = [
   "settings",
 ];
 
+/** TM-14 team switches that change what people may do (defaults: the design). */
+export interface TeamFlags {
+  checkinsOn?: boolean;
+  statusOn?: boolean;
+  membersMayInvite?: boolean;
+  /** OPEN(DECISIONS): Viewers see this-week booking — default off. */
+  viewersSeeBooking?: boolean;
+}
+
 /** Capabilities per role (SPEC permission tables). Archived teams are read-only. */
-export function teamCapabilities(role: TeamRole, lifecycle: TeamLifecycle): TeamCapabilities {
+export function teamCapabilities(role: TeamRole, lifecycle: TeamLifecycle, flags: TeamFlags = {}): TeamCapabilities {
   const rank = RANK[role];
   const editable = lifecycle === "active";
   const modules = Object.fromEntries(
-    ALL_MODULES.map((module) => [module, module === "settings" ? rank >= RANK.lead : true]),
+    ALL_MODULES.map((module) => [
+      module,
+      module === "settings" ? rank >= RANK.lead : module === "checkins" ? flags.checkinsOn !== false : true,
+    ]),
   ) as Record<TeamModule, boolean>;
   return {
     modules,
-    setOwnStatus: editable && rank >= RANK.member,
+    setOwnStatus: editable && rank >= RANK.member && flags.statusOn !== false,
     editWeekFocus: editable && rank >= RANK.lead,
-    invite: editable && rank >= RANK.lead,
+    invite: editable && (rank >= RANK.lead || (rank === RANK.member && flags.membersMayInvite === true)),
     inviteAdmin: editable && role === "owner",
     createTask: editable && rank >= RANK.member,
     editAnyTask: editable && rank >= RANK.lead,
     assignOthers: editable && rank >= RANK.lead,
     deleteTask: editable && rank >= RANK.lead,
     // OPEN(DECISIONS): whether Viewers may see this-week booking — design default off.
-    seeBooking: rank >= RANK.member,
+    seeBooking: rank >= RANK.member || flags.viewersSeeBooking === true,
     archive: editable && rank >= RANK.admin,
     restore: lifecycle === "archived" && rank >= RANK.admin,
     linkProjects: editable && rank >= RANK.admin,
@@ -119,6 +132,9 @@ export function teamCapabilities(role: TeamRole, lifecycle: TeamLifecycle): Team
     uploadFile: editable && rank >= RANK.member,
     manageFiles: editable && rank >= RANK.lead,
     exportAnalytics: rank >= RANK.lead,
+    editGeneral: editable && rank >= RANK.admin,
+    editPlanning: editable && rank >= RANK.lead,
+    ownTeam: editable && role === "owner",
   };
 }
 
@@ -163,6 +179,8 @@ export interface MockTeamsStore extends TeamRepositories {
   adoptProject(teamId: string, projectId: string): void;
   /** Mock-only: the live team fixtures (other team mocks read linked projects, lead, members). */
   findTeam(id: string): TeamFixture | undefined;
+  /** Mock-only: the transfer successor accepts (TM-14). */
+  acceptTeamTransfer(teamId: string): void;
   /** Mock-only: one upload lifecycle step for team files. */
   tickFiles(): void;
   /** Mock-only: the linked projects the viewer can open. */
@@ -341,6 +359,13 @@ export function createMockTeams({
     const workingOn = entry.shareWorkingOn ? (workingOnFixtures[entry.personId] ?? null) : null;
     return expired(entry) ? { ...entry, status: null, note: "", until: null, workingOn } : { ...entry, workingOn };
   };
+  // TM-14: per-team settings (switches feed the capabilities).
+  const teamSettingsStore = new Map<string, StoredTeamSettings>();
+  const settingsOf = (teamId: string) => {
+    if (!teamSettingsStore.has(teamId)) teamSettingsStore.set(teamId, defaultTeamSettings());
+    return teamSettingsStore.get(teamId)!;
+  };
+  const flagsOf = (team: TeamFixture) => settingsOf(team.id);
   const memberOf = (teamId: string) => {
     const team = find(teamId);
     if (!team) throw new RepositoryError("not-found", `Team ${teamId} not found`);
@@ -508,7 +533,7 @@ export function createMockTeams({
       return respond(undefined);
     },
   };
-  const { teamSprints, teamBacklog } = createMockTeamSprints({
+  const { teamSprints, teamBacklog, hasActiveSprint, draftFromPlan } = createMockTeamSprints({
     respond,
     today,
     now,
@@ -615,6 +640,28 @@ export function createMockTeams({
   });
   const teamFiles: TeamFileRepository = { ...filesMock.files, list: (teamId) => filesMock.files.list(teamId) };
 
+  const teamSettings = createMockTeamSettings({
+    respond,
+    now,
+    memberOf,
+    roleOf,
+    capabilities: (team) => teamCapabilities(team.role, team.lifecycle, flagsOf(team)),
+    settings: settingsOf,
+    hasActiveSprint,
+    draftFromPlan,
+    plannedThisWeek: (teamId) => {
+      // A new team has no plan fixture yet: its current week is the Iran week of today.
+      const week = weekPlanFixtures[teamId]?.week ?? checkinWeekOf(today);
+      return tasks.filter((task) => task.teamId === teamId && task.planWeek === week && task.source.kind === "team");
+    },
+    removeTeam: (teamId) => {
+      const index = teams.findIndex((team) => team.id === teamId);
+      if (index >= 0) teams.splice(index, 1);
+      const at = recent.indexOf(teamId);
+      if (at >= 0) recent.splice(at, 1);
+    },
+  });
+
   const teamReports = createMockTeamReports({
     respond,
     today,
@@ -686,7 +733,7 @@ export function createMockTeams({
         const at = recent.indexOf(id);
         if (at >= 0) recent.splice(at, 1);
         recent.unshift(id);
-        return respond({ status: "ok" as const, team: shown, capabilities: teamCapabilities(role, lifecycle) });
+        return respond({ status: "ok" as const, team: shown, capabilities: teamCapabilities(role, lifecycle, flagsOf(team)) });
       },
       async create(input) {
         const name = input.name.trim();
@@ -848,7 +895,7 @@ export function createMockTeams({
         const team = memberOf(teamId);
         const role = options.previewRole ?? team.role;
         // OPEN(DECISIONS): whether Viewers may see this-week booking — default off.
-        if (!teamCapabilities(role, team.lifecycle).seeBooking) throw new RepositoryError("forbidden", "No booking rights");
+        if (!teamCapabilities(role, team.lifecycle, flagsOf(team)).seeBooking) throw new RepositoryError("forbidden", "No booking rights");
         return respond(structuredClone(capacities.get(teamId) ?? []));
       },
       async get(teamId, personId) {
@@ -969,6 +1016,8 @@ export function createMockTeams({
     teamFeedback,
     teamFiles,
     teamReports,
+    teamSettings,
+    acceptTeamTransfer: teamSettings.acceptTransfer,
     tickFiles: filesMock.tick,
     teamTasks: {
       async list(teamId, query = {}, options = {}) {
@@ -1052,7 +1101,7 @@ export function createMockTeams({
             ? [assignee.id === "me" ? { person: assignee, state: "accepted" } : { person: assignee, state: "pending", ...(me ? { by: me } : {}) }]
             : [],
           source: { kind: "team" },
-          planWeek: input.planned === false ? null : (weekPlanFixtures[teamId]?.week ?? null),
+          planWeek: input.planned === false ? null : (weekPlanFixtures[teamId]?.week ?? checkinWeekOf(today)),
           progress: 0,
           blockedBy: [],
           goal: null,
@@ -1160,8 +1209,10 @@ export function createMockTeams({
     teamInvitations: {
       async send(teamId, input) {
         const team = memberOf(teamId);
-        const caps = teamCapabilities(team.role, team.lifecycle);
+        const caps = teamCapabilities(team.role, team.lifecycle, flagsOf(team));
         if (!caps.invite || (input.role === "admin" && !caps.inviteAdmin)) throw new RepositoryError("forbidden", "No invite rights");
+        // TM-14 "Members may invite": Members invite Viewers only.
+        if (team.role === "member" && input.role !== "viewer") throw new RepositoryError("forbidden", "Members invite Viewers only");
         const valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (input.emails.length === 0 || input.emails.some((email) => !valid.test(email))) {
           throw new RepositoryError("invalid", "Bad email");
@@ -1236,6 +1287,7 @@ export function teamRepositories(store: MockTeamsStore): TeamRepositories {
     teamFeedback: store.teamFeedback,
     teamFiles: store.teamFiles,
     teamReports: store.teamReports,
+    teamSettings: store.teamSettings,
     teamTasks: store.teamTasks,
     teamSprints: store.teamSprints,
     projectAssociations: store.projectAssociations,

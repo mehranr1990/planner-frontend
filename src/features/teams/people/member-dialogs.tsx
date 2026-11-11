@@ -43,7 +43,7 @@ export const WEEK_ORDER: readonly Weekday[] = [6, 0, 1, 2, 3, 4, 5];
 
 export function useWeekdayName() {
   const format = useProjectFormat();
-  return (day: Weekday) => format.day(WEEKDAY_DAY[day], "weekdayShort");
+  return (day: Weekday, style: "weekdayShort" | "weekday" = "weekdayShort") => format.day(WEEKDAY_DAY[day], style);
 }
 
 export function CapacityDialog({ row, onClose }: { row: TeamMemberRow | null; onClose: () => void }) {

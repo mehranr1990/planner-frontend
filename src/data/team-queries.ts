@@ -15,6 +15,7 @@ import type {
   CheckinSchedule,
   SetPresenceInput,
   TeamAnalyticsRange,
+  TeamPlanningMode,
   TeamRole,
   TeamRsvp,
   TeamTaskStatus,
@@ -27,6 +28,7 @@ import type {
   TeamAccessOptions,
   TeamEventInput,
   TeamInviteInput,
+  TeamSettingsPatch,
   TeamTaskQuery,
 } from "./team-repositories";
 
@@ -591,4 +593,38 @@ export function useTeamFileActions(teamId: string) {
 export function useTeamAnalytics(teamId: string, range: TeamAnalyticsRange, preview: TeamAccessOptions = {}) {
   const { teamReports } = useRepositories();
   return useTeamQuery(teamId, "analytics", () => teamReports.summary(teamId, range, preview), true, range, preview);
+}
+
+// ── Team settings (TM-14) ────────────────────────────────────────────────
+
+export function useTeamSettings(teamId: string, enabled = true) {
+  const { teamSettings } = useRepositories();
+  return useTeamQuery(teamId, "settings", () => teamSettings.get(teamId), enabled);
+}
+
+export function useTeamTransfer(teamId: string, enabled: boolean) {
+  const { teamSettings } = useRepositories();
+  return useTeamQuery(teamId, "transfer", () => teamSettings.transfer(teamId), enabled);
+}
+
+/** Settings + lifecycle writes; every success refreshes all team data (names, capabilities, rail). */
+export function useTeamSettingsActions(teamId: string) {
+  const { teamSettings } = useRepositories();
+  const client = useQueryClient();
+  const refresh = () => client.invalidateQueries({ queryKey: teamKeys.all });
+  return {
+    update: useMutation({
+      mutationFn: ({ patch, revision }: { patch: TeamSettingsPatch; revision: number }) => teamSettings.update(teamId, patch, revision),
+      onSettled: refresh,
+    }),
+    setPlanningMode: useMutation({ mutationFn: (mode: TeamPlanningMode) => teamSettings.setPlanningMode(teamId, mode), onSettled: refresh }),
+    archive: useMutation({ mutationFn: () => teamSettings.archive(teamId), onSuccess: refresh }),
+    requestTransfer: useMutation({ mutationFn: (personId: string) => teamSettings.requestTransfer(teamId, personId), onSuccess: refresh }),
+    cancelTransfer: useMutation({ mutationFn: () => teamSettings.cancelTransfer(teamId), onSuccess: refresh }),
+    confirmTransfer: useMutation({ mutationFn: (password: string) => teamSettings.confirmTransfer(teamId, password), onSuccess: refresh }),
+    remove: useMutation({
+      mutationFn: (input: { name: string; password: string }) => teamSettings.remove(teamId, input),
+      onSuccess: refresh,
+    }),
+  };
 }

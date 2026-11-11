@@ -11,6 +11,8 @@ import type {
   CheckinComment,
   CheckinSchedule,
   CheckinWeek,
+  TeamSettings,
+  TeamTransfer,
   TeamAnalyticsRange,
   TeamAnalyticsSummary,
   FeedbackInbox,
@@ -367,6 +369,7 @@ export interface TeamRepositories {
   teamFeedback: TeamFeedbackRepository;
   teamFiles: TeamFileRepository;
   teamReports: TeamReportRepository;
+  teamSettings: TeamSettingsRepository;
   teamTasks: TeamTaskRepository;
   teamSprints: TeamSprintRepository;
   projectAssociations: ProjectAssociationRepository;
@@ -378,4 +381,36 @@ export interface TeamRepositories {
 /** teamReportRepo (TM-12). Team-level numbers only; never per person. */
 export interface TeamReportRepository {
   summary(teamId: string, range: TeamAnalyticsRange, options?: TeamAccessOptions): Promise<TeamAnalyticsSummary>;
+}
+
+export type TeamSettingsPatch = Partial<Omit<TeamSettings, "revision" | "planningMode">>;
+
+/** teamRepo.update / settings + lifecycle (TM-14; P3-01 / P3-02 / P3-05). */
+export interface TeamSettingsRepository {
+  get(teamId: string): Promise<TeamSettings>;
+  /**
+   * General / Access fields: Owner/Admin; Planning fields: Lead+ ("forbidden"
+   * otherwise). Rejects "conflict" on a stale revision, "invalid" for an
+   * empty name or short name.
+   */
+  update(teamId: string, patch: TeamSettingsPatch, revision: number): Promise<TeamSettings>;
+  /**
+   * Lead+. Weekly → Sprints: this week's plan becomes the Sprint 1 draft.
+   * Sprints → Weekly: rejects "conflict" while a sprint is active (complete it first).
+   */
+  setPlanningMode(teamId: string, mode: TeamPlanningMode): Promise<TeamSettings>;
+  /** Owner/Admin: read-only for everyone; linked projects are not archived. */
+  archive(teamId: string): Promise<void>;
+  transfer(teamId: string): Promise<TeamTransfer | null>;
+  /** Owner: an Admin or Lead becomes the successor (they accept first). */
+  requestTransfer(teamId: string, personId: string): Promise<TeamTransfer>;
+  cancelTransfer(teamId: string): Promise<void>;
+  /** Owner, after the successor accepted; rejects "invalid" ("reauth") on a wrong password. */
+  confirmTransfer(teamId: string, password: string): Promise<void>;
+  /**
+   * Owner: type the team name + password. Team tasks, goals, check-ins and
+   * files are deleted; projects stay with their owners. Rejects "invalid"
+   * ("name-mismatch" / "reauth").
+   */
+  remove(teamId: string, input: { name: string; password: string }): Promise<void>;
 }
