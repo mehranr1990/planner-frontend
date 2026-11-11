@@ -11,6 +11,8 @@ import type {
   TeamRsvp,
   TeamLinkRequest,
   TeamPortfolioProject,
+  TeamGoal,
+  TeamGoalPeriod,
   TeamTask,
   TeamTaskComment,
   TeamTaskDetail,
@@ -223,6 +225,16 @@ export interface PresenceRepository {
   clear(teamId: string): Promise<TeamPresence>;
 }
 
+/** teamGoalRepo (TM-07). Auto KR values are computed by the mock from linked team tasks. */
+export interface TeamGoalRepository {
+  list(teamId: string, options?: TeamAccessOptions): Promise<{ goals: readonly TeamGoal[]; periods: readonly TeamGoalPeriod[]; current: string }>;
+  get(goalId: string, options?: TeamAccessOptions): Promise<TeamGoal>;
+  /** Lead+: a new goal in a period (key results are added in the goal). */
+  create(teamId: string, input: { title: string; periodId: string; dueDay: string }): Promise<TeamGoal>;
+  /** Manual KR numbers ("Update progress"): Lead+ any, Members their own; others "forbidden". */
+  update(goalId: string, values: Readonly<Record<string, number>>): Promise<TeamGoal>;
+}
+
 /** projectAssociationRepo (TM-06; P2-03 association interface → P3). */
 export interface ProjectAssociationRepository {
   /** Pending link requests of this team (waiting for each project's owner). */
@@ -272,5 +284,6 @@ export interface TeamRepositories {
   teamTasks: TeamTaskRepository;
   teamSprints: TeamSprintRepository;
   projectAssociations: ProjectAssociationRepository;
+  teamGoals: TeamGoalRepository;
   teamBacklog: TeamBacklogRepository;
 }

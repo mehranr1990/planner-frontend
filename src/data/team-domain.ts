@@ -466,3 +466,47 @@ export interface SprintReview {
   movedToBacklog: number;
   completedAt: string;
 }
+
+// ── Team goals (TM-07) ───────────────────────────────────────────────────
+
+/** Where a key result's number comes from (each KR shows its source line). */
+export type TeamKrSource =
+  | { kind: "auto"; tag: string }
+  | { kind: "task"; taskId: string; taskTitle: string; status: TeamTaskStatus }
+  | { kind: "manual"; owner: TeamPerson | null; updatedBy: TeamPerson | null; updatedAt: string | null };
+
+export interface TeamKeyResult {
+  id: string;
+  title: string;
+  current: number;
+  target: number;
+  source: TeamKrSource;
+  /** Manual KRs: Lead+ any, Members their own (server-computed). */
+  canUpdate: boolean;
+}
+
+export type TeamGoalPace = "on-pace" | "slightly-behind" | "behind";
+
+export interface TeamGoalPeriod {
+  id: string;
+  quarter: number;
+  /** Jalali year. */
+  year: number;
+}
+
+export interface TeamGoal {
+  id: string;
+  title: string;
+  owner: TeamPerson;
+  period: TeamGoalPeriod;
+  dueDay: string;
+  /** 0–1, the mean of the key results. */
+  progress: number;
+  /** 0–1, expected by today from the period dates (pace marker). */
+  expected: number;
+  pace: TeamGoalPace;
+  keyResults: readonly TeamKeyResult[];
+  /** Linked work the viewer can see: team tasks + tasks of projects they can open (counts only of what they see). */
+  linked: { team: number; projects: readonly { projectId: string; projectName: string; count: number }[] };
+  lifecycle: "active" | "archived";
+}

@@ -22,6 +22,7 @@ import {
   type TeamFixture,
 } from "@/fixtures/teams";
 import { RepositoryError } from "../repositories";
+import { createMockTeamGoals } from "./mock-team-goals";
 import { createMockTeamSprints } from "./mock-team-sprints";
 import type {
   ClearAfter,
@@ -413,7 +414,22 @@ export function createMockTeams({
     },
   };
 
+  const teamGoals = createMockTeamGoals({
+    respond,
+    today,
+    now,
+    tasks: () => tasks,
+    members: (teamId) => memberOf(teamId).members,
+    capabilities: (teamId, options = {}) => {
+      const team = memberOf(teamId);
+      return teamCapabilities(options.previewRole ?? team.role, options.previewArchived ? "archived" : team.lifecycle);
+    },
+    canOpenProject,
+    projectName: (projectId) => findProject(projectId)?.name ?? projectId,
+  });
+
   return {
+    teamGoals,
     projectAssociations,
     adoptProject: (teamId, projectId) => {
       const team = memberOf(teamId);
@@ -966,6 +982,7 @@ export function teamRepositories(store: MockTeamsStore): TeamRepositories {
     teamTasks: store.teamTasks,
     teamSprints: store.teamSprints,
     projectAssociations: store.projectAssociations,
+    teamGoals: store.teamGoals,
     teamBacklog: store.teamBacklog,
   };
 }

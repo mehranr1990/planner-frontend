@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useTranslations } from "next-intl";
+import type { ReactNode } from "react";
 import type { Goal } from "@/data/domain";
 import { Progress } from "@/design-system/feedback/progress";
 import { ProductCard } from "@/design-system/surfaces/product-card";
@@ -42,7 +43,19 @@ function GoalNote({ goal, today }: { goal: Goal; today: string }) {
   return <>{t.rich("nextOn", { step, date: format.dayMonth(goal.nextStepDay) })}</>;
 }
 
-export function GoalList({ goals, selectedId, today }: { goals: readonly Goal[]; selectedId: string | null; today: string }) {
+/** Team seam (TM-07): where a card links and what its note line says; Personal uses the defaults. */
+export interface GoalListSeams {
+  hrefOf?: (id: string) => string;
+  noteOf?: (goal: Goal) => ReactNode;
+}
+
+export function GoalList({
+  goals,
+  selectedId,
+  today,
+  hrefOf = goalHref,
+  noteOf,
+}: { goals: readonly Goal[]; selectedId: string | null; today: string } & GoalListSeams) {
   const t = useTranslations("Goals.list");
   const format = useMyDayFormat();
   return (
@@ -64,7 +77,7 @@ export function GoalList({ goals, selectedId, today }: { goals: readonly Goal[];
           >
             <div className="flex items-baseline justify-between gap-3">
               <Link
-                href={goalHref(goal.id)}
+                href={hrefOf(goal.id)}
                 aria-current={selected ? "page" : undefined}
                 scroll={false}
                 className="min-w-0 truncate text-[0.9375rem] font-bold text-fg outline-none after:absolute after:inset-0 after:rounded-[inherit]"
@@ -82,7 +95,7 @@ export function GoalList({ goals, selectedId, today }: { goals: readonly Goal[];
               indicatorClassName={delayed ? "bg-warning" : undefined}
             />
             <p className={cn("truncate text-xs", delayed ? "font-semibold text-warning-text" : "text-fg-muted")}>
-              <GoalNote goal={goal} today={today} />
+              {noteOf ? noteOf(goal) : <GoalNote goal={goal} today={today} />}
             </p>
           </ProductCard>
         );

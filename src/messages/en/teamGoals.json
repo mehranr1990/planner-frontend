@@ -1,0 +1,46 @@
+{
+  "title": "Goals",
+  "periods": "Goal period",
+  "period": "Q{quarter} {year}",
+  "all": "All",
+  "newGoal": "New goal",
+  "kicker": "Team goal · {period}",
+  "listMeta": "{owner} · {period}",
+  "owner": "Owner {name} · due {date}",
+  "krCount": "{n, plural, one {# key result} other {# key results}}",
+  "pace": {
+    "on-pace": "on pace",
+    "slightly-behind": "slightly behind pace",
+    "behind": "behind pace",
+    "label": "Pace: {pace}, expected {expected} by today"
+  },
+  "source": {
+    "auto": "auto · team tasks tagged “{tag}”",
+    "task": "linked task · {title}",
+    "manual": "manual · updated by {name} {when}",
+    "manualNever": "manual · not updated yet"
+  },
+  "results": "Key results",
+  "linked": "Linked work",
+  "linkedTasks": "{n, plural, one {# task} other {# tasks}}",
+  "noLinked": "No linked work you can see.",
+  "update": "Update progress",
+  "openLinked": "Open linked work",
+  "empty": "No team goals in this period.",
+  "pick": "Select a goal to see its key results.",
+  "updateDialog": {
+    "body": "Manual key results you may update. Auto and linked-task results follow the work.",
+    "cancel": "Cancel",
+    "save": "Save",
+    "saved": "Progress updated",
+    "failed": "Couldn’t save. Try again.",
+    "of": "of {target}"
+  },
+  "newDialog": {
+    "name": "Title",
+    "titleRequired": "Add a title",
+    "due": "Due {date}",
+    "create": "Create",
+    "created": "Goal added"
+  }
+}

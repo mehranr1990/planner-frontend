@@ -4,14 +4,14 @@ import { Flag, Link2, Plus, Unlink } from "lucide-react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { Direction } from "radix-ui";
-import { useState, type FormEvent } from "react";
+import { useState, type FormEvent, type ReactNode } from "react";
 import { Button, IconButton } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/components/ui/toast";
 import { useIsDesktop } from "@/components/ui/use-is-desktop";
-import type { Goal, GoalMilestone } from "@/data/domain";
+import type { Goal, GoalKeyResult, GoalMilestone } from "@/data/domain";
 import {
   useAddMilestone,
   useCreateTask,
@@ -309,7 +309,10 @@ function NextStepCard({ goal, today, onEdit }: { goal: Goal; today: string; onEd
 
 // ── Key results ─────────────────────────────────────────────────────────
 
-export function ResultsPanel({ goal }: { goal: Goal }) {
+/** Team seam (TM-07): per key result, a value text replacing the numbers and a source line under the bar. */
+export type ResultDetail = (result: GoalKeyResult) => { value?: string; source?: ReactNode } | undefined;
+
+export function ResultsPanel({ goal, detailOf }: { goal: Goal; detailOf?: ResultDetail }) {
   const t = useTranslations("Goals.results");
   const format = useMyDayFormat();
   const results = goal.keyResults ?? [];
@@ -319,7 +322,10 @@ export function ResultsPanel({ goal }: { goal: Goal }) {
       {results.map((result) => {
         const ratio = result.target > 0 ? Math.min(1, result.current / result.target) : 0;
         const unit = result.unit ?? "";
-        const value = t("value", { current: `${format.number(result.current)}${unit}`, target: `${format.number(result.target)}${unit}` });
+        const detail = detailOf?.(result);
+        const value =
+          detail?.value ??
+          t("value", { current: `${format.number(result.current)}${unit}`, target: `${format.number(result.target)}${unit}` });
         return (
           <li key={result.id} className="flex flex-col gap-1.5">
             <div className="flex items-baseline justify-between gap-3">
@@ -329,6 +335,7 @@ export function ResultsPanel({ goal }: { goal: Goal }) {
               <span className="tabular shrink-0 text-sm font-semibold text-fg-secondary">{value}</span>
             </div>
             <Progress size="sm" value={ratio * 100} label={result.title} valueText={value} />
+            {detail?.source ? <p className="text-xs text-fg-secondary">{detail.source}</p> : null}
           </li>
         );
       })}

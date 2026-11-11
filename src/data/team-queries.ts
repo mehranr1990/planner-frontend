@@ -385,3 +385,26 @@ export function useProjectAssociationActions(teamId: string) {
     unlink: useMutation({ mutationFn: (projectId: string) => projectAssociations.unlink(teamId, projectId), onSuccess: refresh }),
   };
 }
+
+// ── Team goals (TM-07) ───────────────────────────────────────────────────
+
+export function useTeamGoals(teamId: string, preview: TeamAccessOptions = {}) {
+  const { teamGoals } = useRepositories();
+  return useTeamQuery(teamId, "goals", () => teamGoals.list(teamId, preview), true, preview);
+}
+
+export function useTeamGoalActions(teamId: string) {
+  const { teamGoals } = useRepositories();
+  const client = useQueryClient();
+  const refresh = () => client.invalidateQueries({ queryKey: teamScoped(teamId, "goals") });
+  return {
+    create: useMutation({
+      mutationFn: (input: { title: string; periodId: string; dueDay: string }) => teamGoals.create(teamId, input),
+      onSuccess: refresh,
+    }),
+    update: useMutation({
+      mutationFn: ({ goalId, values }: { goalId: string; values: Readonly<Record<string, number>> }) => teamGoals.update(goalId, values),
+      onSuccess: refresh,
+    }),
+  };
+}
