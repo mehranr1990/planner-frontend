@@ -99,7 +99,7 @@ describe("TM-01 · Team overview", () => {
     expect(await screen.findByText(/moved Icon set v2 to Review/)).toBeInTheDocument();
     const tabs = screen.getByRole("tablist", { name: "Team updates" });
     await user.click(await within(tabs).findByRole("tab", { name: /Check-ins/ }));
-    expect(screen.getByText(/5 of 8 replied/)).toBeInTheDocument();
+    expect(screen.getByText(/5 of 7 replied/)).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Reply" })).toHaveAttribute("href", "/teams/design/check-ins");
     await user.click(within(tabs).getByRole("tab", { name: "Recognition" }));
     expect(screen.getByText("For the icon audit — 40 inconsistencies caught.")).toBeInTheDocument();

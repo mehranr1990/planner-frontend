@@ -1,8 +1,8 @@
 import { teamEventExtras, teamProjectEventFixtures } from "@/fixtures/team-calendar";
 import { planningTaskFixtures, weekReviewFixtures } from "@/fixtures/team-planning";
+import { checkinTaskFixtures } from "@/fixtures/team-checkins";
 import {
   capacityFixtures,
-  checkinSummaryFixtures,
   teamActivityFixtures,
   teamEventFixtures,
   teamTaskDetailFixtures,
@@ -23,6 +23,7 @@ import {
   type TeamFixture,
 } from "@/fixtures/teams";
 import { RepositoryError } from "../repositories";
+import { createMockTeamCheckins } from "./mock-team-checkins";
 import { createMockTeamGoals } from "./mock-team-goals";
 import { createMockTeamSprints } from "./mock-team-sprints";
 import type {
@@ -186,7 +187,7 @@ export function createMockTeams({
   );
   let commentCounter = 0;
   const canOpenProject = (id: string) => findProject(id) !== undefined;
-  const tasks: TeamTask[] = structuredClone([...teamTaskFixtures, ...planningTaskFixtures]);
+  const tasks: TeamTask[] = structuredClone([...teamTaskFixtures, ...planningTaskFixtures, ...checkinTaskFixtures]);
   // TM-04: plan state per team and week (draft/published, focus) and last week's reviews.
   const planStates = new Map<string, Pick<TeamWeekPlan, "status" | "publishedAt" | "publishedBy" | "focus" | "focusBy" | "focusAt">>();
   const reviews = new Map<string, TeamWeekReview>(Object.entries(structuredClone(weekReviewFixtures)));
@@ -569,6 +570,27 @@ export function createMockTeams({
     },
   };
 
+  const teamCheckins = createMockTeamCheckins({
+    respond,
+    today,
+    now,
+    team: (teamId) => {
+      const team = memberOf(teamId);
+      return { members: team.members, roleOf: (personId) => roleOf(team, personId) };
+    },
+    capabilities: (teamId, options = {}) => {
+      const team = memberOf(teamId);
+      return teamCapabilities(options.previewRole ?? team.role, options.previewArchived ? "archived" : team.lifecycle);
+    },
+    isOff: (teamId, personId) => {
+      const entry = (presence.get(teamId) ?? []).find((item) => item.personId === personId);
+      return entry !== undefined && visible(entry).status === "off";
+    },
+    onMineChanged: (teamId, missing) => {
+      memberOf(teamId).checkinMissing = missing;
+    },
+  });
+
   const teamGoals = createMockTeamGoals({
     respond,
     today,
@@ -896,14 +918,7 @@ export function createMockTeams({
         return respond((teamActivityFixtures[teamId] ?? []).slice(0, limit));
       },
     },
-    teamCheckins: {
-      async summary(teamId) {
-        memberOf(teamId);
-        const summary = checkinSummaryFixtures[teamId];
-        if (!summary) throw new RepositoryError("not-found", "No check-in");
-        return respond(summary);
-      },
-    },
+    teamCheckins,
     teamRecognition: {
       async recent(teamId, limit = 5) {
         memberOf(teamId);
@@ -926,6 +941,25 @@ export function createMockTeams({
                 (query.status === undefined || task.status === query.status),
             )
             .map((task) => withCan(task, role, lifecycle)),
+        );
+      },
+      async doneByMe(teamId, week) {
+        const team = memberOf(teamId);
+        const from = Date.parse(`${week}T00:00:00+03:30`);
+        const to = from + 7 * 86_400_000;
+        return respond(
+          tasks
+            .filter(
+              (task) =>
+                task.teamId === teamId &&
+                task.status === "done" &&
+                task.completedAt !== undefined &&
+                Date.parse(task.completedAt) >= from &&
+                Date.parse(task.completedAt) < to &&
+                task.assignees.some((assignee) => assignee.person.id === "me" && assignee.state === "accepted") &&
+                (task.source.kind === "team" || canOpenProject(task.source.projectId)),
+            )
+            .map((task) => withCan(task, team.role, team.lifecycle)),
         );
       },
       async unplanned(teamId, options = {}) {

@@ -9,7 +9,6 @@
 import type {
   TeamActivity,
   TeamCapacityEntry,
-  TeamCheckinSummary,
   TeamEvent,
   TeamTask,
   TeamTaskAssignee,
@@ -161,12 +160,6 @@ export const teamActivityFixtures: Readonly<Record<string, readonly TeamActivity
   ],
   mobile: [{ id: "ac-m1", actor: kian, kind: "moved", subject: "Release build 2.4", status: "in-progress", at: "2026-10-13T13:35:00+03:30" }],
   growth: [{ id: "ac-g1", actor: lena, kind: "created", subject: "Lifecycle email test", at: "2026-10-12T16:10:00+03:30" }],
-};
-
-export const checkinSummaryFixtures: Readonly<Record<string, TeamCheckinSummary>> = {
-  design: { week: CURRENT_WEEK, replied: 5, total: 8, closesAt: "2026-10-14T18:00:00+03:30", mine: "missing" },
-  mobile: { week: CURRENT_WEEK, replied: 4, total: 5, closesAt: "2026-10-14T18:00:00+03:30", mine: "sent" },
-  growth: { week: CURRENT_WEEK, replied: 3, total: 6, closesAt: "2026-10-14T18:00:00+03:30", mine: "sent" },
 };
 
 export const thanksFixtures: Readonly<Record<string, readonly TeamThanks[]>> = {

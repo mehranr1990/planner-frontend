@@ -8,7 +8,15 @@ import { RepositoryError } from "./repositories";
 import { taskKeys, teamKeys } from "./query-keys";
 import type { DeclineReason } from "./project-domain";
 import type { Weekday } from "@/lib/dates/week";
-import type { CarryOverDecision, SetPresenceInput, TeamRole, TeamRsvp, TeamTaskStatus } from "./team-domain";
+import type {
+  CarryOverDecision,
+  CheckinAnswers,
+  CheckinSchedule,
+  SetPresenceInput,
+  TeamRole,
+  TeamRsvp,
+  TeamTaskStatus,
+} from "./team-domain";
 import type {
   NewTeamInput,
   NewTeamTaskInput,
@@ -457,5 +465,50 @@ export function useTeamMemberActions(teamId: string) {
     }),
     resendInvite: useMutation({ mutationFn: (inviteId: string) => teamMembers.resendInvite(teamId, inviteId), onSuccess: refresh }),
     cancelInvite: useMutation({ mutationFn: (inviteId: string) => teamMembers.cancelInvite(teamId, inviteId), onSuccess: refresh }),
+  };
+}
+
+// ── Check-ins (TM-09) ────────────────────────────────────────────────────
+
+/** One check-in week (default = this week). */
+export function useCheckinWeek(teamId: string, week: string | undefined, preview: TeamAccessOptions = {}) {
+  const { teamCheckins } = useRepositories();
+  return useTeamQuery(teamId, "checkin-week", () => teamCheckins.week(teamId, week, preview), true, week ?? "current", preview);
+}
+
+/** My done tasks in a week (suggestion chips; nothing from Personal). */
+export function useDoneByMe(teamId: string, week: string | undefined, enabled: boolean) {
+  const { teamTasks } = useRepositories();
+  return useTeamQuery(teamId, "done-by-me", () => teamTasks.doneByMe(teamId, week!), enabled && week !== undefined, week);
+}
+
+export function useCheckinSchedule(teamId: string) {
+  const { teamCheckins } = useRepositories();
+  return useTeamQuery(teamId, "checkin-schedule", () => teamCheckins.schedule(teamId));
+}
+
+/** Reply / comment / remind / schedule; successes refresh the team (Overview summary, rail badge). */
+export function useCheckinActions(teamId: string) {
+  const { teamCheckins } = useRepositories();
+  const client = useQueryClient();
+  const refresh = () => {
+    void client.invalidateQueries({ queryKey: teamKeys.scope(teamId) });
+    void client.invalidateQueries({ queryKey: teamKeys.directory() });
+    void client.invalidateQueries({ queryKey: [...teamKeys.all, "access", teamId] });
+  };
+  return {
+    reply: useMutation({
+      mutationFn: ({ week, input }: { week: string; input: CheckinAnswers | { skip: true } }) => teamCheckins.reply(teamId, week, input),
+      onSuccess: refresh,
+    }),
+    comment: useMutation({
+      mutationFn: ({ replyId, body }: { replyId: string; body: string }) => teamCheckins.comment(teamId, replyId, body),
+      onSuccess: refresh,
+    }),
+    remind: useMutation({ mutationFn: (week: string) => teamCheckins.remind(teamId, week), onSuccess: refresh }),
+    setSchedule: useMutation({
+      mutationFn: (schedule: CheckinSchedule) => teamCheckins.setSchedule(teamId, schedule),
+      onSuccess: refresh,
+    }),
   };
 }

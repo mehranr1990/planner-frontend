@@ -7,6 +7,10 @@ import type {
   TeamMemberRow,
   TeamPendingInvite,
   TeamCheckinSummary,
+  CheckinAnswers,
+  CheckinComment,
+  CheckinSchedule,
+  CheckinWeek,
   TeamCalendarOverlay,
   TeamEvent,
   TeamEventDetail,
@@ -159,9 +163,25 @@ export interface TeamActivityRepository {
   list(teamId: string, limit?: number): Promise<readonly TeamActivity[]>;
 }
 
-/** checkinRepo (Overview tab: replies count only). */
+/** checkinRepo (TM-09; the Overview tab reads the summary: replies count only). */
 export interface TeamCheckinRepository {
   summary(teamId: string): Promise<TeamCheckinSummary>;
+  /** One week (Saturday; default = this week) with replies, comments and who replied. */
+  week(teamId: string, week?: string, options?: TeamAccessOptions): Promise<CheckinWeek>;
+  /**
+   * Send / edit my reply (or skip the week). Editable until closing; a
+   * missing reply may still be sent for 24h after (marked late, author only).
+   * Rejects "forbidden" for Viewers, "conflict" when the week is closed,
+   * "invalid" when Did and Next are both empty.
+   */
+  reply(teamId: string, week: string, input: CheckinAnswers | { skip: true }): Promise<CheckinWeek>;
+  /** Members+ while the week is not closed. */
+  comment(teamId: string, replyId: string, body: string): Promise<CheckinComment>;
+  /** Lead+: once per week to non-responders; "conflict" when already sent. */
+  remind(teamId: string, week: string): Promise<{ reminded: number }>;
+  schedule(teamId: string): Promise<CheckinSchedule>;
+  /** Lead+ (Settings › Planning). */
+  setSchedule(teamId: string, schedule: CheckinSchedule): Promise<CheckinSchedule>;
 }
 
 /** recognitionRepo (Overview tab: team-visible thanks only). */
@@ -192,6 +212,8 @@ export interface TeamTaskRepository {
   list(teamId: string, query?: TeamTaskQuery, options?: TeamAccessOptions): Promise<readonly TeamTask[]>;
   /** Project tasks of team members in projects the viewer can open (read-through, never others). */
   projectRefs(teamId: string): Promise<readonly TeamTask[]>;
+  /** TM-09 suggestions: tasks I completed in that week (team + projects I can open; nothing from Personal). */
+  doneByMe(teamId: string, week: string): Promise<readonly TeamTask[]>;
   /** TM-04 To plan: open team tasks not in a week plan + member project tasks the viewer can open. */
   unplanned(teamId: string, options?: TeamAccessOptions): Promise<readonly TeamTask[]>;
   create(teamId: string, input: NewTeamTaskInput): Promise<TeamTask>;

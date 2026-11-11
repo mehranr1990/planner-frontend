@@ -545,3 +545,63 @@ export interface TeamGoal {
   linked: { team: number; projects: readonly { projectId: string; projectName: string; count: number }[] };
   lifecycle: "active" | "archived";
 }
+
+// ── Check-ins (TM-09) ─────────────────────────────────────────────────────
+
+/** Three work questions (owner answer): no mood, no energy, no scores. */
+export interface CheckinAnswers {
+  did: string;
+  next: string;
+  blocked: string;
+}
+
+/** OPEN(DECISIONS): default schedule Sat 09:00 → Wed 18:00 (Iran time). Lead+ change it. */
+export interface CheckinSchedule {
+  opensDay: Weekday;
+  opensTime: string;
+  closesDay: Weekday;
+  closesTime: string;
+}
+
+export interface CheckinComment {
+  id: string;
+  author: TeamPerson;
+  body: string;
+  at: string;
+}
+
+export interface CheckinReply {
+  id: string;
+  person: TeamPerson;
+  answers: CheckinAnswers;
+  sentAt: string;
+  /** Sent in the 24h after closing (T12); only ever set on the author's own reply. */
+  late?: boolean;
+  comments: readonly CheckinComment[];
+}
+
+/** open → editable · late → 24h after closing, missing replies only (T12) · closed → read-only. */
+export type CheckinWeekStatus = "open" | "late" | "closed";
+
+export interface CheckinWeek {
+  /** Saturday (YYYY-MM-DD). */
+  week: string;
+  weekNumber: number;
+  status: CheckinWeekStatus;
+  closesAt: string;
+  schedule: CheckinSchedule;
+  /** This week (the switcher always offers it). */
+  current: { week: string; weekNumber: number };
+  /** Previous (closed) weeks the viewer can open, newest first. */
+  previous: readonly { week: string; weekNumber: number }[];
+  /** Others' replies, newest first (mine is in `mine`). */
+  replies: readonly CheckinReply[];
+  mine: { state: "missing" | "sent" | "skipped"; reply: CheckinReply | null };
+  /** Who may reply (Viewers never); counts only, no streaks. */
+  replied: readonly TeamPerson[];
+  notYet: readonly { person: TeamPerson; off: boolean }[];
+  /** Non-responders a reminder would reach (not me, not off today). */
+  remindable: number;
+  remindedAt: string | null;
+  can: { reply: boolean; comment: boolean; remind: boolean; makeTask: boolean };
+}
