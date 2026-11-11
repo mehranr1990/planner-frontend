@@ -7,6 +7,7 @@ import type {
   TeamMember,
   TeamProjectLink,
   TeamTask,
+  TeamTaskPriority,
   TeamTaskStatus,
   TeamThanks,
   TeamWeekPlan,
@@ -84,9 +85,28 @@ export interface TeamTaskQuery {
   status?: TeamTaskStatus;
 }
 
+export interface NewTeamTaskInput {
+  title: string;
+  /** Assigning someone else needs "assign others"; they get a pending assignment. */
+  assigneeId?: string;
+  priority?: TeamTaskPriority;
+  due?: string;
+  estimateHours?: number;
+  /** Put it in this week's plan (default) or leave it not planned. */
+  planned?: boolean;
+}
+
 /** teamTaskRepo */
 export interface TeamTaskRepository {
-  list(teamId: string, query?: TeamTaskQuery): Promise<readonly TeamTask[]>;
+  /** Team tasks plus (by default) project refs the viewer can open, each with `can` for the viewer. */
+  list(teamId: string, query?: TeamTaskQuery, options?: TeamAccessOptions): Promise<readonly TeamTask[]>;
+  /** Project tasks of team members in projects the viewer can open (read-through, never others). */
+  projectRefs(teamId: string): Promise<readonly TeamTask[]>;
+  create(teamId: string, input: NewTeamTaskInput): Promise<TeamTask>;
+  /** Fixed team statuses (T4). Rejects "conflict" on a stale revision, "forbidden" without rights / for project tasks. */
+  setStatus(taskId: string, status: TeamTaskStatus, revision: number): Promise<TeamTask>;
+  /** Undo of create (Viewer/others: "forbidden"). */
+  remove(taskId: string): Promise<void>;
 }
 
 /** teamInvitationRepo */

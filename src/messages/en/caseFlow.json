@@ -1,0 +1,14 @@
+{
+  "people": "People in this flow",
+  "badgeOpen": "{name}: {n} open",
+  "badgeAlert": "{name}: {n} open, something blocked or waiting",
+  "badgeDone": "{name}: all done",
+  "badgeNone": "{name}: no step in this flow",
+  "more": "+{n} more",
+  "needs": "Needs {titles}",
+  "neededBy": "→ Needed by {titles}",
+  "separator": ", ",
+  "blocked": "Blocked",
+  "done": "Done",
+  "active": "In progress"
+}

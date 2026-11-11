@@ -5,8 +5,8 @@ import { useIsClient } from "@/hooks/use-is-client";
 import { useRepositories } from "./provider";
 import { afterHydration } from "./queries";
 import { teamKeys } from "./query-keys";
-import type { SetPresenceInput } from "./team-domain";
-import type { TeamAccessOptions, TeamTaskQuery } from "./team-repositories";
+import type { SetPresenceInput, TeamTaskStatus } from "./team-domain";
+import type { NewTeamTaskInput, TeamAccessOptions, TeamTaskQuery } from "./team-repositories";
 
 /*
  * React Query hooks for Teams (Phase 3). The UI never fetches: it reads these
@@ -169,7 +169,23 @@ export function useTeamRecognition(teamId: string, limit?: number) {
   return useTeamQuery(teamId, "recognition", () => teamRecognition.recent(teamId, limit), true, limit);
 }
 
-export function useTeamTasks(teamId: string, query: TeamTaskQuery = {}) {
+export function useTeamTasks(teamId: string, query: TeamTaskQuery = {}, preview: TeamAccessOptions = {}) {
   const { teamTasks } = useRepositories();
-  return useTeamQuery(teamId, "tasks", () => teamTasks.list(teamId, query), true, query);
+  return useTeamQuery(teamId, "tasks", () => teamTasks.list(teamId, query, preview), true, query, preview);
+}
+
+/** Team task writes; every success refreshes the team's task lists (and the plan/overview counts). */
+export function useTeamTaskActions(teamId: string) {
+  const { teamTasks } = useRepositories();
+  const client = useQueryClient();
+  const refresh = () => client.invalidateQueries({ queryKey: teamKeys.scope(teamId) });
+  return {
+    create: useMutation({ mutationFn: (input: NewTeamTaskInput) => teamTasks.create(teamId, input), onSuccess: refresh }),
+    setStatus: useMutation({
+      mutationFn: ({ taskId, status, revision }: { taskId: string; status: TeamTaskStatus; revision: number }) =>
+        teamTasks.setStatus(taskId, status, revision),
+      onSettled: refresh,
+    }),
+    remove: useMutation({ mutationFn: (taskId: string) => teamTasks.remove(taskId), onSuccess: refresh }),
+  };
 }

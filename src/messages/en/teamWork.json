@@ -15,5 +15,90 @@
   },
   "source": {
     "team": "Team"
+  },
+  "newTask": "New task",
+  "includeProject": "Include project tasks",
+  "inPlan": "In this week’s plan",
+  "notPlanned": "Not planned",
+  "filter": {
+    "label": "Filter work",
+    "all": "All",
+    "mine": "Mine",
+    "week": "This week",
+    "unassigned": "Unassigned",
+    "blocked": "Blocked",
+    "done": "Done"
+  },
+  "view": {
+    "label": "View",
+    "list": "List",
+    "board": "Board",
+    "flow": "Flow"
+  },
+  "group": {
+    "label": "Group",
+    "button": "Group: {name}",
+    "plan": "Week plan",
+    "status": "Status",
+    "person": "Person",
+    "source": "Source",
+    "nobody": "No one"
+  },
+  "columns": {
+    "task": "Task",
+    "source": "Source",
+    "status": "Status",
+    "who": "Who",
+    "due": "Due",
+    "est": "Est.",
+    "priority": "Priority"
+  },
+  "row": {
+    "changeStatus": "Change status of {title}",
+    "status": "Status",
+    "complete": "Mark {title} done",
+    "reopen": "Reopen {title}",
+    "pendingMe": "Waiting for you to accept",
+    "pending": "Waiting for {name} to accept",
+    "declined": "Declined · needs reassignment",
+    "unassigned": "Unassigned",
+    "overdue": "overdue",
+    "est": "{h}h"
+  },
+  "add": {
+    "label": "Add a team task",
+    "placeholder": "Add a team task… @person !priority due ~estimate",
+    "assignee": "@{name}",
+    "due": "Due {date}",
+    "estimate": "~{h}h",
+    "created": "Task added",
+    "undo": "Undo",
+    "undoAlt": "Remove the new task",
+    "failed": "Couldn’t add the task."
+  },
+  "moved": "{title} moved to {status}",
+  "undo": "Undo",
+  "undoAlt": "Move it back",
+  "conflict": "This task changed meanwhile. Reload to see the latest.",
+  "failed": "Couldn’t save. Try again.",
+  "empty": {
+    "title": "No team tasks yet",
+    "description": "Team tasks belong to the team, not to a project. Add one or plan the week."
+  },
+  "filtered": "No tasks match.",
+  "board": {
+    "label": "Team board",
+    "readOnly": "Opens in its project"
+  },
+  "flow": {
+    "title": "Week {n} · hand-offs",
+    "outcomes": "Done this week",
+    "footnote": "Columns = team status. Lines = dependency links between tasks (the waiting task says “Needs …” in its drawer; solid = handed over, dashed red = still waiting). Badges in the notch = open steps per person; red = has a blocked or waiting step; + = nothing in this flow.",
+    "filter": "Show as list",
+    "share": "Copy link",
+    "calendar": "Open in calendar",
+    "copied": "Link copied",
+    "meta": "{name} · {day}",
+    "empty": "Nothing planned this week."
   }
 }

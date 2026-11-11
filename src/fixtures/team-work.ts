@@ -384,7 +384,16 @@ const designTasks: readonly TeamTask[] = [
     goal: { id: "design-system-v2", title: "Design system v2" },
     completedAt: "2026-10-11T15:00:00+03:30",
   },
-].map((task) => ({ ...task, teamId: "design", revision: 1, updatedAt: "2026-10-13T09:00:00+03:30" }) as TeamTask);
+].map(
+  (task) =>
+    ({
+      ...task,
+      teamId: "design",
+      revision: 1,
+      updatedAt: "2026-10-13T09:00:00+03:30",
+      can: { edit: false, status: false },
+    }) as TeamTask,
+);
 
 const simpleTasks = (teamId: string, rows: readonly [string, string, TeamTask["status"], TeamTaskAssignee["person"]][]) =>
   rows.map(
@@ -404,6 +413,7 @@ const simpleTasks = (teamId: string, rows: readonly [string, string, TeamTask["s
       goal: null,
       revision: 1,
       updatedAt: "2026-10-13T09:00:00+03:30",
+      can: { edit: false, status: false },
     }),
   );
 

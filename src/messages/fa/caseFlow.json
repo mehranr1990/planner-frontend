@@ -1,0 +1,14 @@
+{
+  "people": "افراد این جریان",
+  "badgeOpen": "{name}: {n} باز",
+  "badgeAlert": "{name}: {n} باز، کاری مسدود یا منتظر است",
+  "badgeDone": "{name}: همه انجام شد",
+  "badgeNone": "{name}: در این جریان کاری ندارد",
+  "more": "+{n} دیگر",
+  "needs": "نیاز به {titles}",
+  "neededBy": "← لازم برای {titles}",
+  "separator": "، ",
+  "blocked": "مسدود",
+  "done": "انجام شد",
+  "active": "در حال انجام"
+}

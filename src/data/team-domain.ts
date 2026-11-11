@@ -270,4 +270,6 @@ export interface TeamTask {
   revision: number;
   updatedAt: string;
   completedAt?: string;
+  /** What the viewer may do (server-computed; project tasks are read-only on team surfaces). */
+  can: { edit: boolean; status: boolean };
 }

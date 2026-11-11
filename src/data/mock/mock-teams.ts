@@ -120,6 +120,14 @@ export function createMockTeams({
 }: MockTeamsOptions): MockTeamsStore {
   const canOpenProject = (id: string) => findProject(id) !== undefined;
   const tasks: TeamTask[] = structuredClone([...teamTaskFixtures]);
+  let taskCounter = 0;
+  /** Per-viewer rights: project tasks are read-only on team surfaces; Members edit their own / assigned. */
+  const withCan = (task: TeamTask, role: TeamRole, lifecycle: TeamLifecycle): TeamTask => {
+    const caps = teamCapabilities(role, lifecycle);
+    const mine = task.assignees.some((assignee) => assignee.person.id === "me" && assignee.state !== "declined");
+    const edit = task.source.kind === "team" && (caps.editAnyTask || (caps.createTask && mine));
+    return structuredClone({ ...task, can: { edit, status: edit } });
+  };
   const teams: TeamFixture[] = structuredClone([...teamFixtures]);
   const invitations: TeamInvitation[] = structuredClone([...teamInvitationFixtures]);
   const recent: string[] = [...recentTeamIds];
@@ -271,17 +279,87 @@ export function createMockTeams({
       },
     },
     teamTasks: {
-      async list(teamId, query = {}) {
-        memberOf(teamId);
+      async list(teamId, query = {}, options = {}) {
+        const team = memberOf(teamId);
         const includeProjects = query.includeProjects ?? true;
+        const role = options.previewRole ?? team.role;
+        const lifecycle: TeamLifecycle = options.previewArchived ? "archived" : team.lifecycle;
         return respond(
-          tasks.filter(
-            (task) =>
-              task.teamId === teamId &&
-              (task.source.kind === "team" || (includeProjects && canOpenProject(task.source.projectId))) &&
-              (query.status === undefined || task.status === query.status),
-          ),
+          tasks
+            .filter(
+              (task) =>
+                task.teamId === teamId &&
+                (task.source.kind === "team" || (includeProjects && canOpenProject(task.source.projectId))) &&
+                (query.status === undefined || task.status === query.status),
+            )
+            .map((task) => withCan(task, role, lifecycle)),
         );
+      },
+      async projectRefs(teamId) {
+        const team = memberOf(teamId);
+        return respond(
+          tasks
+            .filter((task) => task.teamId === teamId && task.source.kind === "project" && canOpenProject(task.source.projectId))
+            .map((task) => withCan(task, team.role, team.lifecycle)),
+        );
+      },
+      async create(teamId, input) {
+        const team = memberOf(teamId);
+        const caps = teamCapabilities(team.role, team.lifecycle);
+        if (!caps.createTask) throw new RepositoryError("forbidden", "Cannot create team tasks");
+        const title = input.title.trim();
+        if (!title) throw new RepositoryError("invalid", "Title required");
+        const assignee = input.assigneeId ? team.members.find((person) => person.id === input.assigneeId) : undefined;
+        if (assignee && assignee.id !== "me" && !caps.assignOthers) throw new RepositoryError("forbidden", "Cannot assign others");
+        const me = team.members.find((person) => person.id === "me");
+        taskCounter += 1;
+        const task: TeamTask = {
+          id: `t-new-${taskCounter}`,
+          teamId,
+          title,
+          status: "todo",
+          priority: input.priority ?? "medium",
+          due: input.due ?? null,
+          estimateHours: input.estimateHours ?? null,
+          assignees: assignee
+            ? [assignee.id === "me" ? { person: assignee, state: "accepted" } : { person: assignee, state: "pending", ...(me ? { by: me } : {}) }]
+            : [],
+          source: { kind: "team" },
+          planWeek: input.planned === false ? null : (weekPlanFixtures[teamId]?.week ?? null),
+          progress: 0,
+          blockedBy: [],
+          goal: null,
+          revision: 1,
+          updatedAt: now,
+          can: { edit: false, status: false },
+        };
+        tasks.push(task);
+        return respond(withCan(task, team.role, team.lifecycle));
+      },
+      async setStatus(taskId, status, revision) {
+        const task = tasks.find((item) => item.id === taskId);
+        if (!task) throw new RepositoryError("not-found", "Task not found");
+        const team = memberOf(task.teamId);
+        if (!withCan(task, team.role, team.lifecycle).can.status) throw new RepositoryError("forbidden", "Cannot move this task");
+        if (task.revision !== revision) throw new RepositoryError("conflict", "Stale revision");
+        task.status = status;
+        task.revision += 1;
+        task.updatedAt = now;
+        if (status === "done") {
+          task.completedAt = now;
+          task.progress = 100;
+        } else delete task.completedAt;
+        return respond(withCan(task, team.role, team.lifecycle));
+      },
+      async remove(taskId) {
+        const index = tasks.findIndex((item) => item.id === taskId);
+        if (index < 0) throw new RepositoryError("not-found", "Task not found");
+        const task = tasks[index]!;
+        const team = memberOf(task.teamId);
+        const caps = teamCapabilities(team.role, team.lifecycle);
+        if (task.source.kind !== "team" || !caps.createTask) throw new RepositoryError("forbidden", "Cannot remove");
+        tasks.splice(index, 1);
+        return respond(undefined);
       },
     },
     teamInvitations: {

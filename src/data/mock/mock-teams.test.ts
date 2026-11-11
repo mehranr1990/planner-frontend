@@ -148,3 +148,30 @@ describe("mock team overview repos (TM-01)", () => {
     expect(await teamTasks.list("design", { status: "blocked" })).toHaveLength(3);
   });
 });
+
+describe("mock team tasks (TM-02)", () => {
+  it("project refs are read-only; members move their own team tasks with revisions", async () => {
+    const { teamTasks } = make();
+    const refs = await teamTasks.projectRefs("design");
+    expect(refs.every((task) => task.source.kind === "project" && !task.can.status)).toBe(true);
+    const list = await teamTasks.list("design");
+    const critique = list.find((task) => task.id === "t-critique")!;
+    expect(critique.can.status).toBe(true);
+    expect(list.find((task) => task.id === "t-icons")?.can.status).toBe(false);
+    const moved = await teamTasks.setStatus("t-critique", "in-progress", critique.revision);
+    expect(moved.revision).toBe(critique.revision + 1);
+    await expect(teamTasks.setStatus("t-critique", "done", critique.revision)).rejects.toMatchObject({ code: "conflict" });
+    await expect(teamTasks.setStatus("api-integration", "done", 1)).rejects.toMatchObject({ code: "forbidden" });
+  });
+
+  it("creates in this week's plan; assigning others needs Lead+", async () => {
+    const { teamTasks } = make();
+    const task = await teamTasks.create("design", { title: "  Banner  ", assigneeId: "me" });
+    expect(task).toMatchObject({ title: "Banner", planWeek: "2026-10-10", status: "todo" });
+    expect(task.assignees[0]?.state).toBe("accepted");
+    await expect(teamTasks.create("design", { title: "X", assigneeId: "sarah" })).rejects.toMatchObject({ code: "forbidden" });
+    const lead = await teamTasks.create("mobile", { title: "Y", assigneeId: "kian" });
+    expect(lead.assignees[0]).toMatchObject({ state: "pending", by: { id: "me" } });
+    await expect(teamTasks.create("growth", { title: "Z" })).rejects.toMatchObject({ code: "forbidden" });
+  });
+});
