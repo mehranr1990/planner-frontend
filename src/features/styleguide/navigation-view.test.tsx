@@ -69,8 +69,9 @@ describe("NavigationView", { timeout: 30_000 }, () => {
   it("previews the flat rail of other contexts collapsed and expanded", async () => {
     const user = userEvent.setup();
     renderWithProviders(<NavigationView />);
-    await user.click(screen.getAllByRole("radio", { name: "Teams" })[0]!);
-    const rails = screen.getAllByRole("navigation", { name: /^Teams navigation · / });
+    // Teams has its own collection rail now (TS-01); Companies keeps the flat rail.
+    await user.click(screen.getAllByRole("radio", { name: "Companies" })[0]!);
+    const rails = screen.getAllByRole("navigation", { name: /^Companies navigation · / });
     expect(rails).toHaveLength(2);
     expect(within(rails[0]!).getByRole("button", { name: "Expand navigation" })).toHaveAttribute("aria-expanded", "false");
     expect(within(rails[1]!).getByRole("button", { name: "Collapse navigation" })).toHaveAttribute("aria-expanded", "true");
@@ -92,8 +93,8 @@ describe("NavigationView", { timeout: 30_000 }, () => {
     const user = userEvent.setup();
     renderWithProviders(<NavigationView />);
     const switcher = screen.getByRole("region", { name: "Context switcher" });
-    // Teams / Companies stay disabled until their phase (SH01); pick another project.
-    expect(within(switcher).getByRole("button", { name: /^Teams/ })).toHaveAttribute("aria-disabled", "true");
+    // Companies stays disabled until Phase 4 (Teams is enabled since TS-01); pick another project.
+    expect(within(switcher).getByRole("button", { name: /^Companies/ })).toHaveAttribute("aria-disabled", "true");
     await user.click(within(switcher).getByRole("button", { name: /^Projects\s*\d/ }));
     await user.click(within(switcher).getByRole("button", { name: "Planner App" }));
 
