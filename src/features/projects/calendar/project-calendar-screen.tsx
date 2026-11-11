@@ -56,14 +56,15 @@ const sourceOf = (item: ProjectCalendarItem): Source =>
 export function ProjectCalendarScreen() {
   return (
     <CalendarProvider>
-      <Override>
+      <CalendarSystemOverride>
         <ProjectCalendarLayout />
-      </Override>
+      </CalendarSystemOverride>
     </CalendarProvider>
   );
 }
 
-function Override({ children }: { children: ReactNode }) {
+/** The calendar system from the URL (?cal) for the whole screen (shared with TM-03). */
+export function CalendarSystemOverride({ children }: { children: ReactNode }) {
   const { calendar } = useCalendar();
   const patch = useMemo(() => ({ calendar }), [calendar]);
   return <PreferencesOverride patch={patch}>{children}</PreferencesOverride>;
@@ -382,7 +383,8 @@ function DayCell({
   );
 }
 
-function BusyChip({ slot }: { slot: BusySlot }) {
+/** Untitled own-busy slot (shared with TM-03). */
+export function BusyChip({ slot }: { slot: BusySlot }) {
   const t = useTranslations("ProjectCalendar");
   return (
     <span

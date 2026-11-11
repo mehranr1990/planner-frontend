@@ -1,3 +1,4 @@
+import { teamEventExtras, teamProjectEventFixtures } from "@/fixtures/team-calendar";
 import {
   capacityFixtures,
   checkinSummaryFixtures,
@@ -23,7 +24,11 @@ import { RepositoryError } from "../repositories";
 import type {
   ClearAfter,
   TeamCapabilities,
+  TeamCalendarOverlay,
+  TeamEventDetail,
   TeamInvitation,
+  TeamPerson,
+  TeamRsvp,
   TeamLifecycle,
   TeamMember,
   TeamModule,
@@ -35,7 +40,15 @@ import type {
   TeamRole,
   TeamSummary,
 } from "../team-domain";
-import type { TeamRepositories } from "../team-repositories";
+import type { TeamEventInput, TeamRepositories } from "../team-repositories";
+
+/** Stored team event: the detail minus the per-viewer fields. */
+interface StoredTeamEvent extends Omit<TeamEventDetail, "myRsvp" | "can" | "organiser" | "invitees"> {
+  teamId: string;
+  organiserId: string | null;
+  inviteeIds: readonly string[];
+  rsvps: Record<string, TeamRsvp>;
+}
 
 /*
  * Mock Teams adapter (Phase 3 backend not built): teamRepo,
@@ -172,6 +185,54 @@ export function createMockTeams({
     return structuredClone({ ...task, can: { edit, status: edit } });
   };
   const teams: TeamFixture[] = structuredClone([...teamFixtures]);
+  // TM-03: team events with the light-meeting basics (shared with the Overview card).
+  const events: StoredTeamEvent[] = Object.entries(teamEventFixtures).flatMap(([teamId, list]) =>
+    list.map((event): StoredTeamEvent => {
+      const extra = teamEventExtras[event.id] ?? {};
+      const team = teams.find((item) => item.id === teamId);
+      return {
+        ...structuredClone(event),
+        teamId,
+        end: extra.end ?? null,
+        organiserId: extra.organiserId ?? event.personId ?? null,
+        inviteeIds:
+          event.kind === "meeting" ? (extra.invitees ?? team?.members.map((person) => person.id) ?? []) : [],
+        rsvps: { ...extra.rsvps },
+        agenda: structuredClone([...(extra.agenda ?? [])]),
+        url: extra.url ?? null,
+      };
+    }),
+  );
+  let eventCounter = 0;
+  const eventDetail = (event: StoredTeamEvent, role: TeamRole, lifecycle: TeamLifecycle): TeamEventDetail => {
+    const team = memberOf(event.teamId);
+    const person = (id: string): TeamPerson | undefined => team.members.find((item) => item.id === id);
+    const caps = teamCapabilities(role, lifecycle);
+    const { organiserId, inviteeIds, rsvps, ...stored } = structuredClone(event);
+    const rest: Partial<typeof stored> = stored;
+    delete rest.teamId;
+    return {
+      ...(rest as Omit<typeof stored, "teamId">),
+      organiser: organiserId ? (person(organiserId) ?? null) : null,
+      invitees: inviteeIds.flatMap((id) => {
+        const found = person(id);
+        return found ? [{ person: found, rsvp: rsvps[id] ?? null }] : [];
+      }),
+      myRsvp: rsvps.me ?? null,
+      can: {
+        // "Edit any event": Lead+; Members edit what they organised.
+        edit: caps.editAnyTask || (caps.createTask && organiserId === "me"),
+        rsvp: lifecycle === "active" && inviteeIds.includes("me"),
+      },
+    };
+  };
+  const checkEventInput = (input: TeamEventInput) => {
+    const title = input.title.trim();
+    if (!title && input.kind === "meeting") throw new RepositoryError("invalid", "Title required");
+    if (input.time && input.end && input.end <= input.time) throw new RepositoryError("invalid", "End before start");
+    if (input.url && !/^https?:\/\/\S+$/.test(input.url)) throw new RepositoryError("invalid", "Bad URL");
+    return title;
+  };
   const invitations: TeamInvitation[] = structuredClone([...teamInvitationFixtures]);
   const recent: string[] = [...recentTeamIds];
   const presence = new Map<string, TeamPresence[]>(
@@ -334,7 +395,87 @@ export function createMockTeams({
     teamCalendar: {
       async range(teamId, from, to) {
         memberOf(teamId);
-        return respond((teamEventFixtures[teamId] ?? []).filter((event) => event.day >= from && event.day <= to));
+        return respond(
+          events
+            .filter((event) => event.teamId === teamId && event.day >= from && event.day <= to)
+            .map(({ id, title, kind, day, time, personId }) => ({ id, title, kind, day, time, ...(personId ? { personId } : {}) })),
+        );
+      },
+      async overlays(teamId, from, to) {
+        const team = memberOf(teamId);
+        const within = (day: string) => day >= from && day <= to;
+        const dues: TeamCalendarOverlay[] = tasks
+          .filter((task) => task.teamId === teamId && task.source.kind === "team" && task.due && within(task.due) && task.status !== "done")
+          .map((task) => ({
+            id: `due:${task.id}`,
+            kind: "task-due",
+            day: task.due!,
+            title: task.title,
+            taskId: task.id,
+            blocked: task.status === "blocked",
+          }));
+        // Team membership never grants project access: only projects the viewer can open.
+        const projectEvents: TeamCalendarOverlay[] = (teamProjectEventFixtures[teamId] ?? []).flatMap((event) => {
+          const link = team.linkedProjectIds.includes(event.projectId) ? findProject(event.projectId) : undefined;
+          return link && within(event.day)
+            ? [{ ...event, id: `project:${event.id}`, kind: "project-event" as const, projectName: link.name }]
+            : [];
+        });
+        return respond([...dues, ...projectEvents]);
+      },
+    },
+    teamEvents: {
+      async range(teamId, from, to, options = {}) {
+        const team = memberOf(teamId);
+        const role = options.previewRole ?? team.role;
+        const lifecycle: TeamLifecycle = options.previewArchived ? "archived" : team.lifecycle;
+        return respond(
+          events
+            .filter((event) => event.teamId === teamId && event.day >= from && event.day <= to)
+            .map((event) => eventDetail(event, role, lifecycle)),
+        );
+      },
+      async create(teamId, input) {
+        const team = memberOf(teamId);
+        if (!teamCapabilities(team.role, team.lifecycle).createTask) throw new RepositoryError("forbidden", "Viewers cannot add events");
+        const title = checkEventInput(input);
+        eventCounter += 1;
+        const timeOff = input.kind === "time-off";
+        const event: StoredTeamEvent = {
+          id: `ev-new-${eventCounter}`,
+          teamId,
+          title: timeOff ? title || "Time off" : title,
+          kind: input.kind,
+          day: input.day,
+          time: timeOff ? null : input.time,
+          end: timeOff ? null : input.end,
+          // Time off is always the creator's own (T7).
+          ...(timeOff ? { personId: "me" } : {}),
+          organiserId: "me",
+          inviteeIds: timeOff ? [] : team.members.map((person) => person.id),
+          rsvps: timeOff ? {} : { me: "going" },
+          agenda: [],
+          url: timeOff ? null : (input.url ?? null),
+        };
+        events.push(event);
+        return respond(eventDetail(event, team.role, team.lifecycle));
+      },
+      async update(eventId, input) {
+        const event = events.find((item) => item.id === eventId);
+        if (!event) throw new RepositoryError("not-found", "Event not found");
+        const team = memberOf(event.teamId);
+        if (!eventDetail(event, team.role, team.lifecycle).can.edit) throw new RepositoryError("forbidden", "Cannot edit this event");
+        const title = checkEventInput(input);
+        Object.assign(event, { title: title || event.title, day: input.day, time: input.time, end: input.end, url: input.url ?? null });
+        return respond(eventDetail(event, team.role, team.lifecycle));
+      },
+      async rsvp(eventId, answer) {
+        const event = events.find((item) => item.id === eventId);
+        if (!event) throw new RepositoryError("not-found", "Event not found");
+        const team = memberOf(event.teamId);
+        if (!eventDetail(event, team.role, team.lifecycle).can.rsvp) throw new RepositoryError("forbidden", "Not invited");
+        event.rsvps.me = answer;
+        return respond(eventDetail(event, team.role, team.lifecycle));
       },
     },
     teamActivity: {
@@ -582,6 +723,7 @@ export function teamRepositories(store: MockTeamsStore): TeamRepositories {
     teamPlans: store.teamPlans,
     teamCapacity: store.teamCapacity,
     teamCalendar: store.teamCalendar,
+    teamEvents: store.teamEvents,
     teamActivity: store.teamActivity,
     teamCheckins: store.teamCheckins,
     teamRecognition: store.teamRecognition,

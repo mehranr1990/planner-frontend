@@ -198,6 +198,53 @@ export interface TeamEvent {
   personId?: string;
 }
 
+// ── Team calendar (TM-03) ──────────────────────────────────────────────
+
+export type TeamRsvp = "going" | "maybe" | "no";
+
+export const teamRsvps: readonly TeamRsvp[] = ["going", "maybe", "no"];
+
+export interface TeamAgendaItem {
+  id: string;
+  /** User content. */
+  title: string;
+  owner: TeamPerson | null;
+  minutes: number;
+}
+
+/**
+ * teamEventRepo: a team event with the light-meeting basics (title, time,
+ * invitees, agenda with owner and minutes, external URL, RSVP). Minutes,
+ * decisions and action items arrive in Phase 5.
+ */
+export interface TeamEventDetail extends TeamEvent {
+  /** "HH:mm" end, or null (all-day / point in time). */
+  end: string | null;
+  organiser: TeamPerson | null;
+  invitees: readonly { person: TeamPerson; rsvp: TeamRsvp | null }[];
+  agenda: readonly TeamAgendaItem[];
+  /** External meeting URL (user content), or null. */
+  url: string | null;
+  /** My answer, or null (no reply / not invited). */
+  myRsvp: TeamRsvp | null;
+  /** Server-computed for the viewer. */
+  can: { edit: boolean; rsvp: boolean };
+}
+
+/** teamCalendarRepo.overlays: team task due dates and events of projects the viewer can open (never others). */
+export type TeamCalendarOverlay =
+  | { id: string; kind: "task-due"; day: string; title: string; taskId: string; blocked: boolean }
+  | {
+      id: string;
+      kind: "project-event";
+      day: string;
+      time: string;
+      end: string | null;
+      title: string;
+      projectId: string;
+      projectName: string;
+    };
+
 export type TeamActivityKind = "moved" | "flagged" | "shared" | "created" | "completed";
 
 export interface TeamActivity {

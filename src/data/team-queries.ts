@@ -7,11 +7,12 @@ import { afterHydration } from "./queries";
 import { RepositoryError } from "./repositories";
 import { taskKeys, teamKeys } from "./query-keys";
 import type { DeclineReason } from "./project-domain";
-import type { SetPresenceInput, TeamTaskStatus } from "./team-domain";
+import type { SetPresenceInput, TeamRsvp, TeamTaskStatus } from "./team-domain";
 import type {
   NewTeamInput,
   NewTeamTaskInput,
   TeamAccessOptions,
+  TeamEventInput,
   TeamInviteInput,
   TeamTaskQuery,
 } from "./team-repositories";
@@ -259,4 +260,37 @@ export function useCreateTeam() {
 export function useSendTeamInvites(teamId: string) {
   const { teamInvitations } = useRepositories();
   return useMutation({ mutationFn: (input: TeamInviteInput) => teamInvitations.send(teamId, input) });
+}
+
+// ── Team calendar (TM-03) ────────────────────────────────────────────────
+
+export function useTeamEvents(teamId: string, from: string, to: string, preview: TeamAccessOptions = {}) {
+  const { teamEvents } = useRepositories();
+  return useTeamQuery(teamId, "events", () => teamEvents.range(teamId, from, to, preview), true, from, to, preview);
+}
+
+export function useTeamCalendarOverlays(teamId: string, from: string, to: string) {
+  const { teamCalendar } = useRepositories();
+  return useTeamQuery(teamId, "calendar-overlays", () => teamCalendar.overlays(teamId, from, to), true, from, to);
+}
+
+/** Create / edit / RSVP; every success refreshes the team's calendar (Overview card included). */
+export function useTeamEventActions(teamId: string) {
+  const { teamEvents } = useRepositories();
+  const client = useQueryClient();
+  const refresh = () => {
+    void client.invalidateQueries({ queryKey: teamScoped(teamId, "events") });
+    void client.invalidateQueries({ queryKey: teamScoped(teamId, "calendar") });
+  };
+  return {
+    create: useMutation({ mutationFn: (input: TeamEventInput) => teamEvents.create(teamId, input), onSuccess: refresh }),
+    update: useMutation({
+      mutationFn: ({ eventId, input }: { eventId: string; input: TeamEventInput }) => teamEvents.update(eventId, input),
+      onSuccess: refresh,
+    }),
+    rsvp: useMutation({
+      mutationFn: ({ eventId, rsvp }: { eventId: string; rsvp: TeamRsvp }) => teamEvents.rsvp(eventId, rsvp),
+      onSuccess: refresh,
+    }),
+  };
 }

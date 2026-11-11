@@ -3,8 +3,12 @@ import type {
   TeamActivity,
   TeamCapacityEntry,
   TeamCheckinSummary,
+  TeamCalendarOverlay,
   TeamEvent,
+  TeamEventDetail,
+  TeamEventKind,
   TeamMember,
+  TeamRsvp,
   TeamProjectLink,
   TeamTask,
   TeamTaskComment,
@@ -69,6 +73,30 @@ export interface TeamCapacityRepository {
 export interface TeamCalendarRepository {
   /** Team events between two days (inclusive). */
   range(teamId: string, from: string, to: string): Promise<readonly TeamEvent[]>;
+  /** TM-03 layers: team task due dates + events of projects the viewer can open (forbidden = not found). */
+  overlays(teamId: string, from: string, to: string): Promise<readonly TeamCalendarOverlay[]>;
+}
+
+export interface TeamEventInput {
+  title: string;
+  /** "meeting" = team event; "time-off" = my own time off (T7). */
+  kind: Extract<TeamEventKind, "meeting" | "time-off">;
+  day: string;
+  time: string | null;
+  end: string | null;
+  url?: string | null;
+}
+
+/** teamEventRepo (TM-03 light meetings). */
+export interface TeamEventRepository {
+  /** Team events with invitees, agenda and RSVP between two days (inclusive). */
+  range(teamId: string, from: string, to: string, options?: TeamAccessOptions): Promise<readonly TeamEventDetail[]>;
+  /** Members+: a team event (every member invited) or own time off. Viewers: "forbidden". */
+  create(teamId: string, input: TeamEventInput): Promise<TeamEventDetail>;
+  /** Organiser or Lead+ ("Edit any event"); others: "forbidden". */
+  update(eventId: string, input: TeamEventInput): Promise<TeamEventDetail>;
+  /** Every member, Viewers included. */
+  rsvp(eventId: string, rsvp: TeamRsvp): Promise<TeamEventDetail>;
 }
 
 /** activityRepo */
@@ -172,6 +200,7 @@ export interface TeamRepositories {
   teamPlans: TeamPlanRepository;
   teamCapacity: TeamCapacityRepository;
   teamCalendar: TeamCalendarRepository;
+  teamEvents: TeamEventRepository;
   teamActivity: TeamActivityRepository;
   teamCheckins: TeamCheckinRepository;
   teamRecognition: TeamRecognitionRepository;
