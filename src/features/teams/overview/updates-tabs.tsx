@@ -96,7 +96,7 @@ export function UpdatesTabs({ teamId, canReply }: { teamId: string; canReply: bo
             <li key={item.id} className="flex items-start gap-3">
               <Avatar name={item.from.name} initials={item.from.initials} size={32} tone="team" decorative />
               <div className="flex min-w-0 flex-col gap-1 leading-snug">
-                <p className="text-sm text-fg">{t.rich("recognition.thanked", { from: item.from.name, to: item.to.name, b: bold })}</p>
+                <p className="text-sm text-fg">{t.rich("recognition.thanked", { from: item.from.name, to: listNames(item.to, format.locale), b: bold })}</p>
                 <p dir="auto" className="text-sm text-fg-secondary">
                   {item.text}
                 </p>
@@ -111,4 +111,9 @@ export function UpdatesTabs({ teamId, canReply }: { teamId: string; canReply: bo
     },
   ];
   return <FolderTabsCard label={t("tabs.label")} tabs={tabs} defaultValue="activity" />;
+}
+
+/** "Sarah P. and Katy F." in the UI language (recipients of one thanks). */
+export function listNames(people: readonly { name: string }[], locale: string): string {
+  return new Intl.ListFormat(locale === "fa" ? "fa-IR" : "en", { type: "conjunction" }).format(people.map((person) => person.name));
 }

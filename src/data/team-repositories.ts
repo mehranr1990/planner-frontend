@@ -11,6 +11,10 @@ import type {
   CheckinComment,
   CheckinSchedule,
   CheckinWeek,
+  FeedbackInbox,
+  FeedbackNote,
+  FeedbackRequest,
+  ThanksLink,
   TeamCalendarOverlay,
   TeamEvent,
   TeamEventDetail,
@@ -184,9 +188,33 @@ export interface TeamCheckinRepository {
   setSchedule(teamId: string, schedule: CheckinSchedule): Promise<CheckinSchedule>;
 }
 
-/** recognitionRepo (Overview tab: team-visible thanks only). */
+/** recognitionRepo (TM-10; Overview tab: team-visible thanks only). No counts per person, ever. */
 export interface TeamRecognitionRepository {
   recent(teamId: string, limit?: number): Promise<readonly TeamThanks[]>;
+  /** The feed for me: team thanks (not hidden) + private thanks I wrote or received, newest first. */
+  list(teamId: string, options?: TeamAccessOptions): Promise<readonly TeamThanks[]>;
+  /** Members+. Rejects "invalid" (no recipient / empty text / myself), "forbidden" for Viewers. */
+  give(teamId: string, input: GiveThanksInput): Promise<TeamThanks>;
+  /** Recipient: hide from the team feed (or show again). */
+  hide(teamId: string, thanksId: string, hidden: boolean): Promise<TeamThanks>;
+  /** Author deletes own; Owner/Admin remove any (audited). */
+  remove(teamId: string, thanksId: string): Promise<void>;
+}
+
+export interface GiveThanksInput {
+  toIds: readonly string[];
+  text: string;
+  visibility: "team" | "private";
+  link?: ThanksLink | null;
+}
+
+/** feedbackRepo (TM-10): private 1:1, only writer and recipient (Leads don't see it, T9). */
+export interface TeamFeedbackRepository {
+  inbox(teamId: string): Promise<FeedbackInbox>;
+  /** Members+; never to myself. */
+  request(teamId: string, input: { toId: string; about: string; question: string }): Promise<FeedbackRequest>;
+  /** Members+; answering a request asked of me closes it. */
+  write(teamId: string, input: { toId: string; about: string; body: string; requestId?: string }): Promise<FeedbackNote>;
 }
 
 export interface TeamTaskQuery {
@@ -328,6 +356,7 @@ export interface TeamRepositories {
   teamActivity: TeamActivityRepository;
   teamCheckins: TeamCheckinRepository;
   teamRecognition: TeamRecognitionRepository;
+  teamFeedback: TeamFeedbackRepository;
   teamTasks: TeamTaskRepository;
   teamSprints: TeamSprintRepository;
   projectAssociations: ProjectAssociationRepository;

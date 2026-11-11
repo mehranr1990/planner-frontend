@@ -55,6 +55,8 @@ import enBacklog from "./en/backlog.json";
 import enTeamProjects from "./en/teamProjects.json";
 import enTeamGoals from "./en/teamGoals.json";
 import enPeople from "./en/people.json";
+import enTeamFeedback from "./en/teamFeedback.json";
+import enRecognition from "./en/recognition.json";
 import enCheckins from "./en/checkins.json";
 import faAccess from "./fa/access.json";
 import faAuth from "./fa/auth.json";
@@ -112,6 +114,8 @@ import faBacklog from "./fa/backlog.json";
 import faTeamProjects from "./fa/teamProjects.json";
 import faTeamGoals from "./fa/teamGoals.json";
 import faPeople from "./fa/people.json";
+import faTeamFeedback from "./fa/teamFeedback.json";
+import faRecognition from "./fa/recognition.json";
 import faCheckins from "./fa/checkins.json";
 
 /*
@@ -180,6 +184,8 @@ const en = {
   TeamProjects: enTeamProjects,
   TeamGoals: enTeamGoals,
   People: enPeople,
+  TeamFeedback: enTeamFeedback,
+  Recognition: enRecognition,
   Checkins: enCheckins,
 };
 
@@ -242,6 +248,8 @@ const fa: ClientMessages = {
   TeamProjects: faTeamProjects,
   TeamGoals: faTeamGoals,
   People: faPeople,
+  TeamFeedback: faTeamFeedback,
+  Recognition: faRecognition,
   Checkins: faCheckins,
 };
 

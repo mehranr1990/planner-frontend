@@ -355,13 +355,26 @@ export interface TeamCheckinSummary {
   mine: "missing" | "sent";
 }
 
+/** Something the thanks points at (only things the writer can see). */
+export type ThanksLink =
+  | { kind: "task"; id: string; title: string }
+  | { kind: "goal"; id: string; title: string }
+  | { kind: "project"; id: string; title: string };
+
 export interface TeamThanks {
   id: string;
   from: TeamPerson;
-  to: TeamPerson;
+  /** One or more teammates. */
+  to: readonly TeamPerson[];
   text: string;
+  /** "team" = the team feed (default); "private" = writer and recipients only. */
   visibility: "team" | "private";
+  link?: ThanksLink | null;
+  /** A recipient hid it from the team feed (writer and recipients still see it). */
+  hidden?: boolean;
   at: string;
+  /** Server-computed: delete own · hide (recipient) · remove (Owner/Admin, audited). */
+  can?: { delete: boolean; hide: boolean; remove: boolean };
 }
 
 // ── Team work (TM-02 / TM-15) ─────────────────────────────────────────────
@@ -604,4 +617,39 @@ export interface CheckinWeek {
   remindable: number;
   remindedAt: string | null;
   can: { reply: boolean; comment: boolean; remind: boolean; makeTask: boolean };
+}
+
+// ── Feedback (TM-10; private 1:1: writer and recipient only, T9) ──────────
+
+export interface FeedbackRequest {
+  id: string;
+  /** Who asks for feedback. */
+  from: TeamPerson;
+  /** Who is asked. */
+  to: TeamPerson;
+  about: string;
+  question: string;
+  due: string | null;
+  at: string;
+  status: "open" | "answered";
+}
+
+export interface FeedbackNote {
+  id: string;
+  author: TeamPerson;
+  recipient: TeamPerson;
+  about: string;
+  body: string;
+  at: string;
+  requestId: string | null;
+}
+
+/** Only what involves me: never anyone else’s 1:1 (Leads included). */
+export interface FeedbackInbox {
+  /** Open requests others sent me. */
+  asked: readonly FeedbackRequest[];
+  /** My requests (open or answered). */
+  requested: readonly FeedbackRequest[];
+  received: readonly FeedbackNote[];
+  sent: readonly FeedbackNote[];
 }

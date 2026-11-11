@@ -164,9 +164,26 @@ export const teamActivityFixtures: Readonly<Record<string, readonly TeamActivity
 
 export const thanksFixtures: Readonly<Record<string, readonly TeamThanks[]>> = {
   design: [
-    { id: "th-1", from: harry, to: sarah, text: "For the icon audit — 40 inconsistencies caught.", visibility: "team", at: "2026-10-12T11:00:00+03:30" },
-    { id: "th-2", from: jonathan, to: me, text: "Clear acceptance criteria on quick add.", visibility: "private", at: "2026-10-11T17:20:00+03:30" },
-    { id: "th-3", from: amelie, to: ava, text: "Interview notes were spot on.", visibility: "team", at: "2026-10-10T15:00:00+03:30" },
+    {
+      id: "th-1",
+      from: harry,
+      to: [sarah],
+      text: "For the icon audit — 40 inconsistencies caught.",
+      visibility: "team",
+      link: { kind: "task", id: "t-icons", title: "Icon set v2" },
+      at: "2026-10-12T11:00:00+03:30",
+    },
+    { id: "th-2", from: jonathan, to: [me], text: "Clear acceptance criteria on quick add.", visibility: "private", at: "2026-10-11T17:20:00+03:30" },
+    {
+      id: "th-4",
+      from: amelie,
+      to: [katy],
+      text: "Pairing on the onboarding prototype at 8 pm so I could test the next morning.",
+      visibility: "team",
+      link: { kind: "project", id: "planner-app", title: "Planner App" },
+      at: "2026-10-10T18:00:00+03:30",
+    },
+    { id: "th-3", from: amelie, to: [ava], text: "Interview notes were spot on.", visibility: "team", at: "2026-10-10T15:00:00+03:30" },
   ],
   mobile: [],
   growth: [],

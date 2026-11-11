@@ -7,7 +7,6 @@ import {
   teamEventFixtures,
   teamTaskDetailFixtures,
   teamTaskFixtures,
-  thanksFixtures,
   weekPlanFixtures,
   workingOnFixtures,
 } from "@/fixtures/team-work";
@@ -25,6 +24,7 @@ import {
 import { RepositoryError } from "../repositories";
 import { createMockTeamCheckins } from "./mock-team-checkins";
 import { createMockTeamGoals } from "./mock-team-goals";
+import { createMockTeamRecognition } from "./mock-team-recognition";
 import { createMockTeamSprints } from "./mock-team-sprints";
 import type {
   ClearAfter,
@@ -591,6 +591,13 @@ export function createMockTeams({
     },
   });
 
+  const { teamRecognition, teamFeedback } = createMockTeamRecognition({
+    respond,
+    now,
+    team: (teamId) => memberOf(teamId),
+    canOpenProject,
+  });
+
   const teamGoals = createMockTeamGoals({
     respond,
     today,
@@ -919,13 +926,8 @@ export function createMockTeams({
       },
     },
     teamCheckins,
-    teamRecognition: {
-      async recent(teamId, limit = 5) {
-        memberOf(teamId);
-        // Private thanks stay between writer and recipient: never on the team feed.
-        return respond((thanksFixtures[teamId] ?? []).filter((thanks) => thanks.visibility === "team").slice(0, limit));
-      },
-    },
+    teamRecognition,
+    teamFeedback,
     teamTasks: {
       async list(teamId, query = {}, options = {}) {
         const team = memberOf(teamId);
@@ -1189,6 +1191,7 @@ export function teamRepositories(store: MockTeamsStore): TeamRepositories {
     teamActivity: store.teamActivity,
     teamCheckins: store.teamCheckins,
     teamRecognition: store.teamRecognition,
+    teamFeedback: store.teamFeedback,
     teamTasks: store.teamTasks,
     teamSprints: store.teamSprints,
     projectAssociations: store.projectAssociations,

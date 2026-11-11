@@ -21,6 +21,7 @@ import type {
   NewTeamInput,
   NewTeamTaskInput,
   PlanTaskInput,
+  GiveThanksInput,
   TeamAccessOptions,
   TeamEventInput,
   TeamInviteInput,
@@ -508,6 +509,41 @@ export function useCheckinActions(teamId: string) {
     remind: useMutation({ mutationFn: (week: string) => teamCheckins.remind(teamId, week), onSuccess: refresh }),
     setSchedule: useMutation({
       mutationFn: (schedule: CheckinSchedule) => teamCheckins.setSchedule(teamId, schedule),
+      onSuccess: refresh,
+    }),
+  };
+}
+
+// ── Thanks & feedback (TM-10) ────────────────────────────────────────────
+
+export function useThanksFeed(teamId: string, preview: TeamAccessOptions = {}) {
+  const { teamRecognition } = useRepositories();
+  return useTeamQuery(teamId, "thanks", () => teamRecognition.list(teamId, preview), true, preview);
+}
+
+/** Private 1:1 feedback that involves me (never requested for Viewers). */
+export function useFeedbackInbox(teamId: string, enabled: boolean) {
+  const { teamFeedback } = useRepositories();
+  return useTeamQuery(teamId, "feedback", () => teamFeedback.inbox(teamId), enabled);
+}
+
+export function useRecognitionActions(teamId: string) {
+  const { teamRecognition, teamFeedback } = useRepositories();
+  const client = useQueryClient();
+  const refresh = () => client.invalidateQueries({ queryKey: teamKeys.scope(teamId) });
+  return {
+    give: useMutation({ mutationFn: (input: GiveThanksInput) => teamRecognition.give(teamId, input), onSuccess: refresh }),
+    hide: useMutation({
+      mutationFn: ({ thanksId, hidden }: { thanksId: string; hidden: boolean }) => teamRecognition.hide(teamId, thanksId, hidden),
+      onSuccess: refresh,
+    }),
+    remove: useMutation({ mutationFn: (thanksId: string) => teamRecognition.remove(teamId, thanksId), onSuccess: refresh }),
+    request: useMutation({
+      mutationFn: (input: { toId: string; about: string; question: string }) => teamFeedback.request(teamId, input),
+      onSuccess: refresh,
+    }),
+    write: useMutation({
+      mutationFn: (input: { toId: string; about: string; body: string; requestId?: string }) => teamFeedback.write(teamId, input),
       onSuccess: refresh,
     }),
   };

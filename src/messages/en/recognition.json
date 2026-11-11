@@ -1,0 +1,59 @@
+{
+  "title": "Recognition",
+  "thanks": "Say thanks",
+  "visibility": {
+    "label": "Who can see it",
+    "team": "{team}",
+    "private": "Only {name}",
+    "onlyYou": "Only you",
+    "recipient": "Only the recipient"
+  },
+  "view": {
+    "label": "Recognition view",
+    "thanks": "Thanks",
+    "feedback": "Feedback"
+  },
+  "composerHint": "Specific beats general.",
+  "send": "Send thanks",
+  "to": "Thank",
+  "addPerson": "Add a teammate",
+  "removePerson": "Remove {name}",
+  "text": "What are you thanking them for?",
+  "textPlaceholder": "Be specific: what did they do, and what did it change?",
+  "link": "Link",
+  "addLink": "Link a task, goal or project",
+  "removeLink": "Remove link {title}",
+  "linkGroups": {
+    "task": "Tasks",
+    "goal": "Goals",
+    "project": "Projects"
+  },
+  "thanked": "<b>{from}</b> thanked <b>{to}</b>",
+  "you": "you",
+  "chip": {
+    "team": "Team",
+    "hidden": "Hidden from the team feed"
+  },
+  "actions": "Actions for thanks from {name}",
+  "delete": "Delete",
+  "hide": "Hide from the team feed",
+  "show": "Show on the team feed",
+  "remove": "Remove (policy)",
+  "removeTitle": "Remove this thanks?",
+  "removeBody": "It leaves the feed for everyone. Removals are audited.",
+  "viewer": "Viewers read thanks.",
+  "empty": {
+    "title": "No thanks yet",
+    "body": "Thank someone for something specific. Public to the team or private to them."
+  },
+  "feed": "Thanks feed",
+  "toast": {
+    "sent": "Thanks sent",
+    "deleted": "Thanks deleted",
+    "hidden": "Hidden from the team feed",
+    "shown": "Back on the team feed",
+    "removed": "Thanks removed",
+    "missing": "Pick a teammate and say what for.",
+    "failed": "Couldn’t save. Try again."
+  }
+}
