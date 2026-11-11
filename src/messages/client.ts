@@ -39,6 +39,9 @@ import enReview from "./en/review.json";
 import enShutdown from "./en/shutdown.json";
 import enTasks from "./en/tasks.json";
 import enUi from "./en/ui.json";
+import enTeams from "./en/teams.json";
+import enTeam from "./en/team.json";
+import enTeamStatus from "./en/teamStatus.json";
 import faAccess from "./fa/access.json";
 import faAuth from "./fa/auth.json";
 import faBrainDump from "./fa/brainDump.json";
@@ -79,6 +82,9 @@ import faReview from "./fa/review.json";
 import faShutdown from "./fa/shutdown.json";
 import faTasks from "./fa/tasks.json";
 import faUi from "./fa/ui.json";
+import faTeams from "./fa/teams.json";
+import faTeam from "./fa/team.json";
+import faTeamStatus from "./fa/teamStatus.json";
 
 /*
  * The namespaces client components read outside the styleguide. The root
@@ -130,6 +136,9 @@ const en = {
   Workload: enWorkload,
   Analytics: enAnalytics,
   ProjectSettings: enProjectSettings,
+  Teams: enTeams,
+  Team: enTeam,
+  TeamStatus: enTeamStatus,
 };
 
 export type ClientMessages = typeof en;
@@ -175,6 +184,9 @@ const fa: ClientMessages = {
   Workload: faWorkload,
   Analytics: faAnalytics,
   ProjectSettings: faProjectSettings,
+  Teams: faTeams,
+  Team: faTeam,
+  TeamStatus: faTeamStatus,
 };
 
 export const clientMessages: Record<Locale, ClientMessages> = { en, fa };

@@ -12,6 +12,7 @@ import {
   SearchX,
   ShieldOff,
   Trash2,
+  UsersRound,
   WifiOff,
   type LucideIcon,
 } from "lucide-react";
@@ -42,7 +43,12 @@ export type AccessStateKind =
   | "deleted"
   | "pending"
   | "conflict"
-  | "quota";
+  | "quota"
+  // Team additions (TS-01): forbidden = not found, invitation (joining ≠ project access), removed / left, joined.
+  | "team-not-available"
+  | "team-invite"
+  | "team-removed"
+  | "team-joined";
 
 const KEY: Record<AccessStateKind, string> = {
   empty: "empty",
@@ -56,6 +62,10 @@ const KEY: Record<AccessStateKind, string> = {
   pending: "pending",
   conflict: "conflict",
   quota: "quota",
+  "team-not-available": "teamNotAvailable",
+  "team-invite": "teamInvite",
+  "team-removed": "teamRemoved",
+  "team-joined": "teamJoined",
 };
 
 const LOOK: Record<AccessStateKind, { icon: LucideIcon; tone: StateTone }> = {
@@ -70,6 +80,10 @@ const LOOK: Record<AccessStateKind, { icon: LucideIcon; tone: StateTone }> = {
   pending: { icon: Clock, tone: "info" },
   conflict: { icon: GitCompareArrows, tone: "warning" },
   quota: { icon: Gauge, tone: "neutral" },
+  "team-not-available": { icon: LockKeyhole, tone: "neutral" },
+  "team-invite": { icon: MailOpen, tone: "scope" },
+  "team-removed": { icon: ShieldOff, tone: "warning" },
+  "team-joined": { icon: UsersRound, tone: "scope" },
 };
 
 export interface AccessStateProps {
@@ -103,7 +117,7 @@ export function AccessState({
       {errorRef ? <span className="mt-1 block text-xs text-fg-muted">{t("error.ref", { ref: errorRef })}</span> : null}
     </>
   );
-  const inline = kind === "pending" || kind === "conflict" || kind === "quota";
+  const inline = kind === "pending" || kind === "conflict" || kind === "quota" || kind === "team-joined";
   return (
     <StateLayout
       role={kind === "error" ? "alert" : "status"}

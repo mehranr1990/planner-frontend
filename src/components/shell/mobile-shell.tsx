@@ -11,6 +11,10 @@ import { getAppContext } from "@/features/navigation/contexts";
 import { useActiveContext } from "@/features/navigation/use-active-navigation";
 import { ProjectMoreContent } from "@/features/projects/shell/project-mobile";
 import { ProjectQuickAddSheet } from "@/features/projects/shell/project-quick-create";
+import { teamHref } from "@/features/navigation/contexts";
+import { TeamMoreContent } from "@/features/teams/shell/team-mobile";
+import { useOpenTeamSheet } from "@/features/teams/sheets/team-sheet-params";
+import { useRouter } from "next/navigation";
 import { usePreferenceActions, usePreferences } from "@/features/preferences/use-preferences";
 import { cn } from "@/lib/cn";
 import { AssistantSheet } from "./assistant-panel";
@@ -62,7 +66,8 @@ export function MobileHeader() {
   const scope = useShellScope();
   // Personal (PM01): account · name · bell; no context chips, no digits toggle.
   if (scope === "personal") return <PersonalMobileHeader />;
-  if (scope === "project") return <ProjectMobileHeader />;
+  // Teams share the Projects header: the identity opens the switcher sheet (TS-01).
+  if (scope === "project" || scope === "team") return <ProjectMobileHeader />;
   return <ContextMobileHeader />;
 }
 
@@ -103,7 +108,60 @@ export function MobileShellNav() {
   const scope = useShellScope();
   if (scope === "personal") return <PersonalMobileNav />;
   if (scope === "project") return <ProjectMobileNav />;
+  if (scope === "team") return <TeamMobileNav />;
   return <ContextMobileNav />;
+}
+
+/**
+ * Teams bottom bar (TS-01 Mobile, T11): Overview · Work · (+) · Calendar ·
+ * More inside a team (All teams on the collection). (+) creates a team task
+ * on Work (on the collection: New team); More lists the remaining modules.
+ * No Assistant.
+ */
+function TeamMobileNav() {
+  const t = useTranslations("Shell");
+  const tNav = useTranslations("Navigation");
+  const router = useRouter();
+  const context = useActiveContext() ?? getAppContext("team");
+  const tTeams = useTranslations("Teams");
+  const openTeamSheet = useOpenTeamSheet();
+  const [moreOpen, setMoreOpen] = useRouteScopedOpen();
+  const { capture, onCloseAutoFocus } = useReturnFocus();
+  const teamId = context.workspaceId;
+
+  return (
+    <>
+      <MobileBottomNav
+        className="mx-auto max-w-md p-0"
+        fabLabel={teamId ? tTeams("newTask") : tNav("contexts.team.add")}
+        fab={
+          <button
+            type="button"
+            aria-haspopup={teamId ? undefined : "dialog"}
+            onClick={() => {
+              if (teamId) router.push(`${teamHref(teamId, "work")}?add=task`);
+              else openTeamSheet("team-new");
+            }}
+          />
+        }
+        onMoreClick={() => {
+          capture();
+          setMoreOpen(true);
+        }}
+        moreExpanded={moreOpen}
+      />
+      <Sheet open={moreOpen} onOpenChange={setMoreOpen}>
+        <SheetContent
+          side="bottom"
+          title={t("mobile.moreTitle", { context: tNav(context.labelKey) })}
+          data-scope="team"
+          onCloseAutoFocus={onCloseAutoFocus}
+        >
+          <TeamMoreContent context={context} onNavigate={() => setMoreOpen(false)} />
+        </SheetContent>
+      </Sheet>
+    </>
+  );
 }
 
 /**

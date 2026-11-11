@@ -10,7 +10,7 @@ import { preventDocumentNavigation } from "./test-utils";
 const personal = getAppContext("personal");
 const overview = personal.nav.find((item) => item.id === "overview")!;
 // Planned items now live outside Personal (every Personal route exists since Step 3).
-const board = getAppContext("team").nav.find((item) => item.id === "work")!;
+const board = getAppContext("company").nav.find((item) => item.id === "departments")!;
 
 describe("NavLink", () => {
   preventDocumentNavigation();
@@ -39,7 +39,7 @@ describe("NavLink", () => {
     const user = userEvent.setup();
     renderWithProviders(<NavLink item={board} />);
     expect(screen.queryByRole("link")).not.toBeInTheDocument();
-    const entry = screen.getByRole("button", { name: "Work" });
+    const entry = screen.getByRole("button", { name: "Departments" });
     expect(entry).toHaveAttribute("aria-disabled", "true");
     expect(entry).toHaveAccessibleDescription("Coming soon");
     expect(screen.getByText("Coming soon")).toBeVisible();
@@ -48,16 +48,16 @@ describe("NavLink", () => {
   });
 
   it("never marks a planned item current, even on its reserved route", () => {
-    setMockPathname("/teams/work");
+    setMockPathname("/companies/departments");
     renderWithProviders(<NavLink item={board} />);
-    expect(screen.getByRole("button", { name: "Work" })).not.toHaveAttribute("aria-current");
+    expect(screen.getByRole("button", { name: "Departments" })).not.toHaveAttribute("aria-current");
   });
 
   it("hides the label visually when icon-only but keeps the accessible name", () => {
     renderWithProviders(<NavLink item={board} iconOnly />);
-    const entry = screen.getByRole("button", { name: "Work" });
+    const entry = screen.getByRole("button", { name: "Departments" });
     expect(entry).toHaveAccessibleDescription("Coming soon");
-    expect(screen.getByText("Work")).toHaveClass("sr-only");
+    expect(screen.getByText("Departments")).toHaveClass("sr-only");
   });
 
   it("calls onNavigate on a plain click only", async () => {
@@ -86,7 +86,7 @@ describe("NavLink", () => {
     renderWithProviders(<NavLink item={board} layout="tab" />, {
       preferences: { locale: "fa", direction: "rtl", digits: "fa" },
     });
-    const entry = screen.getByRole("button", { name: "کارهای تیم" });
+    const entry = screen.getByRole("button", { name: "واحدها" });
     expect(entry).toHaveAccessibleDescription("به‌زودی");
   });
 });

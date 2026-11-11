@@ -10,11 +10,15 @@ import { Icon } from "@/components/ui/icon";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { useMyInvitations, useProjectDirectory } from "@/data/project-queries";
-import { getAppContext, projectHref } from "@/features/navigation/contexts";
+import { useMyTeamInvitations, useTeamDirectory } from "@/data/team-queries";
+import { getAppContext, projectHref, teamHref } from "@/features/navigation/contexts";
 import type { ContextId } from "@/features/navigation/types";
 import { ProjectSwitcherList } from "@/features/projects/shell/project-switcher-list";
 import { useOpenProjectSheet } from "@/features/projects/sheets/project-sheet-params";
 import { useCurrentProjectAccess } from "@/features/projects/use-current-project";
+import { TeamSwitcherList } from "@/features/teams/shell/team-switcher-list";
+import { useOpenTeamSheet } from "@/features/teams/sheets/team-sheet-params";
+import { useCurrentTeamAccess } from "@/features/teams/use-current-team";
 import { useActiveWorkspace, useShell } from "./shell-provider";
 import { useRouteScopedOpen, useShellScope } from "./use-shell-ui";
 
@@ -22,8 +26,9 @@ import { useRouteScopedOpen, useShellScope } from "./use-shell-ui";
  * Top-bar context switcher (Shell board · SH01): the context pill opens the
  * panel of contexts and their workspaces. Personal has one space; Projects
  * lists the project directory in sections (Recent · Owned · Member ·
- * Invitations · Archived) from the project repository; Teams / Companies stay
- * disabled until their phase. Choosing a project navigates to /projects/[id]
+ * Invitations · Archived) from the project repository; Teams lists Your teams ·
+ * Invitations · Archived from the team repository (TS-01); Companies stays
+ * disabled until Phase 4. Choosing a project navigates to /projects/[id]
  * (the URL is the source of truth).
  *
  * The panel carries its own surface, so it renders through the unstyled
@@ -45,8 +50,12 @@ export function ShellContextSwitcher({ variant = "pill" }: { variant?: "pill" | 
   const invitations = useMyInvitations();
   const current = useCurrentProjectAccess();
   const openSheet = useOpenProjectSheet();
+  const teamDirectory = useTeamDirectory();
+  const teamInvitations = useMyTeamInvitations();
+  const currentTeam = useCurrentTeamAccess();
+  const openTeamSheet = useOpenTeamSheet();
 
-  // Projects: the directory replaces the sample workspace list.
+  // Projects / Teams: the directories replace the sample workspace lists.
   const panelWorkspaces = useMemo(
     () => ({
       ...workspaces,
@@ -54,12 +63,19 @@ export function ShellContextSwitcher({ variant = "pill" }: { variant?: "pill" | 
         id: project.id,
         name: project.name,
       })),
+      team: (teamDirectory.data?.teams ?? []).map((team) => ({ id: team.id, name: team.name })),
     }),
-    [workspaces, directory.data],
+    [workspaces, directory.data, teamDirectory.data],
   );
   const contextLabel = t(getAppContext(scope).labelKey);
-  const name = scope === "project" ? (current.project?.name ?? contextLabel) : (workspace?.name ?? contextLabel);
-  const activeWorkspaceId = scope === "project" ? current.projectId : activeWorkspaceIds[scope];
+  const name =
+    scope === "project"
+      ? (current.project?.name ?? contextLabel)
+      : scope === "team"
+        ? (currentTeam.team?.name ?? t("items.allTeams"))
+        : (workspace?.name ?? contextLabel);
+  const activeWorkspaceId =
+    scope === "project" ? current.projectId : scope === "team" ? currentTeam.teamId : activeWorkspaceIds[scope];
 
   const go = (href: string) => {
     setOpen(false);
@@ -79,7 +95,13 @@ export function ShellContextSwitcher({ variant = "pill" }: { variant?: "pill" | 
       }
       onSelect={(context: ContextId, workspaceId) => {
         selectWorkspace(context, workspaceId);
-        go(context === "project" ? projectHref(workspaceId) : getAppContext(context).basePath);
+        go(
+          context === "project"
+            ? projectHref(workspaceId)
+            : context === "team"
+              ? teamHref(workspaceId)
+              : getAppContext(context).basePath,
+        );
       }}
       projects={
         <ProjectSwitcherList
@@ -91,6 +113,19 @@ export function ShellContextSwitcher({ variant = "pill" }: { variant?: "pill" | 
           onNewProject={() => {
             setOpen(false);
             openSheet("project-new");
+          }}
+        />
+      }
+      teams={
+        <TeamSwitcherList
+          directory={teamDirectory.data}
+          invitations={teamInvitations.data ?? []}
+          activeTeamId={currentTeam.teamId}
+          onOpen={(teamId) => go(teamHref(teamId))}
+          onAllTeams={() => go("/teams")}
+          onNewTeam={() => {
+            setOpen(false);
+            openTeamSheet("team-new");
           }}
         />
       }

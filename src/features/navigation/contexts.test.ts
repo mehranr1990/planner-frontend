@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { scopes } from "@/design-system/tokens/colors";
 import enNavigation from "@/messages/en/navigation.json";
 import faNavigation from "@/messages/fa/navigation.json";
-import { appContexts, getAppContext, getProjectContext, projectHref } from "./contexts";
+import { appContexts, getAppContext, getProjectContext, getTeamContext, projectHref, teamHref } from "./contexts";
 import { navItemIds } from "./types";
 
 type Tree = { [key: string]: string | Tree };
@@ -49,7 +49,8 @@ describe("navigation contexts", () => {
       ],
       // The collection (/projects, D7); a project's own nav comes from getProjectContext.
       project: ["overview"],
-      team: ["overview", "work", "people", "calendar", "checkins", "activity", "files"],
+      // The collection (/teams, TS-01); a team's own nav comes from getTeamContext.
+      team: ["overview"],
       company: ["overview", "departments", "projects", "people", "goals", "finance", "assets", "approvals", "reports"],
     });
   });
@@ -101,6 +102,7 @@ describe("navigation contexts", () => {
     expect(personal.nav.find((item) => item.id === "inbox")?.badge).toBe("inbox");
     for (const id of ["project", "team", "company"] as const) expect(getAppContext(id).rail).toBeUndefined();
     expect(getAppContext("project").collection).toBe(true);
+    expect(getAppContext("team").collection).toBe(true);
   });
 
   it("gives Personal the PM01 bottom bar: Today (Overview + My Day) · Tasks · Calendar", () => {
@@ -170,6 +172,32 @@ describe("navigation contexts", () => {
     expect(project.nav.find((item) => item.id === "risks")?.badge).toBe("risks");
     expect(getProjectContext("website-redesign")).toBe(project);
     expect(projectHref("a b", "board")).toBe("/projects/a%20b/board");
+  });
+
+  it("builds a team context per id: 3 groups + Settings, Activity is not a route (TS-01, T1–T3, T11)", () => {
+    const team = getTeamContext("design");
+    expect(team.basePath).toBe("/teams/design");
+    expect(team.workspaceId).toBe("design");
+    expect(team.collection).toBeUndefined();
+    expect(team.rail).toEqual({
+      groups: [
+        ["overview", "work", "calendar", "planning"],
+        ["projects", "goals", "people", "analytics"],
+        ["checkins", "recognition", "files"],
+      ],
+      footer: ["settings"],
+    });
+    expect(team.nav.map((item) => item.id)).not.toContain("activity");
+    expect(team.nav.find((item) => item.id === "checkins")).toMatchObject({ href: "/teams/design/check-ins", badge: "checkins" });
+    expect(team.nav.filter((item) => item.mobileOrder).map((item) => [item.id, item.mobileOrder])).toEqual([
+      ["overview", 1],
+      ["work", 2],
+      ["calendar", 3],
+    ]);
+    expect(team.nav.every((item) => item.status === "available")).toBe(true);
+    expect(getTeamContext("design")).toBe(team);
+    expect(teamHref("a b", "work")).toBe("/teams/a%20b/work");
+    expect(getAppContext("team").mobileNav?.map((item) => item.labelKey)).toEqual(["items.allTeams"]);
   });
 
   it("looks contexts up by id", () => {

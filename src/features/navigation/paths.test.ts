@@ -6,6 +6,7 @@ import {
   getMobileNavItems,
   getNavItemForPathname,
   getProjectIdFromPathname,
+  getTeamIdFromPathname,
   isNavItemActive,
   normalizePathname,
   resolveContext,
@@ -61,12 +62,12 @@ describe("getNavItemForPathname", () => {
     expect(getNavItemForPathname("/projects/website-redesign/board")?.item?.id).toBe("tasks");
     expect(getNavItemForPathname("/projects/website-redesign")?.item?.id).toBe("overview");
     expect(getNavItemForPathname("/projects")?.item?.id).toBe("overview");
-    expect(getNavItemForPathname("/teams/check-ins/")?.item?.id).toBe("checkins");
+    expect(getNavItemForPathname("/teams/design/check-ins/")?.item?.id).toBe("checkins");
     expect(getNavItemForPathname("/companies/approvals?filter=open")?.item?.id).toBe("approvals");
   });
 
   it("keeps the context but no item for unknown routes inside a context", () => {
-    const result = getNavItemForPathname("/teams/unknown");
+    const result = getNavItemForPathname("/teams/design/unknown");
     expect(result?.context.id).toBe("team");
     expect(result?.item).toBeUndefined();
   });
@@ -90,6 +91,15 @@ describe("getNavItemForPathname", () => {
     const url = getContextFromPathname("/projects/planner-app");
     expect(resolveContext(undefined, url)).toBe(url);
     expect(resolveContext("team", url).id).toBe("team");
+  });
+
+  it("reads the team id from the URL and resolves its context (TS-01, T1)", () => {
+    expect(getTeamIdFromPathname("/teams")).toBeUndefined();
+    expect(getTeamIdFromPathname("/teams/design/work")).toBe("design");
+    expect(getContextFromPathname("/teams/design")?.basePath).toBe("/teams/design");
+    expect(getContextFromPathname("/teams")?.collection).toBe(true);
+    expect(getNavItemForPathname("/teams/design")?.item?.id).toBe("overview");
+    expect(getNavItemForPathname("/teams/design/work/t1")?.item?.id).toBe("work");
   });
 });
 

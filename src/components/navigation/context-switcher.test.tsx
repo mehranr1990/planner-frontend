@@ -82,19 +82,29 @@ describe("ContextSwitcherPanel", () => {
     expect(projects).toHaveTextContent("Website Redesign · active");
   });
 
-  it("keeps Teams and Companies visible but disabled until their phase (SH01)", async () => {
+  it("enables Teams (TS-01) and keeps Companies visible but disabled until Phase 4", async () => {
     const user = userEvent.setup();
     const onSelect = renderPanel();
+    const companies = screen.getByRole("button", { name: /^Companies/ });
+    expect(companies).toHaveAttribute("aria-disabled", "true");
+    expect(companies).toHaveAccessibleDescription("Phase 4 · not available yet");
+    await user.click(companies);
+    expect(companies).not.toHaveAttribute("aria-expanded");
     const teams = screen.getByRole("button", { name: /^Teams/ });
-    expect(teams).toHaveAttribute("aria-disabled", "true");
-    expect(teams).toHaveAccessibleDescription("Phase 3 · not available yet");
-    expect(screen.getByRole("button", { name: /^Companies/ })).toHaveAccessibleDescription(
-      "Phase 4 · not available yet",
-    );
+    expect(teams).not.toHaveAttribute("aria-disabled");
     await user.click(teams);
-    expect(teams).not.toHaveAttribute("aria-expanded");
-    expect(screen.queryByText("Design Team")).not.toBeInTheDocument();
-    expect(onSelect).not.toHaveBeenCalled();
+    expect(teams).toHaveAttribute("aria-expanded", "true");
+    await user.click(screen.getByRole("button", { name: "Design Team" }));
+    expect(onSelect).toHaveBeenCalledWith("team", expect.any(String));
+  });
+
+  it("shows the Teams sections when given", async () => {
+    const user = userEvent.setup();
+    renderWithProviders(
+      <ContextSwitcherPanel activeContext="personal" workspaces={workspaces} onSelect={vi.fn()} teams={<p>Team sections</p>} />,
+    );
+    await user.click(screen.getByRole("button", { name: /^Teams/ }));
+    expect(screen.getByText("Team sections")).toBeInTheDocument();
   });
 
   it("keeps a single context expanded at a time", async () => {
@@ -155,7 +165,8 @@ describe("ContextSwitcherPanel", () => {
       preferences: { locale: "fa", direction: "rtl", digits: "fa" },
     });
     expect(screen.getByRole("group", { name: "تغییر حوزه" })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /^تیم‌ها/ })).toHaveTextContent("فاز ۳ · هنوز در دسترس نیست");
+    expect(screen.getByRole("button", { name: /^تیم‌ها/ })).toHaveTextContent("۲ فضای کاری");
+    expect(screen.getByRole("button", { name: /^شرکت‌ها/ })).toHaveTextContent("فاز ۴ · هنوز در دسترس نیست");
     expect(screen.getByRole("button", { name: "پروژه‌ی جدید" })).toHaveAttribute("aria-disabled", "true");
   });
 });

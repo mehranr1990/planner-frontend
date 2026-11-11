@@ -21,11 +21,12 @@ export interface ContextSwitcherPanelProps extends Omit<ComponentProps<"div">, "
    * Member · Invitations · Archived). Without it Projects lists `workspaces`.
    */
   projects?: ReactNode;
+  /** The Teams workspace list (TS-01: Your teams · Invitations · Archived). */
+  teams?: ReactNode;
 }
 
 /** Contexts whose phase has not shipped: visible, disabled, no fake records (SH01). */
 const FUTURE_CONTEXTS: Partial<Record<ContextId, "phase3" | "phase4">> = {
-  team: "phase3",
   company: "phase4",
 };
 
@@ -64,6 +65,7 @@ export function ContextSwitcherPanel({
   workspaces,
   onSelect,
   projects,
+  teams,
   className,
   onKeyDown,
   ...props
@@ -101,7 +103,7 @@ export function ContextSwitcherPanel({
             expanded={expanded === context.id}
             onToggle={() => setExpanded(expanded === context.id ? null : context.id)}
             onSelect={onSelect}
-            list={context.id === "project" ? projects : undefined}
+            list={context.id === "project" ? projects : context.id === "team" ? teams : undefined}
           />
         );
       })}

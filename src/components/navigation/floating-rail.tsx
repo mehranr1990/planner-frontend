@@ -17,6 +17,7 @@ import { useProjectDirectory } from "@/data/project-queries";
 import { projectHref } from "@/features/navigation/contexts";
 import { ProjectTile } from "@/features/projects/project-visuals";
 import { useOpenProjectSheet } from "@/features/projects/sheets/project-sheet-params";
+import { TeamCollectionRail } from "@/features/teams/shell/team-collection-rail";
 import { NavLink } from "./nav-link";
 import { useControllableState } from "./use-controllable-state";
 
@@ -73,6 +74,16 @@ export function FloatingRail({
 
   // Tooltips open toward the content: inline-end of the rail.
   const inlineEnd = direction === "rtl" ? "left" : "right";
+
+  if (context.collection && context.id === "team") {
+    return (
+      <TeamCollectionRail
+        ariaLabel={ariaLabel ?? t("rail.landmark", { context: t(context.labelKey) })}
+        tooltipSide={inlineEnd}
+        className={className}
+      />
+    );
+  }
 
   if (context.collection) {
     return (

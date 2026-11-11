@@ -36,7 +36,7 @@ describe("ContextChips", () => {
     expect(screen.getByRole("link", { name: "Teams" })).toHaveAttribute("aria-current", "page");
     unmount();
 
-    setMockPathname("/teams/people");
+    setMockPathname("/teams/design/people");
     renderWithProviders(<ContextChips />);
     expect(screen.getByRole("link", { name: "Teams" })).toHaveAttribute("aria-current", "true");
     expect(screen.getByRole("link", { name: "Personal" })).not.toHaveAttribute("aria-current");

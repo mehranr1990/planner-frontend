@@ -12,7 +12,14 @@ import { projectDemoStates, type ProjectDemoState } from "./demo-state";
  * access/page state. Never rendered in live API mode. State ids are
  * developer-facing and stay untranslated.
  */
-export function DemoStateSwitch({ value }: { value: ProjectDemoState | null }) {
+export function DemoStateSwitch({
+  value,
+  states = projectDemoStates,
+}: {
+  value: ProjectDemoState | string | null;
+  /** The state ids to offer (Teams pass their own list). */
+  states?: readonly string[];
+}) {
   const t = useTranslations("Access.demo");
   const router = useRouter();
   const pathname = usePathname();
@@ -40,7 +47,7 @@ export function DemoStateSwitch({ value }: { value: ProjectDemoState | null }) {
         className="h-8 rounded-pill border border-line bg-surface px-3 text-xs text-fg"
       >
         <option value="">{t("none")}</option>
-        {projectDemoStates.map((state) => (
+        {states.map((state) => (
           <option key={state} value={state}>
             {state}
           </option>

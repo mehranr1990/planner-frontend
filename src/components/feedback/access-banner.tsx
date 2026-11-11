@@ -13,9 +13,25 @@ import { cn } from "@/lib/cn";
  * guest — use `pickAccessBanner`.
  */
 
-export type AccessBannerKind = "offline" | "archived" | "conflict" | "read-only" | "guest";
+/** team-archived / team-read-only: the Team variants (TS-01), same slot in the priority order. */
+export type AccessBannerKind =
+  | "offline"
+  | "archived"
+  | "team-archived"
+  | "conflict"
+  | "read-only"
+  | "team-read-only"
+  | "guest";
 
-const PRIORITY: readonly AccessBannerKind[] = ["offline", "archived", "conflict", "read-only", "guest"];
+const PRIORITY: readonly AccessBannerKind[] = [
+  "offline",
+  "archived",
+  "team-archived",
+  "conflict",
+  "read-only",
+  "team-read-only",
+  "guest",
+];
 
 /** The one banner to show for the conditions that hold. */
 export function pickAccessBanner(conditions: Partial<Record<AccessBannerKind, boolean>>): AccessBannerKind | null {
@@ -29,6 +45,8 @@ const LOOK: Record<AccessBannerKind, { icon: LucideIcon; className: string; key:
     key: "offline",
   },
   archived: { icon: Archive, className: "bg-raised text-fg", key: "archived" },
+  "team-archived": { icon: Archive, className: "bg-raised text-fg", key: "teamArchived" },
+  "team-read-only": { icon: Eye, className: "bg-scope-soft text-scope-deep", key: "teamReadOnly" },
   conflict: {
     icon: RefreshCw,
     className: "bg-info-soft text-info-text",

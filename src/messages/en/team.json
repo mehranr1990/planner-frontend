@@ -1,0 +1,10 @@
+{
+  "setStatus": "Set status",
+  "status": {
+    "available": "Available",
+    "busy": "Busy",
+    "away": "Away",
+    "off": "Off today",
+    "none": "No status"
+  }
+}

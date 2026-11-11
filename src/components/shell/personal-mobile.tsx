@@ -43,7 +43,8 @@ export function PersonalMobileHeader() {
   );
 }
 
-function MoreTile({ item, onNavigate }: { item: NavItem; onNavigate: () => void }) {
+/** One More-sheet tile (icon disc + label + live badge); Teams reuse it. */
+export function MoreTile({ item, onNavigate }: { item: NavItem; onNavigate: () => void }) {
   const t = useTranslations("Navigation");
   const tBadges = useTranslations("Navigation.badges");
   const badge = useNavBadge(item);

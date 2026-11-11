@@ -54,7 +54,10 @@
     "milestones": "Milestones",
     "risks": "Risks",
     "workload": "Workload",
-    "members": "Members"
+    "members": "Members",
+    "allTeams": "All teams",
+    "planning": "Planning",
+    "recognition": "Recognition"
   },
   "rail": {
     "landmark": "{context} navigation",
@@ -65,7 +68,8 @@
   "badges": {
     "inbox": "{count} to triage",
     "withCount": "{label}, {count}",
-    "risks": "open high risks: {count}"
+    "risks": "open high risks: {count}",
+    "checkins": "Your check-in reply is missing"
   },
   "switcher": {
     "title": "Context",

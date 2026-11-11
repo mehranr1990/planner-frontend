@@ -79,6 +79,26 @@
     "quota": {
       "title": "Limit reached",
       "description": "Future only — no quota is enforced while all features are free."
+    },
+    "teamNotAvailable": {
+      "title": "This team isn’t available",
+      "description": "It may not exist, or you’re not a member. Ask the person who shared the link.",
+      "action": "Go to my teams"
+    },
+    "teamInvite": {
+      "title": "You’re invited to “{team}”",
+      "description": "{inviter} invited you as {role}. Joining the team does not give access to the team’s projects.",
+      "accept": "Accept",
+      "decline": "Decline"
+    },
+    "teamRemoved": {
+      "title": "Your access to this team was removed",
+      "description": "Team tasks left your Personal lists. Drafts kept on this device were discarded.",
+      "action": "Go to my teams"
+    },
+    "teamJoined": {
+      "title": "You joined the team",
+      "description": "Joining a team gives team tasks, calendar, goals and files — never automatic access to every project."
     }
   },
   "banners": {
@@ -89,7 +109,9 @@
     "offline": "Offline · showing last loaded version",
     "retry": "Retry",
     "conflict": "Updated by {person} a moment ago",
-    "reload": "Reload"
+    "reload": "Reload",
+    "teamReadOnly": "You’re a Viewer in this team · read only",
+    "teamArchived": "Team archived {date} · read-only · linked projects stay active"
   },
   "demo": {
     "label": "Demo state",

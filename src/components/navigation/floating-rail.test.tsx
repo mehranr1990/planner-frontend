@@ -9,24 +9,65 @@ import { FloatingRail } from "./floating-rail";
 
 describe("FloatingRail", () => {
   it("is a navigation landmark named after the URL's context", () => {
-    setMockPathname("/teams");
+    setMockPathname("/companies");
     renderWithProviders(<FloatingRail />);
-    const nav = screen.getByRole("navigation", { name: "Teams navigation" });
-    expect(nav).toHaveAttribute("data-scope", "team");
-    expect(within(nav).getAllByRole("listitem")).toHaveLength(7);
+    const nav = screen.getByRole("navigation", { name: "Companies navigation" });
+    expect(nav).toHaveAttribute("data-scope", "company");
+    expect(within(nav).getAllByRole("listitem")).toHaveLength(9);
   });
 
-  it("marks the overview current and renders planned items as disabled non-links (Teams)", () => {
-    setMockPathname("/teams");
+  it("marks the overview current and renders planned items as disabled non-links (Companies)", () => {
+    setMockPathname("/companies");
     renderWithProviders(<FloatingRail />);
-    const nav = screen.getByRole("navigation", { name: "Teams navigation" });
+    const nav = screen.getByRole("navigation", { name: "Companies navigation" });
     const links = within(nav).getAllByRole("link");
     expect(links).toHaveLength(1);
     expect(links[0]).toHaveAccessibleName("Overview");
     expect(links[0]).toHaveAttribute("aria-current", "page");
-    const work = within(nav).getByRole("button", { name: "Work" });
+    const work = within(nav).getByRole("button", { name: "Departments" });
     expect(work).toHaveAttribute("aria-disabled", "true");
     expect(work).toHaveAccessibleDescription("Coming soon");
+  });
+
+  describe("Teams (TS-01)", () => {
+    it("collection: All teams, my active teams as tiles, New team", async () => {
+      setMockPathname("/teams");
+      renderWithProviders(<FloatingRail />);
+      const nav = screen.getByRole("navigation", { name: "Teams navigation" });
+      expect(nav).toHaveAttribute("data-rail", "collection");
+      expect(within(nav).getByRole("link", { name: "All teams" })).toHaveAttribute("aria-current", "page");
+      const yours = await within(nav).findByRole("list", { name: "Your teams" });
+      expect(within(yours).getAllByRole("link").map((link) => link.getAttribute("href"))).toEqual([
+        "/teams/design",
+        "/teams/mobile",
+        "/teams/growth",
+      ]);
+      expect(within(nav).getByRole("button", { name: "New team" })).toHaveAttribute("aria-haspopup", "dialog");
+    });
+
+    it("inside a team: 3 groups + Settings, hidden by role, Check-ins badge", async () => {
+      setMockPathname("/teams/design/work");
+      renderWithProviders(<FloatingRail />);
+      const nav = screen.getByRole("navigation", { name: "Teams navigation" });
+      expect(nav).toHaveAttribute("data-rail", "grouped");
+      expect(within(nav).getByRole("link", { name: "Work" })).toHaveAttribute("aria-current", "page");
+      await within(nav).findByRole("link", { name: "Planning" });
+      expect(within(nav).getAllByRole("link").map((link) => link.getAttribute("href"))).toEqual([
+        "/teams/design",
+        "/teams/design/work",
+        "/teams/design/calendar",
+        "/teams/design/planning",
+        "/teams/design/projects",
+        "/teams/design/goals",
+        "/teams/design/people",
+        "/teams/design/analytics",
+        "/teams/design/check-ins",
+        "/teams/design/recognition",
+        "/teams/design/files",
+      ]);
+      expect(within(nav).queryByRole("link", { name: /Activity/ })).not.toBeInTheDocument();
+      expect(within(nav).getByRole("link", { name: /^Check-ins, / })).toBeInTheDocument();
+    });
   });
 
   describe("Projects (SH01)", () => {
@@ -171,7 +212,7 @@ describe("FloatingRail", () => {
   it("toggles expanded state with aria-expanded, aria-controls and visible labels (contexts with a flat rail)", async () => {
     const user = userEvent.setup();
     const onExpandedChange = vi.fn();
-    setMockPathname("/teams");
+    setMockPathname("/companies");
     renderWithProviders(<FloatingRail onExpandedChange={onExpandedChange} />);
 
     const toggle = screen.getByRole("button", { name: "Expand navigation" });
@@ -203,13 +244,13 @@ describe("FloatingRail", () => {
       const [expanded, setExpanded] = useState(true);
       return (
         <>
-          <FloatingRail context="team" expanded={expanded} onExpandedChange={setExpanded} />
+          <FloatingRail context="company" expanded={expanded} onExpandedChange={setExpanded} />
           <output>{String(expanded)}</output>
         </>
       );
     }
     renderWithProviders(<Controlled />);
-    expect(screen.getByRole("navigation", { name: "Teams navigation" })).toBeInTheDocument();
+    expect(screen.getByRole("navigation", { name: "Companies navigation" })).toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: "Collapse navigation" }));
     expect(screen.getByText("false")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Expand navigation" })).toHaveAttribute("aria-expanded", "false");
@@ -228,9 +269,9 @@ describe("FloatingRail", () => {
     expect(screen.getByRole("navigation", { name: "Personal navigation" })).toBeInTheDocument();
   });
 
-  it("expands a flat rail in Persian RTL with the same item order (Teams)", async () => {
+  it("expands a flat rail in Persian RTL with the same item order (Companies)", async () => {
     const user = userEvent.setup();
-    setMockPathname("/teams");
+    setMockPathname("/companies");
     renderWithProviders(
       <div dir="rtl">
         <FloatingRail />

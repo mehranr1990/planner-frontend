@@ -22,18 +22,18 @@ describe("ContextNavList", () => {
   it("calls onNavigate when an available item is chosen", async () => {
     const user = userEvent.setup();
     const onNavigate = vi.fn();
-    renderWithProviders(<ContextNavList context="team" onNavigate={onNavigate} />);
-    await user.click(screen.getByRole("button", { name: "People" }));
+    renderWithProviders(<ContextNavList context="company" onNavigate={onNavigate} />);
+    await user.click(screen.getByRole("button", { name: "Departments" }));
     expect(onNavigate).not.toHaveBeenCalled();
     await user.click(screen.getByRole("link", { name: "Overview" }));
     expect(onNavigate).toHaveBeenCalledTimes(1);
   });
 
   it("accepts a custom accessible name and translates", () => {
-    renderWithProviders(<ContextNavList context="team" aria-label="Jump to" />, {
+    renderWithProviders(<ContextNavList context="company" aria-label="Jump to" />, {
       preferences: { locale: "fa", direction: "rtl", digits: "fa" },
     });
     const list = screen.getByRole("list", { name: "Jump to" });
-    expect(within(list).getByRole("button", { name: "کارهای تیم" })).toHaveAccessibleDescription("به‌زودی");
+    expect(within(list).getByRole("button", { name: "واحدها" })).toHaveAccessibleDescription("به‌زودی");
   });
 });

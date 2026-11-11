@@ -34,11 +34,11 @@ describe("MobileBottomNav", () => {
     expect(screen.getByRole("link", { name: "Tasks" })).not.toHaveAttribute("aria-current");
   });
 
-  it("marks the active item and disables planned ones (Teams)", () => {
-    setMockPathname("/teams");
+  it("marks the active item and disables planned ones (Companies)", () => {
+    setMockPathname("/companies");
     renderWithProviders(<MobileBottomNav fabLabel="Quick add" />);
     expect(screen.getByRole("link", { name: "Overview" })).toHaveAttribute("aria-current", "page");
-    const work = screen.getByRole("button", { name: "Work" });
+    const work = screen.getByRole("button", { name: "Approvals" });
     expect(work).toHaveAttribute("aria-disabled", "true");
     expect(work).toHaveAccessibleDescription("Coming soon");
   });

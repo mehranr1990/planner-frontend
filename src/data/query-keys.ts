@@ -120,3 +120,13 @@ export const projectKeys = {
   /** Everything scoped to one project (cleared on revoke / context switch). */
   scope: (id: string) => [...projectKeys.all, "scope", id] as const,
 };
+
+export const teamKeys = {
+  all: ["teams"] as const,
+  directory: () => [...teamKeys.all, "directory"] as const,
+  invitations: () => [...teamKeys.all, "invitations"] as const,
+  /** One team's access answer; the demo preview is part of the key. */
+  access: (id: string, preview: string | null = null) => [...teamKeys.all, "access", id, preview] as const,
+  /** Everything scoped to one team (cleared on removal / context switch). */
+  scope: (id: string) => [...teamKeys.all, "scope", id] as const,
+};

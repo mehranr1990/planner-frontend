@@ -1,5 +1,6 @@
 import {
   Activity,
+  Award,
   Box,
   Briefcase,
   Building2,
@@ -17,6 +18,7 @@ import {
   Inbox,
   Kanban,
   LayoutDashboard,
+  ListTodo,
   Lightbulb,
   MessageSquareCheck,
   NotebookText,
@@ -75,6 +77,8 @@ export const navItemIcons: Record<NavItemId, LucideIcon> = {
   assets: Box,
   approvals: CircleCheck,
   reports: FileChartColumn,
+  planning: ListTodo,
+  recognition: Award,
 };
 
 /** URL segment per item; the overview lives at the context base path itself. */
@@ -109,6 +113,8 @@ const segments: Record<Exclude<NavItemId, "overview">, string> = {
   assets: "assets",
   approvals: "approvals",
   reports: "reports",
+  planning: "planning",
+  recognition: "recognition",
 };
 
 interface ContextSpec {
@@ -143,6 +149,7 @@ function navItem(
     ...(slot >= 0 ? { mobileOrder: slot + 1 } : {}),
     ...(id === "inbox" ? { badge: "inbox" as const } : {}),
     ...(id === "risks" ? { badge: "risks" as const } : {}),
+    ...(id === "checkins" ? { badge: "checkins" as const } : {}),
   };
 }
 
@@ -195,6 +202,7 @@ const personalMobileNav = (basePath: string): NavItem[] => [
 ];
 
 const PROJECTS_BASE = "/projects";
+const TEAMS_BASE = "/teams";
 
 /** Contexts in display order: Personal, Projects, Teams, Companies. */
 export const appContexts: readonly AppContext[] = [
@@ -250,13 +258,26 @@ export const appContexts: readonly AppContext[] = [
       },
     ],
   }),
+  // The collection (/teams, TS-01): "All teams"; the rail lists teams instead.
   defineContext({
     id: "team",
-    basePath: "/teams",
+    basePath: TEAMS_BASE,
     icon: Users,
     canAddWorkspace: true,
-    nav: ["overview", "work", "people", "calendar", "checkins", "activity", "files"],
-    mobile: ["overview", "work", "calendar"],
+    nav: ["overview"],
+    mobile: ["overview"],
+    available: "all",
+    collection: true,
+    mobileNav: (basePath) => [
+      {
+        id: "overview",
+        labelKey: "items.allTeams",
+        icon: Users,
+        href: basePath,
+        status: "available",
+        mobileOrder: 1,
+      },
+    ],
   }),
   defineContext({
     id: "company",
@@ -329,5 +350,49 @@ export function getProjectContext(projectId: string): AppContext {
 /** Route of a project module (overview = the project root). */
 export function projectHref(projectId: string, item: NavItemId | "board" = "overview"): string {
   const basePath = `${PROJECTS_BASE}/${encodeURIComponent(projectId)}`;
+  return item === "overview" ? basePath : `${basePath}/${segments[item]}`;
+}
+
+/*
+ * Inside a team (TS-01, T1/T2/T11): routes are /teams/[id]/…, the rail is
+ * three groups + Settings (Activity is an Overview tab, not a route), and the
+ * bottom bar is Overview · Work · (+) · Calendar · More. Built per team id,
+ * cached. Items the role cannot open are hidden by the nav filter.
+ */
+export const teamRail = {
+  groups: [
+    ["overview", "work", "calendar", "planning"],
+    ["projects", "goals", "people", "analytics"],
+    ["checkins", "recognition", "files"],
+  ],
+  footer: ["settings"],
+} as const satisfies AppContext["rail"];
+
+const teamNavIds: readonly NavItemId[] = [...teamRail.groups.flat(), ...teamRail.footer];
+const teamContexts = new Map<string, AppContext>();
+
+/** The team context for one team id (nav hrefs carry the id). */
+export function getTeamContext(teamId: string): AppContext {
+  const cached = teamContexts.get(teamId);
+  if (cached) return cached;
+  const base = getAppContext("team");
+  const basePath = `${TEAMS_BASE}/${encodeURIComponent(teamId)}`;
+  const mobile: NavItemId[] = ["overview", "work", "calendar"];
+  const context: AppContext = {
+    ...base,
+    basePath,
+    nav: teamNavIds.map((id) => navItem(id, basePath, mobile, "all")),
+    rail: teamRail,
+    workspaceId: teamId,
+  };
+  delete context.collection;
+  delete context.mobileNav;
+  teamContexts.set(teamId, context);
+  return context;
+}
+
+/** Route of a team module (overview = the team root). */
+export function teamHref(teamId: string, item: NavItemId = "overview"): string {
+  const basePath = `${TEAMS_BASE}/${encodeURIComponent(teamId)}`;
   return item === "overview" ? basePath : `${basePath}/${segments[item]}`;
 }

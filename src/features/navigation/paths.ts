@@ -1,4 +1,4 @@
-import { appContexts, defaultContextId, getAppContext, getProjectContext } from "./contexts";
+import { appContexts, defaultContextId, getAppContext, getProjectContext, getTeamContext } from "./contexts";
 import type { AppContext, ContextId, NavItem } from "./types";
 
 /*
@@ -22,7 +22,16 @@ function isWithin(pathname: string, base: string): boolean {
 
 /** The project id in /projects/[id]/…, or undefined on the collection and outside Projects. */
 export function getProjectIdFromPathname(pathname: string | null | undefined): string | undefined {
-  const match = /^\/projects\/([^/]+)/.exec(normalizePathname(pathname));
+  return workspaceIdIn(/^\/projects\/([^/]+)/, pathname);
+}
+
+/** The team id in /teams/[id]/…, or undefined on the collection (/teams) and outside Teams (TS-01, T1). */
+export function getTeamIdFromPathname(pathname: string | null | undefined): string | undefined {
+  return workspaceIdIn(/^\/teams\/([^/]+)/, pathname);
+}
+
+function workspaceIdIn(pattern: RegExp, pathname: string | null | undefined): string | undefined {
+  const match = pattern.exec(normalizePathname(pathname));
   if (!match) return undefined;
   try {
     return decodeURIComponent(match[1]!);
@@ -31,13 +40,19 @@ export function getProjectIdFromPathname(pathname: string | null | undefined): s
   }
 }
 
-/** The context for a URL; inside a project it is that project's context (hrefs carry the id, D1). */
+/** The context for a URL; inside a project or team it is that workspace's context (hrefs carry the id, D1 · T1). */
 export function getContextFromPathname(pathname: string | null | undefined): AppContext | undefined {
   const path = normalizePathname(pathname);
   const context = appContexts.find((candidate) => isWithin(path, candidate.basePath));
-  if (context?.id !== "project") return context;
-  const projectId = getProjectIdFromPathname(path);
-  return projectId ? getProjectContext(projectId) : context;
+  if (context?.id === "project") {
+    const projectId = getProjectIdFromPathname(path);
+    return projectId ? getProjectContext(projectId) : context;
+  }
+  if (context?.id === "team") {
+    const teamId = getTeamIdFromPathname(path);
+    return teamId ? getTeamContext(teamId) : context;
+  }
+  return context;
 }
 
 /**

@@ -1,0 +1,42 @@
+{
+  "title": "All teams",
+  "new": "New team",
+  "forYou": "{n} for you",
+  "empty": "No teams yet",
+  "emptyDescription": "Teams plan the week together. Create one or accept an invitation.",
+  "invite": {
+    "note": "Joining does not give project access by itself"
+  },
+  "roles": {
+    "owner": "Owner",
+    "admin": "Admin",
+    "lead": "Lead",
+    "member": "Member",
+    "viewer": "Viewer"
+  },
+  "people": "{n} people",
+  "switcher": {
+    "find": "Find a team",
+    "yours": "Your teams",
+    "invitations": "Invitations",
+    "archived": "Archived",
+    "invitedBy": "Invited by {name} as {role}",
+    "review": "Review",
+    "archivedOn": "Archived {date}",
+    "readOnly": "Read-only",
+    "noMatch": "No teams match.",
+    "all": "All teams"
+  },
+  "rail": {
+    "yours": "Your teams"
+  },
+  "breadcrumb": "Teams",
+  "comingSoon": {
+    "title": "{module} is coming soon",
+    "description": "This part of the team is designed and arrives in a later step."
+  },
+  "more": {
+    "status": "Set status"
+  },
+  "newTask": "New task"
+}

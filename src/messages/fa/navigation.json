@@ -41,7 +41,7 @@
     "analytics": "تحلیل‌ها",
     "work": "کارهای تیم",
     "people": "افراد",
-    "checkins": "گزارش وضعیت",
+    "checkins": "چک‌این",
     "activity": "فعالیت‌ها",
     "files": "فایل‌ها",
     "departments": "واحدها",
@@ -54,7 +54,10 @@
     "milestones": "نقاط عطف",
     "risks": "ریسک‌ها",
     "workload": "بار کاری",
-    "members": "اعضا"
+    "members": "اعضا",
+    "allTeams": "همه‌ی تیم‌ها",
+    "planning": "برنامه‌ریزی",
+    "recognition": "قدردانی"
   },
   "rail": {
     "landmark": "ناوبری {context}",
@@ -65,7 +68,8 @@
   "badges": {
     "inbox": "{count} مورد برای بررسی",
     "withCount": "{label}، {count}",
-    "risks": "ریسک بالای باز: {count}"
+    "risks": "ریسک بالای باز: {count}",
+    "checkins": "پاسخ چک‌این شما مانده است"
   },
   "switcher": {
     "title": "حوزه",

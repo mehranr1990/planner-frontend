@@ -1,5 +1,8 @@
 import { personalFixtures } from "@/fixtures/personal";
 import { createMockProjects, projectRepositories } from "./mock-projects";
+import { createMockTeams } from "./mock-teams";
+import type { MockProjectsStore } from "./mock-projects";
+import type { TeamRepositories } from "../team-repositories";
 import type { SampleFinance } from "@/fixtures/personal/finance";
 import { SAMPLE_NOW } from "@/fixtures/personal/sample-day";
 import {
@@ -167,6 +170,20 @@ function resolveSpan(placement: BlockPlacement, fallbackMinutes: number): { star
     throw new RepositoryError("invalid", "A block cannot leave its day");
   }
   return { startMinutes, durationMinutes };
+}
+
+/** Projects plus Teams (Phase 3 mock): team project counts only include projects the viewer can open. */
+function projectsAndTeams(
+  projects: MockProjectsStore,
+  options: { respond<T>(value: T): Promise<T>; today: string; now: string },
+): ReturnType<typeof projectRepositories> & TeamRepositories {
+  const teams = createMockTeams({ ...options, canOpenProject: (id) => projects.findProject(id) !== undefined });
+  return {
+    ...projectRepositories(projects),
+    teams: teams.teams,
+    teamInvitations: teams.teamInvitations,
+    presence: teams.presence,
+  };
 }
 
 export function createMockRepositories({ fixtures, latencyMs = 0 }: MockRepositoriesOptions = {}): Repositories {
@@ -803,7 +820,7 @@ export function createMockRepositories({ fixtures, latencyMs = 0 }: MockReposito
       moods: source.moods ?? [],
       respond,
     }),
-    ...projectRepositories(
+    ...projectsAndTeams(
       createMockProjects({
         respond,
         today,
@@ -834,6 +851,7 @@ export function createMockRepositories({ fixtures, latencyMs = 0 }: MockReposito
           else tasks.push(projected);
         },
       }),
+      { respond, today, now: nowInstant },
     ),
     review: createMockReview({ reviews: source.reviews ?? [], now: nowInstant, respond }),
     brainDump: createMockBrainDump({

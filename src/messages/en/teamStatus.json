@@ -1,0 +1,23 @@
+{
+  "title": "Your status",
+  "titleIn": "Your status in {team}",
+  "status": "Status",
+  "note": "Note (optional)",
+  "notePlaceholder": "e.g. deep work",
+  "clearAfter": "Clear after",
+  "options": {
+    "hour": "1 hour",
+    "today": "Today",
+    "week": "This week",
+    "never": "Never"
+  },
+  "allTeams": "Same status in all my teams",
+  "shareWorkingOn": "Share what I’m working on",
+  "manualHint": "Set by you only. Nothing is read from calendars or activity.",
+  "set": "Set",
+  "clear": "Clear status",
+  "saved": "Status set",
+  "cleared": "Status cleared",
+  "failed": "Couldn’t save your status. Try again.",
+  "noRight": "Viewers can’t set a status in this team."
+}
