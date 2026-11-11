@@ -8,7 +8,13 @@ import { RepositoryError } from "./repositories";
 import { taskKeys, teamKeys } from "./query-keys";
 import type { DeclineReason } from "./project-domain";
 import type { SetPresenceInput, TeamTaskStatus } from "./team-domain";
-import type { NewTeamTaskInput, TeamAccessOptions, TeamTaskQuery } from "./team-repositories";
+import type {
+  NewTeamInput,
+  NewTeamTaskInput,
+  TeamAccessOptions,
+  TeamInviteInput,
+  TeamTaskQuery,
+} from "./team-repositories";
 
 /*
  * React Query hooks for Teams (Phase 3). The UI never fetches: it reads these
@@ -237,4 +243,20 @@ export function useTeamTaskDetailActions(teamId: string) {
     }),
     remind: useMutation({ mutationFn: (taskId: string) => teamTasks.remind(taskId) }),
   };
+}
+
+// ── Team sheets (TM-90) ─────────────────────────────────────────────────
+
+export function useCreateTeam() {
+  const { teams } = useRepositories();
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: (input: NewTeamInput) => teams.create(input),
+    onSuccess: () => client.invalidateQueries({ queryKey: teamKeys.all }),
+  });
+}
+
+export function useSendTeamInvites(teamId: string) {
+  const { teamInvitations } = useRepositories();
+  return useMutation({ mutationFn: (input: TeamInviteInput) => teamInvitations.send(teamId, input) });
 }

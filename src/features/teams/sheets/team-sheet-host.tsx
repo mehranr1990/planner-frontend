@@ -7,6 +7,8 @@ import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { consumeOpenedSheet, SHEET_PARAM } from "@/features/sheets/sheet-params";
 import { useCurrentTeamAccess } from "../use-current-team";
 import { isTeamSheetId, teamSheetHref, type TeamSheetId } from "./team-sheet-params";
+import { NewTeamSheet } from "./new-team-sheet";
+import { TeamInviteSheet } from "./team-invite-sheet";
 import { TeamStatusSheet } from "./team-status-sheet";
 
 /*
@@ -23,6 +25,8 @@ export function TeamSheetHost() {
 
 function TeamSheet({ id }: { id: TeamSheetId }) {
   const tStatus = useTranslations("TeamStatus");
+  const tNew = useTranslations("TeamNew");
+  const tInvite = useTranslations("TeamInvite");
   const router = useRouter();
   const pathname = usePathname();
   const opener = useRef<Element | null>(typeof document === "undefined" ? null : document.activeElement);
@@ -40,11 +44,17 @@ function TeamSheet({ id }: { id: TeamSheetId }) {
     else document.getElementById("main-content")?.focus();
   }, []);
 
-  // team-status needs a team (it is per team); elsewhere nothing opens.
-  if (id === "team-status" && !team) return null;
-  if (id !== "team-status") return null;
+  // team-status and team-invite act on the team in the URL; team-new opens anywhere under /teams.
+  if (id !== "team-new" && !team) return null;
 
-  const title = team ? tStatus("titleIn", { team: team.name }) : tStatus("title");
+  const title =
+    id === "team-new"
+      ? tNew("title")
+      : id === "team-invite"
+        ? tInvite("title", { team: team?.name ?? "" })
+        : team
+          ? tStatus("titleIn", { team: team.name })
+          : tStatus("title");
   return (
     <Sheet
       defaultOpen
@@ -60,6 +70,8 @@ function TeamSheet({ id }: { id: TeamSheetId }) {
         data-team-sheet={id}
         onCloseAutoFocus={onCloseAutoFocus}
       >
+        {id === "team-new" ? <NewTeamSheet onDone={close} /> : null}
+        {id === "team-invite" ? <TeamInviteSheet onDone={close} /> : null}
         {id === "team-status" ? <TeamStatusSheet onDone={close} /> : null}
       </SheetContent>
     </Sheet>

@@ -1,0 +1,19 @@
+{
+  "title": "New team",
+  "name": "Name",
+  "namePlaceholder": "Design Team",
+  "nameRequired": "Give the team a name",
+  "description": "Description",
+  "descriptionPlaceholder": "What this team works on (optional)",
+  "planning": "Planning",
+  "weekly": "Weekly plan",
+  "sprints": "Sprints + backlog",
+  "planningHint": "Can be changed later in Settings.",
+  "company": "Belongs to a company",
+  "companyHint": "available in a later phase",
+  "owner": "You become the Owner.",
+  "cancel": "Cancel",
+  "submit": "Create team",
+  "created": "{team} created",
+  "failed": "Couldn’t create the team. Try again."
+}

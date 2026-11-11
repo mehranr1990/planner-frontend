@@ -16,6 +16,7 @@ import type {
   TeamAccess,
   TeamDirectory,
   TeamInvitation,
+  TeamPlanningMode,
   TeamPresence,
   TeamRole,
   TeamSummary,
@@ -45,6 +46,8 @@ export interface TeamRepository {
   access(id: string, options?: TeamAccessOptions): Promise<TeamAccess>;
   /** Owner/Admin: archived → active. */
   restore(id: string): Promise<TeamSummary>;
+  /** TM-90 New team: the creator becomes Owner. No company association in Phase 3. */
+  create(input: NewTeamInput): Promise<TeamSummary>;
   /** Members with team role and job title (A–Z is the UI's job). */
   members(id: string): Promise<readonly TeamMember[]>;
   /** Linked projects the viewer can open — never a hidden one or a hidden count. */
@@ -122,8 +125,27 @@ export interface TeamTaskRepository {
   remind(taskId: string): Promise<void>;
 }
 
+export interface NewTeamInput {
+  name: string;
+  description?: string;
+  planningMode: TeamPlanningMode;
+}
+
+export interface TeamInviteInput {
+  emails: readonly string[];
+  /** Owner only by transfer; Admin only from an Owner. */
+  role: Exclude<TeamRole, "owner">;
+}
+
 /** teamInvitationRepo */
 export interface TeamInvitationRepository {
+  /**
+   * TM-90 Invite: the same answer for every address (never reveals whether an
+   * account exists); verified accounts get an invitation. Joining never
+   * grants project access. Rejects "invalid" for a malformed email,
+   * "forbidden" without invite rights (Admin role: Owner only).
+   */
+  send(teamId: string, input: TeamInviteInput): Promise<{ sent: number }>;
   /** Pending invitations for me (public-safe preview). */
   listMine(): Promise<readonly TeamInvitation[]>;
   /** Accepts and returns the team id to open. Joining never grants project access. */

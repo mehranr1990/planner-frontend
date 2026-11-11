@@ -1,0 +1,33 @@
+{
+  "title": "Invite to {team}",
+  "emails": "Email addresses",
+  "addEmail": "email",
+  "removeEmail": "Remove {email}",
+  "role": "Role",
+  "roles": {
+    "admin": {
+      "label": "Admin",
+      "description": "settings, members"
+    },
+    "lead": {
+      "label": "Lead",
+      "description": "plans the week, assigns, check-ins"
+    },
+    "member": {
+      "label": "Member",
+      "description": "works on team tasks"
+    },
+    "viewer": {
+      "label": "Viewer",
+      "description": "read only"
+    }
+  },
+  "note": "Joining the team does not give access to the team’s projects.",
+  "noteMore": "Share projects separately.",
+  "verified": "If the address belongs to a verified account they get an invitation; we never say whether an account exists.",
+  "invalid": "Check the email addresses.",
+  "noRight": "Your role can’t invite people to this team.",
+  "cancel": "Cancel",
+  "submit": "Send invitation",
+  "sent": "{n, plural, one {Invitation sent} other {# invitations sent}}"
+}

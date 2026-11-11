@@ -253,6 +253,43 @@ export function createMockTeams({
         recent.unshift(id);
         return respond({ status: "ok" as const, team: shown, capabilities: teamCapabilities(role, lifecycle) });
       },
+      async create(input) {
+        const name = input.name.trim();
+        if (!name) throw new RepositoryError("invalid", "Name required");
+        const base = name.toLocaleLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "team";
+        let id = base;
+        for (let n = 2; find(id); n += 1) id = base + "-" + n;
+        const me = { id: "me", name: "Mehran R.", initials: "MR" };
+        const initials =
+          name
+            .split(/\s+/)
+            .filter(Boolean)
+            .slice(0, 2)
+            .map((word) => Array.from(word)[0] ?? "")
+            .join("")
+            .toLocaleUpperCase() || "T";
+        const team: TeamFixture = {
+          id,
+          name,
+          initials,
+          tint: "indigo",
+          description: input.description?.trim() ?? "",
+          role: "owner",
+          lifecycle: "active",
+          planningMode: input.planningMode,
+          members: [me],
+          memberCount: 1,
+          leadId: "me",
+          openTasks: 0,
+          forYou: 0,
+          linkedProjectIds: [],
+          checkinMissing: false,
+          updatedAt: now,
+        };
+        teams.push(team);
+        recent.unshift(id);
+        return respond(summary(team));
+      },
       async restore(id) {
         const team = memberOf(id);
         if (!teamCapabilities(team.role, team.lifecycle).restore) throw new RepositoryError("forbidden", "Owner/Admin only");
@@ -474,6 +511,17 @@ export function createMockTeams({
       },
     },
     teamInvitations: {
+      async send(teamId, input) {
+        const team = memberOf(teamId);
+        const caps = teamCapabilities(team.role, team.lifecycle);
+        if (!caps.invite || (input.role === "admin" && !caps.inviteAdmin)) throw new RepositoryError("forbidden", "No invite rights");
+        const valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (input.emails.length === 0 || input.emails.some((email) => !valid.test(email))) {
+          throw new RepositoryError("invalid", "Bad email");
+        }
+        // Same answer for every address: never reveals whether an account exists.
+        return respond({ sent: input.emails.length });
+      },
       async listMine() {
         return respond(invitations.map((invitation) => ({ ...invitation })));
       },

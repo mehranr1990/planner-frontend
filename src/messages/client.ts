@@ -45,6 +45,8 @@ import enCaseFlow from "./en/caseFlow.json";
 import enTeam from "./en/team.json";
 import enTeamWork from "./en/teamWork.json";
 import enTeamTask from "./en/teamTask.json";
+import enTeamNew from "./en/teamNew.json";
+import enTeamInvite from "./en/teamInvite.json";
 import enTeamStatus from "./en/teamStatus.json";
 import faAccess from "./fa/access.json";
 import faAuth from "./fa/auth.json";
@@ -92,6 +94,8 @@ import faCaseFlow from "./fa/caseFlow.json";
 import faTeam from "./fa/team.json";
 import faTeamWork from "./fa/teamWork.json";
 import faTeamTask from "./fa/teamTask.json";
+import faTeamNew from "./fa/teamNew.json";
+import faTeamInvite from "./fa/teamInvite.json";
 import faTeamStatus from "./fa/teamStatus.json";
 
 /*
@@ -150,6 +154,8 @@ const en = {
   Team: enTeam,
   TeamWork: enTeamWork,
   TeamTask: enTeamTask,
+  TeamNew: enTeamNew,
+  TeamInvite: enTeamInvite,
   TeamStatus: enTeamStatus,
 };
 
@@ -202,6 +208,8 @@ const fa: ClientMessages = {
   Team: faTeam,
   TeamWork: faTeamWork,
   TeamTask: faTeamTask,
+  TeamNew: faTeamNew,
+  TeamInvite: faTeamInvite,
   TeamStatus: faTeamStatus,
 };
 
