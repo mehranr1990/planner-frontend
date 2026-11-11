@@ -1,0 +1,72 @@
+# Teams (Phase 3) — implementation notes
+
+Result of PROMPTS.md T0 (read-only survey, 2026-11-11). Subagents: read this first; do not re-explore.
+Design order: `design/team/README.md` → `SCREENS.md` → `DECISIONS.md` → `PEOPLE_FLOW.md` (when the prompt mentions it) → only the SPEC.md section of the current screen (grep/line ranges). Never open `boards/*.dc.html`; only the current screen's screenshots (light + Dark, tab captures if needed).
+**Also read `design/project/IMPL_NOTES.md` → "Learned during implementation"**: it is the map of every Project seam/component Team must reuse.
+
+## Stack & gates (same as Projects)
+- Next.js 16.4 App Router (pages export `instant = false`), TS, Tailwind 4, React Query 5, next-intl 4, @dnd-kit, date-fns(-jalali), lucide-react, Vitest. No new dependencies.
+- Per prompt: `npm run typecheck`, `npx eslint <touched paths>`, `npx vitest run <targeted tests>`. No e2e / Playwright. Commit with explicit `git add <paths>` only (never `-A`, never `chatgpt-context.zip`), don't push, end with `Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>`.
+- Never run prettier on existing files. Logical CSS only (a test enforces it). en/fa message keys identical (`messages.test.ts`); new client namespaces go in `src/messages/client.ts`.
+- Build + full vitest were green at `88ad295` (1873 passed, 5 skipped).
+
+## Key paths
+| Area | Path |
+|---|---|
+| Context registry | `src/features/navigation/contexts.ts` (`appContexts`; project pattern: `projectRail`, `getProjectContext(id)`, `projectHref(id, item)`), `types.ts` (`navItemIds`, `RailLayout`), `paths.ts` (`getProjectIdFromPathname`, `resolveContext`, `getMobileNavItems`) |
+| Team context today | `contexts.ts` `id: "team"`: basePath `/teams`, flat nav `[overview, work, people, calendar, checkins, activity, files]`, mobile `[overview, work, calendar]`, all items "planned" |
+| Team route today | `src/app/(app)/teams/page.tsx` → `ContextOverview` placeholder |
+| Shell | `components/shell/shell-frame.tsx`, `floating-rail.tsx` (grouped when `context.rail`), `mobile-shell.tsx`, switcher `components/navigation/context-switcher-panel.tsx` + `features/projects/shell/project-switcher-list.tsx` (pattern for a Teams list), `project-mobile.tsx` (More sheet), `project-quick-create.tsx` |
+| Assistant | `components/shell/non-personal-assistant.tsx` hides for personal + project only → add team |
+| Access states | `components/feedback/access-state.tsx` (`AccessStateKind`: empty, filtered, error, unauthenticated, not-available, invite-pending, revoked, deleted, pending, conflict, quota) + `access-banner.tsx` |
+| Project gate pattern | `app/(app)/projects/layout.tsx` (mounts `ProjectSheetHost`), `projects/[id]/layout.tsx` (ProjectGate + `@drawer` slot), `[id]/[module]/page.tsx` (coming-soon catch for unbuilt modules), `features/projects/project-gate.tsx` (`useProject()` → project + capabilities + demo), `project-page-header.tsx`, `demo-state.ts` / `demo-state-switch.tsx` (`?state=`), `project-module-placeholder.tsx`, `project-modules.ts` |
+| Task drawer | `projects/[id]/@drawer/(.)tasks/[taskId]` + `ProjectDrawerGate`; view `features/projects/task-detail/{project-task-drawer,project-task-detail-view,assignment-block}.tsx` |
+| Assignment machinery | `repos.assignments` (`AssignmentRepository`, accept/decline + Personal projection via `createMockProjects({ onProjection })`), `features/projects/assignments/assignment-decline.tsx`, `sheets/assignment-reassign-sheet.tsx` |
+| Sheets | `features/projects/sheets/project-sheet-host.tsx` + `project-sheet-params.ts` (`project-new`, `project-invite`, `assignment-reassign`); Personal host `features/sheets/sheet-host.tsx` |
+| Files | `features/projects/files/files-screen.tsx` (bound to `useProject()` + project hooks) |
+| Data seam | `src/data/project-{domain,repositories,queries}.ts`, `src/data/mock/mock-project*.ts`, fixtures `src/fixtures/project*.ts`; aggregate `Repositories` in `data/repositories.ts`, mock wiring `data/mock/mock-repositories.ts`, `data/provider.tsx` (live spreads mock) |
+| Personal Calendar | `features/calendar/*` (`CalendarProvider`, month/week/agenda); project reuse example `features/projects/calendar/*` + `repos.calendar.range/myBusy` |
+| Personal Goals | `features/goals/{goals-screen,goal-list,goal-detail,goal-panels,goal-sheet}.tsx` (bound to Personal `Goal` + Personal hooks) |
+| Messages | No Messages context/route exists → Message buttons render the existing coming-soon state (`ComingSoonBadge` / disabled with hint). |
+| i18n | `src/messages/{en,fa}/*.json`, register in `src/messages/client.ts` |
+
+## Reuse (already built — never copy)
+- Surfaces: `SignatureCard`/`SignatureCardAction` (notch, side, presets), `ProductCard`, `UtilityCard`, `FolderTabsCard`, `MetricTile`/`MetricGroup`, `notch-path.ts` (`design-system/surfaces/`).
+- Feedback: `EmptyState`/`ErrorState`/`LoadingState`/`UnavailableState`, `AccessState`/`AccessBanner`, `Progress`, `StatusChip`, toast with Undo.
+- UI kit `components/ui/*` (segmented, pills, avatar/AvatarGroup, popover, sheet, dialog, field…).
+- Personal: `TaskRow`, board column/card, BulkBar, calendar views; Project: task views `features/projects/tasks/task-view-shared.tsx`, `workflow-status-chip.tsx`, board model, schedule/time-scale, files screen, members/capacity, analytics SVG patterns, settings `settings-shared.tsx` (DirtyBar, SettingRow).
+- **PeopleWorkload** and **CaseFlow** do NOT exist yet. Build once, context-neutral (accent via `data-scope` tokens / accent prop), in `src/components/context/` (`people-workload.tsx`, `case-flow.tsx`); T3 builds PeopleWorkload, T4 builds CaseFlow.
+
+## Conventions
+- Module header comment naming the board/spec; pages are Server Components with client islands; `useSearchParams` only inside `<Suspense>`.
+- UI never fetches: interface → mock adapter (co-located `*.test.ts`) → React Query hook + key.
+- Capabilities come from the repo (`capabilities` object per team); never derive rights from the role label. Hidden vs disabled per SH-02. Forbidden = not found.
+- Project-specific components must be generalised with a small seam (scope/owner prop, data hooks passed in) rather than copied; keep Project behaviour and tests unchanged.
+- RTL: charts/timelines mirror by coordinates; CaseFlow connectors follow PEOPLE_FLOW (`scaleX(-1)` on the connector SVG, aria-hidden).
+
+## Conflicts with Team DECISIONS (current code vs T1–T12 / owner updates)
+1. **T1** — team basePath `/teams` with no `[id]`; hrefs `/teams/<segment>`. Needs `/teams/[id]/…` + `getTeamContext(id)`/`teamHref` like Projects.
+2. **T2** — flat rail; ids missing: planning, projects, goals, analytics, recognition, settings (`projects`, `goals`, `analytics`, `settings` ids exist; add `planning`, `recognition`).
+3. **T3** — `activity` is a nav item; Activity must be a tab on Overview (no route).
+4. **T11** — mobile `[overview, work, calendar]` lacks (+) and More with the remaining modules.
+5. **README #9 / owner** — `NonPersonalAssistant` still shows on team routes.
+6. Drawer/sheet host are project-scoped; Team needs `/teams/[id]` layout + own `@drawer` intercept (`(.)work/[taskId]`) + team sheet host (`team-new`, `team-invite`, `team-status`) — no catch-all.
+7. Project Files/Members/task drawer/sheets are bound to `useProject()`; Team reuse needs a scope seam (see Conventions).
+8. Personal Goals components are bound to Personal `Goal`/hooks; TM-07 needs a team-scope data seam.
+9. **PEOPLE_FLOW** lists PJ-06 as a CaseFlow user, but PJ-06 is already built as a read-only SVG graph. Team prompts must not change Project screens → PJ-06 stays as is (later decision).
+10. **Owner update** Message button → "Messages DM": Messages does not exist → coming-soon state (user rule).
+11. OPEN items (status storage scope, check-in schedule, Viewer booking visibility, single Owner, delete retention): per PROMPTS.md notes, apply the design default and mark the spot (`// OPEN(DECISIONS): …` + report), don't invent beyond it.
+
+## Step plan (files per prompt)
+- **T1** contexts/types/paths (+tests), switcher Teams list, rails, team mobile More, assistant, `app/(app)/teams/layout.tsx` + `[id]/layout.tsx` + `[id]/[module]` coming-soon, `features/teams/{team-gate,shell,sheets/team-status-sheet}`, `data/team-{domain,repositories,queries}.ts`, `data/mock/mock-teams.ts` (teamRepo, presenceRepo), `fixtures/teams.ts`, AccessState team kinds, messages `Teams`, `TeamStatus`.
+- **T2** `teams/page.tsx`, `features/teams/all/*` (TeamCard, TeamInvitationStrip).
+- **T3** `teams/[id]/page.tsx`, `components/context/people-workload.tsx`, `features/teams/overview/*`, mock plan/capacity/teamCalendar/activity repos, `Team` messages.
+- **T4** `teams/[id]/work`, `components/context/case-flow.tsx`, `features/teams/work/*`, teamTaskRepo + dependencies, `TeamWork`.
+- **T5** `teams/[id]/@drawer/(.)work/[taskId]` + full page, `features/teams/task-detail/*`, `TeamTask`.
+- **T6** team sheet host: `team-new`, `team-invite` (`TeamNew`, `TeamInvite`).
+- **T7** QA A.
+- **T8–T13** `teams/[id]/{calendar,planning (+?tab=sprint·backlog·reviews),projects,goals,people}` + `features/teams/*` + mock teamEvent/plan/sprint/projectAssociation/teamGoal/teamMember/capacity repos.
+- **T14–T18** `teams/[id]/{checkins,recognition,files,analytics,settings}` + mock checkin/recognition/feedback repos; files via the generalised PJ-10 component.
+- **T19** QA B+C.
+
+## Learned during implementation (append one line each)
