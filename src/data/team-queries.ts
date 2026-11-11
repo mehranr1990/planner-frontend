@@ -14,6 +14,7 @@ import type {
   CheckinAnswers,
   CheckinSchedule,
   SetPresenceInput,
+  TeamAnalyticsRange,
   TeamRole,
   TeamRsvp,
   TeamTaskStatus,
@@ -583,4 +584,11 @@ export function useTeamFileActions(teamId: string) {
     }),
     download: (fileId: string) => teamFiles.download(fileId),
   };
+}
+
+// ── Team analytics (TM-12) ───────────────────────────────────────────────
+
+export function useTeamAnalytics(teamId: string, range: TeamAnalyticsRange, preview: TeamAccessOptions = {}) {
+  const { teamReports } = useRepositories();
+  return useTeamQuery(teamId, "analytics", () => teamReports.summary(teamId, range, preview), true, range, preview);
 }

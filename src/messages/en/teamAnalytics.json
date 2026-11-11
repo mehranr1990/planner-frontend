@@ -1,0 +1,53 @@
+{
+  "title": "Analytics",
+  "planCompletion": "Plan completion",
+  "carried": "Carried over",
+  "cycle": "Median cycle time",
+  "capacity": "Capacity booked",
+  "range": {
+    "label": "Range",
+    "weeks": "{n} weeks",
+    "quarter": "Quarter"
+  },
+  "export": "Export snapshot",
+  "csvHint": "team metrics + weekly plan",
+  "none": "—",
+  "days": "{n} d",
+  "captions": {
+    "completion": "{done} of {planned} planned tasks done in {range}",
+    "carried": "{carried} of {planned} planned tasks moved to the next week",
+    "cycle": "In progress → Done · {n} tasks",
+    "capacity": "avg booked ÷ capacity, all members"
+  },
+  "plan": {
+    "title": "Planned vs done per week",
+    "planned": "Planned",
+    "done": "Done",
+    "current": "This week so far",
+    "week": "W{n}",
+    "summary": "{done} of {planned} planned tasks done over {weeks} weeks; this week so far {current} of {currentPlanned}."
+  },
+  "projects": {
+    "title": "Projects you can open",
+    "note": "Project progress = done / all tasks in each project.",
+    "empty": "No linked projects you can open."
+  },
+  "mix": {
+    "title": "Where the work came from",
+    "unit": "done tasks · {range}",
+    "team": "Team tasks",
+    "other": "Other projects",
+    "note": "Counts only tasks in projects you can open; others are grouped as “Other projects” for Lead/Admin."
+  },
+  "table": {
+    "week": "Week",
+    "planned": "Planned",
+    "done": "Done",
+    "source": "Source",
+    "count": "Done tasks",
+    "project": "Project",
+    "progress": "Progress"
+  },
+  "footnote": "Team-level numbers only. No per-person performance.",
+  "thisQuarter": "this quarter"
+}

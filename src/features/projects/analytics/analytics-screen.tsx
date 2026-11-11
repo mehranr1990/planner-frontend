@@ -173,7 +173,8 @@ function Kpis({ data }: { data: AnalyticsSummary }) {
   );
 }
 
-function ChartCard({
+/** A chart card with "View as table" (shared with TM-12 Team analytics). */
+export function ChartCard({
   title,
   aside,
   table,
@@ -539,23 +540,56 @@ export function buildSnapshotCsv(data: AnalyticsSummary, tasks: readonly Project
       task.estimateHours ?? "",
     ]),
   ];
+  return toCsv(lines);
+}
+
+/** Rows → CSV text (quoted where needed). Shared with TM-12. */
+export function toCsv(lines: readonly (readonly (string | number)[])[]) {
   return lines.map((line) => line.map(csvCell).join(",")).join("\n");
 }
 
 function ExportDialog({ data, workflow, onClose }: { data: AnalyticsSummary; workflow: ProjectWorkflow; onClose: () => void }) {
-  const t = useTranslations("Analytics.exportDialog");
   const statusLabel = useWorkflowStatusLabel();
   const { project } = useProject();
   const tasks = useProjectTasks(project.id, {});
+  return (
+    <SnapshotExportDialog
+      scope="project"
+      fileName={`${project.key}-snapshot-${data.asOf.slice(0, 10)}.csv`}
+      ready={tasks.data !== undefined}
+      buildCsv={() =>
+        buildSnapshotCsv(data, tasks.data?.tasks ?? [], (id) => statusLabel(workflow.statuses.find((status) => status.id === id)))
+      }
+      onClose={onClose}
+    />
+  );
+}
+
+/** Export snapshot dialog (CSV now; PDF needs the server export). Shared with TM-12. */
+export function SnapshotExportDialog({
+  scope,
+  fileName,
+  ready,
+  buildCsv,
+  csvHint,
+  onClose,
+}: {
+  scope: "project" | "team";
+  /** What the CSV holds (default: the project hint). */
+  csvHint?: string;
+  fileName: string;
+  ready: boolean;
+  buildCsv: () => string;
+  onClose: () => void;
+}) {
+  const t = useTranslations("Analytics.exportDialog");
   const download = () => {
-    const csv = buildSnapshotCsv(data, tasks.data?.tasks ?? [], (id) =>
-      statusLabel(workflow.statuses.find((status) => status.id === id)),
-    );
+    const csv = buildCsv();
     if (typeof URL.createObjectURL === "function") {
       const url = URL.createObjectURL(new Blob(["﻿", csv], { type: "text/csv;charset=utf-8" }));
       const anchor = document.createElement("a");
       anchor.href = url;
-      anchor.download = `${project.key}-snapshot-${data.asOf.slice(0, 10)}.csv`;
+      anchor.download = fileName;
       anchor.click();
       URL.revokeObjectURL(url);
     }
@@ -564,7 +598,7 @@ function ExportDialog({ data, workflow, onClose }: { data: AnalyticsSummary; wor
   };
   return (
     <Dialog open onOpenChange={(open) => !open && onClose()}>
-      <DialogContent title={t("title")} size="sm" data-scope="project">
+      <DialogContent title={t("title")} size="sm" data-scope={scope}>
         <div role="radiogroup" aria-label={t("title")} className="flex flex-col gap-1.5">
           <button
             type="button"
@@ -573,7 +607,7 @@ function ExportDialog({ data, workflow, onClose }: { data: AnalyticsSummary; wor
             className="flex items-center justify-between rounded-[14px] bg-surface px-3 py-2.5 text-start inset-ring-[1.5px] inset-ring-scope-deep focus-visible:focus-ring"
           >
             <span className="text-sm font-bold text-fg">{t("csv")}</span>
-            <span className="text-xs font-medium text-fg-secondary">{t("csvHint")}</span>
+            <span className="text-xs font-medium text-fg-secondary">{csvHint ?? t("csvHint")}</span>
           </button>
           {/* PDF needs the server export (not built): shown, not selectable. */}
           <button
@@ -592,7 +626,7 @@ function ExportDialog({ data, workflow, onClose }: { data: AnalyticsSummary; wor
           <Button variant="secondary" onClick={onClose}>
             {t("cancel")}
           </Button>
-          <Button onClick={download} disabled={!tasks.data}>
+          <Button onClick={download} disabled={!ready}>
             {t("action")}
           </Button>
         </DialogFooter>

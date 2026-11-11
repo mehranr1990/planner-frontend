@@ -11,6 +11,8 @@ import type {
   CheckinComment,
   CheckinSchedule,
   CheckinWeek,
+  TeamAnalyticsRange,
+  TeamAnalyticsSummary,
   FeedbackInbox,
   FeedbackNote,
   FeedbackRequest,
@@ -364,10 +366,16 @@ export interface TeamRepositories {
   teamRecognition: TeamRecognitionRepository;
   teamFeedback: TeamFeedbackRepository;
   teamFiles: TeamFileRepository;
+  teamReports: TeamReportRepository;
   teamTasks: TeamTaskRepository;
   teamSprints: TeamSprintRepository;
   projectAssociations: ProjectAssociationRepository;
   teamGoals: TeamGoalRepository;
   teamMembers: TeamMemberRepository;
   teamBacklog: TeamBacklogRepository;
+}
+
+/** teamReportRepo (TM-12). Team-level numbers only; never per person. */
+export interface TeamReportRepository {
+  summary(teamId: string, range: TeamAnalyticsRange, options?: TeamAccessOptions): Promise<TeamAnalyticsSummary>;
 }

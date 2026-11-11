@@ -25,6 +25,7 @@ import {
 import { RepositoryError } from "../repositories";
 import { createMockTeamCheckins } from "./mock-team-checkins";
 import { createMockTeamGoals } from "./mock-team-goals";
+import { createMockTeamReports } from "./mock-team-reports";
 import { createMockFiles } from "./mock-project-files";
 import { teamFileFolders, teamFiles as teamFileFixtures } from "@/fixtures/team-files";
 import { createMockTeamRecognition } from "./mock-team-recognition";
@@ -117,6 +118,7 @@ export function teamCapabilities(role: TeamRole, lifecycle: TeamLifecycle): Team
     createProject: editable && rank >= RANK.lead,
     uploadFile: editable && rank >= RANK.member,
     manageFiles: editable && rank >= RANK.lead,
+    exportAnalytics: rank >= RANK.lead,
   };
 }
 
@@ -613,6 +615,21 @@ export function createMockTeams({
   });
   const teamFiles: TeamFileRepository = { ...filesMock.files, list: (teamId) => filesMock.files.list(teamId) };
 
+  const teamReports = createMockTeamReports({
+    respond,
+    today,
+    now,
+    team: (teamId) => memberOf(teamId),
+    currentPlan: (teamId) => {
+      memberOf(teamId);
+      const plan = weekPlan(teamId);
+      return { week: plan.week, weekNumber: plan.weekNumber, planned: plan.planned, done: plan.done };
+    },
+    capacities: (teamId) => capacities.get(teamId) ?? [],
+    // Only projects the viewer can open are named (team membership never grants access).
+    projectName: (projectId) => findProject(projectId)?.name,
+  });
+
   const { teamRecognition, teamFeedback } = createMockTeamRecognition({
     respond,
     now,
@@ -951,6 +968,7 @@ export function createMockTeams({
     teamRecognition,
     teamFeedback,
     teamFiles,
+    teamReports,
     tickFiles: filesMock.tick,
     teamTasks: {
       async list(teamId, query = {}, options = {}) {
@@ -1217,6 +1235,7 @@ export function teamRepositories(store: MockTeamsStore): TeamRepositories {
     teamRecognition: store.teamRecognition,
     teamFeedback: store.teamFeedback,
     teamFiles: store.teamFiles,
+    teamReports: store.teamReports,
     teamTasks: store.teamTasks,
     teamSprints: store.teamSprints,
     projectAssociations: store.projectAssociations,

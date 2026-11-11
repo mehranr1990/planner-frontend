@@ -111,6 +111,8 @@ export interface TeamCapabilities {
   uploadFile: boolean;
   /** TM-11: versions of anyone’s files / restore (Lead+). */
   manageFiles: boolean;
+  /** TM-12: export snapshot (Owner/Admin/Lead). */
+  exportAnalytics: boolean;
 }
 
 export type TeamAccess =
@@ -656,4 +658,37 @@ export interface FeedbackInbox {
   requested: readonly FeedbackRequest[];
   received: readonly FeedbackNote[];
   sent: readonly FeedbackNote[];
+}
+
+// ── Team analytics (TM-12; team-level only, no per-person charts) ─────────
+
+export type TeamAnalyticsRange = "4w" | "12w" | "quarter";
+
+export interface TeamAnalyticsWeek {
+  /** Saturday. */
+  week: string;
+  weekNumber: number;
+  planned: number;
+  /** Planned tasks done. */
+  done: number;
+  /** This week so far (lighter bar). */
+  current: boolean;
+}
+
+export interface TeamAnalyticsSummary {
+  range: TeamAnalyticsRange;
+  weeks: readonly TeamAnalyticsWeek[];
+  /** Plan completion = plannedDone / planned. */
+  planned: number;
+  plannedDone: number;
+  /** Carried over = planned moved to next week / planned. */
+  carried: number;
+  /** First In progress → Done (median days) over `cycleSample` done tasks. */
+  cycleMedianDays: number | null;
+  cycleSample: number;
+  /** avg(booked ÷ capacity) over members with capacity, 0–100; null when nobody has capacity. */
+  capacityBooked: number | null;
+  /** Done tasks by where they came from; `other` = projects the viewer cannot open (Lead/Admin only, else null). */
+  mix: { team: number; projects: readonly { projectId: string; name: string; count: number }[]; other: number | null };
+  asOf: string;
 }
