@@ -4,7 +4,9 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useIsClient } from "@/hooks/use-is-client";
 import { useRepositories } from "./provider";
 import { afterHydration } from "./queries";
-import { teamKeys } from "./query-keys";
+import { RepositoryError } from "./repositories";
+import { taskKeys, teamKeys } from "./query-keys";
+import type { DeclineReason } from "./project-domain";
 import type { SetPresenceInput, TeamTaskStatus } from "./team-domain";
 import type { NewTeamTaskInput, TeamAccessOptions, TeamTaskQuery } from "./team-repositories";
 
@@ -187,5 +189,52 @@ export function useTeamTaskActions(teamId: string) {
       onSettled: refresh,
     }),
     remove: useMutation({ mutationFn: (taskId: string) => teamTasks.remove(taskId), onSuccess: refresh }),
+  };
+}
+
+// ── Team task detail (TM-15) ─────────────────────────────────────────────
+
+export function useTeamTaskDetail(teamId: string, taskId: string, preview: TeamAccessOptions = {}) {
+  const { teamTasks } = useRepositories();
+  const hydrated = useIsClient();
+  return afterHydration(
+    useQuery({
+      queryKey: teamScoped(teamId, "task", taskId, preview),
+      queryFn: () => teamTasks.get(taskId, preview),
+      // Not found (deleted, or a project task) is an answer, not a network blip.
+      retry: (count, error) => !(error instanceof RepositoryError && error.code === "not-found") && count < 2,
+    }),
+    hydrated,
+  );
+}
+
+/** Comments + the assignment machinery (Accept projects the task into Personal Tasks). */
+export function useTeamTaskDetailActions(teamId: string) {
+  const { teamTasks } = useRepositories();
+  const client = useQueryClient();
+  const refresh = () => {
+    void client.invalidateQueries({ queryKey: teamKeys.scope(teamId) });
+    // Personal Tasks show accepted team tasks as projections.
+    void client.invalidateQueries({ queryKey: taskKeys.all });
+  };
+  return {
+    addComment: useMutation({
+      mutationFn: ({ taskId, body }: { taskId: string; body: string }) => teamTasks.addComment(taskId, body),
+      onSuccess: refresh,
+    }),
+    accept: useMutation({
+      mutationFn: ({ taskId, revision }: { taskId: string; revision: number }) => teamTasks.accept(taskId, revision),
+      onSuccess: refresh,
+    }),
+    decline: useMutation({
+      mutationFn: ({ taskId, ...input }: { taskId: string; reason: DeclineReason; note?: string; revision: number }) =>
+        teamTasks.decline(taskId, input),
+      onSuccess: refresh,
+    }),
+    revertAccept: useMutation({
+      mutationFn: ({ taskId, revision }: { taskId: string; revision: number }) => teamTasks.revertAccept(taskId, revision),
+      onSuccess: refresh,
+    }),
+    remind: useMutation({ mutationFn: (taskId: string) => teamTasks.remind(taskId) }),
   };
 }

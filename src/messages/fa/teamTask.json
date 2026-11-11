@@ -1,0 +1,59 @@
+{
+  "title": "کار",
+  "close": "بستن",
+  "markDone": "علامت انجام",
+  "reopen": "باز کردن دوباره",
+  "copyLink": "کپی پیوند",
+  "copied": "پیوند کپی شد",
+  "done": "انجام شد",
+  "doneUndo": "واگرد",
+  "doneUndoAlt": "باز کردن دوباره‌ی کار",
+  "viewer": "فقط مشاهده — نقش شما در این تیم «بیننده» است.",
+  "due": "سررسید {date}",
+  "weekPlan": "برنامه‌ی هفته‌ی {n}",
+  "notPlanned": "برنامه‌ریزی‌نشده",
+  "props": {
+    "label": "ویژگی‌ها",
+    "status": "وضعیت",
+    "assignee": "مسئول",
+    "dates": "تاریخ‌ها",
+    "estimate": "تخمین",
+    "goal": "هدف",
+    "related": "مرتبط"
+  },
+  "you": "شما",
+  "state": {
+    "pending": "در انتظار",
+    "accepted": "پذیرفته",
+    "declined": "ردشده"
+  },
+  "unassigned": "بدون مسئول",
+  "dueInPlan": "سررسید {date} · در برنامه‌ی هفته‌ی {n}",
+  "dueOnly": "سررسید {date}",
+  "noDue": "بدون سررسید",
+  "hours": "{h} ساعت",
+  "none": "—",
+  "relatedTask": "کار پروژه «{title}» در {project}",
+  "tabs": {
+    "label": "بخش‌های کار",
+    "comments": "نظرها",
+    "subtasks": "زیرکارها",
+    "activity": "فعالیت"
+  },
+  "subtasks": "{percent} از چک‌لیست انجام شده",
+  "activity": {
+    "created": "<b>{name}</b> این کار را ساخت",
+    "assigned": "<b>{name}</b> آن را سپرد",
+    "status": "<b>{name}</b> آن را به {status} برد",
+    "accepted": "<b>{name}</b> پذیرفت",
+    "declined": "<b>{name}</b> رد کرد"
+  },
+  "notFound": {
+    "title": "این کار در دسترس نیست",
+    "description": "ممکن است حذف شده باشد یا در یک پروژه باشد. به کارهای تیم برگردید.",
+    "action": "بازگشت به کارها"
+  },
+  "accepted": "پذیرفته شد · به کارهای شما اضافه شد",
+  "declined": "سپردن کار رد شد",
+  "reminded": "یادآوری برای {name} فرستاده شد"
+}

@@ -225,7 +225,7 @@ function DetailHead({
   );
 }
 
-function PropertyRow({
+export function PropertyRow({
   icon,
   label,
   children,
@@ -383,12 +383,10 @@ function DetailTabs({ data, workflow }: { data: ProjectTaskDetail; workflow: Pro
   const { project, capabilities } = useProject();
   const actions = useTaskDetailActions(data.task.id);
   const projectTasks = useProjectTasks(project.id, {});
-  const [comment, setComment] = useState("");
   const [predecessor, setPredecessor] = useState("");
   const [type, setType] = useState<DependencyType>("FS");
   const [lag, setLag] = useState("0");
   const [cycle, setCycle] = useState(false);
-  const commentId = useId();
   const task = data.task;
   const canEdit = task.can?.edit === true;
   const doneSubtasks = data.subtasks.filter((item) => item.done).length;
@@ -399,57 +397,12 @@ function DetailTabs({ data, workflow }: { data: ProjectTaskDetail; workflow: Pro
       label: t("tabs.comments"),
       count: data.comments.length,
       content: (
-        <div className="flex flex-col gap-3">
-          {data.comments.length === 0 ? <p className="text-sm text-fg-muted">{t("comments.empty")}</p> : null}
-          <ul className="flex flex-col gap-3">
-            {data.comments.map((item) => (
-              <li key={item.id} className="flex gap-2.5">
-                <Avatar
-                  name={item.author.name}
-                  initials={item.author.initials}
-                  size={32}
-                  decorative
-                  className="size-7 text-[0.625rem]"
-                />
-                <div className="flex min-w-0 flex-col">
-                  <p className="text-xs font-bold text-fg">
-                    <bdi>{item.author.name}</bdi>{" "}
-                    <span className="font-medium text-fg-muted">{format.relative(item.at)}</span>
-                  </p>
-                  <p dir="auto" className="text-sm text-fg">
-                    {item.body}
-                  </p>
-                </div>
-              </li>
-            ))}
-          </ul>
-          {capabilities.comment ? (
-            <form
-              className="flex items-end gap-2"
-              onSubmit={(event) => {
-                event.preventDefault();
-                if (!comment.trim()) return;
-                actions.addComment.mutate(comment, { onSuccess: () => setComment("") });
-              }}
-            >
-              <label htmlFor={commentId} className="sr-only">
-                {t("comments.label")}
-              </label>
-              <Textarea
-                id={commentId}
-                dir="auto"
-                rows={1}
-                value={comment}
-                onChange={(event) => setComment(event.target.value)}
-                placeholder={t("comments.placeholder")}
-                className="min-h-11 flex-1"
-              />
-              <Button type="submit" size="sm" disabled={!comment.trim() || actions.addComment.isPending}>
-                {t("comments.send")}
-              </Button>
-            </form>
-          ) : null}
-        </div>
+        <TaskComments
+          comments={data.comments}
+          canComment={capabilities.comment}
+          busy={actions.addComment.isPending}
+          onAdd={(body, done) => actions.addComment.mutate(body, { onSuccess: done })}
+        />
       ),
     },
     {
@@ -631,4 +584,79 @@ function DetailTabs({ data, workflow }: { data: ProjectTaskDetail; workflow: Pro
   ];
 
   return <FolderTabsCard label={t("tabs.label")} tabs={tabs} defaultValue="comments" />;
+}
+
+/**
+ * PJ-15 comments panel (list + composer). Context-neutral seam: Teams (TM-15)
+ * render the same component with their own comments and handler.
+ */
+export function TaskComments({
+  comments,
+  canComment,
+  busy,
+  onAdd,
+}: {
+  comments: readonly { id: string; author: { name: string; initials: string }; at: string; body: string }[];
+  canComment: boolean;
+  busy: boolean;
+  /** Save the body; call `done` on success to clear the field. */
+  onAdd: (body: string, done: () => void) => void;
+}) {
+  const t = useTranslations("ProjectTask");
+  const format = useProjectFormat();
+  const [comment, setComment] = useState("");
+  const commentId = useId();
+  return (
+    <div className="flex flex-col gap-3">
+      {comments.length === 0 ? <p className="text-sm text-fg-muted">{t("comments.empty")}</p> : null}
+      <ul className="flex flex-col gap-3">
+        {comments.map((item) => (
+          <li key={item.id} className="flex gap-2.5">
+            <Avatar
+              name={item.author.name}
+              initials={item.author.initials}
+              size={32}
+              decorative
+              className="size-7 text-[0.625rem]"
+            />
+            <div className="flex min-w-0 flex-col">
+              <p className="text-xs font-bold text-fg">
+                <bdi>{item.author.name}</bdi>{" "}
+                <span className="font-medium text-fg-muted">{format.relative(item.at)}</span>
+              </p>
+              <p dir="auto" className="text-sm text-fg">
+                {item.body}
+              </p>
+            </div>
+          </li>
+        ))}
+      </ul>
+      {canComment ? (
+        <form
+          className="flex items-end gap-2"
+          onSubmit={(event) => {
+            event.preventDefault();
+            if (!comment.trim()) return;
+            onAdd(comment, () => setComment(""));
+          }}
+        >
+          <label htmlFor={commentId} className="sr-only">
+            {t("comments.label")}
+          </label>
+          <Textarea
+            id={commentId}
+            dir="auto"
+            rows={1}
+            value={comment}
+            onChange={(event) => setComment(event.target.value)}
+            placeholder={t("comments.placeholder")}
+            className="min-h-11 flex-1"
+          />
+          <Button type="submit" size="sm" disabled={!comment.trim() || busy}>
+            {t("comments.send")}
+          </Button>
+        </form>
+      ) : null}
+    </div>
+  );
 }

@@ -273,3 +273,31 @@ export interface TeamTask {
   /** What the viewer may do (server-computed; project tasks are read-only on team surfaces). */
   can: { edit: boolean; status: boolean };
 }
+
+export interface TeamTaskComment {
+  id: string;
+  author: TeamPerson;
+  at: string;
+  body: string;
+}
+
+export interface TeamTaskActivity {
+  id: string;
+  kind: "created" | "assigned" | "status" | "accepted" | "declined";
+  actor: TeamPerson;
+  at: string;
+  status?: TeamTaskStatus;
+}
+
+/** TM-15: the task plus what the drawer shows (never the assignee's personal notes, focus or time blocks). */
+export interface TeamTaskDetail {
+  task: TeamTask;
+  teamName: string;
+  assignedAt: string | null;
+  /** Related project task (link only; opens in its project) — only when the viewer can open it. */
+  related: { projectId: string; projectName: string; taskId: string; title: string } | null;
+  comments: readonly TeamTaskComment[];
+  activity: readonly TeamTaskActivity[];
+  /** Lead+: Remind / Reassign on someone else's pending assignment. */
+  canManageAssignments: boolean;
+}

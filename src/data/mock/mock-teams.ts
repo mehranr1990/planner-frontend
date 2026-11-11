@@ -3,6 +3,7 @@ import {
   checkinSummaryFixtures,
   teamActivityFixtures,
   teamEventFixtures,
+  teamTaskDetailFixtures,
   teamTaskFixtures,
   thanksFixtures,
   weekPlanFixtures,
@@ -29,6 +30,8 @@ import type {
   TeamPresence,
   TeamProjectLink,
   TeamTask,
+  TeamTaskActivity,
+  TeamTaskComment,
   TeamRole,
   TeamSummary,
 } from "../team-domain";
@@ -92,6 +95,21 @@ export interface MockTeamsOptions {
    * when the viewer cannot open it — team membership never grants access.
    */
   findProject?: (projectId: string) => TeamProjectLink | undefined;
+  /**
+   * The accepted-assignment bridge into Personal (same as Projects): called
+   * with the projection when one of my team tasks is accepted and with null
+   * when it leaves (Undo of Accept).
+   */
+  onProjection?: (taskId: string, projection: TeamPersonalProjection | null) => void;
+}
+
+/** What Personal shows for an accepted team task: a projection with the team as its source. */
+export interface TeamPersonalProjection {
+  title: string;
+  teamName: string;
+  due: string | null;
+  priority: TeamTask["priority"];
+  estimateHours: number | null;
 }
 
 export interface MockTeamsStore extends TeamRepositories {
@@ -117,10 +135,35 @@ export function createMockTeams({
   today = "2026-10-13",
   now = "2026-10-13T14:35:00+03:30",
   findProject = (id) => ({ id, name: id, percent: 0, health: "on-track", lifecycle: "active" }),
+  onProjection,
 }: MockTeamsOptions): MockTeamsStore {
+  const comments = new Map<string, TeamTaskComment[]>(
+    Object.entries(teamTaskDetailFixtures).map(([id, extra]) => [id, structuredClone([...(extra.comments ?? [])])]),
+  );
+  let commentCounter = 0;
   const canOpenProject = (id: string) => findProject(id) !== undefined;
   const tasks: TeamTask[] = structuredClone([...teamTaskFixtures]);
   let taskCounter = 0;
+  const bump = (task: TeamTask) => {
+    task.revision += 1;
+    task.updatedAt = now;
+  };
+  const project = (task: TeamTask, teamName: string, present: boolean) =>
+    onProjection?.(
+      task.id,
+      present
+        ? { title: task.title, teamName, due: task.due, priority: task.priority, estimateHours: task.estimateHours }
+        : null,
+    );
+  const myAssignment = (taskId: string, revision: number, state: "pending" | "accepted") => {
+    const task = tasks.find((item) => item.id === taskId && item.source.kind === "team");
+    if (!task) throw new RepositoryError("not-found", "Task not found");
+    const team = memberOf(task.teamId);
+    const mine = task.assignees.find((assignee) => assignee.person.id === "me" && assignee.state === state);
+    if (!mine || !teamCapabilities(team.role, team.lifecycle).createTask) throw new RepositoryError("forbidden", "Not your assignment");
+    if (task.revision !== revision) throw new RepositoryError("conflict", "Stale revision");
+    return { task, team, mine };
+  };
   /** Per-viewer rights: project tasks are read-only on team surfaces; Members edit their own / assigned. */
   const withCan = (task: TeamTask, role: TeamRole, lifecycle: TeamLifecycle): TeamTask => {
     const caps = teamCapabilities(role, lifecycle);
@@ -350,6 +393,74 @@ export function createMockTeams({
           task.progress = 100;
         } else delete task.completedAt;
         return respond(withCan(task, team.role, team.lifecycle));
+      },
+      async get(taskId, options = {}) {
+        const task = tasks.find((item) => item.id === taskId && item.source.kind === "team");
+        if (!task) throw new RepositoryError("not-found", "Task not found");
+        const team = memberOf(task.teamId);
+        const role = options.previewRole ?? team.role;
+        const lifecycle: TeamLifecycle = options.previewArchived ? "archived" : team.lifecycle;
+        const extra = teamTaskDetailFixtures[taskId] ?? {};
+        const related = extra.related && canOpenProject(extra.related.projectId) ? extra.related : null;
+        const creator = team.members.find((person) => person.id === team.leadId) ?? team.members[0]!;
+        const by = task.assignees.find((assignee) => assignee.by)?.by ?? creator;
+        const activity: TeamTaskActivity[] = [
+          { id: taskId + "-created", kind: "created", actor: creator, at: task.updatedAt },
+          ...(extra.assignedAt ? [{ id: taskId + "-assigned", kind: "assigned" as const, actor: by, at: extra.assignedAt }] : []),
+        ];
+        return respond({
+          task: withCan(task, role, lifecycle),
+          teamName: team.name,
+          assignedAt: extra.assignedAt ?? null,
+          related,
+          comments: comments.get(taskId) ?? [],
+          activity,
+          canManageAssignments: teamCapabilities(role, lifecycle).assignOthers,
+        });
+      },
+      async addComment(taskId, body) {
+        const task = tasks.find((item) => item.id === taskId);
+        if (!task) throw new RepositoryError("not-found", "Task not found");
+        const team = memberOf(task.teamId);
+        if (!teamCapabilities(team.role, team.lifecycle).createTask) throw new RepositoryError("forbidden", "Cannot comment");
+        const text = body.trim();
+        if (!text) throw new RepositoryError("invalid", "Empty comment");
+        commentCounter += 1;
+        const comment: TeamTaskComment = {
+          id: "c-new-" + commentCounter,
+          author: team.members.find((person) => person.id === "me")!,
+          at: now,
+          body: text,
+        };
+        comments.set(taskId, [...(comments.get(taskId) ?? []), comment]);
+        return respond(comment);
+      },
+      async accept(taskId, revision) {
+        const { task, team, mine } = myAssignment(taskId, revision, "pending");
+        mine.state = "accepted";
+        bump(task);
+        project(task, team.name, true);
+        return respond(withCan(task, team.role, team.lifecycle));
+      },
+      async decline(taskId, input) {
+        const { task, team, mine } = myAssignment(taskId, input.revision, "pending");
+        mine.state = "declined";
+        bump(task);
+        return respond(withCan(task, team.role, team.lifecycle));
+      },
+      async revertAccept(taskId, revision) {
+        const { task, team, mine } = myAssignment(taskId, revision, "accepted");
+        mine.state = "pending";
+        bump(task);
+        project(task, team.name, false);
+        return respond(withCan(task, team.role, team.lifecycle));
+      },
+      async remind(taskId) {
+        const task = tasks.find((item) => item.id === taskId);
+        if (!task) throw new RepositoryError("not-found", "Task not found");
+        const team = memberOf(task.teamId);
+        if (!teamCapabilities(team.role, team.lifecycle).assignOthers) throw new RepositoryError("forbidden", "Lead+ only");
+        return respond(undefined);
       },
       async remove(taskId) {
         const index = tasks.findIndex((item) => item.id === taskId);

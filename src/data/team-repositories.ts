@@ -7,6 +7,8 @@ import type {
   TeamMember,
   TeamProjectLink,
   TeamTask,
+  TeamTaskComment,
+  TeamTaskDetail,
   TeamTaskPriority,
   TeamTaskStatus,
   TeamThanks,
@@ -18,6 +20,8 @@ import type {
   TeamRole,
   TeamSummary,
 } from "./team-domain";
+
+import type { DeclineReason } from "./project-domain";
 
 /*
  * Teams (Phase 3) repository interfaces. Backend Phase 3 is not built: only
@@ -107,6 +111,15 @@ export interface TeamTaskRepository {
   setStatus(taskId: string, status: TeamTaskStatus, revision: number): Promise<TeamTask>;
   /** Undo of create (Viewer/others: "forbidden"). */
   remove(taskId: string): Promise<void>;
+  /** TM-15 detail; project tasks are "not-found" here (they open PJ-15 in their project). */
+  get(taskId: string, options?: TeamAccessOptions): Promise<TeamTaskDetail>;
+  addComment(taskId: string, body: string): Promise<TeamTaskComment>;
+  /** Assignment machinery (same as Projects): accepting projects the task into Personal. */
+  accept(taskId: string, revision: number): Promise<TeamTask>;
+  decline(taskId: string, input: { reason: DeclineReason; note?: string; revision: number }): Promise<TeamTask>;
+  /** Undo of Accept (back to pending; the Personal projection leaves). */
+  revertAccept(taskId: string, revision: number): Promise<TeamTask>;
+  remind(taskId: string): Promise<void>;
 }
 
 /** teamInvitationRepo */

@@ -429,3 +429,27 @@ export const teamTaskFixtures: readonly TeamTask[] = [
     ["g-funnel", "Funnel dashboard", "todo", omid],
   ]),
 ];
+
+/** TM-15 extras per team task (assignment time, related project task, comments). */
+export const teamTaskDetailFixtures: Readonly<
+  Record<
+    string,
+    {
+      assignedAt?: string;
+      related?: { projectId: string; projectName: string; taskId: string; title: string };
+      comments?: readonly { id: string; author: (typeof teamPeople)[keyof typeof teamPeople]; at: string; body: string }[];
+    }
+  >
+> = {
+  "t-critique": {
+    assignedAt: "2026-10-12T10:00:00+03:30",
+    related: { projectId: "website-redesign", projectName: "Website Redesign", taskId: "design-4", title: "Design tokens" },
+    comments: [
+      { id: "c-1", author: harry, at: "2026-10-12T10:05:00+03:30", body: "Please cover the onboarding spacing too." },
+    ],
+  },
+  "t-icons": {
+    assignedAt: "2026-10-08T09:00:00+03:30",
+    related: { projectId: "partner-portal", projectName: "Partner Portal", taskId: "pp-icons", title: "Icon set" },
+  },
+};

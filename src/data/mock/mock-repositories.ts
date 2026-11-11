@@ -1,6 +1,6 @@
 import { personalFixtures } from "@/fixtures/personal";
 import { createMockProjects, projectRepositories } from "./mock-projects";
-import { createMockTeams, teamRepositories } from "./mock-teams";
+import { createMockTeams, teamRepositories, type MockTeamsOptions } from "./mock-teams";
 import type { MockProjectsStore } from "./mock-projects";
 import type { TeamRepositories } from "../team-repositories";
 import type { SampleFinance } from "@/fixtures/personal/finance";
@@ -176,9 +176,11 @@ function resolveSpan(placement: BlockPlacement, fallbackMinutes: number): { star
 function projectsAndTeams(
   projects: MockProjectsStore,
   options: { respond<T>(value: T): Promise<T>; today: string; now: string },
+  onProjection?: MockTeamsOptions["onProjection"],
 ): ReturnType<typeof projectRepositories> & TeamRepositories {
   const teams = createMockTeams({
     ...options,
+    onProjection,
     findProject: (id) => {
       const project = projects.findProject(id);
       return project
@@ -861,6 +863,31 @@ export function createMockRepositories({ fixtures, latencyMs = 0 }: MockReposito
         },
       }),
       { respond, today, now: nowInstant },
+      // Accepted team assignments appear in Personal Tasks too (source: the team).
+      (teamTaskId, projection) => {
+        const id = "team-" + teamTaskId;
+        const index = tasks.findIndex((item) => item.id === id);
+        if (!projection) {
+          if (index >= 0) tasks.splice(index, 1);
+          return;
+        }
+        const projected: Task = {
+          id,
+          title: projection.title,
+          scope: "team",
+          project: projection.teamName,
+          priority: projection.priority,
+          energy: null,
+          durationMinutes: projection.estimateHours === null ? null : Math.round(projection.estimateHours * 60),
+          date: projection.due,
+          time: null,
+          ...(projection.due ? { deadline: projection.due } : {}),
+          status: "open",
+          createdAt: nowInstant,
+        };
+        if (index >= 0) tasks[index] = projected;
+        else tasks.push(projected);
+      },
     ),
     review: createMockReview({ reviews: source.reviews ?? [], now: nowInstant, respond }),
     brainDump: createMockBrainDump({

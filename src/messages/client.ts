@@ -44,6 +44,7 @@ import enPeopleWorkload from "./en/peopleWorkload.json";
 import enCaseFlow from "./en/caseFlow.json";
 import enTeam from "./en/team.json";
 import enTeamWork from "./en/teamWork.json";
+import enTeamTask from "./en/teamTask.json";
 import enTeamStatus from "./en/teamStatus.json";
 import faAccess from "./fa/access.json";
 import faAuth from "./fa/auth.json";
@@ -90,6 +91,7 @@ import faPeopleWorkload from "./fa/peopleWorkload.json";
 import faCaseFlow from "./fa/caseFlow.json";
 import faTeam from "./fa/team.json";
 import faTeamWork from "./fa/teamWork.json";
+import faTeamTask from "./fa/teamTask.json";
 import faTeamStatus from "./fa/teamStatus.json";
 
 /*
@@ -147,6 +149,7 @@ const en = {
   CaseFlow: enCaseFlow,
   Team: enTeam,
   TeamWork: enTeamWork,
+  TeamTask: enTeamTask,
   TeamStatus: enTeamStatus,
 };
 
@@ -198,6 +201,7 @@ const fa: ClientMessages = {
   CaseFlow: faCaseFlow,
   Team: faTeam,
   TeamWork: faTeamWork,
+  TeamTask: faTeamTask,
   TeamStatus: faTeamStatus,
 };
 

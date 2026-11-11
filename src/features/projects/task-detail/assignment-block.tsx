@@ -4,7 +4,7 @@ import { useTranslations } from "next-intl";
 import { Avatar } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/toast";
-import type { ProjectCapabilities, ProjectTask } from "@/data/project-domain";
+import type { DeclineReason, ProjectCapabilities, ProjectPerson, ProjectTask } from "@/data/project-domain";
 import { useAssignmentActions } from "@/data/project-queries";
 import { AssignmentDecline } from "../assignments/assignment-decline";
 import { useProjectFormat } from "../format";
@@ -16,25 +16,46 @@ import { useOpenProjectSheet } from "../sheets/project-sheet-params";
  * adds the task to Personal Tasks / My Calendar as a projection (toast with
  * Undo). Managers see "Pending · Kian F." with Remind / Reassign instead
  * (assignment-reassign sheet, PJ-90).
+ *
+ * Seam (Teams TM-15): `AssignmentBlockView` is the context-neutral block;
+ * the scope passes the assignees, rights and handlers. `AssignmentBlock`
+ * binds it to the Project hooks.
  */
-export function AssignmentBlock({
-  task,
-  capabilities,
-  assignedAt,
-}: {
-  task: ProjectTask;
-  capabilities: ProjectCapabilities;
+
+export interface AssignmentBlockViewProps {
+  assignees: readonly { person: ProjectPerson; state: "pending" | "accepted" | "declined"; by?: ProjectPerson }[];
+  /** The viewer may accept / decline their own pending assignment. */
+  canAccept: boolean;
+  /** The viewer sees Remind / Reassign on someone else's pending assignment. */
+  canManage: boolean;
   assignedAt: string | null;
-}) {
+  busy: boolean;
+  remindBusy?: boolean;
+  onAccept: () => void;
+  onDecline: (reason: DeclineReason, note: string) => void;
+  onRemind: (name: string) => void;
+  /** Omit to hide Reassign (a scope without a reassign flow yet). */
+  onReassign?: () => void;
+}
+
+export function AssignmentBlockView({
+  assignees,
+  canAccept,
+  canManage,
+  assignedAt,
+  busy,
+  remindBusy = false,
+  onAccept,
+  onDecline,
+  onRemind,
+  onReassign,
+}: AssignmentBlockViewProps) {
   const t = useTranslations("ProjectTask");
   const format = useProjectFormat();
-  const { accept, decline, revertAccept, remind } = useAssignmentActions();
-  const openSheet = useOpenProjectSheet();
-  const mine = task.assignees.find((assignee) => assignee.person.id === "me" && assignee.state === "pending");
-  const otherPending = task.assignees.find((assignee) => assignee.person.id !== "me" && assignee.state === "pending");
-  const busy = accept.isPending || decline.isPending;
+  const mine = assignees.find((assignee) => assignee.person.id === "me" && assignee.state === "pending");
+  const otherPending = assignees.find((assignee) => assignee.person.id !== "me" && assignee.state === "pending");
 
-  if (mine && capabilities.acceptAssignments) {
+  if (mine && canAccept) {
     const by = mine.by;
     return (
       <section
@@ -63,33 +84,9 @@ export function AssignmentBlock({
                 {t("assign.decline")}
               </Button>
             }
-            onDecline={(reason, note) =>
-              decline.mutate(
-                { taskId: task.id, reason, note: note || undefined, revision: task.revision },
-                { onSuccess: () => toast({ title: t("decline.done") }) },
-              )
-            }
+            onDecline={onDecline}
           />
-          <Button
-            disabled={busy}
-            onClick={() =>
-              accept.mutate(
-                { taskId: task.id, revision: task.revision },
-                {
-                  onSuccess: (accepted) =>
-                    toast({
-                      title: t("assign.accepted"),
-                      tone: "success",
-                      action: {
-                        label: t("assign.undo"),
-                        altText: t("assign.undoAlt"),
-                        onClick: () => revertAccept.mutate({ taskId: accepted.id, revision: accepted.revision }),
-                      },
-                    }),
-                },
-              )
-            }
-          >
+          <Button disabled={busy} onClick={onAccept}>
             {t("assign.accept")}
           </Button>
         </div>
@@ -97,7 +94,7 @@ export function AssignmentBlock({
     );
   }
 
-  if (otherPending && capabilities.manageAssignments) {
+  if (otherPending && canManage) {
     return (
       <section
         data-slot="assignment-block"
@@ -117,20 +114,67 @@ export function AssignmentBlock({
           variant="secondary"
           size="sm"
           className="bg-surface"
-          disabled={remind.isPending}
-          onClick={() =>
-            remind.mutate(task.id, {
-              onSuccess: () => toast({ title: t("assign.reminded", { name: otherPending.person.name }) }),
-            })
-          }
+          disabled={remindBusy}
+          onClick={() => onRemind(otherPending.person.name)}
         >
           {t("assign.remind")}
         </Button>
-        <Button size="sm" aria-haspopup="dialog" onClick={() => openSheet("assignment-reassign", { task: task.id })}>
-          {t("assign.reassign")}
-        </Button>
+        {onReassign ? (
+          <Button size="sm" aria-haspopup="dialog" onClick={onReassign}>
+            {t("assign.reassign")}
+          </Button>
+        ) : null}
       </section>
     );
   }
   return null;
+}
+
+export function AssignmentBlock({
+  task,
+  capabilities,
+  assignedAt,
+}: {
+  task: ProjectTask;
+  capabilities: ProjectCapabilities;
+  assignedAt: string | null;
+}) {
+  const t = useTranslations("ProjectTask");
+  const { accept, decline, revertAccept, remind } = useAssignmentActions();
+  const openSheet = useOpenProjectSheet();
+  return (
+    <AssignmentBlockView
+      assignees={task.assignees}
+      canAccept={capabilities.acceptAssignments}
+      canManage={capabilities.manageAssignments}
+      assignedAt={assignedAt}
+      busy={accept.isPending || decline.isPending}
+      remindBusy={remind.isPending}
+      onDecline={(reason, note) =>
+        decline.mutate(
+          { taskId: task.id, reason, note: note || undefined, revision: task.revision },
+          { onSuccess: () => toast({ title: t("decline.done") }) },
+        )
+      }
+      onAccept={() =>
+        accept.mutate(
+          { taskId: task.id, revision: task.revision },
+          {
+            onSuccess: (accepted) =>
+              toast({
+                title: t("assign.accepted"),
+                tone: "success",
+                action: {
+                  label: t("assign.undo"),
+                  altText: t("assign.undoAlt"),
+                  onClick: () => revertAccept.mutate({ taskId: accepted.id, revision: accepted.revision }),
+                },
+              }),
+          },
+        )
+      }
+      onRemind={(name) => remind.mutate(task.id, { onSuccess: () => toast({ title: t("assign.reminded", { name }) }) })}
+      onReassign={() => openSheet("assignment-reassign", { task: task.id })}
+    />
+  );
 }

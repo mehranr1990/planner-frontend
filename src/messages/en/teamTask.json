@@ -1,0 +1,59 @@
+{
+  "title": "Task",
+  "close": "Close",
+  "markDone": "Mark done",
+  "reopen": "Reopen",
+  "copyLink": "Copy link",
+  "copied": "Link copied",
+  "done": "Marked done",
+  "doneUndo": "Undo",
+  "doneUndoAlt": "Reopen the task",
+  "viewer": "View only — your role is Viewer in this team.",
+  "due": "Due {date}",
+  "weekPlan": "Week plan W{n}",
+  "notPlanned": "Not planned",
+  "props": {
+    "label": "Properties",
+    "status": "Status",
+    "assignee": "Assignee",
+    "dates": "Dates",
+    "estimate": "Estimate",
+    "goal": "Goal",
+    "related": "Related"
+  },
+  "you": "You",
+  "state": {
+    "pending": "pending",
+    "accepted": "accepted",
+    "declined": "declined"
+  },
+  "unassigned": "Unassigned",
+  "dueInPlan": "Due {date} · in W{n} plan",
+  "dueOnly": "Due {date}",
+  "noDue": "No due date",
+  "hours": "{h}h",
+  "none": "—",
+  "relatedTask": "Project task “{title}” in {project}",
+  "tabs": {
+    "label": "Task sections",
+    "comments": "Comments",
+    "subtasks": "Subtasks",
+    "activity": "Activity"
+  },
+  "subtasks": "{percent} of the checklist done",
+  "activity": {
+    "created": "<b>{name}</b> created this task",
+    "assigned": "<b>{name}</b> assigned it",
+    "status": "<b>{name}</b> moved it to {status}",
+    "accepted": "<b>{name}</b> accepted",
+    "declined": "<b>{name}</b> declined"
+  },
+  "notFound": {
+    "title": "This task isn’t available",
+    "description": "It may have been deleted, or it lives in a project. Go back to the team’s work.",
+    "action": "Back to work"
+  },
+  "accepted": "Accepted · added to your tasks",
+  "declined": "Assignment declined",
+  "reminded": "Reminder sent to {name}"
+}
