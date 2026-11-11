@@ -47,6 +47,8 @@ export interface TeamFixture extends Omit<TeamSummary, "projectCount" | "restora
   linkedProjectIds: readonly string[];
   /** The team lead shown in the header ("Lead · Harry B."). */
   leadId: string;
+  /** TM-06: associated projects created under the team (Team-owned); the rest are Linked. */
+  ownedProjectIds?: readonly string[];
 }
 
 export const teamFixtures: readonly TeamFixture[] = [
@@ -66,6 +68,7 @@ export const teamFixtures: readonly TeamFixture[] = [
     forYou: 3,
     // partner-portal: linked, but the viewer has no grant → not listed, not counted.
     linkedProjectIds: ["website-redesign", "planner-app", "brand-refresh", "partner-portal"],
+    ownedProjectIds: ["website-redesign"],
     checkinMissing: true,
     updatedAt: "2026-10-13T14:30:00+03:30",
   },

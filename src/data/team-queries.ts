@@ -368,3 +368,20 @@ export function useSprintActions(teamId: string) {
     rank: useMutation({ mutationFn: (taskIds: readonly string[]) => teamBacklog.rank(teamId, taskIds), onSettled: refresh }),
   };
 }
+
+// ── Team projects (TM-06) ────────────────────────────────────────────────
+
+export function useTeamLinkRequests(teamId: string) {
+  const { projectAssociations } = useRepositories();
+  return useTeamQuery(teamId, "link-requests", () => projectAssociations.requests(teamId));
+}
+
+export function useProjectAssociationActions(teamId: string) {
+  const { projectAssociations } = useRepositories();
+  const client = useQueryClient();
+  const refresh = () => client.invalidateQueries({ queryKey: teamKeys.all });
+  return {
+    request: useMutation({ mutationFn: (projectId: string) => projectAssociations.request(teamId, projectId), onSuccess: refresh }),
+    unlink: useMutation({ mutationFn: (projectId: string) => projectAssociations.unlink(teamId, projectId), onSuccess: refresh }),
+  };
+}

@@ -1,0 +1,64 @@
+{
+  "title": "Projects",
+  "view": { "label": "Projects view", "table": "Table", "timeline": "Timeline" },
+  "link": "Link a project",
+  "new": "New team project",
+  "owned": "Team-owned",
+  "linked": "Linked",
+  "linkNote": "Linking never grants project access.",
+  "ownedBy": "Owned by {team}",
+  "filter": {
+    "label": "Show",
+    "all": "All {n}",
+    "owned": "Team-owned {n}",
+    "linked": "Linked {n}",
+    "risk": "At risk {n}"
+  },
+  "columns": {
+    "project": "Project",
+    "status": "Status",
+    "progress": "Progress",
+    "milestone": "Next milestone",
+    "people": "Team people",
+    "risks": "Risks",
+    "role": "Your role",
+    "relation": "Relation"
+  },
+  "milestone": "{title} · {date}",
+  "none": "—",
+  "progress": "{project} progress",
+  "risks": "{n} open high risks",
+  "noPeople": "No team people",
+  "timeline": {
+    "title": "Portfolio timeline",
+    "range": "{range}",
+    "now": "Today",
+    "bar": "{project}: {range}"
+  },
+  "empty": {
+    "title": "No projects you can open",
+    "body": "Projects linked to this team appear here when you have access to them."
+  },
+  "filtered": "No projects match this filter.",
+  "requests": {
+    "title": "Link requests",
+    "pending": "Waiting for the project owner · requested {date}"
+  },
+  "unlink": {
+    "action": "Unlink {project}",
+    "title": "Unlink {project}?",
+    "body": "The project leaves this team’s list. It is not deleted and its members don’t change.",
+    "confirm": "Unlink",
+    "cancel": "Cancel",
+    "done": "{project} unlinked"
+  },
+  "linkDialog": {
+    "body": "Choose a project where you are Owner or Admin. The project owner sees a request; after approval the project appears here for team members who already have access to it.",
+    "search": "Search your projects…",
+    "empty": "No projects to link.",
+    "cancel": "Cancel",
+    "submit": "Send link request",
+    "sent": "Link request sent",
+    "failed": "Couldn’t send the request. Try again."
+  }
+}

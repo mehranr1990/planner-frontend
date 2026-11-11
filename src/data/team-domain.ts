@@ -102,6 +102,10 @@ export interface TeamCapabilities {
   seeBooking: boolean;
   archive: boolean;
   restore: boolean;
+  /** TM-06: link / unlink projects (team Owner/Admin). */
+  linkProjects: boolean;
+  /** TM-06: New team project (Lead+). */
+  createProject: boolean;
 }
 
 export type TeamAccess =
@@ -160,6 +164,33 @@ export interface TeamProjectLink {
   percent: number;
   health: "on-track" | "at-risk" | "off-track";
   lifecycle: "active" | "paused" | "archived";
+}
+
+/**
+ * TM-06 portfolio row: a project the viewer can open that is Team-owned
+ * (created under the team) or Linked (approved by the project owner).
+ */
+export interface TeamPortfolioProject extends TeamProjectLink {
+  relation: "owned" | "linked";
+  initials: string;
+  tint: TeamTint;
+  /** The viewer's own project role (display only). */
+  role: "owner" | "admin" | "manager" | "member" | "viewer" | "guest";
+  nextMilestone: { title: string; due: string } | null;
+  startDate: string;
+  endDate: string;
+  /** Team members who are also project members (never others). */
+  teamPeople: readonly TeamPerson[];
+  openHighRisks: number;
+}
+
+/** projectAssociationRepo: a link request waiting for the project owner. */
+export interface TeamLinkRequest {
+  id: string;
+  projectId: string;
+  projectName: string;
+  requestedAt: string;
+  requestedBy: TeamPerson;
 }
 
 /** planRepo.week: the published weekly plan's summary (week = its Saturday). */

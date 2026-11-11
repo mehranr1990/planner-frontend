@@ -190,11 +190,32 @@ function projectsAndTeams(
             percent: project.progress.percent,
             health: project.health,
             lifecycle: project.lifecycle,
+            initials: project.initials,
+            tint: project.tint,
+            role: project.role,
+            nextMilestone: project.nextMilestone ? { title: project.nextMilestone.title, due: project.nextMilestone.due } : null,
+            startDate: project.startDate,
+            endDate: project.endDate,
+            openHighRisks: project.openHighRisks,
+            memberIds: project.members.map((person) => person.id),
           }
         : undefined;
     },
   });
-  return { ...projectRepositories(projects), ...teamRepositories(teams) };
+  const projectRepos = projectRepositories(projects);
+  return {
+    ...projectRepos,
+    // TM-06 "New team project": a project created under a team becomes Team-owned (mock wiring).
+    projectCreate: {
+      ...projectRepos.projectCreate,
+      async create(input) {
+        const project = await projectRepos.projectCreate.create(input);
+        if (input.ownerTeamId) teams.adoptProject(input.ownerTeamId, project.id);
+        return project;
+      },
+    },
+    ...teamRepositories(teams),
+  };
 }
 
 export function createMockRepositories({ fixtures, latencyMs = 0 }: MockRepositoriesOptions = {}): Repositories {

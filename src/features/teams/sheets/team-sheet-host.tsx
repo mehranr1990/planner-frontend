@@ -7,13 +7,14 @@ import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { consumeOpenedSheet, SHEET_PARAM } from "@/features/sheets/sheet-params";
 import { useCurrentTeamAccess } from "../use-current-team";
 import { isTeamSheetId, teamSheetHref, type TeamSheetId } from "./team-sheet-params";
+import { NewProjectSheet } from "@/features/projects/sheets/new-project-sheet";
 import { NewTeamSheet } from "./new-team-sheet";
 import { TeamInviteSheet } from "./team-invite-sheet";
 import { TeamStatusSheet } from "./team-status-sheet";
 
 /*
  * TM-90 sheet host for every /teams route: ?sheet=team-new · team-invite ·
- * team-status. End drawers on desktop, bottom sheets on phones. Closing goes
+ * team-status, plus project-new (TM-06 New team project, owner = this team). End drawers on desktop, bottom sheets on phones. Closing goes
  * Back when this tab opened the sheet, else drops the parameter.
  */
 export function TeamSheetHost() {
@@ -27,6 +28,7 @@ function TeamSheet({ id }: { id: TeamSheetId }) {
   const tStatus = useTranslations("TeamStatus");
   const tNew = useTranslations("TeamNew");
   const tInvite = useTranslations("TeamInvite");
+  const tProjects = useTranslations("TeamProjects");
   const router = useRouter();
   const pathname = usePathname();
   const opener = useRef<Element | null>(typeof document === "undefined" ? null : document.activeElement);
@@ -50,6 +52,8 @@ function TeamSheet({ id }: { id: TeamSheetId }) {
   const title =
     id === "team-new"
       ? tNew("title")
+      : id === "project-new"
+        ? tProjects("new")
       : id === "team-invite"
         ? tInvite("title", { team: team?.name ?? "" })
         : team
@@ -66,13 +70,16 @@ function TeamSheet({ id }: { id: TeamSheetId }) {
         side="end"
         size="drawer"
         title={title}
-        data-scope="team"
+        data-scope={id === "project-new" ? "project" : "team"}
         data-team-sheet={id}
         onCloseAutoFocus={onCloseAutoFocus}
       >
         {id === "team-new" ? <NewTeamSheet onDone={close} /> : null}
         {id === "team-invite" ? <TeamInviteSheet onDone={close} /> : null}
         {id === "team-status" ? <TeamStatusSheet onDone={close} /> : null}
+        {id === "project-new" && team ? (
+          <NewProjectSheet onDone={close} ownerTeam={{ teamId: team.id, label: tProjects("ownedBy", { team: team.name }) }} />
+        ) : null}
       </SheetContent>
     </Sheet>
   );

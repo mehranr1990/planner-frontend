@@ -42,7 +42,13 @@ const TEMPLATES: readonly ProjectTemplate[] = ["blank", "product-launch", "websi
 const toDay = (date: Date) =>
   `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
 
-export function NewProjectSheet({ onDone }: { onDone: () => void }) {
+/** Team seam (TM-06 "New team project"): the owning team, with its row label ("Owned by Design Team"). */
+export interface NewProjectOwnerTeam {
+  teamId: string;
+  label: string;
+}
+
+export function NewProjectSheet({ onDone, ownerTeam }: { onDone: () => void; ownerTeam?: NewProjectOwnerTeam }) {
   const t = useTranslations("Projects.sheets");
   const router = useRouter();
   const format = useProjectFormat();
@@ -79,7 +85,15 @@ export function NewProjectSheet({ onDone }: { onDone: () => void }) {
     if (end < start) return setError(t("new.datesInvalid"));
     setError(null);
     create.mutate(
-      { name, key: projectKey, description, startDate: start, endDate: end, template },
+      {
+        name,
+        key: projectKey,
+        description,
+        startDate: start,
+        endDate: end,
+        template,
+        ...(ownerTeam ? { ownerTeamId: ownerTeam.teamId } : {}),
+      },
       {
         onError: (cause) => {
           if (cause instanceof RepositoryError && cause.message === "key-taken")
@@ -184,18 +198,28 @@ export function NewProjectSheet({ onDone }: { onDone: () => void }) {
         <Icon icon={UserRound} size={16} className="text-fg-secondary" />
         {t("new.owner")}
       </p>
-      <div
-        role="group"
-        aria-disabled="true"
-        aria-describedby={associationId}
-        className="flex min-h-11 cursor-not-allowed items-center gap-2 rounded-row px-3 text-sm text-fg-muted inset-ring inset-ring-line"
-      >
-        <Icon icon={UsersRound} size={16} />
-        <span className="min-w-0 flex-1">{t("new.association")}</span>
-        <span id={associationId} className="text-xs">
-          {t("new.associationHint")}
-        </span>
-      </div>
+      {ownerTeam ? (
+        <p
+          data-owner-team={ownerTeam.teamId}
+          className="flex min-h-11 items-center gap-2 rounded-row bg-scope-soft px-3 text-sm font-semibold text-scope-deep"
+        >
+          <Icon icon={UsersRound} size={16} />
+          <bdi>{ownerTeam.label}</bdi>
+        </p>
+      ) : (
+        <div
+          role="group"
+          aria-disabled="true"
+          aria-describedby={associationId}
+          className="flex min-h-11 cursor-not-allowed items-center gap-2 rounded-row px-3 text-sm text-fg-muted inset-ring inset-ring-line"
+        >
+          <Icon icon={UsersRound} size={16} />
+          <span className="min-w-0 flex-1">{t("new.association")}</span>
+          <span id={associationId} className="text-xs">
+            {t("new.associationHint")}
+          </span>
+        </div>
+      )}
       {error ? <InlineAlert tone="danger" title={error} /> : null}
       <div className="flex justify-end gap-2">
         <Button type="button" variant="secondary" onClick={onDone}>

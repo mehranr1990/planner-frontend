@@ -209,3 +209,32 @@ describe("mock team calendar + planning (TM-03 / TM-04)", () => {
     expect((await teamPlans.review("design", "2026-10-03")).plannedDone).toBe(14);
   });
 });
+
+describe("mock team projects (TM-06)", () => {
+  it("portfolio: owned/linked, only openable projects; link requests need Owner/Admin on both sides", async () => {
+    const roles: Record<string, "owner" | "member"> = { "website-redesign": "member", "mobile-onboarding": "owner", "spring-campaign": "owner" };
+    const store = createMockTeams({
+      respond,
+      findProject: (id) =>
+        OPENABLE.has(id) ? { id, name: id, percent: 50, health: "on-track", lifecycle: "active", role: roles[id] ?? "member" } : undefined,
+    });
+    const portfolio = await store.teams.projects("design");
+    expect(portfolio.map((project) => [project.id, project.relation])).toEqual([
+      ["website-redesign", "owned"],
+      ["planner-app", "linked"],
+      ["brand-refresh", "linked"],
+    ]);
+    await expect(store.projectAssociations.request("design", "mobile-onboarding")).rejects.toMatchObject({ code: "forbidden" });
+    const team = await store.teams.create({ name: "Ops", planningMode: "weekly" });
+    await expect(store.projectAssociations.request(team.id, "website-redesign")).rejects.toMatchObject({ code: "forbidden" });
+    await expect(store.projectAssociations.request(team.id, "partner-portal")).rejects.toMatchObject({ code: "not-found" });
+    const request = await store.projectAssociations.request(team.id, "mobile-onboarding");
+    expect(await store.teams.projects(team.id)).toEqual([]);
+    await store.projectAssociations.approve(request.id);
+    expect((await store.teams.projects(team.id)).map((project) => project.relation)).toEqual(["linked"]);
+    await store.projectAssociations.unlink(team.id, "mobile-onboarding");
+    expect(await store.teams.projects(team.id)).toEqual([]);
+    store.adoptProject(team.id, "spring-campaign");
+    expect((await store.teams.projects(team.id))[0]?.relation).toBe("owned");
+  });
+});

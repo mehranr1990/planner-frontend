@@ -10,7 +10,8 @@ import { OPENED_KEY, SHEET_PARAM } from "@/features/sheets/sheet-params";
  * host under /teams — no collision with Personal or Project sheet ids.
  */
 
-export const teamSheetIds = ["team-new", "team-invite", "team-status"] as const;
+/** "project-new" = TM-06 New team project: PJ-90's sheet with owner = the team in the URL. */
+export const teamSheetIds = ["team-new", "team-invite", "team-status", "project-new"] as const;
 
 export type TeamSheetId = (typeof teamSheetIds)[number];
 

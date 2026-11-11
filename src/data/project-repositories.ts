@@ -470,6 +470,8 @@ export interface NewProjectInput {
   startDate: string;
   endDate: string;
   template: ProjectTemplate;
+  /** Teams (Phase 3, TM-06): the owning team when created under it (mock until the backend topology lands). */
+  ownerTeamId?: string;
 }
 
 export interface ProjectCreateRepository {

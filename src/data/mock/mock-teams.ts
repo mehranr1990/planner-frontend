@@ -35,6 +35,8 @@ import type {
   TeamMember,
   TeamModule,
   TeamPresence,
+  TeamLinkRequest,
+  TeamPortfolioProject,
   TeamProjectLink,
   TeamTask,
   TeamTaskActivity,
@@ -44,7 +46,7 @@ import type {
   TeamRole,
   TeamSummary,
 } from "../team-domain";
-import type { TeamEventInput, TeamRepositories } from "../team-repositories";
+import type { ProjectAssociationRepository, TeamEventInput, TeamRepositories } from "../team-repositories";
 
 /** Stored team event: the detail minus the per-viewer fields. */
 interface StoredTeamEvent extends Omit<TeamEventDetail, "myRsvp" | "can" | "organiser" | "invitees"> {
@@ -99,6 +101,8 @@ export function teamCapabilities(role: TeamRole, lifecycle: TeamLifecycle): Team
     seeBooking: rank >= RANK.member,
     archive: editable && rank >= RANK.admin,
     restore: lifecycle === "archived" && rank >= RANK.admin,
+    linkProjects: editable && rank >= RANK.admin,
+    createProject: editable && rank >= RANK.lead,
   };
 }
 
@@ -111,7 +115,7 @@ export interface MockTeamsOptions {
    * A linked project as the viewer may see it (Projects mock), or undefined
    * when the viewer cannot open it — team membership never grants access.
    */
-  findProject?: (projectId: string) => TeamProjectLink | undefined;
+  findProject?: (projectId: string) => TeamProjectSource | undefined;
   /**
    * The accepted-assignment bridge into Personal (same as Projects): called
    * with the projection when one of my team tasks is accepted and with null
@@ -129,7 +133,16 @@ export interface TeamPersonalProjection {
   estimateHours: number | null;
 }
 
+/** A project as the Projects mock shows it to the viewer (portfolio fields optional for small test doubles). */
+export type TeamProjectSource = TeamProjectLink &
+  Partial<Pick<TeamPortfolioProject, "initials" | "tint" | "role" | "nextMilestone" | "startDate" | "endDate" | "openHighRisks">> & {
+    /** Project member ids (team people involved = team members among them). */
+    memberIds?: readonly string[];
+  };
+
 export interface MockTeamsStore extends TeamRepositories {
+  /** Mock-only: a project created under the team (TM-06 New team project) becomes Team-owned. */
+  adoptProject(teamId: string, projectId: string): void;
   /** Mock-only: the live team fixtures (other team mocks read linked projects, lead, members). */
   findTeam(id: string): TeamFixture | undefined;
   /** Mock-only: the linked projects the viewer can open. */
@@ -287,8 +300,9 @@ export function createMockTeams({
     const shown: Partial<TeamFixture> = structuredClone(team);
     delete shown.linkedProjectIds;
     delete shown.leadId;
+    delete shown.ownedProjectIds;
     return {
-      ...(shown as Omit<TeamFixture, "linkedProjectIds" | "leadId">),
+      ...(shown as Omit<TeamFixture, "linkedProjectIds" | "leadId" | "ownedProjectIds">),
       projectCount: openable(team).length,
       lead: team.members.find((person) => person.id === team.leadId) ?? null,
       restorable: teamCapabilities(team.role, team.lifecycle).restore,
@@ -337,7 +351,75 @@ export function createMockTeams({
     },
   });
 
+  const linkRequests: (TeamLinkRequest & { teamId: string })[] = [];
+  let requestCounter = 0;
+  const publicRequest = ({ id, projectId, projectName, requestedAt, requestedBy }: TeamLinkRequest): TeamLinkRequest => ({
+    id,
+    projectId,
+    projectName,
+    requestedAt,
+    requestedBy,
+  });
+  const projectAdmin = (projectId: string) => {
+    const role = findProject(projectId)?.role;
+    return role === "owner" || role === "admin";
+  };
+  const projectAssociations: ProjectAssociationRepository = {
+    async requests(teamId) {
+      memberOf(teamId);
+      return respond(linkRequests.filter((item) => item.teamId === teamId).map(publicRequest));
+    },
+    async request(teamId, projectId) {
+      const team = memberOf(teamId);
+      const project = findProject(projectId);
+      // Forbidden = not found: an unopenable project answers like a missing one.
+      if (!project) throw new RepositoryError("not-found", "Project not found");
+      if (!teamCapabilities(team.role, team.lifecycle).linkProjects || !projectAdmin(projectId)) {
+        throw new RepositoryError("forbidden", "Owner/Admin on both sides");
+      }
+      if (team.linkedProjectIds.includes(projectId) || linkRequests.some((item) => item.teamId === teamId && item.projectId === projectId)) {
+        throw new RepositoryError("conflict", "Already linked or requested");
+      }
+      requestCounter += 1;
+      const request = {
+        id: "link-" + requestCounter,
+        teamId,
+        projectId,
+        projectName: project.name,
+        requestedAt: now,
+        requestedBy: meIn(teamId),
+      };
+      linkRequests.push(request);
+      return respond(publicRequest(request));
+    },
+    async approve(requestId) {
+      const index = linkRequests.findIndex((item) => item.id === requestId);
+      if (index < 0) throw new RepositoryError("not-found", "Request not found");
+      const [request] = linkRequests.splice(index, 1);
+      const team = memberOf(request!.teamId);
+      team.linkedProjectIds = [...team.linkedProjectIds, request!.projectId];
+      return respond(undefined);
+    },
+    async unlink(teamId, projectId) {
+      const team = memberOf(teamId);
+      if (!team.linkedProjectIds.includes(projectId)) throw new RepositoryError("not-found", "Not linked");
+      if (team.ownedProjectIds?.includes(projectId)) throw new RepositoryError("invalid", "Team-owned projects are not unlinked");
+      if (!teamCapabilities(team.role, team.lifecycle).linkProjects && !projectAdmin(projectId)) {
+        throw new RepositoryError("forbidden", "Owner/Admin only");
+      }
+      // Never deletes the project or changes its members.
+      team.linkedProjectIds = team.linkedProjectIds.filter((id) => id !== projectId);
+      return respond(undefined);
+    },
+  };
+
   return {
+    projectAssociations,
+    adoptProject: (teamId, projectId) => {
+      const team = memberOf(teamId);
+      team.linkedProjectIds = [...team.linkedProjectIds, projectId];
+      team.ownedProjectIds = [...(team.ownedProjectIds ?? []), projectId];
+    },
     teamSprints,
     teamBacklog,
     findTeam: find,
@@ -423,7 +505,25 @@ export function createMockTeams({
       async projects(id) {
         const team = memberOf(id);
         return respond(
-          team.linkedProjectIds.map((projectId) => findProject(projectId)).filter((link) => link !== undefined),
+          team.linkedProjectIds.flatMap((projectId): TeamPortfolioProject[] => {
+            const source = findProject(projectId);
+            if (!source) return [];
+            const { memberIds = [], ...project } = source;
+            return [
+              {
+                initials: project.name.slice(0, 2).toLocaleUpperCase(),
+                tint: "blue",
+                role: "member",
+                nextMilestone: null,
+                startDate: today,
+                endDate: today,
+                openHighRisks: 0,
+                ...project,
+                relation: team.ownedProjectIds?.includes(projectId) ? "owned" : "linked",
+                teamPeople: team.members.filter((person) => memberIds.includes(person.id)),
+              },
+            ];
+          }),
         );
       },
     },
@@ -865,6 +965,7 @@ export function teamRepositories(store: MockTeamsStore): TeamRepositories {
     teamRecognition: store.teamRecognition,
     teamTasks: store.teamTasks,
     teamSprints: store.teamSprints,
+    projectAssociations: store.projectAssociations,
     teamBacklog: store.teamBacklog,
   };
 }

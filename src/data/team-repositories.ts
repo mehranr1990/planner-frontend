@@ -9,7 +9,8 @@ import type {
   TeamEventKind,
   TeamMember,
   TeamRsvp,
-  TeamProjectLink,
+  TeamLinkRequest,
+  TeamPortfolioProject,
   TeamTask,
   TeamTaskComment,
   TeamTaskDetail,
@@ -59,8 +60,8 @@ export interface TeamRepository {
   create(input: NewTeamInput): Promise<TeamSummary>;
   /** Members with team role and job title (A–Z is the UI's job). */
   members(id: string): Promise<readonly TeamMember[]>;
-  /** Linked projects the viewer can open — never a hidden one or a hidden count. */
-  projects(id: string): Promise<readonly TeamProjectLink[]>;
+  /** Team-owned + linked projects the viewer can open — never a hidden one or a hidden count. */
+  projects(id: string): Promise<readonly TeamPortfolioProject[]>;
 }
 
 /** planRepo */
@@ -222,6 +223,22 @@ export interface PresenceRepository {
   clear(teamId: string): Promise<TeamPresence>;
 }
 
+/** projectAssociationRepo (TM-06; P2-03 association interface → P3). */
+export interface ProjectAssociationRepository {
+  /** Pending link requests of this team (waiting for each project's owner). */
+  requests(teamId: string): Promise<readonly TeamLinkRequest[]>;
+  /**
+   * Team Owner/Admin asks to link a project where they are project Owner or
+   * Admin. Linking never grants project access. Rejects "forbidden" without
+   * rights on either side, "conflict" when already linked or requested.
+   */
+  request(teamId: string, projectId: string): Promise<TeamLinkRequest>;
+  /** Project owner side (approval lives in the project; mock only here). */
+  approve(requestId: string): Promise<void>;
+  /** Team or project Owner/Admin; never deletes the project or changes its members. */
+  unlink(teamId: string, projectId: string): Promise<void>;
+}
+
 /** sprintRepo (TM-05; only for teams with Settings › Planning › Sprints on, else "unsupported"). */
 export interface TeamSprintRepository {
   current(teamId: string, options?: TeamAccessOptions): Promise<TeamSprintState>;
@@ -254,5 +271,6 @@ export interface TeamRepositories {
   teamRecognition: TeamRecognitionRepository;
   teamTasks: TeamTaskRepository;
   teamSprints: TeamSprintRepository;
+  projectAssociations: ProjectAssociationRepository;
   teamBacklog: TeamBacklogRepository;
 }
