@@ -2,7 +2,7 @@
 
 import { MessageCircle, UserPen } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useId, useState } from "react";
+import { useId, useState, type ReactNode } from "react";
 import { PeopleWorkload, type PeopleWorkloadPerson } from "@/components/context/people-workload";
 import { Button } from "@/components/ui/button";
 import { Icon } from "@/components/ui/icon";
@@ -23,7 +23,15 @@ import { useTeam } from "../team-gate";
  * Message (Messages does not exist yet: coming soon) or Set status for
  * yourself (?sheet=team-status).
  */
-export function TeamPeopleCard() {
+/** TM-08 seam: the strip (rows hidden) whose selection drives the People page; TM-01 uses the defaults. */
+export interface TeamPeopleCardProps {
+  mode?: "full" | "strip";
+  selectedId?: string;
+  onSelect?: (id: string) => void;
+  footnote?: ReactNode;
+}
+
+export function TeamPeopleCard({ mode = "full", selectedId: controlledId, onSelect, footnote }: TeamPeopleCardProps = {}) {
   const t = useTranslations("Team");
   const labels = useTeamLabels();
   const { team, capabilities } = useTeam();
@@ -32,7 +40,9 @@ export function TeamPeopleCard() {
   const capacity = useTeamCapacity(team.id, capabilities.seeBooking);
   const openSheet = useOpenTeamSheet();
   const soonId = useId();
-  const [selectedId, setSelectedId] = useState<string>();
+  const [ownSelectedId, setOwnSelectedId] = useState<string>();
+  const selectedId = controlledId ?? ownSelectedId;
+  const setSelectedId = onSelect ?? setOwnSelectedId;
 
   if (!members.data || !presence.data) return <Skeleton className="h-72 rounded-[2rem]" />;
 
@@ -57,14 +67,15 @@ export function TeamPeopleCard() {
     <PeopleWorkload
       title={t("people.title")}
       scope="team"
+      mode={mode}
       people={people}
       selectedId={selectedId}
       onSelect={setSelectedId}
       statusLabel={labels.status}
       legend={presenceStatuses}
       statusOnly={!capabilities.seeBooking}
-      moreHref={teamHref(team.id, "people")}
-      footnote={t("people.footnote")}
+      moreHref={mode === "full" ? teamHref(team.id, "people") : undefined}
+      footnote={footnote ?? t("people.footnote")}
       action={(person) =>
         person.isSelf ? (
           capabilities.setOwnStatus ? (

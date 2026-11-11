@@ -7,7 +7,8 @@ import { afterHydration } from "./queries";
 import { RepositoryError } from "./repositories";
 import { taskKeys, teamKeys } from "./query-keys";
 import type { DeclineReason } from "./project-domain";
-import type { CarryOverDecision, SetPresenceInput, TeamRsvp, TeamTaskStatus } from "./team-domain";
+import type { Weekday } from "@/lib/dates/week";
+import type { CarryOverDecision, SetPresenceInput, TeamRole, TeamRsvp, TeamTaskStatus } from "./team-domain";
 import type {
   NewTeamInput,
   NewTeamTaskInput,
@@ -406,5 +407,55 @@ export function useTeamGoalActions(teamId: string) {
       mutationFn: ({ goalId, values }: { goalId: string; values: Readonly<Record<string, number>> }) => teamGoals.update(goalId, values),
       onSuccess: refresh,
     }),
+  };
+}
+
+// ── People & capacity (TM-08) ────────────────────────────────────────────
+
+export function useTeamMemberRows(teamId: string, preview: TeamAccessOptions = {}) {
+  const { teamMembers } = useRepositories();
+  return useTeamQuery(teamId, "member-rows", () => teamMembers.list(teamId, preview), true, preview);
+}
+
+export function useTeamPendingInvites(teamId: string, enabled: boolean) {
+  const { teamMembers } = useRepositories();
+  return useTeamQuery(teamId, "pending-invites", () => teamMembers.invitations(teamId), enabled);
+}
+
+export function useMemberRemovalPreview(teamId: string, personId: string | null) {
+  const { teamMembers } = useRepositories();
+  return useTeamQuery(teamId, "removal-preview", () => teamMembers.removalPreview(teamId, personId!), personId !== null, personId);
+}
+
+export function useTeamPersonCapacity(teamId: string, personId: string | null) {
+  const { teamCapacity } = useRepositories();
+  return useTeamQuery(teamId, "capacity-of", () => teamCapacity.get(teamId, personId!), personId !== null, personId);
+}
+
+/** Roles, capacity, move / remove and invitations; successes refresh the whole team (and my teams list). */
+export function useTeamMemberActions(teamId: string) {
+  const { teamMembers, teamCapacity } = useRepositories();
+  const client = useQueryClient();
+  const refresh = () => {
+    void client.invalidateQueries({ queryKey: teamKeys.all });
+    void client.invalidateQueries({ queryKey: taskKeys.all });
+  };
+  return {
+    setRole: useMutation({
+      mutationFn: ({ personId, role }: { personId: string; role: Exclude<TeamRole, "owner"> }) => teamMembers.setRole(teamId, personId, role),
+      onSuccess: refresh,
+    }),
+    setCapacity: useMutation({
+      mutationFn: ({ personId, hours, days }: { personId: string; hours: number; days: readonly Weekday[] }) =>
+        teamCapacity.set(teamId, personId, { hours, days }),
+      onSuccess: refresh,
+    }),
+    remove: useMutation({ mutationFn: (personId: string) => teamMembers.remove(teamId, personId), onSuccess: refresh }),
+    move: useMutation({
+      mutationFn: ({ personId, toTeamId }: { personId: string; toTeamId: string }) => teamMembers.move(teamId, personId, toTeamId),
+      onSuccess: refresh,
+    }),
+    resendInvite: useMutation({ mutationFn: (inviteId: string) => teamMembers.resendInvite(teamId, inviteId), onSuccess: refresh }),
+    cancelInvite: useMutation({ mutationFn: (inviteId: string) => teamMembers.cancelInvite(teamId, inviteId), onSuccess: refresh }),
   };
 }

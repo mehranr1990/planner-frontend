@@ -238,3 +238,33 @@ describe("mock team projects (TM-06)", () => {
     expect((await store.teams.projects(team.id))[0]?.relation).toBe("owned");
   });
 });
+
+describe("mock team members + capacity (TM-08)", () => {
+  it("Owner/Admin change roles, move and remove (open team tasks become Unassigned); Owner is never removed", async () => {
+    const store = make();
+    const rows = await store.teamMembers.list("design");
+    expect(rows.find((row) => row.person.id === "katy")?.can).toMatchObject({ changeRole: false, remove: false });
+    await expect(store.teamMembers.remove("design", "katy")).rejects.toMatchObject({ code: "forbidden" });
+    store.findTeam("design")!.role = "admin";
+    expect((await store.teamMembers.list("design")).find((row) => row.person.id === "sarah")?.can.remove).toBe(false);
+    await expect(store.teamMembers.setRole("design", "katy", "admin")).rejects.toMatchObject({ code: "forbidden" });
+    expect((await store.teamMembers.setRole("design", "katy", "lead")).role).toBe("lead");
+    expect(await store.teamMembers.removalPreview("design", "katy")).toEqual({ openTeamTasks: 3, acceptedTeamTasks: 3, lastOwner: false });
+    await store.teamMembers.move("design", "katy", "growth");
+    const handoff = (await store.teamTasks.list("design")).find((task) => task.id === "t-handoff")!;
+    expect(handoff.assignees).toEqual([]);
+    expect((await store.teams.members("growth")).map((member) => member.person.id)).toContain("katy");
+    await store.teamMembers.remove("design", "nina");
+    expect((await store.teams.members("design")).map((member) => member.person.id)).not.toContain("nina");
+  });
+
+  it("capacity: Lead+ set hours and days; invitations resend / cancel need invite rights", async () => {
+    const store = make();
+    await expect(store.teamCapacity.set("design", "katy", { hours: 30, days: [6] })).rejects.toMatchObject({ code: "forbidden" });
+    const set = await store.teamCapacity.set("mobile", "kian", { hours: 28, days: [6, 0, 1] });
+    expect(set).toEqual({ personId: "kian", hours: 28, days: [6, 0, 1] });
+    await expect(store.teamCapacity.set("mobile", "kian", { hours: 90, days: [6] })).rejects.toMatchObject({ code: "invalid" });
+    await expect(store.teamMembers.invitations("design")).rejects.toMatchObject({ code: "forbidden" });
+    expect(await store.teamMembers.invitations("mobile")).toEqual([]);
+  });
+});

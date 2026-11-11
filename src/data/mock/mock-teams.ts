@@ -19,6 +19,7 @@ import {
   removedTeamIds,
   teamFixtures,
   teamInvitationFixtures,
+  teamPendingInviteFixtures,
   type TeamFixture,
 } from "@/fixtures/teams";
 import { RepositoryError } from "../repositories";
@@ -27,6 +28,11 @@ import { createMockTeamSprints } from "./mock-team-sprints";
 import type {
   ClearAfter,
   TeamCapabilities,
+  TeamCapacity,
+  TeamCapacityEntry,
+  TeamMemberRemovalPreview,
+  TeamMemberRow,
+  TeamPendingInvite,
   TeamCalendarOverlay,
   TeamEventDetail,
   TeamInvitation,
@@ -47,7 +53,8 @@ import type {
   TeamRole,
   TeamSummary,
 } from "../team-domain";
-import type { ProjectAssociationRepository, TeamEventInput, TeamRepositories } from "../team-repositories";
+import type { ProjectAssociationRepository, TeamEventInput, TeamMemberRepository, TeamRepositories } from "../team-repositories";
+import { IRAN_WEEK, type Weekday } from "@/lib/dates/week";
 
 /** Stored team event: the detail minus the per-viewer fields. */
 interface StoredTeamEvent extends Omit<TeamEventDetail, "myRsvp" | "can" | "organiser" | "invitees"> {
@@ -148,6 +155,12 @@ export interface MockTeamsStore extends TeamRepositories {
   findTeam(id: string): TeamFixture | undefined;
   /** Mock-only: the linked projects the viewer can open. */
   openableProjectIds(id: string): readonly string[];
+}
+
+/** A member's team role (the viewer's own from the team; Lead for leadId; else Member unless set). */
+function roleOf(team: TeamFixture, personId: string): TeamRole {
+  if (personId === "me") return team.role;
+  return team.memberRoles?.[personId] ?? (personId === team.leadId ? "lead" : "member");
 }
 
 /** The instant a status set now clears, in Iran time (+03:30); Iran weeks end on Friday. */
@@ -340,6 +353,148 @@ export function createMockTeams({
     return entry;
   };
   const myTeams = () => teams.filter((team) => team.lifecycle === "active").map((team) => team.id);
+  // TM-08: capacity (hours + days), team roles, pending invitations.
+  const capacities = new Map<string, TeamCapacityEntry[]>(
+    Object.entries(structuredClone(capacityFixtures)).map(([id, list]) => [id, [...list]]),
+  );
+  const capacityDays = new Map<string, Weekday[]>();
+  const capacityOf = (teamId: string, personId: string): TeamCapacity => ({
+    personId,
+    hours: capacities.get(teamId)?.find((item) => item.personId === personId)?.capacityHours ?? 0,
+    days: [...(capacityDays.get(teamId + ":" + personId) ?? IRAN_WEEK.workDays)],
+  });
+  const pendingInvites = new Map<string, TeamPendingInvite[]>(
+    Object.entries(structuredClone(teamPendingInviteFixtures)).map(([id, list]) => [id, [...list]]),
+  );
+  const unassignFrom = (teamId: string, personId: string) => {
+    const team = memberOf(teamId);
+    for (const task of tasks) {
+      if (task.teamId !== teamId || task.source.kind !== "team" || task.status === "done") continue;
+      const before = task.assignees.length;
+      const wasAccepted = task.assignees.some((assignee) => assignee.person.id === personId && assignee.state === "accepted");
+      task.assignees = task.assignees.filter((assignee) => assignee.person.id !== personId);
+      if (task.assignees.length !== before) {
+        bump(task);
+        // Accepted team tasks leave the person's Personal projections.
+        if (personId === "me" && wasAccepted) project(task, team.name, false);
+      }
+    }
+  };
+  const removalPreviewOf = (teamId: string, personId: string): TeamMemberRemovalPreview => {
+    const team = memberOf(teamId);
+    const open = tasks.filter(
+      (task) =>
+        task.teamId === teamId &&
+        task.source.kind === "team" &&
+        task.status !== "done" &&
+        task.assignees.some((assignee) => assignee.person.id === personId && assignee.state !== "declined"),
+    );
+    return {
+      openTeamTasks: open.length,
+      acceptedTeamTasks: open.filter((task) =>
+        task.assignees.some((assignee) => assignee.person.id === personId && assignee.state === "accepted"),
+      ).length,
+      lastOwner: roleOf(team, personId) === "owner",
+    };
+  };
+  const memberRow = (team: TeamFixture, person: TeamPerson, viewerRole: TeamRole): TeamMemberRow => {
+    const caps = teamCapabilities(viewerRole, team.lifecycle);
+    const role = roleOf(team, person.id);
+    const self = person.id === "me";
+    const admin = team.lifecycle === "active" && RANK[viewerRole] >= RANK.admin;
+    return {
+      person,
+      role,
+      title: teamJobTitles[person.id] ?? "",
+      can: {
+        // Owner changes only by transfer; Admin is granted only by an Owner.
+        changeRole: admin && !self && role !== "owner" && (role !== "admin" || viewerRole === "owner"),
+        editCapacity: caps.editWeekFocus,
+        // OPEN(DECISIONS): exactly one Owner - the Owner is never moved or removed here.
+        move: admin && !self && role !== "owner",
+        remove: admin && !self && role !== "owner",
+        leave: self && role !== "owner",
+      },
+    };
+  };
+  const adminOf = (teamId: string) => {
+    const team = memberOf(teamId);
+    if (team.lifecycle !== "active" || RANK[team.role] < RANK.admin) throw new RepositoryError("forbidden", "Owner/Admin only");
+    return team;
+  };
+  const dropMember = (team: TeamFixture, personId: string) => {
+    unassignFrom(team.id, personId);
+    team.members = team.members.filter((person) => person.id !== personId);
+    team.memberCount = team.members.length;
+    const list = presence.get(team.id);
+    if (list) presence.set(team.id, list.filter((entry) => entry.personId !== personId));
+  };
+  const invitesOf = (teamId: string) => {
+    const team = memberOf(teamId);
+    if (!teamCapabilities(team.role, team.lifecycle).invite) throw new RepositoryError("forbidden", "No invite rights");
+    return pendingInvites.get(teamId) ?? [];
+  };
+  const teamMembers: TeamMemberRepository = {
+    async list(teamId, options = {}) {
+      const team = memberOf(teamId);
+      const viewerRole = options.previewRole ?? team.role;
+      return respond(team.members.map((person) => memberRow(team, person, viewerRole)));
+    },
+    async setRole(teamId, personId, role) {
+      const team = adminOf(teamId);
+      const person = team.members.find((item) => item.id === personId);
+      if (!person) throw new RepositoryError("not-found", "Not a member");
+      if (!memberRow(team, person, team.role).can.changeRole || (role === "admin" && team.role !== "owner")) {
+        throw new RepositoryError("forbidden", "Cannot change this role");
+      }
+      team.memberRoles = { ...team.memberRoles, [personId]: role };
+      return respond(memberRow(team, person, team.role));
+    },
+    async removalPreview(teamId, personId) {
+      memberOf(teamId);
+      return respond(removalPreviewOf(teamId, personId));
+    },
+    async remove(teamId, personId) {
+      const team = adminOf(teamId);
+      const person = team.members.find((item) => item.id === personId);
+      if (!person) throw new RepositoryError("not-found", "Not a member");
+      if (!memberRow(team, person, team.role).can.remove) throw new RepositoryError("forbidden", "Cannot remove");
+      dropMember(team, personId);
+      return respond(undefined);
+    },
+    async move(teamId, personId, toTeamId) {
+      const team = adminOf(teamId);
+      const target = memberOf(toTeamId);
+      const person = team.members.find((item) => item.id === personId);
+      if (!person) throw new RepositoryError("not-found", "Not a member");
+      if (toTeamId === teamId || target.lifecycle !== "active") throw new RepositoryError("invalid", "Pick another active team");
+      if (!memberRow(team, person, team.role).can.move) throw new RepositoryError("forbidden", "Cannot move");
+      dropMember(team, personId);
+      // Project roles are unchanged: projects belong to their owners.
+      if (!target.members.some((item) => item.id === personId)) {
+        target.members = [...target.members, person];
+        target.memberCount = target.members.length;
+      }
+      return respond(undefined);
+    },
+    async invitations(teamId) {
+      return respond(structuredClone(invitesOf(teamId)));
+    },
+    async resendInvite(teamId, inviteId) {
+      const invite = invitesOf(teamId).find((item) => item.id === inviteId);
+      if (!invite) throw new RepositoryError("not-found", "Invitation not found");
+      invite.sentAt = now;
+      invite.expiresAt = new Date(Date.parse(now) + 14 * 86_400_000).toISOString();
+      return respond(structuredClone(invite));
+    },
+    async cancelInvite(teamId, inviteId) {
+      pendingInvites.set(
+        teamId,
+        invitesOf(teamId).filter((item) => item.id !== inviteId),
+      );
+      return respond(undefined);
+    },
+  };
   const { teamSprints, teamBacklog } = createMockTeamSprints({
     respond,
     today,
@@ -429,6 +584,7 @@ export function createMockTeams({
   });
 
   return {
+    teamMembers,
     teamGoals,
     projectAssociations,
     adoptProject: (teamId, projectId) => {
@@ -513,7 +669,7 @@ export function createMockTeams({
         return respond(
           team.members.map((person): TeamMember => ({
             person,
-            role: person.id === "me" ? team.role : person.id === team.leadId ? "lead" : "member",
+            role: roleOf(team, person.id),
             title: teamJobTitles[person.id] ?? "",
           })),
         );
@@ -625,7 +781,27 @@ export function createMockTeams({
         const role = options.previewRole ?? team.role;
         // OPEN(DECISIONS): whether Viewers may see this-week booking — default off.
         if (!teamCapabilities(role, team.lifecycle).seeBooking) throw new RepositoryError("forbidden", "No booking rights");
-        return respond(capacityFixtures[teamId] ?? []);
+        return respond(structuredClone(capacities.get(teamId) ?? []));
+      },
+      async get(teamId, personId) {
+        const team = memberOf(teamId);
+        if (!team.members.some((person) => person.id === personId)) throw new RepositoryError("not-found", "Not a member");
+        return respond(capacityOf(teamId, personId));
+      },
+      async set(teamId, personId, input) {
+        const team = memberOf(teamId);
+        if (!teamCapabilities(team.role, team.lifecycle).editWeekFocus) throw new RepositoryError("forbidden", "Lead+ only");
+        if (!team.members.some((person) => person.id === personId)) throw new RepositoryError("not-found", "Not a member");
+        if (!Number.isFinite(input.hours) || input.hours < 0 || input.hours > 80 || input.days.length === 0) {
+          throw new RepositoryError("invalid", "Hours 0-80 and at least one day");
+        }
+        const list = capacities.get(teamId) ?? [];
+        const entry = list.find((item) => item.personId === personId);
+        if (entry) entry.capacityHours = input.hours;
+        else list.push({ personId, bookedHours: 0, capacityHours: input.hours });
+        capacities.set(teamId, list);
+        capacityDays.set(teamId + ":" + personId, [...input.days]);
+        return respond(capacityOf(teamId, personId));
       },
     },
     teamCalendar: {
@@ -983,6 +1159,7 @@ export function teamRepositories(store: MockTeamsStore): TeamRepositories {
     teamSprints: store.teamSprints,
     projectAssociations: store.projectAssociations,
     teamGoals: store.teamGoals,
+    teamMembers: store.teamMembers,
     teamBacklog: store.teamBacklog,
   };
 }

@@ -5,7 +5,7 @@
  * Replace with the real API when backend Phase 3 lands.
  */
 
-import type { TeamInvitation, TeamPerson, TeamPresence, TeamSummary } from "@/data/team-domain";
+import type { TeamInvitation, TeamPendingInvite, TeamPerson, TeamPresence, TeamRole, TeamSummary } from "@/data/team-domain";
 
 const person = (id: string, name: string, initials: string): TeamPerson => ({ id, name, initials });
 
@@ -49,6 +49,8 @@ export interface TeamFixture extends Omit<TeamSummary, "projectCount" | "restora
   leadId: string;
   /** TM-06: associated projects created under the team (Team-owned); the rest are Linked. */
   ownedProjectIds?: readonly string[];
+  /** Team roles of other members (default: Lead for leadId, else Member). OPEN(DECISIONS): exactly one Owner. */
+  memberRoles?: Readonly<Record<string, TeamRole>>;
 }
 
 export const teamFixtures: readonly TeamFixture[] = [
@@ -69,6 +71,7 @@ export const teamFixtures: readonly TeamFixture[] = [
     // partner-portal: linked, but the viewer has no grant → not listed, not counted.
     linkedProjectIds: ["website-redesign", "planner-app", "brand-refresh", "partner-portal"],
     ownedProjectIds: ["website-redesign"],
+    memberRoles: { sarah: "owner", ava: "viewer" },
     checkinMissing: true,
     updatedAt: "2026-10-13T14:30:00+03:30",
   },
@@ -201,4 +204,18 @@ export const presenceFixtures: Readonly<Record<string, readonly PresenceSeed[]>>
     { personId: "ava", status: "available", note: "", until: null, shareWorkingOn: false },
     { personId: "harry", status: "busy", note: "", until: null, shareWorkingOn: false },
   ],
+};
+
+/** TM-08 Invitations tab: invitations each team sent that are still pending. */
+export const teamPendingInviteFixtures: Readonly<Record<string, readonly TeamPendingInvite[]>> = {
+  design: [
+    {
+      id: "inv-dana",
+      email: "dana@studio.example",
+      role: "member",
+      sentAt: "2026-10-09T10:00:00+03:30",
+      expiresAt: "2026-10-23T10:00:00+03:30",
+    },
+  ],
+  mobile: [],
 };

@@ -24,17 +24,21 @@ export function TeamTaskAdd({
   busy,
   onCreate,
   inputRef,
+  defaultAssignee,
 }: {
   members: readonly TeamPerson[];
   busy: boolean;
   onCreate: (input: NewTeamTaskInput) => void;
   inputRef?: Ref<HTMLInputElement>;
+  /** TM-08 "Assign a task" (?assignee=): used when the text names nobody. */
+  defaultAssignee?: TeamPerson;
 }) {
   const t = useTranslations("TeamWork");
   const format = useProjectFormat();
   const [text, setText] = useState("");
   const id = useId();
-  const parsed = projectQuickParse(text, getPlannerToday(), members);
+  const quick = projectQuickParse(text, getPlannerToday(), members);
+  const parsed = quick.assignee || !defaultAssignee ? quick : { ...quick, assignee: defaultAssignee };
   const chips: { key: string; label: string; className?: string }[] = [];
   if (parsed.assignee) chips.push({ key: "who", label: t("add.assignee", { name: parsed.assignee.name }) });
   if (parsed.priority)

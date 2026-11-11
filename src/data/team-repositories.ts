@@ -1,7 +1,11 @@
 import type {
   SetPresenceInput,
   TeamActivity,
+  TeamCapacity,
   TeamCapacityEntry,
+  TeamMemberRemovalPreview,
+  TeamMemberRow,
+  TeamPendingInvite,
   TeamCheckinSummary,
   TeamCalendarOverlay,
   TeamEvent,
@@ -34,6 +38,7 @@ import type {
   TeamSummary,
 } from "./team-domain";
 
+import type { Weekday } from "@/lib/dates/week";
 import type { DeclineReason } from "./project-domain";
 
 /*
@@ -97,6 +102,26 @@ export interface PlanTaskInput {
 /** capacityRepo — Viewers get "forbidden" (OPEN(DECISIONS): Viewer booking default off). */
 export interface TeamCapacityRepository {
   week(teamId: string, week?: string, options?: TeamAccessOptions): Promise<readonly TeamCapacityEntry[]>;
+  /** TM-08 capacity editor: weekly hours + working days per member. */
+  get(teamId: string, personId: string): Promise<TeamCapacity>;
+  /** Lead+ ("Edit capacity"); used by Planning, Workload and Sprints. */
+  set(teamId: string, personId: string, input: { hours: number; days: readonly Weekday[] }): Promise<TeamCapacity>;
+}
+
+/** teamMemberRepo (TM-08). Rights are per row (`can`), never derived from the role label in the UI. */
+export interface TeamMemberRepository {
+  list(teamId: string, options?: TeamAccessOptions): Promise<readonly TeamMemberRow[]>;
+  /** Owner/Admin. Owner only changes by transfer; Admin is set only by an Owner. */
+  setRole(teamId: string, personId: string, role: Exclude<TeamRole, "owner">): Promise<TeamMemberRow>;
+  removalPreview(teamId: string, personId: string): Promise<TeamMemberRemovalPreview>;
+  /** Owner/Admin: open team tasks become Unassigned; project roles never change. */
+  remove(teamId: string, personId: string): Promise<void>;
+  /** Owner/Admin: to another of my teams; this team's open tasks become Unassigned. */
+  move(teamId: string, personId: string, toTeamId: string): Promise<void>;
+  /** Invitations tab (Lead+ with invite rights). */
+  invitations(teamId: string): Promise<readonly TeamPendingInvite[]>;
+  resendInvite(teamId: string, inviteId: string): Promise<TeamPendingInvite>;
+  cancelInvite(teamId: string, inviteId: string): Promise<void>;
 }
 
 /** teamCalendarRepo */
@@ -285,5 +310,6 @@ export interface TeamRepositories {
   teamSprints: TeamSprintRepository;
   projectAssociations: ProjectAssociationRepository;
   teamGoals: TeamGoalRepository;
+  teamMembers: TeamMemberRepository;
   teamBacklog: TeamBacklogRepository;
 }

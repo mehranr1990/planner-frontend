@@ -40,7 +40,7 @@ export const capacityFixtures: Readonly<Record<string, readonly TeamCapacityEntr
     { personId: "amelie", bookedHours: 18, capacityHours: 25 },
     { personId: "harry", bookedHours: 24, capacityHours: 25 },
     { personId: "jonathan", bookedHours: 16, capacityHours: 25 },
-    { personId: "katy", bookedHours: 33, capacityHours: 32 },
+    { personId: "katy", bookedHours: 33, capacityHours: 32, otherProjectTasks: 1 },
     { personId: "me", bookedHours: 20, capacityHours: 25 },
     { personId: "nina", bookedHours: 6, capacityHours: 20 },
     { personId: "sarah", bookedHours: 22, capacityHours: 25 },

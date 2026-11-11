@@ -1,0 +1,80 @@
+{
+  "title": "People",
+  "capacity": "Capacity",
+  "thisWeek": "This week",
+  "assign": "Assign a task",
+  "move": "Move to another team",
+  "otherProject": "{n, plural, one {# other project task} other {# other project tasks}} · {h}h",
+  "invite": "Invite",
+  "tabs": { "label": "People view", "members": "Members {n}", "invitations": "Invitations {n}" },
+  "stripFootnote": "Pick a person in the notch: the strip, the highlighted row and the Person card follow. “Now working on” shows only if that person shares it.",
+  "filter": {
+    "label": "Show",
+    "all": "All {n}",
+    "available": "Available {n}",
+    "over": "Over capacity {n}",
+    "off": "Off today {n}"
+  },
+  "columns": { "person": "Person", "status": "Status", "role": "Role", "capacity": "Capacity", "week": "This week" },
+  "you": "{name} (you)",
+  "until": "until {time}",
+  "hours": "{n}h",
+  "booked": "{name}: {percent} booked",
+  "noBooking": "Booking not shown",
+  "changeRole": "Change role of {name}",
+  "roleSaved": "{name} is now {role}",
+  "actions": "Actions for {name}",
+  "editCapacity": "Edit capacity",
+  "remove": "Remove from team",
+  "select": "Show {name}",
+  "footnote": "A–Z. Status is set by each person. “This week” = booked estimates ÷ capacity; never a ranking.",
+  "filtered": "Nobody matches this filter.",
+  "card": {
+    "roleLine": "{title} · {role}",
+    "week": "This week · {booked} / {capacity}h",
+    "days": "{days} · {perDay}h/day",
+    "planned": "Planned this week",
+    "noPlanned": "Nothing planned this week.",
+    "shared": "Shared projects you can see",
+    "noShared": "No shared projects you can see.",
+    "copyLink": "Copy profile link",
+    "linkCopied": "Profile link copied"
+  },
+  "capacityDialog": {
+    "title": "Capacity · {name}",
+    "days": "Working days",
+    "hours": "Hours for this team per week",
+    "hint": "Set by Lead/Admin with the person; used by Planning, Workload and Sprints. Not linked to Personal settings.",
+    "invalid": "Enter 0–80 hours and at least one day",
+    "save": "Save",
+    "cancel": "Cancel",
+    "saved": "Capacity saved"
+  },
+  "moveDialog": {
+    "title": "Move {name} to another team",
+    "body": "{name}’s {n, plural, one {# open team task stays} other {# open team tasks stay}} in {team} and become Unassigned. Project roles are unchanged — projects belong to their owners.",
+    "to": "Move to",
+    "submit": "Move",
+    "cancel": "Cancel",
+    "done": "{name} moved to {team}",
+    "noTeams": "No other active team to move to."
+  },
+  "removeDialog": {
+    "title": "Remove {name} from team",
+    "body": "Open team tasks become Unassigned; accepted team tasks disappear from the person’s Personal projections; their check-ins and thanks stay as history. Last Owner can’t be removed.",
+    "preview": "{n, plural, one {# open team task becomes} other {# open team tasks become}} Unassigned.",
+    "confirm": "Remove",
+    "cancel": "Cancel",
+    "done": "{name} removed"
+  },
+  "invites": {
+    "label": "Pending invitations",
+    "row": "{role} · sent {sent} · expires {expires}",
+    "resend": "Resend",
+    "cancel": "Cancel invitation",
+    "resent": "Invitation resent",
+    "cancelled": "Invitation cancelled",
+    "empty": "No pending invitations."
+  },
+  "failed": "Couldn’t save. Try again."
+}

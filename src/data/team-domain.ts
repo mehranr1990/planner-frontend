@@ -1,3 +1,4 @@
+import type { Weekday } from "@/lib/dates/week";
 import type { ProjectTint } from "./project-domain";
 
 /*
@@ -237,6 +238,40 @@ export interface TeamCapacityEntry {
   personId: string;
   bookedHours: number;
   capacityHours: number;
+  /** TM-08: booked tasks of projects the viewer cannot open (hours only, never titles). */
+  otherProjectTasks?: number;
+}
+
+/** capacityRepo.get/set (TM-08): weekly hours for this team and the working days (not linked to Personal settings). */
+export interface TeamCapacity {
+  personId: string;
+  hours: number;
+  /** JS weekdays (0 = Sunday … 6 = Saturday). */
+  days: readonly Weekday[];
+}
+
+/** teamMemberRepo.list row: role, title, and what the viewer may do with this member (server-computed). */
+export interface TeamMemberRow extends TeamMember {
+  can: { changeRole: boolean; editCapacity: boolean; move: boolean; remove: boolean; leave: boolean };
+}
+
+/** What moving / removing a member does (preview before confirming). */
+export interface TeamMemberRemovalPreview {
+  /** Open team tasks that become Unassigned. */
+  openTeamTasks: number;
+  /** Accepted team tasks that leave the person's Personal projections. */
+  acceptedTeamTasks: number;
+  /** OPEN(DECISIONS): exactly one Owner — the last Owner cannot be removed or moved. */
+  lastOwner: boolean;
+}
+
+/** A pending invitation the team sent (Invitations tab). */
+export interface TeamPendingInvite {
+  id: string;
+  email: string;
+  role: Exclude<TeamRole, "owner">;
+  sentAt: string;
+  expiresAt: string;
 }
 
 export type TeamEventKind = "meeting" | "time-off" | "deadline" | "checkin";

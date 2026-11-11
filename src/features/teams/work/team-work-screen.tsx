@@ -84,6 +84,9 @@ export function TeamWorkScreen() {
 
   // ?add=task (Overview "New task", the phone (+)): focus quick add once.
   const wantsAdd = search.get("add") === "task";
+  // ?assignee=<id> (TM-08 "Assign a task"): quick add assigns that person unless the text names someone.
+  const [assigneeId] = useState(() => search.get("assignee"));
+  const defaultAssignee = members.data?.find((member) => member.person.id === assigneeId)?.person;
   useEffect(() => {
     if (wantsAdd && view === "list") addRef.current?.focus();
   }, [wantsAdd, view, tasks.data]);
@@ -184,6 +187,7 @@ export function TeamWorkScreen() {
             members={members.data.map((member) => member.person)}
             busy={actions.create.isPending}
             inputRef={addRef}
+            defaultAssignee={defaultAssignee}
             onCreate={(input) => actions.create.mutate(input, { onSuccess: () => toast({ title: t("add.created") }) })}
           />
         ) : null}
@@ -368,6 +372,7 @@ export function TeamWorkScreen() {
               members={members.data.map((member) => member.person)}
               busy={actions.create.isPending}
               inputRef={addRef}
+              defaultAssignee={defaultAssignee}
               onCreate={(input) =>
                 actions.create.mutate(input, {
                   onSuccess: (task) =>
