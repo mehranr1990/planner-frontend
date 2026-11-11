@@ -1,0 +1,51 @@
+{
+  "subtitle": "Sprints on",
+  "tabs": { "label": "Planning view", "backlog": "Backlog", "sprint": "Sprint {n}", "reviews": "Reviews" },
+  "kicker": "Sprint {n} · day {day} of {days}",
+  "meta": "{range} · committed {committed} · capacity {capacity}",
+  "doneOf": "of {committed} done",
+  "points": "{n} pt",
+  "hours": "{n}h",
+  "burndown": "Burndown: {remaining} remaining of {committed}, ideal {ideal}",
+  "goal": "Goal",
+  "complete": "Complete sprint",
+  "start": "Start sprint",
+  "openMine": "Open my sprint tasks",
+  "noSprint": "No active sprint",
+  "noSprintBody": "Start the next sprint with its goal; items moved on from the last sprint come with it.",
+  "off": "This team plans weekly",
+  "offBody": "Sprints and backlog are optional. A Lead or Admin can turn them on in Settings › Planning.",
+  "openSettings": "Open settings",
+  "startDialog": {
+    "title": "Start sprint {n}",
+    "dates": "Dates",
+    "datesValue": "{range} (2 weeks)",
+    "capacity": "Committed {committed} · capacity {capacity} (from People capacity × days).",
+    "goalRequired": "Add a sprint goal"
+  },
+  "completeDialog": {
+    "title": "Complete sprint {n}",
+    "done": "points done",
+    "unfinished": "{n} unfinished items:",
+    "next": "Sprint {n}",
+    "backlog": "Backlog",
+    "moveLabel": "Where {title} goes",
+    "cancel": "Cancel",
+    "submit": "Complete & open review"
+  },
+  "reviews": {
+    "title": "Sprint reviews",
+    "row": "Sprint {n}",
+    "doneOf": "{done}/{committed} done",
+    "moved": "{next} to the next sprint · {backlog} to backlog",
+    "velocity": "Team velocity: {n} per sprint (last {count})",
+    "teamOnly": "Velocity is shown for the team only, never per person.",
+    "empty": "No completed sprints yet."
+  },
+  "toast": {
+    "started": "Sprint {n} started",
+    "completed": "Sprint {n} completed",
+    "ranked": "Backlog order saved",
+    "failed": "Couldn’t save. Try again."
+  }
+}

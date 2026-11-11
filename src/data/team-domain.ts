@@ -372,3 +372,66 @@ export interface TeamTaskDetail {
   /** Lead+: Remind / Reassign on someone else's pending assignment. */
   canManageAssignments: boolean;
 }
+
+// ── Sprint & backlog (TM-05, optional per team) ─────────────────────────
+
+/** Team setting: estimates in points or hours. */
+export type SprintEstimateUnit = "points" | "hours";
+
+export interface SprintItem {
+  taskId: string;
+  title: string;
+  source: TeamTaskSource;
+  status: TeamTaskStatus;
+  estimate: number;
+  assignee: TeamPerson | null;
+}
+
+/** sprintRepo.current: the active sprint; velocity and burndown are team-level only (no per-person scoring). */
+export interface TeamSprint {
+  id: string;
+  number: number;
+  goal: string;
+  start: string;
+  end: string;
+  /** Working days of the sprint (Sat–Wed in Iran) and today's position in them (1-based; 0 = not started). */
+  days: readonly string[];
+  dayIndex: number;
+  committed: number;
+  capacity: number;
+  done: number;
+  unit: SprintEstimateUnit;
+  items: readonly SprintItem[];
+  /** Remaining estimate after each elapsed working day (computed by the mock). */
+  burndown: readonly { day: string; remaining: number }[];
+}
+
+export interface TeamSprintState {
+  unit: SprintEstimateUnit;
+  sprint: TeamSprint | null;
+  /** The next sprint as Start would create it (dates, capacity from People × days, items queued for it). */
+  next: { number: number; start: string; end: string; capacity: number; committed: number; items: readonly SprintItem[] };
+}
+
+export interface BacklogItem {
+  taskId: string;
+  title: string;
+  source: TeamTaskSource;
+  estimate: number;
+}
+
+/** Read-only sprint review (team totals only). */
+export interface SprintReview {
+  sprintId: string;
+  number: number;
+  goal: string;
+  start: string;
+  end: string;
+  committed: number;
+  done: number;
+  unit: SprintEstimateUnit;
+  /** Items moved on at completion. */
+  movedToNext: number;
+  movedToBacklog: number;
+  completedAt: string;
+}

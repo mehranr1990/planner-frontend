@@ -1,0 +1,7 @@
+{
+  "title": "Backlog",
+  "meta": "ranked · {n} items",
+  "hint": "Drag to rank.",
+  "move": "Move {title}",
+  "empty": "The backlog is empty."
+}

@@ -22,6 +22,7 @@ import {
   type TeamFixture,
 } from "@/fixtures/teams";
 import { RepositoryError } from "../repositories";
+import { createMockTeamSprints } from "./mock-team-sprints";
 import type {
   ClearAfter,
   TeamCapabilities,
@@ -324,8 +325,21 @@ export function createMockTeams({
     return entry;
   };
   const myTeams = () => teams.filter((team) => team.lifecycle === "active").map((team) => team.id);
+  const { teamSprints, teamBacklog } = createMockTeamSprints({
+    respond,
+    today,
+    now,
+    canOpenProject,
+    team: (teamId, options = {}) => {
+      const team = memberOf(teamId);
+      const caps = teamCapabilities(options.previewRole ?? team.role, options.previewArchived ? "archived" : team.lifecycle);
+      return { sprints: team.planningMode === "sprints", lead: caps.editWeekFocus, member: caps.createTask };
+    },
+  });
 
   return {
+    teamSprints,
+    teamBacklog,
     findTeam: find,
     openableProjectIds: (id) => {
       const team = find(id);
@@ -850,5 +864,7 @@ export function teamRepositories(store: MockTeamsStore): TeamRepositories {
     teamCheckins: store.teamCheckins,
     teamRecognition: store.teamRecognition,
     teamTasks: store.teamTasks,
+    teamSprints: store.teamSprints,
+    teamBacklog: store.teamBacklog,
   };
 }

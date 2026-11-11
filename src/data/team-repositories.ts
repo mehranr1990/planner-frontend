@@ -19,6 +19,9 @@ import type {
   TeamWeekPlan,
   TeamWeekReview,
   CarryOverDecision,
+  BacklogItem,
+  SprintReview,
+  TeamSprintState,
   TeamAccess,
   TeamDirectory,
   TeamInvitation,
@@ -219,6 +222,25 @@ export interface PresenceRepository {
   clear(teamId: string): Promise<TeamPresence>;
 }
 
+/** sprintRepo (TM-05; only for teams with Settings › Planning › Sprints on, else "unsupported"). */
+export interface TeamSprintRepository {
+  current(teamId: string, options?: TeamAccessOptions): Promise<TeamSprintState>;
+  /** Lead+: starts the next sprint with its queued items. Rejects "conflict" while one is active. */
+  start(teamId: string, input: { goal: string }): Promise<TeamSprintState>;
+  /** Lead+: each unfinished item goes to the next sprint or back to the backlog; returns the review. */
+  complete(teamId: string, sprintId: string, moves: Readonly<Record<string, "next" | "backlog">>): Promise<SprintReview>;
+  /** Completed sprints, newest first (read-only summaries). */
+  reviews(teamId: string): Promise<readonly SprintReview[]>;
+}
+
+/** backlogRepo (TM-05). */
+export interface TeamBacklogRepository {
+  /** Ranked team tasks + project tasks the viewer can open (read-through). */
+  list(teamId: string): Promise<readonly BacklogItem[]>;
+  /** Lead+: the full new order of task ids. */
+  rank(teamId: string, taskIds: readonly string[]): Promise<readonly BacklogItem[]>;
+}
+
 export interface TeamRepositories {
   teams: TeamRepository;
   teamInvitations: TeamInvitationRepository;
@@ -231,4 +253,6 @@ export interface TeamRepositories {
   teamCheckins: TeamCheckinRepository;
   teamRecognition: TeamRecognitionRepository;
   teamTasks: TeamTaskRepository;
+  teamSprints: TeamSprintRepository;
+  teamBacklog: TeamBacklogRepository;
 }

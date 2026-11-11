@@ -335,3 +335,36 @@ export function useTeamPlanActions(teamId: string) {
     }),
   };
 }
+
+// ── Sprint & backlog (TM-05) ─────────────────────────────────────────────
+
+/** Only requested when the team has Sprints on (Settings › Planning). */
+export function useTeamSprint(teamId: string, enabled: boolean, preview: TeamAccessOptions = {}) {
+  const { teamSprints } = useRepositories();
+  return useTeamQuery(teamId, "sprint", () => teamSprints.current(teamId, preview), enabled, preview);
+}
+
+export function useTeamBacklog(teamId: string, enabled: boolean) {
+  const { teamBacklog } = useRepositories();
+  return useTeamQuery(teamId, "backlog", () => teamBacklog.list(teamId), enabled);
+}
+
+export function useSprintReviews(teamId: string, enabled: boolean) {
+  const { teamSprints } = useRepositories();
+  return useTeamQuery(teamId, "sprint-reviews", () => teamSprints.reviews(teamId), enabled);
+}
+
+export function useSprintActions(teamId: string) {
+  const { teamSprints, teamBacklog } = useRepositories();
+  const client = useQueryClient();
+  const refresh = () => client.invalidateQueries({ queryKey: teamKeys.scope(teamId) });
+  return {
+    start: useMutation({ mutationFn: (goal: string) => teamSprints.start(teamId, { goal }), onSuccess: refresh }),
+    complete: useMutation({
+      mutationFn: ({ sprintId, moves }: { sprintId: string; moves: Readonly<Record<string, "next" | "backlog">> }) =>
+        teamSprints.complete(teamId, sprintId, moves),
+      onSuccess: refresh,
+    }),
+    rank: useMutation({ mutationFn: (taskIds: readonly string[]) => teamBacklog.rank(teamId, taskIds), onSettled: refresh }),
+  };
+}
