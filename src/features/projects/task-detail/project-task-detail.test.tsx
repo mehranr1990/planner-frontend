@@ -118,7 +118,7 @@ describe("PJ-15 · Project task detail", () => {
 describe("accepted assignment → Personal projection (mock)", () => {
   it("adds a projection to Personal tasks with the project as source, and Undo removes it", async () => {
     const repos = createMockRepositories();
-    const accepted = await repos.assignments.accept("payment-errors-copy", 1);
+    const accepted = await repos.assignments.accept("website-redesign", "payment-errors-copy", 1);
     const projected = (await repos.tasks.list({ view: "all" })).find(
       (task) => task.id === "project-payment-errors-copy",
     );
@@ -128,9 +128,9 @@ describe("accepted assignment → Personal projection (mock)", () => {
       date: "2026-10-24",
       deadline: "2026-10-24",
     });
-    await repos.taskDetails.setShowInCalendar("payment-errors-copy", false);
+    await repos.taskDetails.setShowInCalendar("website-redesign", "payment-errors-copy", false);
     expect((await repos.tasks.get("project-payment-errors-copy"))?.date).toBeNull();
-    await repos.assignments.revertAccept("payment-errors-copy", accepted.revision);
+    await repos.assignments.revertAccept("website-redesign", "payment-errors-copy", accepted.revision);
     expect(await repos.tasks.get("project-payment-errors-copy")).toBeNull();
   });
 });

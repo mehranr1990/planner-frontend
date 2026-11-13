@@ -511,7 +511,7 @@ export function ProjectTasksScreen() {
 function undoPatch(task: ProjectTask, patch: ProjectTaskPatch): ProjectTaskPatch {
   const back: ProjectTaskPatch = {};
   if (patch.statusId !== undefined) back.statusId = task.statusId;
-  if (patch.phaseId !== undefined) back.phaseId = task.phaseId;
+  if (patch.phaseId !== undefined && task.phaseId !== null) back.phaseId = task.phaseId;
   if (patch.due !== undefined) back.due = task.due;
   if (patch.assigneeIds !== undefined)
     back.assigneeIds = task.assignees.filter((a) => a.state !== "declined").map((a) => a.person.id);
@@ -528,7 +528,7 @@ function exportCsv(tasks: readonly ProjectTask[], projectName: string, status: (
       task.assignees.map((assignee) => assignee.person.name).join("; "),
       task.due ?? "",
       task.estimateHours?.toString() ?? "",
-      task.priority,
+      task.priority ?? "",
     ]),
   ];
   const blob = new Blob([rows.map((row) => row.map(escape).join(",")).join("\n")], { type: "text/csv;charset=utf-8" });

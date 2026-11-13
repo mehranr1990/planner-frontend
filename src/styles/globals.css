@@ -64,6 +64,12 @@
   --color-company-soft: var(--company-soft);
   --color-company-deep: var(--company-deep);
   --color-company-dot: var(--company-dot);
+  --color-social-soft: var(--social-soft);
+  --color-social-deep: var(--social-deep);
+  --color-social-dot: var(--social-dot);
+  --color-msg-soft: var(--msg-soft);
+  --color-msg-deep: var(--msg-deep);
+  --color-msg-dot: var(--msg-dot);
 
   --color-volt: var(--volt);
   --color-on-volt: var(--on-volt);

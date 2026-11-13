@@ -14,6 +14,8 @@ export interface PageHeaderProps {
   subtitle?: ReactNode;
   /** Primary action (and optional secondary controls), placed at inline-end. */
   actions?: ReactNode;
+  /** Controls beside the title, outside the heading (Companies: department scope chip). */
+  titleAddon?: ReactNode;
   /** `h1` for workspace pages, `display` for the large greeting. */
   size?: "h1" | "display";
   /** Put the subtitle (e.g. "Tuesday, 13 October") above the title, as on My Day. */
@@ -28,6 +30,7 @@ export function PageHeader({
   breadcrumb,
   subtitle,
   actions,
+  titleAddon,
   size = "h1",
   subtitlePlacement = "below",
   titleAs: TitleTag = "h1",
@@ -44,7 +47,14 @@ export function PageHeader({
       <div className="flex min-w-0 flex-col gap-2">
         {breadcrumb}
         {subtitlePlacement === "above" ? subtitleNode : null}
-        <TitleTag className={cn("break-words text-fg", size === "display" ? "type-display" : "type-h1")}>{title}</TitleTag>
+        {titleAddon ? (
+          <div className="flex min-w-0 flex-wrap items-center gap-x-4 gap-y-2">
+            <TitleTag className={cn("break-words text-fg", size === "display" ? "type-display" : "type-h1")}>{title}</TitleTag>
+            {titleAddon}
+          </div>
+        ) : (
+          <TitleTag className={cn("break-words text-fg", size === "display" ? "type-display" : "type-h1")}>{title}</TitleTag>
+        )}
         {subtitlePlacement === "below" ? subtitleNode : null}
       </div>
       {actions ? <div className="flex min-w-0 flex-wrap items-center gap-2 sm:justify-end">{actions}</div> : null}

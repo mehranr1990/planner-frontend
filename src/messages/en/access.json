@@ -99,6 +99,102 @@
     "teamJoined": {
       "title": "You joined the team",
       "description": "Joining a team gives team tasks, calendar, goals and files — never automatic access to every project."
+    },
+    "companyNotAvailable": {
+      "title": "This company isn’t available",
+      "description": "It may not exist, or you’re not a member. Nothing from one company appears in another.",
+      "action": "Go to my companies"
+    },
+    "companyInvite": {
+      "title": "You’re invited to “{company}”",
+      "description": "{inviter} invited you as {role}{department}. Accepting creates a work profile; your personal data is never shared.",
+      "accept": "Accept",
+      "decline": "Decline"
+    },
+    "companyLeft": {
+      "title": "You left this company",
+      "description": "Company data disappears; your personal data stays yours. Expense claims you filed stay with the company.",
+      "action": "Go to my companies"
+    },
+    "companySealed": {
+      "title": "Employee file · sealed",
+      "description": "Every employee has a file; its contents need an explicit grant. Every open is audited and visible to the employee."
+    },
+    "companyPolicy": {
+      "title": "Set by {company} · mandatory",
+      "description": "This control is enforced by the company: departments and people can’t override it."
+    },
+    "companyOutside": {
+      "title": "Outside your department",
+      "description": "Other departments are shown as names only — no people, budgets or files. Data beyond your scope is not listed."
+    },
+    "companyAttachPending": {
+      "title": "Attach pending",
+      "description": "Waiting for the owner’s consent to join the company. Until accepted nothing of it is visible to the company."
+    },
+    "companyNotCounted": {
+      "title": "Not counted yet",
+      "description": "Expenses count in budgets only after final approval; a reimbursement is “settled” only when Finance confirms the payment."
+    },
+    "msgNotAvailable": {
+      "title": "Messages aren’t available yet",
+      "description": "Messaging needs a server that isn’t connected in this mode. Nothing here is simulated."
+    },
+    "msgRemoved": {
+      "title": "You’re no longer in this conversation",
+      "description": "Its history, files and new messages aren’t available to you."
+    },
+    "msgBlocked": {
+      "title": "You can’t message each other here",
+      "description": "Direct messages and presence are off between you. Shared groups still show their messages unless you collapse them."
+    },
+    "msgJoined": {
+      "title": "You joined on {date}",
+      "description": "Earlier history follows the {rule} rule."
+    },
+    "msgReconnecting": {
+      "title": "Reconnecting…",
+      "description": "Catching up from where you left off; nothing will be duplicated or reordered."
+    },
+    "msgOffline": {
+      "title": "Offline · {count, plural, one {# message} other {# messages}} will send when you’re back online",
+      "description": "Mock mode: queued in this tab only."
+    },
+    "msgPolicy": {
+      "title": "Set by {workspace}",
+      "description": "This rule comes from the workspace; channel admins can only make it stricter."
+    },
+    "msgNotFound": {
+      "title": "Conversation not found",
+      "description": "It doesn’t exist or you don’t have access to it."
+    },
+    "socialNotAvailable": {
+      "title": "This group isn’t available",
+      "description": "It may be private, deleted, or you were removed. Private groups can’t be found or counted."
+    },
+    "socialRequested": {
+      "title": "Join requested",
+      "description": "The admins of {group} approve or decline. Until then you see the public preview only."
+    },
+    "socialGuest": {
+      "title": "Activity guest",
+      "description": "You were invited to an activity of {group}. You see only that activity, its chat and your own expenses."
+    },
+    "socialLeft": {
+      "title": "You left {group}",
+      "description": "Access is revoked. Your own balance stays visible until it’s settled."
+    },
+    "socialNotCounted": {
+      "title": "Not counted yet",
+      "description": "Proposed expenses and pending edits are shown but don’t change any balance until approved."
+    },
+    "socialBlocked": {
+      "title": "Blocked",
+      "description": "No connection requests or direct messages between you. Group rules still apply in shared groups."
+    },
+    "socialOff": {
+      "title": "Sign in to use Social",
+      "description": "Social needs your signed-in account. Nothing from your other spaces is shown here."
     }
   },
   "banners": {
@@ -111,7 +207,9 @@
     "conflict": "Updated by {person} a moment ago",
     "reload": "Reload",
     "teamReadOnly": "You’re a Viewer in this team · read only",
-    "teamArchived": "Team archived {date} · read-only · linked projects stay active"
+    "teamArchived": "Team archived {date} · read-only · linked projects stay active",
+    "companyArchived": "Company archived {date} · read-only",
+    "companyReadOnly": "You’re a Viewer in this company · read only"
   },
   "demo": {
     "label": "Demo state",

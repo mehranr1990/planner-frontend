@@ -84,7 +84,7 @@ function CardBody({ task, milestones, title }: { task: ProjectTask; milestones: 
         ) : null}
         <span className={cn("ms-auto inline-flex items-center gap-1.5 font-bold", priority.label)}>
           <span aria-hidden="true" className={cn("size-1.5 rounded-full", priority.dot)} />
-          {t(`priority.${task.priority}`)}
+          {t(`priority.${task.priority ?? "none"}`)}
         </span>
       </div>
     </>

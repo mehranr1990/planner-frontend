@@ -72,13 +72,13 @@ function ProjectListRow({ project }: { project: ProjectSummary }) {
       </td>
       <td className="px-3 py-3.5">
         <div className="flex items-center gap-2">
-          <span className="w-9 text-xs font-semibold tabular">{format.percent(project.progress.percent)}</span>
+          <span className="w-9 text-xs font-semibold tabular">{format.progress(project.progress)}</span>
           <Progress
             value={project.progress.percent}
             size="sm"
             className="w-16"
             label={tCard("progress", { project: project.name })}
-            valueText={format.percent(project.progress.percent)}
+            valueText={format.progress(project.progress)}
           />
         </div>
       </td>

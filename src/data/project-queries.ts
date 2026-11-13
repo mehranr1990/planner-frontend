@@ -212,7 +212,7 @@ export function useMyProjectWork(projectId: string) {
 }
 
 /** Accept / decline my assignment; refreshes the project scope and the directory counts. */
-export function useAssignmentActions() {
+export function useAssignmentActions(projectId: string) {
   const { assignments } = useRepositories();
   const client = useQueryClient();
   // Accepting projects the task into Personal Tasks / My Calendar: refresh those too.
@@ -222,20 +222,20 @@ export function useAssignmentActions() {
       client.invalidateQueries({ queryKey: taskKeys.all }),
     ]);
   const accept = useMutation({
-    mutationFn: ({ taskId, revision }: { taskId: string; revision: number }) => assignments.accept(taskId, revision),
+    mutationFn: ({ taskId, revision }: { taskId: string; revision: number }) => assignments.accept(projectId, taskId, revision),
     onSettled: refresh,
   });
   const decline = useMutation({
     mutationFn: ({ taskId, ...input }: { taskId: string } & AssignmentDeclineInput) =>
-      assignments.decline(taskId, input),
+      assignments.decline(projectId, taskId, input),
     onSettled: refresh,
   });
   const revertAccept = useMutation({
     mutationFn: ({ taskId, revision }: { taskId: string; revision: number }) =>
-      assignments.revertAccept(taskId, revision),
+      assignments.revertAccept(projectId, taskId, revision),
     onSettled: refresh,
   });
-  const remind = useMutation({ mutationFn: (taskId: string) => assignments.remind(taskId) });
+  const remind = useMutation({ mutationFn: (taskId: string) => assignments.remind(projectId, taskId) });
   return { accept, decline, revertAccept, remind };
 }
 
@@ -287,7 +287,7 @@ export function useProjectTaskActions(projectId: string) {
   });
   const update = useMutation({
     mutationFn: ({ taskId, patch, revision }: { taskId: string; patch: ProjectTaskPatch; revision: number }) =>
-      projectTasks.update(taskId, patch, revision),
+      projectTasks.update(projectId, taskId, patch, revision),
     onSettled: refresh,
   });
   const bulkUpdate = useMutation({
@@ -296,7 +296,7 @@ export function useProjectTaskActions(projectId: string) {
     onSettled: refresh,
   });
   const remove = useMutation({
-    mutationFn: (taskIds: readonly string[]) => projectTasks.remove(taskIds),
+    mutationFn: (taskIds: readonly string[]) => projectTasks.remove(projectId, taskIds),
     onSettled: refresh,
   });
   const transition = useMutation({
@@ -310,14 +310,14 @@ export function useProjectTaskActions(projectId: string) {
       toStatusId: string;
       revision: number;
       exceedWip?: boolean;
-    }) => projectTasks.transition(taskId, toStatusId, revision, { exceedWip }),
+    }) => projectTasks.transition(projectId, taskId, toStatusId, revision, { exceedWip }),
     onSettled: refresh,
   });
   const reorder = useMutation({
     mutationFn: (orderedIds: readonly string[]) => projectTasks.reorder(projectId, orderedIds),
     onSettled: refresh,
   });
-  const fetchTask = (taskId: string) => projectTasks.get(taskId);
+  const fetchTask = (taskId: string) => projectTasks.get(projectId, taskId);
   return { create, update, bulkUpdate, remove, transition, reorder, fetchTask, refresh };
 }
 
@@ -325,13 +325,13 @@ export function useProjectTaskActions(projectId: string) {
 
 const detailKey = (taskId: string) => [...projectKeys.all, "task-detail", taskId];
 
-export function useProjectTaskDetail(taskId: string, preview: ProjectAccessOptions = {}) {
+export function useProjectTaskDetail(projectId: string, taskId: string, preview: ProjectAccessOptions = {}) {
   const { taskDetails } = useRepositories();
   const hydrated = useIsClient();
   return afterHydration(
     useQuery({
       queryKey: [...detailKey(taskId), preview.previewRole ?? null, preview.previewArchived ?? false],
-      queryFn: () => taskDetails.get(taskId, preview),
+      queryFn: () => taskDetails.get(projectId, taskId, preview),
       enabled: taskId !== "",
       // A deleted / unknown task will not come back: show the deleted state at once.
       retry: (count, error) => !(error instanceof RepositoryError && error.code === "not-found") && count < 2,
@@ -341,7 +341,7 @@ export function useProjectTaskDetail(taskId: string, preview: ProjectAccessOptio
 }
 
 /** Detail writes. Calendar / acceptance changes also refresh Personal tasks (the projection). */
-export function useTaskDetailActions(taskId: string) {
+export function useTaskDetailActions(projectId: string, taskId: string) {
   const { taskDetails, comments, dependencies } = useRepositories();
   const client = useQueryClient();
   const refresh = () => {
@@ -350,21 +350,21 @@ export function useTaskDetailActions(taskId: string) {
   };
   return {
     toggleSubtask: useMutation({
-      mutationFn: (subtaskId: string) => taskDetails.toggleSubtask(taskId, subtaskId),
+      mutationFn: (subtaskId: string) => taskDetails.toggleSubtask(projectId, taskId, subtaskId),
       onSettled: refresh,
     }),
     setShowInCalendar: useMutation({
-      mutationFn: (on: boolean) => taskDetails.setShowInCalendar(taskId, on),
+      mutationFn: (on: boolean) => taskDetails.setShowInCalendar(projectId, taskId, on),
       onSettled: refresh,
     }),
-    addComment: useMutation({ mutationFn: (body: string) => comments.add(taskId, body), onSettled: refresh }),
+    addComment: useMutation({ mutationFn: (body: string) => comments.add(projectId, taskId, body), onSettled: refresh }),
     addDependency: useMutation({
       mutationFn: (input: { predecessorId: string; type: DependencyType; lagDays: number }) =>
-        dependencies.add(taskId, input),
+        dependencies.add(projectId, taskId, input),
       onSettled: refresh,
     }),
     removeDependency: useMutation({
-      mutationFn: (dependencyId: string) => dependencies.remove(taskId, dependencyId),
+      mutationFn: (dependencyId: string) => dependencies.remove(projectId, taskId, dependencyId),
       onSettled: refresh,
     }),
   };
@@ -435,7 +435,7 @@ export function useReassignTask(projectId: string) {
   const { reassign } = useRepositories();
   const client = useQueryClient();
   return useMutation({
-    mutationFn: ({ taskId, ...input }: { taskId: string } & ReassignInput) => reassign.reassign(taskId, input),
+    mutationFn: ({ taskId, ...input }: { taskId: string } & ReassignInput) => reassign.reassign(projectId, taskId, input),
     onSettled: () => client.invalidateQueries({ queryKey: projectKeys.all }),
     meta: { projectId },
   });
@@ -512,7 +512,7 @@ export function useScheduleActions(projectId: string) {
   });
   const renameMilestone = useMutation({
     mutationFn: ({ milestoneId, title, revision }: { milestoneId: string; title: string; revision: number }) =>
-      milestones.updateMilestone(milestoneId, { title }, revision),
+      milestones.updateMilestone(projectId, milestoneId, { title }, revision),
     onSettled: refresh,
   });
   const apply = useMutation({
@@ -582,7 +582,7 @@ export function useRisk(projectId: string, riskId: string) {
   const { risks } = useRepositories();
   const hydrated = useIsClient();
   return afterHydration(
-    useQuery({ queryKey: scoped(projectId, "risks", "detail", riskId), queryFn: () => risks.get(riskId), retry: false }),
+    useQuery({ queryKey: scoped(projectId, "risks", "detail", riskId), queryFn: () => risks.get(projectId, riskId), retry: false }),
     hydrated,
   );
 }
@@ -591,7 +591,7 @@ export function useRiskHistory(projectId: string, riskId: string) {
   const { risks } = useRepositories();
   const hydrated = useIsClient();
   return afterHydration(
-    useQuery({ queryKey: scoped(projectId, "risks", "history", riskId), queryFn: () => risks.history(riskId) }),
+    useQuery({ queryKey: scoped(projectId, "risks", "history", riskId), queryFn: () => risks.history(projectId, riskId) }),
     hydrated,
   );
 }
@@ -600,7 +600,7 @@ export function useRiskComments(projectId: string, riskId: string) {
   const { risks } = useRepositories();
   const hydrated = useIsClient();
   return afterHydration(
-    useQuery({ queryKey: scoped(projectId, "risks", "comments", riskId), queryFn: () => risks.comments(riskId) }),
+    useQuery({ queryKey: scoped(projectId, "risks", "comments", riskId), queryFn: () => risks.comments(projectId, riskId) }),
     hydrated,
   );
 }
@@ -613,7 +613,7 @@ export function useRiskActions(projectId: string) {
   return {
     update: useMutation({
       mutationFn: ({ riskId, patch, revision }: { riskId: string; patch: RiskPatch; revision: number }) =>
-        risks.update(riskId, patch, revision),
+        risks.update(projectId, riskId, patch, revision),
       onSettled: refresh,
     }),
     setChecklistItem: useMutation({
@@ -627,7 +627,7 @@ export function useRiskActions(projectId: string) {
         itemId: string;
         patch: { done?: boolean; taskId?: string };
         revision: number;
-      }) => risks.setChecklistItem(riskId, itemId, patch, revision),
+      }) => risks.setChecklistItem(projectId, riskId, itemId, patch, revision),
       onSettled: refresh,
     }),
     close: useMutation({
@@ -641,20 +641,20 @@ export function useRiskActions(projectId: string) {
         reason: RiskCloseReason;
         note?: string;
         revision: number;
-      }) => risks.close(riskId, { reason, note }, revision),
+      }) => risks.close(projectId, riskId, { reason, note }, revision),
       onSettled: refresh,
     }),
     resolve: useMutation({
       mutationFn: ({ riskId, resolution, revision }: { riskId: string; resolution: string; revision: number }) =>
-        risks.resolve(riskId, resolution, revision),
+        risks.resolve(projectId, riskId, resolution, revision),
       onSettled: refresh,
     }),
     convert: useMutation({
-      mutationFn: ({ riskId, revision }: { riskId: string; revision: number }) => risks.convert(riskId, revision),
+      mutationFn: ({ riskId, revision }: { riskId: string; revision: number }) => risks.convert(projectId, riskId, revision),
       onSettled: refresh,
     }),
     addComment: useMutation({
-      mutationFn: ({ riskId, body }: { riskId: string; body: string }) => risks.addComment(riskId, body),
+      mutationFn: ({ riskId, body }: { riskId: string; body: string }) => risks.addComment(projectId, riskId, body),
       onSettled: refresh,
     }),
   };
@@ -695,13 +695,13 @@ export function useFileActions(projectId: string) {
   const refresh = () => client.invalidateQueries({ queryKey: scoped(projectId, "files") });
   return {
     upload: useMutation({ mutationFn: (input: FileUploadInput) => files.upload(projectId, input), onSettled: refresh }),
-    cancel: useMutation({ mutationFn: (fileId: string) => files.cancel(fileId), onSettled: refresh }),
-    retry: useMutation({ mutationFn: (fileId: string) => files.retry(fileId), onSettled: refresh }),
+    cancel: useMutation({ mutationFn: (fileId: string) => files.cancel(projectId, fileId), onSettled: refresh }),
+    retry: useMutation({ mutationFn: (fileId: string) => files.retry(projectId, fileId), onSettled: refresh }),
     restoreVersion: useMutation({
-      mutationFn: ({ fileId, version }: { fileId: string; version: number }) => files.restoreVersion(fileId, version),
+      mutationFn: ({ fileId, version }: { fileId: string; version: number }) => files.restoreVersion(projectId, fileId, version),
       onSettled: refresh,
     }),
-    download: (fileId: string) => files.download(fileId),
+    download: (fileId: string) => files.download(projectId, fileId),
   };
 }
 

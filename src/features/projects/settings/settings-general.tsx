@@ -62,7 +62,7 @@ export function GeneralTab() {
   const dirty = (Object.keys(base) as (keyof Draft)[]).some((key) => base[key] !== draft[key]);
   useReportDirty(dirty);
   const keyInvalid = !isValidProjectKey(draft.key);
-  const datesInvalid = draft.endDate < draft.startDate;
+  const datesInvalid = draft.startDate !== null && draft.endDate !== null && draft.endDate < draft.startDate;
   const canEdit = capabilities.editGeneral;
   const set = <K extends keyof Draft>(key: K, value: Draft[K]) => setDraft((current) => ({ ...current, [key]: value }));
 
@@ -165,15 +165,19 @@ function DateField({
   onChange,
 }: {
   label: string;
-  value: string;
+  /** null = not declared (shown as Unknown). */
+  value: string | null;
   disabled: boolean;
   onChange: (day: string) => void;
 }) {
   const { locale, digits } = usePreferences();
+  const tShell = useTranslations("ContextShell");
   const [open, setOpen] = useState(false);
-  const date = dayToLocalDate(value);
+  const date = value ? dayToLocalDate(value) : new Date();
   // Both calendars side by side (Gregorian transport, Jalali display).
-  const text = `${formatDate(date, "full", { calendar: "gregorian", locale, digits })} · ${formatDate(date, "full", { calendar: "jalali", locale, digits })}`;
+  const text = value
+    ? `${formatDate(date, "full", { calendar: "gregorian", locale, digits })} · ${formatDate(date, "full", { calendar: "jalali", locale, digits })}`
+    : tShell("unknown");
   return (
     <div className="flex flex-col gap-1.5">
       <span className="text-sm font-semibold text-fg">{label}</span>

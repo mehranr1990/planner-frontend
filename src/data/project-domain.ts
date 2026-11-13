@@ -27,9 +27,10 @@ export interface ProjectPerson {
 
 export interface ProjectStatusNote {
   text: string;
-  author: ProjectPerson;
-  /** Instant with offset. */
-  at: string;
+  /** null in live mode: the API keeps the note text only (no author or time). */
+  author: ProjectPerson | null;
+  /** Instant with offset; null when unknown. */
+  at: string | null;
 }
 
 export interface ProjectMilestoneRef {
@@ -52,16 +53,18 @@ export interface ProjectSummary {
   description: string;
   /** The current user's role. Display only: rights come from `ProjectCapabilities`. */
   role: ProjectRole;
-  health: ProjectHealth;
+  /** null = unknown: no approved definition yet (live mode); never invented. */
+  health: ProjectHealth | null;
   lifecycle: ProjectLifecycle;
   statusNote: ProjectStatusNote | null;
   /** Tasks done / total and the server-rounded percent. */
   progress: { done: number; total: number; percent: number };
-  /** Expected share done by today (0–100) for the pace marker. */
-  expectedPercent: number;
+  /** Expected share done by today (0–100) for the pace marker; null = unknown (no approved baseline). */
+  expectedPercent: number | null;
   nextMilestone: ProjectMilestoneRef | null;
-  startDate: string;
-  endDate: string;
+  /** Declared project dates (Gregorian days); null = not declared. */
+  startDate: string | null;
+  endDate: string | null;
   /** First members for the avatar stack; `memberCount` is the server total. */
   members: readonly ProjectPerson[];
   memberCount: number;
@@ -183,10 +186,11 @@ export interface ProjectDirectory {
 // ── Work inside a project (PJ-01, PJ-02, PJ-15) ──────────────────────────
 
 /** What a workflow status means for counts and views (never shown by itself). */
-export type WorkflowCategory = "todo" | "active" | "review" | "blocked" | "done";
+/** "canceled": the API base status CANCELED (closed, never counted as done). */
+export type WorkflowCategory = "todo" | "active" | "review" | "blocked" | "done" | "canceled";
 
 /** Statuses of the shipped workflow carry a key, so the UI can show its translation. */
-export type DefaultStatusKey = "todo" | "in-progress" | "in-review" | "blocked" | "done";
+export type DefaultStatusKey = "todo" | "in-progress" | "in-review" | "blocked" | "done" | "canceled";
 
 export interface WorkflowStatus {
   id: string;
@@ -234,20 +238,25 @@ export interface ProjectTask {
   projectId: string;
   title: string;
   statusId: string;
-  phaseId: string;
+  /** null when the task sits in no phase (live: no section, or a section without a phase). */
+  phaseId: string | null;
   milestoneId: string | null;
   assignees: readonly TaskAssignee[];
-  priority: ProjectPriority;
+  /** null = no priority (API NONE). */
+  priority: ProjectPriority | null;
   /** Gregorian day or null. */
   due: string | null;
   estimateHours: number | null;
   /** Tasks this one waits for (FS by default). */
   blockedBy: readonly string[];
-  subtasks: { done: number; total: number };
-  commentCount: number;
+  /** null when unknown (live: shared subtasks are not readable). */
+  subtasks: { done: number; total: number } | null;
+  /** null when unknown (live: the API lists no comments). */
+  commentCount: number | null;
   /** Optimistic concurrency token (If-Match on writes). */
   revision: number;
-  updatedAt: string;
+  /** Absent in live mode (the task read model has no update time). */
+  updatedAt?: string;
   /** When the task entered a done status (instant); absent while open. */
   completedAt?: string;
   /** When the task first entered an active (In progress) status (instant); cycle time = startedAt → completedAt. */
@@ -818,15 +827,17 @@ export interface ImportResult {
 /** D17: successor accepts, then the owner confirms with the password; the owner stays until then. */
 export interface OwnershipTransfer {
   successor: ProjectPerson;
-  requestedAt: string;
+  /** Absent in live mode: the API's handover carries no request time. */
+  requestedAt?: string;
   accepted: boolean;
 }
 
 export interface ProjectGeneralPatch {
   name?: string;
   key?: string;
-  startDate?: string;
-  endDate?: string;
+  /** null clears a declared date. */
+  startDate?: string | null;
+  endDate?: string | null;
   description?: string;
   tint?: ProjectTint;
 }

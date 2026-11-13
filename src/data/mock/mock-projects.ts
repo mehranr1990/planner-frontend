@@ -486,7 +486,8 @@ export function createMockProjects({
             role,
             range,
             weekStartsOn,
-            projectStart: found.startDate,
+            // Mock fixtures always declare their dates.
+            projectStart: found.startDate!,
             today,
             now,
           }),

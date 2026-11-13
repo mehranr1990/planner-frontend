@@ -46,7 +46,7 @@ async function fetchSession(signal: AbortSignal): Promise<SessionState | null> {
   }
 }
 
-export function useSession(): SessionStatus {
+export function useSession(options: { enabled?: boolean } = {}): SessionStatus {
   const query = useQuery({
     queryKey: sessionQueryKey,
     queryFn: ({ signal }) => fetchSession(signal),
@@ -54,6 +54,7 @@ export function useSession(): SessionStatus {
     // Coming back to the tab revalidates: a session revoked elsewhere ends here.
     refetchOnWindowFocus: true,
     retry: (count, error) => error instanceof ApiNetworkError && count < 2,
+    enabled: options.enabled ?? true,
   });
   if (query.data !== undefined) return query.data ? { status: "active", session: query.data } : { status: "anonymous" };
   if (query.error instanceof ApiHttpError && query.error.status === 403) return { status: "unavailable" };

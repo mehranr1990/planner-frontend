@@ -6,6 +6,7 @@ import { toast } from "@/components/ui/toast";
 import type { ScheduleChange } from "@/data/project-domain";
 import { useScheduleActions } from "@/data/project-queries";
 import { RepositoryError } from "@/data/repositories";
+import { isUnavailable, useUnavailableTitle } from "@/features/projects/unavailable";
 import { addDaysToDay } from "@/lib/dates/clock-time";
 import { SchedulePreviewDialog } from "./schedule-preview-dialog";
 
@@ -25,6 +26,7 @@ export function useReschedule(projectId: string, canCascade: boolean): {
 } {
   const tTasks = useTranslations("ProjectTasks");
   const tAccess = useTranslations("Access.states.conflict");
+  const unavailable = useUnavailableTitle();
   const actions = useScheduleActions(projectId);
   const [pending, setPending] = useState<{ change: ScheduleChange; title: string } | null>(null);
 
@@ -37,8 +39,8 @@ export function useReschedule(projectId: string, canCascade: boolean): {
       else await actions.apply.mutateAsync(preview.moves.slice(0, 1));
     } catch (error) {
       toast({
-        tone: "danger",
-        title: error instanceof RepositoryError && error.code === "conflict" ? tAccess("title") : tTasks("error"),
+        tone: isUnavailable(error) ? "info" : "danger",
+        title: unavailable(error) ?? (error instanceof RepositoryError && error.code === "conflict" ? tAccess("title") : tTasks("error")),
       });
     }
   };

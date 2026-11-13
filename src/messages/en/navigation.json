@@ -18,7 +18,12 @@
     "company": {
       "label": "Companies",
       "description": "Departments, portfolio, goals and approvals",
-      "add": "Add company"
+      "add": "New company"
+    },
+    "social": {
+      "label": "Social",
+      "description": "Friends, groups, activities and shared costs",
+      "add": "New group"
     }
   },
   "items": {
@@ -57,7 +62,25 @@
     "members": "Members",
     "allTeams": "All teams",
     "planning": "Planning",
-    "recognition": "Recognition"
+    "recognition": "Recognition",
+    "resources": "Resources",
+    "expenses": "Expenses",
+    "budgets": "Budgets",
+    "knowledge": "Knowledge",
+    "companyWork": "Projects & teams",
+    "allCompanies": "All companies",
+    "companyWorkTab": "Work",
+    "channels": "Channels",
+    "connections": "Connections",
+    "groups": "Groups",
+    "activities": "Activities",
+    "balances": "My balances",
+    "lending": "Lending & found",
+    "chat": "Chat",
+    "album": "Album",
+    "challenges": "Challenges",
+    "socialHome": "Home",
+    "socialLending": "Lending"
   },
   "rail": {
     "landmark": "{context} navigation",
@@ -69,7 +92,9 @@
     "inbox": "{count} to triage",
     "withCount": "{label}, {count}",
     "risks": "open high risks: {count}",
-    "checkins": "Your check-in reply is missing"
+    "checkins": "Your check-in reply is missing",
+    "approvals": "{count} waiting for you",
+    "channels": "{count} unread mentions"
   },
   "switcher": {
     "title": "Context",

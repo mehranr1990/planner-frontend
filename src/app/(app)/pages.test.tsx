@@ -1,9 +1,7 @@
-import { screen } from "@testing-library/react";
 import { createTranslator } from "next-intl";
 import { describe, expect, it, vi } from "vitest";
 import { messages } from "@/messages";
-import { renderWithProviders } from "@/test/render";
-import CompaniesPage, { generateMetadata as companiesMetadata } from "./companies/page";
+import { generateMetadata as companiesMetadata } from "./companies/page";
 import { generateMetadata as projectsMetadata } from "./projects/page";
 import { generateMetadata as teamsMetadata } from "./teams/page";
 
@@ -14,22 +12,11 @@ vi.mock("next-intl/server", () => ({
     createTranslator({ locale: locale.current, messages: messages[locale.current], namespace: namespace as never }),
 }));
 
-const pages = [
-  ["companies", CompaniesPage, companiesMetadata, "Companies overview", "Review approvals"],
-] as const;
-
 // Personal routes render their own screens (covered by each feature).
-describe("context overview routes", () => {
-  it.each(pages)("/%s renders its overview", (_route, Page, _metadata, title, cta) => {
-    renderWithProviders(<Page />);
-    expect(screen.getByRole("heading", { level: 1, name: title })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: cta })).toHaveAttribute("aria-disabled", "true");
-    expect(screen.getByRole("region", { name: "Overview layout placeholder" })).toBeInTheDocument();
-  });
-
-  it.each(pages)("/%s has a translated title", async (_route, _Page, generateMetadata, title) => {
+describe("context collection routes", () => {
+  it("titles /companies (CO-00 renders its own screen)", async () => {
     locale.current = "en";
-    expect(await generateMetadata()).toEqual({ title });
+    expect(await companiesMetadata()).toEqual({ title: "All companies" });
   });
 
   it("titles /projects (PJ-00 renders its own screen)", async () => {
@@ -44,7 +31,7 @@ describe("context overview routes", () => {
 
   it("translates the metadata title in Persian", async () => {
     locale.current = "fa";
-    expect(await companiesMetadata()).toEqual({ title: "نمای کلی شرکت‌ها" });
+    expect(await companiesMetadata()).toEqual({ title: "همه‌ی شرکت‌ها" });
     locale.current = "en";
   });
 });

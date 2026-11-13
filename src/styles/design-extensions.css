@@ -10,6 +10,16 @@
  */
 
 :root {
+  /* Messages neutral source colour (direct & groups) — design/messages DECISIONS M1 */
+  --msg-soft: #E9EDF2;
+  --msg-deep: #3D4A5C;
+  --msg-dot: #8C9AAE;
+
+  /* Social coral scope — design/social README rule 1 (owner decision) */
+  --social-soft: #FFEBDD;
+  --social-deep: #C2410C;
+  --social-dot: #FF9A6B;
+
   /* Deep (signature) card — P01PersonalOverview Insight card, CLAUDE.md §2.7 */
   --deep-card: #0E6B57;           /* board paints #0E6B58; snapped to --personal-deep */
   --on-deep-card: #FFFFFF;        /* P01PersonalOverview Insight heading */
@@ -34,6 +44,16 @@
 }
 
 [data-theme="dark"] {
+  /* Messages neutral — DECISIONS M1 dark */
+  --msg-soft: #2A313B;
+  --msg-deep: #A9B6C8;
+  --msg-dot: #8C9AAE;
+
+  /* Social coral — design/social README rule 1 dark */
+  --social-soft: #4A2A1C;
+  --social-deep: #FFA77D;
+  --social-dot: #FF9A6B;
+
   /* P01PersonalOverviewDark Insight card; its heading stays white (--on-deep-card) */
   --deep-card: #173A31;           /* P01PersonalOverviewDark */
   --on-deep-card-muted: #9FD9C5;  /* P01PersonalOverviewDark */

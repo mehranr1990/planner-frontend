@@ -35,6 +35,7 @@ const upcomingTone: Record<Scope, string> = {
   project: "bg-project-soft text-project-deep",
   team: "bg-team-soft text-team-deep",
   company: "bg-company-soft text-company-deep",
+  social: "bg-social-soft text-social-deep",
 };
 
 const avatarTones: readonly AvatarTone[] = ["team", "personal", "project", "company"];

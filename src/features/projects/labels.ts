@@ -8,7 +8,8 @@ export function useProjectLabels() {
   const t = useTranslations("ContextShell");
   return {
     role: (role: ProjectRole) => t(`roles.${role}`),
-    health: (health: ProjectHealth) => t(`health.${health}`),
+    /** null = unknown (no approved health definition in live mode). */
+    health: (health: ProjectHealth | null) => t(health ? `health.${health}` : "health.unknown"),
     lifecycle: (lifecycle: ProjectLifecycle) => t(`lifecycle.${lifecycle}`),
   };
 }

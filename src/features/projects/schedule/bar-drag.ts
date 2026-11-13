@@ -72,4 +72,5 @@ export const BAR_CLASS: Record<WorkflowCategory, string> = {
   review: "bg-info-soft text-info-text inset-ring inset-ring-scope-deep/40",
   blocked: "bg-surface text-danger-text inset-ring-[1.5px] inset-ring-danger",
   done: "bg-success-soft text-success-text",
+  canceled: "bg-raised text-fg-muted line-through",
 };

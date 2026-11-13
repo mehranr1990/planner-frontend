@@ -9,6 +9,7 @@ import { Icon } from "@/components/ui/icon";
 import { Tooltip } from "@/components/ui/tooltip";
 import type { AppContext, ContextId, NavItem, NavItemId } from "@/features/navigation/types";
 import { resolveContext } from "@/features/navigation/paths";
+import { isMessagesPath } from "@/features/messages/paths";
 import { useActiveContext } from "@/features/navigation/use-active-navigation";
 import { useNavBadge, useNavItemFilter } from "@/features/navigation/use-nav-state";
 import { usePreferences } from "@/features/preferences/use-preferences";
@@ -18,6 +19,8 @@ import { projectHref } from "@/features/navigation/contexts";
 import { ProjectTile } from "@/features/projects/project-visuals";
 import { useOpenProjectSheet } from "@/features/projects/sheets/project-sheet-params";
 import { TeamCollectionRail } from "@/features/teams/shell/team-collection-rail";
+import { CompanyCollectionRail } from "@/features/companies/shell/company-collection-rail";
+import { SocialRail } from "@/features/social/shell/social-rail";
 import { NavLink } from "./nav-link";
 import { useControllableState } from "./use-controllable-state";
 
@@ -65,6 +68,8 @@ export function FloatingRail({
   const { direction } = usePreferences();
   const urlContext = useActiveContext();
   const context = resolveContext(contextProp, urlContext);
+  // /messages has no context rail: the conversation list takes its place (MS-01).
+  const onMessages = isMessagesPath(usePathname()) && contextProp === undefined;
   const listId = useId();
   const [expanded, setExpanded] = useControllableState({
     value: expandedProp,
@@ -75,9 +80,21 @@ export function FloatingRail({
   // Tooltips open toward the content: inline-end of the rail.
   const inlineEnd = direction === "rtl" ? "left" : "right";
 
+  if (onMessages) return null;
+
   if (context.collection && context.id === "team") {
     return (
       <TeamCollectionRail
+        ariaLabel={ariaLabel ?? t("rail.landmark", { context: t(context.labelKey) })}
+        tooltipSide={inlineEnd}
+        className={className}
+      />
+    );
+  }
+
+  if (context.collection && context.id === "company") {
+    return (
+      <CompanyCollectionRail
         ariaLabel={ariaLabel ?? t("rail.landmark", { context: t(context.labelKey) })}
         tooltipSide={inlineEnd}
         className={className}
@@ -90,6 +107,19 @@ export function FloatingRail({
       <CollectionRail
         ariaLabel={ariaLabel ?? t("rail.landmark", { context: t(context.labelKey) })}
         tooltipSide={inlineEnd}
+        className={className}
+      />
+    );
+  }
+
+  // Social (SO-01): home rail with New (+), or the group rail with Back.
+  if (context.id === "social") {
+    return (
+      <SocialRail
+        context={context}
+        ariaLabel={ariaLabel ?? t("rail.landmark", { context: t(context.labelKey) })}
+        tooltipSide={inlineEnd}
+        activeItemId={activeItemId}
         className={className}
       />
     );

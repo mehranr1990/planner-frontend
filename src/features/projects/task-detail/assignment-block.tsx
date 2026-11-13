@@ -140,7 +140,7 @@ export function AssignmentBlock({
   assignedAt: string | null;
 }) {
   const t = useTranslations("ProjectTask");
-  const { accept, decline, revertAccept, remind } = useAssignmentActions();
+  const { accept, decline, revertAccept, remind } = useAssignmentActions(task.projectId);
   const openSheet = useOpenProjectSheet();
   return (
     <AssignmentBlockView

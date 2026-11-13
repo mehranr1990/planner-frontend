@@ -157,27 +157,15 @@ describe("desktop top bar", () => {
     expect(screen.queryByRole("button", { name: "Assistant" })).not.toBeInTheDocument();
   });
 
-  it("opens the assistant panel with the later-step notice (other contexts)", async () => {
-    const user = userEvent.setup();
-    setMockPathname("/companies");
+  it("Companies (CS-01): no Assistant, in the collection or inside a company", () => {
+    setMockPathname("/companies/euroly");
     renderFrame();
-    await user.click(screen.getByRole("button", { name: "Assistant" }));
-    const panel = await screen.findByRole("dialog", { name: "Assistant" });
-    expect(within(panel).getByRole("status")).toHaveTextContent("The assistant arrives in a later step");
-    await user.click(within(panel).getByRole("button", { name: "Close" }));
-    await waitFor(() => expect(screen.getByRole("button", { name: "Assistant" })).toHaveFocus());
-    await waitFor(() => expect(screen.queryByRole("dialog", { name: "Assistant" })).not.toBeInTheDocument());
+    expect(screen.queryByRole("button", { name: "Assistant" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("complementary", { name: "Assistant" })).not.toBeInTheDocument();
   });
 });
 
 describe("landmarks and sample data", () => {
-  it("keeps the floating assistant inside a complementary landmark (other contexts)", () => {
-    setMockPathname("/companies");
-    renderFrame();
-    const aside = screen.getByRole("complementary", { name: "Assistant" });
-    expect(within(aside).getByRole("button", { name: "Assistant" })).toBeInTheDocument();
-  });
-
   it("labels sample content in the schedule and the account menu", async () => {
     const user = userEvent.setup();
     const { topBar } = renderFrame(undefined, undefined, true);
@@ -305,14 +293,11 @@ describe("command palette", () => {
     const input = within(dialog).getByRole("combobox", { name: "Search pages" });
     await waitFor(() => expect(input).toHaveFocus());
 
-    // Every context is listed; Personal pages are real, other contexts' planned pages are disabled.
+    // Every context is listed; every page is routed (Companies since CS-01).
     const listbox = within(dialog).getByRole("listbox");
-    expect(within(listbox).getAllByRole("group")).toHaveLength(4);
+    expect(within(listbox).getAllByRole("group")).toHaveLength(5);
     const personalGoals = within(listbox).getAllByRole("option", { name: /Goals/ })[0]!;
     expect(personalGoals).not.toHaveAttribute("aria-disabled");
-    const work = within(listbox).getByRole("option", { name: /Approvals/ });
-    expect(work).toHaveAttribute("aria-disabled", "true");
-    expect(work).toHaveTextContent("Coming soon");
 
     await user.type(input, "companies");
     const options = within(dialog).getAllByRole("option");
@@ -326,7 +311,7 @@ describe("command palette", () => {
     await waitFor(() => expect(screen.queryByRole("dialog", { name: "Search and commands" })).not.toBeInTheDocument());
   });
 
-  it("moves the active option with the arrow keys and skips Enter on planned pages", async () => {
+  it("moves the active option with the arrow keys and wraps", async () => {
     const user = userEvent.setup();
     renderFrame();
     await user.keyboard("{Control>}k{/Control}");
@@ -337,11 +322,10 @@ describe("command palette", () => {
     await user.keyboard("{ArrowDown}");
     expect(activeText()).toContain("Overview");
     await user.keyboard("{ArrowUp}{ArrowUp}");
-    // Wraps to the last page of the last context.
-    expect(activeText()).toContain("Reports");
-    // A planned page ignores Enter.
+    // Wraps to the last page of the last context (Social · Lending, SO-01).
+    expect(activeText()).toContain("Lending");
     await user.keyboard("{Enter}");
-    expect(routerPush).not.toHaveBeenCalled();
+    expect(routerPush).toHaveBeenCalledWith("/social/lending");
   });
 
   it("shows the no-results state and announces the count once, after typing pauses", async () => {
@@ -419,16 +403,16 @@ describe("mobile chrome", () => {
     expect(await within(sheet).findByRole("group", { name: "Recent" })).toBeInTheDocument();
   });
 
-  it("renders the header: account, context and workspace, bell, chips", () => {
-    setMockPathname("/companies");
+  it("Companies header: account, context + company (opens the switcher sheet), bell", async () => {
+    setMockPathname("/companies/euroly");
     const { mobileHeader } = renderFrame();
     const header = within(mobileHeader());
     expect(header.getByRole("button", { name: "Account menu" })).toBeInTheDocument();
     const label = mobileHeader().querySelector("[data-slot=\"mobile-context\"]")!;
-    expect(label.firstElementChild).toHaveTextContent("Companies");
-    expect(label.lastElementChild).toHaveTextContent("Euroly");
+    expect(label).toHaveTextContent("Companies");
+    await waitFor(() => expect(label).toHaveTextContent("Euroly"));
     expect(header.getByRole("button", { name: "Notifications" })).toBeInTheDocument();
-    expect(header.getByRole("navigation", { name: "Contexts" })).toBeInTheDocument();
+    expect(header.queryByRole("navigation", { name: "Contexts" })).not.toBeInTheDocument();
   });
 
   it("Personal More: the PM01 module grid, Finish day and Weekly review, no Assistant", async () => {
@@ -493,6 +477,7 @@ describe("mobile chrome", () => {
       "Milestones",
       "Risks",
       "Workload",
+      "Channels",
       "Members",
       "Files",
       "Analytics",
@@ -505,17 +490,19 @@ describe("mobile chrome", () => {
     expect(within(sheet).queryByRole("button", { name: /Assistant/ })).not.toBeInTheDocument();
   });
 
-  it("More opens the context's pages and closes on navigation (Companies)", async () => {
+  it("Companies More: the module grid (role-filtered), closes on navigation, no Assistant", async () => {
     const user = userEvent.setup();
-    setMockPathname("/companies");
+    setMockPathname("/companies/euroly");
     const { mobileNav } = renderFrame();
-    const more = within(mobileNav()).getByRole("button", { name: "More" });
-    await user.click(more);
+    await user.click(within(mobileNav()).getByRole("button", { name: "More" }));
     const sheet = await screen.findByRole("dialog", { name: "Companies pages" });
     const list = within(sheet).getByRole("list", { name: "All Companies pages" });
-    expect(within(list).getAllByRole("listitem")).toHaveLength(9);
-    expect(within(sheet).getByRole("button", { name: /Assistant/ })).toBeInTheDocument();
-    await user.click(within(list).getByRole("link", { name: "Overview" }));
+    // Org Admin: everything not in the bottom bar.
+    // + Channels (MS-01).
+    await waitFor(() => expect(within(list).getAllByRole("listitem")).toHaveLength(10));
+    expect(within(list).getByRole("link", { name: "Budgets" })).toHaveAttribute("href", "/companies/euroly/budgets");
+    expect(within(sheet).queryByRole("button", { name: /Assistant/ })).not.toBeInTheDocument();
+    await user.click(within(list).getByRole("link", { name: "Departments" }));
     await waitFor(() => expect(screen.queryByRole("dialog", { name: "Companies pages" })).not.toBeInTheDocument());
   });
 
@@ -532,17 +519,6 @@ describe("mobile chrome", () => {
     setMockPathname("/personal");
     rerender(<Frame />);
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
-  });
-
-  it("opens the assistant sheet from More (other contexts)", async () => {
-    const user = userEvent.setup();
-    setMockPathname("/companies");
-    const { mobileNav } = renderFrame();
-    await user.click(within(mobileNav()).getByRole("button", { name: "More" }));
-    const sheet = await screen.findByRole("dialog", { name: "Companies pages" });
-    await user.click(within(sheet).getByRole("button", { name: /Assistant/ }));
-    const assistant = await screen.findByRole("dialog", { name: "Assistant" });
-    expect(within(assistant).getByRole("status")).toHaveTextContent("The assistant arrives in a later step");
   });
 
   it("Personal FAB: tap opens Quick Add, the context menu (long-press alternative) opens Voice", async () => {
@@ -568,20 +544,16 @@ describe("mobile chrome", () => {
     expect(within(sheet).getByRole("button", { name: "Personal task instead" })).toBeInTheDocument();
   });
 
-  it("the FAB opens Quick add with six disabled tiles (other contexts)", async () => {
+  it("Companies FAB opens New expense inside a company, New company on the collection", async () => {
     const user = userEvent.setup();
+    setMockPathname("/companies/euroly");
+    const { mobileNav, rerender } = renderFrame();
+    await user.click(within(mobileNav()).getByRole("button", { name: "New expense" }));
+    expect(routerPush).toHaveBeenLastCalledWith("/companies/euroly?sheet=expense-new", { scroll: false });
     setMockPathname("/companies");
-    const { mobileNav } = renderFrame();
-    const fab = within(mobileNav()).getByRole("button", { name: "Quick add" });
-    expect(fab).toHaveAttribute("aria-haspopup", "dialog");
-    await user.click(fab);
-    const sheet = await screen.findByRole("dialog", { name: "Quick add" });
-    const tiles = within(sheet).getAllByRole("button", { name: /^(Task|Event|Expense|Mood|Habit|Note)$/ });
-    expect(tiles).toHaveLength(6);
-    for (const tile of tiles) {
-      expect(tile).toHaveAttribute("aria-disabled", "true");
-      expect(tile).toHaveAccessibleDescription("Coming soon");
-    }
+    rerender(<Frame />);
+    await user.click(within(mobileNav()).getByRole("button", { name: "New company" }));
+    expect(routerPush).toHaveBeenLastCalledWith("/companies?sheet=company-new", { scroll: false });
   });
 
   it("Personal header (PM01): account, Personal + name, bell; no chips, no digits toggle", () => {
@@ -618,7 +590,8 @@ describe("mobile chrome", () => {
     const sheet = await screen.findByRole("dialog", { name: "Teams pages" });
     const list = within(sheet).getByRole("list", { name: "All Teams pages" });
     // Member in Design Team: Settings is hidden, not disabled.
-    await waitFor(() => expect(within(list).getAllByRole("listitem")).toHaveLength(8));
+    // + Channels (MS-01).
+    await waitFor(() => expect(within(list).getAllByRole("listitem")).toHaveLength(9));
     expect(within(list).getByRole("link", { name: "Planning" })).toHaveAttribute("href", "/teams/design/planning");
     expect(within(list).queryByRole("link", { name: "Settings" })).not.toBeInTheDocument();
     expect(within(sheet).queryByRole("button", { name: /Assistant/ })).not.toBeInTheDocument();
@@ -628,13 +601,10 @@ describe("mobile chrome", () => {
   });
 
   it("translates the mobile chrome in Persian", async () => {
-    const user = userEvent.setup();
-    setMockPathname("/companies");
+    setMockPathname("/companies/euroly");
     const { mobileHeader, mobileNav } = renderFrame({ preferences: { locale: "fa", direction: "rtl", digits: "fa" } });
-    expect(mobileHeader().querySelector("[data-slot=\"mobile-context\"]")).toHaveTextContent("شرکت‌هاEuroly");
-    await user.click(within(mobileNav()).getByRole("button", { name: "افزودن سریع" }));
-    const sheet = await screen.findByRole("dialog", { name: "افزودن سریع" });
-    expect(sheet).toHaveAttribute("dir", "rtl");
-    expect(within(sheet).getByRole("button", { name: "یادداشت" })).toHaveAccessibleDescription("به‌زودی");
+    await waitFor(() => expect(mobileHeader().querySelector("[data-slot=\"mobile-context\"]")).toHaveTextContent("شرکت‌هاEuroly"));
+    expect(within(mobileNav()).getByRole("button", { name: "هزینه‌ی جدید" })).toBeInTheDocument();
+    expect(within(mobileNav()).getByRole("link", { name: "کار" })).toHaveAttribute("href", "/companies/euroly/work");
   });
 });

@@ -32,6 +32,7 @@ import { ProjectPageHeader } from "../project-page-header";
 import { BAR_CLASS, draggedSpan, useBarDrag, type BarEdge } from "../schedule/bar-drag";
 import { makeScale, type TimeScale, type Zoom } from "../schedule/time-scale";
 import { useReschedule } from "../schedule/use-reschedule";
+import { isUnavailable } from "@/features/projects/unavailable";
 import { DependenciesTable } from "./dependencies-table";
 
 /*
@@ -70,6 +71,8 @@ export function GanttScreen() {
   const list = useProjectTasks(project.id, { view: "all" }, demoAccessOptions(demo));
   const workflow = useProjectWorkflow(project.id);
   const path = useCriticalPath(project.id, critical);
+  const pathUnavailable = isUnavailable(path.error);
+  const tShell = useTranslations("ContextShell");
   const depsRef = useRef<HTMLDivElement>(null);
   const editDeps = capabilities.editAnyTask;
 
@@ -85,9 +88,17 @@ export function GanttScreen() {
             onValueChange={setZoom}
             options={(["days", "weeks", "months"] as const).map((value) => ({ value, label: tZoom(value) }))}
           />
-          <Button variant="secondary" aria-pressed={critical} onClick={() => setCritical(!critical)} className="gap-2 bg-surface">
+          <Button
+            variant="secondary"
+            aria-pressed={critical && !pathUnavailable}
+            disabled={pathUnavailable}
+            title={pathUnavailable ? tShell("unavailable") : undefined}
+            onClick={() => setCritical(!critical)}
+            className="gap-2 bg-surface"
+          >
             <Icon icon={Zap} size={16} />
             {t("critical")}
+            {pathUnavailable ? <span className="text-xs font-medium text-fg-muted">· {tShell("unavailable")}</span> : null}
           </Button>
           <Button
             variant="secondary"
@@ -124,7 +135,7 @@ export function GanttScreen() {
           tasks={list.data.tasks}
           graph={graph.data}
           zoom={zoom}
-          critical={critical ? new Set(path.data ?? []) : null}
+          critical={critical && !pathUnavailable ? new Set(path.data ?? []) : null}
           canLink={editDeps}
           canCascade={capabilities.editAnyTask}
           workflow={workflow.data}

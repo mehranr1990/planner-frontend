@@ -135,22 +135,19 @@ Active tab: 56px tall, 24px top radius, same surface as the panel, two **20px co
 
 # Mehran Personal Planner — frontend/backend integration
 
-Scope: connect the EXISTING frontend to the IMPLEMENTED Phase 0/1 backend. Preserve approved UI/UX, locale/RTL/Jalali behavior, and existing frontend architecture. Do not implement Phase 2+, invent endpoints, or change backend code/contracts.
+Scope: connect the EXISTING frontend to the IMPLEMENTED backend. Current contract: **P6-01** (OpenAPI 3.1, 841 operations; the 293 Phase 0/1 Personal operations are unchanged in it). **Personal is the active integration scope.** Projects / Teams / Companies / messaging / meetings / Social (Phase 2+) stay out of scope until the owner authorizes it and Shared activation is authorized in the release. Preserve approved UI/UX, locale/RTL/Jalali behavior, and existing frontend architecture. Do not invent endpoints or change backend code/contracts.
 
 ## Authoritative sources (local files, not pasted into chat)
-- `docs/backend-handoff/openapi.json`: exact machine-readable API contract (OpenAPI 3.1, 293 operations, 189 paths).
-- `docs/backend-handoff/API_MODULE_REFERENCE.md`: route/module index.
-- `docs/backend-handoff/FRONTEND_INTEGRATION_GUIDE.md`: cookies, origin, auth, connectivity.
-- `docs/backend-handoff/FRONTEND_WORKFLOWS.md`: per-feature behavior.
-- `docs/backend-handoff/FRONTEND_TYPES_AND_STATE.md`: revisions, dates, currencies, caching, sync.
-- `docs/backend-handoff/FRONTEND_SECURITY_AND_FILES.md`: sensitive data and lifecycle.
-- `docs/backend-handoff/FRONTEND_INTEGRATION_CHECKLIST.md`: acceptance scenarios.
+- `docs/integration/SESSION_HANDOFF.md`, `INTEGRATION_STATE.md`, `API_COVERAGE_MATRIX.md`, `DECISIONS_AND_BLOCKERS.md`: current state, coverage, decisions, next task. Read `SESSION_HANDOFF.md` first.
+- `frontend-handoff/openapi.json` (tracked): Phase 0/1 contract (293 operations), the source of `src/api/generated/openapi.d.ts` (`npm run api:types`).
+- `frontend-handoff/*.md`: `API_MODULE_REFERENCE`, `FRONTEND_INTEGRATION_GUIDE`, `FRONTEND_WORKFLOWS`, `FRONTEND_TYPES_AND_STATE`, `FRONTEND_SECURITY_AND_FILES`, `FRONTEND_INTEGRATION_CHECKLIST`.
+- `docs/Backend-Handoff/Mehran-Backend-Fable-P6-01.zip` (local, git-ignored, never commit): full P6-01 package; hashes in `INTEGRATION_STATE.md`. Extract to a temp directory for lookups. Phase 2+ types are generated from its verified `api/openapi.json`; commit generated TypeScript only, never the raw JSON or the ZIP.
 If files live elsewhere, locate them once; do not duplicate or print their full contents. If missing, report precisely which files are missing.
 
 ## Low-token working rules
-1. Inspect the relevant existing frontend feature and only the relevant document sections/OpenAPI operations before editing. Never read/dump the entire 4.86 MB JSON into model context. Use local code tools for schema/type generation and targeted programmatic lookup.
+1. Inspect the relevant existing frontend feature and only the relevant document sections/OpenAPI operations before editing. Never read/dump an entire OpenAPI JSON (4.86 MB / 11.4 MB) into model context. Use local code tools for schema/type generation and targeted programmatic lookup.
 2. Work ONE small module at a time. Avoid broad repository scans, dependency upgrades, UI redesigns, and verbose command output.
-3. Keep `docs/INTEGRATION_PROGRESS.md` as a brief persistent checklist with completed modules, changes, test evidence, blockers, next module. Read this file at the start of each session.
+3. Keep `docs/integration/*` (state, coverage matrix, decisions/blockers, session handoff) current after every batch; `docs/INTEGRATION_PROGRESS.md` holds the per-phase history. Read `SESSION_HANDOFF.md` at the start of each session.
 4. Generate API types from the unchanged local handoff OpenAPI using an approved/pinned OpenAPI 3.1-capable tool in the FRONTEND only. Keep generated code in files; do not print it to chat. Do not handwrite guessed DTOs/routes.
 5. Use browser cookie sessions with `credentials: 'include'`, correctly configured API origin/CORS. Do not store auth tokens or expose secrets. Respect exact response status/media types, ETag/If-Match, Idempotency-Key, 401/403/409, and isolated private caches.
 6. Preserve server semantics: Gregorian transport/Jalali display, IANA timezones, exact decimal-string money, feature-specific weekday rules, streamed files, restricted offline sync subset. No new backend endpoint assumptions.

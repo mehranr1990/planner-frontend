@@ -11,6 +11,7 @@ import type {
   EnergyLevel,
   FinanceMonth,
   FinanceMonthSummary,
+  FocusSpan,
   FocusSummary,
   Goal,
   GoalLifecycle,
@@ -364,8 +365,11 @@ export interface PlanRepository {
   /** Replaces the day's priorities (max 3, no duplicates; targets must exist). Order is rank. */
   setPriorities(day: string, refs: readonly DayPriorityRef[]): Promise<DayPriority[]>;
   focusToday(day: string): Promise<FocusSummary>;
-  /** Records finished focus cycles on the day (P09); `cycle` is the next position in the Pomodoro cycle. Rejects "invalid" for a bad day or count. */
-  recordFocusSessions(day: string, input: { count: number; cycle: number }): Promise<FocusSummary>;
+  /**
+   * Records finished focus cycles on the day (P09); `cycle` is the next position in the Pomodoro cycle and
+   * `spans` the actual time of each cycle (the live API stores them as time entries). Rejects "invalid" for a bad day or count.
+   */
+  recordFocusSessions(day: string, input: { count: number; cycle: number; spans?: readonly FocusSpan[] }): Promise<FocusSummary>;
 }
 
 /*

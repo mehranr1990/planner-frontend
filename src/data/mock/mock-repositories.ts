@@ -188,14 +188,15 @@ function projectsAndTeams(
             id: project.id,
             name: project.name,
             percent: project.progress.percent,
-            health: project.health,
+            // Mock fixtures always carry a health and dates.
+            health: project.health!,
             lifecycle: project.lifecycle,
             initials: project.initials,
             tint: project.tint,
             role: project.role,
             nextMilestone: project.nextMilestone ? { title: project.nextMilestone.title, due: project.nextMilestone.due } : null,
-            startDate: project.startDate,
-            endDate: project.endDate,
+            startDate: project.startDate!,
+            endDate: project.endDate!,
             openHighRisks: project.openHighRisks,
             memberIds: project.members.map((person) => person.id),
           }

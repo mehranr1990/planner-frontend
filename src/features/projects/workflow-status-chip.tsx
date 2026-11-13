@@ -17,6 +17,7 @@ const CATEGORY_CLASS: Record<WorkflowCategory, string> = {
   review: "bg-team-soft text-team-deep",
   blocked: "bg-danger-soft text-danger-text",
   done: "bg-success-soft text-success-text",
+  canceled: "bg-raised text-fg-muted",
 };
 
 export function useWorkflowStatusLabel() {

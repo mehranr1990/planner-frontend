@@ -114,7 +114,7 @@ export interface MilestoneRepository {
   /** Manager+: new phase order (all phase ids). */
   reorderPhases(projectId: string, phaseIds: readonly string[]): Promise<readonly ProjectPhase[]>;
   /** Manager+: rename (dates change through ScheduleRepository). Rejects "conflict" on a stale revision. */
-  updateMilestone(milestoneId: string, patch: { title: string }, revision: number): Promise<ProjectMilestone>;
+  updateMilestone(projectId: string, milestoneId: string, patch: { title: string }, revision: number): Promise<ProjectMilestone>;
 }
 
 export interface ProjectCalendarRepository {
@@ -175,24 +175,25 @@ export interface RiskRepository {
   list(projectId: string, options?: { open?: boolean; kind?: ProjectRisk["kind"] }): Promise<readonly ProjectRisk[]>;
   /** The open risk linked to a milestone, if any. */
   byMilestone(projectId: string, milestoneId: string): Promise<ProjectRisk | null>;
-  get(riskId: string): Promise<ProjectRisk>;
-  history(riskId: string): Promise<readonly RiskHistoryEntry[]>;
-  comments(riskId: string): Promise<readonly TaskComment[]>;
-  addComment(riskId: string, body: string): Promise<TaskComment>;
+  get(projectId: string, riskId: string): Promise<ProjectRisk>;
+  history(projectId: string, riskId: string): Promise<readonly RiskHistoryEntry[]>;
+  comments(projectId: string, riskId: string): Promise<readonly TaskComment[]>;
+  addComment(projectId: string, riskId: string, body: string): Promise<TaskComment>;
   /** If-Match: rejects "conflict" when `revision` is stale. */
-  update(riskId: string, patch: RiskPatch, revision: number): Promise<ProjectRisk>;
+  update(projectId: string, riskId: string, patch: RiskPatch, revision: number): Promise<ProjectRisk>;
   setChecklistItem(
+    projectId: string,
     riskId: string,
     itemId: string,
     patch: { done?: boolean; taskId?: string },
     revision: number,
   ): Promise<ProjectRisk>;
   /** Close a risk with a reason (optional note). */
-  close(riskId: string, input: { reason: RiskCloseReason; note?: string }, revision: number): Promise<ProjectRisk>;
+  close(projectId: string, riskId: string, input: { reason: RiskCloseReason; note?: string }, revision: number): Promise<ProjectRisk>;
   /** Resolve an issue (resolution note required, else "invalid"). */
-  resolve(riskId: string, resolution: string, revision: number): Promise<ProjectRisk>;
+  resolve(projectId: string, riskId: string, resolution: string, revision: number): Promise<ProjectRisk>;
   /** Creates the issue (same title / severity, links back) and closes the risk as "became-issue"; returns the issue. */
-  convert(riskId: string, revision: number): Promise<ProjectRisk>;
+  convert(projectId: string, riskId: string, revision: number): Promise<ProjectRisk>;
 }
 
 export interface FileUploadInput {
@@ -211,12 +212,12 @@ export interface FileRepository {
   config(projectId: string): Promise<FileServerConfig>;
   /** Starts the signed upload; blocked at once when the type / size is not allowed. */
   upload(projectId: string, input: FileUploadInput): Promise<ProjectFile>;
-  cancel(fileId: string): Promise<void>;
-  retry(fileId: string): Promise<ProjectFile>;
+  cancel(projectId: string, fileId: string): Promise<void>;
+  retry(projectId: string, fileId: string): Promise<ProjectFile>;
   /** Restoring an older version creates a new version. */
-  restoreVersion(fileId: string, version: number): Promise<ProjectFile>;
+  restoreVersion(projectId: string, fileId: string, version: number): Promise<ProjectFile>;
   /** Rejects "invalid" until the file is scanned and ready. */
-  download(fileId: string): Promise<Blob>;
+  download(projectId: string, fileId: string): Promise<Blob>;
 }
 
 /**
@@ -325,12 +326,12 @@ export interface AssignmentDeclineInput {
 export interface AssignmentRepository {
   /** My pending assignments and accepted open tasks in one project. */
   listMine(projectId: string): Promise<MyProjectWork>;
-  accept(taskId: string, revision: number): Promise<ProjectTask>;
-  decline(taskId: string, input: AssignmentDeclineInput): Promise<ProjectTask>;
+  accept(projectId: string, taskId: string, revision: number): Promise<ProjectTask>;
+  decline(projectId: string, taskId: string, input: AssignmentDeclineInput): Promise<ProjectTask>;
   /** Undo of Accept: back to pending (the projection leaves Personal). */
-  revertAccept(taskId: string, revision: number): Promise<ProjectTask>;
+  revertAccept(projectId: string, taskId: string, revision: number): Promise<ProjectTask>;
   /** Manager+: nudge a pending assignee. */
-  remind(taskId: string): Promise<void>;
+  remind(projectId: string, taskId: string): Promise<void>;
 }
 
 /** The Projects part of the `Repositories` aggregate (mock adapters only). */
@@ -414,15 +415,15 @@ export interface BulkUpdateResult {
 
 export interface ProjectTaskRepository {
   list(projectId: string, query?: ProjectTaskQuery, options?: ProjectAccessOptions): Promise<ProjectTaskList>;
-  get(taskId: string, options?: ProjectAccessOptions): Promise<ProjectTask>;
+  get(projectId: string, taskId: string, options?: ProjectAccessOptions): Promise<ProjectTask>;
   /** People who can hold tasks in the project (assignee picker, @mentions). */
   members(projectId: string): Promise<readonly ProjectPerson[]>;
   create(projectId: string, input: NewProjectTaskInput): Promise<ProjectTask>;
   /** If-Match: rejects with code "conflict" when `revision` is stale. */
-  update(taskId: string, patch: ProjectTaskPatch, revision: number): Promise<ProjectTask>;
+  update(projectId: string, taskId: string, patch: ProjectTaskPatch, revision: number): Promise<ProjectTask>;
   /** All-or-nothing per task: tasks the user cannot change come back in failedIds. */
   bulkUpdate(projectId: string, taskIds: readonly string[], patch: ProjectTaskPatch): Promise<BulkUpdateResult>;
-  remove(taskIds: readonly string[]): Promise<void>;
+  remove(projectId: string, taskIds: readonly string[]): Promise<void>;
   /**
    * Board drop = workflow transition with If-Match. Rejects "conflict" (stale
    * revision), "forbidden" (not your card / role), or "invalid" with message
@@ -430,6 +431,7 @@ export interface ProjectTaskRepository {
    * status limit without `exceedWip`, or without the capability).
    */
   transition(
+    projectId: string,
     taskId: string,
     toStatusId: string,
     revision: number,
@@ -444,20 +446,20 @@ export interface ProjectTaskRepository {
 // ── Task detail (PJ-15) ──────────────────────────────────────────────────
 
 export interface TaskDetailRepository {
-  get(taskId: string, options?: ProjectAccessOptions): Promise<ProjectTaskDetail>;
-  toggleSubtask(taskId: string, subtaskId: string): Promise<ProjectTaskDetail>;
+  get(projectId: string, taskId: string, options?: ProjectAccessOptions): Promise<ProjectTaskDetail>;
+  toggleSubtask(projectId: string, taskId: string, subtaskId: string): Promise<ProjectTaskDetail>;
   /** My own projection setting (never visible to the project). */
-  setShowInCalendar(taskId: string, on: boolean): Promise<ProjectTaskDetail>;
+  setShowInCalendar(projectId: string, taskId: string, on: boolean): Promise<ProjectTaskDetail>;
 }
 
 export interface CommentRepository {
-  add(taskId: string, body: string): Promise<TaskComment>;
+  add(projectId: string, taskId: string, body: string): Promise<TaskComment>;
 }
 
 export interface DependencyRepository {
   /** Rejects with code "invalid" + message "cycle" when it would create a loop. */
-  add(taskId: string, input: { predecessorId: string; type: DependencyType; lagDays: number }): Promise<TaskDependency>;
-  remove(taskId: string, dependencyId: string): Promise<void>;
+  add(projectId: string, taskId: string, input: { predecessorId: string; type: DependencyType; lagDays: number }): Promise<TaskDependency>;
+  remove(projectId: string, taskId: string, dependencyId: string): Promise<void>;
 }
 
 // ── Sheets (PJ-90) ───────────────────────────────────────────────────────
@@ -503,5 +505,5 @@ export interface ReassignInput {
 
 export interface ReassignRepository {
   /** Manager+: replaces the pending / declined assignee; the new person gets a pending assignment. */
-  reassign(taskId: string, input: ReassignInput): Promise<ProjectTask>;
+  reassign(projectId: string, taskId: string, input: ReassignInput): Promise<ProjectTask>;
 }

@@ -182,7 +182,7 @@ export function createMockProjectSheets({
   };
 
   const reassign: ReassignRepository = {
-    async reassign(taskId, { personId, note }) {
+    async reassign(_projectId, taskId, { personId, note }) {
       const task = store.findTask(taskId);
       if (!task) throw new RepositoryError("not-found", `No task ${taskId}`);
       if (!canReassign(task.projectId)) throw new RepositoryError("forbidden", "Manager+ only");

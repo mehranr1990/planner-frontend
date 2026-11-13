@@ -62,12 +62,12 @@ export function ProjectStatusChip({
   lifecycle,
   className,
 }: {
-  health: ProjectHealth;
+  health: ProjectHealth | null;
   lifecycle: ProjectLifecycle;
   className?: string;
 }) {
   const labels = useProjectLabels();
-  const tone: StatusTone = lifecycle === "active" ? HEALTH_TONE[health] : "neutral";
+  const tone: StatusTone = lifecycle === "active" && health ? HEALTH_TONE[health] : "neutral";
   const label = lifecycle === "active" ? labels.health(health) : labels.lifecycle(lifecycle);
   return (
     <StatusChip tone={tone} className={cn("shrink-0", className)}>

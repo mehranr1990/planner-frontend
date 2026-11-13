@@ -21,15 +21,19 @@ export type AccessBannerKind =
   | "conflict"
   | "read-only"
   | "team-read-only"
+  | "company-archived"
+  | "company-read-only"
   | "guest";
 
 const PRIORITY: readonly AccessBannerKind[] = [
   "offline",
   "archived",
   "team-archived",
+  "company-archived",
   "conflict",
   "read-only",
   "team-read-only",
+  "company-read-only",
   "guest",
 ];
 
@@ -47,6 +51,8 @@ const LOOK: Record<AccessBannerKind, { icon: LucideIcon; className: string; key:
   archived: { icon: Archive, className: "bg-raised text-fg", key: "archived" },
   "team-archived": { icon: Archive, className: "bg-raised text-fg", key: "teamArchived" },
   "team-read-only": { icon: Eye, className: "bg-scope-soft text-scope-deep", key: "teamReadOnly" },
+  "company-archived": { icon: Archive, className: "bg-raised text-fg", key: "companyArchived" },
+  "company-read-only": { icon: Eye, className: "bg-scope-soft text-scope-deep", key: "companyReadOnly" },
   conflict: {
     icon: RefreshCw,
     className: "bg-info-soft text-info-text",

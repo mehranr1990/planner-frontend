@@ -1,7 +1,7 @@
 # Integration progress (frontend ⇄ Phase 0/1 backend)
 
 Handoff files live in `frontend-handoff/` (not `docs/backend-handoff/`); all seven present, `openapi.json` unchanged (sha256 verified before/after generation).
-Module order: `INTEGRATION_RUNBOOK.md`.
+Module order: `INTEGRATION_RUNBOOK.md`. Current state, coverage matrix, blockers and next task (P6-01 contract): `docs/integration/`.
 
 ## Frontend inventory (baseline)
 - Next.js 16 App Router + TS + Tailwind 4, React Query 5, next-intl, Vitest (jsdom) + Playwright.
@@ -14,7 +14,7 @@ Module order: `INTEGRATION_RUNBOOK.md`.
 - [x] **01** Tasks, checklist, subtasks, labels, trash, attachments — **accepted with documented gaps** 2026-11-03 (see "01 — Tasks")
 - [x] **02** Task recurrence, occurrences, templates, saved filters, bulk — **accepted with documented gaps** 2026-11-03 (see "02 — Recurrence + bulk")
 - [x] **03** My Day, week, reviews, rollover, capacity — **accepted with documented gaps** 2026-11-03 (see "03 — My Day / Day plans")
-- [ ] 04 Calendar events, time blocks, views, conflicts ← **next**
+- [~] **04** Calendar — 04a blocks adapter wired 2026-11-11, **NOT live verified** (see "04a"); 04b/04c ← **next** (`docs/integration/SESSION_HANDOFF.md`)
 - [ ] 05 … 17 (see runbook)
 
 ## 00a — what exists
@@ -140,3 +140,9 @@ Backend: `/health/ready` 200; preflight from `http://localhost:3001` → ACAO `h
 4. NextIntl `timeZone` (message date formatting) is still the static default zone.
 5. Mock modules in live mode now see the real date while their fixtures sit on 13 Oct 2026 (Habits/Goals/Finance/… may look empty until their phases).
 **Leftover test data (claude-01-… account; nothing deleted)**: 5 task series — 2 active weekly with no end (`5e8bb30e…`, `b3344d9f…`; each list load keeps occurrences materialized through today+7, i.e. ~1 new occurrence task per week per series), 2 ended on 2026-10-20 (`0d1077ff…`, `b2c870d6…`; no further writes), 1 retired. Tests that count tasks/occurrences on this account must filter by their own title stamp (all current tests do). Day plans exist for several dates in Nov 2026.
+
+## 04a — Calendar blocks (2026-11-11) — implemented, NOT live verified
+- `provider.tsx` live mode: `blocks` = `src/data/api/api-blocks-repository.ts` (GET `/calendar/views`, time-blocks CRUD with Idempotency-Key / If-Match, event schedule PATCH; Task day/time/estimate written alongside; 409 → refetch + resend once).
+- Fixes: mutation results are real instants; blocks of deleted/canceled/skipped Tasks hidden; `setDone` guard.
+- Tests: `api-blocks-repository.test.ts` 11/11; `vitest src/data/api src/api` 55 passed, 4 skipped; `tsc` + eslint clean. No live/browser run (backend `/health/ready` 503).
+- Gaps: event create/edit/delete, recurring series edits, conflicts, all-day entries, block priorities; a Task rescheduled outside the timeline does not move its block (D5 — fix approved 2026-11-11, to implement in 04b).

@@ -28,7 +28,7 @@ export function useFocusSync(session: FocusSession | null) {
     });
     const result = taken as ReturnType<typeof drain> | null;
     if (!result) return;
-    if (result.cycles > 0) record({ day: getPlannerToday(), count: result.cycles, cycle: summaryCycle(session) });
+    if (result.cycles > 0) record({ day: getPlannerToday(), count: result.cycles, cycle: summaryCycle(session), spans: result.spans });
     for (const text of result.parked) capture({ text, source: "note" });
   }, [session, record, capture]);
 }

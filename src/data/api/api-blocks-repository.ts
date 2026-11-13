@@ -1,9 +1,9 @@
 import type { ApiClient, ResponseData } from "@/api/client";
 import { newIdempotencyKey } from "@/api/client";
 import { ApiHttpError } from "@/api/errors";
-import { addDaysToDay, dayOfInstant, formatClockTime, instantToClockTime, parseClockTime } from "@/lib/dates/clock-time";
+import { addDaysToDay, dayOfInstant, formatClockTime, instantAt, instantToClockTime, parseClockTime } from "@/lib/dates/clock-time";
 import { getPlannerTimeZone } from "@/lib/dates/zone";
-import type { TimeBlock } from "../domain";
+import type { Task, TimeBlock } from "../domain";
 import { RepositoryError, type BlockPlacement, type BlocksRepository, type ScheduleSnapshot } from "../repositories";
 import type { ApiTasksRepository } from "./api-tasks-repository";
 
@@ -16,7 +16,9 @@ import type { ApiTasksRepository } from "./api-tasks-repository";
  * block saved. Every edit sends the block's/event's ETag (409 → refetch +
  * resend once); creates use an Idempotency-Key. Recurring event occurrences
  * are virtual: moving them needs the series flow (not in this UI) → refused.
- * Only ACTIVE timed entries are shown (no all-day lane in the UI).
+ * Only ACTIVE timed entries are shown (no all-day lane in the UI). The server
+ * keeps the block of a deleted, canceled or skipped Task (disposition); the
+ * timeline hides it, and it shows again when the Task is restored.
  */
 
 type ApiViewItem = ResponseData<"/api/v1/calendar/views", "get">["items"][number];
@@ -33,13 +35,23 @@ interface Known {
 }
 
 const DEFAULT_MINUTES = 30;
+const HIDDEN_DISPOSITIONS: ReadonlySet<string> = new Set(["DELETED", "CANCELED", "SKIPPED"]);
 const PAGE = "100";
 
 export interface ApiBlocksOptions {
   tasks: ApiTasksRepository;
 }
 
-export function createApiBlocksRepository(client: ApiClient, { tasks }: ApiBlocksOptions): BlocksRepository {
+export type ApiBlocksRepository = BlocksRepository & {
+  /**
+   * Keeps a task's linked time block in step after its day, time or length changed
+   * outside the timeline: the block moves / resizes, or is removed when the task
+   * lost its time or date. Only that task's own block is touched; no block → no-op.
+   */
+  followTask(task: Task): Promise<void>;
+};
+
+export function createApiBlocksRepository(client: ApiClient, { tasks }: ApiBlocksOptions): ApiBlocksRepository {
   const known = new Map<string, Known>();
   const lastByDay = new Map<string, TimeBlock[]>();
 
@@ -52,6 +64,7 @@ export function createApiBlocksRepository(client: ApiClient, { tasks }: ApiBlock
 
   function toBlock(item: ApiViewItem): TimeBlock | null {
     if (item.status !== "ACTIVE" || item.schedule.kind !== "TIMED" || !item.schedule.startAt || !item.schedule.endAt) return null;
+    if (item.taskId && item.taskDisposition && HIDDEN_DISPOSITIONS.has(item.taskDisposition)) return null;
     const id = item.seriesId ? item.identity : item.resourceId;
     known.set(id, { kind: item.kind, resourceId: item.resourceId, seriesId: item.seriesId, taskId: item.taskId, etag: known.get(id)?.etag });
     const task = item.taskId ? tasks.peek(item.taskId) : undefined;
@@ -130,6 +143,20 @@ export function createApiBlocksRepository(client: ApiClient, { tasks }: ApiBlock
     entry.etag = result.etag;
   }
 
+  /** DELETE a time block with If-Match; 409 → refetch ETag and re-send once. */
+  async function deleteBlock(id: string, entry: Known) {
+    const send = (etag: string) =>
+      client.request("delete", "/api/v1/calendar/time-blocks/{id}", { path: { id: entry.resourceId }, header: { "If-Match": etag }, body: {} });
+    try {
+      await send(await etagFor(id, entry));
+    } catch (error) {
+      if (!(error instanceof ApiHttpError && error.status === 409)) throw error;
+      entry.etag = undefined;
+      await send(await etagFor(id, entry));
+    }
+    known.delete(id);
+  }
+
   /** An explicit DST-gap time is invalid input, not a server failure. */
   function rethrowGap(error: unknown) {
     if (error instanceof ApiHttpError && error.status === 400 && error.details.some((d) => d.code === "DST_GAP")) {
@@ -164,12 +191,11 @@ export function createApiBlocksRepository(client: ApiClient, { tasks }: ApiBlock
   }
 
   const blockFrom = (id: string, title: string, day: string, start: number, end: number, taskId: string | null, done = false): TimeBlock => {
-    const schedule = timed(day, start, end);
     const block: TimeBlock = {
       id,
       title,
-      start: `${schedule.localStart}`,
-      end: `${schedule.localEnd}`,
+      start: instantAt(day, start),
+      end: instantAt(day, end),
       scope: "personal",
       kind: taskId ? "task" : "event",
     };
@@ -227,16 +253,7 @@ export function createApiBlocksRepository(client: ApiClient, { tasks }: ApiBlock
     async unschedule(blockId) {
       const { entry } = await findBlock(blockId);
       if (entry.kind !== "TIME_BLOCK" || !entry.taskId) throw new RepositoryError("forbidden", "Only task blocks can be unscheduled");
-      const send = (etag: string) =>
-        client.request("delete", "/api/v1/calendar/time-blocks/{id}", { path: { id: entry.resourceId }, header: { "If-Match": etag }, body: {} });
-      try {
-        await send(await etagFor(blockId, entry));
-      } catch (error) {
-        if (!(error instanceof ApiHttpError && error.status === 409)) throw error;
-        entry.etag = undefined;
-        await send(await etagFor(blockId, entry));
-      }
-      known.delete(blockId);
+      await deleteBlock(blockId, entry);
       // The task keeps its day and loses its time.
       try {
         await tasks.update(entry.taskId, { time: null });
@@ -297,10 +314,29 @@ export function createApiBlocksRepository(client: ApiClient, { tasks }: ApiBlock
       }
     },
 
+    async followTask(task) {
+      const block = (await taskBlocks()).find((item) => item.taskId === task.id);
+      if (!block) return;
+      const entry: Known = { kind: "TIME_BLOCK", resourceId: block.id, seriesId: null, taskId: task.id, etag: undefined };
+      known.set(block.id, entry);
+      const start = task.date && task.time ? parseClockTime(task.time) : null;
+      if (!task.date || start === null) {
+        await deleteBlock(block.id, entry);
+        return;
+      }
+      const { startAt, endAt } = block.schedule.kind === "TIMED" ? block.schedule : { startAt: null, endAt: null };
+      const current = startAt && endAt ? Math.round((Date.parse(endAt) - Date.parse(startAt)) / 60_000) : DEFAULT_MINUTES;
+      // The UI keeps a block inside its day: a length that would cross midnight is cut there.
+      const end = Math.min(start + (task.durationMinutes ?? current), 1440);
+      if (startAt && endAt && Date.parse(startAt) === Date.parse(instantAt(task.date, start)) && Date.parse(endAt) === Date.parse(instantAt(task.date, end))) return;
+      await patchSchedule(block.id, entry, timed(task.date, start, end));
+    },
+
     async setDone(blockId, done) {
       const { entry, block } = await findBlock(blockId);
       if (!entry.taskId) throw new RepositoryError("unsupported", "Events cannot be marked done");
       const task = await tasks.setDone(entry.taskId, done);
+      if (!block && !task.date) throw new RepositoryError("not-found", "Block not found");
       return { ...(block ?? blockFrom(blockId, task.title, task.date ?? "", 0, DEFAULT_MINUTES, entry.taskId)), done };
     },
   };

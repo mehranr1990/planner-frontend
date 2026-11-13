@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useTheme } from "next-themes";
@@ -628,6 +629,12 @@ function NotificationsGroup() {
   const invalid = !isClockTime(time);
   return (
     <>
+      {/* MS-09: message privacy & notifications live under /messages/settings. */}
+      <Row label={t("messages")} hint={t("messagesHint")}>
+        <Button asChild size="sm" variant="secondary">
+          <Link href="/messages/settings">{t("messagesOpen")}</Link>
+        </Button>
+      </Row>
       <PlaceholderRow label={t("taskReminders")} value="—" />
       <PlaceholderRow label={t("morningNudge")} value={n(t("morningNudgeValue"))} />
       <PlaceholderRow label={t("shutdown")} value={t("shutdownValue")} />

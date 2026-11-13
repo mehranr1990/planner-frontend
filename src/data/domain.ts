@@ -165,6 +165,12 @@ export interface FocusSummary {
   cycle: number;
 }
 
+/** One finished focus cycle as it actually ran: when it ended (epoch ms) and how long was focused (pauses excluded). */
+export interface FocusSpan {
+  endAt: number;
+  ms: number;
+}
+
 export type InboxSource = "quick-add" | "voice" | "share" | "note" | "brain-dump";
 
 /** "processed" (sent to a destination) and "dropped" are kept as tombstones so Undo can restore them; list() without a state skips them. */

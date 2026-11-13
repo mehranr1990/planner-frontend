@@ -1,7 +1,8 @@
 import { screen, within } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
 import { renderWithProviders } from "@/test/render";
-import { setMockPathname, setMockSearch } from "@/test/setup";
+import { routerReplace, setMockPathname, setMockSearch } from "@/test/setup";
 import { ProjectGate } from "../project-gate";
 import { ProjectFlowScreen } from "./project-flow-screen";
 
@@ -33,6 +34,38 @@ describe("PJ-06 · Workflow view", () => {
       "href",
       "/projects/website-redesign/tasks?status=blocked",
     );
+  });
+
+  it("opens the CaseFlow on the nearest at-risk milestone (D20)", async () => {
+    renderFlow();
+    const flow = (await screen.findByRole("heading", { name: "Payment go-live · flow" })).closest("section")!;
+    expect(screen.getByRole("radio", { name: "Payment go-live" })).toHaveAttribute("aria-checked", "true");
+    expect(within(flow).getByText(/\(4 tasks · 1 done\)/)).toBeInTheDocument();
+    // Blocked is a row state in the first active column; the waiting row says what it needs.
+    expect(within(flow).getByRole("link", { name: /Checkout flow.*Blocked/ })).toHaveAttribute(
+      "href",
+      "/projects/website-redesign/tasks/checkout-flow",
+    );
+    expect(within(flow).getByText("Needs Checkout flow · accept pending")).toBeInTheDocument();
+    expect(within(flow).getByText("Nothing in In review")).toBeInTheDocument();
+    // Done tile (highlighted, most recent) + milestone tile.
+    expect(within(flow).getByRole("link", { name: /3DS verification/ })).toBeInTheDocument();
+    expect(within(flow).getByRole("link", { name: /Payment go-live.*milestone/ })).toHaveAttribute(
+      "href",
+      "/projects/website-redesign/milestones",
+    );
+  });
+
+  it("filters by person from the notch and switches filters through the URL", async () => {
+    const user = userEvent.setup();
+    renderFlow("flow=all");
+    const avatar = await screen.findByRole("button", { name: /^Show only Kian.*tasks$/ });
+    expect(screen.getByRole("heading", { name: "All open tasks · flow" })).toBeInTheDocument();
+    expect(avatar).toHaveAttribute("aria-pressed", "false");
+    await user.click(avatar);
+    expect(routerReplace).toHaveBeenLastCalledWith("/projects/website-redesign/flow?flow=all&person=kian", { scroll: false });
+    await user.click(screen.getByRole("radio", { name: "My tasks" }));
+    expect(routerReplace).toHaveBeenLastCalledWith("/projects/website-redesign/flow?flow=mine", { scroll: false });
   });
 
   it("offers Edit in Settings to Admin+ only", async () => {

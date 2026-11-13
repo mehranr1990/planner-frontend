@@ -1,4 +1,4 @@
-import { appContexts, defaultContextId, getAppContext, getProjectContext, getTeamContext } from "./contexts";
+import { appContexts, defaultContextId, getAppContext, getCompanyContext, getProjectContext, getSocialGroupContext, getTeamContext } from "./contexts";
 import type { AppContext, ContextId, NavItem } from "./types";
 
 /*
@@ -30,6 +30,16 @@ export function getTeamIdFromPathname(pathname: string | null | undefined): stri
   return workspaceIdIn(/^\/teams\/([^/]+)/, pathname);
 }
 
+/** The company id in /companies/[id]/…, or undefined on the collection (/companies) and outside Companies (CS-01, C1). */
+export function getCompanyIdFromPathname(pathname: string | null | undefined): string | undefined {
+  return workspaceIdIn(/^\/companies\/([^/]+)/, pathname);
+}
+
+/** The group id in /social/groups/[id]/…, or undefined on /social/groups and elsewhere (SO-01). */
+export function getSocialGroupIdFromPathname(pathname: string | null | undefined): string | undefined {
+  return workspaceIdIn(/^\/social\/groups\/([^/]+)/, pathname);
+}
+
 function workspaceIdIn(pattern: RegExp, pathname: string | null | undefined): string | undefined {
   const match = pattern.exec(normalizePathname(pathname));
   if (!match) return undefined;
@@ -51,6 +61,14 @@ export function getContextFromPathname(pathname: string | null | undefined): App
   if (context?.id === "team") {
     const teamId = getTeamIdFromPathname(path);
     return teamId ? getTeamContext(teamId) : context;
+  }
+  if (context?.id === "social") {
+    const groupId = getSocialGroupIdFromPathname(path);
+    return groupId ? getSocialGroupContext(groupId) : context;
+  }
+  if (context?.id === "company") {
+    const companyId = getCompanyIdFromPathname(path);
+    return companyId ? getCompanyContext(companyId) : context;
   }
   return context;
 }

@@ -23,12 +23,14 @@ export interface ContextSwitcherPanelProps extends Omit<ComponentProps<"div">, "
   projects?: ReactNode;
   /** The Teams workspace list (TS-01: Your teams · Invitations · Archived). */
   teams?: ReactNode;
+  /** The Companies workspace list (CS-01: Your companies · Invitations · Archived). */
+  companies?: ReactNode;
+  /** The Social list (SO-01: Social home · Your groups · Pending join requests · Find groups · New group). */
+  social?: ReactNode;
 }
 
 /** Contexts whose phase has not shipped: visible, disabled, no fake records (SH01). */
-const FUTURE_CONTEXTS: Partial<Record<ContextId, "phase3" | "phase4">> = {
-  company: "phase4",
-};
+const FUTURE_CONTEXTS: Partial<Record<ContextId, "phase3" | "phase4">> = {};
 
 const ROW_SELECTOR = "[data-switcher-row]";
 
@@ -66,6 +68,8 @@ export function ContextSwitcherPanel({
   onSelect,
   projects,
   teams,
+  companies,
+  social,
   className,
   onKeyDown,
   ...props
@@ -103,7 +107,7 @@ export function ContextSwitcherPanel({
             expanded={expanded === context.id}
             onToggle={() => setExpanded(expanded === context.id ? null : context.id)}
             onSelect={onSelect}
-            list={context.id === "project" ? projects : context.id === "team" ? teams : undefined}
+            list={context.id === "project" ? projects : context.id === "team" ? teams : context.id === "company" ? companies : context.id === "social" ? social : undefined}
           />
         );
       })}

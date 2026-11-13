@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useMemo } from "react";
+import { useTranslations } from "next-intl";
 import { parseDay } from "@/lib/dates/clock-time";
 import { formatDate, formatDateRange, type DateStyle } from "@/lib/dates/format";
 import { getPlannerNow } from "@/data/clock";
@@ -21,18 +22,25 @@ export function dayToDate(day: string): Date {
 
 export function useProjectFormat() {
   const { calendar, locale, digits } = usePreferences();
+  const t = useTranslations("ContextShell");
   const options = useMemo(() => ({ calendar, locale, digits }), [calendar, locale, digits]);
   const day = useCallback(
     (value: string, style: DateStyle = "dayMonth") => formatDate(dayToDate(value), style, options),
     [options],
   );
+  /** A missing (undeclared) end shows "Unknown", never a guessed date. */
   const range = useCallback(
-    (start: string, end: string) => formatDateRange(dayToDate(start), dayToDate(end), options),
-    [options],
+    (start: string | null, end: string | null) => (start && end ? formatDateRange(dayToDate(start), dayToDate(end), options) : t("unknown")),
+    [options, t],
   );
   const number = useCallback((value: number) => formatNumber(value, digits), [digits]);
   /** 0–100 → "58%" / "۵۸٪". */
-  const percent = useCallback((value: number) => formatPercent(value / 100, digits), [digits]);
+  const percent = useCallback((value: number | null) => (value === null ? t("unknown") : formatPercent(value / 100, digits)), [digits, t]);
+  /** Project completion: done / eligible tasks; "No tasks yet" when nothing is eligible. */
+  const progress = useCallback(
+    (value: { total: number; percent: number }) => (value.total === 0 ? t("noTasks") : formatPercent(value.percent / 100, digits)),
+    [digits, t],
+  );
   /** "2h ago" / "yesterday" / "۲ هفته پیش" from the planner clock. */
   const relative = useCallback(
     (instant: string) => convertDigits(formatRelative(instant, getPlannerNow(), locale), digits),
@@ -40,7 +48,7 @@ export function useProjectFormat() {
   );
   /** Whole days from the planner day to `day` (negative = past). */
   const daysFromToday = useCallback((value: string) => daysBetween(getPlannerNow().slice(0, 10), value), []);
-  return { day, range, number, percent, relative, daysFromToday, locale, digits, calendar };
+  return { day, range, number, percent, progress, relative, daysFromToday, locale, digits, calendar };
 }
 
 const MINUTE = 60_000;

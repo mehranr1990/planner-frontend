@@ -23,6 +23,11 @@ import { SelectedEventPanel } from "./selected-event-panel";
 import { useCalendarData, type CalendarData } from "./use-calendar-data";
 import { useCalendarFormat } from "./use-calendar-format";
 import { WeekView } from "./week-view";
+import { CalendarMeetings } from "@/features/messages/meetings/calendar-meetings";
+import { SocialCalendarProjections } from "@/features/social/activity/calendar-projections";
+import type { MsgSource } from "@/data/messaging-domain";
+
+const PERSONAL_SOURCE: MsgSource = { kind: "personal", workspaceId: null, name: "" };
 
 /*
  * P04 Calendar. Header (range, prev / Today / next, Day · Week · Month ·
@@ -80,6 +85,8 @@ function CalendarLayout() {
               <WeekView days={days} data={data} />
             )}
             <UnscheduledTray className="lg:hidden" />
+            <CalendarMeetings source={PERSONAL_SOURCE} days={days} />
+            <SocialCalendarProjections days={days} />
           </div>
           <div data-slot="calendar-side" className="hidden min-w-0 flex-col gap-4.5 lg:flex">
             <SelectedEventPanel data={data} />

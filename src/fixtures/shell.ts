@@ -55,6 +55,7 @@ export interface SampleProfile {
 export const sampleProfile: SampleProfile = { name: "Mehran", detail: "Euroly · Admin" };
 
 export const sampleWorkspaces: Readonly<Record<Scope, readonly SampleWorkspace[]>> = {
+  social: [{ id: "mountain", name: "Mountain Friends" }],
   personal: [{ id: "mehran", name: "Mehran" }],
   project: [
     { id: "website-redesign", name: "Website Redesign" },

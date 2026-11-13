@@ -18,6 +18,7 @@ import { formatDate } from "@/lib/dates/format";
 import { getWeekDates } from "@/lib/dates/week";
 import { formatNumber } from "@/lib/locale/digits";
 import { cn } from "@/lib/cn";
+import { MessagesButton } from "@/features/messages/messages-button";
 import { NotificationsPopover } from "./notifications-popover";
 import { ProfileMenu } from "./profile-menu";
 import { ShellContextSwitcher } from "./shell-context-switcher";
@@ -38,6 +39,7 @@ export function PersonalMobileHeader() {
       <ProfileMenu align="start" />
       {/* The identity is the mobile context switcher (Personal · Projects · Teams · Companies). */}
       <ShellContextSwitcher variant="header" />
+      <MessagesButton className="bg-surface shadow-island hover:bg-subtle" />
       <NotificationsPopover triggerClassName="bg-surface shadow-island hover:bg-subtle" />
     </div>
   );

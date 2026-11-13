@@ -188,14 +188,14 @@ export function createMockFiles({
       kick();
       return respond(file);
     },
-    async cancel(fileId) {
+    async cancel(_projectId, fileId) {
       const { list, index, file } = locate(fileId);
       if (!["queued", "uploading", "failed", "blocked"].includes(file.state))
         throw new RepositoryError("invalid", "Only unfinished uploads can be cancelled");
       list.splice(index, 1);
       return respond(undefined);
     },
-    async retry(fileId) {
+    async retry(_projectId, fileId) {
       const { file } = locate(fileId);
       if (file.state !== "failed") throw new RepositoryError("invalid", "Only failed uploads retry");
       file.state = "queued";
@@ -203,7 +203,7 @@ export function createMockFiles({
       kick();
       return respond(file);
     },
-    async restoreVersion(fileId, version) {
+    async restoreVersion(_projectId, fileId, version) {
       const { file } = locate(fileId);
       const old = file.versions.find((candidate) => candidate.version === version);
       if (!old || version === file.version) throw new RepositoryError("invalid", "Pick an older version");
@@ -213,7 +213,7 @@ export function createMockFiles({
       file.updatedAt = now;
       return respond(file);
     },
-    async download(fileId) {
+    async download(_projectId, fileId) {
       const { file } = locate(fileId);
       if (file.state !== "ready") throw new RepositoryError("invalid", "Not ready for download");
       return new Blob([`Mock contents of ${file.name}`], { type: "application/octet-stream" });

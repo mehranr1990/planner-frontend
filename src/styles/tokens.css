@@ -10,7 +10,7 @@
  * src/styles/tokens.test.ts checks the contract between the two files.
  *
  * Theme: light on :root, dark on [data-theme="dark"] (set by next-themes).
- * Scope: [data-scope="personal|project|team|company"] retints the primary.
+ * Scope: [data-scope="personal|project|team|company|social"] retints the primary.
  */
 
 /* ── App overrides ────────────────────────────────────────────────────── */
@@ -176,6 +176,19 @@
   --scope-soft: var(--company-soft);
   --scope-deep: var(--company-deep);
   --scope-dot: var(--company-dot);
+}
+
+[data-scope="social"] {
+  --scope-soft: var(--social-soft);
+  --scope-deep: var(--social-deep);
+  --scope-dot: var(--social-dot);
+}
+
+/* Messages: direct conversations and private groups use the neutral slate (M1). */
+[data-scope="messages"] {
+  --scope-soft: var(--msg-soft);
+  --scope-deep: var(--msg-deep);
+  --scope-dot: var(--msg-dot);
 }
 
 :root,

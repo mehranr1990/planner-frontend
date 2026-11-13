@@ -1,0 +1,1374 @@
+{
+  "title": "All companies",
+  "breadcrumb": "Companies",
+  "new": "New company",
+  "peopleCount": "{n} people",
+  "roles": {
+    "owner": "Owner",
+    "admin": "Org Admin",
+    "manager": "Dept Manager",
+    "lead": "Team Lead",
+    "member": "Member",
+    "viewer": "Viewer"
+  },
+  "currency": {
+    "toman": "T",
+    "rial": "IRR",
+    "usd": "USD",
+    "eur": "EUR"
+  },
+  "currencyName": {
+    "toman": "Toman",
+    "rial": "Rial",
+    "usd": "US dollar",
+    "eur": "Euro"
+  },
+  "scope": {
+    "label": "Department scope",
+    "all": "All departments",
+    "title": "Department",
+    "hint": "Narrows what you can already see; never widens access."
+  },
+  "switcher": {
+    "find": "Find a company",
+    "yours": "Your companies",
+    "invitations": "Invitations",
+    "archived": "Archived",
+    "review": "Review",
+    "all": "All companies",
+    "invitedAs": "Invited as {role}{department}",
+    "line": "{role}{department} · {people}",
+    "readOnly": "Read-only",
+    "noMatch": "No companies match"
+  },
+  "rail": {
+    "yours": "Your companies"
+  },
+  "newExpense": "New expense",
+  "comingSoon": {
+    "title": "{module} is coming soon",
+    "body": "This part of the company is being built. Nothing is missing from your data."
+  },
+  "joined": "You joined {company}",
+  "all": {
+    "filter": "Filter companies",
+    "pills": {
+      "all": "All",
+      "admin": "Admin",
+      "member": "Member",
+      "invitations": "Invitations",
+      "archived": "Archived"
+    },
+    "empty": {
+      "title": "No companies yet",
+      "body": "Create your organisation or accept an invitation."
+    },
+    "archivedNote": "Archived companies are read-only; the Owner can restore them.",
+    "noneHere": "No companies here",
+    "leftNote": "Companies you left are not listed.",
+    "noInvitations": "No invitations",
+    "departments": "{n} departments",
+    "approvals": "{n} approvals for you",
+    "updated": "updated {when}",
+    "menu": "Actions for {company}",
+    "open": "Open",
+    "copyLink": "Copy link",
+    "copied": "Link copied",
+    "invite": {
+      "title": "{company} invited you as {role}{department}",
+      "body": "Accepting creates a work profile in {company}. Your personal data stays private.",
+      "declined": "Invitation declined"
+    }
+  },
+  "overview": {
+    "export": "Export",
+    "exported": "Export requested",
+    "exportedBody": "Generated from what you may see, watermarked and logged. Find it in Reports › Exports.",
+    "reviewApprovals": "Review approvals · {n}",
+    "openPortfolio": "Open portfolio",
+    "portfolio": {
+      "kicker": "Portfolio · {quarter}",
+      "onTrack": "projects on track",
+      "atRisk": "{n} at risk",
+      "offTrack": "{n} off track",
+      "source": "status set by each project’s managers",
+      "history": "Projects on track per quarter",
+      "none": "No active projects yet."
+    },
+    "kpi": {
+      "label": "Company figures",
+      "teams": "Teams",
+      "teamsHint": "{n} sent this week’s plan",
+      "people": "People",
+      "peopleHint": "+{joined} joined this quarter · {leave} on leave",
+      "goals": "Goals on pace",
+      "goalsHint": "company + department goals, {quarter}",
+      "approvals": "Approvals for you",
+      "approvalsHint": "oldest waiting {n} days",
+      "approvalsNone": "nothing waiting"
+    },
+    "watch": {
+      "label": "Watch",
+      "body": "{department} booked {percent}% of capacity in {month} while {n} launches overlap",
+      "source": "source: Resources › Capacity",
+      "view": "View"
+    },
+    "tabs": {
+      "label": "Company sections",
+      "departments": "Departments",
+      "portfolio": "Portfolio",
+      "goals": "Goals",
+      "capacity": "Capacity",
+      "departmentsSource": "Progress = done / all tasks in the department’s projects. Status is set by the department manager. Cap. = booked ÷ capacity.",
+      "capacitySource": "Booked ÷ capacity, {month}. Department aggregates only.",
+      "watch": "Watch",
+      "onTrack": "On track",
+      "atRisk": "At risk",
+      "offTrack": "Off track",
+      "onPace": "On pace",
+      "behind": "Behind",
+      "cap": "{percent} cap."
+    },
+    "budget": {
+      "title": "Budget · {quarter}",
+      "unit": "{currency} · approved spend",
+      "of": "of {budget} budget · {committed} committed",
+      "bar": "Approved {approved}, committed {committed}, left {left}",
+      "approved": "Approved {amount}",
+      "committed": "Committed {amount}",
+      "left": "Left {amount}",
+      "pendingNote": "Pending claims ({amount}) are not counted until approved."
+    },
+    "approvals": {
+      "title": "Approvals for you",
+      "pending": "{n} pending",
+      "empty": "Nothing is waiting for you.",
+      "step": "Pending · step {n}",
+      "review": "Review",
+      "reviewItem": "Review {item}"
+    }
+  },
+  "policy": {
+    "mandatory": "Mandatory",
+    "default": "Default",
+    "optional": "Optional"
+  },
+  "departments": {
+    "title": "Departments",
+    "new": "Department",
+    "tree": "Organisation tree",
+    "people": "{n} people",
+    "teamCount": "team · {n}",
+    "unitCount": "unit · {n}",
+    "chartNote": "Read-only org chart. Departments scope grants and reporting inside the one company boundary; they are not separate data spaces.",
+    "view": {
+      "label": "View",
+      "tree": "Tree",
+      "chart": "Chart"
+    },
+    "move": {
+      "label": "Move {name}…",
+      "hint": "Drag a department onto another, or use Move…, to re-parent it. You’ll see what moves first.",
+      "title": "Move {name}",
+      "description": "Choose the new parent. People, budgets and teams move with it.",
+      "parent": "New parent",
+      "previewTitle": "What moves",
+      "preview": "{people} people · {budget} budget · {teams} teams",
+      "cancel": "Cancel",
+      "confirm": "Move",
+      "done": "{name} moved"
+    },
+    "card": {
+      "kicker": "Department",
+      "unitKicker": "Unit",
+      "meta": "Manager {manager} · parent {parent} · {people} people",
+      "noManager": "none",
+      "teamsUnits": "teams + units",
+      "projects": "projects",
+      "capacity": "capacity booked",
+      "done": "tasks done",
+      "teamsAndUnits": "Teams & units",
+      "noTeams": "No teams or units yet.",
+      "projectsTitle": "Projects",
+      "noProjects": "No projects yet.",
+      "budget": "Budget Q4",
+      "budgetOf": "{used} of {budget}",
+      "edit": "Edit department",
+      "copyLink": "Copy link",
+      "copied": "Link copied"
+    },
+    "editor": {
+      "title": "Edit {name}",
+      "name": "Name",
+      "nameRequired": "Enter a name",
+      "manager": "Manager",
+      "noManager": "No manager",
+      "cancel": "Cancel",
+      "save": "Save",
+      "saved": "Department saved"
+    },
+    "policies": {
+      "title": "Policies here",
+      "inherited": "inherited from {company}",
+      "overriddenTo": "overridden to {value}",
+      "setBy": "Set by {company} · mandatory",
+      "override": "override",
+      "overridden": "overridden",
+      "rule": "Mandatory can’t be overridden. Default can be overridden by the Dept Manager with a reason (logged). Optional is each team’s choice."
+    },
+    "override": {
+      "title": "Override {policy} · {department}",
+      "description": "Only Default policies can be overridden. The reason is logged in the audit.",
+      "value": "Value for this department",
+      "reason": "Reason",
+      "reasonRequired": "Add a reason",
+      "cancel": "Cancel",
+      "save": "Override",
+      "saved": "Override saved · logged"
+    }
+  },
+  "people": {
+    "title": "People",
+    "invite": "Invite",
+    "all": "All",
+    "departmentPills": "Departments",
+    "view": {
+      "label": "View",
+      "directory": "Directory",
+      "invitations": "Invitations {n}"
+    },
+    "invitations": {
+      "title": "Pending invitations",
+      "empty": "No pending invitations.",
+      "line": "{department}",
+      "pending": "Pending"
+    },
+    "workloadTitle": "{department} · people & workload",
+    "workloadNote": "Workload = booked estimates of company work assigned this week ÷ work-profile hours; shown to Org Admin / Owner and the department’s manager only. Never a ranking.",
+    "statusOnlyNote": "Status only: workload is visible to Org Admin / Owner and the department’s manager. Never a ranking.",
+    "allTitle": "Departments · people & workload",
+    "count": "{n} people",
+    "avgBooked": "{percent}",
+    "allNote": "People count per department and average booked this week (bars only where you may see workload).",
+    "directory": "Directory",
+    "statusFilter": "Filter people",
+    "search": "Search people",
+    "noMatch": "No people match",
+    "shown": "{n} shown · {total} in the company",
+    "menu": "Actions for {name}",
+    "viewProfile": "View work profile",
+    "filters": {
+      "all": "All",
+      "active": "Active",
+      "leave": "On leave",
+      "new": "New this quarter"
+    },
+    "col": {
+      "person": "Person",
+      "department": "Department",
+      "supervisor": "Supervisor",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "status": {
+      "active": "Active",
+      "leave": "On leave",
+      "left": "Left"
+    },
+    "profileNote": "Work profile only. The sealed employee file is separate.",
+    "profile": {
+      "edit": "Edit work profile",
+      "copyContact": "Copy contact",
+      "copied": "Contact copied",
+      "supervisor": "Supervisor",
+      "role": "Role",
+      "started": "Started",
+      "email": "Work email",
+      "verified": "✓ verified",
+      "hours": "Work hours",
+      "location": "Location",
+      "equipment": "Equipment",
+      "none": "None",
+      "visibleWork": "Teams & projects you can see"
+    },
+    "file": {
+      "sealed": "Employee file · sealed",
+      "hint": "Needs an explicit grant · every access is logged",
+      "mine": "My employee file",
+      "mineHint": "You can see your own file and who opened it",
+      "openMine": "Open",
+      "open": "Employee file",
+      "request": "Request access",
+      "requested": "Access requested",
+      "requestSent": "Access requested · logged",
+      "requestSentBody": "HR decides. {name} is told who asked."
+    },
+    "editor": {
+      "title": "Edit work profile · {name}",
+      "description": "Work profile only — nothing from Personal, no sensitive file data.",
+      "position": "Position",
+      "positionRequired": "Enter a position",
+      "hours": "Work hours",
+      "location": "Location",
+      "phone": "Work phone (optional)",
+      "cancel": "Cancel",
+      "save": "Save",
+      "saved": "Work profile saved"
+    }
+  },
+  "months": {
+    "1": "Farvardin",
+    "2": "Ordibehesht",
+    "3": "Khordad",
+    "4": "Tir",
+    "5": "Mordad",
+    "6": "Shahrivar",
+    "7": "Mehr",
+    "8": "Aban",
+    "9": "Azar",
+    "10": "Dey",
+    "11": "Bahman",
+    "12": "Esfand"
+  },
+  "expenses": {
+    "category": {
+      "meals": "Meals",
+      "travel": "Travel",
+      "software": "Software",
+      "equipment": "Equipment",
+      "training": "Training",
+      "other": "Other"
+    },
+    "title": "Expenses",
+    "new": "New expense",
+    "listLabel": "Expenses",
+    "filter": "Filter expenses",
+    "missing": "missing",
+    "receiptAttached": "Receipt attached",
+    "view": {
+      "label": "Show",
+      "all": "All",
+      "mine": "Mine",
+      "reimbursements": "Reimbursements"
+    },
+    "filters": {
+      "all": "All",
+      "pending": "Pending",
+      "approved": "Approved",
+      "changes": "Changes",
+      "rejected": "Rejected",
+      "draft": "Drafts"
+    },
+    "empty": {
+      "title": "No expenses here",
+      "body": "New expenses start with the receipt. Pending ones never count against the budget."
+    },
+    "footnote": "Amounts are exact {currency}. Approved expenses count against the department budget; pending ones never do.",
+    "currencyName": {
+      "toman": "Toman",
+      "rial": "Rial",
+      "usd": "US dollars",
+      "eur": "Euros"
+    },
+    "col": {
+      "expense": "Expense",
+      "by": "By",
+      "amount": "Amount ({unit})",
+      "receipt": "Receipt",
+      "status": "Status"
+    },
+    "status": {
+      "draft": "Draft",
+      "pending": "Pending",
+      "pendingStep": "Pending · step {n}",
+      "approved": "Approved",
+      "rejected": "Rejected",
+      "changes": "Changes requested",
+      "withdrawn": "Withdrawn"
+    },
+    "card": {
+      "kickerPending": "Pending · step {n} of {total}",
+      "edit": "Edit expense",
+      "withdraw": "Withdraw",
+      "withdrawn": "Expense withdrawn",
+      "openApproval": "Open approval",
+      "viewApproval": "View approval",
+      "changes": "Changes requested",
+      "noReceipt": "No receipt yet",
+      "payerCard": "receipt · payer: company card",
+      "payerMe": "receipt · payer: me (reimbursable)",
+      "category": "Category",
+      "budgetLine": "Budget line",
+      "budgetLineValue": "{department} · Q4",
+      "project": "Project",
+      "departmentCost": "— (department cost)",
+      "paidBy": "Paid by",
+      "paidCard": "Company card (not a reimbursement)",
+      "paidMe": "I paid · reimbursement after approval",
+      "approval": "Approval",
+      "submitted": "Submitted",
+      "unassigned": "next eligible",
+      "notYet": "not yet",
+      "waitingDays": "waiting {n} days",
+      "decision": {
+        "approved": "approved",
+        "rejected": "rejected",
+        "changes": "requested changes"
+      },
+      "approvedNote": "Approved ≠ paid. Reimbursable items are settled in a payment run.",
+      "pendingNote": "Pending expenses never count against the budget."
+    }
+  },
+  "sheets": {
+    "cancel": "Cancel",
+    "new": {
+      "title": "New company",
+      "name": "Name",
+      "nameRequired": "Enter a name",
+      "legalName": "Legal name (optional)",
+      "legalPlaceholder": "Euroly Ltd.",
+      "currency": "Currency",
+      "fiscal": "Fiscal year starts",
+      "fiscalDay": "1 {month}",
+      "currencyNote": "Currency is fixed after the first approved expense (one currency per company).",
+      "departments": "First departments (optional)",
+      "departmentsPlaceholder": "Engineering, Design, Marketing",
+      "ownerNote": "You become the Owner. Comma-separated; you can add more later.",
+      "submit": "Create company",
+      "created": "{company} created",
+      "failed": "Couldn’t create the company. Try again."
+    },
+    "invite": {
+      "title": "Invite to {company}",
+      "email": "Work email",
+      "emailInvalid": "Enter a work email",
+      "role": "Role",
+      "department": "Department",
+      "departmentRequired": "Choose a department",
+      "choose": "Choose…",
+      "position": "Position",
+      "supervisor": "Supervisor",
+      "noSupervisor": "No supervisor",
+      "verifiedOnly": "Verified accounts only; we never say whether an account exists. Accepting creates a work profile; personal data stays private.",
+      "submit": "Send invitation",
+      "sent": "Invitation sent",
+      "sentBody": "If the address can join, they’ll get the invitation.",
+      "failed": "Couldn’t send the invitation. Check the email."
+    },
+    "department": {
+      "title": "New department",
+      "name": "Name",
+      "nameRequired": "Enter a name",
+      "parent": "Parent",
+      "manager": "Manager",
+      "noManager": "No manager",
+      "inherits": "Inherits {n} company policies ({mandatory} mandatory)",
+      "submit": "Create department",
+      "created": "{name} created",
+      "failed": "Couldn’t create the department."
+    },
+    "expense": {
+      "title": "New expense",
+      "editTitle": "Edit expense",
+      "notEditable": "This expense can’t be edited now.",
+      "receipt": "Receipt",
+      "drop": "Drop receipt or take a photo",
+      "removeReceipt": "Remove receipt",
+      "receiptRequired": "Policy: attach the receipt to submit (you can still save a draft).",
+      "titleRequired": "Describe the expense",
+      "amount": "Amount ({unit})",
+      "amountInvalid": "Enter the exact whole amount",
+      "date": "Date",
+      "category": "Category",
+      "department": "Department",
+      "departmentRequired": "Choose a department",
+      "choose": "Choose…",
+      "project": "Project (optional)",
+      "noProject": "— (department cost)",
+      "payer": "Who paid",
+      "iPaid": "I paid · reimburse me",
+      "companyCard": "Company card",
+      "note": "Pending expenses never count against the budget. Nothing is written to your Personal Finance.",
+      "saveDraft": "Save draft",
+      "submit": "Submit",
+      "resubmit": "Resubmit",
+      "saved": "Draft saved",
+      "submitted": "Expense submitted",
+      "submittedBody": "It goes through the Expenses approval chain.",
+      "changesTitle": "Changes requested",
+      "changesBody": "Edit and resubmit; the chain restarts at the step that asked.",
+      "failed": "Couldn’t save the expense.",
+      "whatFor": "What for"
+    }
+  },
+  "work": {
+    "title": "Projects & teams",
+    "attach": "Attach existing",
+    "newProject": "New project",
+    "newTeam": "New team",
+    "filter": "Filter projects",
+    "tabs": {
+      "label": "Show",
+      "projects": "Projects {n}",
+      "teams": "Teams {n}",
+      "projectsLabel": "Company projects",
+      "teamsLabel": "Company teams"
+    },
+    "filters": {
+      "all": "All",
+      "risk": "At risk",
+      "paused": "Paused",
+      "attached": "Attached",
+      "pending": "Pending attach"
+    },
+    "col": {
+      "project": "Project",
+      "department": "Department",
+      "status": "Status",
+      "progress": "Progress",
+      "milestone": "Next milestone",
+      "risks": "Risks",
+      "budget": "Budget",
+      "custody": "Custody"
+    },
+    "teamCol": {
+      "team": "Team",
+      "department": "Department",
+      "lead": "Lead",
+      "people": "People",
+      "plan": "This week’s plan",
+      "custody": "Custody"
+    },
+    "custody": {
+      "company": "Company",
+      "attached": "Attached"
+    },
+    "attachedOn": "Attached {date}",
+    "budgetTitle": "Approved spend {spent} of {budget}",
+    "noProjects": "No projects here",
+    "noTeams": "No teams here",
+    "noPending": "No pending attach requests",
+    "pendingBelow": "Pending requests are listed below.",
+    "teamsNote": "Opening a team goes to its team context; the breadcrumb shows the company. Plan = this week’s plan completion.",
+    "pending": {
+      "title": "Pending attach",
+      "waiting": "waiting for owner",
+      "requested": "requested {when}",
+      "body": "The owner sees a custody & privacy preview and must accept. Until then the company sees only the name — no members, tasks or files.",
+      "cancel": "Cancel request",
+      "cancelled": "Request cancelled"
+    },
+    "preview": {
+      "title": "Attach preview · {subject}",
+      "custodian": "{company} becomes the custodian of {subject}’s work data from now on",
+      "accounts": "Members keep their accounts; they get a work profile in {company}",
+      "secrets": "Past private comments, check-ins, feedback and files are NOT revealed in bulk — only new items after attach",
+      "personal": "Personal data of members is never transferred",
+      "policies": "Company mandatory policies will apply (2-step sign-in, expense chain)",
+      "members": "{n} members",
+      "linked": "{n} linked projects (each needs its own consent)",
+      "consent": "Bring these linked projects too (separate consent each)",
+      "decline": "Decline",
+      "declined": "Attach declined",
+      "accept": "Accept & re-authenticate"
+    },
+    "reauth": {
+      "title": "Confirm it’s you",
+      "description": "Accepting moves custody of {subject} to {company}. Enter your password to continue.",
+      "password": "Password",
+      "failed": "Re-authentication failed",
+      "cancel": "Cancel",
+      "confirm": "Accept",
+      "done": "{subject} attached"
+    },
+    "request": {
+      "title": "Attach an existing team or project",
+      "description": "The owner must accept with a custody & privacy preview. Nothing is revealed until they do.",
+      "subject": "Team or project",
+      "subjectRequired": "Choose one",
+      "choose": "Choose…",
+      "kind": {
+        "team": "team",
+        "project": "project"
+      },
+      "department": "Department",
+      "departmentRequired": "Choose a department",
+      "privacyTitle": "Past private items are not revealed in bulk",
+      "privacy": "Only items created after the owner accepts become visible to the company.",
+      "cancel": "Cancel",
+      "submit": "Send request",
+      "sent": "Attach requested",
+      "sentBody": "Waiting for the owner’s consent."
+    }
+  },
+  "goals": {
+    "title": "Goals",
+    "new": "Company goal",
+    "newDepartment": "Department goal",
+    "tree": "Goal cascade",
+    "period": {
+      "label": "Period",
+      "q3": "Q3",
+      "q4": "Q4 1405",
+      "year": "Year"
+    },
+    "empty": {
+      "title": "No goals for this period",
+      "body": "Company goals cascade to department goals, which link team goals and projects."
+    },
+    "companyLine": "Company · {owner}",
+    "onTrack": "On track",
+    "atRisk": "At risk",
+    "linkedProject": "linked project",
+    "linkedTeamGoal": "linked team goal",
+    "kickerCompany": "Company goal · {quarter}",
+    "kickerDepartment": "Department goal · {department}",
+    "owner": "Owner {owner}",
+    "children": "{n} department goals",
+    "onPace": "on pace",
+    "behind": "behind",
+    "update": "Update progress",
+    "openLinked": "Open linked work",
+    "noScore": "Each key result shows its source. No weighted composite score.",
+    "source": {
+      "auto": "auto · child goals on pace ({onPace}/{children})",
+      "manual": "manual · updated by {by} · {date}"
+    },
+    "updateDialog": {
+      "title": "Update progress",
+      "description": "Manual key results only; automatic ones roll up from child goals.",
+      "kr": "{title} (target {target})",
+      "invalid": "Enter a number",
+      "cancel": "Cancel",
+      "save": "Save",
+      "saved": "Progress updated"
+    },
+    "create": {
+      "title": "New goal",
+      "level": "Level",
+      "company": "Company",
+      "department": "Department",
+      "goal": "Goal",
+      "goalRequired": "Describe the goal",
+      "choose": "Choose…",
+      "departmentRequired": "Choose a department",
+      "parent": "Rolls into",
+      "noParent": "No company goal",
+      "kr": "First key result",
+      "krRequired": "Add a key result with a target",
+      "target": "Target",
+      "cancel": "Cancel",
+      "submit": "Create goal",
+      "created": "Goal created"
+    }
+  },
+  "resources": {
+    "title": "Resources",
+    "add": "Add resource",
+    "request": "Request",
+    "requestItem": "Request {name} · {tag}",
+    "filter": "Filter resources",
+    "empty": "No resources here",
+    "required": "This is required",
+    "cancel": "Cancel",
+    "tabs": {
+      "label": "Section",
+      "equipment": "Equipment",
+      "rooms": "Rooms",
+      "capacity": "Capacity"
+    },
+    "status": {
+      "all": "All",
+      "assigned": "Assigned",
+      "available": "Available",
+      "requested": "Requested",
+      "repair": "Repair",
+      "retired": "Retired"
+    },
+    "type": {
+      "laptop": "Laptop",
+      "monitor": "Monitor",
+      "phone": "Device",
+      "license": "Licence",
+      "vehicle": "Vehicle",
+      "other": "Other"
+    },
+    "since": "since {date}",
+    "requestedUntil": "{name} until {date}",
+    "note": "Assigning shows on the person’s work profile. Buying equipment is an expense; no depreciation or accounting here.",
+    "card": {
+      "kicker": "Request",
+      "kickerForMe": "Request · waiting for you",
+      "meta": "{name} · {department} · {from} → {to}",
+      "reason": "Reason",
+      "overlaps": "Overlaps another booking until {date}",
+      "suggest": "Suggest {date}",
+      "approve": "Approve request",
+      "approveDates": "Approve with dates",
+      "approved": "Request approved · resource assigned",
+      "decline": "Decline…",
+      "declineTitle": "Decline request",
+      "declineReason": "Reason",
+      "declineSubmit": "Decline",
+      "declined": "Request declined",
+      "withdraw": "Withdraw request",
+      "withdrawn": "Request withdrawn",
+      "copyLink": "Copy link",
+      "copied": "Link copied",
+      "chain": "Runs through the “Resources” approval chain."
+    },
+    "requestDialog": {
+      "title": "Request a resource",
+      "description": "Your request goes through the “Resources” approval chain.",
+      "resource": "Resource",
+      "resourceRequired": "Choose a resource",
+      "choose": "Choose…",
+      "from": "From",
+      "to": "To",
+      "datesInvalid": "The end must be on or after the start",
+      "conflict": "Already booked until {date}",
+      "useSuggestion": "Use {from} → {to}",
+      "reason": "Reason",
+      "reasonRequired": "Add a reason",
+      "busy": "Already booked for these dates",
+      "failed": "Couldn’t send the request",
+      "cancel": "Cancel",
+      "submit": "Send request",
+      "sent": "Request sent",
+      "sentBody": "You’ll be notified when it’s decided."
+    },
+    "addDialog": {
+      "title": "Add resource",
+      "description": "Inventory only — the purchase is an expense.",
+      "name": "Name",
+      "nameRequired": "Enter a name",
+      "tag": "Tag",
+      "tagRequired": "Enter a tag",
+      "type": "Type",
+      "department": "Department",
+      "shared": "Shared (no department)",
+      "failed": "Couldn’t add it (the tag may be taken)",
+      "purchaseNote": "Buying equipment is filed as an expense (Expenses).",
+      "cancel": "Cancel",
+      "submit": "Add",
+      "added": "Resource added"
+    },
+    "rooms": {
+      "title": "Rooms · {day}",
+      "seats": "{n} seats · {floor}",
+      "timeline": "{room} bookings today",
+      "busy": "Busy",
+      "book": "Book",
+      "empty": "No rooms yet",
+      "note": "People who aren’t attending see other bookings as busy, without a title. Booking may need approval by policy."
+    },
+    "book": {
+      "title": "Book {room}",
+      "description": "Today. Others see only “busy”.",
+      "from": "From",
+      "to": "To",
+      "what": "What for (optional)",
+      "busy": "The room is busy then",
+      "failed": "Couldn’t book the room",
+      "cancel": "Cancel",
+      "submit": "Book",
+      "done": "Room booked"
+    },
+    "capacity": {
+      "title": "Department capacity by month",
+      "department": "Department",
+      "empty": "No capacity data yet",
+      "note": "Department booked ÷ capacity (sum of members’ weekly hours). Basic check only — no HR scheduling."
+    }
+  },
+  "knowledge": {
+    "title": "Knowledge base",
+    "newPage": "New page",
+    "search": "Search all pages and files",
+    "results": "Search results",
+    "noResults": "Nothing readable matches.",
+    "searchNote": "Only pages and files you may read are searched.",
+    "folders": "Folders",
+    "restricted": "restricted",
+    "noPage": "No pages in this folder yet",
+    "notAvailable": "This page isn’t available",
+    "empty": {
+      "title": "No knowledge yet",
+      "body": "Folders and pages appear here once someone with access creates them."
+    },
+    "page": {
+      "version": "v{v} · {date}",
+      "ackRequired": "Acknowledge required",
+      "meta": "Last edited by {by} · {date}",
+      "edit": "Edit",
+      "body": "Page text",
+      "changeNote": "What changed (optional)",
+      "newVersionAck": "Saving creates a new version; everyone acknowledges it again.",
+      "cancel": "Cancel",
+      "save": "Save new version",
+      "saved": "Saved as v{v}",
+      "ackCount": "{n} of {total} people acknowledged v{v}",
+      "acknowledge": "Acknowledge",
+      "acked": "Acknowledged",
+      "youAcked": "You acknowledged this version",
+      "remind": "Remind",
+      "remindedOnce": "Reminded",
+      "reminded": "Reminder sent (once per version)",
+      "remindedAlready": "Already reminded for this version",
+      "diffTitle": "Changes since v{v}",
+      "closeDiff": "Close",
+      "noChanges": "No text changes.",
+      "removed": "Removed:",
+      "added": "Added:",
+      "versions": "Versions",
+      "compare": "Diff",
+      "restore": "Restore",
+      "restoreLabel": "Restore v{v} as a new version",
+      "restored": "v{v} restored as a new version",
+      "files": "Attached files",
+      "access": "Access",
+      "accessAll": "All members · read",
+      "accessRestricted": "Granted people only · read",
+      "accessEdit": "Editors · {by}"
+    },
+    "create": {
+      "title": "New page",
+      "folder": "Folder",
+      "pageTitle": "Title",
+      "titleRequired": "Enter a title",
+      "body": "Text",
+      "cancel": "Cancel",
+      "submit": "Create page",
+      "created": "{title} created"
+    }
+  },
+  "approvals": {
+    "title": "Approvals",
+    "back": "All approvals",
+    "waiting": "waiting {n} d",
+    "pendingStep": "Pending · step {n}",
+    "tabs": {
+      "label": "Inbox",
+      "forMe": "For me {n}",
+      "mine": "I requested {n}",
+      "history": "History",
+      "forMeLabel": "Waiting for me",
+      "mineLabel": "I requested"
+    },
+    "empty": {
+      "forMe": "Nothing is waiting for you",
+      "mine": "You have no requests in progress"
+    },
+    "subject": {
+      "expenses": "Expense",
+      "resources": "Resource",
+      "headcount": "Headcount",
+      "budget": "Budget change"
+    },
+    "status": {
+      "pending": "Pending",
+      "approved": "Approved",
+      "rejected": "Rejected",
+      "changes": "Changes requested"
+    },
+    "card": {
+      "yourStep": "Your step · {n} of {total} · {step}",
+      "step": "Step {n} of {total} · {step}",
+      "submitted": "Submitted",
+      "approve": "Approve",
+      "openSubject": "Open the request",
+      "budget": "{department} · Q4 budget",
+      "afterApproval": "after approval {percent} used",
+      "chain": "{subject} chain v{v}",
+      "you": "You",
+      "nextEligible": "next eligible",
+      "skipped": "not needed · {note}",
+      "escalates": "escalates on {date}",
+      "ownItem": "You requested this — you can’t approve it; the step routes to the next eligible reviewer.",
+      "comment": "Comment (required to reject or request changes)",
+      "commentRequired": "Write a reason or comment first.",
+      "reject": "Reject…",
+      "changes": "Request changes",
+      "grantMissing": "Your reviewer grant isn’t active any more — the step reassigns per the chain.",
+      "notAllowed": "You can’t decide this step.",
+      "failed": "Couldn’t record the decision.",
+      "decision": {
+        "approved": "approved",
+        "rejected": "rejected",
+        "changes": "requested changes"
+      },
+      "done": {
+        "approved": "Approved · logged with the chain version",
+        "rejected": "Rejected · the requester is told why",
+        "changes": "Changes requested · the requester can resubmit"
+      }
+    },
+    "flow": {
+      "title": "{item} · approval flow",
+      "submitted": "Submitted",
+      "submit": "Submit request",
+      "submitAmount": "Submit · {amount}",
+      "routed": "Routed to next eligible",
+      "waitingSince": "since {date}",
+      "notYet": "not yet",
+      "escalate": "Escalate",
+      "automatic": "automatic · {date}",
+      "after": "After approval",
+      "footnote": "Columns = steps of the chain version this item was submitted under ({subject} v{v}). Read-only — the decision itself stays in the Approval card."
+    },
+    "history": {
+      "title": "Approval history",
+      "empty": "No decisions yet",
+      "chainVersion": "{subject} v{v}",
+      "col": {
+        "when": "When",
+        "item": "Item",
+        "decision": "Decision",
+        "by": "By",
+        "chain": "Chain version"
+      },
+      "decision": {
+        "approved": "Approved (step {step})",
+        "rejected": "Rejected",
+        "changes": "Changes requested"
+      }
+    }
+  },
+  "budgets": {
+    "title": "Budgets",
+    "quarter": "Q4 1405",
+    "change": "Budget change",
+    "tableLabel": "Budget lines",
+    "barLabel": "Approved {approved} + committed {committed} of {budget}",
+    "view": {
+      "label": "Level",
+      "departments": "Departments",
+      "projects": "Projects"
+    },
+    "empty": {
+      "title": "No budgets you can see",
+      "body": "Owner and Org Admin see company budgets; a Dept Manager sees their department."
+    },
+    "col": {
+      "department": "Department",
+      "project": "Project",
+      "bar": "Approved · committed · left",
+      "budget": "Budget",
+      "approved": "Approved",
+      "committed": "Committed",
+      "variance": "Variance",
+      "pending": "Pending*"
+    },
+    "footnote": "Variance = budget − approved − committed. *Pending claims are shown for information only and are not part of variance. Hover a figure for the exact amount.",
+    "card": {
+      "kicker": "{name} · Q4",
+      "nearLimit": "near limit",
+      "over": "over budget",
+      "leftOf": "{left} left of {budget}",
+      "overBy": "{amount} over budget",
+      "lines": "{n} budget lines",
+      "allocation": "Allocation inside {department}",
+      "used": "{used} of {budget} used",
+      "lineOver": "{name} line is {amount} over (approved + committed)",
+      "pendingChange": "Budget change pending: {amount}",
+      "pendingNote": "Pending claims ({amount}) are not counted until approved.",
+      "versions": "Versions",
+      "request": "Request budget change",
+      "overNote": "Over-budget items still go through approval; the chain shows the overrun to each reviewer."
+    },
+    "dialog": {
+      "title": "Request budget change",
+      "description": "Goes through the “Budget change” approval chain. A new version is created only after approval.",
+      "line": "Budget line",
+      "lineRequired": "Choose a line",
+      "choose": "Choose…",
+      "current": "Current budget: {amount}",
+      "amount": "New budget ({unit})",
+      "amountInvalid": "Enter the exact whole amount",
+      "reason": "Reason",
+      "reasonRequired": "Add a reason",
+      "alreadyPending": "A change is already pending for this line",
+      "failed": "Couldn’t send the request",
+      "cancel": "Cancel",
+      "submit": "Send for approval",
+      "sent": "Budget change requested",
+      "sentBody": "It runs through the Budget change chain."
+    }
+  },
+  "reimbursements": {
+    "title": "Reimbursements",
+    "toSettleLabel": "To settle",
+    "mineLabel": "My reimbursements",
+    "settledLabel": "Settled",
+    "select": "Add {title} to the payment run",
+    "note": "Request ≠ paid; approval ≠ paid. No money moves in the app and there is no bank integration.",
+    "runs": "Confirmed payment runs",
+    "runMeta": "ref {reference} · {by} · {date}",
+    "backToExpenses": "Back to expenses",
+    "tabs": {
+      "label": "Show",
+      "settle": "To settle {n}",
+      "mine": "Mine {n}",
+      "settled": "Settled"
+    },
+    "status": {
+      "to-settle": "Approved",
+      "in-run": "In payment run",
+      "settled": "Settled",
+      "disputed": "Not received"
+    },
+    "approvedOn": "approved {date}",
+    "settledOn": "settled {date}",
+    "disputed": "Not received · {note}",
+    "empty": {
+      "settle": "Nothing to settle",
+      "mine": "No reimbursements yet",
+      "mineBody": "“I paid” expenses appear here after final approval.",
+      "settled": "Nothing settled yet"
+    },
+    "notReceived": "Not received",
+    "record": "Record in my finance",
+    "recorded": "Recorded in my finance",
+    "recordedToast": "Recorded in your Personal Finance",
+    "alreadyRecorded": "Already recorded — nothing added twice",
+    "recordTitle": "Record in my finance?",
+    "recordBody": "Adds one income of {amount} (reimbursement from {company}) to your Personal Finance. Only you see it; you can do this once.",
+    "recordTransaction": "Reimbursement · {title}",
+    "personalTitle": "Personal ledger",
+    "personalBody": "Nothing is written to your Personal Finance automatically. After settlement you may choose “Record in my finance” (explicit, once).",
+    "disputeTitle": "Not received · {title}",
+    "disputeNote": "What happened?",
+    "disputeSubmit": "Mark not received",
+    "run": {
+      "kicker": "Payment run · {label} · draft",
+      "kickerNew": "New payment run",
+      "meta": "{n} approved reimbursements · {people} people",
+      "outside": "Pay outside the app (bank transfer), then confirm here. The app never moves money.",
+      "reference": "Payment reference",
+      "referencePlaceholder": "Bank transfer · ref …",
+      "referenceRequired": "Add the payment reference",
+      "pick": "Tick approved items to start a run.",
+      "settledNote": "Each person sees “Settled” only after you confirm. They can mark “not received” within {days} days.",
+      "create": "Create payment run",
+      "created": "Payment run created",
+      "confirm": "Confirm payment",
+      "confirmed": "Payment confirmed",
+      "confirmedBody": "Each item is now Settled (acknowledged)."
+    }
+  },
+  "file": {
+    "title": "Employee file",
+    "sealedLine": "Sealed · you have no grant",
+    "ownLine": "Your own file · you see who opened it",
+    "grantedUntil": "Sealed · access granted to you until {date}",
+    "granted": "Sealed · access granted to you",
+    "accessLog": "Access log",
+    "withoutGrant": "Without a grant",
+    "request": "Request access",
+    "requested": "Access requested · logged",
+    "requestSent": "Access requested · logged",
+    "requestSentBody": "HR decides. {name} is told who asked.",
+    "noRoleAccess": "Org Admin and Owner do NOT get access by role: every file needs an explicit, time-limited grant.",
+    "addDocument": "Add document",
+    "downloadPack": "Download file pack",
+    "downloaded": "File pack ready · logged",
+    "since": "since {date}",
+    "retention": "Retention",
+    "retentionValue": "7 years after leaving (policy)",
+    "yourGrant": "Your grant",
+    "grantSelf": "Your own file",
+    "grant": {
+      "hr": "HR reviewer",
+      "supervisor": "Supervisor (specific documents)"
+    },
+    "until": "until {date}",
+    "lastOpened": "Last opened",
+    "lastOpenedValue": "you · now (logged)",
+    "documents": "Documents",
+    "noDocuments": "No documents yet.",
+    "hrOnly": "HR only",
+    "hrPlus": "HR + {who}",
+    "corrective": {
+      "title": "Corrective actions",
+      "confidential": "confidential · {n}",
+      "none": "No corrective actions.",
+      "open": "Open corrective action",
+      "readOnlyPhone": "Read-only on phones: responses and corrective actions are on desktop.",
+      "noPenalties": "No automatic monetary penalties. Recognition (kudos) is never stored here.",
+      "status": {
+        "open": "Open",
+        "responded": "Response received",
+        "appealed": "Appealed",
+        "closed": "Closed"
+      },
+      "meta": "Opened {date} by {by} · evidence: {evidence} · visible to: {visible}",
+      "appealed": "Appeal",
+      "outcome": "Outcome: {outcome}",
+      "respond": "Respond",
+      "appeal": "Appeal",
+      "close": "Close with outcome",
+      "appealStatus": "Appeal status: {status}",
+      "appealYes": "filed",
+      "appealNone": "none",
+      "respondTitle": "Respond",
+      "respondLabel": "Your response",
+      "respondDone": "Response sent",
+      "appealTitle": "Appeal",
+      "appealLabel": "Why you appeal",
+      "appealDone": "Appeal filed",
+      "closeTitle": "Close with outcome",
+      "closeLabel": "Outcome",
+      "closeDone": "Closed with outcome"
+    },
+    "log": {
+      "title": "Access log (the employee can see it too)",
+      "description": "Every open, download and change is logged.",
+      "when": "When",
+      "who": "Who",
+      "what": "What"
+    },
+    "add": {
+      "title": "Add document",
+      "description": "HR reviewer only. The upload is logged and visible to the employee.",
+      "file": "File",
+      "required": "Choose a file",
+      "cancel": "Cancel",
+      "submit": "Add",
+      "added": "Document added · logged"
+    },
+    "open": {
+      "title": "Open corrective action",
+      "description": "Reason and evidence are required. The employee is notified and can respond and appeal.",
+      "reason": "Reason",
+      "reasonRequired": "Add the reason",
+      "evidence": "Evidence (required)",
+      "evidenceRequired": "Attach or name the evidence",
+      "visibleTo": "Visible to: HR, supervisor, employee",
+      "note": "Confidential by default. No monetary punishment.",
+      "cancel": "Cancel",
+      "submit": "Open",
+      "opened": "Corrective action opened · employee notified"
+    }
+  },
+  "reports": {
+    "title": "Reports",
+    "open": "Open",
+    "csv": "CSV",
+    "csvLabel": "Export {report} as CSV",
+    "exported": "Export requested",
+    "exportedBody": "Generated server-side from what you may see, watermarked and logged. See Exports.",
+    "viewTable": "View as table",
+    "item": "Item",
+    "value": "Value",
+    "source": "source: {source}",
+    "scopeNote": "Exports respect your scope (departments you can see). Department aggregates only — no people ranking.",
+    "tabs": {
+      "label": "Section",
+      "reports": "Reports",
+      "exports": "Exports",
+      "audit": "Audit log"
+    },
+    "empty": {
+      "title": "Not enough data yet",
+      "body": "Reports appear after the first approved items in this quarter."
+    },
+    "portfolio": {
+      "onTrack": "On track",
+      "atRisk": "At risk",
+      "offTrack": "Off track"
+    },
+    "report": {
+      "portfolio": {
+        "title": "Portfolio status",
+        "body": "Projects by status, milestones, risks"
+      },
+      "capacity": {
+        "title": "Capacity",
+        "body": "Department booked vs capacity by month"
+      },
+      "expenses": {
+        "title": "Expenses",
+        "body": "By category; approved only"
+      },
+      "variance": {
+        "title": "Budget variance",
+        "body": "Budget, approved, committed, variance"
+      },
+      "goals": {
+        "title": "Goals",
+        "body": "Company and department goals with KR sources"
+      },
+      "headcount": {
+        "title": "Headcount",
+        "body": "People per department (no personal data)"
+      }
+    },
+    "exports": {
+      "title": "Exports",
+      "rules": "Exports are generated server-side from what the requester may see, watermarked with requester and time, and logged in the audit. Download links expire in 24 h.",
+      "empty": "No exports yet",
+      "auditName": "Audit log",
+      "watermark": "watermark: {watermark}",
+      "status": {
+        "ready": "Ready",
+        "expired": "Expired"
+      },
+      "download": "Download",
+      "downloaded": "Download started · logged",
+      "expires": "Link expires {date}"
+    },
+    "audit": {
+      "title": "Audit log",
+      "filter": "Filter audit entries",
+      "export": "Export CSV",
+      "exported": "Audit export requested · logged",
+      "note": "Read-only. Every sensitive action is listed: file opens, approvals, policy overrides, exports, ownership changes.",
+      "kind": {
+        "all": "All",
+        "file": "Files",
+        "approval": "Approvals",
+        "policy": "Policies",
+        "export": "Exports",
+        "ownership": "Ownership"
+      },
+      "col": {
+        "when": "When",
+        "who": "Who",
+        "action": "Action",
+        "subject": "Subject"
+      }
+    }
+  },
+  "settings": {
+    "title": "Company settings",
+    "mock": "Mock data · backend Phase 4 not built",
+    "noAccess": {
+      "title": "Settings are for Owner and Org Admin",
+      "body": "Ask an Org Admin if something needs to change."
+    },
+    "tabs": {
+      "label": "Settings sections",
+      "general": "General",
+      "policies": "Policies",
+      "chains": "Approval chains",
+      "roles": "Roles & access",
+      "lifecycle": "Lifecycle"
+    },
+    "general": {
+      "name": "Name",
+      "nameRequired": "Enter a name",
+      "legalName": "Legal name",
+      "currency": "Currency",
+      "currencyLocked": "Locked after the first approved expense (one currency per company).",
+      "currencyOpen": "Can change until the first expense is approved.",
+      "fiscal": "Fiscal year starts",
+      "fiscalDay": "1 {month}",
+      "save": "Save",
+      "saved": "Settings saved",
+      "failed": "Couldn’t save the settings."
+    },
+    "policies": {
+      "level": "{policy} level",
+      "security": "security",
+      "saved": "{policy} set to {level} · logged",
+      "securityLocked": "Mandatory security can never be relaxed",
+      "rule": "Mandatory locks it for everyone below. Default lets departments override with a reason (audited). Optional is each team’s or person’s choice.",
+      "readOnlyPhone": "Read-only on phones — change policies on desktop."
+    },
+    "chains": {
+      "subjects": "Subject types",
+      "published": "Published v{v} · {date}",
+      "draft": "Draft v{v}",
+      "steps": "Sequential steps",
+      "always": "always",
+      "ifAmount": "if amount > {amount}",
+      "escalation": "escalate after {days} days → {to}",
+      "editStep": "Edit step {n}",
+      "removeStep": "Remove step {n}",
+      "addStep": "Add step (role or person · optional amount condition)",
+      "readOnlyPhone": "Read-only on phones — edit chains on desktop.",
+      "draftSaved": "Draft v{v} saved",
+      "publish": "Publish v{v}",
+      "publishNote": "Publishing v{v} applies to new requests only; {n} pending items stay on v{old}.",
+      "publishedToast": "v{v} published · new requests only",
+      "approver": {
+        "dept-manager": "Department manager",
+        "finance": "Finance reviewer",
+        "hr": "HR reviewer",
+        "admin": "Org Admin",
+        "owner": "Owner"
+      },
+      "editTitle": "Edit step · {label}",
+      "addTitle": "Add step",
+      "stepDescription": "Steps run in order. A step applies above its amount; the requester never approves their own item (the step routes to the next eligible).",
+      "stepLabel": "Step name",
+      "labelRequired": "Name the step",
+      "approverLabel": "Who decides",
+      "minAmount": "Only above ({unit})",
+      "escalateDays": "Escalate after (days)",
+      "escalateTo": "Escalate to",
+      "requesterRule": "If the requester is this step’s approver, the step goes to the next eligible person.",
+      "cancel": "Cancel",
+      "saveStep": "Save to draft"
+    },
+    "roles": {
+      "roles": "Roles",
+      "grants": "Special grants",
+      "addGrant": "Add grant",
+      "grantsNote": "Finance, HR and Security reviewer are explicit grants, not roles — time-limited where sensitive. Owner and Org Admin don’t get them by role.",
+      "until": "until {date}",
+      "noEnd": "until revoked",
+      "revoke": "Revoke",
+      "revoked": "Grant revoked · logged",
+      "granted": "Grant added · logged",
+      "person": "Person",
+      "personRequired": "Choose a person",
+      "choose": "Choose…",
+      "kind": "Grant",
+      "untilLabel": "Until",
+      "untilHint": "Leave empty for no end date (not recommended for HR).",
+      "grantSubmit": "Grant",
+      "cancel": "Cancel",
+      "grant": {
+        "finance": "Finance reviewer",
+        "hr": "HR reviewer",
+        "security": "Security reviewer"
+      },
+      "roleNote": {
+        "owner": "custody, lifecycle",
+        "admin": "everything but lifecycle",
+        "manager": "own department",
+        "lead": "teams they lead",
+        "member": "own work",
+        "viewer": "read only"
+      }
+    },
+    "lifecycle": {
+      "ownerOnly": "Only the Owner can transfer, archive or delete",
+      "ownerOnlyBody": "Org Admins manage everything else.",
+      "transfer": "Transfer administrative ownership",
+      "transferPending": "Transfer to {name} is waiting for their acceptance",
+      "noEligible": "Add another Org Admin first — the company keeps at least one eligible custodian.",
+      "to": "New owner (Org Admin)",
+      "choose": "Choose…",
+      "password": "Your password",
+      "reauthFailed": "Re-authentication failed",
+      "transferNote": "They must accept and re-authenticate. You stay Owner until then.",
+      "transferSubmit": "Request transfer",
+      "transferSent": "Transfer requested · logged",
+      "archive": "Archive",
+      "archiveNote": "Everything becomes read-only. The Owner can restore it. Nothing is deleted.",
+      "archiveSubmit": "Archive company",
+      "archiveTitle": "Archive {company}?",
+      "archived": "Company archived",
+      "delete": "Delete company",
+      "deleteNote": "Records under retention holds are kept (e.g. employee files {years} years after leaving). Everything else is removed for every member.",
+      "deleteSubmit": "Delete company",
+      "deleteTitle": "Delete {company}?",
+      "typeName": "Type {company} to confirm",
+      "deleteFailed": "Couldn’t delete — check the name and password",
+      "deleted": "Company deleted · retention holds kept",
+      "cancel": "Cancel"
+    }
+  }
+}

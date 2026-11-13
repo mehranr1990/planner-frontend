@@ -68,19 +68,19 @@ export function createMockRisks(store: ProjectWorkStore, { respond, now }: MockR
           (risk) => risk.kind === "risk" && risk.open && risk.milestoneId === milestoneId,
         ) ?? null,
       ),
-    async get(riskId) {
+    async get(_projectId, riskId) {
       const { list, index } = locate(riskId);
       return respond(list[index]!);
     },
-    async history(riskId) {
+    async history(_projectId, riskId) {
       locate(riskId);
       return respond([...(history.get(riskId) ?? [])].reverse());
     },
-    async comments(riskId) {
+    async comments(_projectId, riskId) {
       locate(riskId);
       return respond(comments.get(riskId) ?? []);
     },
-    async addComment(riskId, body) {
+    async addComment(_projectId, riskId, body) {
       const text = body.trim();
       if (!text) throw new RepositoryError("invalid", "Empty comment");
       const { list, index } = locate(riskId);
@@ -89,7 +89,7 @@ export function createMockRisks(store: ProjectWorkStore, { respond, now }: MockR
       list[index] = { ...list[index]!, commentCount: list[index]!.commentCount + 1 };
       return respond(comment);
     },
-    async update(riskId, patch, revision) {
+    async update(_projectId, riskId, patch, revision) {
       if (patch.title !== undefined && !patch.title.trim()) throw new RepositoryError("invalid", "Title required");
       const owner = patch.ownerId ? people.find((person) => person.id === patch.ownerId) : undefined;
       if (patch.ownerId && !owner) throw new RepositoryError("invalid", "Unknown owner");
@@ -112,7 +112,7 @@ export function createMockRisks(store: ProjectWorkStore, { respond, now }: MockR
       });
       return respond(saved);
     },
-    async setChecklistItem(riskId, itemId, patch, revision) {
+    async setChecklistItem(_projectId, riskId, itemId, patch, revision) {
       const saved = write(riskId, revision, (risk) => {
         const item = risk.checklist?.find((candidate) => candidate.id === itemId);
         if (!item) throw new RepositoryError("not-found", `No checklist item ${itemId}`);
@@ -128,7 +128,7 @@ export function createMockRisks(store: ProjectWorkStore, { respond, now }: MockR
       });
       return respond(saved);
     },
-    async close(riskId, { reason, note }, revision) {
+    async close(_projectId, riskId, { reason, note }, revision) {
       const saved = write(riskId, revision, (risk) => {
         if (risk.status === "closed") throw new RepositoryError("invalid", "Already closed");
         audit(riskId, { field: "closed", from: risk.status, to: reason });
@@ -139,7 +139,7 @@ export function createMockRisks(store: ProjectWorkStore, { respond, now }: MockR
       });
       return respond(saved);
     },
-    async resolve(riskId, resolution, revision) {
+    async resolve(_projectId, riskId, resolution, revision) {
       if (!resolution.trim()) throw new RepositoryError("invalid", "Resolution note required");
       const saved = write(riskId, revision, (risk) => {
         if (risk.kind !== "issue") throw new RepositoryError("invalid", "Only issues are resolved");
@@ -151,7 +151,7 @@ export function createMockRisks(store: ProjectWorkStore, { respond, now }: MockR
       });
       return respond(saved);
     },
-    async convert(riskId, revision) {
+    async convert(_projectId, riskId, revision) {
       const { list, projectId } = locate(riskId);
       const source = list.find((risk) => risk.id === riskId)!;
       if (source.kind !== "risk" || !source.open) throw new RepositoryError("invalid", "Only open risks convert");

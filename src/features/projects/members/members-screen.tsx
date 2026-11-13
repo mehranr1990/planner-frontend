@@ -32,6 +32,7 @@ import {
   useProjectTasks,
 } from "@/data/project-queries";
 import { RepositoryError } from "@/data/repositories";
+import { isUnavailable, useUnavailableTitle } from "@/features/projects/unavailable";
 import { dayToLocalDate, localDateToDay } from "@/lib/dates/clock-time";
 import { cn } from "@/lib/cn";
 import { useProjectFormat } from "../format";
@@ -60,10 +61,11 @@ type AssignableRole = Exclude<ProjectRole, "owner" | "guest">;
 function useSaveError() {
   const t = useTranslations("Members");
   const tConflict = useTranslations("Access.states.conflict");
+  const unavailable = useUnavailableTitle();
   return (error: unknown) =>
     toast({
-      tone: "danger",
-      title: error instanceof RepositoryError && error.code === "conflict" ? tConflict("title") : t("error"),
+      tone: isUnavailable(error) ? "info" : "danger",
+      title: unavailable(error) ?? (error instanceof RepositoryError && error.code === "conflict" ? tConflict("title") : t("error")),
     });
 }
 

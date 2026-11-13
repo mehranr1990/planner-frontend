@@ -24,6 +24,7 @@ const firstWorkspaces: WorkspaceSelection = {
   project: sampleWorkspaces.project[0]?.id ?? "",
   team: sampleWorkspaces.team[0]?.id ?? "",
   company: sampleWorkspaces.company[0]?.id ?? "",
+  social: sampleWorkspaces.social[0]?.id ?? "",
 };
 
 /** /styleguide/navigation: navigation and shell parts, previewed in frames. */

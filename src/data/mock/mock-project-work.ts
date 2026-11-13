@@ -205,7 +205,7 @@ export function createMockProjectWork({
       store.phases.set(projectId, next);
       return respond(next);
     },
-    async updateMilestone(milestoneId, { title }, revision) {
+    async updateMilestone(_projectId, milestoneId, { title }, revision) {
       for (const [projectId, list] of store.milestones) {
         const milestone = list.find((item) => item.id === milestoneId);
         if (!milestone) continue;
@@ -261,7 +261,7 @@ export function createMockProjectWork({
         open: mine.filter((task) => state(task) === "accepted"),
       });
     },
-    async accept(taskId, revision) {
+    async accept(_projectId, taskId, revision) {
       const { task, index } = myAssignment(taskId, revision);
       task.assignees = task.assignees.map((assignee, at) =>
         at === index ? { ...assignee, state: "accepted" } : assignee,
@@ -272,7 +272,7 @@ export function createMockProjectWork({
       onAcceptance?.(task, true);
       return respond(task);
     },
-    async revertAccept(taskId, revision) {
+    async revertAccept(_projectId, taskId, revision) {
       const { task, index } = myAssignment(taskId, revision, "accepted");
       task.assignees = task.assignees.map((assignee, at) =>
         at === index ? { ...assignee, state: "pending" } : assignee,
@@ -282,7 +282,7 @@ export function createMockProjectWork({
       onAcceptance?.(task, false);
       return respond(task);
     },
-    async remind(taskId) {
+    async remind(_projectId, taskId) {
       const task = store.findTask(taskId);
       if (!task) throw new RepositoryError("not-found", `No task ${taskId}`);
       if (!task.assignees.some((assignee) => assignee.state === "pending")) {
@@ -290,7 +290,7 @@ export function createMockProjectWork({
       }
       return respond(undefined);
     },
-    async decline(taskId, { reason, note, revision }) {
+    async decline(_projectId, taskId, { reason, note, revision }) {
       const { task, index } = myAssignment(taskId, revision);
       task.assignees = task.assignees.map((assignee, at) =>
         at === index ? { ...assignee, state: "declined", reason, ...(note ? { note } : {}) } : assignee,

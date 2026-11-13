@@ -84,7 +84,8 @@ export function createMockTaskDetail({ store, now, respond, withCan, onCalendarC
     }
     activity.push({
       id: `${taskId}-status`,
-      at: task.updatedAt,
+      // Mock fixtures always carry updatedAt.
+      at: task.updatedAt!,
       actor: assignedBy ?? task.assignees[0]?.person ?? { id: "sara", name: "Sara P.", initials: "SP" },
       kind: "status",
       statusId: task.statusId,
@@ -121,8 +122,8 @@ export function createMockTaskDetail({ store, now, respond, withCan, onCalendarC
   }
 
   const taskDetails: TaskDetailRepository = {
-    get: (taskId) => respond(detail(taskId)),
-    async toggleSubtask(taskId, subtaskId) {
+    get: (_projectId, taskId) => respond(detail(taskId)),
+    async toggleSubtask(_projectId, taskId, subtaskId) {
       const task = taskOrThrow(taskId);
       if (!withCan(task).can?.edit) throw new RepositoryError("forbidden", "Not allowed");
       const current = state(taskId);
@@ -130,7 +131,7 @@ export function createMockTaskDetail({ store, now, respond, withCan, onCalendarC
       task.subtasks = { done: current.subtasks.filter((item) => item.done).length, total: current.subtasks.length };
       return respond(detail(taskId));
     },
-    async setShowInCalendar(taskId, on) {
+    async setShowInCalendar(_projectId, taskId, on) {
       const task = taskOrThrow(taskId);
       if (!task.assignees.some((assignee) => assignee.person.id === CURRENT_USER_ID)) {
         throw new RepositoryError("forbidden", "Assignee only");
@@ -142,7 +143,7 @@ export function createMockTaskDetail({ store, now, respond, withCan, onCalendarC
   };
 
   const comments: CommentRepository = {
-    async add(taskId, body) {
+    async add(_projectId, taskId, body) {
       const task = taskOrThrow(taskId);
       const text = body.trim();
       if (!text) throw new RepositoryError("invalid", "Empty comment");
@@ -153,13 +154,13 @@ export function createMockTaskDetail({ store, now, respond, withCan, onCalendarC
         body: text,
       };
       state(taskId).comments.push(comment);
-      task.commentCount += 1;
+      task.commentCount = (task.commentCount ?? 0) + 1;
       return respond(comment);
     },
   };
 
   const dependencies: DependencyRepository = {
-    async add(taskId, { predecessorId, type, lagDays }) {
+    async add(_projectId, taskId, { predecessorId, type, lagDays }) {
       const predecessor = taskOrThrow(predecessorId);
       taskOrThrow(taskId);
       // The predecessor already (transitively) waits for this task → a loop.
@@ -168,7 +169,7 @@ export function createMockTaskDetail({ store, now, respond, withCan, onCalendarC
       state(taskId).dependencies.push(dependency);
       return respond({ ...dependency, predecessorTitle: predecessor.title });
     },
-    async remove(taskId, dependencyId) {
+    async remove(_projectId, taskId, dependencyId) {
       const current = state(taskId);
       current.dependencies = current.dependencies.filter((dependency) => dependency.id !== dependencyId);
       return respond(undefined);

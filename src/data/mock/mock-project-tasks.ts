@@ -46,7 +46,7 @@ function taskCan(task: ProjectTask, role: ProjectRole, archived: boolean): TaskC
 function matchesFilters(task: ProjectTask, filters: ProjectTaskFilters | undefined): boolean {
   if (!filters) return true;
   if (filters.statusIds?.length && !filters.statusIds.includes(task.statusId)) return false;
-  if (filters.priorities?.length && !filters.priorities.includes(task.priority)) return false;
+  if (filters.priorities?.length && !(task.priority && filters.priorities.includes(task.priority))) return false;
   if (filters.milestoneIds?.length && !(task.milestoneId && filters.milestoneIds.includes(task.milestoneId)))
     return false;
   if (filters.assigneeIds?.length) {
@@ -159,7 +159,7 @@ export function createMockProjectTasks({ store, today, now, respond, roleOf, mem
       const tasks = base.filter(inView[query.view ?? "all"]).map((task) => withCan(task, options));
       return respond({ tasks, counts });
     },
-    get(taskId, options) {
+    get(_projectId, taskId, options) {
       return respond(withCan(taskOrThrow(taskId), options));
     },
     members(projectId) {
@@ -194,7 +194,7 @@ export function createMockProjectTasks({ store, today, now, respond, roleOf, mem
       list.push(task);
       return respond(withCan(task));
     },
-    async update(taskId, patch, revision) {
+    async update(_projectId, taskId, patch, revision) {
       const task = taskOrThrow(taskId);
       if (task.revision !== revision) throw new RepositoryError("conflict", `Task ${taskId} changed`, {});
       const { role, archived } = access(task.projectId);
@@ -228,7 +228,7 @@ export function createMockProjectTasks({ store, today, now, respond, roleOf, mem
       }
       return respond({ updated, failedIds });
     },
-    async transition(taskId, toStatusId, revision, { exceedWip = false } = {}) {
+    async transition(_projectId, taskId, toStatusId, revision, { exceedWip = false } = {}) {
       const task = taskOrThrow(taskId);
       if (task.revision !== revision) throw new RepositoryError("conflict", `Task ${taskId} changed`, {});
       const { role, archived } = access(task.projectId);
@@ -270,7 +270,7 @@ export function createMockProjectTasks({ store, today, now, respond, roleOf, mem
       }
       return respond(counts);
     },
-    async remove(taskIds) {
+    async remove(_projectId, taskIds) {
       for (const id of taskIds) {
         const task = taskOrThrow(id);
         const { role, archived } = access(task.projectId);

@@ -41,6 +41,7 @@ import {
   type TeamCalLayer,
 } from "./calendar-model";
 import { TeamEventCard } from "./team-event-card";
+import { CalendarMeetings } from "@/features/messages/meetings/calendar-meetings";
 import { TeamEventDialog } from "./team-event-dialog";
 
 /*
@@ -271,6 +272,7 @@ function TeamCalendarLayout() {
         open={dialog.open}
         onOpenChange={(open) => setDialog((current) => ({ ...current, open }))}
       />
+      <CalendarMeetings source={{ kind: "team", workspaceId: team.id, name: team.name }} days={days} />
     </>
   );
 }

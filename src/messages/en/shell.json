@@ -120,6 +120,10 @@
     "company": {
       "title": "Companies overview",
       "cta": "Review approvals"
+    },
+    "social": {
+      "title": "Social",
+      "cta": "New activity"
     }
   },
   "placeholder": {
@@ -172,6 +176,17 @@
       "p3Title": "Company goals",
       "p3Note": "Strategic objectives.",
       "utility": "Approvals queue, resource capacity and budget."
+    },
+    "social": {
+      "hero": "Next activity",
+      "heroNote": "What's next with friends and what needs you — not a feed.",
+      "p1Title": "Groups",
+      "p1Note": "Your groups with unread chat.",
+      "p2Title": "Activities",
+      "p2Note": "Coming up and needs an answer.",
+      "p3Title": "Balances",
+      "p3Note": "Approved shares only, per currency.",
+      "utility": "Requests, payments to confirm and things due."
     }
   }
 }

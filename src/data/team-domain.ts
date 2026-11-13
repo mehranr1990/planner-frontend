@@ -727,5 +727,6 @@ export interface TeamSettings {
 export interface TeamTransfer {
   successor: TeamPerson;
   accepted: boolean;
-  requestedAt: string;
+  /** Not served by the API (live mode leaves it out). */
+  requestedAt?: string;
 }

@@ -9,7 +9,7 @@ import type { ApiTasksRepository } from "./api-tasks-repository";
  * missing task into the Day (Day If-Match + task revision) and reorders the
  * Day with them first; other planned items keep their order after them.
  * Block priorities (TimeBlocks) wait for the Calendar integration (Phase 04).
- * Focus stats stay on the mock until Phase 07.
+ * Focus stats come from the Focus adapter (Phase 07, api-focus.ts).
  */
 
 const MAX_PRIORITIES = 3;
@@ -17,7 +17,7 @@ const MAX_PRIORITIES = 3;
 export function createApiPlanRepository(
   dayPlans: DayPlans,
   tasks: ApiTasksRepository,
-  fallback: Pick<PlanRepository, "focusToday" | "recordFocusSessions">,
+  focus: Pick<PlanRepository, "focusToday" | "recordFocusSessions">,
 ): PlanRepository {
   // Always a fresh read (one request): item status changes elsewhere must not show stale priorities.
   async function priorities(day: string): Promise<DayPriority[]> {
@@ -60,7 +60,7 @@ export function createApiPlanRepository(
       await dayPlans.order(day, first);
       return priorities(day);
     },
-    focusToday: (day) => fallback.focusToday(day),
-    recordFocusSessions: (day, input) => fallback.recordFocusSessions(day, input),
+    focusToday: (day) => focus.focusToday(day),
+    recordFocusSessions: (day, input) => focus.recordFocusSessions(day, input),
   };
 }

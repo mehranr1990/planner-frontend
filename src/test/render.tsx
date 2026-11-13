@@ -11,7 +11,7 @@ import { preferencesForLocale, type Preferences } from "@/features/preferences/p
  */
 export const testPreferences: Preferences = { ...preferencesForLocale("en"), currency: "toman" };
 
-interface ProvidersRenderOptions extends Omit<RenderOptions, "wrapper"> {
+export interface ProvidersRenderOptions extends Omit<RenderOptions, "wrapper"> {
   preferences?: Partial<Preferences>;
   /** Planner settings as the server would resolve them; defaults to nothing hidden. */
   plannerSettings?: PlannerSettings;

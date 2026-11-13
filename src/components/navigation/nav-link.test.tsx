@@ -9,8 +9,8 @@ import { preventDocumentNavigation } from "./test-utils";
 
 const personal = getAppContext("personal");
 const overview = personal.nav.find((item) => item.id === "overview")!;
-// Planned items now live outside Personal (every Personal route exists since Step 3).
-const board = getAppContext("company").nav.find((item) => item.id === "departments")!;
+// No context ships a planned item any more (Companies is routed since CS-01): a reserved entry keeps the planned path covered.
+const board = { ...getAppContext("personal").nav.find((item) => item.id === "insights")!, id: "departments" as const, labelKey: "items.departments" as const, href: "/companies/euroly/departments", status: "planned" as const };
 
 describe("NavLink", () => {
   preventDocumentNavigation();
@@ -48,7 +48,7 @@ describe("NavLink", () => {
   });
 
   it("never marks a planned item current, even on its reserved route", () => {
-    setMockPathname("/companies/departments");
+    setMockPathname("/companies/euroly/departments");
     renderWithProviders(<NavLink item={board} />);
     expect(screen.getByRole("button", { name: "Departments" })).not.toHaveAttribute("aria-current");
   });
@@ -86,7 +86,7 @@ describe("NavLink", () => {
     renderWithProviders(<NavLink item={board} layout="tab" />, {
       preferences: { locale: "fa", direction: "rtl", digits: "fa" },
     });
-    const entry = screen.getByRole("button", { name: "واحدها" });
+    const entry = screen.getByRole("button", { name: "دپارتمان‌ها" });
     expect(entry).toHaveAccessibleDescription("به‌زودی");
   });
 });

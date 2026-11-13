@@ -1,20 +1,29 @@
 "use client";
 
 import {
+  Building2,
   CircleAlert,
+  Coins,
   Clock,
   FolderKanban,
   GitCompareArrows,
+  Link2,
   Gauge,
   LockKeyhole,
   LogIn,
+  LogOut,
   MailOpen,
   SearchX,
+  Shield,
   ShieldOff,
   Trash2,
   UsersRound,
   WifiOff,
   type LucideIcon,
+  Ban,
+  MessageSquareOff,
+  RefreshCw,
+  Hourglass,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useEffect, useState, type ReactNode } from "react";
@@ -48,7 +57,33 @@ export type AccessStateKind =
   | "team-not-available"
   | "team-invite"
   | "team-removed"
-  | "team-joined";
+  | "team-joined"
+  // Company additions (CS-01): forbidden = not found, invitation, left, and the inline sealed / policy / scope / attach / not-counted states.
+  | "company-not-available"
+  | "company-invite"
+  | "company-left"
+  | "company-sealed"
+  | "company-policy"
+  | "company-outside"
+  | "company-attach-pending"
+  | "company-not-counted"
+  // Messages (MS-01): not available (live mode, no Phase 5 backend), removed, and the inline blocked / joined later / reconnecting / offline / policy states.
+  | "msg-not-available"
+  | "msg-removed"
+  | "msg-not-found"
+  | "msg-blocked"
+  | "msg-joined"
+  | "msg-reconnecting"
+  | "msg-offline"
+  | "msg-policy"
+  // Social (SO-01): not available (= private, not discoverable, not counted), join requested, activity guest, left, not counted yet, blocked; off = live mode without a Social backend.
+  | "social-not-available"
+  | "social-requested"
+  | "social-guest"
+  | "social-left"
+  | "social-not-counted"
+  | "social-blocked"
+  | "social-off";
 
 const KEY: Record<AccessStateKind, string> = {
   empty: "empty",
@@ -66,6 +101,29 @@ const KEY: Record<AccessStateKind, string> = {
   "team-invite": "teamInvite",
   "team-removed": "teamRemoved",
   "team-joined": "teamJoined",
+  "company-not-available": "companyNotAvailable",
+  "company-invite": "companyInvite",
+  "company-left": "companyLeft",
+  "company-sealed": "companySealed",
+  "company-policy": "companyPolicy",
+  "company-outside": "companyOutside",
+  "company-attach-pending": "companyAttachPending",
+  "company-not-counted": "companyNotCounted",
+  "msg-not-available": "msgNotAvailable",
+  "msg-removed": "msgRemoved",
+  "msg-not-found": "msgNotFound",
+  "msg-blocked": "msgBlocked",
+  "msg-joined": "msgJoined",
+  "msg-reconnecting": "msgReconnecting",
+  "msg-offline": "msgOffline",
+  "msg-policy": "msgPolicy",
+  "social-not-available": "socialNotAvailable",
+  "social-requested": "socialRequested",
+  "social-guest": "socialGuest",
+  "social-left": "socialLeft",
+  "social-not-counted": "socialNotCounted",
+  "social-blocked": "socialBlocked",
+  "social-off": "socialOff",
 };
 
 const LOOK: Record<AccessStateKind, { icon: LucideIcon; tone: StateTone }> = {
@@ -84,6 +142,29 @@ const LOOK: Record<AccessStateKind, { icon: LucideIcon; tone: StateTone }> = {
   "team-invite": { icon: MailOpen, tone: "scope" },
   "team-removed": { icon: ShieldOff, tone: "warning" },
   "team-joined": { icon: UsersRound, tone: "scope" },
+  "company-not-available": { icon: Building2, tone: "neutral" },
+  "company-invite": { icon: MailOpen, tone: "scope" },
+  "company-left": { icon: LogOut, tone: "warning" },
+  "company-sealed": { icon: LockKeyhole, tone: "neutral" },
+  "company-policy": { icon: Shield, tone: "scope" },
+  "company-outside": { icon: Building2, tone: "neutral" },
+  "company-attach-pending": { icon: Link2, tone: "warning" },
+  "company-not-counted": { icon: Coins, tone: "info" },
+  "msg-not-available": { icon: MessageSquareOff, tone: "neutral" },
+  "msg-removed": { icon: LockKeyhole, tone: "warning" },
+  "msg-not-found": { icon: MessageSquareOff, tone: "neutral" },
+  "msg-blocked": { icon: Ban, tone: "neutral" },
+  "msg-joined": { icon: Clock, tone: "neutral" },
+  "msg-reconnecting": { icon: RefreshCw, tone: "warning" },
+  "msg-offline": { icon: WifiOff, tone: "warning" },
+  "msg-policy": { icon: Shield, tone: "scope" },
+  "social-not-available": { icon: LockKeyhole, tone: "neutral" },
+  "social-requested": { icon: Clock, tone: "scope" },
+  "social-guest": { icon: UsersRound, tone: "scope" },
+  "social-left": { icon: LogOut, tone: "warning" },
+  "social-not-counted": { icon: Coins, tone: "info" },
+  "social-blocked": { icon: Ban, tone: "neutral" },
+  "social-off": { icon: Hourglass, tone: "neutral" },
 };
 
 export interface AccessStateProps {
@@ -117,7 +198,23 @@ export function AccessState({
       {errorRef ? <span className="mt-1 block text-xs text-fg-muted">{t("error.ref", { ref: errorRef })}</span> : null}
     </>
   );
-  const inline = kind === "pending" || kind === "conflict" || kind === "quota" || kind === "team-joined";
+  const inline =
+    kind === "pending" ||
+    kind === "conflict" ||
+    kind === "quota" ||
+    kind === "team-joined" ||
+    kind === "company-sealed" ||
+    kind === "company-policy" ||
+    kind === "company-outside" ||
+    kind === "company-attach-pending" ||
+    kind === "company-not-counted" ||
+    kind === "msg-blocked" ||
+    kind === "msg-joined" ||
+    kind === "msg-reconnecting" ||
+    kind === "msg-offline" ||
+    kind === "msg-policy" ||
+    kind === "social-not-counted" ||
+    kind === "social-blocked";
   return (
     <StateLayout
       role={kind === "error" ? "alert" : "status"}

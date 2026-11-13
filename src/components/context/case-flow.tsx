@@ -1,6 +1,6 @@
 "use client";
 
-import { Check, Cog, MoreHorizontal, Plus } from "lucide-react";
+import { Check, Cog, Eye, MoreHorizontal, Plus } from "lucide-react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { useCallback, useId, useLayoutEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
@@ -64,6 +64,8 @@ export interface CaseFlowColumn {
   id: string;
   label: string;
   rows: readonly CaseFlowRow[];
+  /** Placeholder when the column has no rows ("Nothing in review" · "tasks appear here when moved"). */
+  empty?: { title: string; hint?: string };
   /** "+N more" target (the List, filtered). */
   moreHref?: string;
 }
@@ -94,6 +96,9 @@ export interface CaseFlowProps {
   outcomeLabel: string;
   /** Round icon buttons at the header's end (Filter · Share · Open in calendar). */
   actions?: ReactNode;
+  /** Avatar click = filter by person (toggle); the avatar becomes a pressed/unpressed button. */
+  onPersonSelect?: (personId: string) => void;
+  selectedPersonId?: string | null;
   /** The "+" badge: assign / filter by person. */
   onPersonAction?: (personId: string) => void;
   footnote?: ReactNode;
@@ -123,6 +128,8 @@ export function CaseFlow({
   outcomeLabel,
   actions,
   onPersonAction,
+  onPersonSelect,
+  selectedPersonId = null,
   footnote,
   maxRows = 5,
   className,
@@ -187,12 +194,14 @@ export function CaseFlow({
       const from = rowBox(link.from);
       const to = rowBox(link.to);
       if (!from || !to || from.width === 0 || to.width === 0) continue;
-      const fromEnd = rtl ? logical(from.left) : logical(from.right);
-      const toStart = rtl ? logical(to.right) : logical(to.left);
-      const x1 = fromEnd;
-      const y1 = from.top - box.top + from.height / 2;
-      const x2 = toStart;
-      const y2 = to.top - box.top + to.height / 2;
+      const start = (rect: DOMRect) => (rtl ? logical(rect.right) : logical(rect.left));
+      const end = (rect: DOMRect) => (rtl ? logical(rect.left) : logical(rect.right));
+      // Always run from the box nearer the inline start (a waiting row can sit before its upstream).
+      const [a, b] = start(from) <= start(to) ? [from, to] : [to, from];
+      const x1 = end(a);
+      const y1 = a.top - box.top + a.height / 2;
+      const x2 = start(b);
+      const y2 = b.top - box.top + b.height / 2;
       const bend = Math.max(24, Math.abs(x2 - x1) / 2);
       const direction = x2 >= x1 ? 1 : -1;
       items.push({
@@ -201,7 +210,15 @@ export function CaseFlow({
         satisfied: link.satisfied,
       });
     }
-    setSegments({ width: box.width, height: box.height, items });
+    // Callers rebuild `links` per render: only commit a geometry change (no measure ⇄ render loop).
+    setSegments((previous) =>
+      previous.width === box.width &&
+      previous.height === box.height &&
+      previous.items.length === items.length &&
+      previous.items.every((item, index) => item.d === items[index]!.d && item.satisfied === items[index]!.satisfied)
+        ? previous
+        : { width: box.width, height: box.height, items },
+    );
   }, [links]);
 
   useLayoutEffect(() => {
@@ -303,7 +320,22 @@ export function CaseFlow({
         >
           {people.map((person) => (
             <li key={person.id} className="flex w-12 shrink-0 flex-col items-center">
-              <Avatar name={person.name} initials={person.initials} size={40} tone={scope} decorative className="ring-2 ring-surface" />
+              {onPersonSelect ? (
+                <button
+                  type="button"
+                  aria-pressed={selectedPersonId === person.id}
+                  aria-label={t("filterPerson", { name: person.name })}
+                  onClick={() => onPersonSelect(person.id)}
+                  className={cn(
+                    "rounded-full focus-visible:focus-ring",
+                    selectedPersonId === person.id ? "ring-2 ring-scope-deep" : undefined,
+                  )}
+                >
+                  <Avatar name={person.name} initials={person.initials} size={40} tone={scope} decorative className="ring-2 ring-surface" />
+                </button>
+              ) : (
+                <Avatar name={person.name} initials={person.initials} size={40} tone={scope} decorative className="ring-2 ring-surface" />
+              )}
               {badge(person)}
             </li>
           ))}
@@ -317,6 +349,20 @@ export function CaseFlow({
               <div key={column.id} className="flex min-w-0 flex-col gap-2">
                 <div className="flex flex-col gap-1 rounded-[1.75rem] bg-subtle p-3 max-lg:bg-surface max-lg:inset-ring max-lg:inset-ring-line lg:min-h-64">
                   <h3 className="px-1 pb-1 text-sm font-bold text-fg lg:sr-only">{column.label}</h3>
+                  {shown.length === 0 && column.empty ? (
+                    <p className="flex min-h-18 items-center gap-3 px-2 py-2">
+                      <span
+                        aria-hidden="true"
+                        className="inline-flex size-10 shrink-0 items-center justify-center rounded-full bg-surface text-fg-secondary inset-ring inset-ring-line"
+                      >
+                        <Icon icon={Eye} size={16} />
+                      </span>
+                      <span className="flex min-w-0 flex-col leading-snug">
+                        <span className="text-sm font-medium text-fg-secondary">{column.empty.title}</span>
+                        {column.empty.hint ? <span className="text-xs text-fg-secondary">{column.empty.hint}</span> : null}
+                      </span>
+                    </p>
+                  ) : null}
                   <ul className="flex flex-col gap-1">
                     {shown.map((row) => {
                       const waitingFor = needs(row.id);
@@ -385,11 +431,13 @@ export function CaseFlow({
                 return (
                   <li key={outcome.id}>
                     {outcome.href ? (
-                      <Link href={outcome.href} className={tile}>
+                      <Link href={outcome.href} data-flow-row={outcome.id} className={tile}>
                         {body}
                       </Link>
                     ) : (
-                      <div className={tile}>{body}</div>
+                      <div data-flow-row={outcome.id} className={tile}>
+                        {body}
+                      </div>
                     )}
                   </li>
                 );

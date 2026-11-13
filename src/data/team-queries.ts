@@ -578,13 +578,13 @@ export function useTeamFileActions(teamId: string) {
   const refresh = () => client.invalidateQueries({ queryKey: teamScoped(teamId, "files") });
   return {
     upload: useMutation({ mutationFn: (input: FileUploadInput) => teamFiles.upload(teamId, input), onSettled: refresh }),
-    cancel: useMutation({ mutationFn: (fileId: string) => teamFiles.cancel(fileId), onSettled: refresh }),
-    retry: useMutation({ mutationFn: (fileId: string) => teamFiles.retry(fileId), onSettled: refresh }),
+    cancel: useMutation({ mutationFn: (fileId: string) => teamFiles.cancel(teamId, fileId), onSettled: refresh }),
+    retry: useMutation({ mutationFn: (fileId: string) => teamFiles.retry(teamId, fileId), onSettled: refresh }),
     restoreVersion: useMutation({
-      mutationFn: ({ fileId, version }: { fileId: string; version: number }) => teamFiles.restoreVersion(fileId, version),
+      mutationFn: ({ fileId, version }: { fileId: string; version: number }) => teamFiles.restoreVersion(teamId, fileId, version),
       onSettled: refresh,
     }),
-    download: (fileId: string) => teamFiles.download(fileId),
+    download: (fileId: string) => teamFiles.download(teamId, fileId),
   };
 }
 

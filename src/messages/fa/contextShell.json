@@ -1,4 +1,7 @@
 {
+  "unknown": "نامشخص",
+  "noTasks": "هنوز کاری نیست",
+  "unavailable": "فعلاً در دسترس نیست",
   "roles": {
     "owner": "مالک",
     "admin": "ادمین",
@@ -10,7 +13,8 @@
   "health": {
     "on-track": "طبق برنامه",
     "at-risk": "در خطر",
-    "off-track": "عقب از برنامه"
+    "off-track": "عقب از برنامه",
+    "unknown": "نامشخص"
   },
   "lifecycle": {
     "active": "فعال",
@@ -69,6 +73,7 @@
     "in-progress": "در حال انجام",
     "in-review": "در بازبینی",
     "blocked": "مسدود",
-    "done": "انجام شد"
+    "done": "انجام شد",
+    "canceled": "لغوشده"
   }
 }

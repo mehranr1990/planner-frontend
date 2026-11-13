@@ -47,7 +47,7 @@ import { useMediaQuery } from "../use-media";
  */
 
 export interface FilesScope {
-  scope: "project" | "team";
+  scope: "project" | "team" | "social";
   /** The page header with these actions (upload, list/grid). */
   header: (actions: ReactNode) => ReactNode;
   library: { data: FileLibrary | undefined };

@@ -20,6 +20,13 @@ let mockPathname = "/";
 let mockSearch = "";
 
 /** Sets what usePathname() returns in the current test (reset after each test). */
+let mockParams: Record<string, string> = {};
+
+/** Dynamic route params for components that call useParams (Social routes). */
+export function setMockParams(params: Record<string, string>) {
+  mockParams = params;
+}
+
 export function setMockPathname(pathname: string) {
   mockPathname = pathname;
 }
@@ -41,6 +48,7 @@ vi.mock("next/navigation", () => ({
   useRouter: () => ({ refresh: routerRefresh, push: routerPush, replace: routerReplace, prefetch: vi.fn(), back: vi.fn() }),
   usePathname: () => mockPathname,
   useSearchParams: () => new URLSearchParams(mockSearch),
+  useParams: () => mockParams,
 }));
 
 // jsdom lacks these browser APIs; next-themes, Radix and Motion expect them.

@@ -40,6 +40,7 @@ import enShutdown from "./en/shutdown.json";
 import enTasks from "./en/tasks.json";
 import enUi from "./en/ui.json";
 import enTeams from "./en/teams.json";
+import enCompany from "./en/company.json";
 import enPeopleWorkload from "./en/peopleWorkload.json";
 import enCaseFlow from "./en/caseFlow.json";
 import enTeam from "./en/team.json";
@@ -60,6 +61,8 @@ import enTeamAnalytics from "./en/teamAnalytics.json";
 import enTeamFeedback from "./en/teamFeedback.json";
 import enRecognition from "./en/recognition.json";
 import enCheckins from "./en/checkins.json";
+import enMessaging from "./en/messaging.json";
+import enSocial from "./en/social.json";
 import faAccess from "./fa/access.json";
 import faAuth from "./fa/auth.json";
 import faBrainDump from "./fa/brainDump.json";
@@ -101,6 +104,7 @@ import faShutdown from "./fa/shutdown.json";
 import faTasks from "./fa/tasks.json";
 import faUi from "./fa/ui.json";
 import faTeams from "./fa/teams.json";
+import faCompany from "./fa/company.json";
 import faPeopleWorkload from "./fa/peopleWorkload.json";
 import faCaseFlow from "./fa/caseFlow.json";
 import faTeam from "./fa/team.json";
@@ -121,6 +125,8 @@ import faTeamAnalytics from "./fa/teamAnalytics.json";
 import faTeamFeedback from "./fa/teamFeedback.json";
 import faRecognition from "./fa/recognition.json";
 import faCheckins from "./fa/checkins.json";
+import faMessaging from "./fa/messaging.json";
+import faSocial from "./fa/social.json";
 
 /*
  * The namespaces client components read outside the styleguide. The root
@@ -173,6 +179,7 @@ const en = {
   Analytics: enAnalytics,
   ProjectSettings: enProjectSettings,
   Teams: enTeams,
+  Company: enCompany,
   PeopleWorkload: enPeopleWorkload,
   CaseFlow: enCaseFlow,
   Team: enTeam,
@@ -193,6 +200,8 @@ const en = {
   TeamFeedback: enTeamFeedback,
   Recognition: enRecognition,
   Checkins: enCheckins,
+  Msg: enMessaging,
+  Social: enSocial,
 };
 
 export type ClientMessages = typeof en;
@@ -239,6 +248,7 @@ const fa: ClientMessages = {
   Analytics: faAnalytics,
   ProjectSettings: faProjectSettings,
   Teams: faTeams,
+  Company: faCompany,
   PeopleWorkload: faPeopleWorkload,
   CaseFlow: faCaseFlow,
   Team: faTeam,
@@ -259,6 +269,8 @@ const fa: ClientMessages = {
   TeamFeedback: faTeamFeedback,
   Recognition: faRecognition,
   Checkins: faCheckins,
+  Msg: faMessaging,
+  Social: faSocial,
 };
 
 export const clientMessages: Record<Locale, ClientMessages> = { en, fa };

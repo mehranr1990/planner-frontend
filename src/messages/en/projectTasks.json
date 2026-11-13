@@ -57,6 +57,7 @@
     "priority": "Priority"
   },
   "priority": {
+    "none": "No priority",
     "urgent": "Urgent",
     "high": "High",
     "medium": "Medium",
@@ -149,5 +150,28 @@
     "to": "Allowed to",
     "who": "Who",
     "none": "—"
+  },
+  "caseFlow": {
+    "filterLabel": "Flow filter",
+    "all": "All open tasks",
+    "mine": "My tasks",
+    "title": "{name} · flow",
+    "unassigned": "Unassigned",
+    "needs": "Needs {titles}",
+    "blockedBy": "Blocked by {titles}",
+    "pending": "accept pending",
+    "separator": ", ",
+    "emptyTitle": "Nothing in {status}",
+    "emptyHint": "tasks appear here when moved",
+    "outcomes": "Done",
+    "outcomesMilestone": "Done · milestone",
+    "milestoneMeta": "milestone · {date} · {status}",
+    "footnote": "Filter: {filter} ({total} tasks · {done} done). Columns = statuses of the published workflow (Blocked shows as a row state). Lines = dependency links: solid = satisfied, dashed red = still waiting. Notch = assignees: number = open tasks, red = blocked or waiting, ✓ = all done, + = not involved.",
+    "openList": "Open in List",
+    "share": "Copy link",
+    "copied": "Link copied",
+    "calendar": "Open in calendar",
+    "workflow": "Workflow",
+    "workflowHint": "statuses & allowed transitions · read-only"
   }
 }

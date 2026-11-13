@@ -77,7 +77,7 @@ export function ProjectTaskDetailView({ taskId, variant, closeControl }: Project
   const t = useTranslations("ProjectTask");
   const tDeleted = useTranslations("Access.states.deleted");
   const { project, capabilities, demo } = useProject();
-  const detail = useProjectTaskDetail(taskId, demoAccessOptions(demo));
+  const detail = useProjectTaskDetail(project.id, taskId, demoAccessOptions(demo));
   const workflow = useProjectWorkflow(project.id);
   const phases = useProjectPhases(project.id);
   const milestones = useProjectMilestones(project.id);
@@ -203,7 +203,7 @@ function DetailHead({
         <span
           className={cn("inline-flex min-h-6 items-center rounded-pill px-2.5 text-xs font-semibold", priority.chip)}
         >
-          {tTasks(`priority.${task.priority}`)}
+          {tTasks(`priority.${task.priority ?? "none"}`)}
         </span>
         {task.due ? (
           <span className="inline-flex min-h-6 items-center rounded-pill bg-raised px-2.5 text-xs font-semibold text-fg">
@@ -263,7 +263,7 @@ function Properties({
   const statusLabel = useWorkflowStatusLabel();
   const { project, capabilities } = useProject();
   const actions = useProjectTaskActions(project.id);
-  const detailActions = useTaskDetailActions(data.task.id);
+  const detailActions = useTaskDetailActions(data.task.projectId, data.task.id);
   const task = data.task;
   const status = workflow.statuses.find((candidate) => candidate.id === task.statusId);
   const moves = (workflow.transitions[task.statusId] ?? [])
@@ -381,7 +381,7 @@ function DetailTabs({ data, workflow }: { data: ProjectTaskDetail; workflow: Pro
   const format = useProjectFormat();
   const statusLabel = useWorkflowStatusLabel();
   const { project, capabilities } = useProject();
-  const actions = useTaskDetailActions(data.task.id);
+  const actions = useTaskDetailActions(data.task.projectId, data.task.id);
   const projectTasks = useProjectTasks(project.id, {});
   const [predecessor, setPredecessor] = useState("");
   const [type, setType] = useState<DependencyType>("FS");

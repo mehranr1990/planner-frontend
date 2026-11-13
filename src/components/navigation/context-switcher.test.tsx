@@ -8,6 +8,7 @@ import { ContextSwitcherPanel } from "./context-switcher-panel";
 import { ContextSwitcherTrigger } from "./context-switcher-trigger";
 
 const workspaces: Record<ContextId, Workspace[]> = {
+  social: [],
   personal: [{ id: "me", name: "Mehran" }],
   project: [
     { id: "web", name: "Website Redesign" },
@@ -82,14 +83,13 @@ describe("ContextSwitcherPanel", () => {
     expect(projects).toHaveTextContent("Website Redesign · active");
   });
 
-  it("enables Teams (TS-01) and keeps Companies visible but disabled until Phase 4", async () => {
+  it("enables Teams (TS-01) and Companies (CS-01)", async () => {
     const user = userEvent.setup();
     const onSelect = renderPanel();
     const companies = screen.getByRole("button", { name: /^Companies/ });
-    expect(companies).toHaveAttribute("aria-disabled", "true");
-    expect(companies).toHaveAccessibleDescription("Phase 4 · not available yet");
+    expect(companies).not.toHaveAttribute("aria-disabled");
     await user.click(companies);
-    expect(companies).not.toHaveAttribute("aria-expanded");
+    expect(companies).toHaveAttribute("aria-expanded", "true");
     const teams = screen.getByRole("button", { name: /^Teams/ });
     expect(teams).not.toHaveAttribute("aria-disabled");
     await user.click(teams);
@@ -141,7 +141,7 @@ describe("ContextSwitcherPanel", () => {
     expect(onSelect).toHaveBeenLastCalledWith("project", "app");
 
     await user.keyboard("{End}");
-    expect(screen.getByRole("button", { name: /^Companies/ })).toHaveFocus();
+    expect(screen.getByRole("button", { name: /^Social/ })).toHaveFocus();
     await user.keyboard("{Home}");
     expect(screen.getByRole("button", { name: /^Personal/ })).toHaveFocus();
   });
@@ -166,7 +166,7 @@ describe("ContextSwitcherPanel", () => {
     });
     expect(screen.getByRole("group", { name: "تغییر حوزه" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /^تیم‌ها/ })).toHaveTextContent("۲ فضای کاری");
-    expect(screen.getByRole("button", { name: /^شرکت‌ها/ })).toHaveTextContent("فاز ۴ · هنوز در دسترس نیست");
+    expect(screen.getByRole("button", { name: /^شرکت‌ها/ })).not.toHaveAttribute("aria-disabled");
     expect(screen.getByRole("button", { name: "پروژه‌ی جدید" })).toHaveAttribute("aria-disabled", "true");
   });
 });

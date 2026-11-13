@@ -27,15 +27,15 @@ describe("mock project work (PJ-01)", () => {
 
   it("accepts with the current revision, rejects a stale one (409), and declines with a reason", async () => {
     const store = createMockProjects({ respond });
-    const accepted = await store.assignments.accept("payment-errors-copy", 1);
+    const accepted = await store.assignments.accept("website-redesign", "payment-errors-copy", 1);
     expect(accepted.assignees[0]).toMatchObject({ state: "accepted" });
     expect(accepted.revision).toBe(2);
-    await expect(store.assignments.decline("checkout-qa-pass", { reason: "other", revision: 9 })).rejects.toMatchObject(
+    await expect(store.assignments.decline("website-redesign", "checkout-qa-pass", { reason: "other", revision: 9 })).rejects.toMatchObject(
       {
         code: "conflict",
       },
     );
-    const declined = await store.assignments.decline("checkout-qa-pass", {
+    const declined = await store.assignments.decline("website-redesign", "checkout-qa-pass", {
       reason: "no-capacity",
       note: "Full",
       revision: 1,

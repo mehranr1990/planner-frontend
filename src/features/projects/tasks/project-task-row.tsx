@@ -121,7 +121,7 @@ export function ProjectTaskRow({
       </span>,
     );
   }
-  if (task.subtasks.total > 0) {
+  if (task.subtasks && task.subtasks.total > 0) {
     meta.push(
       <span key="sub" className="inline-flex items-center gap-1">
         <Icon icon={ListChecks} size={12} />
@@ -129,7 +129,7 @@ export function ProjectTaskRow({
       </span>,
     );
   }
-  if (task.commentCount > 0) {
+  if (task.commentCount !== null && task.commentCount > 0) {
     meta.push(
       <span key="comments" className="inline-flex items-center gap-1">
         <Icon icon={MessageSquare} size={12} className="lg:hidden" />
@@ -262,7 +262,7 @@ export function ProjectTaskRow({
         </span>
         <span className={cn("flex items-center gap-1.5 text-xs font-semibold max-lg:hidden", priority.label)}>
           <span aria-hidden="true" className={cn("size-2 rounded-full", priority.dot)} />
-          {t(`priority.${task.priority}`)}
+          {t(`priority.${task.priority ?? "none"}`)}
         </span>
       </div>
       {conflict}

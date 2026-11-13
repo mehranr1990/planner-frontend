@@ -35,7 +35,8 @@
     "primary": "اصلی",
     "secondary": "ثانویه",
     "outline": "خطی",
-    "destructive": "حذف"
+    "destructive": "حذف",
+    "social": "اجتماعی"
   },
   "neutrals": {
     "title": "رنگ‌های خنثی",

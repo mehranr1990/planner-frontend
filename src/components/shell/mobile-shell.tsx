@@ -13,11 +13,17 @@ import { ProjectMoreContent } from "@/features/projects/shell/project-mobile";
 import { ProjectQuickAddSheet } from "@/features/projects/shell/project-quick-create";
 import { teamHref } from "@/features/navigation/contexts";
 import { TeamMoreContent } from "@/features/teams/shell/team-mobile";
+import { CompanyMoreContent } from "@/features/companies/shell/company-mobile";
+import { SocialMobileNav } from "@/features/social/shell/social-mobile";
+import { useOpenCompanySheet } from "@/features/companies/sheets/company-sheet-params";
 import { useOpenTeamSheet } from "@/features/teams/sheets/team-sheet-params";
 import { useRouter } from "next/navigation";
 import { usePreferenceActions, usePreferences } from "@/features/preferences/use-preferences";
 import { cn } from "@/lib/cn";
 import { AssistantSheet } from "./assistant-panel";
+import { MessagesButton } from "@/features/messages/messages-button";
+import { isMessagesPath } from "@/features/messages/paths";
+import { usePathname } from "next/navigation";
 import { NotificationsPopover } from "./notifications-popover";
 import { PersonalMobileHeader, PersonalMoreContent, usePersonalFab } from "./personal-mobile";
 import { ProfileMenu } from "./profile-menu";
@@ -62,12 +68,19 @@ export function DigitsToggle({ className }: { className?: string }) {
   );
 }
 
+function useIsMessagesRoute() {
+  return isMessagesPath(usePathname());
+}
+
 export function MobileHeader() {
   const scope = useShellScope();
+  // /messages has its own full-screen top bar (MS · Mobile 390).
+  const onMessages = useIsMessagesRoute();
+  if (onMessages) return null;
   // Personal (PM01): account · name · bell; no context chips, no digits toggle.
   if (scope === "personal") return <PersonalMobileHeader />;
   // Teams share the Projects header: the identity opens the switcher sheet (TS-01).
-  if (scope === "project" || scope === "team") return <ProjectMobileHeader />;
+  if (scope === "project" || scope === "team" || scope === "company" || scope === "social") return <ProjectMobileHeader />;
   return <ContextMobileHeader />;
 }
 
@@ -78,6 +91,7 @@ function ProjectMobileHeader() {
       <ProfileMenu align="start" />
       <ShellContextSwitcher variant="sheet" />
       <DigitsToggle />
+      <MessagesButton className="bg-surface shadow-island hover:bg-subtle" />
       <NotificationsPopover triggerClassName="bg-surface shadow-island hover:bg-subtle" />
     </div>
   );
@@ -97,6 +111,7 @@ function ContextMobileHeader() {
           <bdi className="truncate type-title text-fg">{workspace?.name ?? t(context.labelKey)}</bdi>
         </p>
         <DigitsToggle />
+        <MessagesButton className="bg-surface shadow-island hover:bg-subtle" />
         <NotificationsPopover triggerClassName="bg-surface shadow-island hover:bg-subtle" />
       </div>
       <ContextChips className="-mx-1" />
@@ -106,9 +121,14 @@ function ContextMobileHeader() {
 
 export function MobileShellNav() {
   const scope = useShellScope();
+  // The context bottom nav is hidden inside Messages (M9).
+  const onMessages = useIsMessagesRoute();
+  if (onMessages) return null;
   if (scope === "personal") return <PersonalMobileNav />;
   if (scope === "project") return <ProjectMobileNav />;
   if (scope === "team") return <TeamMobileNav />;
+  if (scope === "company") return <CompanyMobileNav />;
+  if (scope === "social") return <SocialMobileNav />;
   return <ContextMobileNav />;
 }
 
@@ -158,6 +178,54 @@ function TeamMobileNav() {
           onCloseAutoFocus={onCloseAutoFocus}
         >
           <TeamMoreContent context={context} onNavigate={() => setMoreOpen(false)} />
+        </SheetContent>
+      </Sheet>
+    </>
+  );
+}
+
+/**
+ * Companies bottom bar (CS-01 Mobile, C11): Overview · Work · (+) ·
+ * Approvals · More inside a company (All companies on the collection).
+ * (+) opens New expense (receipt first, CO-08) inside a company, New
+ * company on the collection; More lists the remaining modules. No Assistant.
+ */
+function CompanyMobileNav() {
+  const t = useTranslations("Shell");
+  const tNav = useTranslations("Navigation");
+  const tCompany = useTranslations("Company");
+  const context = useActiveContext() ?? getAppContext("company");
+  const openSheet = useOpenCompanySheet();
+  const [moreOpen, setMoreOpen] = useRouteScopedOpen();
+  const { capture, onCloseAutoFocus } = useReturnFocus();
+  const companyId = context.workspaceId;
+
+  return (
+    <>
+      <MobileBottomNav
+        className="mx-auto max-w-md p-0"
+        fabLabel={companyId ? tCompany("newExpense") : tNav("contexts.company.add")}
+        fab={
+          <button
+            type="button"
+            aria-haspopup="dialog"
+            onClick={() => openSheet(companyId ? "expense-new" : "company-new")}
+          />
+        }
+        onMoreClick={() => {
+          capture();
+          setMoreOpen(true);
+        }}
+        moreExpanded={moreOpen}
+      />
+      <Sheet open={moreOpen} onOpenChange={setMoreOpen}>
+        <SheetContent
+          side="bottom"
+          title={t("mobile.moreTitle", { context: tNav(context.labelKey) })}
+          data-scope="company"
+          onCloseAutoFocus={onCloseAutoFocus}
+        >
+          <CompanyMoreContent context={context} onNavigate={() => setMoreOpen(false)} />
         </SheetContent>
       </Sheet>
     </>

@@ -23,7 +23,7 @@ export function ProjectStatusCard({ project, kpis }: { project: ProjectSummary; 
   const router = useRouter();
   const format = useProjectFormat();
   const percent = project.progress.percent;
-  const daysLeft = format.daysFromToday(project.endDate);
+  const daysLeft = project.endDate ? format.daysFromToday(project.endDate) : null;
   const note = project.statusNote;
 
   return (
@@ -42,7 +42,7 @@ export function ProjectStatusCard({ project, kpis }: { project: ProjectSummary; 
     >
       <SignatureCardHeader className="flex-wrap items-center gap-2 text-xs font-semibold">
         <span className="font-bold tracking-wide text-scope-deep uppercase">{t("hero.label")}</span>
-        {note ? (
+        {note?.author && note.at ? (
           <span className="flex min-w-0 items-center gap-1.5 text-fg-secondary">
             <Avatar
               name={note.author.name}
@@ -59,7 +59,7 @@ export function ProjectStatusCard({ project, kpis }: { project: ProjectSummary; 
 
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-6">
         <div className="flex shrink-0 flex-col">
-          <span className="text-[3.25rem] leading-none font-semibold tabular text-fg">{format.percent(percent)}</span>
+          <span className="text-[3.25rem] leading-none font-semibold tabular text-fg">{format.progress(project.progress)}</span>
           <span className="pt-1 text-xs font-semibold text-fg-secondary">
             {t("hero.done", {
               done: format.number(project.progress.done),
@@ -80,25 +80,29 @@ export function ProjectStatusCard({ project, kpis }: { project: ProjectSummary; 
             aria-valuemin={0}
             aria-valuemax={100}
             aria-valuenow={percent}
-            aria-valuetext={`${format.percent(percent)} · ${t("hero.expected", { pct: format.percent(project.expectedPercent) })}`}
+            aria-valuetext={`${format.progress(project.progress)} · ${t("hero.expected", { pct: format.percent(project.expectedPercent) })}`}
             className="h-2 w-full overflow-hidden rounded-pill bg-scope-soft"
           >
             {/* Dynamic geometry: widths are data. Logical inset mirrors the bar in RTL. */}
             <div className="h-full rounded-pill bg-primary" style={{ width: `${percent}%` }} />
           </div>
-          <span
-            aria-hidden="true"
-            data-slot="pace-marker"
-            className="absolute -top-1 h-4 w-0.5 rounded-pill bg-fg"
-            style={{ insetInlineStart: `${project.expectedPercent}%` }}
-          />
+          {project.expectedPercent !== null ? (
+            <span
+              aria-hidden="true"
+              data-slot="pace-marker"
+              className="absolute -top-1 h-4 w-0.5 rounded-pill bg-fg"
+              style={{ insetInlineStart: `${project.expectedPercent}%` }}
+            />
+          ) : null}
         </div>
         <div className="flex flex-wrap justify-between gap-2 text-xs font-semibold text-fg-secondary">
           <span>{t("hero.expected", { pct: format.percent(project.expectedPercent) })}</span>
           <span>
-            {daysLeft >= 0
-              ? t("hero.ends", { date: format.day(project.endDate), days: format.number(daysLeft) })
-              : t("hero.ended", { date: format.day(project.endDate) })}
+            {project.endDate === null || daysLeft === null
+              ? format.range(project.startDate, project.endDate)
+              : daysLeft >= 0
+                ? t("hero.ends", { date: format.day(project.endDate), days: format.number(daysLeft) })
+                : t("hero.ended", { date: format.day(project.endDate) })}
           </span>
         </div>
       </div>

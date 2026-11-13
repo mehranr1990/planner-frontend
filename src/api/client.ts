@@ -109,6 +109,30 @@ export interface ApiClient {
   ): Promise<ApiResult<ResponseData<P, M>>>;
 }
 
+/*
+ * The same transport typed against another generated contract `T` (the Phase 2+ subsets under
+ * `./generated`). Types only: one cookie session, one runtime client.
+ */
+type OperationIn<T, P extends keyof T, M extends HttpMethod> = T[P] extends Record<M, infer Op> ? NonNullable<Op> : never;
+export type PathsWithIn<T, M extends HttpMethod> = {
+  [P in keyof T]: T[P] extends Record<M, { responses: unknown }> ? P : never;
+}[keyof T];
+export type ResponseDataIn<T, P extends keyof T, M extends HttpMethod> = DataOf<SuccessContent<OperationIn<T, P, M>>>;
+export type RequestBodyIn<T, P extends keyof T, M extends HttpMethod> = JsonBody<OperationIn<T, P, M>>;
+export type RequestInitIn<T, P extends keyof T, M extends HttpMethod> = ParamsInit<OperationIn<T, P, M>> &
+  BodyInit_<OperationIn<T, P, M>> & { signal?: AbortSignal; redirect?: RequestRedirect };
+
+export interface ApiClientFor<T> {
+  readonly origin: string;
+  request<M extends HttpMethod, P extends PathsWithIn<T, M>>(
+    method: M,
+    path: P,
+    ...init: Empty extends RequestInitIn<T, P, M> ? [RequestInitIn<T, P, M>?] : [RequestInitIn<T, P, M>]
+  ): Promise<ApiResult<ResponseDataIn<T, P, M>>>;
+}
+
+export const typedAs = <T>(client: ApiClient): ApiClientFor<T> => client as unknown as ApiClientFor<T>;
+
 export function buildUrl(origin: string, path: string, pathParams?: object, query?: object): string {
   const filled = path.replace(/\{([^}]+)\}/g, (_, name: string) => {
     const value = (pathParams as Record<string, unknown> | undefined)?.[name];

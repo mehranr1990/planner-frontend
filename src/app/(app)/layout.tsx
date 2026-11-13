@@ -1,6 +1,7 @@
-import type { ReactNode } from "react";
+import { Suspense, type ReactNode } from "react";
 import { ShellFrame } from "@/components/shell/shell-frame";
 import { AuthGate } from "@/features/auth/auth-gate";
+import { MessagingSheetHost } from "@/features/messages/sheets/messaging-sheet-host";
 import { getRequestPreferences } from "@/features/preferences/request-preferences";
 import { getSampleShellData, isSampleData } from "@/fixtures/shell";
 
@@ -27,6 +28,10 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
     <AuthGate>
       <ShellFrame workspaces={workspaces} profile={profile} schedule={schedule} sample={isSampleData}>
         {children}
+        {/* Messages & Meetings sheets (MS-90, MT-02) open over any route. */}
+        <Suspense fallback={null}>
+          <MessagingSheetHost />
+        </Suspense>
       </ShellFrame>
     </AuthGate>
   );

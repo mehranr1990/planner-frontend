@@ -11,7 +11,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { useMyInvitations, useProjectDirectory } from "@/data/project-queries";
 import { useMyTeamInvitations, useTeamDirectory } from "@/data/team-queries";
-import { getAppContext, projectHref, teamHref } from "@/features/navigation/contexts";
+import { companyHref, getAppContext, projectHref, teamHref } from "@/features/navigation/contexts";
 import type { ContextId } from "@/features/navigation/types";
 import { ProjectSwitcherList } from "@/features/projects/shell/project-switcher-list";
 import { useOpenProjectSheet } from "@/features/projects/sheets/project-sheet-params";
@@ -19,6 +19,15 @@ import { useCurrentProjectAccess } from "@/features/projects/use-current-project
 import { TeamSwitcherList } from "@/features/teams/shell/team-switcher-list";
 import { useOpenTeamSheet } from "@/features/teams/sheets/team-sheet-params";
 import { useCurrentTeamAccess } from "@/features/teams/use-current-team";
+import { useCompanyDirectory, useCompanyInvitations } from "@/data/company-queries";
+import { CompanySwitcherList } from "@/features/companies/shell/company-switcher-list";
+import { useOpenCompanySheet } from "@/features/companies/sheets/company-sheet-params";
+import { useCurrentCompanyAccess } from "@/features/companies/use-current-company";
+import { useSocialDirectory } from "@/data/social-queries";
+import { socialHref } from "@/features/social/paths";
+import { SocialSwitcherList } from "@/features/social/shell/social-switcher-list";
+import { useOpenSocialSheet } from "@/features/social/sheets/social-sheet-params";
+import { useCurrentSocialGroup } from "@/features/social/use-social";
 import { useActiveWorkspace, useShell } from "./shell-provider";
 import { useRouteScopedOpen, useShellScope } from "./use-shell-ui";
 
@@ -54,6 +63,13 @@ export function ShellContextSwitcher({ variant = "pill" }: { variant?: "pill" | 
   const teamInvitations = useMyTeamInvitations();
   const currentTeam = useCurrentTeamAccess();
   const openTeamSheet = useOpenTeamSheet();
+  const companyDirectory = useCompanyDirectory();
+  const companyInvitations = useCompanyInvitations();
+  const currentCompany = useCurrentCompanyAccess();
+  const openCompanySheet = useOpenCompanySheet();
+  const socialDirectory = useSocialDirectory();
+  const currentSocial = useCurrentSocialGroup();
+  const openSocialSheet = useOpenSocialSheet();
 
   // Projects / Teams: the directories replace the sample workspace lists.
   const panelWorkspaces = useMemo(
@@ -64,8 +80,10 @@ export function ShellContextSwitcher({ variant = "pill" }: { variant?: "pill" | 
         name: project.name,
       })),
       team: (teamDirectory.data?.teams ?? []).map((team) => ({ id: team.id, name: team.name })),
+      company: (companyDirectory.data?.companies ?? []).map((company) => ({ id: company.id, name: company.name })),
+      social: (socialDirectory.data?.groups ?? []).map((group) => ({ id: group.id, name: group.name })),
     }),
-    [workspaces, directory.data, teamDirectory.data],
+    [workspaces, directory.data, teamDirectory.data, companyDirectory.data, socialDirectory.data],
   );
   const contextLabel = t(getAppContext(scope).labelKey);
   const name =
@@ -73,9 +91,21 @@ export function ShellContextSwitcher({ variant = "pill" }: { variant?: "pill" | 
       ? (current.project?.name ?? contextLabel)
       : scope === "team"
         ? (currentTeam.team?.name ?? t("items.allTeams"))
-        : (workspace?.name ?? contextLabel);
+        : scope === "company"
+          ? (currentCompany.company?.name ?? t("items.allCompanies"))
+          : scope === "social"
+            ? (currentSocial.group?.name ?? t("items.socialHome"))
+            : (workspace?.name ?? contextLabel);
   const activeWorkspaceId =
-    scope === "project" ? current.projectId : scope === "team" ? currentTeam.teamId : activeWorkspaceIds[scope];
+    scope === "project"
+      ? current.projectId
+      : scope === "team"
+        ? currentTeam.teamId
+        : scope === "company"
+          ? currentCompany.companyId
+          : scope === "social"
+            ? currentSocial.groupId
+            : activeWorkspaceIds[scope];
 
   const go = (href: string) => {
     setOpen(false);
@@ -100,7 +130,11 @@ export function ShellContextSwitcher({ variant = "pill" }: { variant?: "pill" | 
             ? projectHref(workspaceId)
             : context === "team"
               ? teamHref(workspaceId)
-              : getAppContext(context).basePath,
+              : context === "company"
+                ? companyHref(workspaceId)
+                : context === "social"
+                  ? socialHref.group(workspaceId)
+                  : getAppContext(context).basePath,
         );
       }}
       projects={
@@ -113,6 +147,32 @@ export function ShellContextSwitcher({ variant = "pill" }: { variant?: "pill" | 
           onNewProject={() => {
             setOpen(false);
             openSheet("project-new");
+          }}
+        />
+      }
+      companies={
+        <CompanySwitcherList
+          directory={companyDirectory.data}
+          invitations={companyInvitations.data ?? []}
+          activeCompanyId={currentCompany.companyId}
+          onOpen={(companyId) => go(companyHref(companyId))}
+          onAll={() => go("/companies")}
+          onNew={() => {
+            setOpen(false);
+            openCompanySheet("company-new");
+          }}
+        />
+      }
+      social={
+        <SocialSwitcherList
+          directory={socialDirectory.data}
+          activeGroupId={currentSocial.groupId}
+          onHome={() => go(socialHref.home)}
+          onOpen={(groupId) => go(socialHref.group(groupId))}
+          onFind={() => go(socialHref.groups("discover"))}
+          onNew={() => {
+            setOpen(false);
+            openSocialSheet("group-new");
           }}
         />
       }

@@ -85,7 +85,7 @@ export function ProjectCard({ project }: { project: ProjectSummary }) {
 
       <div className="flex flex-col gap-1.5">
         <div className="flex items-center justify-between gap-2 text-xs font-semibold">
-          <span className="text-fg tabular">{format.percent(project.progress.percent)}</span>
+          <span className="text-fg tabular">{format.progress(project.progress)}</span>
           <span className="text-fg-secondary tabular max-sm:hidden">
             {t("tasks", { done: format.number(project.progress.done), total: format.number(project.progress.total) })}
           </span>
@@ -94,7 +94,7 @@ export function ProjectCard({ project }: { project: ProjectSummary }) {
           value={project.progress.percent}
           size="sm"
           label={t("progress", { project: project.name })}
-          valueText={format.percent(project.progress.percent)}
+          valueText={format.progress(project.progress)}
           indicatorClassName={paused ? "bg-fg-muted" : undefined}
         />
       </div>

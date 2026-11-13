@@ -1,19 +1,29 @@
 import {
   Activity,
+  Archive,
   Award,
   Box,
   Briefcase,
   Building2,
+  Contact,
+  Image,
+  Map as MapIcon,
+  MessageCircle,
+  Package,
+  Scale,
+  Trophy,
   Calendar,
   ChartGantt,
   ChartNoAxesColumn,
   ChartNoAxesGantt,
   CircleCheck,
   CreditCard,
+  FileText,
   Flag,
   FileChartColumn,
   Folder,
   FolderKanban,
+  HeartHandshake,
   House,
   Inbox,
   Kanban,
@@ -21,6 +31,7 @@ import {
   ListTodo,
   Lightbulb,
   MessageSquareCheck,
+  MessagesSquare,
   NotebookText,
   PenLine,
   RefreshCw,
@@ -34,6 +45,7 @@ import {
   User,
   Users,
   UsersRound,
+  Wallet,
   type LucideIcon,
 } from "lucide-react";
 import type { AppContext, ContextId, NavItem, NavItemId } from "./types";
@@ -79,6 +91,19 @@ export const navItemIcons: Record<NavItemId, LucideIcon> = {
   reports: FileChartColumn,
   planning: ListTodo,
   recognition: Award,
+  resources: Archive,
+  expenses: Wallet,
+  budgets: CreditCard,
+  knowledge: FileText,
+  channels: MessagesSquare,
+  connections: Contact,
+  groups: UsersRound,
+  activities: MapIcon,
+  balances: Scale,
+  lending: Package,
+  chat: MessageCircle,
+  album: Image,
+  challenges: Trophy,
 };
 
 /** URL segment per item; the overview lives at the context base path itself. */
@@ -115,6 +140,19 @@ const segments: Record<Exclude<NavItemId, "overview">, string> = {
   reports: "reports",
   planning: "planning",
   recognition: "recognition",
+  resources: "resources",
+  expenses: "expenses",
+  budgets: "budgets",
+  knowledge: "knowledge",
+  channels: "channels",
+  connections: "connections",
+  groups: "groups",
+  activities: "activities",
+  balances: "balances",
+  lending: "lending",
+  chat: "chat",
+  album: "album",
+  challenges: "challenges",
 };
 
 interface ContextSpec {
@@ -150,6 +188,9 @@ function navItem(
     ...(id === "inbox" ? { badge: "inbox" as const } : {}),
     ...(id === "risks" ? { badge: "risks" as const } : {}),
     ...(id === "checkins" ? { badge: "checkins" as const } : {}),
+    ...(id === "approvals" ? { badge: "approvals" as const } : {}),
+    // Channels (MS-03): unread mentions; announcements live inside it (MT-04).
+    ...(id === "channels" ? { badge: "channels" as const, alsoActiveOn: [`${basePath}/announcements`] } : {}),
   };
 }
 
@@ -203,8 +244,10 @@ const personalMobileNav = (basePath: string): NavItem[] => [
 
 const PROJECTS_BASE = "/projects";
 const TEAMS_BASE = "/teams";
+const COMPANIES_BASE = "/companies";
+const SOCIAL_BASE = "/social";
 
-/** Contexts in display order: Personal, Projects, Teams, Companies. */
+/** Contexts in display order: Personal, Projects, Teams, Companies, Social. */
 export const appContexts: readonly AppContext[] = [
   defineContext({
     id: "personal",
@@ -279,15 +322,59 @@ export const appContexts: readonly AppContext[] = [
       },
     ],
   }),
+  // The collection (/companies, CS-01): "All companies"; the rail lists companies instead.
   defineContext({
     id: "company",
-    basePath: "/companies",
+    basePath: COMPANIES_BASE,
     icon: Building2,
     canAddWorkspace: true,
-    nav: ["overview", "departments", "projects", "people", "goals", "finance", "assets", "approvals", "reports"],
-    mobile: ["overview", "projects", "approvals"],
+    nav: ["overview"],
+    mobile: ["overview"],
+    available: "all",
+    collection: true,
+    mobileNav: (basePath) => [
+      {
+        id: "overview",
+        labelKey: "items.allCompanies",
+        icon: Building2,
+        href: basePath,
+        status: "available",
+        mobileOrder: 1,
+      },
+    ],
   }),
-];
+  /*
+   * Social (SO-01, 5th context, coral): the home rail is
+   * Home · Connections | Groups · Activities | My balances · Lending and a
+   * New (+) action; the bottom bar is Home · Groups · (+) · Activities · More.
+   */
+  defineContext({
+    id: "social",
+    basePath: SOCIAL_BASE,
+    icon: HeartHandshake,
+    canAddWorkspace: true,
+    nav: ["overview", "connections", "groups", "activities", "balances", "lending"],
+    mobile: ["overview", "groups", "activities"],
+    available: "all",
+    rail: {
+      groups: [
+        ["overview", "connections"],
+        ["groups", "activities"],
+        ["balances", "lending"],
+      ],
+      footer: [],
+    },
+  }),
+].map((context) =>
+  context.id === "social"
+    ? {
+        ...context,
+        nav: context.nav.map((item) =>
+          item.id === "overview" ? { ...item, labelKey: "items.socialHome" as const, icon: House } : item.id === "lending" ? { ...item, labelKey: "items.socialLending" as const } : item,
+        ),
+      }
+    : context,
+);
 
 const contextById = new Map<ContextId, AppContext>(appContexts.map((context) => [context.id, context]));
 
@@ -310,7 +397,7 @@ export const projectRail = {
   groups: [
     ["overview", "tasks", "timeline", "gantt", "calendar"],
     ["milestones", "risks", "workload"],
-    ["members", "files", "analytics"],
+    ["channels", "members", "files", "analytics"],
   ],
   footer: ["settings"],
 } as const satisfies AppContext["rail"];
@@ -363,7 +450,7 @@ export const teamRail = {
   groups: [
     ["overview", "work", "calendar", "planning"],
     ["projects", "goals", "people", "analytics"],
-    ["checkins", "recognition", "files"],
+    ["channels", "checkins", "recognition", "files"],
   ],
   footer: ["settings"],
 } as const satisfies AppContext["rail"];
@@ -395,4 +482,90 @@ export function getTeamContext(teamId: string): AppContext {
 export function teamHref(teamId: string, item: NavItemId = "overview"): string {
   const basePath = `${TEAMS_BASE}/${encodeURIComponent(teamId)}`;
   return item === "overview" ? basePath : `${basePath}/${segments[item]}`;
+}
+
+/*
+ * Inside a company (CS-01, C1/C2/C11): routes are /companies/[id]/…, the
+ * rail is four groups + Settings (organisation · work · money · knowledge),
+ * Reimbursements live inside Expenses, and the bottom bar is
+ * Overview · Work · (+) · Approvals · More. Items the role cannot open are
+ * hidden by the nav filter. Built per company id, cached.
+ */
+export const companyRail = {
+  groups: [
+    ["overview", "departments", "people"],
+    ["work", "goals", "resources"],
+    ["expenses", "approvals", "budgets"],
+    ["channels", "knowledge", "reports"],
+  ],
+  footer: ["settings"],
+} as const satisfies AppContext["rail"];
+
+const companyNavIds: readonly NavItemId[] = [...companyRail.groups.flat(), ...companyRail.footer];
+const companyContexts = new Map<string, AppContext>();
+
+/** The company context for one company id (nav hrefs carry the id). */
+export function getCompanyContext(companyId: string): AppContext {
+  const cached = companyContexts.get(companyId);
+  if (cached) return cached;
+  const base = getAppContext("company");
+  const basePath = `${COMPANIES_BASE}/${encodeURIComponent(companyId)}`;
+  const mobile: NavItemId[] = ["overview", "work", "approvals"];
+  const context: AppContext = {
+    ...base,
+    basePath,
+    nav: companyNavIds.map((id) => {
+      const item = navItem(id, basePath, mobile, "all");
+      return id === "work" ? { ...item, labelKey: "items.companyWork" as const, tabLabelKey: "items.companyWorkTab" as const } : item;
+    }),
+    rail: companyRail,
+    workspaceId: companyId,
+  };
+  delete context.collection;
+  delete context.mobileNav;
+  companyContexts.set(companyId, context);
+  return context;
+}
+
+/** Route of a company module (overview = the company root). */
+export function companyHref(companyId: string, item: NavItemId = "overview"): string {
+  const basePath = `${COMPANIES_BASE}/${encodeURIComponent(companyId)}`;
+  return item === "overview" ? basePath : `${basePath}/${segments[item]}`;
+}
+
+/*
+ * Inside a social group (SO-01): routes are /social/groups/[id]/…; the rail
+ * is Back · Overview · Activities · Calendar · Chat | Expenses · Lending &
+ * found · Album · Challenges | Members | Settings, and the bottom bar is
+ * Overview · Activities · (+) · Chat · More. Chat opens the group's
+ * conversation in Messages (Phase 5 engine). Built per group id, cached.
+ */
+export const socialGroupRail = {
+  groups: [
+    ["overview", "activities", "calendar", "chat"],
+    ["expenses", "lending", "album", "challenges"],
+    ["members"],
+  ],
+  footer: ["settings"],
+} as const satisfies AppContext["rail"];
+
+const socialGroupNavIds: readonly NavItemId[] = [...socialGroupRail.groups.flat(), ...socialGroupRail.footer];
+const socialGroupContexts = new Map<string, AppContext>();
+
+/** The social group context for one group id (nav hrefs carry the id). */
+export function getSocialGroupContext(groupId: string): AppContext {
+  const cached = socialGroupContexts.get(groupId);
+  if (cached) return cached;
+  const base = getAppContext("social");
+  const basePath = `${SOCIAL_BASE}/groups/${encodeURIComponent(groupId)}`;
+  const mobile: NavItemId[] = ["overview", "activities", "chat"];
+  const context: AppContext = {
+    ...base,
+    basePath,
+    nav: socialGroupNavIds.map((id) => navItem(id, basePath, mobile, "all")),
+    rail: socialGroupRail,
+    workspaceId: groupId,
+  };
+  socialGroupContexts.set(groupId, context);
+  return context;
 }

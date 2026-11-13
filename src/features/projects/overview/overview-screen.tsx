@@ -172,7 +172,8 @@ function StatusControl({ project, canEdit }: { project: ProjectSummary; canEdit:
   const labels = useProjectLabels();
   const save = useSetProjectStatus(project.id);
   const [open, setOpen] = useState(false);
-  const [health, setHealth] = useState<ProjectHealth>(project.health);
+  // Unknown health opens the picker on the first choice; nothing is saved until the user confirms.
+  const [health, setHealth] = useState<ProjectHealth>(project.health ?? HEALTHS[0]!);
   const [note, setNote] = useState(project.statusNote?.text ?? "");
   const noteId = useId();
   const chip = <ProjectStatusChip health={project.health} lifecycle={project.lifecycle} />;
@@ -184,7 +185,7 @@ function StatusControl({ project, canEdit }: { project: ProjectSummary; canEdit:
       onOpenChange={(next) => {
         setOpen(next);
         if (next) {
-          setHealth(project.health);
+          setHealth(project.health ?? HEALTHS[0]!);
           setNote(project.statusNote?.text ?? "");
         }
       }}

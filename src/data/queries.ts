@@ -14,6 +14,7 @@ import type { WeekConfig } from "@/lib/dates/week";
 import type {
   DayPriorityRef,
   FinanceMonth,
+  FocusSpan,
   FocusSummary,
   Goal,
   GoalLifecycle,
@@ -218,7 +219,7 @@ export function useFocusToday(day: string) {
 export function useRecordFocusSessions() {
   const { plan } = useRepositories();
   const client = useQueryClient();
-  return useMutation<FocusSummary, Error, { day: string; count: number; cycle: number }>({
+  return useMutation<FocusSummary, Error, { day: string; count: number; cycle: number; spans?: readonly FocusSpan[] }>({
     mutationFn: ({ day, ...input }) => plan.recordFocusSessions(day, input),
     onSuccess: (_summary, { day }) => client.invalidateQueries({ queryKey: planKeys.focus(day) }),
   });

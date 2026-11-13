@@ -221,7 +221,8 @@ export function ImportTab({ phone }: { phone: boolean }) {
                         setStep("import");
                         toast({
                           title: t("import.done", { n: done.created }),
-                          action: {
+                          // Undo only where the server keeps an undo window (config answered).
+                          action: !config.data ? undefined : {
                             label: t("import.undo"),
                             altText: t("import.undo"),
                             onClick: () =>

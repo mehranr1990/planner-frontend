@@ -26,7 +26,8 @@ describe("personal fixtures", () => {
   });
 
   it("domain scopes match the design-system scopes", () => {
-    expectTypeOf<DomainScope>().toEqualTypeOf<Scope>();
+    // Social (Phase 6) is a colour scope and context, never a task scope (social and work never mix).
+    expectTypeOf<DomainScope>().toEqualTypeOf<Exclude<Scope, "social">>();
   });
 });
 

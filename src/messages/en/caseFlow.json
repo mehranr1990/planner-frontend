@@ -4,6 +4,7 @@
   "badgeAlert": "{name}: {n} open, something blocked or waiting",
   "badgeDone": "{name}: all done",
   "badgeNone": "{name}: no step in this flow",
+  "filterPerson": "Show only {name}'s tasks",
   "more": "+{n} more",
   "needs": "Needs {titles}",
   "neededBy": "→ Needed by {titles}",

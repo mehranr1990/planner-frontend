@@ -1,15 +1,26 @@
 "use client";
 
-import { Plus } from "lucide-react";
+import { CalendarDays, Filter, Plus, Share2 } from "lucide-react";
 import Link from "next/link";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { useId } from "react";
 import { Direction } from "radix-ui";
+import { CaseFlow } from "@/components/context/case-flow";
 import { AccessLoading, AccessState } from "@/components/feedback/access-state";
-import { Button } from "@/components/ui/button";
+import { Button, IconButton } from "@/components/ui/button";
 import { Icon } from "@/components/ui/icon";
-import type { ProjectWorkflow, WorkflowStatus } from "@/data/project-domain";
-import { useProjectStatusCounts, useProjectWorkflow } from "@/data/project-queries";
+import { PillGroup } from "@/components/ui/pills";
+import { toast } from "@/components/ui/toast";
+import { getPlannerNow } from "@/data/clock";
+import type { ProjectTask, ProjectWorkflow, WorkflowStatus } from "@/data/project-domain";
+import {
+  useMilestoneRows,
+  useProjectMembers,
+  useProjectStatusCounts,
+  useProjectTasks,
+  useProjectWorkflow,
+} from "@/data/project-queries";
 import { projectHref } from "@/features/navigation/contexts";
 import { demoAccessOptions } from "../demo-state";
 import { useProjectFormat } from "../format";
@@ -18,15 +29,23 @@ import { ProjectPageHeader } from "../project-page-header";
 import { TaskViewSwitch, useTasksUrlState } from "../tasks/task-view-shared";
 import { useWorkflowStatusLabel, WorkflowStatusChip } from "../workflow-status-chip";
 import { layoutFlow, NODE_H, NODE_W } from "./flow-layout";
+import { buildProjectFlow, flowFilterValue, parseFlowFilter, type FlowRowFacts } from "./flow-model";
 
 /*
- * PJ-06 · Workflow view (/projects/[id]/flow), the Flow view mode of Tasks.
- * Read-only graph of the published workflow: status nodes with current
- * counts, arrows = allowed transitions (aria-hidden SVG); screen readers and
- * keyboards get the table under it with the same data. A status opens the
- * List filtered by it. "Edit in Settings" only when Settings is visible to
- * the user (Admin+). Phones (D18): no graph, the table only. RTL mirrors the
- * geometry through coordinates, never a CSS flip.
+ * PJ-06 · Flow view (/projects/[id]/flow), the Flow view mode of Tasks (D20).
+ * Main part: filter pills (All open tasks · each milestone · My tasks;
+ * default = nearest at-risk milestone, else All; `?flow=`) over the shared
+ * CaseFlow of those tasks (columns = workflow statuses, Blocked = row state,
+ * lines = dependencies, Done + milestone tiles, notch = members: avatar =
+ * filter by person `?person=`, + = assign → List of unassigned). Read-only:
+ * rows open the task drawer.
+ * Below, the Workflow section: read-only graph of the published workflow
+ * (status nodes with counts, arrows = allowed transitions, aria-hidden SVG)
+ * and the accessible table with the same data. A status opens the List
+ * filtered by it. "Edit in Settings" only when Settings is visible (Admin+).
+ * Phones: CaseFlow stacks its columns; no graph, the table only. RTL mirrors
+ * the graph through coordinates, never a CSS flip.
+ * Live: milestones are unavailable there, so only All / My tasks are offered.
  */
 
 export function ProjectFlowScreen() {
@@ -40,6 +59,10 @@ export function ProjectFlowScreen() {
   const url = useTasksUrlState();
   const workflow = useProjectWorkflow(project.id);
   const counts = useProjectStatusCounts(project.id, demoAccessOptions(demo));
+  const allTasks = useProjectTasks(project.id, { view: "all" }, demoAccessOptions(demo));
+  const myTasks = useProjectTasks(project.id, { view: "mine" }, demoAccessOptions(demo));
+  const members = useProjectMembers(project.id);
+  const milestoneRows = useMilestoneRows(project.id);
   const captionId = useId();
 
   const header = (
@@ -62,7 +85,9 @@ export function ProjectFlowScreen() {
     />
   );
 
-  if (!workflow.data || !counts.data) {
+  // Milestones are unavailable in live mode (error) → no milestone pills, never invented ones.
+  const milestonesReady = milestoneRows.data !== undefined || milestoneRows.isError;
+  if (!workflow.data || !counts.data || !allTasks.data || !myTasks.data || !members.data || !milestonesReady) {
     return (
       <>
         {header}
@@ -83,6 +108,20 @@ export function ProjectFlowScreen() {
     <>
       {header}
       {demo === "pending" || demo === "quota" ? <AccessState kind={demo} titleAs="h2" /> : null}
+
+      <TaskCaseFlow
+        workflow={wf}
+        all={allTasks.data.tasks}
+        mine={myTasks.data.tasks}
+        members={members.data}
+        milestones={milestoneRows.data ?? []}
+        canAssign={capabilities.assignTasks}
+      />
+
+      <p className="flex flex-wrap items-baseline gap-x-3 gap-y-1 px-1 pt-2">
+        <span className="text-xs font-bold tracking-wide text-fg uppercase">{t("caseFlow.workflow")}</span>
+        <span className="text-xs text-fg-secondary">{t("caseFlow.workflowHint")}</span>
+      </p>
 
       {/* The graph (not on phones, D18). */}
       <section aria-labelledby={`${captionId}-title`} className="flex flex-col gap-4 rounded-[28px] bg-surface p-5 max-sm:hidden">
@@ -159,6 +198,165 @@ export function ProjectFlowScreen() {
           </table>
         </div>
       </section>
+    </>
+  );
+}
+
+interface TaskCaseFlowProps {
+  workflow: ProjectWorkflow;
+  all: readonly ProjectTask[];
+  mine: readonly ProjectTask[];
+  members: Parameters<typeof buildProjectFlow>[0]["members"];
+  milestones: Parameters<typeof buildProjectFlow>[0]["milestones"];
+  canAssign: boolean;
+}
+
+/** The CaseFlow board of the filtered tasks (D20). URL-held filter (`flow`) and person (`person`). */
+function TaskCaseFlow({ workflow, all, mine, members, milestones, canAssign }: TaskCaseFlowProps) {
+  const t = useTranslations("ProjectTasks.caseFlow");
+  const tMilestones = useTranslations("Milestones.status");
+  const format = useProjectFormat();
+  const statusLabel = useWorkflowStatusLabel();
+  const { project } = useProject();
+  const router = useRouter();
+  const pathname = usePathname();
+  const params = useSearchParams();
+  const filter = parseFlowFilter(params.get("flow"), milestones);
+  const person = params.get("person");
+  const tasksHref = projectHref(project.id, "tasks");
+  const setParams = (changes: Record<string, string | null>) => {
+    const next = new URLSearchParams(params.toString());
+    for (const [key, value] of Object.entries(changes)) {
+      if (value === null) next.delete(key);
+      else next.set(key, value);
+    }
+    const query = next.toString();
+    router.replace(query ? `${pathname}?${query}` : pathname, { scroll: false });
+  };
+
+  const model = buildProjectFlow({
+    workflow,
+    all,
+    mine,
+    members,
+    milestones,
+    filter,
+    person: members.some((member) => member.id === person) ? person : null,
+    today: getPlannerNow().slice(0, 10),
+    href: (task) => `${tasksHref}/${encodeURIComponent(task.id)}`,
+  });
+
+  const filterName =
+    filter.kind === "milestone" ? (model.milestone?.milestone.title ?? "") : t(filter.kind === "mine" ? "mine" : "all");
+  const listHref =
+    filter.kind === "milestone"
+      ? `${tasksHref}?milestone=${encodeURIComponent(filter.id)}`
+      : filter.kind === "mine"
+        ? `${tasksHref}?view=mine`
+        : tasksHref;
+  const sub = (facts: FlowRowFacts) => {
+    const parts: string[] = [];
+    if (facts.unassigned) parts.push(t("unassigned"));
+    if (facts.waitingOn.length > 0) {
+      const titles = facts.waitingOn.join(t("separator"));
+      parts.push(facts.blocked ? t("blockedBy", { titles }) : t("needs", { titles }));
+    }
+    if (facts.pending) parts.push(t("pending"));
+    return parts.length ? parts.join(" · ") : undefined;
+  };
+
+  const milestone = model.milestone;
+  const outcomes = [
+    ...model.done.map((task, index) => ({
+      id: task.id,
+      title: task.title,
+      highlighted: index === 0,
+      href: `${tasksHref}/${encodeURIComponent(task.id)}`,
+      meta: [task.assignees.find((assignee) => assignee.state !== "declined")?.person.name, task.completedAt ? format.day(task.completedAt.slice(0, 10)) : null]
+        .filter(Boolean)
+        .join(" · "),
+    })),
+    ...(milestone
+      ? [
+          {
+            id: `milestone-${milestone.milestone.id}`,
+            title: milestone.milestone.title,
+            href: projectHref(project.id, "milestones"),
+            meta: t("milestoneMeta", {
+              date: format.day(milestone.milestone.due),
+              status: tMilestones(milestone.status),
+            }),
+          },
+        ]
+      : []),
+  ];
+
+  return (
+    <>
+      <PillGroup
+        label={t("filterLabel")}
+        value={flowFilterValue(filter)}
+        onValueChange={(value) => setParams({ flow: value, person: null })}
+        className="max-sm:overflow-x-auto"
+        options={[
+          { value: "all", label: t("all") },
+          ...milestones.map((row) => ({ value: row.milestone.id, label: row.milestone.title })),
+          { value: "mine", label: t("mine") },
+        ]}
+      />
+      <CaseFlow
+        scope="project"
+        title={t("title", { name: filterName })}
+        people={model.people}
+        columns={model.columns.map(({ status, rows }) => ({
+          id: status.id,
+          label: statusLabel(status),
+          rows: rows.map(({ facts, ...row }) => ({ ...row, sub: sub(facts) })),
+          empty: { title: t("emptyTitle", { status: statusLabel(status) }), hint: t("emptyHint") },
+          moreHref: `${listHref}${listHref.includes("?") ? "&" : "?"}status=${encodeURIComponent(status.id)}`,
+        }))}
+        links={model.links}
+        outcomes={outcomes}
+        outcomeLabel={milestone ? t("outcomesMilestone") : t("outcomes")}
+        selectedPersonId={person}
+        onPersonSelect={(id) => setParams({ person: person === id ? null : id })}
+        onPersonAction={
+          canAssign
+            ? () =>
+                router.push(
+                  filter.kind === "milestone"
+                    ? `${tasksHref}?view=unassigned&milestone=${encodeURIComponent(filter.id)}`
+                    : `${tasksHref}?view=unassigned`,
+                )
+            : undefined
+        }
+        footnote={t("footnote", {
+          filter: filterName,
+          total: format.number(model.total),
+          done: format.number(model.doneCount),
+        })}
+        actions={
+          <>
+            <IconButton icon={Filter} label={t("openList")} variant="secondary" onClick={() => router.push(listHref)} />
+            <IconButton
+              icon={Share2}
+              label={t("share")}
+              variant="secondary"
+              onClick={() => {
+                void navigator.clipboard?.writeText(window.location.href);
+                toast({ title: t("copied") });
+              }}
+            />
+            <Link
+              href={projectHref(project.id, "calendar")}
+              aria-label={t("calendar")}
+              className="inline-flex size-11 items-center justify-center rounded-full bg-surface text-fg inset-ring inset-ring-line hover:bg-subtle focus-visible:focus-ring"
+            >
+              <Icon icon={CalendarDays} size={18} />
+            </Link>
+          </>
+        }
+      />
     </>
   );
 }

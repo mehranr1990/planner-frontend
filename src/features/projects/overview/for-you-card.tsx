@@ -39,7 +39,7 @@ export function ForYouCard({
   const t = useTranslations("Project");
   const format = useProjectFormat();
   const work = useMyProjectWork(projectId);
-  const { accept, decline } = useAssignmentActions();
+  const { accept, decline } = useAssignmentActions(projectId);
   const pending = work.data?.pending ?? [];
   const open = work.data?.open ?? [];
   if (!canAccept || (pending.length === 0 && open.length === 0)) return null;

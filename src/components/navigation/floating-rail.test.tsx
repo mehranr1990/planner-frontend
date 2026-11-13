@@ -1,7 +1,5 @@
 import { screen, within } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
-import { useState } from "react";
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it } from "vitest";
 import { DEFAULT_PLANNER_SETTINGS } from "@/features/planner-settings/planner-settings";
 import { renderWithProviders } from "@/test/render";
 import { setMockPathname } from "@/test/setup";
@@ -13,20 +11,33 @@ describe("FloatingRail", () => {
     renderWithProviders(<FloatingRail />);
     const nav = screen.getByRole("navigation", { name: "Companies navigation" });
     expect(nav).toHaveAttribute("data-scope", "company");
-    expect(within(nav).getAllByRole("listitem")).toHaveLength(9);
   });
 
-  it("marks the overview current and renders planned items as disabled non-links (Companies)", () => {
-    setMockPathname("/companies");
-    renderWithProviders(<FloatingRail />);
-    const nav = screen.getByRole("navigation", { name: "Companies navigation" });
-    const links = within(nav).getAllByRole("link");
-    expect(links).toHaveLength(1);
-    expect(links[0]).toHaveAccessibleName("Overview");
-    expect(links[0]).toHaveAttribute("aria-current", "page");
-    const work = within(nav).getByRole("button", { name: "Departments" });
-    expect(work).toHaveAttribute("aria-disabled", "true");
-    expect(work).toHaveAccessibleDescription("Coming soon");
+  describe("Companies (CS-01)", () => {
+    it("collection: All companies, my companies as tiles, New company", async () => {
+      setMockPathname("/companies");
+      renderWithProviders(<FloatingRail />);
+      const nav = screen.getByRole("navigation", { name: "Companies navigation" });
+      expect(nav).toHaveAttribute("data-rail", "collection");
+      expect(within(nav).getByRole("link", { name: "All companies" })).toHaveAttribute("aria-current", "page");
+      const yours = await within(nav).findByRole("list", { name: "Your companies" });
+      expect(within(yours).getAllByRole("link").map((link) => link.getAttribute("href"))).toEqual([
+        "/companies/euroly",
+        "/companies/araxitis",
+      ]);
+      expect(within(nav).getByRole("button", { name: "New company" })).toHaveAttribute("aria-haspopup", "dialog");
+    });
+
+    it("inside a company: four groups + Settings, approvals badge, role-filtered", async () => {
+      setMockPathname("/companies/euroly/approvals");
+      renderWithProviders(<FloatingRail />);
+      const nav = screen.getByRole("navigation", { name: "Companies navigation" });
+      expect(nav).toHaveAttribute("data-rail", "grouped");
+      expect(await within(nav).findByRole("link", { name: /^Approvals/ })).toHaveAttribute("aria-current", "page");
+      expect(within(nav).getByRole("link", { name: "Projects & teams" })).toHaveAttribute("href", "/companies/euroly/work");
+      expect(within(nav).getAllByRole("link")).toHaveLength(13);
+      expect(nav.querySelectorAll("[data-slot='rail-separator']")).toHaveLength(3);
+    });
   });
 
   describe("Teams (TS-01)", () => {
@@ -61,6 +72,7 @@ describe("FloatingRail", () => {
         "/teams/design/goals",
         "/teams/design/people",
         "/teams/design/analytics",
+        "/teams/design/channels",
         "/teams/design/check-ins",
         "/teams/design/recognition",
         "/teams/design/files",
@@ -116,6 +128,7 @@ describe("FloatingRail", () => {
         "/projects/website-redesign/milestones",
         "/projects/website-redesign/risks",
         "/projects/website-redesign/workload",
+        "/projects/website-redesign/channels",
         "/projects/website-redesign/members",
         "/projects/website-redesign/files",
         "/projects/website-redesign/analytics",
@@ -209,81 +222,9 @@ describe("FloatingRail", () => {
     });
   });
 
-  it("toggles expanded state with aria-expanded, aria-controls and visible labels (contexts with a flat rail)", async () => {
-    const user = userEvent.setup();
-    const onExpandedChange = vi.fn();
-    setMockPathname("/companies");
-    renderWithProviders(<FloatingRail onExpandedChange={onExpandedChange} />);
-
-    const toggle = screen.getByRole("button", { name: "Expand navigation" });
-    expect(toggle).toHaveAttribute("aria-expanded", "false");
-    expect(document.getElementById(toggle.getAttribute("aria-controls")!)).toBeInTheDocument();
-    expect(screen.getByText("Overview")).toHaveClass("sr-only");
-    expect(screen.getByRole("navigation")).toHaveClass("w-16");
-
-    await user.click(toggle);
-    const collapse = screen.getByRole("button", {
-      name: "Collapse navigation",
-    });
-    expect(collapse).toBe(toggle);
-    expect(collapse).toHaveAttribute("aria-expanded", "true");
-    expect(collapse).toHaveFocus();
-    expect(screen.getByText("Overview")).not.toHaveClass("sr-only");
-    expect(screen.getAllByText("Coming soon").length).toBeGreaterThan(0);
-    expect(screen.getByRole("navigation")).toHaveClass("w-58");
-    expect(onExpandedChange).toHaveBeenLastCalledWith(true);
-
-    await user.keyboard("{Enter}");
-    expect(toggle).toHaveAttribute("aria-expanded", "false");
-    expect(onExpandedChange).toHaveBeenLastCalledWith(false);
-  });
-
-  it("supports controlled expanded state", async () => {
-    const user = userEvent.setup();
-    function Controlled() {
-      const [expanded, setExpanded] = useState(true);
-      return (
-        <>
-          <FloatingRail context="company" expanded={expanded} onExpandedChange={setExpanded} />
-          <output>{String(expanded)}</output>
-        </>
-      );
-    }
-    renderWithProviders(<Controlled />);
-    expect(screen.getByRole("navigation", { name: "Companies navigation" })).toBeInTheDocument();
-    await user.click(screen.getByRole("button", { name: "Collapse navigation" }));
-    expect(screen.getByText("false")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Expand navigation" })).toHaveAttribute("aria-expanded", "false");
-  });
-
-  it("honours a fixed expanded prop when no handler updates it", async () => {
-    const user = userEvent.setup();
-    renderWithProviders(<FloatingRail context="company" expanded />);
-    await user.click(screen.getByRole("button", { name: "Collapse navigation" }));
-    expect(screen.getByRole("button", { name: "Collapse navigation" })).toHaveAttribute("aria-expanded", "true");
-  });
-
   it("falls back to Personal outside any context", () => {
     setMockPathname("/");
     renderWithProviders(<FloatingRail />);
     expect(screen.getByRole("navigation", { name: "Personal navigation" })).toBeInTheDocument();
-  });
-
-  it("expands a flat rail in Persian RTL with the same item order (Companies)", async () => {
-    const user = userEvent.setup();
-    setMockPathname("/companies");
-    renderWithProviders(
-      <div dir="rtl">
-        <FloatingRail />
-      </div>,
-      { preferences: { locale: "fa", direction: "rtl", digits: "fa" } },
-    );
-    const nav = screen.getByRole("navigation");
-    await user.click(within(nav).getByRole("button", { name: "باز کردن ناوبری" }));
-    const names = within(nav)
-      .getAllByRole("listitem")
-      .map((item) => item.textContent);
-    expect(names[0]).toBe("نمای کلی");
-    expect(within(nav).getByRole("button", { name: "جمع کردن ناوبری" })).toHaveAttribute("aria-expanded", "true");
   });
 });

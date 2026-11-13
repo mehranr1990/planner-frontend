@@ -34,13 +34,12 @@ describe("MobileBottomNav", () => {
     expect(screen.getByRole("link", { name: "Tasks" })).not.toHaveAttribute("aria-current");
   });
 
-  it("marks the active item and disables planned ones (Companies)", () => {
-    setMockPathname("/companies");
-    renderWithProviders(<MobileBottomNav fabLabel="Quick add" />);
-    expect(screen.getByRole("link", { name: "Overview" })).toHaveAttribute("aria-current", "page");
-    const work = screen.getByRole("button", { name: "Approvals" });
-    expect(work).toHaveAttribute("aria-disabled", "true");
-    expect(work).toHaveAccessibleDescription("Coming soon");
+  it("shows Overview · Work · Approvals inside a company (CS-01 C11)", () => {
+    setMockPathname("/companies/euroly/approvals");
+    renderWithProviders(<MobileBottomNav fabLabel="New expense" />);
+    expect(screen.getByRole("link", { name: "Overview" })).toHaveAttribute("href", "/companies/euroly");
+    expect(screen.getByRole("link", { name: "Work" })).toHaveAttribute("href", "/companies/euroly/work");
+    expect(screen.getByRole("link", { name: "Approvals" })).toHaveAttribute("aria-current", "page");
   });
 
   it("follows the project in the URL: Overview · Tasks · Calendar (D8)", () => {

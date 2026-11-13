@@ -77,7 +77,8 @@ function sortProjects(projects: ProjectSummary[], sort: ProjectSort, locale: str
     if (sort === "name") return byName(a, b);
     if (sort === "progress") return b.progress.percent - a.progress.percent || byName(a, b);
     if (sort === "due") {
-      const due = (project: ProjectSummary) => project.nextMilestone?.due ?? project.endDate;
+      // Undeclared dates sort last.
+      const due = (project: ProjectSummary) => project.nextMilestone?.due ?? project.endDate ?? "9999-12-31";
       return due(a).localeCompare(due(b)) || byName(a, b);
     }
     return Date.parse(b.updatedAt) - Date.parse(a.updatedAt);

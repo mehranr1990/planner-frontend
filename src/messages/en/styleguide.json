@@ -35,7 +35,8 @@
     "primary": "Primary",
     "secondary": "Secondary",
     "outline": "Outline",
-    "destructive": "Delete"
+    "destructive": "Delete",
+    "social": "Social"
   },
   "neutrals": {
     "title": "Neutrals",

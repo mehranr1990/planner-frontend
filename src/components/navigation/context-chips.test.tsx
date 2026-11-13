@@ -9,8 +9,8 @@ describe("ContextChips", () => {
     renderWithProviders(<ContextChips />);
     const nav = screen.getByRole("navigation", { name: "Contexts" });
     const links = within(nav).getAllByRole("link");
-    expect(links.map((link) => link.getAttribute("href"))).toEqual(["/personal", "/projects", "/teams", "/companies"]);
-    expect(links.map((link) => link.getAttribute("data-scope"))).toEqual(["personal", "project", "team", "company"]);
+    expect(links.map((link) => link.getAttribute("href"))).toEqual(["/personal", "/projects", "/teams", "/companies", "/social"]);
+    expect(links.map((link) => link.getAttribute("data-scope"))).toEqual(["personal", "project", "team", "company", "social"]);
     expect(links.every((link) => !link.hasAttribute("aria-current"))).toBe(true);
     expect(nav.querySelector("[data-slot=active-check]")).toBeNull();
   });
@@ -77,6 +77,7 @@ describe("ContextChips", () => {
       "پروژه‌ها",
       "تیم‌ها",
       "شرکت‌ها",
+      "اجتماعی",
     ]);
     expect(screen.getByRole("link", { name: "شخصی" })).toHaveAttribute("aria-current", "page");
   });

@@ -24,13 +24,13 @@ describe("mock project tasks (PJ-02)", () => {
 
   it("update checks the revision (409) and the workflow transitions", async () => {
     const { projectTasks } = createMockProjects({ respond });
-    await expect(projectTasks.update("api-integration", { statusId: "in-review" }, 7)).rejects.toMatchObject({
+    await expect(projectTasks.update("website-redesign", "api-integration", { statusId: "in-review" }, 7)).rejects.toMatchObject({
       code: "conflict",
     });
-    await expect(projectTasks.update("api-integration", { statusId: "done" }, 1)).rejects.toMatchObject({
+    await expect(projectTasks.update("website-redesign", "api-integration", { statusId: "done" }, 1)).rejects.toMatchObject({
       code: "invalid",
     });
-    const moved = await projectTasks.update("api-integration", { statusId: "in-review" }, 1);
+    const moved = await projectTasks.update("website-redesign", "api-integration", { statusId: "in-review" }, 1);
     expect(moved).toMatchObject({ statusId: "in-review", revision: 2 });
   });
 
@@ -48,6 +48,6 @@ describe("mock project tasks (PJ-02)", () => {
     // Neither In progress nor To do may jump to Done: both refused, nothing applied.
     expect(result.updated).toEqual([]);
     expect(result.failedIds).toEqual(["api-integration", "icon-set"]);
-    await expect(projectTasks.remove(["icon-set"])).rejects.toMatchObject({ code: "forbidden" });
+    await expect(projectTasks.remove("website-redesign", ["icon-set"])).rejects.toMatchObject({ code: "forbidden" });
   });
 });

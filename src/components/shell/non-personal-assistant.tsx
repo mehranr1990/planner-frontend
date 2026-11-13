@@ -11,5 +11,5 @@ import { useShellScope } from "./use-shell-ui";
  */
 export function NonPersonalAssistant() {
   const scope = useShellScope();
-  return scope === "personal" || scope === "project" || scope === "team" ? null : <AssistantLauncher />;
+  return scope === "personal" || scope === "project" || scope === "team" || scope === "company" || scope === "social" ? null : <AssistantLauncher />;
 }

@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { scopes } from "@/design-system/tokens/colors";
 import enNavigation from "@/messages/en/navigation.json";
 import faNavigation from "@/messages/fa/navigation.json";
-import { appContexts, getAppContext, getProjectContext, getTeamContext, projectHref, teamHref } from "./contexts";
+import { appContexts, getAppContext, getProjectContext, getTeamContext, projectHref, teamHref, companyHref, getCompanyContext } from "./contexts";
 import { navItemIds } from "./types";
 
 type Tree = { [key: string]: string | Tree };
@@ -20,13 +20,14 @@ const catalogues = {
 };
 
 describe("navigation contexts", () => {
-  it("lists the four scopes in display order", () => {
+  it("lists the five scopes in display order (Social after Companies, SO-01)", () => {
     expect(appContexts.map((context) => context.id)).toEqual([...scopes]);
     expect(appContexts.map((context) => context.basePath)).toEqual([
       "/personal",
       "/projects",
       "/teams",
       "/companies",
+      "/social",
     ]);
   });
 
@@ -51,8 +52,33 @@ describe("navigation contexts", () => {
       project: ["overview"],
       // The collection (/teams, TS-01); a team's own nav comes from getTeamContext.
       team: ["overview"],
-      company: ["overview", "departments", "projects", "people", "goals", "finance", "assets", "approvals", "reports"],
+      // The collection (/companies, CS-01); a company's own nav comes from getCompanyContext.
+      company: ["overview"],
+      social: ["overview", "connections", "groups", "activities", "balances", "lending"],
     });
+  });
+
+  it("builds the company rail: four groups + Settings, Work labelled Projects & teams (CS-01 C2)", () => {
+    const context = getCompanyContext("euroly");
+    expect(context.nav.map((item) => item.id)).toEqual([
+      "overview",
+      "departments",
+      "people",
+      "work",
+      "goals",
+      "resources",
+      "expenses",
+      "approvals",
+      "budgets",
+      "channels",
+      "knowledge",
+      "reports",
+      "settings",
+    ]);
+    expect(context.nav.find((item) => item.id === "work")?.labelKey).toBe("items.companyWork");
+    expect(context.nav.find((item) => item.id === "approvals")?.badge).toBe("approvals");
+    expect(context.nav.filter((item) => item.mobileOrder).map((item) => item.id)).toEqual(["overview", "work", "approvals"]);
+    expect(companyHref("euroly", "resources")).toBe("/companies/euroly/resources");
   });
 
   it.each(appContexts.map((context) => [context.id, context] as const))("%s has unique ids and hrefs", (_, context) => {
@@ -63,12 +89,12 @@ describe("navigation contexts", () => {
   });
 
   it.each(appContexts.map((context) => [context.id, context] as const))(
-    "%s hrefs start with the base path; Personal is fully routed, other contexts only their overview",
+    "%s hrefs start with the base path; Personal and Social are fully routed, other contexts only their overview",
     (_, context) => {
       for (const item of context.nav) {
         expect(item.href === context.basePath || item.href.startsWith(`${context.basePath}/`), item.href).toBe(true);
         expect(item.href).not.toMatch(/\/$/);
-        expect(item.status).toBe(context.id === "personal" || item.id === "overview" ? "available" : "planned");
+        expect(item.status).toBe(context.id === "personal" || context.id === "social" || item.id === "overview" ? "available" : "planned");
       }
       expect(context.nav[0]).toMatchObject({
         id: "overview",
@@ -145,7 +171,7 @@ describe("navigation contexts", () => {
       groups: [
         ["overview", "tasks", "timeline", "gantt", "calendar"],
         ["milestones", "risks", "workload"],
-        ["members", "files", "analytics"],
+        ["channels", "members", "files", "analytics"],
       ],
       footer: ["settings"],
     });
@@ -158,6 +184,7 @@ describe("navigation contexts", () => {
       ["milestones", "/projects/website-redesign/milestones"],
       ["risks", "/projects/website-redesign/risks"],
       ["workload", "/projects/website-redesign/workload"],
+      ["channels", "/projects/website-redesign/channels"],
       ["members", "/projects/website-redesign/members"],
       ["files", "/projects/website-redesign/files"],
       ["analytics", "/projects/website-redesign/analytics"],
@@ -183,7 +210,7 @@ describe("navigation contexts", () => {
       groups: [
         ["overview", "work", "calendar", "planning"],
         ["projects", "goals", "people", "analytics"],
-        ["checkins", "recognition", "files"],
+        ["channels", "checkins", "recognition", "files"],
       ],
       footer: ["settings"],
     });

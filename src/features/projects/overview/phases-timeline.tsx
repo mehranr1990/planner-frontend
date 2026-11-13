@@ -31,24 +31,28 @@ export function PhasesTimeline({ project, phases }: { project: ProjectSummary; p
   const format = useProjectFormat();
   const { calendar, locale, digits } = usePreferences();
   const today = getPlannerToday();
-  const span = Math.max(1, daysBetween(project.startDate, project.endDate));
-  const at = (day: string) => Math.min(100, Math.max(0, (daysBetween(project.startDate, day) / span) * 100));
+  // Undeclared project dates fall back to the phases' own dates (never guessed).
+  const sorted = phases.flatMap((phase) => [phase.start, phase.end]).sort();
+  const startDate = project.startDate ?? sorted[0] ?? today;
+  const endDate = project.endDate ?? sorted.at(-1) ?? today;
+  const span = Math.max(1, daysBetween(startDate, endDate));
+  const at = (day: string) => Math.min(100, Math.max(0, (daysBetween(startDate, day) / span) * 100));
   const current =
     phases.find((phase) => !phase.done && today >= phase.start && today <= phase.end) ??
     phases.find((phase) => !phase.done);
   const nowAt = at(today);
-  const showNow = today >= project.startDate && today <= project.endDate;
+  const showNow = today >= startDate && today <= endDate;
 
   // Month ticks at the first day of each month of the user's calendar inside the span.
   const ticks: { key: string; at: number; label: string }[] = [];
   const startOf = calendar === "jalali" ? startOfJalaliMonth : startOfMonth;
   const next = calendar === "jalali" ? addJalaliMonths : addMonths;
-  const end = dayToDate(project.endDate);
-  for (let cursor = startOf(dayToDate(project.startDate)); cursor <= end; cursor = next(cursor, 1)) {
+  const end = dayToDate(endDate);
+  for (let cursor = startOf(dayToDate(startDate)); cursor <= end; cursor = next(cursor, 1)) {
     const day = toDay(cursor);
     ticks.push({
       key: day,
-      at: at(day < project.startDate ? project.startDate : day),
+      at: at(day < startDate ? startDate : day),
       label: formatDate(cursor, "monthYear", { calendar, locale, digits }).split(" ")[0]!,
     });
   }
@@ -112,7 +116,7 @@ export function PhasesTimeline({ project, phases }: { project: ProjectSummary; p
       </ol>
 
       <figure
-        aria-label={t("chart", { start: format.day(project.startDate), end: format.day(project.endDate) })}
+        aria-label={t("chart", { start: format.day(startDate), end: format.day(endDate) })}
         className="relative flex flex-col gap-2 max-sm:hidden"
       >
         {phases.map((phase) => {

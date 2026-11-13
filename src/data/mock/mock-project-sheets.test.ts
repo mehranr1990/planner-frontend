@@ -46,7 +46,7 @@ describe("mock project sheets (PJ-90)", () => {
 
   it("reassigns to a member with a pending assignment", async () => {
     const store = createMockProjects({ respond });
-    const task = await store.reassign.reassign("empty-states", { personId: "jonathan", note: "You know the copy" });
+    const task = await store.reassign.reassign("website-redesign", "empty-states", { personId: "jonathan", note: "You know the copy" });
     expect(task.assignees).toEqual([
       expect.objectContaining({ person: expect.objectContaining({ id: "jonathan" }), state: "pending" }),
     ]);

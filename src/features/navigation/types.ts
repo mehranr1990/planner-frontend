@@ -38,6 +38,19 @@ export const navItemIds = [
   "reports",
   "planning",
   "recognition",
+  "resources",
+  "expenses",
+  "budgets",
+  "knowledge",
+  "channels",
+  "connections",
+  "groups",
+  "activities",
+  "balances",
+  "lending",
+  "chat",
+  "album",
+  "challenges",
 ] as const;
 
 export type NavItemId = (typeof navItemIds)[number];
@@ -49,11 +62,13 @@ export type NavItemId = (typeof navItemIds)[number];
 export type NavItemStatus = "available" | "planned";
 
 /** Translation keys are relative to the "Navigation" namespace. */
-export type NavItemLabelKey = `items.${NavItemId | "today" | "allProjects" | "allTeams"}`;
+export type NavItemLabelKey = `items.${NavItemId | "today" | "allProjects" | "allTeams" | "allCompanies" | "companyWork" | "companyWorkTab" | "socialHome" | "socialLending"}`;
 
 export interface NavItem {
   id: NavItemId;
   labelKey: NavItemLabelKey;
+  /** Shorter label for the mobile bottom bar (Companies: "Work" for Projects & teams). */
+  tabLabelKey?: NavItemLabelKey;
   icon: LucideIcon;
   href: string;
   status: NavItemStatus;
@@ -65,7 +80,7 @@ export interface NavItem {
   /** Other routes that also make this item current (mobile "Today" covers My Day too). */
   alsoActiveOn?: readonly string[];
   /** A live count shown on the item (Personal Inbox: untriaged items, P07). */
-  badge?: "inbox" | "risks" | "checkins";
+  badge?: "inbox" | "risks" | "checkins" | "approvals" | "channels";
 }
 
 /**

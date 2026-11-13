@@ -46,7 +46,7 @@ function ProjectSheet({ id }: { id: ProjectSheetId }) {
 
   const { project } = useCurrentProjectAccess();
   const taskId = useSearchParams().get("task") ?? "";
-  const reassignTask = useProjectTaskDetail(taskId);
+  const reassignTask = useProjectTaskDetail(project?.id ?? "", taskId);
   const title =
     id === "project-new"
       ? t("new.title")

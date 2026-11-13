@@ -15,14 +15,14 @@ describe("mock project board (PJ-03 / PJ-06)", () => {
 
   it("transition checks revision, workflow and sets completedAt on done", async () => {
     const { projectTasks } = createMockProjects({ respond });
-    await expect(projectTasks.transition("api-integration", "in-review", 9)).rejects.toMatchObject({ code: "conflict" });
-    await expect(projectTasks.transition("api-integration", "done", 1)).rejects.toMatchObject({
+    await expect(projectTasks.transition("website-redesign", "api-integration", "in-review", 9)).rejects.toMatchObject({ code: "conflict" });
+    await expect(projectTasks.transition("website-redesign", "api-integration", "done", 1)).rejects.toMatchObject({
       code: "invalid",
       message: "transition",
     });
-    const review = await projectTasks.transition("api-integration", "in-review", 1);
+    const review = await projectTasks.transition("website-redesign", "api-integration", "in-review", 1);
     expect(review.statusId).toBe("in-review");
-    const done = await projectTasks.transition("api-integration", "done", review.revision);
+    const done = await projectTasks.transition("website-redesign", "api-integration", "done", review.revision);
     expect(done.completedAt).toBeTruthy();
   });
 
@@ -34,15 +34,15 @@ describe("mock project board (PJ-03 / PJ-06)", () => {
     let filled = counts["in-review"] ?? 0;
     for (const task of todo) {
       if (filled >= 3) break;
-      const active = await projectTasks.transition(task.id, "in-progress", task.revision, { exceedWip: true });
-      await projectTasks.transition(task.id, "in-review", active.revision);
+      const active = await projectTasks.transition("website-redesign", task.id, "in-progress", task.revision, { exceedWip: true });
+      await projectTasks.transition("website-redesign", task.id, "in-review", active.revision);
       filled += 1;
     }
     const next = (await projectTasks.list("website-redesign", { filters: { statusIds: ["in-progress"] } })).tasks[0]!;
-    await expect(projectTasks.transition(next.id, "in-review", next.revision)).rejects.toMatchObject({
+    await expect(projectTasks.transition("website-redesign", next.id, "in-review", next.revision)).rejects.toMatchObject({
       message: "wip-limit",
     });
-    const moved = await projectTasks.transition(next.id, "in-review", next.revision, { exceedWip: true });
+    const moved = await projectTasks.transition("website-redesign", next.id, "in-review", next.revision, { exceedWip: true });
     expect(moved.statusId).toBe("in-review");
   });
 

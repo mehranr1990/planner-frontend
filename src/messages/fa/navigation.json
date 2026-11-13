@@ -18,7 +18,12 @@
     "company": {
       "label": "شرکت‌ها",
       "description": "واحدها، سبد پروژه‌ها، هدف‌ها و تأییدها",
-      "add": "افزودن شرکت"
+      "add": "شرکت جدید"
+    },
+    "social": {
+      "label": "اجتماعی",
+      "description": "دوستان، گروه‌ها، فعالیت‌ها و هزینه‌های مشترک",
+      "add": "گروه جدید"
     }
   },
   "items": {
@@ -44,7 +49,7 @@
     "checkins": "چک‌این",
     "activity": "فعالیت‌ها",
     "files": "فایل‌ها",
-    "departments": "واحدها",
+    "departments": "دپارتمان‌ها",
     "projects": "پروژه‌ها",
     "assets": "دارایی‌ها",
     "approvals": "تأییدها",
@@ -57,7 +62,25 @@
     "members": "اعضا",
     "allTeams": "همه‌ی تیم‌ها",
     "planning": "برنامه‌ریزی",
-    "recognition": "قدردانی"
+    "recognition": "قدردانی",
+    "resources": "منابع",
+    "expenses": "هزینه‌ها",
+    "budgets": "بودجه‌ها",
+    "knowledge": "پایگاه دانش",
+    "companyWork": "پروژه‌ها و تیم‌ها",
+    "allCompanies": "همه‌ی شرکت‌ها",
+    "companyWorkTab": "کار",
+    "channels": "کانال‌ها",
+    "connections": "ارتباط‌ها",
+    "groups": "گروه‌ها",
+    "activities": "فعالیت‌ها",
+    "balances": "مانده‌های من",
+    "lending": "امانت و گم‌شده‌ها",
+    "chat": "گفتگو",
+    "album": "آلبوم",
+    "challenges": "چالش‌ها",
+    "socialHome": "خانه",
+    "socialLending": "امانت"
   },
   "rail": {
     "landmark": "ناوبری {context}",
@@ -69,7 +92,9 @@
     "inbox": "{count} مورد برای بررسی",
     "withCount": "{label}، {count}",
     "risks": "ریسک بالای باز: {count}",
-    "checkins": "پاسخ چک‌این شما مانده است"
+    "checkins": "پاسخ چک‌این شما مانده است",
+    "approvals": "{count} منتظر شما",
+    "channels": "{count} اشاره‌ی خوانده‌نشده"
   },
   "switcher": {
     "title": "حوزه",

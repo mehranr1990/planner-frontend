@@ -63,7 +63,8 @@ describe("getNavItemForPathname", () => {
     expect(getNavItemForPathname("/projects/website-redesign")?.item?.id).toBe("overview");
     expect(getNavItemForPathname("/projects")?.item?.id).toBe("overview");
     expect(getNavItemForPathname("/teams/design/check-ins/")?.item?.id).toBe("checkins");
-    expect(getNavItemForPathname("/companies/approvals?filter=open")?.item?.id).toBe("approvals");
+    expect(getNavItemForPathname("/companies/euroly/approvals?filter=open")?.item?.id).toBe("approvals");
+    expect(getNavItemForPathname("/companies")?.item?.id).toBe("overview");
   });
 
   it("keeps the context but no item for unknown routes inside a context", () => {

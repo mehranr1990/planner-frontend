@@ -1,4 +1,7 @@
 {
+  "unknown": "Unknown",
+  "noTasks": "No tasks yet",
+  "unavailable": "Not available yet",
   "roles": {
     "owner": "Owner",
     "admin": "Admin",
@@ -10,7 +13,8 @@
   "health": {
     "on-track": "On track",
     "at-risk": "At risk",
-    "off-track": "Off track"
+    "off-track": "Off track",
+    "unknown": "Unknown"
   },
   "lifecycle": {
     "active": "Active",
@@ -69,6 +73,7 @@
     "in-progress": "In progress",
     "in-review": "In review",
     "blocked": "Blocked",
-    "done": "Done"
+    "done": "Done",
+    "canceled": "Canceled"
   }
 }

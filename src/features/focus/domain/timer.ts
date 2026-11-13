@@ -10,6 +10,8 @@
  * the user starts it.
  */
 
+import type { FocusSpan } from "@/data/domain";
+
 export type FocusPhase = "focus" | "short" | "long";
 export type FocusStatus = "running" | "paused" | "ready" | "complete";
 
@@ -42,6 +44,8 @@ export interface FocusSession {
   focusedMs: number;
   /** Finished focus cycles not yet written to the plan repository. */
   unrecorded: number;
+  /** The actual time of each unrecorded cycle (absent on sessions stored before spans existed). */
+  spans?: FocusSpan[];
   /** Distractions parked this session; they go to Inbox when it ends. */
   parked: string[];
   /** Distractions parked this session, including those already sent. */
@@ -145,6 +149,7 @@ function closePhase(session: FocusSession, endedAt: number, run: boolean): Focus
       ...session,
       completedCycles: session.completedCycles + 1,
       unrecorded: session.unrecorded + 1,
+      spans: [...(session.spans ?? []), { endAt: endedAt, ms: elapsedMs(session, endedAt) }],
       focusedMs: session.focusedMs + elapsedMs(session, endedAt),
     };
   }
@@ -205,11 +210,12 @@ export function park(session: FocusSession, text: string): FocusSession {
 }
 
 /** Takes the cycles to record and the distractions to send, leaving none behind. */
-export function drain(session: FocusSession): { session: FocusSession; cycles: number; parked: string[] } {
+export function drain(session: FocusSession): { session: FocusSession; cycles: number; spans: FocusSpan[]; parked: string[] } {
   const parked = session.status === "complete" ? session.parked : [];
   return {
-    session: { ...session, unrecorded: 0, parked: session.status === "complete" ? [] : session.parked },
+    session: { ...session, unrecorded: 0, spans: [], parked: session.status === "complete" ? [] : session.parked },
     cycles: session.unrecorded,
+    spans: session.spans ?? [],
     parked,
   };
 }

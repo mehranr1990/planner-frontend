@@ -6,6 +6,7 @@ import { IconButton } from "@/components/ui/button";
 import { Icon } from "@/components/ui/icon";
 import { useOpenSheet } from "@/features/sheets/sheet-params";
 import { cn } from "@/lib/cn";
+import { MessagesButton } from "@/features/messages/messages-button";
 import { NotificationsPopover } from "./notifications-popover";
 import { ProfileMenu } from "./profile-menu";
 import { ProjectQuickCreateMenu } from "@/features/projects/shell/project-quick-create";
@@ -67,6 +68,7 @@ export function ShellActions({ className }: { className?: string }) {
       ) : (
         <QuickCreateMenu />
       )}
+      <MessagesButton />
       <NotificationsPopover />
       <ProfileMenu />
     </div>

@@ -179,7 +179,10 @@
     "weeklyReview": "Weekly review",
     "weeklyReviewHint": "When the weekly review is suggested",
     "weekday": "Weekly review day",
-    "time": "Weekly review time"
+    "time": "Weekly review time",
+    "messages": "Messages",
+    "messagesHint": "Read receipts, last seen, who can message you, quiet hours",
+    "messagesOpen": "Message settings"
   },
   "privacy": {
     "journalLock": "Journal lock",

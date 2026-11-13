@@ -36,14 +36,14 @@ describe("mock files (PJ-10)", () => {
     expect(blocked).toMatchObject({ state: "blocked", blockReason: "type" });
     const file = await files.upload("website-redesign", { name: "brief.pdf", sizeBytes: 1000, folderId: "specs" });
     expect(file.state).toBe("queued");
-    await expect(files.download(file.id)).rejects.toMatchObject({ code: "invalid" });
+    await expect(files.download("website-redesign", file.id)).rejects.toMatchObject({ code: "invalid" });
     for (let i = 0; i < 6; i += 1) tick();
     const scanning = (await files.list("website-redesign")).files.find((candidate) => candidate.id === file.id);
     expect(scanning?.state).toBe("scanning");
     tick();
     const ready = (await files.list("website-redesign")).files.find((candidate) => candidate.id === file.id);
     expect(ready?.state).toBe("ready");
-    expect(await files.download(file.id)).toBeInstanceOf(Blob);
+    expect(await files.download("website-redesign", file.id)).toBeInstanceOf(Blob);
   });
 
   it("the in-flight fixture fails once, retries, and restore creates a new version", async () => {
@@ -51,8 +51,8 @@ describe("mock files (PJ-10)", () => {
     tick();
     const failed = (await files.list("website-redesign")).files.find((file) => file.id === "empty-states");
     expect(failed).toMatchObject({ state: "failed", failReason: "connection" });
-    expect((await files.retry("empty-states")).state).toBe("queued");
-    const restored = await files.restoreVersion("checkout-final", 3);
+    expect((await files.retry("website-redesign", "empty-states")).state).toBe("queued");
+    const restored = await files.restoreVersion("website-redesign", "checkout-final", 3);
     expect(restored.version).toBe(5);
     expect(restored.versions[0]).toMatchObject({ version: 5, restoredFrom: 3 });
     const next = await files.upload("website-redesign", {

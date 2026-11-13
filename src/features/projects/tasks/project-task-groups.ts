@@ -71,7 +71,7 @@ export function groupProjectTasks(
   for (const task of tasks) {
     const keys: { id: string; label: string | null }[] = [];
     if (by === "phase")
-      keys.push({ id: task.phaseId, label: phases.find((phase) => phase.id === task.phaseId)?.name ?? null });
+      keys.push({ id: task.phaseId ?? "none", label: phases.find((phase) => phase.id === task.phaseId)?.name ?? null });
     else if (by === "status") keys.push({ id: task.statusId, label: task.statusId });
     else if (by === "milestone")
       keys.push({

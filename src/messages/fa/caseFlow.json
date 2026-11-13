@@ -4,6 +4,7 @@
   "badgeAlert": "{name}: {n} باز، کاری مسدود یا منتظر است",
   "badgeDone": "{name}: همه انجام شد",
   "badgeNone": "{name}: در این جریان کاری ندارد",
+  "filterPerson": "فقط کارهای {name}",
   "more": "+{n} دیگر",
   "needs": "نیاز به {titles}",
   "neededBy": "← لازم برای {titles}",

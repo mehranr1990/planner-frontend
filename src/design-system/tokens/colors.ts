@@ -29,7 +29,7 @@ export const neutralTokens: readonly ColorToken[] = [
   { name: "On accent", cssVar: "--on-accent", swatch: "bg-on-accent", role: "Text on accent / volt" },
 ];
 
-export const scopes = ["personal", "project", "team", "company"] as const;
+export const scopes = ["personal", "project", "team", "company", "social"] as const;
 
 export type Scope = (typeof scopes)[number];
 
@@ -74,6 +74,14 @@ export const scopeTokens: Record<Scope, ScopeTokens> = {
     deep: "bg-company-deep",
     dot: "bg-company-dot",
     text: "text-company-deep",
+  },
+  social: {
+    hue: "Coral",
+    usage: "Friends, groups, activities, shared costs",
+    soft: "bg-social-soft",
+    deep: "bg-social-deep",
+    dot: "bg-social-dot",
+    text: "text-social-deep",
   },
 };
 

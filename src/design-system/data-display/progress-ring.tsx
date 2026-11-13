@@ -23,6 +23,7 @@ const fillTone: Record<"base" | "deep", Record<Scope | "scope", string>> = {
     project: "stroke-project-dot",
     team: "stroke-team-dot",
     company: "stroke-company-dot",
+    social: "stroke-social-dot",
   },
   deep: {
     scope: "stroke-scope-deep",
@@ -30,6 +31,7 @@ const fillTone: Record<"base" | "deep", Record<Scope | "scope", string>> = {
     project: "stroke-project-deep",
     team: "stroke-team-deep",
     company: "stroke-company-deep",
+    social: "stroke-social-deep",
   },
 };
 

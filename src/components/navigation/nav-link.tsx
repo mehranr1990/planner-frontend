@@ -58,7 +58,7 @@ export function NavLink({
   const pathname = usePathname();
   const badgeId = useId();
 
-  const label = t(item.labelKey);
+  const label = t(layout === "tab" && item.tabLabelKey ? item.tabLabelKey : item.labelKey);
   const planned = item.status === "planned";
   const active = !planned && (activeOverride ?? isNavItemActive(item, pathname));
   const compact = layout === "row" && iconOnly;

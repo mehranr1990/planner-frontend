@@ -9,22 +9,22 @@ import { preventDocumentNavigation } from "./test-utils";
 describe("ContextNavList", () => {
   preventDocumentNavigation();
 
-  it("lists every item of the context with Coming soon badges for planned ones", () => {
-    setMockPathname("/companies/reports");
+  it("lists every page of the context the role can open (inside a company)", async () => {
+    setMockPathname("/companies/euroly/reports");
     renderWithProviders(<ContextNavList />);
     const list = screen.getByRole("list", { name: "All Companies pages" });
-    expect(within(list).getAllByRole("listitem")).toHaveLength(9);
-    expect(within(list).getAllByRole("link")).toHaveLength(1);
-    expect(within(list).getAllByText("Coming soon")).toHaveLength(8);
-    expect(within(list).getByRole("button", { name: "Reports" })).toHaveAttribute("aria-disabled", "true");
+    // Org Admin in Euroly: every module, all routed.
+    expect(await within(list).findByRole("link", { name: "Settings" })).toHaveAttribute("href", "/companies/euroly/settings");
+    // + Channels (MS-01, company group 4).
+    expect(within(list).getAllByRole("listitem")).toHaveLength(13);
+    expect(within(list).queryByText("Coming soon")).toBeNull();
+    expect(within(list).getByRole("link", { name: "Reports" })).toHaveAttribute("aria-current", "page");
   });
 
   it("calls onNavigate when an available item is chosen", async () => {
     const user = userEvent.setup();
     const onNavigate = vi.fn();
     renderWithProviders(<ContextNavList context="company" onNavigate={onNavigate} />);
-    await user.click(screen.getByRole("button", { name: "Departments" }));
-    expect(onNavigate).not.toHaveBeenCalled();
     await user.click(screen.getByRole("link", { name: "Overview" }));
     expect(onNavigate).toHaveBeenCalledTimes(1);
   });
@@ -34,6 +34,6 @@ describe("ContextNavList", () => {
       preferences: { locale: "fa", direction: "rtl", digits: "fa" },
     });
     const list = screen.getByRole("list", { name: "Jump to" });
-    expect(within(list).getByRole("button", { name: "واحدها" })).toHaveAccessibleDescription("به‌زودی");
+    expect(within(list).getAllByRole("link")[0]).toHaveAccessibleName("نمای کلی");
   });
 });

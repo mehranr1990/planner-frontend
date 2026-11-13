@@ -5,6 +5,7 @@ import { createContext, useContext, useEffect, type ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/toast";
 import { RepositoryError } from "@/data/repositories";
+import { isUnavailable, useUnavailableTitle } from "@/features/projects/unavailable";
 import { cn } from "@/lib/cn";
 
 /*
@@ -97,10 +98,11 @@ export function SettingRow({
 export function useSettingsError() {
   const t = useTranslations("ProjectSettings");
   const tConflict = useTranslations("Access.states.conflict");
+  const unavailable = useUnavailableTitle();
   return (error: unknown) =>
     toast({
-      tone: "danger",
-      title: error instanceof RepositoryError && error.code === "conflict" ? tConflict("title") : t("error"),
+      tone: isUnavailable(error) ? "info" : "danger",
+      title: unavailable(error) ?? (error instanceof RepositoryError && error.code === "conflict" ? tConflict("title") : t("error")),
     });
 }
 

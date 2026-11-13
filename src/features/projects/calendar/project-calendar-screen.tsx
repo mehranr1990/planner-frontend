@@ -31,6 +31,7 @@ import { ProjectPageHeader } from "../project-page-header";
 import { useReschedule } from "../schedule/use-reschedule";
 import { useMediaQuery } from "../use-media";
 import { useWorkflowStatusLabel } from "../workflow-status-chip";
+import { CalendarMeetings } from "@/features/messages/meetings/calendar-meetings";
 
 /*
  * PJ-07 · Project calendar (/projects/[id]/calendar). Reuses the Personal
@@ -222,6 +223,7 @@ function ProjectCalendarLayout() {
         </div>
       </DndContext>
       {dialog}
+      <CalendarMeetings source={{ kind: "project", workspaceId: project.id, name: project.name }} days={days} />
     </>
   );
 }

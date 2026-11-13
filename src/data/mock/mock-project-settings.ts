@@ -351,7 +351,7 @@ export function createMockSettings({ store, respond, now, projects, recent, find
       }
       const start = patch.startDate ?? found.startDate;
       const end = patch.endDate ?? found.endDate;
-      if (end < start) throw new RepositoryError("invalid", "dates");
+      if (start && end && end < start) throw new RepositoryError("invalid", "dates");
       Object.assign(found, {
         ...patch,
         ...(patch.name !== undefined ? { name: patch.name.trim() } : {}),
