@@ -205,10 +205,14 @@ export function TeamTaskRow({
         <span className="text-xs font-medium text-fg-secondary max-lg:hidden">
           {task.estimateHours !== null ? t("row.est", { h: format.number(task.estimateHours) }) : "—"}
         </span>
-        <span className={cn("flex items-center gap-1.5 text-xs font-semibold max-lg:hidden", priority.label)}>
-          <span aria-hidden="true" className={cn("size-2 rounded-full", priority.dot)} />
-          {t(`priority.${task.priority}`)}
-        </span>
+        {task.priority ? (
+          <span className={cn("flex items-center gap-1.5 text-xs font-semibold max-lg:hidden", priority.label)}>
+            <span aria-hidden="true" className={cn("size-2 rounded-full", priority.dot)} />
+            {t(`priority.${task.priority}`)}
+          </span>
+        ) : (
+          <span className="text-xs font-medium text-fg-secondary max-lg:hidden">—</span>
+        )}
       </div>
       {after}
     </li>

@@ -68,5 +68,7 @@
     "member": "Work on tasks, create tasks, comment, upload.",
     "viewer": "Read only.",
     "guest": "Verified external person; only granted tasks + shared files."
-  }
+  },
+  "pendingUnavailable": "Pending invitations cannot be listed yet. Invitations you send still reach people.",
+  "grantsUnavailable": "Task-only guests cannot be listed yet."
 }

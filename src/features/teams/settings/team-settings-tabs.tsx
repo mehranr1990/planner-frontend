@@ -396,23 +396,27 @@ export function AccessTab({ settings }: { settings: TeamSettings }) {
           ))}
         </Select>
       </SettingRow>
-      <SettingRow title={t("access.membersInvite")} hint={t("access.membersInviteHint")}>
-        <Switch
-          aria-label={t("access.membersInvite")}
-          checked={settings.membersMayInvite}
-          disabled={!canEdit}
-          onCheckedChange={(on) => save({ membersMayInvite: on })}
-        />
-      </SettingRow>
+      {settings.membersMayInvite !== null && (
+        <SettingRow title={t("access.membersInvite")} hint={t("access.membersInviteHint")}>
+          <Switch
+            aria-label={t("access.membersInvite")}
+            checked={settings.membersMayInvite}
+            disabled={!canEdit}
+            onCheckedChange={(on) => save({ membersMayInvite: on })}
+          />
+        </SettingRow>
+      )}
       {/* OPEN(DECISIONS): whether Viewers may see this-week booking — design default off. */}
-      <SettingRow title={t("access.viewersBooking")} hint={t("access.viewersBookingHint")}>
-        <Switch
-          aria-label={t("access.viewersBooking")}
-          checked={settings.viewersSeeBooking}
-          disabled={!canEdit}
-          onCheckedChange={(on) => save({ viewersSeeBooking: on })}
-        />
-      </SettingRow>
+      {settings.viewersSeeBooking !== null && (
+        <SettingRow title={t("access.viewersBooking")} hint={t("access.viewersBookingHint")}>
+          <Switch
+            aria-label={t("access.viewersBooking")}
+            checked={settings.viewersSeeBooking}
+            disabled={!canEdit}
+            onCheckedChange={(on) => save({ viewersSeeBooking: on })}
+          />
+        </SettingRow>
+      )}
     </div>
   );
 }

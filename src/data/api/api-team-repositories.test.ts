@@ -20,6 +20,7 @@ function teamApi(extra: (call: FakeCall, parts: string[]) => Response | null = (
     if (parts.length === 2) return json(team(), 200, '"team-6"');
     if (parts[2] === "access") return json(ME);
     if (parts[2] === "memberships") return json({ items: ROSTER, nextCursor: null });
+    if (parts[2] === "member-profiles") return json({ items: [{ member: { accessId: "m2", generation: 1 }, jobTitle: "Designer", revision: 1 }], nextCursor: null });
     if (parts[2] === "tasks")
       return json({ items: [{ status: "OPEN", deletedAt: null }, { status: "IN_PROGRESS", deletedAt: null }, { status: "DONE", deletedAt: null }, { status: "OPEN", deletedAt: "x" }], nextCursor: null });
     if (parts[2] === "projects") return json({ items: [{ link: { teamId: T, projectId: "p1", revision: 3, active: true }, project: {} }], nextCursor: null });
@@ -48,8 +49,9 @@ describe("live Teams repositories", () => {
     const access = await teams.access(T);
     expect(access.status).toBe("ok");
     if (access.status !== "ok") return;
-    expect(access.capabilities).toMatchObject({ archive: true, restore: false, ownTeam: true, invite: false, createTask: false });
-    expect(access.capabilities.modules).toMatchObject({ overview: true, people: true, calendar: true, settings: true, work: false, goals: false });
+    // Capabilities follow the backend grants: membership.admin → invite; no task.create → no task creation; check-ins off without settings.
+    expect(access.capabilities).toMatchObject({ archive: true, restore: false, ownTeam: true, invite: true, inviteAdmin: true, createTask: false, setOwnStatus: false });
+    expect(access.capabilities.modules).toMatchObject({ overview: true, people: true, calendar: true, settings: true, work: true, files: true, goals: true, planning: true, checkins: false });
     await expect(teams.access("other")).resolves.toEqual({ status: "not-available" });
     expect(api.writes()).toEqual([]);
   });
@@ -81,9 +83,9 @@ describe("live Teams repositories", () => {
     await repos.teamMembers.cancelInvite(T, "i1");
     expect(api.writes()).toEqual([`POST /teams/${T}/invitations/i1/revoke`]);
     expect(api.calls.at(-1)!.ifMatch).toBe('"4"');
+    // Pending rows carry no email / send time; an invitation not in my recipient list has no proof to fetch.
     await expect(repos.teamMembers.invitations(T)).rejects.toMatchObject({ code: "unsupported" });
-    await expect(repos.teamInvitations.accept("i1")).rejects.toMatchObject({ code: "unsupported" });
-    await expect(repos.teamInvitations.send(T, { emails: ["a@b.c"], role: "member" })).rejects.toMatchObject({ code: "unsupported" });
+    await expect(repos.teamInvitations.accept("i1")).rejects.toMatchObject({ code: "not-found" });
   });
 
   it("calendar: active events of the range (to inclusive), task blocks and cancelled items left out", async () => {
@@ -151,10 +153,9 @@ describe("live Teams repositories", () => {
   it("refuses unsupported modules without a request (never mock data)", async () => {
     const api = fakeApi(() => err(500));
     const repos = createApiTeamRepositories(api.client);
-    await expect(repos.teamTasks.list(T)).rejects.toMatchObject({ code: "unsupported", message: expect.stringContaining("Teams API:") });
-    await expect(repos.teamSettings.get(T)).rejects.toMatchObject({ code: "unsupported" });
-    await expect(repos.teams.create({ name: "x", planningMode: "weekly" })).rejects.toMatchObject({ code: "unsupported" });
-    await expect(repos.teamGoals.list(T)).rejects.toMatchObject({ code: "unsupported" });
+    await expect(repos.teamCapacity.set(T, "m1", { hours: 10, days: [6] })).rejects.toMatchObject({ code: "unsupported" });
+    await expect(repos.teamTasks.addComment("k1", "x")).rejects.toMatchObject({ code: "unsupported" });
+    await expect(repos.teamMembers.move(T, "m1", "t2")).rejects.toMatchObject({ code: "unsupported" });
     expect(api.calls).toEqual([]);
   });
 });

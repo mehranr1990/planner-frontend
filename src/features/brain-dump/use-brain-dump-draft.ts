@@ -17,6 +17,8 @@ let lineCounter = 0;
 
 /** Client-made ids: a new id is a new line for the store. Only called on interaction or after hydration. */
 export function newLineId(): string {
+  // A UUID: the live API keys lines by uuid; Mock Mode accepts any id.
+  if (typeof crypto !== "undefined" && "randomUUID" in crypto) return crypto.randomUUID();
   lineCounter += 1;
   return `bd-${Date.now().toString(36)}-${lineCounter}`;
 }

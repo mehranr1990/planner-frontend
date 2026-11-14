@@ -173,9 +173,9 @@ export function CompanyGate({ children }: { children: ReactNode }) {
       <AccessState
         kind="company-invite"
         values={{
-          company: invitation.companyName,
-          inviter: invitation.inviterName,
-          role: labels.role(invitation.role),
+          company: invitation.companyName ?? "",
+          inviter: invitation.inviterName ?? "",
+          role: invitation.role ? labels.role(invitation.role) : "",
           department: invitation.departmentName ? ` · ${invitation.departmentName}` : "",
         }}
         primaryAction={
@@ -184,7 +184,7 @@ export function CompanyGate({ children }: { children: ReactNode }) {
             onClick={() =>
               accept.mutate(invitation.id, {
                 onSuccess: ({ companyId }) => {
-                  toast({ title: tCompany("joined", { company: invitation.companyName }) });
+                  toast({ title: tCompany("joined", { company: invitation.companyName ?? "" }) });
                   router.replace(companyHref(companyId));
                 },
               })

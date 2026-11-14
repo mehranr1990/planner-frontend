@@ -51,7 +51,26 @@ export const useParticipants = (id: string, enabled = true) => useRead(["partici
 export const useUnreadConversations = () => useRead(["unread"], (r) => r.conversations.unreadCount());
 export const useWorkspaceMentions = (workspaceId: string | undefined) =>
   useRead(["mentions", workspaceId], (r) => r.conversations.workspaceMentions(workspaceId!), workspaceId !== undefined);
-export const useMessagePage = (id: string | undefined, enabled = true) => useRead(["page", id], (r) => r.messages.page(id!), id !== undefined && enabled);
+export const useConversationInvitations = () => useRead(["conversation-invitations"], (r) => r.conversations.invitations(), true, true);
+/** Bell: messaging notices + announcement reminders (polled like the personal badge; no stream exists). */
+export function useMessagingNotices() {
+  const repo = useMessagingRepository();
+  const available = useMessagingAvailable();
+  const hydrated = useIsClient();
+  return afterHydration(
+    useQuery({
+      queryKey: [...messagingKeys.all, "notices"],
+      queryFn: async () => {
+        const [notices, reminders] = await Promise.all([repo.conversations.notices(), repo.announcements.reminders()]);
+        return { notices, reminders };
+      },
+      enabled: available,
+      refetchInterval: 60_000,
+    }),
+    hydrated,
+  );
+}
+export const useMessagePage =(id: string | undefined, enabled = true) => useRead(["page", id], (r) => r.messages.page(id!), id !== undefined && enabled);
 export const useThread = (cid: string, parentId: string | undefined) =>
   useRead(["thread", cid, parentId], (r) => r.messages.thread(cid, parentId!), parentId !== undefined);
 export const usePinnedMessages = (id: string, enabled = true) => useRead(["pinned", id], (r) => r.messages.pinned(id), enabled);
@@ -77,8 +96,8 @@ export const useInvitable = (source: MsgSource | undefined) =>
 export const useMinutes = (meetingId: string | undefined) => useRead(["minutes", meetingId], (r) => r.minutes.get(meetingId!), meetingId !== undefined);
 export const useAnnouncements = (workspaceId: string | undefined, kind?: MsgSourceKind) =>
   useRead(["announcements", workspaceId, kind], (r) => r.announcements.list(workspaceId!, kind), workspaceId !== undefined);
-export const useAnnouncementAccess = (workspaceId: string | undefined) =>
-  useRead(["announcement-access", workspaceId], (r) => r.announcements.access(workspaceId!), workspaceId !== undefined);
+export const useAnnouncementAccess = (workspaceId: string | undefined, kind?: MsgSourceKind) =>
+  useRead(["announcement-access", workspaceId, kind], (r) => r.announcements.access(workspaceId!, kind), workspaceId !== undefined);
 
 /** Idempotent client op id for one command (retries reuse it). */
 export function newClientOpId(): string {

@@ -32,13 +32,13 @@ export function PhasesTimeline({ project, phases }: { project: ProjectSummary; p
   const { calendar, locale, digits } = usePreferences();
   const today = getPlannerToday();
   // Undeclared project dates fall back to the phases' own dates (never guessed).
-  const sorted = phases.flatMap((phase) => [phase.start, phase.end]).sort();
+  const sorted = phases.flatMap((phase) => [phase.start, phase.end]).filter((day): day is string => day !== null).sort();
   const startDate = project.startDate ?? sorted[0] ?? today;
   const endDate = project.endDate ?? sorted.at(-1) ?? today;
   const span = Math.max(1, daysBetween(startDate, endDate));
   const at = (day: string) => Math.min(100, Math.max(0, (daysBetween(startDate, day) / span) * 100));
   const current =
-    phases.find((phase) => !phase.done && today >= phase.start && today <= phase.end) ??
+    phases.find((phase) => !phase.done && phase.start !== null && phase.end !== null && today >= phase.start && today <= phase.end) ??
     phases.find((phase) => !phase.done);
   const nowAt = at(today);
   const showNow = today >= startDate && today <= endDate;
@@ -62,7 +62,7 @@ export function PhasesTimeline({ project, phases }: { project: ProjectSummary; p
       <div className="flex flex-wrap items-baseline justify-between gap-2">
         <h2 id="phases-title" className="flex flex-wrap items-baseline gap-2 type-title text-fg">
           {t("title")}
-          {current ? (
+          {current?.end ? (
             <span className="text-xs font-semibold text-fg-secondary">
               {t("ends", { phase: current.name, date: format.day(current.end) })}
             </span>
@@ -100,12 +100,17 @@ export function PhasesTimeline({ project, phases }: { project: ProjectSummary; p
                 <bdi className="truncate">{phase.name}</bdi>
               </span>
               <span className="truncate text-xs font-medium text-fg-secondary">
-                {phase.start === phase.end ? format.day(phase.end) : format.range(phase.start, phase.end)}
-                {isCurrent && phase.behindDays > 0
+                {/* Live phases carry no dates, progress or delay (not served): those parts are left out. */}
+                {phase.start === null || phase.end === null
+                  ? null
+                  : phase.start === phase.end
+                    ? format.day(phase.end)
+                    : format.range(phase.start, phase.end)}
+                {isCurrent && phase.behindDays !== null && phase.behindDays > 0
                   ? ` · ${t("behind", { days: format.number(phase.behindDays) })}`
                   : ""}
               </span>
-              {isCurrent ? (
+              {isCurrent && phase.progress !== null ? (
                 <span aria-hidden="true" className="mt-1 h-1 w-full overflow-hidden rounded-pill bg-scope-soft">
                   <span className="block h-full rounded-pill bg-primary" style={{ width: `${phase.progress}%` }} />
                 </span>
@@ -120,6 +125,7 @@ export function PhasesTimeline({ project, phases }: { project: ProjectSummary; p
         className="relative flex flex-col gap-2 max-sm:hidden"
       >
         {phases.map((phase) => {
+          if (phase.start === null || phase.end === null) return null;
           const start = at(phase.start);
           const width = Math.max(2, at(phase.end) - start);
           const isCurrent = phase.id === current?.id;

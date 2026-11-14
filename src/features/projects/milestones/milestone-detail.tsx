@@ -50,7 +50,7 @@ export function MilestoneDetail({ projectId, row, phase, tasks, workflow, risk, 
   const format = useProjectFormat();
   const [editing, setEditing] = useState(false);
   const { milestone, status, tasksDone, tasksTotal } = row;
-  const daysLeft = format.daysFromToday(milestone.due);
+  const daysLeft = milestone.due ? format.daysFromToday(milestone.due) : null;
   const statusText = t(`status.${status}`);
 
   const action = canEdit ? (
@@ -83,8 +83,8 @@ export function MilestoneDetail({ projectId, row, phase, tasks, workflow, risk, 
       <p className="text-xs font-medium text-fg-secondary">
         <bdi>
           {milestone.owner
-            ? t("detail.meta", { phase: phase?.name ?? "", date: format.day(milestone.due), name: milestone.owner.name })
-            : t("detail.metaNoOwner", { phase: phase?.name ?? "", date: format.day(milestone.due) })}
+            ? t("detail.meta", { phase: phase?.name ?? "", date: milestone.due ? format.day(milestone.due) : "—", name: milestone.owner.name })
+            : t("detail.metaNoOwner", { phase: phase?.name ?? "", date: milestone.due ? format.day(milestone.due) : "—" })}
         </bdi>
       </p>
       <div className="flex flex-col gap-1.5">
@@ -92,7 +92,7 @@ export function MilestoneDetail({ projectId, row, phase, tasks, workflow, risk, 
           <span className="text-fg">
             {t("detail.progress", { done: format.number(tasksDone), total: format.number(tasksTotal) })}
           </span>
-          {daysLeft >= 0 && status !== "reached" ? (
+          {daysLeft !== null && daysLeft >= 0 && status !== "reached" ? (
             <span className="text-fg-secondary">
               {t("detail.daysLeft", { n: daysLeft, count: format.number(daysLeft) })}
             </span>
@@ -147,7 +147,7 @@ export function MilestoneDetail({ projectId, row, phase, tasks, workflow, risk, 
       {editing ? (
         <EditMilestoneDialog
           title={milestone.title}
-          due={milestone.due}
+          due={milestone.due ?? ""}
           onClose={() => setEditing(false)}
           onSave={(input) => {
             setEditing(false);

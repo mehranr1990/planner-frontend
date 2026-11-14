@@ -228,6 +228,38 @@ export interface paths {
         patch: operations["socialpatchsocialgroupsid"];
         trace?: never;
     };
+    "/api/v1/social-groups/{id}/access/me": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["socialgetsocialgroupsidaccessme"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/social-groups/{id}/history": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["socialgetsocialgroupsidhistory"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/social-groups/{id}/memberships": {
         parameters: {
             query?: never;
@@ -900,6 +932,8 @@ export interface operations {
                 content: {
                     "application/json": {
                         items: {
+                            requesterDisplayName?: string | null;
+                            recipientDisplayName?: string | null;
                             /** Format: uuid */
                             id: string;
                             /** Format: uuid */
@@ -1040,6 +1074,8 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
+                        requesterDisplayName?: string | null;
+                        recipientDisplayName?: string | null;
                         /** Format: uuid */
                         id: string;
                         /** Format: uuid */
@@ -1177,6 +1213,8 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
+                        requesterDisplayName?: string | null;
+                        recipientDisplayName?: string | null;
                         /** Format: uuid */
                         id: string;
                         /** Format: uuid */
@@ -3470,6 +3508,262 @@ export interface operations {
             };
         };
     };
+    socialgetsocialgroupsidaccessme: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Authorized P6-01 result; discovery grants no private access */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        accessId: string;
+                        /** Format: uuid */
+                        actorId: string;
+                        /** @enum {string} */
+                        role: "OWNER" | "ADMIN" | "MEMBER";
+                        /** @constant */
+                        state: "ACTIVE";
+                        generation: number;
+                        revision: number;
+                        groupState: string;
+                        capabilities: ("task.read" | "settings.manage" | "membership.member" | "membership.admin" | "membership.leave" | "custody.handover")[];
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence or unavailable contact/invitation */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialgetsocialgroupsidhistory: {
+        parameters: {
+            query?: {
+                limit?: number;
+                after?: string;
+            };
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Authorized P6-01 result; discovery grants no private access */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        items: {
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            actorId: string;
+                            actorDisplayName: string | null;
+                            /** @enum {string} */
+                            action: "social.group.create" | "social.group.update" | "social.group.private" | "social.group.public" | "membership.admit" | "membership.change" | "membership.leave" | "handover.accept";
+                            resourceId: string | null;
+                            /** Format: date-time */
+                            occurredAt: string;
+                        }[];
+                        nextCursor: string | null;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence or unavailable contact/invitation */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
     socialgetsocialgroupsidmemberships: {
         parameters: {
             query?: {
@@ -3507,6 +3801,7 @@ export interface operations {
                             state: "ACTIVE" | "SUSPENDED" | "LEFT" | "REVOKED" | "ERASED";
                             generation: number;
                             revision: number;
+                            displayName?: string | null;
                         }[];
                         nextCursor: string | null;
                     };
@@ -3651,6 +3946,7 @@ export interface operations {
                         state: "ACTIVE" | "SUSPENDED" | "LEFT" | "REVOKED" | "ERASED";
                         generation: number;
                         revision: number;
+                        displayName?: string | null;
                     };
                 };
             };
@@ -4190,6 +4486,7 @@ export interface operations {
                 content: {
                     "application/json": {
                         items: {
+                            requesterDisplayName?: string | null;
                             /** Format: uuid */
                             id: string;
                             /** Format: uuid */
@@ -4325,6 +4622,7 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
+                        requesterDisplayName?: string | null;
                         /** Format: uuid */
                         id: string;
                         /** Format: uuid */
@@ -4457,6 +4755,7 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
+                        requesterDisplayName?: string | null;
                         /** Format: uuid */
                         id: string;
                         /** Format: uuid */
@@ -5557,6 +5856,7 @@ export interface operations {
                             state: "ACTIVE" | "SUSPENDED" | "LEFT" | "REVOKED" | "ERASED";
                             generation: number;
                             revision: number;
+                            displayName?: string | null;
                         };
                     };
                 };

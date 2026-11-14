@@ -12,9 +12,10 @@ import { loadProjectTasks, type ApiAssignment, type LoadedTasks } from "./api-pr
  * (accept / decline), reassign and the project calendar. All of it reuses the
  * task loader (`api-project-tasks-repository.ts`).
  * - Detail: start day, section, logged hours (non-voided work logs), the
- *   predecessors, and assignment events as activity. The API lists no task
- *   comments, files or shared subtasks (empty) and has no personal calendar
- *   projection switch (refused).
+ *   predecessors, assignment events as activity, the live comments
+ *   (`content/TASK/{id}/comments`, author by actor id) and READY files
+ *   (`content/TASK/{id}/files`). No shared subtasks (empty), no personal
+ *   calendar projection switch (refused).
  * - Accept / decline act on the caller's own pending assignment (access id
  *   from `access/me`); there is no "back to pending" and no reminder (refused).
  * - Calendar: open tasks on their due day and dated milestones; no project
@@ -22,6 +23,8 @@ import { loadProjectTasks, type ApiAssignment, type LoadedTasks } from "./api-pr
  */
 
 type ApiMilestone = ProjectsData<"/api/v1/projects/{id}/components/{kind}", "get">["items"][number];
+type ApiComment = ProjectsData<"/api/v1/projects/{projectId}/content/{targetKind}/{targetId}/comments", "get">["items"][number];
+type ApiContentFile = ProjectsData<"/api/v1/projects/{projectId}/content/{targetKind}/{targetId}/files", "get">["items"][number];
 type ApiWorkLog = ProjectsData<"/api/v1/projects/{projectId}/tasks/{taskId}/work-logs", "get">["items"][number];
 
 const PAGE = 100;
@@ -48,6 +51,11 @@ export function createApiProjectTaskDetailRepository(client: ApiClient): TaskDet
             async (after) => (await api.request("get", "/api/v1/projects/{projectId}/tasks/{taskId}/work-logs", { path: { projectId, taskId }, query: { limit: PAGE, after } })).data,
           ),
           api.request("get", "/api/v1/projects/{projectId}/dependencies", { path: { projectId } }).then((response) => response.data.edges),
+        ]);
+        const target = { projectId, targetKind: "TASK" as const, targetId: taskId };
+        const [comments, files] = await Promise.all([
+          pageAll<ApiComment>(async (after) => (await api.request("get", "/api/v1/projects/{projectId}/content/{targetKind}/{targetId}/comments", { path: target, query: { limit: PAGE, after } })).data),
+          pageAll<ApiContentFile>(async (after) => (await api.request("get", "/api/v1/projects/{projectId}/content/{targetKind}/{targetId}/files", { path: target, query: { limit: PAGE, after } })).data),
         ]);
         const task = rowOf(loaded, taskId);
         const sections = place.sectionId
@@ -78,9 +86,15 @@ export function createApiProjectTaskDetailRepository(client: ApiClient): TaskDet
               type: edge.kind,
               lagDays: Math.round(edge.lagMinutes / MINUTES_PER_DAY),
             })),
-          files: [],
+          files: files.filter((file) => file.status === "READY").map((file) => ({ id: file.id, name: file.filename })),
           activity: activity.sort((a, b) => b.at.localeCompare(a.at)),
-          comments: [],
+          comments: comments
+            .filter((comment) => comment.deletedAt === null)
+            .map((comment) => {
+              const author = loaded.roster.find((member) => member.actorId === comment.createdByActorId);
+              return { id: comment.id, author: author ? personOf(loaded.roster, author.id) : { id: comment.createdByActorId, name: "", initials: "" }, at: comment.createdAt, body: comment.body };
+            })
+            .sort((a, b) => a.at.localeCompare(b.at)),
           unreadComments: 0,
           showInCalendar: false,
         };

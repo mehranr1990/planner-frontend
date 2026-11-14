@@ -118,7 +118,7 @@ export function AssignmentReassignSheet({ onDone }: { onDone: () => void }) {
         </p>
         {candidates.map((person) => {
           const load = loadOf(person.id);
-          const over = load ? load.hours > load.capacity : false;
+          const over = load && load.capacity !== null ? load.hours > load.capacity : false;
           return (
             <button
               key={person.id}
@@ -140,11 +140,13 @@ export function AssignmentReassignSheet({ onDone }: { onDone: () => void }) {
               />
               <bdi className="min-w-0 flex-1 truncate text-sm font-bold text-fg">{person.name}</bdi>
               <span className={cn("text-xs font-semibold", over ? "text-danger-text" : "text-fg-secondary")}>
-                {load
-                  ? over
-                    ? t("reassign.over", { hours: format.number(load.hours), capacity: format.number(load.capacity) })
-                    : t("reassign.load", { hours: format.number(load.hours), capacity: format.number(load.capacity) })
-                  : t("reassign.noLoad")}
+                {!load
+                  ? t("reassign.noLoad")
+                  : load.capacity === null
+                    ? t("reassign.loadOnly", { hours: format.number(load.hours) })
+                    : over
+                      ? t("reassign.over", { hours: format.number(load.hours), capacity: format.number(load.capacity) })
+                      : t("reassign.load", { hours: format.number(load.hours), capacity: format.number(load.capacity) })}
               </span>
             </button>
           );

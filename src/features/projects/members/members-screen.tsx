@@ -85,6 +85,9 @@ export function MembersScreen() {
   const list = members.data ?? [];
   const guests = list.filter((member) => member.role === "guest");
   const pending = demo === "empty" ? [] : (invites.data ?? []);
+  // Live: the API lists no pending invitations or task grants; those reads fail and show as unavailable.
+  const invitesUnavailable = invites.isError && demo !== "empty";
+  const grantList = grants.data ?? [];
 
   const setView = (next: View) => {
     const query = new URLSearchParams(params.toString());
@@ -127,7 +130,7 @@ export function MembersScreen() {
     />
   );
 
-  if (!members.data || !invites.data || !grants.data) {
+  if (!members.data || (!invites.data && !invites.isError) || (!grants.data && !grants.isError)) {
     return (
       <>
         {header}
@@ -143,13 +146,13 @@ export function MembersScreen() {
         <div className="flex min-w-0 flex-col gap-4">
           {view === "members" ? (
             <>
-              <MemberList members={list} grants={grants.data} />
-              <PendingInvites invites={pending} />
+              <MemberList members={list} grants={grantList} />
+              <PendingInvites invites={invitesUnavailable ? null : pending} />
             </>
           ) : view === "invitations" ? (
-            <PendingInvites invites={pending} />
+            <PendingInvites invites={invitesUnavailable ? null : pending} />
           ) : (
-            <GuestList guests={guests} grants={grants.data} />
+            <GuestList guests={guests} grants={grantList} grantsUnavailable={grants.isError} />
           )}
         </div>
         <RoleGuide />
@@ -481,7 +484,7 @@ function RemoveDialog({
   );
 }
 
-function PendingInvites({ invites }: { invites: readonly PendingInvite[] }) {
+function PendingInvites({ invites }: { invites: readonly PendingInvite[] | null }) {
   const t = useTranslations("Members");
   const labels = useProjectLabels();
   const format = useProjectFormat();
@@ -493,9 +496,11 @@ function PendingInvites({ invites }: { invites: readonly PendingInvite[] }) {
         <h2 id="pending-invites" className="type-title text-fg">
           {t("pending")}
         </h2>
-        <span className="text-xs font-semibold text-fg-secondary">{format.number(invites.length)}</span>
+        {invites ? <span className="text-xs font-semibold text-fg-secondary">{format.number(invites.length)}</span> : null}
       </div>
-      {invites.length === 0 ? (
+      {invites === null ? (
+        <p className="text-sm text-fg-muted">{t("pendingUnavailable")}</p>
+      ) : invites.length === 0 ? (
         <p className="text-sm text-fg-muted">{t("noPending")}</p>
       ) : (
         <ul className="flex flex-col gap-2">
@@ -548,8 +553,17 @@ function PendingInvites({ invites }: { invites: readonly PendingInvite[] }) {
   );
 }
 
-function GuestList({ guests, grants }: { guests: readonly ProjectMember[]; grants: readonly GuestGrant[] }) {
+function GuestList({
+  guests,
+  grants,
+  grantsUnavailable,
+}: {
+  guests: readonly ProjectMember[];
+  grants: readonly GuestGrant[];
+  grantsUnavailable: boolean;
+}) {
   const t = useTranslations("Members");
+  if (grantsUnavailable) return <EmptyState variant="card" title={t("grantsUnavailable")} titleAs="h2" />;
   if (guests.length === 0) return <EmptyState variant="card" title={t("guestsEmpty")} titleAs="h2" />;
   return (
     <section aria-label={t("view.guests")} className="flex flex-col gap-3">

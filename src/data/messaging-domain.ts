@@ -361,7 +361,8 @@ export interface Minutes {
   versions: MinutesVersion[];
   /** Personal meetings: optional minutes, no review step. */
   personal: boolean;
-  can: { write: boolean; submit: boolean; review: boolean; finalize: boolean; makeTask: boolean };
+  /** `withdraw`: pull an in-review / approved version back to Draft (author or organiser; never a final one). */
+  can: { write: boolean; submit: boolean; review: boolean; finalize: boolean; makeTask: boolean; withdraw?: boolean };
   /** Last "request changes" comment (back to Draft). */
   changesComment: string | null;
 }
@@ -373,6 +374,42 @@ export interface MeetingInvitation {
   /** Null when the time cannot be placed in the planner zone. */
   start: string | null;
   end: string | null;
+}
+
+/**
+ * A pending conversation invitation addressed to me (recipient-only read).
+ * The API serves no conversation title: only the kind, the inviter's display
+ * name when visible to me (else null) and the expiry.
+ */
+export interface ConversationInvitation {
+  id: string;
+  revision: number;
+  conversationId: string;
+  kind: ConversationKind;
+  inviterName: string | null;
+  expiresAt: string;
+}
+
+/** A server-created messaging notice (new message or invitation); read-only state + read, no dismiss / snooze in the API. */
+export interface MessagingNotice {
+  id: string;
+  revision: number;
+  conversationId: string;
+  kind: "message" | "invitation";
+  messageId: string | null;
+  invitationId: string | null;
+  read: boolean;
+  at: string;
+}
+
+/** "Please read" reminder for an announcement; title / source only when the announcement is still readable by me. */
+export interface AnnouncementReminder {
+  id: string;
+  announcementId: string;
+  at: string;
+  read: boolean;
+  title: string | null;
+  source: MsgSource | null;
 }
 
 export interface NewMeetingInput {

@@ -13,6 +13,7 @@ interface FakeGoal {
   milestones: { id: string; title: string; position: number; targetDate: string | null; status: string; contributes: boolean; completedAt: string | null }[];
   metrics: { id: string; unit: string; baseline: string; target: string; current: string }[];
   links: { id: string; taskId: string }[];
+  habits: { id: string; habitId: string }[];
 }
 
 function backend() {
@@ -28,6 +29,7 @@ function backend() {
       milestones: [],
       metrics: [],
       links: [],
+      habits: [],
     };
     goals.set(id, goal);
     return goal;
@@ -59,6 +61,7 @@ function backend() {
       if (!child) return json(goal.dto);
       if (child === "milestones") return json({ goalRevision: goal.dto.revision, items: goal.milestones });
       if (child === "progress") return json(progress(goal));
+      if (child === "links" && a === "habits") return json({ goalRevision: goal.dto.revision, items: goal.habits });
       return json({ goalRevision: goal.dto.revision, items: goal.links });
     }
     if (state.conflictOnce) {
@@ -148,13 +151,15 @@ describe("goals adapter", () => {
       { id: "m1", title: "One", position: 0, targetDate: "2026-10-20", status: "COMPLETED", contributes: true, completedAt: "2026-10-19T12:00:00.000Z" },
       { id: "m2", title: "Two", position: 1, targetDate: "2026-11-01", status: "OPEN", contributes: true, completedAt: null },
     );
+    a.habits.push({ id: "lh1", habitId: "h-walk" });
     t.seed("gb", { status: "PAUSED" });
     t.seed("gc", { status: "COMPLETED" });
     t.seed("gd", { status: "ABANDONED" });
 
     const active = await t.goals.list();
     expect(active.map((goal) => goal.id)).toEqual(["gb", "ga"]);
-    expect(active[1]).toMatchObject({ area: "Health", progress: 0.5, status: "behind", behindDays: 10, nextStep: "Two", nextStepDay: "2026-11-01", dueDay: "2026-11-02", notes: "Why", lifecycle: "active" });
+    expect(active[1]).toMatchObject({ area: "Health", progress: 0.5, status: "behind", behindDays: 10, nextStep: "Two", nextStepDay: "2026-11-01", dueDay: "2026-11-02", notes: "Why", lifecycle: "active", habitIds: ["h-walk"] });
+    expect(active[0]!.habitIds).toBeUndefined();
     expect(active[1].milestones).toEqual([
       { id: "m1", title: "One", dueDay: "2026-10-20", doneDay: "2026-10-19" },
       { id: "m2", title: "Two", dueDay: "2026-11-01", doneDay: null },

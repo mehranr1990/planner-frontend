@@ -2,7 +2,11 @@
 
 import { Link2, Pencil, Video } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { useState } from "react";
+import { ConfirmDialog } from "@/components/ui/alert-dialog";
 import { AvatarGroup } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { RepositoryError } from "@/data/repositories";
 import { toast } from "@/components/ui/toast";
 import { SignatureCard, SignatureCardAction } from "@/design-system/surfaces/signature-card";
 import { teamRsvps, type TeamEventDetail, type TeamRsvp } from "@/data/team-domain";
@@ -32,7 +36,8 @@ export function TeamEventCard({
 }) {
   const t = useTranslations("TeamCal");
   const format = useProjectFormat();
-  const { rsvp } = useTeamEventActions(teamId);
+  const { rsvp, cancel } = useTeamEventActions(teamId);
+  const [cancelError, setCancelError] = useState<string | null>(null);
   const counts = rsvpCounts(event);
   const time = event.time
     ? convertDigits(event.end ? `${event.time} – ${event.end}` : event.time, format.digits)
@@ -58,6 +63,20 @@ export function TeamEventCard({
 
   const answer = (value: TeamRsvp) =>
     rsvp.mutate({ eventId: event.id, rsvp: value }, { onSuccess: () => toast({ title: t("rsvp.saved") }) });
+
+  // The event leaves the calendar only after the server canceled it (the refetch drops it).
+  const confirmCancel = async () => {
+    setCancelError(null);
+    try {
+      await cancel.mutateAsync(event.id);
+      toast({ title: t("cancelEvent.done") });
+    } catch (cause) {
+      setCancelError(
+        cause instanceof RepositoryError && cause.code === "conflict" ? t("cancelEvent.conflict") : t("cancelEvent.failed"),
+      );
+      throw cause;
+    }
+  };
 
   return (
     <SignatureCard action={action} as="section" aria-labelledby="team-event-title" contentClassName="gap-4">
@@ -130,9 +149,11 @@ export function TeamEventCard({
                     <bdi className="min-w-0 flex-1">
                       {item.owner ? t("agendaOwner", { title: item.title, name: item.owner.name }) : item.title}
                     </bdi>
-                    <span className="shrink-0 text-xs font-medium text-fg-secondary">
-                      {t("minutes", { n: format.number(item.minutes) })}
-                    </span>
+                    {item.minutes !== null ? (
+                      <span className="shrink-0 text-xs font-medium text-fg-secondary">
+                        {t("minutes", { n: format.number(item.minutes) })}
+                      </span>
+                    ) : null}
                   </li>
                 ))}
               </ol>
@@ -150,6 +171,23 @@ export function TeamEventCard({
             >
               {event.url.replace(/^https?:\/\//, "")}
             </a>
+          ) : null}
+          {event.can.cancel ? (
+            <ConfirmDialog
+              tone="destructive"
+              title={t("cancelEvent.title")}
+              description={t("cancelEvent.body", { title: event.title })}
+              confirmLabel={t("cancelEvent.confirm")}
+              cancelLabel={t("cancelEvent.keep")}
+              onConfirm={confirmCancel}
+              onOpenChange={(open) => (open ? undefined : setCancelError(null))}
+              error={cancelError}
+              trigger={
+                <Button variant="ghost" size="sm" className="self-start" disabled={cancel.isPending}>
+                  {t("cancelEvent.action")}
+                </Button>
+              }
+            />
           ) : null}
         </>
       ) : null}

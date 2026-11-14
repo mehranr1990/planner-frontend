@@ -139,7 +139,7 @@ function PortfolioCard({ portfolio }: { portfolio: PortfolioSummary }) {
   const { company } = useCompany();
   const format = useCompanyFormat(company.currency);
   const router = useRouter();
-  const ratio = portfolio.active > 0 ? (portfolio.onTrack / portfolio.active) * 100 : 0;
+  const ratio = portfolio.active > 0 && portfolio.onTrack !== null ? (portfolio.onTrack / portfolio.active) * 100 : 0;
   return (
     <SignatureCard
       as="section"
@@ -159,6 +159,15 @@ function PortfolioCard({ portfolio }: { portfolio: PortfolioSummary }) {
       </p>
       {portfolio.active === 0 ? (
         <p className="text-sm text-fg-secondary">{t("portfolio.none")}</p>
+      ) : portfolio.onTrack === null ? (
+        // The health split is not served: the active count only, never an invented split.
+        <>
+          <p className="flex flex-wrap items-baseline gap-x-2">
+            <span className="type-display tabular text-fg">{format.number(portfolio.active)}</span>
+            <span className="text-sm font-semibold text-fg-secondary">{t("portfolio.active")}</span>
+          </p>
+          <p className="text-xs text-fg-muted">{t("portfolio.healthUnavailable")}</p>
+        </>
       ) : (
         <>
           <p className="flex flex-wrap items-baseline gap-x-2">
@@ -168,8 +177,8 @@ function PortfolioCard({ portfolio }: { portfolio: PortfolioSummary }) {
           </p>
           <Progress value={ratio} label={t("portfolio.onTrack")} valueText={format.percent(ratio)} />
           <p className="flex flex-wrap items-center gap-2 text-xs font-semibold">
-            <span className="rounded-pill bg-warning-soft px-2.5 py-1 text-warning-text">{t("portfolio.atRisk", { n: format.number(portfolio.atRisk) })}</span>
-            <span className="rounded-pill bg-subtle px-2.5 py-1 text-fg-secondary">{t("portfolio.offTrack", { n: format.number(portfolio.offTrack) })}</span>
+            <span className="rounded-pill bg-warning-soft px-2.5 py-1 text-warning-text">{t("portfolio.atRisk", { n: format.number(portfolio.atRisk ?? 0) })}</span>
+            <span className="rounded-pill bg-subtle px-2.5 py-1 text-fg-secondary">{t("portfolio.offTrack", { n: format.number(portfolio.offTrack ?? 0) })}</span>
             <span className="text-fg-muted">{t("portfolio.source")}</span>
           </p>
           {portfolio.history.length > 0 ? (
@@ -201,22 +210,30 @@ function Kpis({ data }: { data: CompanyOverview }) {
   const { kpis } = data;
   return (
     <MetricGroup columns={2} aria-label={t("label")}>
-      <MetricTile label={t("teams")} value={format.number(kpis.teams)} hint={t("teamsHint", { n: format.number(kpis.teamsSentPlan) })} />
+      <MetricTile label={t("teams")} value={format.number(kpis.teams)} hint={kpis.teamsSentPlan === null ? undefined : t("teamsHint", { n: format.number(kpis.teamsSentPlan) })} />
       <MetricTile
         label={t("people")}
         value={format.number(kpis.people)}
-        hint={t("peopleHint", { joined: format.number(kpis.joinedThisQuarter), leave: format.number(kpis.onLeave) })}
+        hint={kpis.joinedThisQuarter === null || kpis.onLeave === null ? undefined : t("peopleHint", { joined: format.number(kpis.joinedThisQuarter), leave: format.number(kpis.onLeave) })}
       />
       <MetricTile
         label={t("goals")}
-        value={`${format.number(kpis.goalsOnPace)}/${format.number(kpis.goals)}`}
-        hint={t("goalsHint", { quarter: data.portfolio.quarter.split(" ")[0] ?? "" })}
+        value={kpis.goals === null ? "—" : kpis.goalsOnPace === null ? format.number(kpis.goals) : `${format.number(kpis.goalsOnPace)}/${format.number(kpis.goals)}`}
+        hint={
+          kpis.goals === null
+            ? t("notAvailable")
+            : kpis.goalsOnPace !== null
+              ? t("goalsHint", { quarter: data.portfolio.quarter.split(" ")[0] ?? "" })
+              : kpis.goalsProgress != null
+                ? t("goalsProgress", { percent: format.percent(kpis.goalsProgress) })
+                : undefined
+        }
       />
       {capabilities.modules.approvals ? (
         <MetricTile
           label={t("approvals")}
           value={format.number(kpis.approvalsForMe)}
-          hint={kpis.approvalsForMe > 0 ? t("approvalsHint", { n: format.number(kpis.oldestWaitingDays) }) : t("approvalsNone")}
+          hint={kpis.approvalsForMe > 0 ? t("approvalsHint", { n: format.number(kpis.oldestWaitingDays ?? 0) }) : t("approvalsNone")}
         />
       ) : null}
     </MetricGroup>
@@ -266,8 +283,8 @@ function OverviewTabs({ data }: { data: CompanyOverview }) {
                   <Link href={`/projects/${project.id}`} className="truncate text-sm font-bold text-fg hover:underline">
                     <bdi>{project.name}</bdi>
                   </Link>
-                  <Progress value={project.progress} label={project.name} size="sm" className="max-sm:hidden" />
-                  <span className="text-xs font-semibold tabular text-fg-secondary max-sm:hidden">{format.percent(project.progress)}</span>
+                  <Progress value={project.progress ?? 0} label={project.name} size="sm" className="max-sm:hidden" />
+                  <span className="text-xs font-semibold tabular text-fg-secondary max-sm:hidden">{project.progress === null ? "—" : format.percent(project.progress)}</span>
                   <ProjectStatusChip health={project.health} lifecycle="active" />
                 </li>
               ))}
@@ -324,16 +341,16 @@ function DepartmentRow({ row }: { row: DepartmentProgressRow }) {
   const t = useTranslations("Company.overview.tabs");
   const { company } = useCompany();
   const format = useCompanyFormat(company.currency);
-  const tone = row.status === "on-track" ? "success" : row.status === "off-track" ? "danger" : "warning";
-  const label = row.status === "watch" ? t("watch") : row.status === "on-track" ? t("onTrack") : row.status === "at-risk" ? t("atRisk") : t("offTrack");
+  const tone = row.status === "on-track" ? "success" : row.status === "off-track" ? "danger" : row.status === null ? "neutral" : "warning";
+  const label = row.status === null ? null : row.status === "watch" ? t("watch") : row.status === "on-track" ? t("onTrack") : row.status === "at-risk" ? t("atRisk") : t("offTrack");
   return (
     <li className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-1 py-2.5 sm:grid-cols-[minmax(0,8rem)_minmax(0,1fr)_3rem_auto_5rem]">
       <bdi className="truncate text-sm font-bold text-fg">{row.name}</bdi>
-      <Progress value={row.progress} label={row.name} size="sm" className="max-sm:order-last max-sm:col-span-2" />
-      <span className="text-xs font-semibold tabular text-fg-secondary max-sm:hidden">{format.percent(row.progress)}</span>
-      <StatusChip tone={tone}>{label}</StatusChip>
-      <span className={cn("text-xs font-bold tabular max-sm:hidden", row.capacity > 90 ? "text-danger-text" : "text-fg-secondary")}>
-        {t("cap", { percent: format.percent(row.capacity) })}
+      <Progress value={row.progress ?? 0} label={row.name} size="sm" className="max-sm:order-last max-sm:col-span-2" />
+      <span className="text-xs font-semibold tabular text-fg-secondary max-sm:hidden">{row.progress === null ? "—" : format.percent(row.progress)}</span>
+      {label === null ? <span aria-hidden="true" /> : <StatusChip tone={tone}>{label}</StatusChip>}
+      <span className={cn("text-xs font-bold tabular max-sm:hidden", row.capacity !== null && row.capacity > 90 ? "text-danger-text" : "text-fg-secondary")}>
+        {row.capacity === null ? "—" : t("cap", { percent: format.percent(row.capacity) })}
       </span>
     </li>
   );
@@ -383,7 +400,7 @@ function BudgetCard({ budget }: { budget: BudgetSummary }) {
           {t("left", { amount: format.short(budget.left) })}
         </li>
       </ul>
-      <p className="text-xs text-fg-secondary">{t("pendingNote", { amount: format.short(budget.pending) })}</p>
+      {budget.pending === null ? null : <p className="text-xs text-fg-secondary">{t("pendingNote", { amount: format.short(budget.pending) })}</p>}
     </ProductCard>
   );
 }

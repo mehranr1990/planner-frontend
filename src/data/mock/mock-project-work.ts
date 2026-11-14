@@ -2,6 +2,7 @@ import { projectWorkFixtures, sampleWorkflow } from "@/fixtures/project-work";
 import type {
   MilestoneRow,
   MilestoneStatus,
+  PhaseRow,
   ProjectActivity,
   ProjectKpis,
   ProjectMilestone,
@@ -11,6 +12,7 @@ import type {
   ProjectWorkflow,
   WorkloadEntry,
 } from "../project-domain";
+import { compareMilestoneDue } from "../project-domain";
 import type {
   ActivityRepository,
   AssignmentRepository,
@@ -88,6 +90,49 @@ export function isTaskDone(task: ProjectTask, workflow: ProjectWorkflow): boolea
   return workflow.statuses.find((status) => status.id === task.statusId)?.category === "done";
 }
 
+/** PJ-08 phase rows: done / all tasks placed in each phase (live computes the same from the visible task list). */
+export function computePhaseRows(phases: readonly ProjectPhase[], tasks: readonly ProjectTask[], workflow: ProjectWorkflow): PhaseRow[] {
+  return phases.map((phase) => {
+    const inPhase = tasks.filter((task) => task.phaseId === phase.id);
+    return { phase, tasksDone: inPhase.filter((task) => isTaskDone(task, workflow)).length, tasksTotal: inPhase.length };
+  });
+}
+
+/**
+ * SPEC PJ-08 status: Reached · At risk · Next (earliest open) · Planned. At risk =
+ * an open high / critical risk linked to the milestone, or due within 14 days
+ * with less than half its tasks done; an undated milestone is never "behind".
+ */
+export function computeMilestoneRows({
+  milestones,
+  tasks,
+  workflow,
+  risks,
+  today,
+}: {
+  milestones: readonly ProjectMilestone[];
+  tasks: readonly ProjectTask[];
+  workflow: ProjectWorkflow;
+  risks: readonly ProjectRisk[];
+  today: string;
+}): MilestoneRow[] {
+  const base = [...milestones].sort(compareMilestoneDue).map((milestone) => {
+    const linked = tasks.filter((task) => task.milestoneId === milestone.id);
+    const done = linked.filter((task) => isTaskDone(task, workflow)).length;
+    const reached = milestone.done || (linked.length > 0 && done === linked.length);
+    return { milestone, linked: linked.length, done, reached };
+  });
+  const nextId = base.find((row) => !row.reached)?.milestone.id;
+  return base.map(({ milestone, linked, done, reached }) => {
+    const highRisk = risks.some(
+      (risk) => risk.open && risk.milestoneId === milestone.id && (risk.severity === "high" || risk.severity === "critical"),
+    );
+    const behind = milestone.due !== null && dayNumber(milestone.due) - dayNumber(today) <= 14 && (linked === 0 ? 0 : done / linked) < 0.5;
+    const status: MilestoneStatus = reached ? "reached" : highRisk || behind ? "risk" : milestone.id === nextId ? "next" : "planned";
+    return { milestone, status, tasksDone: done, tasksTotal: linked };
+  });
+}
+
 export function isMine(task: ProjectTask): boolean {
   return task.assignees.some((assignee) => assignee.person.id === CURRENT_USER_ID && assignee.state !== "declined");
 }
@@ -100,7 +145,9 @@ export function computeKpis(store: ProjectWorkStore, projectId: string, today: s
   const overdue = open.filter((task) => task.due && dayNumber(task.due) < now);
   const [weekStart, weekEnd] = weekOf(today);
   const milestones = store.milestones.get(projectId) ?? [];
-  const next = milestones.filter((milestone) => !milestone.done).sort((a, b) => a.due.localeCompare(b.due))[0];
+  const next = milestones
+    .flatMap((milestone) => (!milestone.done && milestone.due ? [{ ...milestone, due: milestone.due }] : []))
+    .sort((a, b) => a.due.localeCompare(b.due))[0];
   const risks = (store.risks.get(projectId) ?? []).filter((risk) => risk.open && risk.kind === "risk");
   return {
     milestonesDone: milestones.filter((milestone) => milestone.done).length,
@@ -146,55 +193,21 @@ export function createMockProjectWork({
     if (!canEditMilestones(projectId)) throw new RepositoryError("forbidden", "Manager+ only");
   };
 
-  /** SPEC PJ-08 status: Reached · At risk · Next (earliest open) · Planned, computed here like the server. */
-  function milestoneRows(projectId: string): MilestoneRow[] {
-    const workflow = store.workflow(projectId);
-    const tasks = store.tasks.get(projectId) ?? [];
-    const risks = store.risks.get(projectId) ?? [];
-    const list = [...(store.milestones.get(projectId) ?? [])].sort((a, b) => a.due.localeCompare(b.due));
-    const base = list.map((milestone) => {
-      const linked = tasks.filter((task) => task.milestoneId === milestone.id);
-      const done = linked.filter((task) => isTaskDone(task, workflow)).length;
-      const reached = milestone.done || (linked.length > 0 && done === linked.length);
-      return { milestone, linked: linked.length, done, reached };
-    });
-    const nextId = base.find((row) => !row.reached)?.milestone.id;
-    return base.map(({ milestone, linked, done, reached }) => {
-      const days = dayNumber(milestone.due) - dayNumber(today);
-      const highRisk = risks.some(
-        (risk) =>
-          risk.open && risk.milestoneId === milestone.id && (risk.severity === "high" || risk.severity === "critical"),
-      );
-      const behind = days <= 14 && (linked === 0 ? 0 : done / linked) < 0.5;
-      const status: MilestoneStatus = reached
-        ? "reached"
-        : highRisk || behind
-          ? "risk"
-          : milestone.id === nextId
-            ? "next"
-            : "planned";
-      return { milestone, status, tasksDone: done, tasksTotal: linked };
-    });
-  }
-
   const milestones: MilestoneRepository = {
     listPhases: (projectId) => respond(store.phases.get(projectId) ?? []),
     listMilestones: (projectId) => respond(store.milestones.get(projectId) ?? []),
-    phaseRows: (projectId) => {
-      const workflow = store.workflow(projectId);
-      const tasks = store.tasks.get(projectId) ?? [];
-      return respond(
-        (store.phases.get(projectId) ?? []).map((phase) => {
-          const inPhase = tasks.filter((task) => task.phaseId === phase.id);
-          return {
-            phase,
-            tasksDone: inPhase.filter((task) => isTaskDone(task, workflow)).length,
-            tasksTotal: inPhase.length,
-          };
+    phaseRows: (projectId) =>
+      respond(computePhaseRows(store.phases.get(projectId) ?? [], store.tasks.get(projectId) ?? [], store.workflow(projectId))),
+    milestoneRows: (projectId) =>
+      respond(
+        computeMilestoneRows({
+          milestones: store.milestones.get(projectId) ?? [],
+          tasks: store.tasks.get(projectId) ?? [],
+          workflow: store.workflow(projectId),
+          risks: store.risks.get(projectId) ?? [],
+          today,
         }),
-      );
-    },
-    milestoneRows: (projectId) => respond(milestoneRows(projectId)),
+      ),
     async reorderPhases(projectId, phaseIds) {
       editGuard(projectId);
       const list = store.phases.get(projectId) ?? [];

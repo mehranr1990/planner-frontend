@@ -1,11 +1,18 @@
-import { screen, waitFor } from "@testing-library/react";
+import { screen, waitFor, within } from "@testing-library/react";
+import { act } from "react";
 import userEvent from "@testing-library/user-event";
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, beforeAll, describe, expect, it } from "vitest";
 import { resetToasts } from "@/components/ui/toast";
-import { renderCompanyScreen } from "../test-utils";
+import { asDesktop, renderCompanyScreen } from "../test-utils";
 import { EmployeeFileScreen } from "./employee-file-screen";
 
 afterEach(() => resetToasts());
+
+// jsdom lacks the pointer-capture and scrolling APIs Radix Select calls.
+beforeAll(() => {
+  Element.prototype.releasePointerCapture ??= () => {};
+  Element.prototype.scrollIntoView ??= () => {};
+});
 
 describe("CO-12 · Employee file (sealed)", () => {
   it("is sealed for Org Admin without a grant; Request access is logged", async () => {
@@ -36,5 +43,28 @@ describe("CO-12 · Employee file (sealed)", () => {
     renderCompanyScreen(<EmployeeFileScreen />, { path: "/companies/euroly/people/p-mehran/file" });
     expect(await screen.findByText("Your own file · you see who opened it")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Access log" })).toBeInTheDocument();
+  });
+
+  it("a corrective action needs a reviewer (another Owner / Org Admin) before it opens", async () => {
+    const restore = asDesktop();
+    const user = userEvent.setup();
+    const { repository } = renderCompanyScreen(<EmployeeFileScreen />, { path: "/companies/euroly/people/p-katy/file" });
+    await user.click(await screen.findByRole("button", { name: "Open corrective action" }));
+    const dialog = await screen.findByRole("dialog", { name: "Open corrective action" });
+    await user.type(within(dialog).getByRole("textbox", { name: "Reason" }), "Missed onboarding");
+    await user.type(within(dialog).getByRole("textbox", { name: "Evidence (required)" }), "log.csv");
+    await user.click(within(dialog).getByRole("button", { name: "Open" }));
+    expect(await within(dialog).findByText("Choose who reviews this action")).toBeInTheDocument();
+    within(dialog).getByRole("combobox", { name: "Reviewer" }).focus();
+    await user.keyboard("{Enter}");
+    const option = await screen.findByRole("option", { name: "Navid E." });
+    expect(screen.queryByRole("option", { name: "Mehran R." })).not.toBeInTheDocument();
+    act(() => option.focus());
+    await user.keyboard("{Enter}");
+    await user.click(within(dialog).getByRole("button", { name: "Open" }));
+    await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
+    const file = await repository.employeeFile("euroly", "p-katy");
+    expect(file.status === "open" && file.corrective[0]?.reason).toBe("Missed onboarding");
+    restore();
   });
 });

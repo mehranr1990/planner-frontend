@@ -26,10 +26,17 @@ const version = (over: Record<string, unknown>) => ({
 });
 const page = (items: unknown[]) => json({ items, nextCursor: null, hasMore: false });
 
-function announcementsApi(opts: { totals?: number } = {}) {
+function announcementsApi(opts: { totals?: number; capabilities?: string[]; failPublish?: number } = {}) {
+  let publishFailures = opts.failPublish ?? 0;
   return fakeApi((call: FakeCall, parts) => {
     const tail = parts.join("/");
     if (tail === "teams/t1") return json({ id: "t1", title: "Design Team" });
+    if (tail === "teams/t1/access/me") return opts.capabilities ? json({ actorId: "act-me", capabilities: opts.capabilities }) : err(403);
+    if (tail === "projects/p1/access/me") return json({ actorId: "act-me", capabilities: opts.capabilities ?? [] });
+    if (call.method === "POST" && tail === "announcements") return json({ ...call.body, revision: 1, createdAt: "2026-11-14T08:00:00.000Z" }, 201);
+    if (call.method === "POST" && /^announcements\/[^/]+\/versions$/.test(tail)) return json(version({ ...call.body, announcementId: parts[1], state: "DRAFT", revision: 4, publishedAt: null }), 201);
+    if (call.method === "POST" && /^announcements\/[^/]+\/versions\/[^/]+\/publish$/.test(tail)) return publishFailures-- > 0 ? err(503) : json(version({ id: parts[3], announcementId: parts[1] }), 201);
+    if (tail === "projects/p1") return json({ id: "p1", title: "Apollo" });
     if (tail === "announcements/scopes/TEAM/t1")
       return page([
         version({}),
@@ -58,7 +65,7 @@ describe("live announcements (M-A1)", () => {
       requireAck: true,
       acked: false,
       ack: { done: 5, total: 12, pending: [], lastReminderAt: null },
-      canRemind: false,
+      canRemind: true,
     });
     expect(api.writes()).toEqual([]);
   });
@@ -72,11 +79,86 @@ describe("live announcements (M-A1)", () => {
     expect(api.writes()).toEqual([`POST /announcements/${A1}/versions/v2/acknowledge`]);
   });
 
-  it("publish, remind and the composer access stay refused without a request", async () => {
+  it("remind needs a listed announcement (OD-13)", async () => {
     const api = announcementsApi();
     const repo = createApiMessaging(api.client, USER);
-    await expect(repo.announcements.access("t1")).rejects.toMatchObject({ code: "unavailable" });
-    await expect(repo.announcements.remind(A1)).rejects.toMatchObject({ code: "unavailable" });
+    await expect(repo.announcements.remind(A1)).rejects.toMatchObject({ code: "not-found" });
     expect(api.calls).toEqual([]);
+  });
+
+  it("composer access from the root access/me hint: Team announcement.publish, Project meeting.create; not admitted → hidden", async () => {
+    const repo = (capabilities?: string[]) => createApiMessaging(announcementsApi({ capabilities }).client, USER).announcements;
+    expect(await repo().access("t1", "team")).toEqual({ canPublish: false, audiences: [] });
+    expect(await repo(["task.read"]).access("t1", "team")).toEqual({ canPublish: false, audiences: [] });
+    expect(await repo(["announcement.publish"]).access("t1", "team")).toEqual({ canPublish: true, audiences: [{ kind: "workspace", label: "Design Team", memberIds: [] }] });
+    expect(await repo(["meeting.create"]).access("p1", "project")).toMatchObject({ canPublish: true, audiences: [{ label: "Apollo" }] });
+    expect(await repo(["announcement.publish"]).access("p1", "project")).toMatchObject({ canPublish: false });
+    expect(await repo(["announcement.publish"]).access("t1")).toEqual({ canPublish: false, audiences: [] });
+  });
+
+  it("publish: announcement → draft version → publish ALL (If-Match draft revision, Idempotency-Key per step)", async () => {
+    const api = announcementsApi();
+    const repo = createApiMessaging(api.client, USER).announcements;
+    const input = {
+      workspace: { kind: "team" as const, workspaceId: "t1", name: "Design Team" },
+      title: " Office move ",
+      body: "Saturday",
+      audience: { kind: "workspace" as const, label: "Design Team", memberIds: [] },
+      pinDays: null,
+      requireAck: true,
+      scheduleAt: null,
+      clientOpId: "op-1",
+    };
+    const id = await repo.publish(input);
+    const writes = api.calls.filter((call) => call.method === "POST");
+    expect(writes.map((call) => call.path.replace(id, "{id}").replace(String(writes[1]!.body.id), "{v}"))).toEqual([
+      "/announcements",
+      "/announcements/{id}/versions",
+      "/announcements/{id}/versions/{v}/publish",
+    ]);
+    expect(writes[0]!.body).toEqual({ id, kind: "TEAM", sourceId: "t1" });
+    expect(writes[1]!.body).toMatchObject({ title: "Office move", text: "Saturday", acknowledgement: true });
+    expect(writes[2]).toMatchObject({ ifMatch: '"4"', body: { audience: "ALL" } });
+    expect(new Set(writes.map((call) => call.key)).size).toBe(3);
+  });
+
+  it("publish failure → no success; retrying the same clientOpId replays the same ids and keys", async () => {
+    const api = announcementsApi({ failPublish: 1 });
+    const repo = createApiMessaging(api.client, USER).announcements;
+    const input = {
+      workspace: { kind: "team" as const, workspaceId: "t1", name: "Design Team" },
+      title: "T",
+      body: "B",
+      audience: { kind: "workspace" as const, label: "Design Team", memberIds: [] },
+      pinDays: null,
+      requireAck: false,
+      scheduleAt: null,
+      clientOpId: "op-3",
+    };
+    await expect(repo.publish(input)).rejects.toBeTruthy();
+    const id = await repo.publish(input);
+    const writes = api.calls.filter((call) => call.method === "POST");
+    expect(writes).toHaveLength(6);
+    expect(writes.slice(3).map((call) => [call.path, call.key])).toEqual(writes.slice(0, 3).map((call) => [call.path, call.key]));
+    expect(writes[0]!.body.id).toBe(id);
+  });
+
+  it("schedule, pin end and audience subsets are refused before any write", async () => {
+    const api = announcementsApi();
+    const repo = createApiMessaging(api.client, USER).announcements;
+    const base = {
+      workspace: { kind: "team" as const, workspaceId: "t1", name: "Design Team" },
+      title: "T",
+      body: "B",
+      audience: { kind: "workspace" as const, label: "Design Team", memberIds: [] },
+      pinDays: null,
+      requireAck: false,
+      scheduleAt: null,
+      clientOpId: "op-2",
+    };
+    await expect(repo.publish({ ...base, scheduleAt: "2026-11-20T06:00:00.000Z" })).rejects.toMatchObject({ code: "unavailable" });
+    await expect(repo.publish({ ...base, pinDays: 7 })).rejects.toMatchObject({ code: "unavailable" });
+    await expect(repo.publish({ ...base, audience: { kind: "subset", label: "Design", memberIds: ["x"] } })).rejects.toMatchObject({ code: "unavailable" });
+    expect(api.writes()).toEqual([]);
   });
 });

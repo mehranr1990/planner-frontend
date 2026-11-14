@@ -9,7 +9,7 @@ import { toLatinDigits } from "@/lib/locale/digits";
  * parser ("250k lunch #food"). Budget months are Jalali months.
  */
 
-export const FINANCE_TABS = ["overview", "trends", "breakdown", "transactions"] as const;
+export const FINANCE_TABS = ["overview", "trends", "breakdown", "transactions", "bills", "reports"] as const;
 export type FinanceTab = (typeof FINANCE_TABS)[number];
 
 export function isFinanceTab(value: unknown): value is FinanceTab {

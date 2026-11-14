@@ -1,11 +1,12 @@
 # Integration state
 
-Last updated: 2026-11-12 (sequential Personal run; per-module log in `SESSION_HANDOFF.md`). Detailed per-phase history (00a–03): `docs/INTEGRATION_PROGRESS.md`.
+Last updated: 2026-11-14 (Projects final gap closure; per-module log in `SESSION_HANDOFF.md`). Detailed per-phase history (00a–03): `docs/INTEGRATION_PROGRESS.md`.
 
 ## Backend contract in use
 
 | Item | Value |
 |---|---|
+| **Current contract (2026-11-14, Phase 1–5 final)** | `D:New folderplanner-backenddocsapiopenapi.json` at backend `ab37a2c`, **1,045 operations**, sha256 `e05f977716a2c537a8c1b41721668785a82d852ac6b386cddaedaaafd0c9a049`. All subset types regenerated from full prefixes + new `openapi-p6-personal.d.ts`; coverage in `API_COVERAGE_MATRIX.md` → "Consolidated coverage". The untracked `docs/Backend-Handoff/openapi.json` is the older 845-op copy (not used; never commit) |
 | Package | `docs/Backend-Handoff/Mehran-Backend-Fable-P6-01.zip` (untracked, **not ignored** — do not `git add`) |
 | ZIP sha256 | `ca2b3c5f447c90f174ec5763cced7fbb40154aa7f43ba03a219595e9e4aa59c1` |
 | Release | "Mehran Planner backend through P6-01", 2026-11-11, backend `7bcc10e2b133bc67976e5684f2aba82760890ea8` |
@@ -48,13 +49,20 @@ The ZIP is only extracted to a session temp directory. Re-verify only if the ZIP
 | 13 | Insights | **IMPLEMENTED (summary only), NOT LIVE VERIFIED** (2026-11-12; unit 3/3) | patterns blocked by contract (B4) |
 | 03b | Weekly review | **IMPLEMENTED, NOT LIVE VERIFIED** (2026-11-12; unit 5/5) | one text field holds the draft; rollover/capacity not used |
 | — | Verification phase 2026-11-12 | live verification **not run** (credentials unset); Reschedule Undo failure not reproduced (11/11); lint warning fixed | live-verified = 00a–03 only |
-| 12, 14–16 | Notifications, files, sync, export/deletion | **NOT CONNECTED — no frontend surface** (audited 2026-11-12) | owner decision D6 |
+| 12, 14–16 | Notifications, reminders, routines, task files, bills / reports / finance export, account export / deletion | **IMPLEMENTED, NOT LIVE VERIFIED** (2026-11-14 gap closure; owner-approved UI; contract fakes + UI tests) | bell inbox (read / snooze / dismiss / task deep link), Settings › Notifications (preferences, push devices revoke, reminders list), Task detail › Files + Reminders tabs, Habits › Routines, Finance › Bills + Reports (+ CSV / JSON export), Settings › Data (account export, staged deletion). Deletion ENVIRONMENT BLOCKED until `NEXT_PUBLIC_ERASURE_POLICY_VERSION`; push subscribe needs a service worker; sync stays out of scope. Gaps PR-1…PR-3 (`BACKEND_REQUIREMENTS.md`) |
 | — | Projects, Teams | MOCK ONLY; **BLOCKED** (Shared activation not authorized; D1/D2) | |
-| — | Companies | context page only; BLOCKED as above | |
-| — | Messaging, Meetings, Announcements, Social (P6-01) | NOT BUILT (no frontend screens) | |
+| S3 | Teams (TM-00…TM-15) | **IMPLEMENTED, NOT LIVE VERIFIED** (2026-11-14; contract fakes) | every existing Team screen reads / writes the API in live mode; TM-03 events + time off, TM-05 sprints, TM-06 portfolio, calendar overlays added in S3; remaining refusals are backend gaps TB-1…TB-8 (`BACKEND_REQUIREMENTS.md`) or outside the approved UI. Live run needs migrations, retention catalog, CORS, credentials, Shared activation |
+| S3b | Teams final gaps | **IMPLEMENTED, NOT LIVE VERIFIED** (2026-11-14; contract fakes) | time-off list / approve / reject / cancel / history and event cancel (owner-authorized minimal UI on TM-03); TB-1…TB-8 re-verified, none blocks a core workflow |
+| S4 | Companies (CS-01, CO-00…CO-14, CO-90) | **IMPLEMENTED, NOT LIVE VERIFIED** (2026-11-14; contract fakes) | live mode reads / writes the API on every existing Company screen; S4 added overview KPIs, staff + work profile, projects / teams + attach, resource requests, expenses (receipt bytes, chain submit), KB create, employee document upload, grants, ownership handover, invitations; fixed payment-run override. Gap closure (2026-11-14): company notifications in the bell, employee department transfer, pending invitations (no email), corrective-action reviewer picker, truthful ownership-transfer form. Remaining refusals: CB-1, CB-2, CB-3 (email only), CB-4, CB-6, CB-7, CB-8 (`BACKEND_REQUIREMENTS.md`), company create (C: retention). Live run needs migrations, COMPANY retention policy, CORS, credentials, Shared activation |
+| S5 | Messages & Meetings (MS-01…MS-09, MS-90, MT-01…MT-04) | **IMPLEMENTED, NOT LIVE VERIFIED** (2026-11-14; contract fakes; final gap closure added invitation inbox, bell messaging notices + announcement reminders, meeting file download, minutes withdraw) | every existing Messages / Meetings / Announcements screen reads / writes the API in live mode; S5 added announcement composer (publish ALL), Remind, unread mentions, read receipts, Personal meeting create. Blocked: MB-1…MB-4, OD-16 agenda fields (see `BACKEND_REQUIREMENTS.md`) |
+| — | Social (Phase 6) | out of scope | |
 
 "LIVE VERIFIED" evidence dates from 2026-11-03 against the local Phase 0/1 backend build. Nothing has been live-verified against the P6-01 build: on 2026-11-11 `http://localhost:3000/health/live` = 200 but `/health/ready` = **503** (see B1).
 
-## Projects (Stage 1, 2026-11-12)
+## Projects (Stage 1, 2026-11-12; Session 2 closure 2026-11-14)
+
+**Final gap closure (2026-11-14, same contract) — IMPLEMENTED, NOT LIVE VERIFIED:** workload + team load and analytics computed from the visible task list; PJ-08 rows, milestone rename, phase order; risk register read / edit; Settings → Access = role-default policy; create limits + stable attempt id; live upload gate fixed. Remaining true backend gaps PB-1…PB-17 (`BACKEND_REQUIREMENTS.md`, PB-1 task delete and PB-2 pending invitations / resend are the essential ones).
+
+Session 2 (contract 1,045 ops, sha256 `e05f9777…`): create (sequence + partial outcome), inviter invitations (send / cancel), decline-note refusal, invitation count, task comments + files, PJ-10 files with real bytes, phases + milestones lists (nullable domain; fixes a live loading hang on Tasks / Board / Detail / Overview / Timeline), unavailable states on refused reads. IMPLEMENTED, NOT LIVE VERIFIED. Rows: `API_COVERAGE_MATRIX.md` → Consolidated coverage (Projects · … S2).
 
 Types: `src/api/generated/openapi-p6-projects.d.ts` (subset of the 845-op contract). Live mode: `api-project-repositories.ts` — members (list / role / remove), status-card KPIs, schedule graph + links + cascade reschedule, task comments, task dependencies, field deprecate, template save, project deletion request connected (contract fakes 12/12, NOT live verified); all other Projects methods refused as "unsupported" (blocker B5, requirements R1, R3, R4, R6–R12 in the matrix). R5 seam change applied. Session 5 live results for Personal: see `SESSION_HANDOFF.md`.

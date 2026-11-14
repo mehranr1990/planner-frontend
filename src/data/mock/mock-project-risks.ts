@@ -174,12 +174,12 @@ export function createMockRisks(store: ProjectWorkStore, { respond, now }: MockR
         milestoneId: source.milestoneId,
         taskIds: source.taskIds,
         fromRiskId: source.id,
-        fromRiskCode: source.code,
+        fromRiskCode: source.code ?? undefined,
         commentCount: 0,
         revision: 1,
       };
       write(riskId, revision, (risk) => {
-        audit(riskId, { field: "converted", from: risk.code, to: code });
+        audit(riskId, { field: "converted", from: risk.code ?? undefined, to: code });
         risk.status = "closed";
         risk.closeReason = "became-issue";
         risk.issueId = issue.id;
@@ -187,7 +187,7 @@ export function createMockRisks(store: ProjectWorkStore, { respond, now }: MockR
         return risk;
       });
       list.push(issue);
-      history.set(issue.id, [{ id: `h-new-${++seq}`, at: now, actor: me, field: "converted", from: source.code, to: code }]);
+      history.set(issue.id, [{ id: `h-new-${++seq}`, at: now, actor: me, field: "converted", from: source.code ?? undefined, to: code }]);
       return respond(issue);
     },
   };

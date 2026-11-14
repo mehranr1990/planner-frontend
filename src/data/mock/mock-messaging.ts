@@ -810,6 +810,11 @@ export function createMessagingServer({ now: clock, simulate = true, uploadStepM
             .filter((c) => c.kind === "channel" && c.source.workspaceId === workspaceId && activeMember(c, actor))
             .reduce((n, c) => n + summary(c, actor).mentions, 0);
         },
+        // The mock has no invitation or notice store: inboxes stay empty (nothing fabricated).
+        invitations: () => done([]),
+        respondInvitation: () => Promise.reject(new MessagingError("not-found")),
+        notices: () => done([]),
+        readNotice: () => done(undefined),
       },
 
       messages: {
@@ -1213,6 +1218,12 @@ export function createMessagingServer({ now: clock, simulate = true, uploadStepM
           mt.files.push({ id: nextId("f"), ...file });
           emit({ type: "meeting", meetingId: id });
         },
+        // Mock files keep name + size only; there are no bytes to hand out.
+        async download(id) {
+          const mt = requireMeeting(id, actor);
+          if (!(actor in mt.invitees)) throw new MessagingError("forbidden");
+          throw new MessagingError("unavailable", "Mock files have no stored bytes");
+        },
         invitable: (source) => done(invitableFor(actor, source)),
         sources: () => done(sourcesFor(actor)),
       },
@@ -1241,6 +1252,7 @@ export function createMessagingServer({ now: clock, simulate = true, uploadStepM
               review: !personal && min.status === "in-review" && review?.state === "pending",
               finalize: (mt.organizer === actor || admin) && (min.status === "approved" || (personal && min.status === "draft" && min.version > 0)),
               makeTask: writer || admin,
+              withdraw: (writer || admin) && (min.status === "in-review" || min.status === "approved"),
             },
             changesComment: min.changesComment,
           };
@@ -1305,6 +1317,17 @@ export function createMessagingServer({ now: clock, simulate = true, uploadStepM
           if (!allowed || !(min.status === "approved" || (personal && min.status === "draft"))) throw new MessagingError("forbidden");
           min.status = "final";
           min.version += 1;
+          pushVersion(min, actor);
+          emit({ type: "meeting", meetingId });
+        },
+        async withdraw(meetingId) {
+          const mt = requireMeeting(meetingId, actor);
+          const min = mt.minutes;
+          const allowed = mt.minuteTaker === actor || mt.organizer === actor || (mt.source.kind !== "personal" && isWorkspaceAdmin(actor, mt.source));
+          if (!allowed) throw new MessagingError("forbidden");
+          if (!min || (min.status !== "in-review" && min.status !== "approved")) throw new MessagingError("invalid", "Changed elsewhere");
+          min.status = "draft";
+          min.reviewers = new Map();
           pushVersion(min, actor);
           emit({ type: "meeting", meetingId });
         },
@@ -1385,6 +1408,8 @@ export function createMessagingServer({ now: clock, simulate = true, uploadStepM
           a.lastReminderAt = now();
           emit({ type: "announcement", workspaceId: a.workspaceId });
         },
+        reminders: () => done([]),
+        readReminder: () => done(undefined),
       },
     };
   }

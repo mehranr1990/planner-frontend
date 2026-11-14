@@ -39,6 +39,8 @@ interface Known {
   progress: ApiProgress;
   /** Task links: task id → link id. */
   links: Map<string, string>;
+  /** Linked habits (GET links/habits; read-only in the UI). */
+  habitIds: string[];
 }
 
 export interface ApiGoalsOptions {
@@ -103,16 +105,18 @@ export function createApiGoalsRepository(client: ApiClient, { today, tasks }: Ap
 
   async function details(dto: ApiGoal): Promise<Known> {
     const path = { id: dto.id };
-    const [milestones, progress, links] = await Promise.all([
+    const [milestones, progress, links, habits] = await Promise.all([
       client.request("get", "/api/v1/goals/{id}/milestones", { path }),
       client.request("get", "/api/v1/goals/{id}/progress", { path }),
       client.request("get", "/api/v1/goals/{id}/links/tasks", { path }),
+      client.request("get", "/api/v1/goals/{id}/links/habits", { path }),
     ]);
     const entry: Known = {
       dto,
       milestones: [...milestones.data.items].sort((a, b) => a.position - b.position),
       progress: progress.data,
       links: new Map(links.data.items.map((link) => [link.taskId, link.id])),
+      habitIds: habits.data.items.map((link) => link.habitId),
     };
     known.set(dto.id, entry);
     return entry;
@@ -129,7 +133,7 @@ export function createApiGoalsRepository(client: ApiClient, { today, tasks }: Ap
     for (const entry of entries) known.set(entry.dto.id, entry);
   }
 
-  function toGoal({ dto, milestones, progress }: Known): Goal {
+  function toGoal({ dto, milestones, progress, habitIds }: Known): Goal {
     const lifecycle = LIFECYCLE[dto.status];
     const metric = dto.progressMode === "METRIC" ? progress.sources.find((source) => source.kind === "METRIC")?.metric : null;
     const open = milestones.filter((item) => item.status === "OPEN");
@@ -150,6 +154,7 @@ export function createApiGoalsRepository(client: ApiClient, { today, tasks }: Ap
       ...(metric ? { measure: { current: Number(metric.current), target: Number(metric.target), unit: metric.unit } } : {}),
       ...(milestones.length ? { milestones: milestones.map((item) => ({ id: item.id, title: item.title, dueDay: item.targetDate, doneDay: item.completedAt ? dayOfInstant(item.completedAt) : null })) } : {}),
       ...(dto.description ? { notes: dto.description } : {}),
+      ...(habitIds.length ? { habitIds: [...habitIds] } : {}),
     };
   }
 
@@ -259,7 +264,7 @@ export function createApiGoalsRepository(client: ApiClient, { today, tasks }: Ap
           },
         }),
       );
-      const entry: Known = { dto: data, milestones: [], progress: emptyProgress(data), links: new Map() };
+      const entry: Known = { dto: data, milestones: [], progress: emptyProgress(data), links: new Map(), habitIds: [] };
       known.set(data.id, entry);
       try {
         if (input.measure) await addMeasure(data.id, input.measure);

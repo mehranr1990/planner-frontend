@@ -76,14 +76,15 @@ export interface CompanyDirectory {
   recentIds: string[];
 }
 
+/** Live: the recipient list is public-safe (no company, role, department or inviter before accepting) → null. */
 export interface CompanyInvitation {
   id: string;
-  companyId: string;
-  companyName: string;
-  initials: string;
-  role: CompanyRole;
+  companyId: string | null;
+  companyName: string | null;
+  initials: string | null;
+  role: CompanyRole | null;
   departmentName: string | null;
-  inviterName: string;
+  inviterName: string | null;
 }
 
 /** What the viewer may do in one company (mock `capabilities`, SPEC permission tables). */
@@ -96,6 +97,8 @@ export interface CompanyCapabilities {
   budgetCard: boolean;
   export: boolean;
   manageDepartments: boolean;
+  /** Move an employee's seat between departments of this company (server checks both departments). */
+  transferStaff: boolean;
   overridePolicy: boolean;
   invite: boolean;
   editWorkProfile: boolean;
@@ -148,31 +151,37 @@ export interface PortfolioQuarter {
 
 export interface PortfolioSummary {
   quarter: string;
-  onTrack: number;
+  /** Health split: null when not served (live: no project health aggregate). */
+  onTrack: number | null;
   active: number;
-  atRisk: number;
-  offTrack: number;
+  atRisk: number | null;
+  offTrack: number | null;
   history: PortfolioQuarter[];
 }
 
 export interface CompanyKpis {
   teams: number;
-  teamsSentPlan: number;
+  /** null = not served (live). */
+  teamsSentPlan: number | null;
   people: number;
-  joinedThisQuarter: number;
-  onLeave: number;
-  goalsOnPace: number;
-  goals: number;
+  joinedThisQuarter: number | null;
+  onLeave: number | null;
+  goalsOnPace: number | null;
+  /** null = goals not readable for the viewer. */
+  goals: number | null;
+  /** Average key-result progress (%), when served instead of "on pace". */
+  goalsProgress?: number | null;
   approvalsForMe: number;
-  oldestWaitingDays: number;
+  oldestWaitingDays: number | null;
 }
 
 export interface DepartmentProgressRow {
   departmentId: string;
   name: string;
-  progress: number;
-  status: ProjectHealth | "watch";
-  capacity: number;
+  /** null = no measurable tasks / not served. */
+  progress: number | null;
+  status: ProjectHealth | "watch" | null;
+  capacity: number | null;
 }
 
 export interface CapacityWatch {
@@ -190,7 +199,8 @@ export interface BudgetSummary {
   approved: number;
   committed: number;
   left: number;
-  pending: number;
+  /** null = pending changes not served. */
+  pending: number | null;
 }
 
 export interface CompanyOverview {
@@ -260,15 +270,41 @@ export interface WorkProfile {
   workingOn: string | null;
   email: string;
   phone: string | null;
-  hoursPerWeek: number;
+  /** null = not served (live). */
+  hoursPerWeek: number | null;
   /** Display line, e.g. "Sat – Wed · 9:00 – 17:00" (user content). */
   workHours: string;
   startedOn: string | null;
   location: string;
-  equipment: string[];
-  bookedPercent: number;
+  /** null = not served (live). */
+  equipment: string[] | null;
+  bookedPercent: number | null;
   /** Viewer sees only name + department (outside their department scope). */
   limited: boolean;
+}
+
+/** What moving one employee's department seat would affect (server preview). */
+export interface DepartmentTransferPreview {
+  /** The seat's role in the source department; null = not served. */
+  role: CompanyRole | null;
+  activeAllocations: number;
+  pendingResourceRequests: number;
+  pendingExpenseReviews: number;
+  /** False while anything above blocks the move, or the seat is a department manager's. */
+  allowed: boolean;
+}
+
+/* ── Notifications (server-created; read state only) ─────────────── */
+
+export type CompanyNotificationKind = "kb-ack-reminder" | "file-request";
+
+export interface CompanyNotification {
+  id: string;
+  kind: CompanyNotificationKind;
+  /** KB page (document) id, or the employee whose sealed file was requested. */
+  subjectId: string;
+  createdAt: string;
+  read: boolean;
 }
 
 /* ── Projects & teams (CO-04) ─────────────────────────────────────── */
@@ -281,8 +317,9 @@ export interface CompanyProjectRow {
   initials: string;
   departmentId: string;
   departmentName: string;
-  health: ProjectHealth;
-  progress: number;
+  /** null = not served (live: manual project health is not aggregated). */
+  health: ProjectHealth | null;
+  progress: number | null;
   /** Approved spend vs project budget; null when the viewer may not see budgets. */
   spent: number | null;
   budget: number | null;
@@ -303,7 +340,8 @@ export interface CompanyTeamRow {
   departmentName: string;
   lead: string;
   people: number;
-  planCompletion: number;
+  /** null = not served (live). */
+  planCompletion: number | null;
   custody: Custody;
 }
 
@@ -484,7 +522,7 @@ export interface Expense {
   projectId: string | null;
   projectName: string | null;
   payer: ExpensePayer;
-  receipt: { name: string } | null;
+  receipt: { name: string; file?: Blob } | null;
   authorId: string;
   authorName: string;
   status: ExpenseStatus;
@@ -504,7 +542,8 @@ export interface ExpenseInput {
   departmentId: string;
   projectId: string | null;
   payer: ExpensePayer;
-  receipt: { name: string } | null;
+  /** `file` = the picked bytes (uploaded in live mode); absent for an already stored receipt. */
+  receipt: { name: string; file?: Blob } | null;
 }
 
 /* ── Approvals (CO-09) + chains (CO-14) ───────────────────────────── */
@@ -535,7 +574,10 @@ export type ApprovalDecisionKind = "approved" | "rejected" | "changes";
 
 export interface ApprovalStepState {
   stepId: string;
+  /** Empty when the step is decided by roles (see `roles`). */
   label: string;
+  /** Role-based step (resource approvals): any holder of one of these roles decides. */
+  roles?: CompanyRole[];
   reviewerId: string | null;
   reviewerName: string | null;
   /** Routed past the requester (C7) or reassigned after a revoked grant. */
@@ -555,7 +597,8 @@ export interface Approval {
   amountNote: string | null;
   requesterId: string;
   requesterName: string;
-  chainVersion: number;
+  /** null = the workflow has no version number (resource approvals). */
+  chainVersion: number | null;
   status: "pending" | "approved" | "rejected" | "changes";
   currentStep: number;
   steps: ApprovalStepState[];
@@ -576,7 +619,8 @@ export interface ApprovalHistoryRow {
   note: string | null;
   by: string;
   subject: ApprovalSubject;
-  chainVersion: number;
+  /** null = the workflow has no version number (resource approvals). */
+  chainVersion: number | null;
 }
 
 /* ── Budgets (CO-10) ──────────────────────────────────────────────── */
@@ -714,12 +758,17 @@ export interface AuditRow {
 export interface CompanySettings {
   name: string;
   legalName: string;
-  currency: CompanyCurrency;
+  /** null = not chosen yet (live: no currency stored before the first choice). */
+  currency: CompanyCurrency | null;
   currencyLocked: boolean;
-  fiscalStartMonth: number;
+  /** null = not set. */
+  fiscalStartMonth: number | null;
   policies: PolicyDefinition[];
   grants: (CompanyGrant & { personName: string })[];
   eligibleOwners: CompanyPersonRef[];
   transfer: { toName: string; status: "pending" } | null;
-  retentionYears: number;
+  /** The handover re-checks the owner's password (false: the server takes no password, session authorization only). */
+  transferReauth: boolean;
+  /** null = no approved retention policy for company records yet (legal review pending). */
+  retentionYears: number | null;
 }

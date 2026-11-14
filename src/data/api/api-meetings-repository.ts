@@ -20,8 +20,7 @@ import { initialsOf } from "./api-project-shared";
  * - Minutes: immutable versions. A save is a new version (parent = latest)
  *   with fresh decision / action ids (they are global keys); one reviewer.
  * - Not served, so never shown as facts: location, minute-taker role, agenda
- *   durations / done state, meeting notes, decision authors, action assignee /
- *   due, source channel.
+ *   durations / done state, meeting notes, source channel.
  * `API_COVERAGE_MATRIX.md` → "Messages & Meetings".
  */
 
@@ -46,6 +45,8 @@ export interface ApiMeetingsDeps {
   workspaceName: (kind: WorkKind, id: string) => Promise<string>;
   /** The caller's Projects / Teams / Companies (M-X5 hints, M-X4 rosters). */
   work: WorkSources;
+  /** OD-1: the approved MEETING policy version of the operator catalog (Personal meetings). */
+  retention: () => Promise<string>;
 }
 
 /** A work source the caller can read, with its root `access/me` capabilities. */
@@ -66,6 +67,8 @@ export interface WorkSources {
   list(): Promise<WorkSource[]>;
   /** My actor id and the members of a source's root roster. */
   roster(kind: WorkKind, id: string): Promise<{ me: string; members: WorkMember[] }>;
+  /** My root `access/me` capability hints in one source; null when not admitted (403 / 404). */
+  capabilities(kind: WorkKind, id: string): Promise<readonly string[] | null>;
 }
 
 const PAGE = 100;
@@ -109,7 +112,7 @@ const timed = (start: string, end: string) => ({
 
 const newest = (versions: readonly ApiVersion[]): ApiVersion | undefined => versions.reduce<ApiVersion | undefined>((latest, version) => (!latest || version.number > latest.number ? version : latest), undefined);
 
-export function createApiMeetings(api: MeetClient, { me: ME, mapped, allPages, workspaceName, work }: ApiMeetingsDeps): { meetings: MeetingRepository; minutes: MinutesRepository } {
+export function createApiMeetings(api: MeetClient, { me: ME, mapped, allPages, workspaceName, work, retention }: ApiMeetingsDeps): { meetings: MeetingRepository; minutes: MinutesRepository } {
   const list = <T>(read: (cursor: string | undefined) => Promise<{ data: Page<T> }>) => allPages<T>(async (cursor) => (await read(cursor)).data);
   const meetingRows = () => list((cursor) => api.request("get", "/api/v1/meetings", { query: { cursor, limit: PAGE } }));
   const roster = (id: string) => list<ApiMeetingMember>((cursor) => api.request("get", "/api/v1/meetings/{id}/members", { path: { id }, query: { cursor, limit: PAGE } }));
@@ -137,7 +140,7 @@ export function createApiMeetings(api: MeetClient, { me: ME, mapped, allPages, w
   /** clientOpId → meeting id, so a retried create sends the same body. */
   const created = new Map<string, string>();
   const workKindOf = (source: MsgSource): WorkKind => {
-    if (source.kind === "personal" || !source.workspaceId) throw new MessagingError("unavailable", "Meetings API: personal meetings need a retentionPolicyVersion (OD-1)");
+    if (source.kind === "personal" || !source.workspaceId) throw new MessagingError("unavailable", "Meetings API: not a work source");
     return WORK_KIND[source.kind];
   };
   const sameSource = (meeting: Pick<ApiMeeting, "kind" | "sourceId">, source: MsgSource) =>
@@ -213,13 +216,36 @@ export function createApiMeetings(api: MeetClient, { me: ME, mapped, allPages, w
         return all.filter((meeting) => Date.parse(meeting.end) > now).sort((a, b) => a.start.localeCompare(b.start));
       }),
 
+    // Admitted meetings in full; OD-12: other meetings of the source the organizer opted in appear as anonymous busy blocks.
     forCalendar: (source, from, to) =>
-      mapped(async () =>
-        (await summaries((row) => sameSource(row, source)))
-          .filter((meeting) => meeting.start < to && meeting.end > from)
-          // Only admitted meetings are listed: never busy-only.
-          .map((meeting) => ({ ...meeting, busyOnly: false })),
-      ),
+      mapped(async () => {
+        const admitted = (await summaries((row) => sameSource(row, source))).filter((meeting) => meeting.start < to && meeting.end > from).map((meeting) => ({ ...meeting, busyOnly: false }));
+        if (source.kind === "personal" || !source.workspaceId) return admitted;
+        const { data } = await api
+          .request("get", "/api/v1/meeting-busy", { query: { sourceKind: WORK_KIND[source.kind], sourceId: source.workspaceId } })
+          .catch(() => ({ data: { items: [] as { schedule: { kind: string; startAt: string | null; endAt: string | null }; recurrence: unknown }[] } }));
+        const busy = data.items
+          // One-off timed blocks only (recurring busy series are not expanded here).
+          .filter((item) => item.schedule.kind === "TIMED" && item.schedule.startAt && item.schedule.endAt && !item.recurrence)
+          .filter((item) => item.schedule.startAt! < to && item.schedule.endAt! > from)
+          .filter((item) => !admitted.some((meeting) => meeting.start === item.schedule.startAt && meeting.end === item.schedule.endAt))
+          .map((item, index) => ({
+            id: `busy:${item.schedule.startAt}:${index}`,
+            title: "",
+            source,
+            start: item.schedule.startAt!,
+            end: item.schedule.endAt!,
+            link: null,
+            location: null,
+            myRsvp: "none" as const,
+            organizer: { id: "", name: "", initials: "" },
+            inviteeCount: 0,
+            minutesStatus: null,
+            needsMyMinutes: false,
+            busyOnly: true,
+          }));
+        return [...admitted, ...busy].sort((a, b) => a.start.localeCompare(b.start));
+      }),
 
     get: (id) =>
       mapped(async () => {
@@ -337,19 +363,40 @@ export function createApiMeetings(api: MeetClient, { me: ME, mapped, allPages, w
         const { data: done } = await api.request("post", "/api/v1/meetings/{id}/attachments/{attachmentId}/complete", { path: { id, attachmentId: created.id }, body: file.blob });
         if (done.status !== "READY") throw new MessagingError("invalid", "Meetings API: the attachment was rejected");
       }),
+    // The server authorises every read (403 / 404 = no longer mine to see); bytes are streamed, never a storage URL.
+    download: (id, fileId) =>
+      mapped(async () => {
+        const { data: file } = await api.request("get", "/api/v1/meetings/{id}/attachments/{attachmentId}", { path: { id, attachmentId: fileId } });
+        if (file.status !== "READY") throw new MessagingError("not-found");
+        const { data } = await api.request("get", "/api/v1/meetings/{id}/attachments/{attachmentId}/download", { path: { id, attachmentId: fileId } });
+        return { blob: data.type ? data : new Blob([data], { type: file.mimeType }), name: file.filename };
+      }),
     // Work meetings only (M-X4): invitees are source-roster actor ids, resolved by the server inside the meeting's space.
     create: (input) =>
       mapped(async () => {
-        const kind = workKindOf(input.source);
         const id = created.get(input.clientOpId) ?? newId();
         created.set(input.clientOpId, id);
+        const event = { title: input.title.trim(), schedule: timed(input.start, input.end) };
+        if (input.source.kind === "personal") {
+          // Personal (INDEPENDENT) invitees are account ids, which no directory serves (MB-4) → organiser only.
+          if (input.inviteeIds.length > 0) throw new MessagingError("unavailable", "Meetings API: personal meeting invitees are account ids that no directory serves");
+          const retentionPolicyVersion = await retention().catch((error: unknown) => {
+            throw new MessagingError("unavailable", error instanceof Error ? error.message : "No approved retention policy");
+          });
+          const { data } = await api.request("post", "/api/v1/meetings", {
+            header: { "Idempotency-Key": input.clientOpId },
+            body: { id, kind: "INDEPENDENT", event, externalUrl: input.link, retentionPolicyVersion },
+          });
+          return data.id;
+        }
+        const kind = workKindOf(input.source);
         const { data } = await api.request("post", "/api/v1/meetings", {
           header: { "Idempotency-Key": input.clientOpId },
           body: {
             id,
             kind,
             sourceId: input.source.workspaceId!,
-            event: { title: input.title.trim(), schedule: timed(input.start, input.end) },
+            event,
             externalUrl: input.link,
             participantActorIds: input.inviteeIds,
           },
@@ -358,16 +405,18 @@ export function createApiMeetings(api: MeetClient, { me: ME, mapped, allPages, w
       }),
     invitable: (source) =>
       mapped(async () => {
+        if (source.kind === "personal") return [];
         const { me, members } = await work.roster(workKindOf(source), source.workspaceId!);
         return members
           .filter((member) => member.state === "ACTIVE" && member.actorId !== me)
           .map((member) => ({ id: member.actorId, name: member.displayName ?? "", initials: initialsOf(member.displayName ?? "") }));
       }),
-    // Only sources whose root access/me reports `meeting.create` (M-X5); never inferred from roles.
+    // Personal first (account-owned, OD-1 catalog policy at create); work sources only where root access/me reports `meeting.create` (M-X5).
     sources: () =>
-      mapped(async () =>
-        (await work.list()).filter((source) => source.capabilities.includes(CAN_CREATE)).map((source) => ({ kind: SOURCE_KIND[source.kind], workspaceId: source.id, name: source.title })),
-      ),
+      mapped(async (): Promise<MsgSource[]> => [
+        { kind: "personal", workspaceId: null, name: "" },
+        ...(await work.list()).filter((source) => source.capabilities.includes(CAN_CREATE)).map((source) => ({ kind: SOURCE_KIND[source.kind], workspaceId: source.id, name: source.title })),
+      ]),
   };
 
   /** The latest version, my admission and the people of a meeting's minutes. */
@@ -424,9 +473,15 @@ export function createApiMeetings(api: MeetClient, { me: ME, mapped, allPages, w
           status: latest ? STATUS[latest.state] : "draft",
           version: latest?.number ?? 0,
           summary: latest?.minutes ?? "",
-          // Decision authors are not served.
-          decisions: (latest?.decisions ?? []).map((decision) => ({ id: decision.id, text: decision.text, proposedBy: null })),
-          actionItems: (latest?.actions ?? []).map((action) => ({ id: action.id, text: action.title, assignee: null, due: null, task: tasks.get(action.id) ?? null })),
+          // M-X6 / M-X7: decision proposer, action assignee and due date (meeting members; null when unset).
+          decisions: (latest?.decisions ?? []).map((decision) => ({ id: decision.id, text: decision.text, proposedBy: decision.proposedByMemberId ? person(decision.proposedByMemberId) : null })),
+          actionItems: (latest?.actions ?? []).map((action) => ({
+            id: action.id,
+            text: action.title,
+            assignee: action.assigneeMemberId ? person(action.assigneeMemberId) : null,
+            due: action.dueDate ?? null,
+            task: tasks.get(action.id) ?? null,
+          })),
           reviews:
             latest?.reviewerMemberId && latest.state !== "DRAFT"
               ? [{ reviewer: person(latest.reviewerMemberId), state: latest.review ? (latest.review.decision === "APPROVE" ? "approved" : "changes") : "pending", comment: latest.review?.reason ?? null }]
@@ -443,6 +498,8 @@ export function createApiMeetings(api: MeetClient, { me: ME, mapped, allPages, w
             finalize: can.includes("meeting.manage") && (state === "APPROVED" || (state === "DRAFT" && personal && members.length === 1)),
             // Live: only independent meetings (Personal tasks) link after the final version; work sources need a release and their task engine.
             makeTask: personal && state === "FINAL",
+            // Server rule: the version's author or the organiser, only IN_REVIEW / APPROVED (back to Draft); a final version never reopens.
+            withdraw: (state === "IN_REVIEW" || state === "APPROVED") && (latest?.authorMemberId === me.memberId || can.includes("meeting.manage")),
           },
           changesComment: state === "REJECTED" ? (latest?.review?.reason ?? null) : null,
         };
@@ -451,11 +508,27 @@ export function createApiMeetings(api: MeetClient, { me: ME, mapped, allPages, w
 
     save: (meetingId, patch) =>
       mapped(async () => {
-        if (patch.actionItems?.some((item) => item.assignee || item.due)) throw new MessagingError("unavailable", "Meetings API: action items carry no assignee or due date");
-        const { latest } = await minutesContext(meetingId);
-        // Every version owns its rows: carried-over decisions and actions get fresh ids (global keys).
-        const decisions = (patch.decisions ?? latest?.decisions ?? []).map((decision) => ({ id: newId(), text: decision.text }));
-        const actions = patch.actionItems ? patch.actionItems.map((item) => ({ id: newId(), title: item.text })) : (latest?.actions ?? []).map((action) => ({ id: newId(), title: action.title, description: action.description ?? null }));
+        const { latest, me, members } = await minutesContext(meetingId);
+        const member = (personId: string | undefined) => {
+          if (!personId) return null;
+          const memberId = memberIdOf(members, me, personId);
+          if (!memberId) throw new MessagingError("not-found");
+          return memberId;
+        };
+        // Every version owns its rows: carried-over decisions and actions get fresh ids (global keys); proposer, assignee and due date carry over.
+        const opt = <K extends string>(key: K, value: string | null | undefined) => (value ? ({ [key]: value } as Record<K, string>) : {});
+        const decisions = patch.decisions
+          ? patch.decisions.map((decision) => ({ id: newId(), text: decision.text, ...opt("proposedByMemberId", member(decision.proposedBy?.id)) }))
+          : (latest?.decisions ?? []).map((decision) => ({ id: newId(), text: decision.text, ...opt("proposedByMemberId", decision.proposedByMemberId) }));
+        const actions = patch.actionItems
+          ? patch.actionItems.map((item) => ({ id: newId(), title: item.text, ...opt("assigneeMemberId", member(item.assignee?.id)), ...opt("dueDate", item.due) }))
+          : (latest?.actions ?? []).map((action) => ({
+              id: newId(),
+              title: action.title,
+              description: action.description ?? null,
+              ...opt("assigneeMemberId", action.assigneeMemberId),
+              ...opt("dueDate", action.dueDate),
+            }));
         await api.request("post", "/api/v1/meetings/{id}/versions", {
           path: { id: meetingId },
           header: { "Idempotency-Key": newIdempotencyKey() },
@@ -504,6 +577,14 @@ export function createApiMeetings(api: MeetClient, { me: ME, mapped, allPages, w
         const { latest } = await minutesContext(meetingId);
         if (!latest || (latest.state !== "APPROVED" && latest.state !== "DRAFT")) throw new MessagingError("forbidden");
         await api.request("post", "/api/v1/meetings/{id}/versions/{versionId}/finalize", { ...versionCall(meetingId, latest), body: {} });
+      }),
+
+    // One attempt with the version's revision: a 409 (changed / finalized meanwhile) is shown, never retried onto newer state.
+    withdraw: (meetingId) =>
+      mapped(async () => {
+        const { latest } = await minutesContext(meetingId);
+        if (!latest || (latest.state !== "IN_REVIEW" && latest.state !== "APPROVED")) throw new MessagingError("invalid", "Changed elsewhere");
+        await api.request("post", "/api/v1/meetings/{id}/versions/{versionId}/withdraw", { ...versionCall(meetingId, latest), body: {} });
       }),
 
     linkTask: (meetingId, itemId, task) =>

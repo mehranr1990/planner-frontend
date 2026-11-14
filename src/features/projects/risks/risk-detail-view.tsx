@@ -117,7 +117,7 @@ export function RiskDetailView({ riskId, variant, closeControl }: RiskDetailView
           {canEdit ? <EditButton risk={data} /> : null}
         </div>
       ) : null}
-      <RiskTabs risk={data} canEdit={canEdit && data.open} phaseId={milestone?.phaseId} />
+      <RiskTabs risk={data} canEdit={canEdit && data.open} phaseId={milestone?.phaseId ?? undefined} />
     </article>
   );
 }
@@ -422,7 +422,7 @@ function ConvertButton({ risk }: { risk: ProjectRisk }) {
             code,
             title: risk.title,
             severity: tLevel(risk.severity),
-            risk: risk.code,
+            risk: risk.code ?? "",
           })}
           size="sm"
           data-scope="project"
@@ -439,7 +439,7 @@ function ConvertButton({ risk }: { risk: ProjectRisk }) {
                   {
                     onSuccess: (issue) => {
                       setOpen(false);
-                      toast({ title: t("converted", { code: issue.code }) });
+                      toast({ title: t("converted", { code: issue.code ?? "" }) });
                       router.replace(riskHref(project.id, issue.id));
                     },
                     onError,
@@ -635,6 +635,7 @@ function Properties({ risk }: { risk: ProjectRisk }) {
 
 function RiskTabs({ risk, canEdit, phaseId }: { risk: ProjectRisk; canEdit: boolean; phaseId?: string }) {
   const t = useTranslations("Risk");
+  const tShell = useTranslations("ContextShell");
   const format = useProjectFormat();
   const { project, capabilities } = useProject();
   const history = useRiskHistory(project.id, risk.id);
@@ -732,7 +733,7 @@ function RiskTabs({ risk, canEdit, phaseId }: { risk: ProjectRisk; canEdit: bool
     {
       value: "history",
       label: t("tabs.history"),
-      content: <HistoryList entries={history.data ?? []} />,
+      content: history.isError ? <p className="text-sm text-fg-muted">{tShell("unavailable")}</p> : <HistoryList entries={history.data ?? []} />,
     },
     {
       value: "comments",
@@ -740,7 +741,10 @@ function RiskTabs({ risk, canEdit, phaseId }: { risk: ProjectRisk; canEdit: bool
       count: risk.commentCount > 0 ? format.number(risk.commentCount) : undefined,
       content: (
         <div className="flex flex-col gap-3">
-          {(comments.data ?? []).length === 0 ? (
+          {comments.isError ? (
+            // Live: comments cannot target a register item (not available, no composer).
+            <p className="text-sm text-fg-muted">{tShell("unavailable")}</p>
+          ) : (comments.data ?? []).length === 0 ? (
             <p className="text-sm text-fg-muted">{t("comments.empty")}</p>
           ) : (
             <ul className="flex flex-col gap-3">
@@ -759,7 +763,7 @@ function RiskTabs({ risk, canEdit, phaseId }: { risk: ProjectRisk; canEdit: bool
               ))}
             </ul>
           )}
-          {capabilities.comment ? (
+          {capabilities.comment && !comments.isError ? (
             <form
               className="flex items-end gap-2"
               onSubmit={(event) => {

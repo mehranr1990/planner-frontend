@@ -120,7 +120,7 @@ export function ProjectTasksScreen() {
 
   const today = getPlannerToday();
   const currentPhase =
-    phases.data?.find((phase) => !phase.done && today >= phase.start && today <= phase.end) ??
+    phases.data?.find((phase) => !phase.done && phase.start !== null && phase.end !== null && today >= phase.start && today <= phase.end) ??
     phases.data?.find((phase) => !phase.done);
 
   const saveStatus = (task: ProjectTask, statusId: string) => {
@@ -321,7 +321,9 @@ export function ProjectTasksScreen() {
               : group.done > 0
                 ? t("group.meta", { open: format.number(group.open), done: format.number(group.done) })
                 : t("group.count", { n: format.number(group.open) });
-            const dates = phase
+            // Live phases carry no dates: no date line.
+            const dates =
+              phase && phase.start !== null && phase.end !== null
               ? phase.start > today
                 ? t("group.starts", { date: format.day(phase.start) })
                 : format.range(phase.start, phase.end)

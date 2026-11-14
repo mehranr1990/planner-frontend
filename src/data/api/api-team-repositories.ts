@@ -3,11 +3,29 @@ import { ApiHttpError } from "@/api/errors";
 import type { paths } from "@/api/generated/openapi-p6-teams";
 import { addDaysToDay, dayOfInstant, instantToClockTime } from "@/lib/dates/clock-time";
 import { getPlannerTimeZone } from "@/lib/dates/zone";
-import type { TeamAccess, TeamCapabilities, TeamDirectory, TeamEvent, TeamMemberRow, TeamModule, TeamPerson, TeamRole, TeamSummary } from "../team-domain";
+import type { Weekday } from "@/lib/dates/week";
+import type { TeamAccess, TeamCapabilities, TeamDirectory, TeamEvent, TeamMemberRow, TeamModule, TeamPerson, TeamRole, TeamSettings, TeamSummary } from "../team-domain";
 import type { TeamCalendarRepository, TeamMemberRepository, TeamRepositories, TeamRepository, TeamSettingsRepository, ProjectAssociationRepository } from "../team-repositories";
 import { RepositoryError } from "../repositories";
 import { invalid, mapErrors, pageAll, retryOnConflict, revisionTag } from "./api-shared";
 import { conflictAware, initialsOf, liveOnlyIn } from "./api-project-shared";
+import { catalogVersion } from "./api-retention";
+import { createApiTeamEvents, createApiTeamSprints, teamDueOverlays, teamPortfolio } from "./api-team-schedule-repositories";
+import {
+  createApiPresence,
+  createApiTeamBacklog,
+  createApiTeamActivity,
+  createApiTeamCheckins,
+  createApiTeamFeedback,
+  createApiTeamCapacity,
+  createApiTeamFiles,
+  createApiTeamGoals,
+  createApiTeamInvitations,
+  createApiTeamPlans,
+  createApiTeamRecognition,
+  createApiTeamReports,
+  createApiTeamTasks,
+} from "./api-team-work-repositories";
 
 const liveOnly = <T extends object>(requirement: string, supported: Partial<T> = {}): T => liveOnlyIn("Teams", requirement, supported);
 
@@ -24,12 +42,12 @@ const liveOnly = <T extends object>(requirement: string, supported: Partial<T> =
  * - Lifecycle: ACTIVE → active, ARCHIVED → archived; OWNER_EXIT_FROZEN,
  *   CLOSING_GRACE and CLOSED are "not available".
  * - Not served by the API, so fixed in live mode: tint (indigo), planning mode
- *   (weekly), `forYou` 0 (no team-scoped assignment read), `checkinMissing`
+ *   (weekly), `checkinMissing`
  *   false (no check-ins), `recentIds` [].
  * Everything else is refused with its reason; `API_COVERAGE_MATRIX.md` → "Teams".
  */
 
-type TeamsClient = ApiClientFor<paths>;
+export type TeamsClient = ApiClientFor<paths>;
 type Data<P extends keyof paths, M extends "get" | "post" | "patch" | "put" | "delete"> = ResponseDataIn<paths, P, M>;
 type ApiTeam = Data<"/api/v1/teams/{id}", "get">;
 type ApiMe = Data<"/api/v1/teams/{id}/access/me", "get">;
@@ -37,9 +55,10 @@ type ApiMembership = Data<"/api/v1/teams/{id}/memberships", "get">["items"][numb
 type ApiTask = Data<"/api/v1/teams/{id}/tasks", "get">["items"][number];
 
 const PAGE = 100;
-const PROOF = "accepting or declining needs the one-time invitation proof, whose delivery is an open owner decision (OD-4)";
-const NO_TASK_MODEL = "team tasks carry no assignees, plan week, checklist or dependencies, and only OPEN / IN_PROGRESS / DONE / CANCELED statuses";
-const NO_PLANNING = "the API has no planning mode, week focus, publish or carry-over model";
+const PROOF = "the API has no re-send (revoke the invitation and invite again)";
+
+const ROLE_TO_API: Record<Exclude<TeamRole, "owner">, "ADMIN" | "LEAD" | "MEMBER" | "VIEWER"> = { admin: "ADMIN", lead: "LEAD", member: "MEMBER", viewer: "VIEWER" };
+const TINTS = ["blue", "indigo", "amber", "purple"] as const;
 
 const ROLE: Record<NonNullable<ApiMe["role"]>, TeamRole> = {
   OWNER: "owner",
@@ -54,55 +73,62 @@ const ROLE: Record<NonNullable<ApiMe["role"]>, TeamRole> = {
 };
 
 /** A null role is a grant from an enclosing scope without a team role: shown as Viewer. */
-const roleOf = (role: ApiMe["role"] | ApiMembership["role"]): TeamRole => (role ? ROLE[role] : "viewer");
+export const roleOf = (role: ApiMe["role"] | ApiMembership["role"]): TeamRole => (role ? ROLE[role] : "viewer");
 
 export const teamPerson = (member: ApiMembership): TeamPerson => {
   const name = member.displayName ?? "";
   return { id: member.id, name, initials: initialsOf(name) };
 };
 
-const LIVE_MODULES: readonly TeamModule[] = ["overview", "calendar", "people"];
+const LIVE_MODULES: readonly TeamModule[] = ["overview", "work", "calendar", "planning", "projects", "goals", "people", "analytics", "files", "recognition"];
 
 /** Backend capability hints ∧ what live mode can do. */
-export function teamCapabilitiesOf(me: ApiMe, team: ApiTeam): TeamCapabilities {
+/** The team settings switches that gate modules (null row = never configured: both off on the server). */
+export interface TeamFlagsRow {
+  checkinsEnabled: boolean | null;
+  statusEnabled: boolean | null;
+}
+
+export function teamCapabilitiesOf(me: ApiMe, team: ApiTeam, flags: TeamFlagsRow | null = null): TeamCapabilities {
   const has = (capability: string) => me.capabilities.includes(capability);
   const owner = me.role === "OWNER";
   const settings = has("custody.archive") || owner;
+  const active = team.state === "ACTIVE";
   const modules = Object.fromEntries(
     (["overview", "work", "calendar", "planning", "projects", "goals", "people", "analytics", "checkins", "recognition", "files", "settings"] as const).map((module) => [
       module,
-      module === "settings" ? settings : LIVE_MODULES.includes(module),
+      module === "settings" ? settings : module === "checkins" ? flags?.checkinsEnabled === true : LIVE_MODULES.includes(module),
     ]),
   ) as Record<TeamModule, boolean>;
   return {
     modules,
-    setOwnStatus: false,
-    editWeekFocus: false,
-    // Sending an invitation returns a proof whose delivery is undecided (OD-4).
-    invite: false,
-    inviteAdmin: false,
-    createTask: false,
-    editAnyTask: false,
-    assignOthers: false,
-    deleteTask: false,
-    seeBooking: false,
+    setOwnStatus: active && flags?.statusEnabled === true && me.role !== "VIEWER" && me.role !== null,
+    editWeekFocus: active && has("work.manage"),
+    // OD-4: recipients fetch their own proof in the app, so sending is enough.
+    invite: active && (has("membership.admin") || has("membership.manager")),
+    inviteAdmin: active && owner,
+    createTask: team.state === "ACTIVE" && has("task.create"),
+    editAnyTask: team.state === "ACTIVE" && has("work.manage"),
+    assignOthers: team.state === "ACTIVE" && has("work.manage"),
+    deleteTask: team.state === "ACTIVE" && has("work.manage"),
+    seeBooking: me.role !== "VIEWER" && me.role !== null,
     archive: team.state === "ACTIVE" && has("custody.archive"),
     restore: team.state === "ARCHIVED" && has("custody.archive"),
     linkProjects: false,
     createProject: false,
-    uploadFile: false,
-    manageFiles: false,
-    exportAnalytics: false,
-    editGeneral: false,
-    editPlanning: false,
+    uploadFile: team.state === "ACTIVE" && has("task.create"),
+    manageFiles: team.state === "ACTIVE" && has("work.manage"),
+    exportAnalytics: active && has("work.manage"),
+    editGeneral: active && (owner || me.role === "ADMIN"),
+    editPlanning: active && has("work.manage"),
     ownTeam: owner,
   };
 }
 
-const roster = (api: TeamsClient, teamId: string): Promise<ApiMembership[]> =>
+export const roster = (api: TeamsClient, teamId: string): Promise<ApiMembership[]> =>
   pageAll<ApiMembership>(async (after) => (await api.request("get", "/api/v1/teams/{id}/memberships", { path: { id: teamId }, query: { limit: PAGE, after } })).data);
 
-const accessMe = async (api: TeamsClient, teamId: string): Promise<ApiMe> =>
+export const accessMe = async (api: TeamsClient, teamId: string): Promise<ApiMe> =>
   (await api.request("get", "/api/v1/teams/{id}/access/me", { path: { id: teamId } })).data;
 
 const isHidden = (error: unknown) =>
@@ -114,13 +140,15 @@ const LIFECYCLE: Partial<Record<ApiTeam["state"], TeamSummary["lifecycle"]>> = {
 async function summaryOf(api: TeamsClient, team: ApiTeam): Promise<{ summary: TeamSummary; me: ApiMe } | null> {
   const lifecycle = LIFECYCLE[team.state];
   if (!lifecycle) return null;
-  const [me, members, tasks, links] = await Promise.all([
+  const [me, members, tasks, links, work] = await Promise.all([
     accessMe(api, team.id),
     roster(api, team.id),
     pageAll<ApiTask>(async (after) => (await api.request("get", "/api/v1/teams/{id}/tasks", { path: { id: team.id }, query: { limit: PAGE, after } })).data),
     pageAll<Data<"/api/v1/teams/{id}/projects", "get">["items"][number]>(
       async (after) => (await api.request("get", "/api/v1/teams/{id}/projects", { path: { id: team.id }, query: { limit: PAGE, after } })).data,
     ),
+    // "Assigned to you": my pending team assignments (not served for an archived team → 0).
+    api.request("get", "/api/v1/teams/{id}/my-work", { path: { id: team.id } }).then((response) => response.data, () => null),
   ]);
   const active = members.filter((member) => member.state === "ACTIVE");
   const lead = active.find((member) => member.role === "LEAD");
@@ -137,7 +165,7 @@ async function summaryOf(api: TeamsClient, team: ApiTeam): Promise<{ summary: Te
     memberCount: active.length,
     lead: lead ? teamPerson(lead) : null,
     openTasks: tasks.filter((task) => task.deletedAt === null && (task.status === "OPEN" || task.status === "IN_PROGRESS")).length,
-    forYou: 0,
+    forYou: work?.pending.length ?? 0,
     projectCount: links.filter((entry) => entry.link.active).length,
     restorable: lifecycle === "archived" && me.capabilities.includes("custody.archive"),
     checkinMissing: false,
@@ -146,14 +174,15 @@ async function summaryOf(api: TeamsClient, team: ApiTeam): Promise<{ summary: Te
   return { summary, me };
 }
 
-function createApiTeamDirectory(api: TeamsClient): TeamRepository {
+function createApiTeamDirectory(api: TeamsClient, client: ApiClient): TeamRepository {
   const access = (id: string) =>
     mapErrors(async (): Promise<TeamAccess> => {
       try {
         const { data: team } = await api.request("get", "/api/v1/teams/{id}", { path: { id } });
         const entry = await summaryOf(api, team);
         if (!entry) return { status: "not-available" };
-        return { status: "ok", team: entry.summary, capabilities: teamCapabilitiesOf(entry.me, team) };
+        const flags = await api.request("get", "/api/v1/teams/{id}/settings", { path: { id } }).then((response) => response.data, () => null);
+        return { status: "ok", team: entry.summary, capabilities: teamCapabilitiesOf(entry.me, team, flags) };
       } catch (error) {
         // Forbidden and not found are the same answer (no discovery).
         if (isHidden(error)) return { status: "not-available" };
@@ -195,13 +224,34 @@ function createApiTeamDirectory(api: TeamsClient): TeamRepository {
       }),
 
     members: (id) =>
-      mapErrors(async () =>
-        (await roster(api, id)).filter((member) => member.state === "ACTIVE").map((member) => ({ person: teamPerson(member), role: roleOf(member.role), title: "" })),
-      ),
+      mapErrors(async () => {
+        const [members, profiles] = await Promise.all([
+          roster(api, id),
+          pageAll<Data<"/api/v1/teams/{id}/member-profiles", "get">["items"][number]>(async (after) => (await api.request("get", "/api/v1/teams/{id}/member-profiles", { path: { id }, query: { limit: PAGE, after } })).data),
+        ]);
+        const title = new Map(profiles.map((profile) => [profile.member.accessId, profile.jobTitle ?? ""]));
+        return members.filter((member) => member.state === "ACTIVE").map((member) => ({ person: teamPerson(member), role: roleOf(member.role), title: title.get(member.id) ?? "" }));
+      }),
 
-    create: () => Promise.reject(new RepositoryError("unsupported", "Teams API: creating a team needs the operator-supplied retentionPolicyVersion (OD-1)")),
-    projects: () =>
-      Promise.reject(new RepositoryError("unsupported", "Teams API: team project links carry no progress, health, dates, milestone or risk figures for the portfolio rows")),
+    // OD-1: the single approved TEAM policy of the operator catalog (refused when there is none or several).
+    create: (input) =>
+      mapErrors(async () => {
+        const title = input.name.trim();
+        if (!title) invalid("A team needs a name");
+        const retentionPolicyVersion = await catalogVersion(api as unknown as ApiClient, "TEAM");
+        const { data: team } = await api.request("post", "/api/v1/teams", {
+          header: { "Idempotency-Key": newIdempotencyKey() },
+          body: { id: newIdempotencyKey(), title, description: input.description?.trim() || null, retentionPolicyVersion },
+        });
+        if (input.planningMode === "sprints") {
+          const { data: row } = await api.request("get", "/api/v1/teams/{id}/settings", { path: { id: team.id } });
+          await api.request("patch", "/api/v1/teams/{id}/settings", { path: { id: team.id }, header: { "If-Match": revisionTag(row.revision) }, body: { planningMode: "SPRINTS" } });
+        }
+        const answer = await access(team.id);
+        if (answer.status !== "ok") throw new RepositoryError("not-found", "Not found");
+        return answer.team;
+      }),
+    projects: (id) => mapErrors(() => teamPortfolio(api, client, id)),
   });
 }
 
@@ -224,10 +274,28 @@ function createApiTeamMembers(api: TeamsClient): TeamMemberRepository {
       return (await conflictAware(() => retryOnConflict(send, async () => (member = await current(teamId, personId))))).data;
     });
 
-  return liveOnly<TeamMemberRepository>(`${NO_PLANNING}; moving a member between teams and the removal preview's task counts are not in the API`, {
+  const titles = async (teamId: string) =>
+    new Map(
+      (
+        await pageAll<Data<"/api/v1/teams/{id}/member-profiles", "get">["items"][number]>(
+          async (after) => (await api.request("get", "/api/v1/teams/{id}/member-profiles", { path: { id: teamId }, query: { limit: PAGE, after } })).data,
+        )
+      ).map((profile) => [profile.member.accessId, profile.jobTitle ?? ""]),
+    );
+
+  return liveOnly<TeamMemberRepository>("moving a member between teams is not in the API", {
+    removalPreview: (teamId, personId) =>
+      mapErrors(async () => {
+        const [{ data }, member] = await Promise.all([
+          api.request("get", "/api/v1/teams/{id}/memberships/{accessId}/removal-preview", { path: { id: teamId, accessId: personId } }),
+          current(teamId, personId),
+        ]);
+        return { openTeamTasks: data.openAssignments, acceptedTeamTasks: Math.max(0, data.openAssignments - data.pendingAssignments), lastOwner: member.role === "OWNER" };
+      }),
+
     list: (teamId) =>
       mapErrors(async () => {
-        const [me, members] = await Promise.all([accessMe(api, teamId), roster(api, teamId)]);
+        const [me, members, title] = await Promise.all([accessMe(api, teamId), roster(api, teamId), titles(teamId)]);
         const has = (capability: string) => me.capabilities.includes(capability);
         return members
           .filter((member) => member.state === "ACTIVE")
@@ -237,7 +305,7 @@ function createApiTeamMembers(api: TeamsClient): TeamMemberRepository {
             return {
               person: teamPerson(member),
               role: roleOf(member.role),
-              title: "",
+              title: title.get(member.id) ?? "",
               can: { changeRole: manageable, editCapacity: false, move: false, remove: manageable, leave: false },
             };
           });
@@ -259,7 +327,7 @@ function createApiTeamMembers(api: TeamsClient): TeamMemberRepository {
 
     // The pending rows carry no recipient email or send time, which the Invitations tab shows.
     invitations: () => Promise.reject(new RepositoryError("unsupported", "Teams API: pending invitation rows carry no recipient email or send time")),
-    resendInvite: () => Promise.reject(new RepositoryError("unsupported", `Teams API: resending needs a new proof; ${PROOF}`)),
+    resendInvite: () => Promise.reject(new RepositoryError("unsupported", `Teams API: ${PROOF}`)),
 
     cancelInvite: (teamId, inviteId) =>
       mapErrors(async () => {
@@ -284,7 +352,8 @@ const eventOf = (item: Data<"/api/v1/teams/{id}/calendar", "get">["items"][numbe
 };
 
 function createApiTeamCalendar(api: TeamsClient): TeamCalendarRepository {
-  return liveOnly<TeamCalendarRepository>("team task due dates and project layers have no team-scoped read", {
+  return liveOnly<TeamCalendarRepository>("—", {
+    overlays: (teamId, from, to) => mapErrors(() => teamDueOverlays(api, teamId, from, to)),
     range: (teamId, from, to) =>
       mapErrors(async () => {
         const items = await pageAll<Data<"/api/v1/teams/{id}/calendar", "get">["items"][number]>(
@@ -318,9 +387,70 @@ function createApiTeamSettings(api: TeamsClient): TeamSettingsRepository {
     const successor = (await roster(api, teamId)).find((member) => member.id === accessId);
     return successor ? teamPerson(successor) : { id: accessId, name: "", initials: "" };
   };
+  type ApiSettings = Data<"/api/v1/teams/{id}/settings", "get">;
+  const settingsOf = async (teamId: string): Promise<TeamSettings> => {
+    const [{ data: team }, { data: row }] = await Promise.all([
+      api.request("get", "/api/v1/teams/{id}", { path: { id: teamId } }),
+      api.request("get", "/api/v1/teams/{id}/settings", { path: { id: teamId } }),
+    ]);
+    return {
+      name: team.title,
+      initials: row.shortName ?? initialsOf(team.title),
+      description: team.description ?? "",
+      tint: (TINTS as readonly string[]).includes(row.color ?? "") ? (row.color as TeamSettings["tint"]) : "indigo",
+      planningMode: row.planningMode === "SPRINTS" ? "sprints" : "weekly",
+      weekStart: row.weekStart === null ? null : (row.weekStart as Weekday),
+      estimateUnit: row.estimateUnit === "POINTS" ? "points" : "hours",
+      // The server enables check-ins and status only when explicitly true.
+      checkinsOn: row.checkinsEnabled === true,
+      statusOn: row.statusEnabled === true,
+      defaultInviteRole: row.defaultInviteRole ? ROLE[row.defaultInviteRole] as Exclude<TeamRole, "owner"> : "member",
+      membersMayInvite: null,
+      viewersSeeBooking: null,
+      revision: row.revision,
+    };
+  };
+  const patchSettings = async (teamId: string, body: Partial<Omit<ApiSettings, "teamId" | "revision" | "updatedAt">>, revision: number) =>
+    conflictAware(() => api.request("patch", "/api/v1/teams/{id}/settings", { path: { id: teamId }, header: { "If-Match": revisionTag(revision) }, body }));
   return liveOnly<TeamSettingsRepository>(
-    `${NO_PLANNING}; no check-in or recognition settings; the successor completes a handover with their own password (no owner confirmation step)`,
+    "the successor completes a handover with their own password (no owner confirmation step)",
     {
+      get: (teamId) => mapErrors(() => settingsOf(teamId)),
+
+      // General fields live on the team (its own revision, read fresh); the rest on the settings row (the screen's revision).
+      update: (teamId, patch, revision) =>
+        mapErrors(async () => {
+          if (patch.membersMayInvite != null || patch.viewersSeeBooking != null) invalid("These access switches are not served by the API");
+          if (patch.name !== undefined && !patch.name.trim()) invalid("A team needs a name");
+          if (patch.name !== undefined || patch.description !== undefined) {
+            const current = await read(teamId);
+            await conflictAware(() =>
+              api.request("patch", "/api/v1/teams/{id}", {
+                path: { id: teamId },
+                header: { "If-Match": current.tag },
+                body: { ...(patch.name !== undefined ? { title: patch.name.trim() } : {}), ...(patch.description !== undefined ? { description: patch.description || null } : {}) },
+              }),
+            );
+          }
+          const body: Partial<Omit<ApiSettings, "teamId" | "revision" | "updatedAt">> = {};
+          if (patch.initials !== undefined) body.shortName = patch.initials.trim() || null;
+          if (patch.tint !== undefined) body.color = patch.tint;
+          if (patch.weekStart !== undefined) body.weekStart = patch.weekStart;
+          if (patch.estimateUnit !== undefined) body.estimateUnit = patch.estimateUnit === "points" ? "POINTS" : "HOURS";
+          if (patch.checkinsOn !== undefined) body.checkinsEnabled = patch.checkinsOn;
+          if (patch.statusOn !== undefined) body.statusEnabled = patch.statusOn;
+          if (patch.defaultInviteRole !== undefined) body.defaultInviteRole = ROLE_TO_API[patch.defaultInviteRole];
+          if (Object.keys(body).length > 0) await patchSettings(teamId, body, revision);
+          return settingsOf(teamId);
+        }),
+
+      setPlanningMode: (teamId, mode) =>
+        mapErrors(async () => {
+          const current = await settingsOf(teamId);
+          await patchSettings(teamId, { planningMode: mode === "sprints" ? "SPRINTS" : "WEEKLY" }, current.revision);
+          return settingsOf(teamId);
+        }),
+
       transfer: (teamId) =>
         mapErrors(async () => {
           const handover = await pending(teamId);
@@ -406,25 +536,25 @@ function createApiProjectAssociations(api: TeamsClient): ProjectAssociationRepos
 export function createApiTeamRepositories(client: ApiClient): TeamRepositories {
   const api: TeamsClient = typedAs<paths>(client);
   return {
-    teams: createApiTeamDirectory(api),
-    teamInvitations: liveOnly(`invitee rows carry only a label and expiry; ${PROOF}; sending returns a proof the inviter would have to deliver`),
-    presence: liveOnly("no presence / manual status"),
-    teamPlans: liveOnly(`${NO_PLANNING}`),
-    teamCapacity: liveOnly("capacity is explicit per-day minutes (unknown = null), not weekly hours on chosen weekdays"),
+    teams: createApiTeamDirectory(api, client),
+    teamInvitations: createApiTeamInvitations(api),
+    presence: createApiPresence(api),
+    teamPlans: createApiTeamPlans(api),
+    teamCapacity: createApiTeamCapacity(api),
     teamCalendar: createApiTeamCalendar(api),
-    teamEvents: liveOnly("team meetings carry no per-person RSVP or timed agenda for this screen; meetings are served by Messages & Meetings"),
-    teamActivity: liveOnly("no team activity feed"),
-    teamCheckins: liveOnly("no check-ins"),
-    teamRecognition: liveOnly("recognition is a confidentiality-reviewed case / disclosure flow, not a public thanks feed"),
-    teamFeedback: liveOnly("private feedback is a case / disclosure flow with review and consent, not the screen's inbox"),
-    teamFiles: liveOnly("no team file library"),
-    teamReports: liveOnly("the dashboard has window counts only (no weekly series)"),
+    teamEvents: createApiTeamEvents(api),
+    teamActivity: createApiTeamActivity(api),
+    teamCheckins: createApiTeamCheckins(api),
+    teamRecognition: createApiTeamRecognition(api),
+    teamFeedback: createApiTeamFeedback(api),
+    teamFiles: createApiTeamFiles(api),
+    teamReports: createApiTeamReports(api),
     teamSettings: createApiTeamSettings(api),
-    teamTasks: liveOnly(`${NO_TASK_MODEL}`),
-    teamSprints: liveOnly("plans of kind SPRINT have no move-to-next / backlog review model"),
+    teamTasks: createApiTeamTasks(api),
+    teamSprints: createApiTeamSprints(api),
     projectAssociations: createApiProjectAssociations(api),
-    teamGoals: liveOnly("goals have manual progress, not the screen's periods and key-result values"),
+    teamGoals: createApiTeamGoals(api),
     teamMembers: createApiTeamMembers(api),
-    teamBacklog: liveOnly("no ranked team backlog"),
+    teamBacklog: createApiTeamBacklog(api),
   };
 }

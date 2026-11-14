@@ -21,7 +21,9 @@
     "trendsHint": "River",
     "breakdown": "Breakdown",
     "breakdownHint": "Flow",
-    "transactions": "Transactions"
+    "transactions": "Transactions",
+    "bills": "Bills",
+    "reports": "Reports"
   },
   "categories": {
     "housing": "Housing",
@@ -131,7 +133,10 @@
     "budget": "Set budget",
     "budgetLabel": "Monthly budget ({unit})",
     "save": "Save budget",
-    "saved": "Budget set"
+    "saved": "Budget set",
+    "more": "More finance",
+    "bills": "Bills",
+    "reports": "Reports"
   },
   "locked": {
     "title": "Finance is locked",

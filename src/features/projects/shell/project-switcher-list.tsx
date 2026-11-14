@@ -53,7 +53,7 @@ export function ProjectSwitcherList({
   const owned = rest.filter((project) => project.role === "owner");
   const member = rest.filter((project) => project.role !== "owner");
   const archived = projects.filter((project) => project.lifecycle === "archived");
-  const invites = invitations.filter((invitation) => matches(invitation.projectName));
+  const invites = invitations.filter((invitation) => invitation.projectId !== null && matches(invitation.projectName ?? ""));
   const counts = directory?.counts;
 
   const row = (project: ProjectSummary, line: string, tag?: string) => {
@@ -150,7 +150,7 @@ export function ProjectSwitcherList({
             key={invitation.id}
             type="button"
             data-switcher-row=""
-            onClick={() => onOpen(invitation.projectId)}
+            onClick={() => onOpen(invitation.projectId!)}
             className="flex min-h-touch items-center gap-2.5 rounded-row px-2 py-1.5 text-start text-fg transition-colors hover:bg-raised"
           >
             <span
@@ -160,13 +160,15 @@ export function ProjectSwitcherList({
               <Icon icon={Plus} size={14} />
             </span>
             <span className="flex min-w-0 flex-1 flex-col leading-snug">
-              <bdi className="truncate text-sm font-semibold">{invitation.projectName}</bdi>
-              <span className="truncate text-xs font-medium text-fg-secondary">
-                {t("invitedBy", {
-                  name: invitation.inviter.name,
-                  role: labels.role(invitation.role),
-                })}
-              </span>
+              <bdi className="truncate text-sm font-semibold">{invitation.projectName ?? ""}</bdi>
+              {invitation.inviter && invitation.role ? (
+                <span className="truncate text-xs font-medium text-fg-secondary">
+                  {t("invitedBy", {
+                    name: invitation.inviter.name,
+                    role: labels.role(invitation.role),
+                  })}
+                </span>
+              ) : null}
             </span>
             <span className="shrink-0 rounded-pill bg-scope-soft px-2.5 py-1 text-xs font-bold text-scope-deep">
               {t("review")}

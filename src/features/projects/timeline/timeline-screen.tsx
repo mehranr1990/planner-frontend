@@ -146,7 +146,8 @@ export function TimelineScreen() {
     />
   );
 
-  if (!graph.data || !list.data || !phases.data || !milestones.data || !workflow.data) {
+  // Live: milestone rows (server status) are not served; the timeline then shows no diamonds.
+  if (!graph.data || !list.data || !phases.data || (!milestones.data && !milestones.isError) || !workflow.data) {
     return (
       <>
         {header}
@@ -210,9 +211,9 @@ export function TimelineScreen() {
                   {tickLabel(tick.day, tick.kind)}
                 </span>
               ))}
-              {milestones.data.map((row) => (
-                <Diamond key={row.milestone.id} row={row} x={scale.center(row.milestone.due)} />
-              ))}
+              {(milestones.data ?? []).map((row) =>
+                row.milestone.due ? <Diamond key={row.milestone.id} row={row} x={scale.center(row.milestone.due)} /> : null,
+              )}
               {showNow ? (
                 <span
                   className="absolute bottom-0 size-3 -translate-x-1/2 translate-y-1/2 rounded-full bg-volt ring-2 ring-scope-deep"
@@ -362,7 +363,7 @@ function PhoneList({ bars, workflow }: { bars: readonly Bar[]; workflow: Project
   const { project } = useProject();
   const phases = useProjectPhases(project.id);
   const today = getPlannerToday();
-  const current = phases.data?.find((phase) => today >= phase.start && today <= phase.end);
+  const current = phases.data?.find((phase) => phase.start !== null && phase.end !== null && today >= phase.start && today <= phase.end);
   return (
     <div className="flex flex-col gap-3 sm:hidden">
       <p className="flex items-center gap-2 rounded-pill bg-scope-soft px-3 py-2 text-xs font-bold text-scope-deep">

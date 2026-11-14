@@ -15,6 +15,7 @@ import {
   MoreHorizontal,
   Play,
   Repeat,
+  Shapes,
   Trash2,
   Zap,
   type LucideIcon,
@@ -36,7 +37,7 @@ import { EnergyBars } from "@/components/ui/energy-bars";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "@/components/ui/toast";
 import { getPlannerNow, getPlannerToday } from "@/data/clock";
-import type { Task } from "@/data/domain";
+import { TASK_CATEGORIES, type Task } from "@/data/domain";
 import { useAreas, useCreateTask, useTask } from "@/data/queries";
 import { useTaskFieldSupport } from "@/data/task-capabilities";
 import type { TaskPatch } from "@/data/repositories";
@@ -419,6 +420,15 @@ function TaskDetailContent({ task, variant, closeControl, onDismiss }: TaskDetai
               </DropdownMenuItem>
             ))}
           </PropertyRow>
+          {task.scope === "personal" && task.category !== undefined ? (
+            <PropertyRow icon={Shapes} label={t("category")} value={task.category ? t(`categories.${task.category}`) : t("none")}>
+              {[...TASK_CATEGORIES, null].map((value) => (
+                <DropdownMenuItem key={value ?? "none"} onSelect={() => apply({ category: value })}>
+                  {value ? t(`categories.${value}`) : t("none")}
+                </DropdownMenuItem>
+              ))}
+            </PropertyRow>
+          ) : null}
           <PropertyRow icon={CircleDot} label={t("goal")} value={
               task.goalTitle && task.goalId ? (
                 <Link href={`/personal/goals/${encodeURIComponent(task.goalId)}`} className="text-scope-deep underline-offset-4 hover:underline focus-visible:focus-ring">

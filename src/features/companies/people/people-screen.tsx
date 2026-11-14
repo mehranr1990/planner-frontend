@@ -1,11 +1,12 @@
 "use client";
 
-import { Copy, Ellipsis, LockKeyhole, Pencil, Plus } from "lucide-react";
+import { ArrowRightLeft, Copy, Ellipsis, LockKeyhole, Pencil, Plus } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useId, useState } from "react";
 import { AccessLoading, AccessState } from "@/components/feedback/access-state";
+import { InlineAlert } from "@/components/feedback/inline-alert";
 import { EmptyState, ErrorState } from "@/components/feedback/state-views";
 import { PeopleWorkload, type PeopleWorkloadPerson } from "@/components/context/people-workload";
 import type { ManualStatus } from "@/components/context/presence-dot";
@@ -18,6 +19,7 @@ import { Icon } from "@/components/ui/icon";
 import { Input } from "@/components/ui/input";
 import { PillGroup } from "@/components/ui/pills";
 import { SearchField } from "@/components/ui/search-field";
+import { Select, SelectItem } from "@/components/ui/select";
 import { Segmented } from "@/components/ui/segmented";
 import { toast } from "@/components/ui/toast";
 import type { Department, WorkProfile } from "@/data/company-domain";
@@ -28,7 +30,9 @@ import {
   useDepartments,
   usePendingCompanyInvites,
   useStaff,
+  useTransferPreview,
 } from "@/data/company-queries";
+import { RepositoryError } from "@/data/repositories";
 import { StatusChip } from "@/design-system/feedback/status-chip";
 import { ProductCard } from "@/design-system/surfaces/product-card";
 import { SignatureCard, SignatureCardAction } from "@/design-system/surfaces/signature-card";
@@ -59,6 +63,7 @@ const NEW_THIS_QUARTER = new Set(["p-yasmin", "p-mina", "p-kian"]);
 
 export function CompanyPeopleScreen() {
   const t = useTranslations("Company.people");
+  const labels = useCompanyLabels();
   const { company, capabilities, departmentId } = useCompany();
   const writable = useCompanyWritable();
   const staff = useStaff(company.id, company.role);
@@ -121,13 +126,17 @@ export function CompanyPeopleScreen() {
       <>
         {header}
         <ProductCard as="section" aria-label={t("invitations.title")} className="gap-2">
-          {(invites.data ?? []).length === 0 ? (
+          {invites.isError ? (
+            <ErrorState onRetry={() => void invites.refetch()} />
+          ) : invites.isPending ? (
+            <AccessLoading />
+          ) : invites.data.length === 0 ? (
             <EmptyState title={t("invitations.empty")} size="compact" />
           ) : (
             <ul className="flex flex-col divide-y divide-line">
-              {(invites.data ?? []).map((invite) => (
+              {invites.data.map((invite) => (
                 <li key={invite.id} className="flex flex-wrap items-center gap-3 py-2.5 text-sm">
-                  <bdi className="min-w-0 flex-1 font-bold text-fg">{invite.email}</bdi>
+                  <bdi className="min-w-0 flex-1 font-bold text-fg">{invite.email ?? t("invitations.noEmail", { role: labels.role(invite.role) })}</bdi>
                   <span className="text-fg-secondary">{t("invitations.line", { department: invite.departmentName })}</span>
                   <StatusChip tone="info">{t("invitations.pending")}</StatusChip>
                 </li>
@@ -234,8 +243,9 @@ function DepartmentRows({ departments, people, onPick }: { departments: Departme
       </h2>
       <ul className="flex flex-col divide-y divide-line">
         {departments.map((dept) => {
-          const members = people.filter((person) => person.departmentIds.includes(dept.id) && !person.limited);
-          const average = members.length ? Math.round(members.reduce((total, person) => total + person.bookedPercent, 0) / members.length) : null;
+          // Booking figures are not served in live mode (null): no bar rather than an invented average.
+          const members = people.filter((person) => person.departmentIds.includes(dept.id) && !person.limited && person.bookedPercent !== null);
+          const average = members.length ? Math.round(members.reduce((total, person) => total + (person.bookedPercent ?? 0), 0) / members.length) : null;
           const bars = canSeeBars(capabilities, dept.id) && average !== null;
           return (
             <li key={dept.id}>
@@ -444,7 +454,7 @@ function WorkProfileCard({ person }: { person: WorkProfile }) {
               ["email", `${person.email} · ${t("verified")}`],
               ["hours", person.workHours],
               ["location", person.location],
-              ["equipment", person.equipment.length ? person.equipment.join(" · ") : t("none")],
+              ["equipment", person.equipment === null ? "—" : person.equipment.length ? person.equipment.join(" · ") : t("none")],
             ].map(([key, value]) => (
               <div key={key} className="grid grid-cols-[6.5rem_minmax(0,1fr)] items-center gap-2 rounded-row px-3 py-2 inset-ring inset-ring-line">
                 <dt className="text-xs text-fg-secondary">{t(key as "supervisor")}</dt>
@@ -475,10 +485,144 @@ function WorkProfileCard({ person }: { person: WorkProfile }) {
           ) : null}
         </>
       )}
+      {person.limited ? null : <DepartmentSeatRow person={person} own={own} />}
       <SealedFileRow person={person} own={own} />
       {editing ? <EditProfileDialog person={person} onClose={() => setEditing(false)} /> : null}
       <span className="sr-only">{tPeople("profileNote")}</span>
     </SignatureCard>
+  );
+}
+
+/* Department seat: the person's current department(s); "Move" transfers one seat inside this company (OD-5). */
+function DepartmentSeatRow({ person, own }: { person: WorkProfile; own: boolean }) {
+  const t = useTranslations("Company.people.transfer");
+  const { capabilities } = useCompany();
+  const writable = useCompanyWritable();
+  const [open, setOpen] = useState(false);
+  // Managers move seats only between departments they manage; the server checks every move.
+  const sources = person.departmentIds.filter((id) => capabilities.allDepartments || capabilities.managedDepartmentIds.includes(id));
+  const canMove = writable && capabilities.transferStaff && !own && person.status !== "left" && sources.length > 0;
+  return (
+    <div className="flex items-center gap-3 rounded-row px-3 py-2.5 inset-ring inset-ring-line">
+      <div className="flex min-w-0 flex-1 flex-col">
+        <span className="text-xs text-fg-secondary">{t("current")}</span>
+        <span className="truncate text-xs font-bold text-fg">{person.departmentNames.length ? <bdi>{person.departmentNames.join(" · ")}</bdi> : t("none")}</span>
+      </div>
+      {canMove ? (
+        <Button size="sm" variant="secondary" onClick={() => setOpen(true)}>
+          <Icon icon={ArrowRightLeft} size={14} />
+          {t("move")}
+        </Button>
+      ) : null}
+      {open ? <TransferDialog person={person} sources={sources} onClose={() => setOpen(false)} /> : null}
+    </div>
+  );
+}
+
+type TransferBlocker = "allocations" | "resourceRequests" | "expenseReviews";
+
+function TransferDialog({ person, sources, onClose }: { person: WorkProfile; sources: string[]; onClose: () => void }) {
+  const t = useTranslations("Company.people.transfer");
+  const labels = useCompanyLabels();
+  const { company, capabilities } = useCompany();
+  const format = useCompanyFormat(company.currency);
+  const departments = useDepartments(company.id);
+  const [from, setFrom] = useState<string | null>(sources.length === 1 ? sources[0]! : null);
+  const [to, setTo] = useState<string | null>(null);
+  const preview = useTransferPreview(company.id, person.id, from, to);
+  const transfer = useCompanyMutation(company.id, (repo, id, vars: { from: string; to: string }) => repo.transferEmployee(id, person.id, vars.from, vars.to));
+  // Same company only: another department or unit the person has no seat in (managers: one they manage).
+  const targets = (departments.data ?? []).filter(
+    (department) => !person.departmentIds.includes(department.id) && (capabilities.allDepartments || capabilities.managedDepartmentIds.includes(department.id)),
+  );
+  const nameOf = (id: string) => (departments.data ?? []).find((department) => department.id === id)?.name ?? person.departmentNames[person.departmentIds.indexOf(id)] ?? "";
+  const failure = transfer.error instanceof RepositoryError ? transfer.error.code : transfer.error ? "other" : null;
+  const blockers: [TransferBlocker, number][] = preview.data
+    ? ([
+        ["allocations", preview.data.activeAllocations],
+        ["resourceRequests", preview.data.pendingResourceRequests],
+        ["expenseReviews", preview.data.pendingExpenseReviews],
+      ] as [TransferBlocker, number][]).filter(([, count]) => count > 0)
+    : [];
+  const pick = (set: (value: string) => void) => (value: string) => {
+    set(value);
+    transfer.reset();
+  };
+  return (
+    <Dialog open onOpenChange={(next) => (next ? undefined : onClose())}>
+      <DialogContent title={t("title", { name: person.name })} description={t("description")}>
+        <div className="flex flex-col gap-4">
+          <Field>
+            <FieldLabel>{t("from")}</FieldLabel>
+            {sources.length === 1 ? (
+              <p className="text-sm font-bold text-fg">
+                <bdi>{nameOf(sources[0]!)}</bdi>
+              </p>
+            ) : (
+              <Select value={from ?? undefined} placeholder={t("choose")} onValueChange={pick(setFrom)}>
+                {sources.map((id) => (
+                  <SelectItem key={id} value={id}>
+                    {nameOf(id)}
+                  </SelectItem>
+                ))}
+              </Select>
+            )}
+          </Field>
+          <Field>
+            <FieldLabel>{t("to")}</FieldLabel>
+            <Select value={to ?? undefined} placeholder={t("choose")} disabled={!targets.length} onValueChange={pick(setTo)}>
+              {targets.map((department) => (
+                <SelectItem key={department.id} value={department.id}>
+                  {department.name}
+                </SelectItem>
+              ))}
+            </Select>
+            {departments.data && !targets.length ? <p className="text-xs text-fg-secondary">{t("noTargets")}</p> : null}
+          </Field>
+          {from && to ? (
+            preview.isPending ? (
+              <p className="text-xs text-fg-secondary" aria-live="polite">
+                {t("checking")}
+              </p>
+            ) : preview.isError ? (
+              <InlineAlert tone="danger" title={t(preview.error instanceof RepositoryError && preview.error.code === "forbidden" ? "forbidden" : "previewFailed")} />
+            ) : preview.data.allowed ? (
+              <InlineAlert tone="info" title={t("readyTitle")} description={t("ready", { role: preview.data.role ? labels.role(preview.data.role) : "—", to: nameOf(to) })} />
+            ) : (
+              <InlineAlert
+                tone="warning"
+                title={t("blockedTitle")}
+                description={blockers.length ? blockers.map(([key, count]) => t(key, { count, formatted: format.number(count) })).join(" · ") : t("roleChange")}
+              />
+            )
+          ) : null}
+          {failure ? <InlineAlert tone="danger" title={t(failure === "conflict" ? "conflict" : failure === "forbidden" ? "forbidden" : "failed")} /> : null}
+        </div>
+        <DialogFooter>
+          <Button variant="secondary" onClick={onClose}>
+            {t("cancel")}
+          </Button>
+          <Button
+            disabled={!from || !to || !preview.data?.allowed || transfer.isPending}
+            onClick={() =>
+              transfer.mutate(
+                { from: from!, to: to! },
+                {
+                  onSuccess: () => {
+                    toast({ title: t("done", { name: person.name, to: nameOf(to!) }) });
+                    onClose();
+                  },
+                  // Changed or newly blocked elsewhere: ask the server again before another try.
+                  onError: () => void preview.refetch(),
+                },
+              )
+            }
+          >
+            {t("confirm")}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }
 

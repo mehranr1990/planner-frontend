@@ -4,18 +4,21 @@ import { ArrowLeft, AtSign, BellOff, PenLine, Search, Settings } from "lucide-re
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useState } from "react";
+import { useId, useState } from "react";
 import { AccessState } from "@/components/feedback/access-state";
 import { Badge } from "@/components/ui/badge";
-import { IconButton } from "@/components/ui/button";
+import { Button, IconButton } from "@/components/ui/button";
 import { Icon } from "@/components/ui/icon";
 import { PillGroup } from "@/components/ui/pills";
 import { Skeleton } from "@/components/ui/skeleton";
-import type { ConversationSummary, ConversationTab } from "@/data/messaging-domain";
-import { useConversations } from "@/data/messaging-queries";
+import { toast } from "@/components/ui/toast";
+import type { ConversationInvitation, ConversationSummary, ConversationTab } from "@/data/messaging-domain";
+import { useConversationInvitations, useConversations, useMessagingMutation } from "@/data/messaging-queries";
+import { MessagingError } from "@/data/messaging-repositories";
 import { normalizePathname } from "@/features/navigation/paths";
 import { cn } from "@/lib/cn";
 import { useMsgFormat } from "./format";
+import { errorText } from "./message-dialogs";
 import { channelsHref, messagesHref } from "./paths";
 import { useOpenMessagingSheet } from "./sheets/messaging-sheet-params";
 import { ConversationAvatar, ConversationTitle, SourceChip } from "./visuals";
@@ -79,6 +82,7 @@ export function ConversationList({ contextLabel, contextHref, className }: { con
         options={(["all", "direct", "groups", "channels", "meetings"] as const).map((value) => ({ value, label: t(`tabs.${value}`) }))}
         className="flex-nowrap overflow-x-auto"
       />
+      <InvitationInbox />
       {list.isPending ? (
         <div className="flex flex-col gap-2" aria-busy="true">
           {[0, 1, 2, 3].map((i) => (
@@ -98,6 +102,64 @@ export function ConversationList({ contextLabel, contextHref, className }: { con
           ))}
         </ul>
       )}
+    </section>
+  );
+}
+
+/*
+ * Conversation invitations addressed to me (recipient-only). Shows only what
+ * the server serves: kind, the inviter's name when visible (else a neutral
+ * line), expiry. Accept joins and opens the conversation; a revoked / expired
+ * / changed invitation reports itself and the list refreshes.
+ */
+function InvitationInbox() {
+  const t = useTranslations("Msg.invitations");
+  const tMsg = useTranslations("Msg");
+  const f = useMsgFormat();
+  const router = useRouter();
+  const titleId = useId();
+  const invitations = useConversationInvitations();
+  const respond = useMessagingMutation((repo, vars: { invitation: ConversationInvitation; accept: boolean }) => repo.conversations.respondInvitation(vars.invitation, vars.accept));
+  if (invitations.isPending) return null;
+  if (invitations.isError) return <p className="rounded-2xl bg-subtle p-3 text-xs text-fg-secondary">{t("error")}</p>;
+  if (!invitations.data.length) return null;
+  const answer = (invitation: ConversationInvitation, accept: boolean) =>
+    respond.mutate(
+      { invitation, accept },
+      {
+        onSuccess: (conversationId) => {
+          toast({ title: t(accept ? "accepted" : "declined") });
+          if (accept) router.push(messagesHref.conversation(conversationId));
+        },
+        onError: (error) =>
+          toast({ title: error instanceof MessagingError && (error.code === "not-found" || error.message === "Changed elsewhere") ? t("gone") : errorText(tMsg as never, error), tone: "danger" }),
+      },
+    );
+  return (
+    <section aria-labelledby={titleId} className="flex flex-col gap-1">
+      <h2 id={titleId} className="px-1 text-xs font-bold text-fg-secondary">
+        {t("title")}
+      </h2>
+      <ul className="flex flex-col gap-1" aria-busy={respond.isPending}>
+        {invitations.data.map((invitation) => (
+          <li key={invitation.id} className="flex flex-col gap-2 rounded-2xl bg-subtle p-3">
+            <div className="flex min-w-0 flex-col">
+              <span className="truncate text-sm font-bold">{invitation.inviterName ? t("from", { name: invitation.inviterName }) : t("unknownInviter")}</span>
+              <span className="text-xs text-fg-secondary">
+                {t(`kind.${invitation.kind}`)} · {t("expires", { date: `${f.date(invitation.expiresAt)} ${f.time(invitation.expiresAt)}` })}
+              </span>
+            </div>
+            <div className="flex gap-2">
+              <Button size="sm" disabled={respond.isPending} onClick={() => answer(invitation, true)}>
+                {t("accept")}
+              </Button>
+              <Button size="sm" variant="outline" disabled={respond.isPending} onClick={() => answer(invitation, false)}>
+                {t("decline")}
+              </Button>
+            </div>
+          </li>
+        ))}
+      </ul>
     </section>
   );
 }

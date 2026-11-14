@@ -18,6 +18,7 @@ import type {
   CompanyGrant,
   CompanyGrantKind,
   CompanyInvitation,
+  CompanyNotification,
   CompanyModule,
   CompanyProjectRow,
   CompanyReport,
@@ -128,6 +129,7 @@ export function companyCapabilities(
     budgetCard: manager,
     export: admin,
     manageDepartments: admin,
+    transferStaff: manager,
     overridePolicy: manager,
     invite: admin,
     editWorkProfile: admin || grants.includes("hr"),
@@ -198,6 +200,8 @@ interface CompanyState {
   transfer: { toName: string; status: "pending" } | null;
   capacity: CapacityHeat;
   rooms: CompanyRoom[];
+  /** The viewer's notifications here (server-created in live mode; none are seeded). */
+  notifications: CompanyNotification[];
 }
 
 /** A page without its stored version bodies. */
@@ -254,6 +258,7 @@ function eurolyState(): CompanyState {
     transfer: null,
     capacity: clone(capacityFixture),
     rooms: roomFixtures.map((room) => ({ ...clone(room), bookings: clone(roomBookingFixtures[room.id] ?? []) })),
+    notifications: [],
   };
 }
 
@@ -315,6 +320,7 @@ function smallState(company: CompanySummary, departments: [string, string][]): C
     transfer: null,
     capacity: { months: [7, 8, 9], rows: [] },
     rooms: [],
+    notifications: [],
   };
 }
 
@@ -349,6 +355,16 @@ export function createMockCompanies({ empty = false }: MockCompaniesOptions = {}
     return state;
   };
   const meIn = (state: CompanyState) => state.staff.find((person) => person.id === ME_ID);
+  /** Department transfers stay inside one company; the caller never moves their own seat. */
+  const transferSeat = (state: CompanyState, personId: string, fromDepartmentId: string, toDepartmentId: string) => {
+    const person = state.staff.find((candidate) => candidate.id === personId && candidate.status !== "left");
+    if (!person || !person.departmentIds.includes(fromDepartmentId)) throw new RepositoryError("not-found", "Person not found");
+    const to = state.departments.find((department) => department.id === toDepartmentId);
+    if (!to) throw new RepositoryError("not-found", "Department not found");
+    if (person.id === ME_ID) throw new RepositoryError("forbidden", "You can't move your own seat");
+    if (fromDepartmentId === toDepartmentId || person.departmentIds.includes(toDepartmentId)) throw new RepositoryError("invalid", "Already in that department");
+    return { person, to };
+  };
   const myGrants = (state: CompanyState): CompanyGrantKind[] => {
     const today = getPlannerToday();
     return state.grants
@@ -502,6 +518,7 @@ export function createMockCompanies({ empty = false }: MockCompaniesOptions = {}
       .concat(state.staff.filter((person) => person.role === "admin" && person.id === ME_ID))
       .map((person) => ({ id: person.id, name: person.name, initials: person.initials })),
     transfer: clone(state.transfer),
+    transferReauth: true,
     retentionYears: 7,
   });
 
@@ -668,8 +685,8 @@ export function createMockCompanies({ empty = false }: MockCompaniesOptions = {}
       if (!invitation) throw new RepositoryError("not-found", "Invitation not found");
       invitations = invitations.filter((item) => item.id !== invitationId);
       // Accepting creates a work profile only; personal data is never shared.
-      states.set(invitation.companyId, smallState(clone(novaLabs), [["nl-eng", "Engineering"], ["nl-ops", "Operations"]]));
-      return { companyId: invitation.companyId };
+      states.set(invitation.companyId!, smallState(clone(novaLabs), [["nl-eng", "Engineering"], ["nl-ops", "Operations"]]));
+      return { companyId: invitation.companyId! };
     },
 
     async declineInvitation(invitationId) {
@@ -807,6 +824,33 @@ export function createMockCompanies({ empty = false }: MockCompaniesOptions = {}
         phone: patch.phone?.trim() || null,
       });
       return clone(person);
+    },
+
+    async previewTransfer(id, personId, fromDepartmentId, toDepartmentId) {
+      await wait();
+      const state = get(id);
+      const { person } = transferSeat(state, personId, fromDepartmentId, toDepartmentId);
+      const pendingResourceRequests = state.requests.filter((request) => request.requesterId === person.id && request.status === "pending").length;
+      const pendingExpenseReviews = state.approvals.filter((approval) => approval.subject === "expenses" && approval.requesterId === person.id && approval.status === "pending").length;
+      return {
+        role: person.role,
+        activeAllocations: 0,
+        pendingResourceRequests,
+        pendingExpenseReviews,
+        allowed: person.role !== "manager" && pendingResourceRequests + pendingExpenseReviews === 0,
+      };
+    },
+
+    async transferEmployee(id, personId, fromDepartmentId, toDepartmentId) {
+      const preview = await repo.previewTransfer(id, personId, fromDepartmentId, toDepartmentId);
+      // Same server answers as live: open work blocks the move; managers change role first.
+      if (!preview.allowed) throw new RepositoryError("conflict", "Transfer blocked");
+      const state = get(id);
+      const { person, to } = transferSeat(state, personId, fromDepartmentId, toDepartmentId);
+      const index = person.departmentIds.indexOf(fromDepartmentId);
+      person.departmentIds[index] = to.id;
+      person.departmentNames[index] = to.name;
+      audit(state, `moved to ${to.name}`, person.name, "policy");
     },
 
     async pendingInvites(id) {
@@ -1663,6 +1707,19 @@ export function createMockCompanies({ empty = false }: MockCompaniesOptions = {}
       return { item: clone(item), alreadyRecorded };
     },
 
+    async notifications(id) {
+      await wait();
+      return clone(get(id).notifications).sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+    },
+
+    async readNotification(id, notificationId) {
+      await wait();
+      const item = get(id).notifications.find((entry) => entry.id === notificationId);
+      if (!item) throw new RepositoryError("not-found", "Notification not found");
+      item.read = true;
+      return clone(item);
+    },
+
     async employeeFile(id, personId) {
       await wait();
       return fileAccess(get(id), personId);
@@ -1709,9 +1766,17 @@ export function createMockCompanies({ empty = false }: MockCompaniesOptions = {}
       return { name: `${access.person.name.replace(/W+/g, "-").toLowerCase()}-file-pack.zip` };
     },
 
+    async caseReviewers(id, personId) {
+      await wait();
+      return get(id)
+        .staff.filter((person) => (person.role === "owner" || person.role === "admin") && person.status !== "left" && person.id !== ME_ID && person.id !== personId)
+        .map((person) => ({ id: person.id, name: person.name }));
+    },
+
     async openCorrective(id, personId, input) {
       await wait();
       const state = get(id);
+      if (!(await repo.caseReviewers(id, personId)).some((reviewer) => reviewer.id === input.reviewerId)) throw new RepositoryError("invalid", "Choose a reviewer");
       const access = fileAccess(state, personId);
       if (access.status !== "open" || !access.canOpenCorrective) throw new RepositoryError("forbidden", "Grant required");
       if (!input.reason.trim() || !input.evidence.trim()) throw new RepositoryError("invalid", "Reason and evidence are required");

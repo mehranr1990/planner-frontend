@@ -5,6 +5,7 @@ import type {
   ProjectWorkflow,
   WorkflowStatus,
 } from "@/data/project-domain";
+import { compareMilestoneDue } from "@/data/project-domain";
 
 /*
  * PJ-02 grouping: Phase (default) · Status · Assignee · Milestone · None.
@@ -64,7 +65,7 @@ export function groupProjectTasks(
   if (by === "phase") for (const phase of phases) ensure(make(phase.id, phase.name, { phase }));
   if (by === "status") for (const status of workflow.statuses) ensure(make(status.id, status.name, { status }));
   if (by === "milestone") {
-    for (const milestone of [...milestones].sort((a, b) => a.due.localeCompare(b.due)))
+    for (const milestone of [...milestones].sort(compareMilestoneDue))
       ensure(make(milestone.id, milestone.title));
   }
 

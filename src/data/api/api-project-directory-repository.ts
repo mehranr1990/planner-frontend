@@ -93,12 +93,13 @@ export function capabilitiesOf(me: ApiAccessMe): ProjectCapabilities {
     // No WIP limits and no manual order in the API.
     exceedWip: false,
     reorderTasks: false,
-    // Risks, files, capacity and guest grants are not connected in live mode.
+    // Register writes need work.manage; creation has no approved form, close needs a reason the API has no field for.
     createRisk: false,
-    editOwnRisk: false,
-    editAnyRisk: false,
+    editOwnRisk: manage,
+    editAnyRisk: manage,
     closeRisk: false,
-    uploadFile: false,
+    // Root uploads need file.read + work.manage (backend writeCap PROJECT). Folders / versions are not served.
+    uploadFile: full && has("file.read") && manage,
     manageFiles: false,
     manageMembers: has("membership.admin"),
     manageJuniorMembers: has("membership.manager"),
@@ -108,8 +109,8 @@ export function capabilitiesOf(me: ApiAccessMe): ProjectCapabilities {
     exportAnalytics: has("export.visible"),
     editGeneral: has("settings.manage"),
     editWorkflow: has("workflow.publish"),
-    // The access policy is versioned role defaults, not the screen's toggles.
-    editAccess: false,
+    // Access = the role-default policy (Settings › Access shows it in live mode).
+    editAccess: has("policy.publish"),
     archiveProject: has("custody.archive"),
     ownProject: me.role === "OWNER",
     restore: has("custody.archive"),
@@ -179,9 +180,10 @@ export function createApiProjectDirectory(client: ApiClient): Pick<ProjectReposi
   return {
     listAccessible: () =>
       mapErrors(async (): Promise<ProjectDirectory> => {
-        const [projects, mine] = await Promise.all([
+        const [projects, mine, invitations] = await Promise.all([
           pageAll<ApiProject>(async (after) => (await api.request("get", "/api/v1/projects", { query: { limit: PAGE, after } })).data),
           myOpenAssignments(api),
+          pageAll<{ id: string }>(async (after) => (await api.request("get", "/api/v1/project-invitations", { query: { limit: PAGE, after } })).data),
         ]);
         const summaries: ProjectSummary[] = [];
         for (let at = 0; at < projects.length; at += PROJECT_READS) {
@@ -203,8 +205,8 @@ export function createApiProjectDirectory(client: ApiClient): Pick<ProjectReposi
             all: live.length,
             owned: live.filter((project) => project.role === "owner").length,
             member: live.filter((project) => project.role !== "owner").length,
-            // The invitee's pending invitations cannot be listed (R4).
-            invitations: 0,
+            // The caller's own pending invitations (public-safe list, OD-4).
+            invitations: invitations.length,
             archived: summaries.length - live.length,
           },
           // The API keeps no "recently opened" list.

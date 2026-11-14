@@ -283,7 +283,7 @@ function TaskCaseFlow({ workflow, all, mine, members, milestones, canAssign }: T
             title: milestone.milestone.title,
             href: projectHref(project.id, "milestones"),
             meta: t("milestoneMeta", {
-              date: format.day(milestone.milestone.due),
+              date: milestone.milestone.due ? format.day(milestone.milestone.due) : "—",
               status: tMilestones(milestone.status),
             }),
           },

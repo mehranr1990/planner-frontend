@@ -17,6 +17,7 @@ import { SearchField } from "@/components/ui/search-field";
 import { Segmented } from "@/components/ui/segmented";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { toast } from "@/components/ui/toast";
+import { RepositoryError } from "@/data/repositories";
 import { SignatureCard, SignatureCardAction } from "@/design-system/surfaces/signature-card";
 import { Progress } from "@/design-system/feedback/progress";
 import type { FileLibrary, ProjectFile } from "@/data/project-domain";
@@ -146,6 +147,9 @@ function FilesBody() {
   const [pendingVersion, setPendingVersion] = useState<{ file: File; existing: ProjectFile } | null>(null);
   const [sheetOpen, setSheetOpen] = useState(false);
   const canUpload = scope.canUpload && demo !== "empty";
+  // A refused or rejected upload never fails silently (live: no folders / versions, type / size checks).
+  const onUploadError = (cause: unknown) =>
+    toast({ title: t(cause instanceof RepositoryError && cause.code === "unsupported" ? "uploadUnavailable" : "uploadFailed") });
 
   const setParam = (key: string, value: string | null) => {
     const next = new URLSearchParams(params.toString());
@@ -163,7 +167,7 @@ function FilesBody() {
       setPendingVersion({ file, existing });
       return;
     }
-    actions.upload.mutate({ name: file.name, sizeBytes: file.size, folderId: params.get("folder") });
+    actions.upload.mutate({ name: file.name, sizeBytes: file.size, folderId: params.get("folder"), file }, { onError: onUploadError });
   };
   const onFiles = (list: FileList | null) => {
     if (!list) return;
@@ -396,7 +400,8 @@ function FilesBody() {
                     sizeBytes: pendingVersion.file.size,
                     folderId: pendingVersion.existing.folderId,
                     asNewVersionOf: pendingVersion.existing.id,
-                  });
+                    file: pendingVersion.file,
+                  }, { onError: onUploadError });
                   setPendingVersion(null);
                 }}
               >

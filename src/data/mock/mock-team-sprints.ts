@@ -141,7 +141,7 @@ export function createMockTeamSprints({ respond, today, now, team, canOpenProjec
         goal,
         start: next.start,
         end: next.end,
-        capacity: next.capacity,
+        capacity: next.capacity ?? 0,
         items: (queued.get(teamId) ?? []).map((item) => ({ ...item })),
       });
       lastNumber = new Map(lastNumber).set(teamId, next.number);

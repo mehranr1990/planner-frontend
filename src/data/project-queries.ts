@@ -6,6 +6,7 @@ import { useIsClient } from "@/hooks/use-is-client";
 import type {
   AssignmentDeclineInput,
   NewProjectInput,
+  ProjectCreateLimits,
   NewProjectTaskInput,
   ProjectAccessOptions,
   ProjectStatusInput,
@@ -23,6 +24,7 @@ import type {
   RiskCloseReason,
   ImportTarget,
   ProjectAccessSettings,
+  ProjectRolePolicy,
   ProjectGeneralPatch,
   WorkflowDraft,
   AnalyticsRange,
@@ -903,4 +905,35 @@ export function useSettingsActions(projectId: string) {
     }),
     importUndo: useMutation({ mutationFn: (batchId: string) => imports.undo(projectId, batchId), onSettled: refresh }),
   };
+}
+
+/** PJ-14 › Access in live mode: the role-default policy (refused "unsupported" where the adapter has none). */
+export function useRolePolicy(projectId: string, enabled: boolean) {
+  const { settings } = useRepositories();
+  const hydrated = useIsClient();
+  return afterHydration(
+    useQuery({
+      queryKey: scoped(projectId, "role-policy"),
+      queryFn: () => (settings.rolePolicy ? settings.rolePolicy(projectId) : Promise.reject(new RepositoryError("unsupported", "No role policy"))),
+      enabled,
+      retry: false,
+    }),
+    hydrated,
+  );
+}
+
+export function useSetRolePolicy(projectId: string) {
+  const { settings } = useRepositories();
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: ({ roleDefaults, version }: { roleDefaults: ProjectRolePolicy["roleDefaults"]; version: number }) =>
+      settings.setRolePolicy ? settings.setRolePolicy(projectId, roleDefaults, version) : Promise.reject(new RepositoryError("unsupported", "No role policy")),
+    onSuccess: (policy) => client.setQueryData(scoped(projectId, "role-policy"), policy),
+    onSettled: () => client.invalidateQueries({ queryKey: projectKeys.scope(projectId) }),
+  });
+}
+
+/** PJ-90: what the active adapter can create (null = everything the sheet offers). */
+export function useProjectCreateLimits(): ProjectCreateLimits | null {
+  return useRepositories().projectCreate.limits ?? null;
 }

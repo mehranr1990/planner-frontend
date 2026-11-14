@@ -407,6 +407,7 @@ describe("live Projects repositories", () => {
   const directoryApi = (state: { projectState: string; role: string | null; capabilities: string[]; forbidden?: boolean }) =>
     fakeApi((call, parts) => {
       const project = { id: P, spaceId: "s1", scopeId: "sc", title: "Apollo Launch", description: "Ship it", revision: 4, state: state.projectState, updatedAt: "2026-11-10T09:00:00.000Z" };
+      if (parts[0] === "project-invitations") return json({ items: [{ id: "inv1", contextLabel: "Project", revision: 1, expiresAt: "2026-11-20T00:00:00.000Z" }], nextCursor: null });
       if (parts[0] === "me") return json({ items: [{ assignment: { projectId: P, decision: "PENDING", endedAt: null } }, { assignment: { projectId: "p2", decision: "ACCEPTED", endedAt: null } }, { assignment: { projectId: P, decision: "DECLINED", endedAt: null } }], nextCursor: null });
       if (parts[3] === "me") return state.forbidden ? err(403) : json({ accessId: "m1", actorId: "a-m1", role: state.role, state: "ACTIVE", generation: 1, scope: state.role ? "FULL" : "PROJECT", projectState: state.projectState, capabilities: state.capabilities });
       if (parts[2] === "metadata" && call.method === "GET") return json({ id: P, title: "Apollo Launch", key: "APL", color: "indigo", summary: null, startDate: "2026-10-01", endDate: null, statusNote: "On plan", status: state.projectState, revision: 7 });
@@ -456,7 +457,7 @@ describe("live Projects repositories", () => {
     expect(await live(directoryApi({ projectState: "ACTIVE", role: "MEMBER", capabilities: [], forbidden: true })).projects.access(P)).toEqual({ status: "not-available" });
     const directory = await live(directoryApi({ projectState: "ARCHIVED", role: "OWNER", capabilities: ["custody.archive"] })).projects.listAccessible();
     expect(directory.projects.map((project) => [project.id, project.lifecycle, project.restorable])).toEqual([[P, "archived", true]]);
-    expect(directory.counts).toEqual({ all: 0, owned: 0, member: 0, invitations: 0, archived: 1 });
+    expect(directory.counts).toEqual({ all: 0, owned: 0, member: 0, invitations: 1, archived: 1 });
     expect(directory.recentIds).toEqual([]);
   });
 
@@ -516,6 +517,10 @@ describe("live Projects repositories", () => {
       if (parts[4] === "schedule" && call.method === "GET") return json({ id: parts[3], revision: 1, plannedStartAt: "2026-11-08T06:00:00.000Z", dueAt: null, scheduledDate: null });
       if (parts[4] === "work-logs") return json({ items: [{ startedAt: "2026-11-09T08:00:00.000Z", endedAt: "2026-11-09T09:30:00.000Z", voidedAt: null }, { startedAt: "2026-11-09T10:00:00.000Z", endedAt: "2026-11-09T12:00:00.000Z", voidedAt: "x" }], nextCursor: null });
       if (parts[2] === "dependencies") return json({ revision: 4, edges: [edge({ predecessorId: "t2", successorId: "t1", kind: "SS", lagMinutes: 2880 })] });
+      if (parts[2] === "content" && parts[5] === "comments")
+        return json({ items: [{ id: "c2", body: "Later", createdByActorId: "a-m2", createdAt: "2026-11-10T09:00:00.000Z", deletedAt: null }, { id: "c1", body: "First", createdByActorId: "a-m1", createdAt: "2026-11-09T09:00:00.000Z", deletedAt: null }, { id: "c0", body: "x", createdByActorId: "a-m1", createdAt: "2026-11-08T09:00:00.000Z", deletedAt: "2026-11-08T10:00:00.000Z" }], nextCursor: null });
+      if (parts[2] === "content" && parts[5] === "files")
+        return json({ items: [{ id: "f1", filename: "brief.pdf", status: "READY" }, { id: "f2", filename: "draft.png", status: "INITIATED" }], nextCursor: null });
       return json({ ok: true });
     });
 
@@ -604,7 +609,10 @@ describe("live Projects repositories", () => {
     const items = await repos.calendar.range(P, "2026-11-01", "2026-11-30");
     expect(items.map((item) => [item.id, item.kind])).toEqual([["task:t1", "task"]]);
     const detail = await repos.taskDetails.get(P, "t1");
-    expect(detail).toMatchObject({ start: "2026-11-08", section: "A", loggedHours: 1.5, comments: [], subtasks: [], showInCalendar: false });
+    expect(detail).toMatchObject({ start: "2026-11-08", section: "A", loggedHours: 1.5, subtasks: [], showInCalendar: false });
+    expect(detail.comments.map((comment) => [comment.id, comment.author.name, comment.body])).toEqual([["c1", "Sara Amini", "First"], ["c2", "Omid Karimi", "Later"]]);
+    expect(detail.files).toEqual([{ id: "f1", name: "brief.pdf" }]);
+    expect(api.calls.some((call) => call.path === `/projects/${P}/content/TASK/t1/comments`)).toBe(true);
     expect(detail.dependencies).toEqual([{ id: "e1", predecessorId: "t2", predecessorTitle: "Copy", type: "SS", lagDays: 2 }]);
     expect(detail.activity).toMatchObject([{ kind: "assigned", actor: { id: "m1" }, person: "Omid Karimi" }]);
     await expect(repos.taskDetails.setShowInCalendar(P, "t1", true)).rejects.toMatchObject({ code: "unsupported" });

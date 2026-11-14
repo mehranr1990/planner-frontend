@@ -31,7 +31,7 @@ export function MeetingNewSheet({ initialSource, day, onDone }: { initialSource:
   const router = useRouter();
   const sources = useMeetingSources();
   const [sourceKey, setSourceKey] = useState(initialSource ? sourceParam(initialSource.kind, initialSource.workspaceId) : "personal");
-  // Only sources the server lets me organise in are listed (live has no Personal until OD-1): fall back to the first one.
+  // Only sources the server lets me organise in are listed: fall back to the first one.
   const source = sources.data?.find((s) => sourceParam(s.kind, s.workspaceId) === sourceKey) ?? (initialSource ? undefined : sources.data?.[0]);
   const selectedKey = source ? sourceParam(source.kind, source.workspaceId) : sourceKey;
   const invitable = useInvitable(source);

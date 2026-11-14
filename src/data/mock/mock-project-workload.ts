@@ -85,7 +85,9 @@ interface Bucket {
 export function computeWorkloadGrid({ periods, unit = "week", tasks, workflow, members, startOf }: WorkloadInput): WorkloadGrid {
   const bounds = periods.map((entry) => [dayNumber(entry.start), dayNumber(entry.end)] as const);
   const indexOf = (n: number) => bounds.findIndex(([start, end]) => n >= start && n <= end);
-  const open = tasks.filter((task) => !isTaskDone(task, workflow));
+  // Canceled tasks (live workflows) carry no load, like done ones.
+  const canceled = new Set(workflow.statuses.filter((status) => status.category === "canceled").map((status) => status.id));
+  const open = tasks.filter((task) => !isTaskDone(task, workflow) && !canceled.has(task.statusId));
   const empty = (): Bucket[] => periods.map(() => ({ hours: 0, tasks: new Map() }));
   const perPerson = new Map<string, Bucket[]>();
   const unestimated = new Map<string, number>();

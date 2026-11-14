@@ -212,7 +212,8 @@
       "note": "note",
       "recurrence": "repeat",
       "plan": "My Day plan",
-      "time": "task time"
+      "time": "task time",
+      "category": "category"
     },
     "unavailable": "Not available yet",
     "bulkPartial": "{n} tasks weren’t updated."
@@ -327,6 +328,13 @@
     "duration": "Duration",
     "energy": "Energy",
     "priority": "Priority",
+    "category": "Category",
+    "categories": {
+      "design": "Design",
+      "admin": "Admin & bills",
+      "writing": "Writing",
+      "errands": "Errands"
+    },
     "goal": "Linked goal",
     "areaLabels": "Area · labels",
     "inMyDay": "in My Day",
@@ -341,7 +349,9 @@
       "subtasks": "Subtasks",
       "notes": "Notes",
       "activity": "Activity",
-      "links": "Links"
+      "links": "Links",
+      "files": "Files",
+      "reminders": "Reminders"
     },
     "subtasks": {
       "progress": "{done} of {total}",
@@ -365,7 +375,9 @@
       },
       "scheduled": "Moved from Unscheduled to {time}",
       "subtaskDone": "Subtask “{title}” completed",
-      "priority": "Priority set to {priority}"
+      "priority": "Priority set to {priority}",
+      "completed": "Completed",
+      "reopened": "Marked as not done"
     },
     "links": {
       "blockedBy": "Blocked by",

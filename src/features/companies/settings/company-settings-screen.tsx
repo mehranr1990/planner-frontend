@@ -133,8 +133,8 @@ function General({ settings }: { settings: CompanySettings }) {
   const [name, setName] = useState(settings.name);
   const [legalName, setLegalName] = useState(settings.legalName);
   const [currency, setCurrency] = useState(settings.currency);
-  const [fiscal, setFiscal] = useState(String(settings.fiscalStartMonth));
-  const save = useCompanyMutation(company.id, (repo, id, vars: { name: string; legalName: string; currency: CompanyCurrency; fiscalStartMonth: number }) =>
+  const [fiscal, setFiscal] = useState(settings.fiscalStartMonth === null ? "" : String(settings.fiscalStartMonth));
+  const save = useCompanyMutation(company.id, (repo, id, vars: { name: string; legalName: string; currency: CompanyCurrency | null; fiscalStartMonth: number | null }) =>
     repo.updateGeneral(id, vars),
   );
   return (
@@ -143,7 +143,7 @@ function General({ settings }: { settings: CompanySettings }) {
       onSubmit={(event) => {
         event.preventDefault();
         if (!name.trim()) return;
-        save.mutate({ name, legalName, currency, fiscalStartMonth: Number(fiscal) }, { onSuccess: () => toast({ title: t("saved") }) });
+        save.mutate({ name, legalName, currency, fiscalStartMonth: fiscal ? Number(fiscal) : null }, { onSuccess: () => toast({ title: t("saved") }) });
       }}
     >
       <Field invalid={!name.trim()}>
@@ -158,7 +158,7 @@ function General({ settings }: { settings: CompanySettings }) {
       <div className="grid gap-4 sm:grid-cols-2">
         <Field>
           <FieldLabel>{t("currency")}</FieldLabel>
-          <Select value={currency} disabled={!writable || settings.currencyLocked} onValueChange={(value) => setCurrency(value as CompanyCurrency)}>
+          <Select value={currency ?? ""} disabled={!writable || settings.currencyLocked} onValueChange={(value) => setCurrency(value as CompanyCurrency)}>
             {CURRENCIES.map((value) => (
               <SelectItem key={value} value={value}>
                 {tCurrency(value)}
@@ -632,12 +632,15 @@ function Lifecycle({ settings }: { settings: CompanySettings }) {
                   ))}
                 </Select>
               </Field>
-              <Field invalid={transfer.isError}>
-                <FieldLabel>{t("password")}</FieldLabel>
-                <Input type="password" autoComplete="current-password" value={password} onChange={(event) => setPassword(event.target.value)} />
-                {transfer.isError ? <FieldError>{t("reauthFailed")}</FieldError> : null}
-              </Field>
+              {settings.transferReauth ? (
+                <Field invalid={transfer.isError}>
+                  <FieldLabel>{t("password")}</FieldLabel>
+                  <Input type="password" autoComplete="current-password" value={password} onChange={(event) => setPassword(event.target.value)} />
+                  {transfer.isError ? <FieldError>{t("reauthFailed")}</FieldError> : null}
+                </Field>
+              ) : null}
             </div>
+            {transfer.isError && !settings.transferReauth ? <InlineAlert tone="danger" title={t("transferFailed")} /> : null}
             <p className="text-xs text-fg-secondary">{t("transferNote")}</p>
             <Button type="submit" variant="secondary" className="self-start" disabled={!writable || !toPersonId || transfer.isPending}>
               {t("transferSubmit")}
@@ -658,7 +661,7 @@ function Lifecycle({ settings }: { settings: CompanySettings }) {
         <h3 id="delete-title" className="text-sm font-bold text-danger-text">
           {t("delete")}
         </h3>
-        <p className="text-xs text-fg-secondary">{t("deleteNote", { years: settings.retentionYears })}</p>
+        <p className="text-xs text-fg-secondary">{settings.retentionYears === null ? t("deleteNoteNoPolicy") : t("deleteNote", { years: settings.retentionYears })}</p>
         <Button variant="destructive" className="self-start" disabled={!writable} onClick={() => setDeleting(true)}>
           {t("deleteSubmit")}
         </Button>
@@ -679,7 +682,7 @@ function Lifecycle({ settings }: { settings: CompanySettings }) {
       ) : null}
       {deleting ? (
         <Dialog open onOpenChange={(open) => (open ? undefined : setDeleting(false))}>
-          <DialogContent title={t("deleteTitle", { company: company.name })} description={t("deleteNote", { years: settings.retentionYears })}>
+          <DialogContent title={t("deleteTitle", { company: company.name })} description={settings.retentionYears === null ? t("deleteNoteNoPolicy") : t("deleteNote", { years: settings.retentionYears })}>
             <form
               className="flex flex-col gap-4"
               onSubmit={(event) => {

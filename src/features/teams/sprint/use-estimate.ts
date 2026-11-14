@@ -8,6 +8,7 @@ import { useProjectFormat } from "@/features/projects/format";
 export function useEstimate() {
   const t = useTranslations("Sprint");
   const format = useProjectFormat();
-  return (value: number, unit: SprintEstimateUnit) =>
-    t(unit === "points" ? "points" : "hours", { n: format.number(value) });
+  // null = not served (e.g. capacity in points) → a dash, never a made-up figure.
+  return (value: number | null, unit: SprintEstimateUnit) =>
+    value === null ? "—" : t(unit === "points" ? "points" : "hours", { n: format.number(value) });
 }

@@ -198,5 +198,29 @@
     "nameMismatch": "The name doesn’t match",
     "deleted": "Project deleted",
     "cancel": "Cancel"
+  },
+  "accessUnavailable": "Access settings are not available yet: the server keeps per-role permission defaults, not these options.",
+  "rolePolicy": {
+    "title": "Role permissions",
+    "hint": "The server grants these defaults to every member by role. Changes publish a new policy version.",
+    "capability": "Permission",
+    "ceiling": "not allowed for this role",
+    "save": "Publish policy",
+    "reset": "Discard changes",
+    "exportLimits": "Export limit: {records} records or {megabytes} MB per export",
+    "caps": {
+      "task_read": "See tasks",
+      "task_create": "Create tasks",
+      "task_update": "Edit tasks",
+      "task_complete": "Complete tasks",
+      "task_delete": "Delete tasks",
+      "assignment_accept": "Accept assignments",
+      "assignment_decline": "Decline assignments",
+      "assignment_assign": "Assign tasks",
+      "workflow_transition": "Move tasks between statuses",
+      "workflow_publish": "Publish workflows",
+      "export_visible": "Export",
+      "file_read": "See files"
+    }
   }
 }

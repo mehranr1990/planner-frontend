@@ -132,6 +132,8 @@
     "hours": "{hours}h / {capacity}h week",
     "over": "Over capacity",
     "row": "{name}: {hours} of {capacity} hours this week",
-    "empty": "No estimates this week"
+    "empty": "No estimates this week",
+    "hoursOnly": "{hours}h this week · capacity unknown",
+    "rowOnly": "{name}: {hours} hours this week, capacity unknown"
   }
 }

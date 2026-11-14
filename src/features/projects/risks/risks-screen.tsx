@@ -106,6 +106,9 @@ export function RisksScreen() {
     />
   );
 
+  // Live: the register is not mapped (no code, 3-level probability, close reason…), so it is not available.
+  if (risks.isError || issues.isError) return <AccessState kind="not-available" titleAs="h1" />;
+
   if (!risks.data || !issues.data || !milestones.data) {
     return (
       <>

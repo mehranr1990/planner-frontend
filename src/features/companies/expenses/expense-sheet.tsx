@@ -151,6 +151,11 @@ function ExpenseForm({
         },
         onError: (error) => {
           if (error instanceof RepositoryError && error.message === "receipt-required") setReceiptRequired(true);
+          // Partial success: the draft exists but the receipt / submission did not go through. Say so and close (a retry here would duplicate it).
+          if (error instanceof RepositoryError && error.message === "saved-as-draft") {
+            toast({ title: t("savedDraftOnly"), description: t("savedDraftOnlyBody") });
+            onDone();
+          }
         },
       },
     );
@@ -193,7 +198,7 @@ function ExpenseForm({
             onDrop={(event) => {
               event.preventDefault();
               const file = event.dataTransfer.files[0];
-              if (file) setReceipt({ name: file.name });
+              if (file) setReceipt({ name: file.name, file });
             }}
             className="flex min-h-20 cursor-pointer flex-col items-center justify-center gap-1 rounded-card-sm bg-[repeating-linear-gradient(135deg,var(--scope-soft)_0_8px,transparent_8px_16px)] px-4 py-4 text-sm font-bold text-scope-deep inset-ring-[1.5px] inset-ring-scope-deep focus-within:ring-2 focus-within:ring-focus"
           >
@@ -207,7 +212,7 @@ function ExpenseForm({
               className="sr-only"
               onChange={(event) => {
                 const file = event.target.files?.[0];
-                if (file) setReceipt({ name: file.name });
+                if (file) setReceipt({ name: file.name, file });
               }}
             />
           </label>

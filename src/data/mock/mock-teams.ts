@@ -23,6 +23,8 @@ import {
   type TeamFixture,
 } from "@/fixtures/teams";
 import { RepositoryError } from "../repositories";
+import { getPlannerNow } from "../clock";
+import { addDaysToDay, dayOfInstant } from "@/lib/dates/clock-time";
 import { checkinWeekOf, createMockTeamCheckins } from "./mock-team-checkins";
 import { createMockTeamGoals } from "./mock-team-goals";
 import { createMockTeamReports } from "./mock-team-reports";
@@ -32,6 +34,9 @@ import { teamFileFolders, teamFiles as teamFileFixtures } from "@/fixtures/team-
 import { createMockTeamRecognition } from "./mock-team-recognition";
 import { createMockTeamSprints } from "./mock-team-sprints";
 import type {
+  TeamTimeOffHistoryEntry,
+  TeamTimeOffRequest,
+  TeamTimeOffState,
   ClearAfter,
   TeamCapabilities,
   TeamCapacity,
@@ -63,6 +68,20 @@ import type { ProjectAssociationRepository, TeamEventInput, TeamFileRepository, 
 import { IRAN_WEEK, type Weekday } from "@/lib/dates/week";
 
 /** Stored team event: the detail minus the per-viewer fields. */
+interface StoredTimeOff {
+  id: string;
+  teamId: string;
+  personId: string;
+  startDate: string;
+  endDate: string;
+  reason: string | null;
+  state: TeamTimeOffState;
+  decisionNote: string | null;
+  decidedAt: string | null;
+  createdAt: string;
+  history: { action: TeamTimeOffHistoryEntry["action"]; byId: string | null; at: string }[];
+}
+
 interface StoredTeamEvent extends Omit<TeamEventDetail, "myRsvp" | "can" | "organiser" | "invitees"> {
   teamId: string;
   organiserId: string | null;
@@ -98,9 +117,9 @@ const ALL_MODULES: readonly TeamModule[] = [
 export interface TeamFlags {
   checkinsOn?: boolean;
   statusOn?: boolean;
-  membersMayInvite?: boolean;
+  membersMayInvite?: boolean | null;
   /** OPEN(DECISIONS): Viewers see this-week booking — default off. */
-  viewersSeeBooking?: boolean;
+  viewersSeeBooking?: boolean | null;
 }
 
 /** Capabilities per role (SPEC permission tables). Archived teams are read-only. */
@@ -320,8 +339,73 @@ export function createMockTeams({
         // "Edit any event": Lead+; Members edit what they organised.
         edit: caps.editAnyTask || (caps.createTask && organiserId === "me"),
         rsvp: lifecycle === "active" && inviteeIds.includes("me"),
+        // Cancel for everyone follows "Edit any event"; time off is canceled as a request.
+        cancel: event.kind === "meeting" && (caps.editAnyTask || (caps.createTask && organiserId === "me")),
       },
     };
+  };
+  // Time-off requests (TM-03): only approved requests become calendar absences.
+  const timeOffRequests: StoredTimeOff[] = [
+    {
+      id: "to-design-me",
+      teamId: "design",
+      personId: "me",
+      startDate: "2026-10-19",
+      endDate: "2026-10-20",
+      reason: "Family visit",
+      state: "pending",
+      decisionNote: null,
+      decidedAt: null,
+      createdAt: "2026-10-12T09:00:00Z",
+      history: [{ action: "submitted", byId: "me", at: "2026-10-12T09:00:00Z" }],
+    },
+    {
+      id: "to-mobile-kian",
+      teamId: "mobile",
+      personId: "kian",
+      startDate: "2026-10-21",
+      endDate: "2026-10-21",
+      reason: "Medical appointment",
+      state: "pending",
+      decisionNote: null,
+      decidedAt: null,
+      createdAt: "2026-10-11T08:00:00Z",
+      history: [{ action: "submitted", byId: "kian", at: "2026-10-11T08:00:00Z" }],
+    },
+  ];
+  let timeOffCounter = 0;
+  const timeOffView = (row: StoredTimeOff): TeamTimeOffRequest => {
+    const team = memberOf(row.teamId);
+    const caps = teamCapabilities(team.role, team.lifecycle);
+    const mine = row.personId === "me";
+    const privileged = mine || caps.editAnyTask;
+    const today = dayOfInstant(getPlannerNow());
+    return {
+      id: row.id,
+      person: team.members.find((item) => item.id === row.personId) ?? { id: row.personId, name: "", initials: "" },
+      mine,
+      startDate: row.startDate,
+      endDate: row.endDate,
+      reason: privileged ? row.reason : null,
+      state: row.state,
+      decisionNote: privileged ? row.decisionNote : null,
+      decidedAt: row.decidedAt,
+      createdAt: row.createdAt,
+      can: {
+        decide: caps.editAnyTask && !mine && row.state === "pending",
+        cancel: mine && (row.state === "pending" || (row.state === "approved" && row.endDate >= today)),
+      },
+    };
+  };
+  const timeOffRow = (teamId: string, requestId: string) => {
+    const row = timeOffRequests.find((item) => item.id === requestId && item.teamId === teamId);
+    if (!row) throw new RepositoryError("not-found", "Request not found");
+    return row;
+  };
+  const absenceDays = (row: StoredTimeOff) => {
+    const days: string[] = [];
+    for (let day = row.startDate; day <= row.endDate; day = addDaysToDay(day, 1)) days.push(day);
+    return days;
   };
   const checkEventInput = (input: TeamEventInput) => {
     const title = input.title.trim();
@@ -984,6 +1068,25 @@ export function createMockTeams({
           agenda: [],
           url: timeOff ? null : (input.url ?? null),
         };
+        if (timeOff) {
+          // A request: it shows on the calendar only once a Lead+ approves it.
+          timeOffCounter += 1;
+          const at = new Date().toISOString();
+          timeOffRequests.push({
+            id: `to-new-${timeOffCounter}`,
+            teamId,
+            personId: "me",
+            startDate: input.day,
+            endDate: input.day,
+            reason: title || null,
+            state: "pending",
+            decisionNote: null,
+            decidedAt: null,
+            createdAt: at,
+            history: [{ action: "submitted", byId: "me", at }],
+          });
+          return respond(eventDetail(event, team.role, team.lifecycle));
+        }
         events.push(event);
         return respond(eventDetail(event, team.role, team.lifecycle));
       },
@@ -1003,6 +1106,82 @@ export function createMockTeams({
         if (!eventDetail(event, team.role, team.lifecycle).can.rsvp) throw new RepositoryError("forbidden", "Not invited");
         event.rsvps.me = answer;
         return respond(eventDetail(event, team.role, team.lifecycle));
+      },
+      async cancel(eventId) {
+        const index = events.findIndex((item) => item.id === eventId);
+        if (index < 0) throw new RepositoryError("conflict", "Already canceled");
+        const event = events[index]!;
+        const team = memberOf(event.teamId);
+        if (!eventDetail(event, team.role, team.lifecycle).can.cancel)
+          throw new RepositoryError("forbidden", "Cannot cancel this event");
+        events.splice(index, 1);
+        await respond(undefined);
+      },
+      async timeOff(teamId) {
+        const team = memberOf(teamId);
+        // Viewers see only their own requests.
+        const visible = timeOffRequests.filter(
+          (row) => row.teamId === teamId && (team.role !== "viewer" || row.personId === "me"),
+        );
+        return respond(visible.map(timeOffView).sort((a, b) => b.createdAt.localeCompare(a.createdAt)));
+      },
+      async decideTimeOff(teamId, requestId, decision, note) {
+        const row = timeOffRow(teamId, requestId);
+        if (!timeOffView(row).can.decide) {
+          if (row.state !== "pending") throw new RepositoryError("conflict", "Already decided");
+          throw new RepositoryError("forbidden", "Lead+ decides others' time off");
+        }
+        const at = new Date().toISOString();
+        Object.assign(row, {
+          state: decision === "approve" ? "approved" : "rejected",
+          decisionNote: note?.trim() || null,
+          decidedAt: at,
+        });
+        row.history.push({ action: decision === "approve" ? "approved" : "rejected", byId: "me", at });
+        if (decision === "approve")
+          for (const day of absenceDays(row))
+            events.push({
+              id: `${row.id}@${day}`,
+              teamId,
+              title: "Time off",
+              kind: "time-off",
+              day,
+              time: null,
+              end: null,
+              personId: row.personId,
+              organiserId: row.personId,
+              inviteeIds: [],
+              rsvps: {},
+              agenda: [],
+              url: null,
+            });
+        return respond(timeOffView(row));
+      },
+      async cancelTimeOff(teamId, requestId) {
+        const row = timeOffRow(teamId, requestId);
+        if (!timeOffView(row).can.cancel) {
+          if (row.personId !== "me") throw new RepositoryError("forbidden", "Only your own request");
+          throw new RepositoryError("conflict", "Request closed");
+        }
+        row.state = "canceled";
+        row.history.push({ action: "canceled", byId: "me", at: new Date().toISOString() });
+        const gone = new Set(absenceDays(row).map((day) => `${row.id}@${day}`));
+        for (let index = events.length - 1; index >= 0; index -= 1)
+          if (gone.has(events[index]!.id)) events.splice(index, 1);
+        return respond(timeOffView(row));
+      },
+      async timeOffHistory(teamId, requestId) {
+        const row = timeOffRow(teamId, requestId);
+        const team = memberOf(teamId);
+        if (team.role === "viewer" && row.personId !== "me") throw new RepositoryError("not-found", "Request not found");
+        return respond(
+          row.history.map((step, index) => ({
+            id: `${row.id}:${index}`,
+            action: step.action,
+            by: step.byId ? (team.members.find((item) => item.id === step.byId) ?? null) : null,
+            at: step.at,
+          })),
+        );
       },
     },
     teamActivity: {
@@ -1227,9 +1406,9 @@ export function createMockTeams({
         const index = invitations.findIndex((invitation) => invitation.id === id);
         if (index < 0) throw new RepositoryError("not-found", `Invitation ${id} not found`);
         const [invitation] = invitations.splice(index, 1);
-        const joined = invitedTeamFixtures[invitation!.teamId];
-        if (joined && !find(joined.id)) teams.push(structuredClone({ ...joined, role: invitation!.role }));
-        return respond({ teamId: invitation!.teamId });
+        const joined = invitedTeamFixtures[invitation!.teamId!];
+        if (joined && !find(joined.id)) teams.push(structuredClone({ ...joined, role: invitation!.role! }));
+        return respond({ teamId: invitation!.teamId! });
       },
       async decline(id) {
         const index = invitations.findIndex((invitation) => invitation.id === id);

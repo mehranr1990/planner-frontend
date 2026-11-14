@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useId, useState } from "react";
 import { AccessLoading, AccessState } from "@/components/feedback/access-state";
+import { InlineAlert } from "@/components/feedback/inline-alert";
 import { ErrorState } from "@/components/feedback/state-views";
 import { Avatar } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -12,11 +13,12 @@ import { Dialog, DialogContent, DialogFooter } from "@/components/ui/dialog";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Icon } from "@/components/ui/icon";
 import { Input } from "@/components/ui/input";
+import { Select, SelectItem } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/components/ui/toast";
 import { useIsDesktop } from "@/components/ui/use-is-desktop";
 import type { CorrectiveAction, EmployeeFileAccess, FileAccessLogRow } from "@/data/company-domain";
-import { useCompanyMutation, useEmployeeFile, useStaff } from "@/data/company-queries";
+import { useCaseReviewers, useCompanyMutation, useEmployeeFile, useStaff } from "@/data/company-queries";
 import { StatusChip } from "@/design-system/feedback/status-chip";
 import { ProductCard } from "@/design-system/surfaces/product-card";
 import { SignatureCard, SignatureCardAction } from "@/design-system/surfaces/signature-card";
@@ -164,7 +166,22 @@ function FileCard({ access, position, startedOn }: { access: Extract<EmployeeFil
         variant="neutral"
         label={t("downloadPack")}
         disabled={download.isPending}
-        onClick={() => download.mutate(undefined, { onSuccess: (result) => toast({ title: t("downloaded"), description: result.name }) })}
+        onClick={() =>
+          download.mutate(undefined, {
+            onSuccess: (result) => {
+              // Live mode streams the pack; save it once (Mock Mode returns a name only).
+              if (result.file) {
+                const url = URL.createObjectURL(result.file);
+                const link = document.createElement("a");
+                link.href = url;
+                link.download = result.name;
+                link.click();
+                URL.revokeObjectURL(url);
+              }
+              toast({ title: t("downloaded"), description: result.name });
+            },
+          })
+        }
       />
     );
   const grantLabel =
@@ -378,9 +395,10 @@ function AddDocumentDialog({ personId, onClose }: { personId: string; onClose: (
   const t = useTranslations("Company.file.add");
   const { company } = useCompany();
   const fileId = useId();
-  const [name, setName] = useState("");
+  const [picked, setPicked] = useState<File | null>(null);
+  const name = picked?.name ?? "";
   const [touched, setTouched] = useState(false);
-  const add = useCompanyMutation(company.id, (repo, id, fileName: string) => repo.addDocument(id, personId, fileName));
+  const add = useCompanyMutation(company.id, (repo, id, file: File) => repo.addDocument(id, personId, file.name, file));
   return (
     <Dialog open onOpenChange={(open) => (open ? undefined : onClose())}>
       <DialogContent title={t("title")} description={t("description")}>
@@ -389,8 +407,8 @@ function AddDocumentDialog({ personId, onClose }: { personId: string; onClose: (
           onSubmit={(event) => {
             event.preventDefault();
             setTouched(true);
-            if (!name) return;
-            add.mutate(name, {
+            if (!picked) return;
+            add.mutate(picked, {
               onSuccess: () => {
                 toast({ title: t("added") });
                 onClose();
@@ -404,10 +422,11 @@ function AddDocumentDialog({ personId, onClose }: { personId: string; onClose: (
               id={fileId}
               type="file"
               className="text-sm text-fg file:me-3 file:rounded-pill file:border-0 file:bg-subtle file:px-3 file:py-1.5 file:text-sm file:font-semibold"
-              onChange={(event) => setName(event.target.files?.[0]?.name ?? "")}
+              onChange={(event) => setPicked(event.target.files?.[0] ?? null)}
             />
             {touched && !name ? <FieldError>{t("required")}</FieldError> : null}
           </Field>
+          {add.isError ? <InlineAlert tone="danger" title={t("failed")} /> : null}
           <DialogFooter>
             <Button type="button" variant="secondary" onClick={onClose}>
               {t("cancel")}
@@ -427,8 +446,10 @@ function OpenCorrectiveDialog({ personId, onClose }: { personId: string; onClose
   const { company } = useCompany();
   const [reason, setReason] = useState("");
   const [evidence, setEvidence] = useState("");
+  const [reviewerId, setReviewerId] = useState<string | null>(null);
   const [touched, setTouched] = useState(false);
-  const open = useCompanyMutation(company.id, (repo, id, vars: { reason: string; evidence: string }) => repo.openCorrective(id, personId, vars));
+  const reviewers = useCaseReviewers(company.id, personId);
+  const open = useCompanyMutation(company.id, (repo, id, vars: { reason: string; evidence: string; reviewerId: string }) => repo.openCorrective(id, personId, vars));
   return (
     <Dialog open onOpenChange={(value) => (value ? undefined : onClose())}>
       <DialogContent title={t("title")} description={t("description")}>
@@ -437,9 +458,9 @@ function OpenCorrectiveDialog({ personId, onClose }: { personId: string; onClose
           onSubmit={(event) => {
             event.preventDefault();
             setTouched(true);
-            if (!reason.trim() || !evidence.trim()) return;
+            if (!reason.trim() || !evidence.trim() || !reviewerId) return;
             open.mutate(
-              { reason, evidence },
+              { reason, evidence, reviewerId },
               {
                 onSuccess: () => {
                   toast({ title: t("opened") });
@@ -459,8 +480,21 @@ function OpenCorrectiveDialog({ personId, onClose }: { personId: string; onClose
             <Input dir="auto" value={evidence} placeholder="training-log.csv" onChange={(event) => setEvidence(event.target.value)} />
             {touched && !evidence.trim() ? <FieldError>{t("evidenceRequired")}</FieldError> : null}
           </Field>
+          <Field invalid={touched && !reviewerId}>
+            <FieldLabel>{t("reviewer")}</FieldLabel>
+            <Select value={reviewerId ?? undefined} placeholder={t("chooseReviewer")} disabled={!reviewers.data?.length} onValueChange={setReviewerId}>
+              {(reviewers.data ?? []).map((reviewer) => (
+                <SelectItem key={reviewer.id} value={reviewer.id}>
+                  {reviewer.name}
+                </SelectItem>
+              ))}
+            </Select>
+            {reviewers.data && !reviewers.data.length ? <p className="text-xs text-fg-secondary">{t("noReviewer")}</p> : null}
+            {touched && !reviewerId && reviewers.data?.length ? <FieldError>{t("reviewerRequired")}</FieldError> : null}
+          </Field>
           <p className="rounded-row bg-subtle px-3 py-2 text-xs text-fg">{t("visibleTo")}</p>
           <p className="text-xs text-fg-secondary">{t("note")}</p>
+          {open.isError ? <InlineAlert tone="danger" title={t("failed")} /> : null}
           <DialogFooter>
             <Button type="button" variant="secondary" onClick={onClose}>
               {t("cancel")}

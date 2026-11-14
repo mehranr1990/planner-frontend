@@ -21,7 +21,9 @@
     "trendsHint": "رود",
     "breakdown": "تفکیک",
     "breakdownHint": "جریان",
-    "transactions": "تراکنش‌ها"
+    "transactions": "تراکنش‌ها",
+    "bills": "قبض‌ها",
+    "reports": "گزارش‌ها"
   },
   "categories": {
     "housing": "مسکن",
@@ -131,7 +133,10 @@
     "budget": "تعیین بودجه",
     "budgetLabel": "بودجهٔ ماهانه ({unit})",
     "save": "ذخیرهٔ بودجه",
-    "saved": "بودجه تعیین شد"
+    "saved": "بودجه تعیین شد",
+    "more": "بخش‌های دیگر مالی",
+    "bills": "قبض‌ها",
+    "reports": "گزارش‌ها"
   },
   "locked": {
     "title": "بخش مالی قفل است",

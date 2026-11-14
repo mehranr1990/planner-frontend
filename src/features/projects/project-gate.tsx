@@ -136,9 +136,9 @@ export function ProjectGate({ children }: { children: ReactNode }) {
       <AccessState
         kind="invite-pending"
         values={{
-          project: invitation.projectName,
-          inviter: invitation.inviter.name,
-          role: labels.role(invitation.role),
+          project: invitation.projectName ?? "",
+          inviter: invitation.inviter?.name ?? "",
+          role: invitation.role ? labels.role(invitation.role) : "",
         }}
         primaryAction={
           <Button

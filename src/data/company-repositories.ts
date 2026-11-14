@@ -17,6 +17,7 @@ import type {
   CompanyGoal,
   CompanyGrantKind,
   CompanyInvitation,
+  CompanyNotification,
   CompanyOverview,
   CompanyProjectRow,
   CompanyReport,
@@ -29,6 +30,7 @@ import type {
   CompanyTeamRow,
   CorrectiveAction,
   Department,
+  DepartmentTransferPreview,
   EffectivePolicy,
   EmployeeFileAccess,
   Expense,
@@ -112,7 +114,12 @@ export interface CompanyRepository {
   /** staffRepo (work profiles only — never the sealed file). */
   staff(id: string, role: CompanyRole): Promise<WorkProfile[]>;
   updateWorkProfile(id: string, personId: string, patch: { position: string; location: string; workHours: string; phone: string | null }): Promise<WorkProfile>;
-  pendingInvites(id: string): Promise<{ id: string; email: string; role: CompanyRole; departmentName: string }[]>;
+  /** Preview moving the person's seat in `fromDepartmentId` to `toDepartmentId` (same company only). */
+  previewTransfer(id: string, personId: string, fromDepartmentId: string, toDepartmentId: string): Promise<DepartmentTransferPreview>;
+  /** Moves the seat; identity and records stay with the person. The role is kept. */
+  transferEmployee(id: string, personId: string, fromDepartmentId: string, toDepartmentId: string): Promise<void>;
+  /** `email` null = not served (live: invitation rows carry no recipient, CB-3). */
+  pendingInvites(id: string): Promise<{ id: string; email: string | null; role: CompanyRole; departmentName: string }[]>;
 
   /** companyWorkRepo + attachRepo */
   projects(id: string, role: CompanyRole): Promise<CompanyProjectRow[]>;
@@ -182,10 +189,13 @@ export interface CompanyRepository {
   /** employeeFileRepo + caseRepo + auditRepo.forSubject — every open is audited. */
   employeeFile(id: string, personId: string): Promise<EmployeeFileAccess>;
   requestFileAccess(id: string, personId: string): Promise<void>;
-  addDocument(id: string, personId: string, name: string): Promise<EmployeeFileAccess>;
+  /** `file` = the picked bytes (required in live mode). */
+  addDocument(id: string, personId: string, name: string, file?: Blob): Promise<EmployeeFileAccess>;
   /** Read grant: a server-side file pack; the download is logged and visible to the employee. */
-  downloadPack(id: string, personId: string): Promise<{ name: string }>;
-  openCorrective(id: string, personId: string, input: { reason: string; evidence: string }): Promise<CorrectiveAction>;
+  downloadPack(id: string, personId: string): Promise<{ name: string; file?: Blob }>;
+  /** Who may review a corrective action about this person: active Owners / Org Admins other than the caller and the person. */
+  caseReviewers(id: string, personId: string): Promise<{ id: string; name: string }[]>;
+  openCorrective(id: string, personId: string, input: { reason: string; evidence: string; reviewerId: string }): Promise<CorrectiveAction>;
   respondCorrective(id: string, personId: string, actionId: string, text: string): Promise<CorrectiveAction>;
   appealCorrective(id: string, personId: string, actionId: string, text: string): Promise<CorrectiveAction>;
   closeCorrective(id: string, personId: string, actionId: string, outcome: string): Promise<CorrectiveAction>;
@@ -197,8 +207,12 @@ export interface CompanyRepository {
   audit(id: string): Promise<AuditRow[]>;
 
   /** policyRepo.list / set · companyRepo lifecycle */
+  /** The caller's own notifications in this company (every context they can open), newest first. */
+  notifications(id: string): Promise<CompanyNotification[]>;
+  readNotification(id: string, notificationId: string): Promise<CompanyNotification>;
+
   settings(id: string): Promise<CompanySettings>;
-  updateGeneral(id: string, patch: { name: string; legalName: string; currency: CompanyCurrency; fiscalStartMonth: number }): Promise<CompanySettings>;
+  updateGeneral(id: string, patch: { name: string; legalName: string; currency: CompanyCurrency | null; fiscalStartMonth: number | null }): Promise<CompanySettings>;
   setPolicyLevel(id: string, policyId: string, level: PolicyLevel): Promise<CompanySettings>;
   setGrant(id: string, personId: string, kind: CompanyGrantKind, until: string | null, on: boolean): Promise<CompanySettings>;
   requestTransfer(id: string, toPersonId: string, password: string): Promise<CompanySettings>;

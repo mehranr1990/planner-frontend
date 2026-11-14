@@ -21,6 +21,9 @@ function fakeBackend() {
   const productivity = new Map<string, { revision: number; estimatedMinutes: number | null }>();
   const notes: { id: string; taskId: string; title: string; content: { format: string; version: number; content: string }; createdAt: string }[] = [];
   let failProductivityPatch = false;
+  // Task category (B4): stored on the Task row, written with the Task revision.
+  const categories = new Map<string, string | null>();
+  const history = new Map<string, unknown[]>();
   const now = "2026-11-03T10:00:00.000Z";
   const json = (body: unknown, status = 200, etag?: string) =>
     new Response(JSON.stringify(body), { status, headers: { "Content-Type": "application/json", ...(etag ? { ETag: etag } : {}) } });
@@ -96,9 +99,15 @@ function fakeBackend() {
       p.estimatedMinutes = body.estimatedMinutes;
       return out();
     }
+    if (sub === "history" && method === "GET") return json(page(history.get(row.id) ?? []));
+    if (sub === "category" && method === "GET") return json({ taskId: row.id, revision: row.revision, category: categories.get(row.id) ?? null }, 200, tag(row));
     const conflict = guard(row);
     if (conflict) return conflict;
     bump(row);
+    if (sub === "category") {
+      categories.set(row.id, body.category);
+      return json({ taskId: row.id, revision: row.revision, category: body.category }, 200, tag(row));
+    }
     if (!sub && method === "PATCH") Object.assign(row, body);
     else if (!sub && method === "DELETE") Object.assign(row, { deletedAt: now, restoreUntil: now });
     else if (sub === "restore") Object.assign(row, { deletedAt: null, restoreUntil: null });
@@ -119,7 +128,7 @@ function fakeBackend() {
     }
     return json(row, 200, tag(row));
   };
-  return { fetchImpl, calls, tasks, notes, conflictOnce: () => (conflictNext = true), failDuration: () => (failProductivityPatch = true) };
+  return { fetchImpl, calls, tasks, notes, categories, history, conflictOnce: () => (conflictNext = true), failDuration: () => (failProductivityPatch = true) };
 }
 
 function setup() {
@@ -138,6 +147,57 @@ describe("device-zone time mapping (Asia/Tehran in tests)", () => {
 });
 
 describe("createApiTasksRepository", () => {
+  it("reads the category with the detail, sets and clears it with the Task revision, and follows the bump", async () => {
+    const { repo, backend, writes } = setup();
+    const created = await repo.create({ title: "Draft post" });
+    expect((await repo.get(created.id))?.category).toBeNull();
+    const revision = backend.tasks.get(created.id)!.revision;
+    const set = await repo.update(created.id, { category: "writing" });
+    expect(set.category).toBe("writing");
+    const put = writes().find((call) => call.path.endsWith("/category"))!;
+    expect(put).toMatchObject({ method: "PUT", body: { category: "writing" } });
+    expect(put.headers.get("If-Match")).toBe(`"${revision}"`);
+    // The category write bumped the Task revision: the next Task write uses the new one (no 409 detour).
+    await repo.update(created.id, { title: "Draft blog post" });
+    expect(writes().at(-1)!.headers.get("If-Match")).toBe(`"${revision + 1}"`);
+    expect((await repo.update(created.id, { category: null })).category).toBeNull();
+    expect(backend.categories.get(created.id)).toBeNull();
+    expect(writes().filter((call) => call.method === "PATCH" && call.path.endsWith("/category"))).toEqual([]);
+  });
+
+  it("maps the Task history to the Activity it can state, newest first", async () => {
+    const { repo, backend } = setup();
+    const created = await repo.create({ title: "File taxes" });
+    const row = (id: string, kind: string, at: string, extra: Record<string, unknown> = {}) => ({
+      id, taskId: created.id, actorUserId: "u", kind, fields: [], previousRevision: 1, revision: 2,
+      beforeStatus: null, afterStatus: "OPEN", beforePriority: null, afterPriority: "NONE", relatedId: null, createdAt: at, ...extra,
+    });
+    backend.history.set(created.id, [
+      row("h1", "CREATED", "2026-11-01T08:00:00.000Z"),
+      row("h2", "UPDATED", "2026-11-01T09:00:00.000Z", { fields: ["priority"], afterPriority: "HIGH" }),
+      row("h3", "UPDATED", "2026-11-01T10:00:00.000Z", { fields: ["title"] }),
+      row("h4", "COMPLETED", "2026-11-02T08:00:00.000Z"),
+      row("h5", "LABEL_ADDED", "2026-11-02T09:00:00.000Z"),
+    ]);
+    expect((await repo.get(created.id))?.activity).toEqual([
+      { id: "h4", at: "2026-11-02T08:00:00.000Z", kind: "completed" },
+      { id: "h2", at: "2026-11-01T09:00:00.000Z", kind: "priority", priority: "high" },
+      { id: "h1", at: "2026-11-01T08:00:00.000Z", kind: "created", source: "manual" },
+    ]);
+  });
+
+  it("re-sends a category once after a 409 with the fresh revision", async () => {
+    const { repo, backend, writes } = setup();
+    const created = await repo.create({ title: "Pay rent" });
+    await repo.get(created.id);
+    backend.conflictOnce();
+    expect((await repo.update(created.id, { category: "admin" })).category).toBe("admin");
+    const puts = writes().filter((call) => call.path.endsWith("/category"));
+    expect(puts).toHaveLength(2);
+    // The fresh revision after the conflicting write; the successful PUT then bumped it once more.
+    expect(puts[1]!.headers.get("If-Match")).toBe(`"${backend.tasks.get(created.id)!.revision - 1}"`);
+  });
+
   it("creates with an Idempotency-Key and maps day, time, deadline and priority", async () => {
     const { repo, backend } = setup();
     const task = await repo.create({ title: " Plan ", date: "2026-11-03", time: "09:30", priority: "high", deadline: "2026-11-05", durationMinutes: 30 });

@@ -73,5 +73,14 @@ export function createWorkSources(client: ApiClient): WorkSources {
       const me = await accessOf(kind, id, scopeId);
       return { me: me.actorId, members };
     },
+
+    async capabilities(kind, id) {
+      try {
+        return (await accessOf(kind, id)).capabilities;
+      } catch (error) {
+        if (notAdmitted(error)) return null;
+        throw error;
+      }
+    },
   };
 }

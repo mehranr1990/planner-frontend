@@ -23,6 +23,8 @@ import type {
   TeamEvent,
   TeamEventDetail,
   TeamEventKind,
+  TeamTimeOffHistoryEntry,
+  TeamTimeOffRequest,
   TeamMember,
   TeamRsvp,
   TeamLinkRequest,
@@ -165,6 +167,21 @@ export interface TeamEventRepository {
   update(eventId: string, input: TeamEventInput): Promise<TeamEventDetail>;
   /** Every member, Viewers included. */
   rsvp(eventId: string, rsvp: TeamRsvp): Promise<TeamEventDetail>;
+  /** Cancels a team event for everyone (`can.cancel`); changed elsewhere → "conflict". */
+  cancel(eventId: string): Promise<void>;
+  /** Time-off requests the viewer may see (managers: everyone's; others: their own), newest first. */
+  timeOff(teamId: string): Promise<readonly TeamTimeOffRequest[]>;
+  /** Manager decision on someone else's pending request (`can.decide`); the note is optional. */
+  decideTimeOff(
+    teamId: string,
+    requestId: string,
+    decision: "approve" | "reject",
+    note: string | null,
+  ): Promise<TeamTimeOffRequest>;
+  /** The requester cancels their own pending / not-yet-ended approved request (`can.cancel`). */
+  cancelTimeOff(teamId: string, requestId: string): Promise<TeamTimeOffRequest>;
+  /** Submitted / approved / rejected / canceled steps, oldest first. */
+  timeOffHistory(teamId: string, requestId: string): Promise<readonly TeamTimeOffHistoryEntry[]>;
 }
 
 /** activityRepo */

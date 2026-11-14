@@ -37,7 +37,7 @@ type ApiRegisterItem = ProjectsData<"/api/v1/projects/{projectId}/register-items
 const PAGE = 100;
 const ASSIGNMENT_READS = 8;
 
-const roleOf = (member: ApiProjectMember): ProjectRole | null => {
+export const roleOf = (member: ApiProjectMember): ProjectRole | null => {
   const role = member.role ?? member.memberRole;
   return typeof role === "string" ? (role.toLowerCase() as ProjectRole) : null;
 };

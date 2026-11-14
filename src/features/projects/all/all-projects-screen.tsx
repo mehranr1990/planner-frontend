@@ -23,6 +23,7 @@ import { SearchField } from "@/components/ui/search-field";
 import { Segmented } from "@/components/ui/segmented";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "@/components/ui/toast";
+import { RepositoryError } from "@/data/repositories";
 import type { ProjectFilter, ProjectInvitation, ProjectSummary } from "@/data/project-domain";
 import {
   useAcceptInvitation,
@@ -206,7 +207,7 @@ export function AllProjectsScreen() {
   );
   const shownInvites =
     filter === "all" || filter === "invitations"
-      ? pending.filter((invitation) => invitation.projectName.toLocaleLowerCase().includes(needle))
+      ? pending.filter((invitation) => (invitation.projectName ?? "").toLocaleLowerCase().includes(needle))
       : [];
   const busy = accept.isPending || decline.isPending;
   const clearFilters = () => {
@@ -226,7 +227,17 @@ export function AllProjectsScreen() {
       onDecline={(note) =>
         decline.mutate(
           { id: invitation.id, note: note || undefined },
-          { onSuccess: () => toast({ title: t("invite.declined") }) },
+          {
+            onSuccess: () => toast({ title: t("invite.declined") }),
+            onError: (cause) =>
+              toast({
+                title: t(
+                  cause instanceof RepositoryError && cause.message === "decline-note"
+                    ? "invite.noteUnavailable"
+                    : "invite.declineFailed",
+                ),
+              }),
+          },
         )
       }
     />

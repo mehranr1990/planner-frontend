@@ -33,7 +33,8 @@
   "change": {
     "up": "+{points} pts",
     "down": "−{points} pts",
-    "same": "no change"
+    "same": "no change",
+    "none": "no earlier data"
   },
   "tabs": {
     "label": "Patterns",
@@ -142,6 +143,10 @@
       "title": "Couldn’t calculate",
       "body": "Something went wrong with this pattern. Other tabs still work.",
       "retry": "Retry"
+    },
+    "unavailable": {
+      "title": "Can’t be calculated yet",
+      "body": "The data this pattern needs isn’t recorded. Other tabs still work."
     }
   }
 }

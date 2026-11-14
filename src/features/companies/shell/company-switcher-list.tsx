@@ -42,7 +42,7 @@ export function CompanySwitcherList({ directory, invitations, activeCompanyId, o
     ...live.filter((company) => !recentIds.includes(company.id)),
   ];
   const archived = companies.filter((company) => company.lifecycle === "archived");
-  const invites = invitations.filter((invitation) => matches(invitation.companyName));
+  const invites = invitations.filter((invitation) => invitation.companyId !== null && matches(invitation.companyName ?? ""));
 
   const line = (company: CompanySummary) =>
     t("switcher.line", {
@@ -116,23 +116,25 @@ export function CompanySwitcherList({ directory, invitations, activeCompanyId, o
             key={invitation.id}
             type="button"
             data-switcher-row=""
-            onClick={() => onOpen(invitation.companyId)}
+            onClick={() => onOpen(invitation.companyId!)}
             className="flex min-h-touch items-center gap-2.5 rounded-row px-2 py-1.5 text-start text-fg transition-colors hover:bg-raised"
           >
             <span
               aria-hidden="true"
               className="inline-flex size-9 shrink-0 items-center justify-center rounded-tile bg-raised text-xs font-bold text-fg-secondary"
             >
-              <bdi>{invitation.initials}</bdi>
+              <bdi>{invitation.initials ?? ""}</bdi>
             </span>
             <span className="flex min-w-0 flex-1 flex-col leading-snug">
-              <bdi className="truncate text-sm font-semibold">{invitation.companyName}</bdi>
-              <span className="truncate text-xs font-medium text-fg-secondary">
-                {t("switcher.invitedAs", {
-                  role: labels.role(invitation.role),
-                  department: invitation.departmentName ? ` · ${invitation.departmentName}` : "",
-                })}
-              </span>
+              <bdi className="truncate text-sm font-semibold">{invitation.companyName ?? ""}</bdi>
+              {invitation.role ? (
+                <span className="truncate text-xs font-medium text-fg-secondary">
+                  {t("switcher.invitedAs", {
+                    role: labels.role(invitation.role),
+                    department: invitation.departmentName ? ` · ${invitation.departmentName}` : "",
+                  })}
+                </span>
+              ) : null}
             </span>
             <span className="shrink-0 rounded-pill bg-scope-soft px-2.5 py-1 text-xs font-bold text-scope-deep">{t("switcher.review")}</span>
           </button>

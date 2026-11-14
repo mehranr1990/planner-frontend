@@ -20,6 +20,10 @@ export type EnergyLevel = "low" | "medium" | "high";
 
 export type TaskStatus = "open" | "done";
 
+/** Backend-approved Personal Task categories (estimate accuracy); no other values exist. */
+export const TASK_CATEGORIES = ["design", "admin", "writing", "errands"] as const;
+export type TaskCategory = (typeof TASK_CATEGORIES)[number];
+
 export interface Area {
   id: string;
   name: string;
@@ -68,6 +72,8 @@ export interface Task {
   activity?: TaskActivity[];
   /** P06 Links tab: dependencies (soft, never blocking), files and URLs. */
   links?: TaskLink[];
+  /** Optional Personal category (null = none); loaded with the task detail. */
+  category?: TaskCategory | null;
 }
 
 export interface Subtask {
@@ -89,6 +95,8 @@ export type TaskActivity = { id: string; /** Instant. */ at: string } & (
   | { kind: "scheduled"; time: string }
   | { kind: "subtaskDone"; title: string }
   | { kind: "priority"; priority: TaskPriority }
+  | { kind: "completed" }
+  | { kind: "reopened" }
 );
 
 /**
@@ -529,7 +537,7 @@ export type InsightDayFilter = "all" | "work" | "weekend";
 /** The four contexts plus untracked "other" (Context Ribbon bands). */
 export type InsightContext = "personal" | "projects" | "teams" | "companies" | "other";
 export const insightContexts: readonly InsightContext[] = ["personal", "projects", "teams", "companies", "other"];
-export type EstimateCategory = "design" | "admin" | "writing" | "errands";
+export type EstimateCategory = TaskCategory;
 
 export interface InsightsSummary {
   period: InsightsPeriod;
@@ -545,14 +553,15 @@ export interface FocusWindowStats {
   /** 24 values: typical focus minutes per hour. */
   minutesByHour: number[];
   totalMinutes: number;
-  sessionsCompleted: number;
-  sessionsStarted: number;
-  averageSessionMinutes: number;
-  /** Best window [startHour, endHour) and its share (0–1) of all focused minutes. */
-  bestWindow: [number, number];
-  bestShare: number;
-  /** Hour most sessions were interrupted in. */
-  interruptedHour: number;
+  /** null when the source does not record it (live: no per-day-filter session counts, no started / interrupted sessions). */
+  sessionsCompleted: number | null;
+  sessionsStarted: number | null;
+  averageSessionMinutes: number | null;
+  /** Best window [startHour, endHour) and its share (0–1) of all focused minutes; null without focused minutes. */
+  bestWindow: [number, number] | null;
+  bestShare: number | null;
+  /** Hour most sessions were interrupted in; null when not recorded. */
+  interruptedHour: number | null;
 }
 
 export interface FocusPattern {
@@ -564,10 +573,10 @@ export interface TimePattern {
   id: "time";
   /** Seven rows in week order (first = week start): tracked minutes per context. */
   days: { weekday: number; minutes: Record<InsightContext, number> }[];
-  /** Share per context (0–1) in the previous period, for the delta. */
-  previousShare: Record<InsightContext, number>;
-  /** The project that took most Projects time (user text). */
-  topProject: string;
+  /** Share per context (0–1) in the previous period, for the delta; null without earlier tracked time. */
+  previousShare: Record<InsightContext, number> | null;
+  /** The project that took most Projects time (user text); null when the source does not name it. */
+  topProject: string | null;
 }
 
 export interface SignalsDay {
@@ -581,9 +590,9 @@ export interface SignalsDay {
 export interface SignalsPattern {
   id: "signals";
   days: SignalsDay[];
-  /** Mood (0–10) on days with ≥ 2h focus vs the rest. */
-  moodWithFocus: number;
-  moodWithoutFocus: number;
+  /** Mood (0–10) on days with ≥ 2h focus vs the rest; null without such days. */
+  moodWithFocus: number | null;
+  moodWithoutFocus: number | null;
 }
 
 export interface EstimatesPattern {
@@ -606,7 +615,9 @@ export type InsightPatternOf<Id extends InsightPatternId> = Extract<InsightPatte
 /** A pattern, or progress to its own threshold (never a chart from too little data). */
 export type InsightPatternResult<P extends InsightPattern = InsightPattern> =
   | { status: "ready"; pattern: P }
-  | { status: "collecting"; have: number; need: number };
+  | { status: "collecting"; have: number; need: number }
+  /** The source cannot calculate this pattern (server reason code, e.g. TASK_CATEGORIES_NOT_RECORDED). */
+  | { status: "unavailable"; reason: string };
 
 // ── Weekly review (P16) ──────────────────────────────────────────────────
 

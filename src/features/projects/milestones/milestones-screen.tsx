@@ -110,6 +110,16 @@ export function MilestonesScreen() {
     />
   );
 
+  // Live: phase rows (dates, progress) and milestone rows (server status) are not served.
+  if (phases.isError || rows.isError) {
+    return (
+      <>
+        {header}
+        <EmptyState variant="card" title={t("unavailable")} titleAs="h2" />
+      </>
+    );
+  }
+
   if (!phases.data || !rows.data || !workflow.data) {
     return (
       <>
@@ -121,9 +131,9 @@ export function MilestonesScreen() {
 
   const today = getPlannerToday();
   const current =
-    phases.data.find((row) => !row.phase.done && today >= row.phase.start && today <= row.phase.end) ??
+    phases.data.find((row) => !row.phase.done && row.phase.start !== null && row.phase.end !== null && today >= row.phase.start && today <= row.phase.end) ??
     phases.data.find((row) => !row.phase.done);
-  const phaseOf = (id: string) => phases.data!.find((row) => row.phase.id === id)?.phase;
+  const phaseOf = (id: string | null) => phases.data!.find((row) => row.phase.id === id)?.phase;
   const reached = list.filter((row) => row.status === "reached").length;
   const empty = demo === "empty" || list.length === 0;
 
@@ -265,7 +275,7 @@ function MilestoneRowView({
           </span>
         </span>
         <StatusChip tone={STATUS_TONE[status]}>{t(`status.${status}`)}</StatusChip>
-        <span className="shrink-0 text-xs font-semibold text-fg max-sm:hidden">{format.day(milestone.due)}</span>
+        <span className="shrink-0 text-xs font-semibold text-fg max-sm:hidden">{milestone.due ? format.day(milestone.due) : null}</span>
         {milestone.owner ? (
           <Avatar name={milestone.owner.name} initials={milestone.owner.initials} size={32} decorative className="size-7 text-[0.625rem] max-sm:hidden" />
         ) : null}

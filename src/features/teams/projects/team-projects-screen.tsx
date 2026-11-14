@@ -48,7 +48,7 @@ const matches = (project: TeamPortfolioProject, filter: Filter) =>
   filter === "all" ||
   (filter === "owned" && project.relation === "owned") ||
   (filter === "linked" && project.relation === "linked") ||
-  (filter === "risk" && project.health !== "on-track" && project.lifecycle === "active");
+  (filter === "risk" && project.health !== null && project.health !== "on-track" && project.lifecycle === "active");
 
 export function TeamProjectsScreen() {
   const t = useTranslations("TeamProjects");
@@ -323,8 +323,14 @@ function PortfolioTimeline({ projects }: { projects: readonly TeamPortfolioProje
   const t = useTranslations("TeamProjects.timeline");
   const format = useProjectFormat();
   const today = getPlannerToday();
-  const from = projects.reduce((min, project) => (project.startDate < min ? project.startDate : min), today);
-  const to = projects.reduce((max, project) => (project.endDate > max ? project.endDate : max), today);
+  // Projects without dates (not set in the project) get no bar.
+  const dated = projects.flatMap((project) =>
+    project.startDate && project.endDate
+      ? [{ ...project, startDate: project.startDate, endDate: project.endDate }]
+      : [],
+  );
+  const from = dated.reduce((min, project) => (project.startDate < min ? project.startDate : min), today);
+  const to = dated.reduce((max, project) => (project.endDate > max ? project.endDate : max), today);
   const span = Math.max(1, daysBetween(from, to));
   const at = (day: string) => (daysBetween(from, day) / span) * 100;
   return (
@@ -342,21 +348,23 @@ function PortfolioTimeline({ projects }: { projects: readonly TeamPortfolioProje
               <bdi>{project.name}</bdi>
             </Link>
             <div className="relative h-5 rounded-pill bg-subtle">
-              <span
-                role="img"
-                aria-label={t("bar", {
-                  project: project.name,
-                  range: format.range(project.startDate, project.endDate),
-                })}
-                className={cn(
-                  "absolute inset-y-0 rounded-pill",
-                  project.lifecycle === "active" ? "bg-scope-dot" : "bg-raised",
-                )}
-                style={{
-                  insetInlineStart: `${at(project.startDate)}%`,
-                  width: `${Math.max(1, at(project.endDate) - at(project.startDate))}%`,
-                }}
-              />
+              {project.startDate && project.endDate ? (
+                <span
+                  role="img"
+                  aria-label={t("bar", {
+                    project: project.name,
+                    range: format.range(project.startDate, project.endDate),
+                  })}
+                  className={cn(
+                    "absolute inset-y-0 rounded-pill",
+                    project.lifecycle === "active" ? "bg-scope-dot" : "bg-raised",
+                  )}
+                  style={{
+                    insetInlineStart: `${at(project.startDate)}%`,
+                    width: `${Math.max(1, at(project.endDate) - at(project.startDate))}%`,
+                  }}
+                />
+              ) : null}
               <span
                 aria-hidden
                 className="absolute -inset-y-1 w-0.5 bg-team-deep"

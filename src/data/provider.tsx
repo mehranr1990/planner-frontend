@@ -2,7 +2,13 @@
 
 import { createContext, useContext, useState, type ReactNode } from "react";
 import { getApiClient, isLiveApi } from "@/api/runtime";
+import { createApiBillsRepository, createApiFinanceReportsRepository } from "./api/api-bills-repository";
 import { createApiBlocksRepository } from "./api/api-blocks-repository";
+import { createApiNotificationsRepository } from "./api/api-notifications-repository";
+import { createApiRemindersRepository } from "./api/api-reminders-repository";
+import { createApiRoutinesRepository } from "./api/api-routines-repository";
+import { createApiTaskFilesRepository } from "./api/api-task-files-repository";
+import { createApiBrainDumpRepository } from "./api/api-brain-dump-repository";
 import { createApiFinanceRepository } from "./api/api-finance-repository";
 import { createApiFocus } from "./api/api-focus";
 import { createApiGoalsRepository, withGoalLinks } from "./api/api-goals-repository";
@@ -19,7 +25,7 @@ import { withBlockFollow } from "./api/api-task-block-follow";
 import { createApiTasksRepository } from "./api/api-tasks-repository";
 import { getPlannerToday } from "./clock";
 import { createMockRepositories } from "./mock";
-import { RepositoryError, type BrainDumpRepository, type Repositories } from "./repositories";
+import type { Repositories } from "./repositories";
 
 /*
  * The single swap point for data: mount DataProvider once inside the
@@ -30,29 +36,17 @@ import { RepositoryError, type BrainDumpRepository, type Repositories } from "./
 
 const RepositoriesContext = createContext<Repositories | null>(null);
 
-/**
- * Brain Dump has no API model (pages, lines, sort tags), so it stays on the mock in live mode.
- * Its lines must not look sent to the live Inbox: the two cross-overs are refused instead.
- */
-function withoutInboxCrossOver(brainDump: BrainDumpRepository): BrainDumpRepository {
-  const refuse = () => Promise.reject(new RepositoryError("unsupported", "Brain Dump is not connected to the live Inbox"));
-  return {
-    ...brainDump,
-    sendToInbox: refuse,
-    clear: (day, unsorted) => (unsorted === "inbox" ? refuse() : brainDump.clear(day, unsorted)),
-  };
-}
-
 export function createRepositories(): Repositories {
   const mock = createMockRepositories();
   if (!isLiveApi()) return mock;
   const client = getApiClient();
   const dayPlans = createDayPlans(client);
-  const tasks = createApiTasksRepository(client, { today: getPlannerToday, fallback: mock.tasks, dayPlans });
+  const tasks = createApiTasksRepository(client, { today: getPlannerToday, dayPlans });
   // The blocks adapter writes Tasks through the unwrapped repository; the UI gets the block-following one.
   const blocks = createApiBlocksRepository(client, { tasks });
   // Goals read linked tasks through the unwrapped repository; the UI's tasks carry their goal link.
   const goals = createApiGoalsRepository(client, { today: getPlannerToday, tasks });
+  const inbox = createApiInboxRepository(client);
   return {
     ...mock,
     // Projects: only what the contract answers truthfully; the rest is refused, never mock data.
@@ -64,12 +58,19 @@ export function createRepositories(): Repositories {
     plan: createApiPlanRepository(dayPlans, tasks, createApiFocus(client)),
     habits: createApiHabitsRepository(client, { today: getPlannerToday }),
     goals,
-    inbox: createApiInboxRepository(client),
-    brainDump: withoutInboxCrossOver(mock.brainDump),
+    inbox,
+    brainDump: createApiBrainDumpRepository(client, { today: getPlannerToday, inbox }),
     journal: createApiJournalRepository(client, { today: getPlannerToday }),
     finance: createApiFinanceRepository(client, { today: getPlannerToday }),
     insights: createApiInsightsRepository(client),
     review: createApiReviewRepository(client),
+    // Personal services (gap closure): API only in live mode, never the mock stores.
+    notifications: createApiNotificationsRepository(client),
+    reminders: createApiRemindersRepository(client),
+    routines: createApiRoutinesRepository(client),
+    taskFiles: createApiTaskFilesRepository(client),
+    bills: createApiBillsRepository(client),
+    financeReports: createApiFinanceReportsRepository(client),
   };
 }
 

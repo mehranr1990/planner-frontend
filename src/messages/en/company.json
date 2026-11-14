@@ -77,7 +77,8 @@
     "invite": {
       "title": "{company} invited you as {role}{department}",
       "body": "Accepting creates a work profile in {company}. Your personal data stays private.",
-      "declined": "Invitation declined"
+      "declined": "Invitation declined",
+      "generic": "Company invitation"
     }
   },
   "overview": {
@@ -93,7 +94,9 @@
       "offTrack": "{n} off track",
       "source": "status set by each project’s managers",
       "history": "Projects on track per quarter",
-      "none": "No active projects yet."
+      "none": "No active projects yet.",
+      "active": "active projects",
+      "healthUnavailable": "Project health isn’t reported for the company yet."
     },
     "kpi": {
       "label": "Company figures",
@@ -105,7 +108,9 @@
       "goalsHint": "company + department goals, {quarter}",
       "approvals": "Approvals for you",
       "approvalsHint": "oldest waiting {n} days",
-      "approvalsNone": "nothing waiting"
+      "approvalsNone": "nothing waiting",
+      "notAvailable": "Not available",
+      "goalsProgress": "average key-result progress {percent}"
     },
     "watch": {
       "label": "Watch",
@@ -241,7 +246,8 @@
       "title": "Pending invitations",
       "empty": "No pending invitations.",
       "line": "{department}",
-      "pending": "Pending"
+      "pending": "Pending",
+      "noEmail": "{role} invitation"
     },
     "workloadTitle": "{department} · people & workload",
     "workloadNote": "Workload = booked estimates of company work assigned this week ÷ work-profile hours; shown to Org Admin / Owner and the department’s manager only. Never a ranking.",
@@ -314,6 +320,32 @@
       "cancel": "Cancel",
       "save": "Save",
       "saved": "Work profile saved"
+    },
+    "transfer": {
+      "current": "Department",
+      "none": "No department",
+      "move": "Move",
+      "title": "Move {name} to another department",
+      "description": "Moves this person's department seat inside this company. Their profile, files and history stay with them; their role is kept.",
+      "from": "From",
+      "to": "To",
+      "choose": "Choose a department",
+      "noTargets": "No other department you can move people into.",
+      "checking": "Checking what this move affects…",
+      "readyTitle": "Ready to move",
+      "ready": "Joins {to} with the same role ({role}).",
+      "blockedTitle": "This move is blocked",
+      "allocations": "{count, plural, one {{formatted} active resource allocation} other {{formatted} active resource allocations}}",
+      "resourceRequests": "{count, plural, one {{formatted} pending resource request} other {{formatted} pending resource requests}}",
+      "expenseReviews": "{count, plural, one {{formatted} expense under review} other {{formatted} expenses under review}}",
+      "roleChange": "Department managers and Org Admins move through a role change, not a transfer.",
+      "previewFailed": "Couldn't check this move. Try again.",
+      "forbidden": "You can't move people between these departments.",
+      "conflict": "This person's seat changed meanwhile. Check the move again.",
+      "failed": "Couldn't move this person. Try again.",
+      "cancel": "Cancel",
+      "confirm": "Move",
+      "done": "{name} moved to {to}"
     }
   },
   "months": {
@@ -498,7 +530,9 @@
       "changesTitle": "Changes requested",
       "changesBody": "Edit and resubmit; the chain restarts at the step that asked.",
       "failed": "Couldn’t save the expense.",
-      "whatFor": "What for"
+      "whatFor": "What for",
+      "savedDraftOnly": "Saved as a draft",
+      "savedDraftOnlyBody": "The receipt or the submission didn’t go through. Open the draft to try again."
     }
   },
   "work": {
@@ -598,7 +632,8 @@
       "cancel": "Cancel",
       "submit": "Send request",
       "sent": "Attach requested",
-      "sentBody": "Waiting for the owner’s consent."
+      "sentBody": "Waiting for the owner’s consent.",
+      "failed": "Couldn’t send the request. Try again."
     }
   },
   "goals": {
@@ -839,7 +874,8 @@
       "body": "Text",
       "cancel": "Cancel",
       "submit": "Create page",
-      "created": "{title} created"
+      "created": "{title} created",
+      "failed": "The page wasn’t created. Try again."
     }
   },
   "approvals": {
@@ -901,7 +937,8 @@
         "approved": "Approved · logged with the chain version",
         "rejected": "Rejected · the requester is told why",
         "changes": "Changes requested · the requester can resubmit"
-      }
+      },
+      "chainUnversioned": "{subject} chain"
     },
     "flow": {
       "title": "{item} · approval flow",
@@ -914,7 +951,8 @@
       "escalate": "Escalate",
       "automatic": "automatic · {date}",
       "after": "After approval",
-      "footnote": "Columns = steps of the chain version this item was submitted under ({subject} v{v}). Read-only — the decision itself stays in the Approval card."
+      "footnote": "Columns = steps of the chain version this item was submitted under ({subject} v{v}). Read-only — the decision itself stays in the Approval card.",
+      "footnoteUnversioned": "Columns = the role-based steps of this {subject} request. Read-only — the decision itself stays in the Approval card."
     },
     "history": {
       "title": "Approval history",
@@ -1134,7 +1172,8 @@
       "required": "Choose a file",
       "cancel": "Cancel",
       "submit": "Add",
-      "added": "Document added · logged"
+      "added": "Document added · logged",
+      "failed": "The document wasn’t added. Try again."
     },
     "open": {
       "title": "Open corrective action",
@@ -1147,7 +1186,12 @@
       "note": "Confidential by default. No monetary punishment.",
       "cancel": "Cancel",
       "submit": "Open",
-      "opened": "Corrective action opened · employee notified"
+      "opened": "Corrective action opened · employee notified",
+      "reviewer": "Reviewer",
+      "chooseReviewer": "Choose an Owner or Org Admin",
+      "reviewerRequired": "Choose who reviews this action",
+      "noReviewer": "No other Owner or Org Admin can review this action.",
+      "failed": "Couldn't open the corrective action. Try again."
     }
   },
   "reports": {
@@ -1363,12 +1407,24 @@
       "archived": "Company archived",
       "delete": "Delete company",
       "deleteNote": "Records under retention holds are kept (e.g. employee files {years} years after leaving). Everything else is removed for every member.",
+      "deleteNoteNoPolicy": "Records under retention holds are kept; the retention period for company records is not approved yet. Everything else is removed for every member.",
       "deleteSubmit": "Delete company",
       "deleteTitle": "Delete {company}?",
       "typeName": "Type {company} to confirm",
       "deleteFailed": "Couldn’t delete — check the name and password",
       "deleted": "Company deleted · retention holds kept",
-      "cancel": "Cancel"
+      "cancel": "Cancel",
+      "transferFailed": "Couldn't start the ownership transfer. Try again."
     }
+  },
+  "notifications": {
+    "section": "This company",
+    "kbReminder": "Please acknowledge a knowledge base page",
+    "fileRequest": "Someone asked to open an employee file",
+    "openKb": "Open the page",
+    "openFile": "Open the employee file",
+    "markRead": "Mark as read",
+    "error": "Couldn't load this company's notifications.",
+    "readFailed": "Couldn't mark it as read."
   }
 }

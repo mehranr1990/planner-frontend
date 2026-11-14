@@ -26,6 +26,9 @@ import { toast } from "@/components/ui/toast";
 import { UtilityCard, UtilityField } from "@/design-system/surfaces/utility-card";
 import { useAccount } from "@/features/auth/account-provider";
 import { AccountSettingsPanel } from "@/features/auth/account-settings-panel";
+import { AccountDeletionRow, AccountExportRow } from "@/features/personal-services/account-data";
+import { NotificationPreferencesPanel } from "@/features/personal-services/notification-settings";
+import { RemindersList } from "@/features/personal-services/reminders-list";
 import { optionalModuleIds } from "@/features/planner-settings/modules";
 import {
   cyclesBeforeLongBreakOptions,
@@ -635,7 +638,11 @@ function NotificationsGroup() {
           <Link href="/messages/settings">{t("messagesOpen")}</Link>
         </Button>
       </Row>
-      <PlaceholderRow label={t("taskReminders")} value="—" />
+      <NotificationPreferencesPanel />
+      <UtilityField className="flex-col items-stretch gap-2 py-3">
+        <span>{t("taskReminders")}</span>
+        <RemindersList taskId={null} />
+      </UtilityField>
       <PlaceholderRow label={t("morningNudge")} value={n(t("morningNudgeValue"))} />
       <PlaceholderRow label={t("shutdown")} value={t("shutdownValue")} />
       <Row label={t("weeklyReview")} hint={t("weeklyReviewHint")}>
@@ -700,9 +707,6 @@ function DataGroup() {
   const n = useDigits();
   const settings = usePlannerSettings();
   const { update } = usePlannerSettingsActions();
-  const [deleteOpen, setDeleteOpen] = useState(false);
-  const [confirmText, setConfirmText] = useState("");
-  const confirmId = useId();
   const account = useAccount();
 
   const reset = () => {
@@ -714,11 +718,6 @@ function DataGroup() {
       tone: "neutral",
       action: { label: tPage("undo"), altText: tPage("undoAlt"), onClick: () => update(previous) },
     });
-  };
-
-  const openDelete = (open: boolean) => {
-    setDeleteOpen(open);
-    if (!open) setConfirmText("");
   };
 
   return (
@@ -740,13 +739,41 @@ function DataGroup() {
         </UtilityField>
       )}
       <PlaceholderRow label={t("import")} value={t("importValue")} />
-      <PlaceholderRow label={t("export")} value={t("exportValue")} />
+      {account ? (
+        <>
+          <AccountExportRow />
+          <Row label={t("financeExport")} hint={t("financeExportHint")}>
+            <Button asChild size="sm" variant="secondary">
+              <Link href="/personal/finance?tab=reports">{t("financeExportOpen")}</Link>
+            </Button>
+          </Row>
+        </>
+      ) : (
+        <PlaceholderRow label={t("export")} value={t("exportValue")} />
+      )}
       <PlaceholderRow label={t("archive")} value={n(t("archiveValue"))} />
       <Row label={t("reset")} hint={t("resetHint")}>
         <Button variant="outline" size="sm" onClick={reset}>
           {t("resetButton")}
         </Button>
       </Row>
+      {account ? <AccountDeletionRow /> : <MockDeleteRow />}
+    </>
+  );
+}
+
+/** Mock mode (no account): the board's delete dialog, which can only say it is unavailable. */
+function MockDeleteRow() {
+  const t = useTranslations("Settings.data");
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [confirmText, setConfirmText] = useState("");
+  const confirmId = useId();
+  const openDelete = (open: boolean) => {
+    setDeleteOpen(open);
+    if (!open) setConfirmText("");
+  };
+  return (
+    <>
       <Row label={t("deleteAccount")}>
         <Button variant="outline" size="sm" className="text-danger-text" onClick={() => openDelete(true)}>
           {t("deleteButton")}

@@ -4,6 +4,7 @@ import { ArrowLeft, ArrowRight, Check, Clock, CornerDownRight } from "lucide-rea
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { useCompanyLabels } from "../labels";
 import { useState } from "react";
 import { CaseFlow, type CaseFlowColumn, type CaseFlowLink, type CaseFlowPerson, type CaseFlowRow } from "@/components/context/case-flow";
 import { AccessLoading } from "@/components/feedback/access-state";
@@ -17,7 +18,7 @@ import { Segmented } from "@/components/ui/segmented";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/components/ui/toast";
 import { useIsDesktop } from "@/components/ui/use-is-desktop";
-import type { Approval, ApprovalDecisionKind } from "@/data/company-domain";
+import type { Approval, ApprovalDecisionKind, ApprovalStepState } from "@/data/company-domain";
 import { useApprovalHistory, useApprovals, useBudgets, useCompanyMutation } from "@/data/company-queries";
 import { RepositoryError } from "@/data/repositories";
 import { ProductCard } from "@/design-system/surfaces/product-card";
@@ -180,6 +181,9 @@ function InboxRow({ approval, selected, href }: { approval: Approval; selected: 
 function ApprovalCard({ approval }: { approval: Approval }) {
   const t = useTranslations("Company.approvals.card");
   const tApprovals = useTranslations("Company.approvals");
+  const labels = useCompanyLabels();
+  /** A role-based step (resource approvals) names its roles. */
+  const stepLabel = (step: ApprovalStepState) => step.label || (step.roles ?? []).map((role) => labels.role(role)).join(" / ");
   const { company, me, capabilities } = useCompany();
   const writable = useCompanyWritable();
   const format = useCompanyFormat(company.currency);
@@ -261,7 +265,14 @@ function ApprovalCard({ approval }: { approval: Approval }) {
           <span className="tabular">{t("afterApproval", { percent: format.percent(afterUsed) })}</span>
         </p>
       ) : null}
-      <ol aria-label={t("chain", { v: approval.chainVersion, subject: tApprovals(`subject.${approval.subject}`) })} className="flex flex-col">
+      <ol
+        aria-label={
+          approval.chainVersion === null
+            ? t("chainUnversioned", { subject: tApprovals(`subject.${approval.subject}`) })
+            : t("chain", { v: approval.chainVersion, subject: tApprovals(`subject.${approval.subject}`) })
+        }
+        className="flex flex-col"
+      >
         <li className="flex items-start gap-3 py-1.5">
           <span aria-hidden="true" className="inline-flex size-7 shrink-0 items-center justify-center rounded-full bg-success-soft text-success-text">
             <Icon icon={Check} size={14} />
@@ -285,7 +296,7 @@ function ApprovalCard({ approval }: { approval: Approval }) {
               <Icon icon={step.state === "done" ? Check : step.state === "skipped" ? CornerDownRight : Clock} size={14} />
             </span>
             <span className="flex min-w-0 flex-col">
-              <bdi className="text-xs font-bold text-fg">{step.label}</bdi>
+              <bdi className="text-xs font-bold text-fg">{stepLabel(step)}</bdi>
               <span className="text-xs text-fg-secondary">
                 {step.state === "skipped"
                   ? t("skipped", { note: step.routedNote ?? "" })
@@ -330,6 +341,9 @@ function ApprovalCard({ approval }: { approval: Approval }) {
 function ApprovalFlow({ approval }: { approval: Approval }) {
   const t = useTranslations("Company.approvals.flow");
   const tApprovals = useTranslations("Company.approvals");
+  const labels = useCompanyLabels();
+  /** A role-based step (resource approvals) names its roles. */
+  const stepLabel = (step: ApprovalStepState) => step.label || (step.roles ?? []).map((role) => labels.role(role)).join(" / ");
   const { company, me } = useCompany();
   const format = useCompanyFormat(company.currency);
   const person = (name: string) => ({ kind: "person" as const, name, initials: getInitials(name) });
@@ -358,7 +372,7 @@ function ApprovalFlow({ approval }: { approval: Approval }) {
     }
     rows.push({
       id: decisionRow,
-      title: step.label,
+      title: stepLabel(step),
       sub: step.decision
         ? `${tApprovals(`card.decision.${step.decision.kind}`)} · ${format.day(step.decision.at.slice(0, 10))}`
         : step.state === "current"
@@ -373,7 +387,7 @@ function ApprovalFlow({ approval }: { approval: Approval }) {
     }
     links.push({ from: previous, to: decisionRow, satisfied: step.state !== "waiting" });
     previous = decisionRow;
-    columns.push({ id: step.stepId, label: step.label, rows });
+    columns.push({ id: step.stepId, label: stepLabel(step), rows });
   }
   const names = new Map<string, number>();
   for (const step of approval.steps) {
@@ -398,7 +412,11 @@ function ApprovalFlow({ approval }: { approval: Approval }) {
       links={links}
       outcomes={approval.outcomes.map((outcome, index) => ({ id: outcome, title: outcome, highlighted: index === 0 }))}
       outcomeLabel={t("after")}
-      footnote={t("footnote", { subject: tApprovals(`subject.${approval.subject}`), v: approval.chainVersion })}
+      footnote={
+        approval.chainVersion === null
+          ? t("footnoteUnversioned", { subject: tApprovals(`subject.${approval.subject}`) })
+          : t("footnote", { subject: tApprovals(`subject.${approval.subject}`), v: approval.chainVersion })
+      }
     />
   );
 }
@@ -444,7 +462,7 @@ function History() {
                 <td className="py-2.5 pe-3 text-fg">
                   <bdi>{row.by}</bdi>
                 </td>
-                <td className="py-2.5 text-xs text-fg-secondary">{t("chainVersion", { subject: tApprovals(`subject.${row.subject}`), v: row.chainVersion })}</td>
+                <td className="py-2.5 text-xs text-fg-secondary">{row.chainVersion === null ? tApprovals(`subject.${row.subject}`) : t("chainVersion", { subject: tApprovals(`subject.${row.subject}`), v: row.chainVersion })}</td>
               </tr>
             ))}
           </tbody>

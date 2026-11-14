@@ -43,6 +43,7 @@ import {
 import { TeamEventCard } from "./team-event-card";
 import { CalendarMeetings } from "@/features/messages/meetings/calendar-meetings";
 import { TeamEventDialog } from "./team-event-dialog";
+import { TeamTimeOffPanel } from "./team-time-off-panel";
 
 /*
  * TM-03 · Team calendar (/teams/[id]/calendar). Reuses the Personal
@@ -254,15 +255,19 @@ function TeamCalendarLayout() {
             />
           )}
         </section>
-        {selected ? (
-          <TeamEventCard
-            teamId={team.id}
-            event={selected}
-            onEdit={() => setDialog({ open: true, editing: selected })}
-          />
-        ) : (
-          <p className="rounded-[28px] bg-surface p-5 text-sm text-fg-muted">{t("pickEvent")}</p>
-        )}
+        <div className="flex min-w-0 flex-col gap-4">
+          {selected ? (
+            <TeamEventCard
+              key={selected.id}
+              teamId={team.id}
+              event={selected}
+              onEdit={() => setDialog({ open: true, editing: selected })}
+            />
+          ) : (
+            <p className="rounded-[28px] bg-surface p-5 text-sm text-fg-muted">{t("pickEvent")}</p>
+          )}
+          {demo ? null : <TeamTimeOffPanel teamId={team.id} />}
+        </div>
       </div>
       <TeamEventDialog
         teamId={team.id}

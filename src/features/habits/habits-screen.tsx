@@ -18,6 +18,7 @@ import { FIELD_PERIODS, isDoneOn, isFieldPeriod, type FieldPeriod } from "./doma
 import { HabitFieldCard } from "./habit-field-card";
 import { HABIT_SHEET_PARAM, HABIT_SHEET_TITLE_PARAM } from "./habit-sheet";
 import { SelectedHabit } from "./selected-habit";
+import { RoutinesCard } from "@/features/personal-services/routines-card";
 import { TodayTile } from "./today-tile";
 import { useHabitActions } from "./use-habit-actions";
 
@@ -28,7 +29,7 @@ import { useHabitActions } from "./use-habit-actions";
  * Ribbon, RingCard). Without an id the pinned (else first) habit is
  * selected; clicking a row name selects it. "New habit" opens the Habit
  * sheet (?sheet=habit, P18 · B). No analytics here: correlations live in
- * Insights.
+ * Insights. Below: Routines (ordered habit groups, gap closure).
  */
 
 const HABITS_HREF = "/personal/habits";
@@ -159,6 +160,7 @@ export function HabitsScreen({ habitId }: { habitId: string | null }) {
               />
             ) : null}
           </div>
+          <RoutinesCard habits={habits} />
         </>
       )}
     </div>

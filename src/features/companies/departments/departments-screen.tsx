@@ -413,7 +413,9 @@ function DepartmentCard({ department, departments, teams }: { department: Depart
   const deptProjects = (projects.data ?? []).filter((project) => project.departmentId === department.id);
   const capacityValue = capacity.data?.rows.find((row) => row.departmentId === department.id)?.values[0];
   const line = budgets.data?.find((item) => item.kind === "department" && item.departmentId === department.id);
-  const done = deptProjects.length ? Math.round(deptProjects.reduce((total, item) => total + item.progress, 0) / deptProjects.length) : null;
+  // Projects without a served progress are left out of the average.
+  const measured = deptProjects.flatMap((item) => (item.progress === null ? [] : [item.progress]));
+  const done = measured.length ? Math.round(measured.reduce((total, value) => total + value, 0) / measured.length) : null;
 
   const action = canEdit ? (
     <SignatureCardAction icon={Pencil} label={t("edit")} onClick={() => setEditing(true)} />

@@ -1,5 +1,6 @@
 import type { CaseFlowLink, CaseFlowPerson, CaseFlowRow } from "@/components/context/case-flow";
 import type { MilestoneRow, ProjectPerson, ProjectTask, ProjectWorkflow, WorkflowStatus } from "@/data/project-domain";
+import { compareMilestoneDue } from "@/data/project-domain";
 
 /*
  * PJ-06 Flow view model (D20, design/project-update/PEOPLE_FLOW.md §2): the
@@ -26,7 +27,7 @@ export function parseFlowFilter(value: string | null, milestones: readonly Miles
   // Default: the nearest at-risk milestone, else All.
   const risk = milestones
     .filter((row) => row.status === "risk")
-    .sort((a, b) => a.milestone.due.localeCompare(b.milestone.due))[0];
+    .sort((a, b) => compareMilestoneDue(a.milestone, b.milestone))[0];
   return risk ? { kind: "milestone", id: risk.milestone.id } : { kind: "all" };
 }
 

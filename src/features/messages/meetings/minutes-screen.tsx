@@ -271,6 +271,9 @@ function ReviewPanel({ meeting: m, minutes: min, unsaved }: { meeting: MeetingDe
   const approve = useMessagingMutation((repo, reason: string | undefined) => repo.minutes.approve(m.id, reason));
   const changes = useMessagingMutation((repo, text: string) => repo.minutes.requestChanges(m.id, text));
   const finalize = useMessagingMutation((repo) => repo.minutes.finalize(m.id));
+  const withdraw = useMessagingMutation((repo) => repo.minutes.withdraw(m.id));
+  const [withdrawing, setWithdrawing] = useState(false);
+  const f = useMsgFormat();
 
   const reviewList = min.reviews.length ? (
     <ul className="flex flex-col gap-1 text-xs">
@@ -327,6 +330,31 @@ function ReviewPanel({ meeting: m, minutes: min, unsaved }: { meeting: MeetingDe
         <Button size="sm" loading={finalize.isPending} onClick={() => finalize.mutate(undefined as never, { onSuccess: () => toast({ title: t("finalized") }), onError: fail })}>
           {t("finalize")}
         </Button>
+      ) : null}
+      {min.can.withdraw ? (
+        <>
+          <Button size="sm" variant="outline" onClick={() => setWithdrawing(true)}>
+            {t("withdraw")}
+          </Button>
+          <ConfirmDialog
+            open={withdrawing}
+            onOpenChange={setWithdrawing}
+            title={t("withdrawTitle")}
+            description={t("withdrawDescription", { version: f.number(min.version) })}
+            confirmLabel={t("withdrawConfirm")}
+            onConfirm={async () => {
+              // One attempt on the version shown; a conflict (finalized / changed meanwhile) is reported, never forced.
+              try {
+                await withdraw.mutateAsync(undefined as never);
+                toast({ title: t("withdrawn") });
+                setWithdrawing(false);
+              } catch (e) {
+                fail(e);
+                setWithdrawing(false);
+              }
+            }}
+          />
+        </>
       ) : null}
     </section>
   );

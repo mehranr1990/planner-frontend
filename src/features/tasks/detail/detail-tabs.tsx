@@ -11,13 +11,16 @@ import type { TaskPatch } from "@/data/repositories";
 import { FolderTabsCard, type FolderTab } from "@/design-system/surfaces/folder-tabs-card";
 import { addDaysToDay, dayOfInstant, minutesOfInstant } from "@/lib/dates/clock-time";
 import { cn } from "@/lib/cn";
+import { RemindersList } from "@/features/personal-services/reminders-list";
+import { TaskFilesPanel } from "@/features/personal-services/task-files-panel";
 import { detailTabs, type DetailTab } from "../domain/detail";
 import { TaskCheck } from "../list/task-parts";
 import { useTasksFormat } from "../ui/use-tasks-format";
 
 /*
  * P06 folder tabs: sections of one task (Subtasks · Notes · Activity ·
- * Links). Activity and Links only appear with content.
+ * Links · Files · Reminders). Activity and Links only appear with content;
+ * Files and Reminders always (gap closure).
  */
 
 const fieldClass =
@@ -53,7 +56,12 @@ export function DetailTabs({ task, today, onPatch }: { task: Task; today: string
       label={t("tabsLabel")}
       defaultValue="subtasks"
       surface="subtle"
-      tabs={detailTabs(task).map((value) => ({ value, ...panels[value] }))}
+      tabs={[
+        ...detailTabs(task).map((value) => ({ value, ...panels[value] })),
+        // Gap closure: the task's private files and reminders (always available).
+        { value: "files", label: t("tabs.files"), content: <TaskFilesPanel taskId={task.id} /> },
+        { value: "reminders", label: t("tabs.reminders"), content: <RemindersList taskId={task.id} taskTitle={task.title} /> },
+      ]}
     />
   );
 }
@@ -202,6 +210,10 @@ function ActivityPanel({ items, today }: { items: readonly TaskActivity[]; today
         return t("subtaskDone", { title: item.title });
       case "priority":
         return t("priority", { priority: format.priority(item.priority) });
+      case "completed":
+        return t("completed");
+      case "reopened":
+        return t("reopened");
     }
   };
   return (

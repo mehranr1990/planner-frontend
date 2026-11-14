@@ -2,6 +2,7 @@
 
 import { ChevronLeft, ChevronRight, Lock, Plus, Wallet } from "lucide-react";
 import { motion, useReducedMotion } from "motion/react";
+import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useId, useState, type FormEvent } from "react";
@@ -25,6 +26,8 @@ import { rialToToman, tomanToRial, type Currency } from "@/lib/locale/money";
 import { budgetMonthOf, FINANCE_TABS, isFinanceTab, parseMonthParam, shiftMonth, type BudgetMonthRef, type FinanceTab } from "./domain/finance";
 import { BreakdownPanel, TrendsPanel } from "./finance-charts";
 import { FinanceOverview } from "./finance-overview";
+import { BillsPanel } from "@/features/personal-services/bills-panel";
+import { ReportsPanel } from "@/features/personal-services/reports-panel";
 import { TransactionsPanel } from "./finance-transactions";
 import { useFinanceFormat } from "./use-finance-format";
 
@@ -141,8 +144,8 @@ export function FinanceScreen() {
             {t("retry")}
           </Button>
         </UtilityCard>
-      ) : month.transactionCount === 0 ? (
-        <EmptyFinance month={month} onAdd={addExpense} />
+      ) : month.transactionCount === 0 && tab !== "bills" && tab !== "reports" ? (
+        <EmptyFinance month={month} onAdd={addExpense} billsHref={hrefWith({ tab: "bills" })} reportsHref={hrefWith({ tab: "reports" })} />
       ) : (
         <FolderTabsCard
           label={t("tabs.label")}
@@ -174,6 +177,10 @@ export function FinanceScreen() {
                   <TrendsPanel month={month} monthRef={monthRef} today={today} compact={!desktop} />
                 ) : value === "breakdown" ? (
                   <BreakdownPanel month={month} monthRef={monthRef} compact={!desktop} />
+                ) : value === "bills" ? (
+                  <BillsPanel today={today} />
+                ) : value === "reports" ? (
+                  <ReportsPanel today={today} />
                 ) : (
                   <TransactionsPanel monthRef={monthRef} today={today} />
                 )}
@@ -186,7 +193,7 @@ export function FinanceScreen() {
   );
 }
 
-function EmptyFinance({ month, onAdd }: { month: FinanceMonth; onAdd(): void }) {
+function EmptyFinance({ month, onAdd, billsHref, reportsHref }: { month: FinanceMonth; onAdd(): void; billsHref: string; reportsHref: string }) {
   const t = useTranslations("Finance.empty");
   const format = useFinanceFormat();
   const setBudget = useSetBudget();
@@ -224,6 +231,14 @@ function EmptyFinance({ month, onAdd }: { month: FinanceMonth; onAdd(): void }) 
           {t("budget")}
         </Button>
       </div>
+      <nav aria-label={t("more")} className="flex flex-wrap justify-center gap-2">
+        <Button asChild size="sm" variant="ghost">
+          <Link href={billsHref}>{t("bills")}</Link>
+        </Button>
+        <Button asChild size="sm" variant="ghost">
+          <Link href={reportsHref}>{t("reports")}</Link>
+        </Button>
+      </nav>
       {open ? (
         <form onSubmit={save} className="flex w-full max-w-sm flex-col items-stretch gap-2 text-start">
           <label htmlFor={inputId} className="text-sm font-bold text-fg">

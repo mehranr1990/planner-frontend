@@ -1,11 +1,11 @@
 "use client";
 
-import { Check, Copy, FileText, Link2, Pencil, Plus } from "lucide-react";
+import { Check, Copy, Download, FileText, Link2, Pencil, Plus } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useRef, useState } from "react";
 import { AccessLoading, AccessState } from "@/components/feedback/access-state";
-import { Button } from "@/components/ui/button";
+import { Button, IconButton } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogFooter } from "@/components/ui/dialog";
 import { Field, FieldLabel } from "@/components/ui/field";
 import { Icon } from "@/components/ui/icon";
@@ -17,6 +17,7 @@ import { SignatureCard, SignatureCardAction } from "@/design-system/surfaces/sig
 import type { MeetingDetail, Rsvp } from "@/data/messaging-domain";
 import { useMessagingRepository } from "@/data/messaging-provider";
 import { useMessagePage, useMeeting, useMessagingMutation } from "@/data/messaging-queries";
+import { saveBlob } from "@/data/personal-services-queries";
 import { plainText } from "@/data/mock/mock-messaging";
 import { cn } from "@/lib/cn";
 import { useMsgFormat } from "../format";
@@ -274,6 +275,20 @@ function FilesTab({ meeting: m }: { meeting: MeetingDetail }) {
   const f = useMsgFormat();
   const input = useRef<HTMLInputElement>(null);
   const attach = useMessagingMutation((repo, file: { name: string; bytes: number; blob: Blob }) => repo.meetings.attach(m.id, { ...file, linked: false }));
+  const repo = useMessagingRepository();
+  const [downloading, setDownloading] = useState<string | null>(null);
+  // Bytes come through the server's authorised download (no storage URL); a 403 / 404 explains itself in the toast.
+  const download = async (fileId: string) => {
+    setDownloading(fileId);
+    try {
+      const { blob, name } = await repo.meetings.download(m.id, fileId);
+      saveBlob(blob, name);
+    } catch (err) {
+      toast({ title: errorText(tMsg as never, err), tone: "danger" });
+    } finally {
+      setDownloading(null);
+    }
+  };
   return (
     <div className="flex flex-col gap-2">
       {m.files.length === 0 ? <p className="text-sm text-fg-secondary">{t("filesEmpty")}</p> : null}
@@ -285,6 +300,17 @@ function FilesTab({ meeting: m }: { meeting: MeetingDetail }) {
             <span className="text-xs text-fg-secondary">
               {file.linked ? t("linked") : t("uploaded")} · {f.bytes(file.bytes)}
             </span>
+            {file.linked ? null : (
+              <IconButton
+                icon={Download}
+                size="sm"
+                variant="ghost"
+                label={downloading === file.id ? t("downloading") : t("download", { name: file.name })}
+                disabled={downloading !== null}
+                aria-busy={downloading === file.id}
+                onClick={() => void download(file.id)}
+              />
+            )}
           </li>
         ))}
       </ul>

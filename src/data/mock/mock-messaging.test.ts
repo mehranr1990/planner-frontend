@@ -260,6 +260,17 @@ describe("meetings, minutes and announcements", () => {
     expect((await env.me.minutes.get("mt-retro"))!.status).toBe("final");
   });
 
+  it("minutes withdraw: the writer pulls in-review back to Draft; a plain reviewer may not; final never reopens", async () => {
+    const env = setup();
+    const sara = env.as("sara");
+    expect((await sara.minutes.get("mt-retro"))!.can.withdraw).toBe(true);
+    expect((await env.as("tara").minutes.get("mt-retro"))!.can.withdraw).toBe(false);
+    expect(await code(env.as("tara").minutes.withdraw("mt-retro"))).toBe("forbidden");
+    await sara.minutes.withdraw("mt-retro");
+    expect((await sara.minutes.get("mt-retro"))!).toMatchObject({ status: "draft", reviews: [] });
+    expect(await code(sara.minutes.withdraw("mt-retro"))).toBe("invalid");
+  });
+
   it("make task links one task in the source workspace only, never copies", async () => {
     const env = setup();
     const task = { id: "t-1", href: "/projects/website-redesign/tasks/t-1", workspace: { kind: "project" as const, workspaceId: "website-redesign", name: "Website Redesign" } };

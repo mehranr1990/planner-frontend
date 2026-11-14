@@ -10,7 +10,8 @@
     "short": "دعوت به‌عنوان {role}",
     "accept": "می‌پذیرم",
     "decline": "نمی‌پذیرم",
-    "declined": "دعوت رد شد"
+    "declined": "دعوت رد شد",
+    "generic": "دعوت به تیم"
   },
   "roles": {
     "owner": "مالک",

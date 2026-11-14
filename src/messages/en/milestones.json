@@ -37,5 +37,6 @@
     "title": "Edit milestone",
     "name": "Title",
     "due": "Due date"
-  }
+  },
+  "unavailable": "Milestones and phases are not available yet: phase dates and progress and milestone status are not served by the API."
 }

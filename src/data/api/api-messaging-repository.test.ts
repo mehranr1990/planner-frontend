@@ -74,6 +74,9 @@ function messagingApi(extra: (call: FakeCall, parts: string[]) => Response | nul
     if (tail === "contact-block") return json({ id: parts[1] === "c2" ? "b1" : null, conversationId: parts[1], active: parts[1] === "c2", revision: 3 }, 200, '"blk-3"');
     if (tail === "timeline" || tail === "pins") return json({ items: tail === "pins" ? [] : TIMELINE, nextCursor: null, hasMore: false, changeCursor: "c" });
     if (tail === "progress") return json({ deliveredThrough: "2", readThrough: "1", shareReceipts: false, revision: 1 });
+    if (tail === "mentions") return json({ items: parts[1] === CV ? TIMELINE.filter((entry) => (entry.mentions as string[]).includes("mb1")) : [], nextCursor: null, hasMore: false, changeCursor: "c" });
+    if (tail === "messages/x1/receipts") return json({ messageId: "x1", sharing: false, deliveredCount: null, readCount: null });
+    if (tail === "messages/x3/receipts") return json({ messageId: "x3", sharing: true, deliveredCount: 1, readCount: 1 });
     if (tail.startsWith("message-details/")) return json(TIMELINE.find((entry) => entry.id === parts[3]) ?? item("x9", "9", "mb1", 0));
     if (tail === "notification-settings") return json({ mode: "ALL", quietStart: null, quietEnd: null, mentionQuiet: false, revision: 7 });
     return err(404);
@@ -81,18 +84,20 @@ function messagingApi(extra: (call: FakeCall, parts: string[]) => Response | nul
 }
 
 describe("live Messaging repository", () => {
-  it("lists conversations from the summary API: names, workspace, unread, newest first; no invented mentions", async () => {
+  it("lists conversations from the summary API: names, workspace, unread, unread mentions after my read-through, newest first", async () => {
     const api = messagingApi();
     const repo = createApiMessaging(api.client, USER);
     const list = await repo.conversations.list("all");
     expect(list.map((entry) => [entry.id, entry.kind, entry.title, entry.unread, entry.mentions])).toEqual([
-      [CV, "channel", "general", 2, 0],
+      [CV, "channel", "general", 2, 1],
       ["c2", "direct", "Ali", 1, 0],
     ]);
     expect(list[0].source).toEqual({ kind: "team", workspaceId: "t1", name: "Design Team" });
     expect(list[0].lastMessage).toMatchObject({ author: "Sara Karimi", mine: false, preview: "Hi", kind: "text" });
     expect(await repo.conversations.unreadCount()).toBe(3);
     expect((await repo.channels.list("t1")).map((entry) => entry.id)).toEqual([CV]);
+    expect(await repo.conversations.workspaceMentions("t1")).toBe(1);
+    expect(await repo.conversations.workspaceMentions("t9")).toBe(0);
     expect(api.writes()).toEqual([]);
   });
 
@@ -108,7 +113,7 @@ describe("live Messaging repository", () => {
     ]);
   });
 
-  it("page: sequence order, hidden items left out, unread from readThrough, 48 h window and author-delete policy", async () => {
+  it("page: sequence order, hidden items left out, unread from readThrough, 48 h window, author-delete policy, server receipts on my messages", async () => {
     const repo = createApiMessaging(messagingApi().client, USER);
     const page = await repo.messages.page(CV);
     expect(page.items.map((message) => message.id)).toEqual(["x1", "x2", "x3", "x5"]);
@@ -121,6 +126,8 @@ describe("live Messaging repository", () => {
     expect(recent.can.deleteForEveryone).toEqual({ allowed: false, reason: "policy" });
     expect(theirs).toMatchObject({ mine: false, mentionsMe: true, author: { id: "a2", name: "Sara Karimi" }, receipt: null });
     expect(recent.author).toEqual({ id: "u1", name: "Mehran Raeeszade", initials: "MR" });
+    // x1: receipts not shared → none; x3 in a channel: delivered (no "seen" outside direct conversations).
+    expect([old.receipt, recent.receipt]).toEqual([null, "delivered"]);
   });
 
   it("commands: compose with mentions as member ids, edit / react / pin by remembered conversation, mute, rename, leave", async () => {
@@ -197,14 +204,25 @@ describe("live Messaging repository", () => {
   it("refuses what the API or owner policy does not support, without a request; never emits events", async () => {
     const api = fakeApi(() => err(500));
     const repo = createApiMessaging(api.client, USER);
-    await expect(repo.conversations.create({ personIds: ["a2"], clientOpId: "op" })).rejects.toMatchObject({ code: "unavailable" });
-    await expect(repo.messages.search("hi", {})).rejects.toMatchObject({ code: "unavailable" });
-    await expect(repo.meetings.create({ title: "x", source: { kind: "personal", workspaceId: null, name: "" }, start: "2026-01-01T00:00:00Z", end: "2026-01-01T01:00:00Z", inviteeIds: [], link: null, clientOpId: "op" })).rejects.toMatchObject({ code: "unavailable" });
+    // No media search (OD-11 is text + links only); the author-delete policy is read-only.
+    await expect(repo.messages.search("hi", { has: "image" })).rejects.toMatchObject({ code: "unavailable" });
+    await expect(repo.conversations.updatePolicy("c1", { authorDeleteForEveryone: false })).rejects.toMatchObject({ code: "unavailable" });
+    await expect(repo.meetings.create({ title: "x", source: { kind: "personal", workspaceId: null, name: "" }, start: "2026-01-01T00:00:00Z", end: "2026-01-01T01:00:00Z", inviteeIds: ["u2"], link: null, clientOpId: "op" })).rejects.toMatchObject({ code: "unavailable" });
     await expect(repo.announcements.list("t1")).rejects.toMatchObject({ code: "unavailable" });
     await expect(repo.settings.get()).rejects.toMatchObject({ code: "unavailable" });
     let events = 0;
     repo.subscribe(() => events++)();
     expect(events).toBe(0);
     expect(api.calls).toEqual([]);
+  });
+
+  it("creates a direct conversation with the catalog's CONVERSATION policy; an empty catalog is refused truthfully", async () => {
+    const policy = { version: "mp-rpc-v1.0-conversation", applicableContexts: ["CONVERSATION"], marketScope: "IR", classRules: {}, createdAt: "x" };
+    const api = fakeApi((call) => (call.path === "/retention-policies" ? json({ items: [policy] }) : json({ id: "c9", kind: "DM", sourceId: null, title: null, revision: 1, writable: true, createdAt: "x" }, 201)));
+    expect(await createApiMessaging(api.client, USER).conversations.create({ personIds: ["u2"], clientOpId: "op" })).toBe("c9");
+    expect(api.calls.at(-1)!.body).toMatchObject({ kind: "DM", participants: ["u2"], retentionPolicyVersion: "mp-rpc-v1.0-conversation" });
+    const empty = fakeApi(() => json({ items: [] }));
+    await expect(createApiMessaging(empty.client, USER).conversations.create({ personIds: ["u2"], clientOpId: "op" })).rejects.toMatchObject({ code: "unavailable" });
+    expect(empty.calls.map((call) => call.path)).toEqual(["/retention-policies"]);
   });
 });

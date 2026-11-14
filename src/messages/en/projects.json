@@ -55,7 +55,11 @@
     "notePlaceholder": "Add a short note for {name}",
     "confirm": "Decline invitation",
     "cancel": "Cancel",
-    "declined": "Invitation declined"
+    "declined": "Invitation declined",
+    "generic": "Project invitation",
+    "someone": "someone",
+    "noteUnavailable": "A decline note cannot be sent yet. Clear the note to decline.",
+    "declineFailed": "The invitation could not be declined. Try again."
   },
   "empty": {
     "title": "No projects yet",
@@ -124,7 +128,15 @@
       "undo": "Undo",
       "undoAlt": "Archive the project from Settings to undo",
       "nameRequired": "Give the project a name",
-      "datesInvalid": "The end date is before the start date"
+      "datesInvalid": "The end date is before the start date",
+      "partialDetails": "{name} was created, but its key and dates were not saved. Set them in Settings.",
+      "partialRead": "{name} was created. Open it from All projects.",
+      "templateUnavailable": "This template is not available yet. Start from Blank.",
+      "templatesLimited": "Only Blank is available for now: the server has no built-in templates yet.",
+      "teamOwnerUnavailable": "Team-owned projects can’t be created yet: the server creates independent projects only.",
+      "unavailable": "Creating a project is not available right now.",
+      "failed": "The project could not be created. Try again.",
+      "undoUnavailable": "Undo is not available. Delete the project from Settings."
     },
     "invite": {
       "title": "Invite to {project}",
@@ -166,7 +178,11 @@
       "invalid": "Check the email addresses",
       "noRight": "Your role can’t invite — ask an Admin",
       "undo": "Undo",
-      "undoAlt": "Cancel the invitations from the pending list"
+      "undoAlt": "Cancel the invitations from the pending list",
+      "partial": "{n, plural, one {# invitation was sent} other {# invitations were sent}}; the emails left here were not. Try them again.",
+      "guestUnavailable": "Task-only access cannot be offered by invitation yet. Choose another role.",
+      "unavailable": "Sending invitations is not available right now.",
+      "failed": "The invitations could not be sent. Try again."
     },
     "reassign": {
       "title": "Reassign “{task}”",
@@ -176,6 +192,7 @@
       "load": "{hours}h / {capacity}h this week",
       "over": "{hours}h / {capacity}h · over",
       "noLoad": "No estimate this week",
+      "loadOnly": "{hours}h this week",
       "loadNote": "Load shows project estimates only.",
       "note": "Note (optional)",
       "submit": "Reassign",

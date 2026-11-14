@@ -33,7 +33,7 @@ const meeting = (id: string, extra: Partial<TeamEventDetail> = {}): TeamEventDet
   agenda: [],
   url: null,
   myRsvp: null,
-  can: { edit: false, rsvp: true },
+  can: { edit: false, rsvp: true, cancel: false },
   ...extra,
 });
 
@@ -113,5 +113,63 @@ describe("TM-03 · Team calendar", () => {
     renderCalendar("growth");
     await screen.findByRole("heading", { name: "Experiment review" });
     expect(screen.queryByRole("button", { name: "Team event" })).not.toBeInTheDocument();
+  });
+});
+
+describe("TM-03 · time-off requests and event cancel", () => {
+  const panel = async () =>
+    (await screen.findByRole("heading", { name: "Time-off requests" })).closest("section")!;
+
+  it("a member sees and cancels their own pending request (confirmed), with history; no approval controls", async () => {
+    const user = userEvent.setup();
+    renderCalendar();
+    const card = await panel();
+    const row = (await within(card).findByText("Family visit")).closest("li")!;
+    expect(within(row).getByText("Pending")).toBeInTheDocument();
+    expect(within(card).queryByRole("button", { name: "Approve" })).not.toBeInTheDocument();
+    await user.click(within(row).getByRole("button", { name: "History" }));
+    expect(await within(row).findByText(/^Requested by/)).toBeInTheDocument();
+    await user.click(within(row).getByRole("button", { name: "Cancel request" }));
+    const dialog = await screen.findByRole("alertdialog", { name: "Cancel this time-off request?" });
+    await user.click(within(dialog).getByRole("button", { name: "Cancel request" }));
+    expect(await screen.findByText("Request canceled")).toBeInTheDocument();
+    await waitFor(() => expect(within(row).getByText("Canceled")).toBeInTheDocument());
+    expect(within(row).queryByRole("button", { name: "Cancel request" })).not.toBeInTheDocument();
+  });
+
+  it("a Lead approves or rejects (optional note) someone else's request", async () => {
+    const user = userEvent.setup();
+    renderCalendar("mobile");
+    const card = await panel();
+    const row = (await within(card).findByText("Medical appointment")).closest("li")!;
+    expect(within(card).getByText("1 waiting for you")).toBeInTheDocument();
+    await user.click(within(row).getByRole("button", { name: "Reject" }));
+    const dialog = await screen.findByRole("dialog", { name: /^Reject Kian F\./ });
+    await user.type(within(dialog).getByRole("textbox", { name: "Note (optional)" }), "Release week");
+    await user.click(within(dialog).getByRole("button", { name: "Reject" }));
+    expect(await screen.findByText("Time off rejected")).toBeInTheDocument();
+    await waitFor(() => expect(within(row).getByText("Rejected")).toBeInTheDocument());
+    expect(within(row).getByText("Release week")).toBeInTheDocument();
+    expect(within(row).queryByRole("button", { name: "Approve" })).not.toBeInTheDocument();
+  });
+
+  it("Viewers get no approval or cancel controls", async () => {
+    renderCalendar("growth");
+    const card = await panel();
+    expect(await within(card).findByText("No time-off requests.")).toBeInTheDocument();
+    expect(within(card).queryByRole("button", { name: "Approve" })).not.toBeInTheDocument();
+  });
+
+  it("the organiser cancels an event after confirming; others cannot", async () => {
+    const user = userEvent.setup();
+    renderCalendar();
+    await user.click(await screen.findByRole("button", { name: /^Planning/ }));
+    expect(screen.queryByRole("button", { name: "Cancel event" })).not.toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: /^Workshop/ }));
+    await user.click(await screen.findByRole("button", { name: "Cancel event" }));
+    const dialog = await screen.findByRole("alertdialog", { name: "Cancel this event?" });
+    await user.click(within(dialog).getByRole("button", { name: "Cancel event" }));
+    expect(await screen.findByText("Event canceled")).toBeInTheDocument();
+    await waitFor(() => expect(screen.queryByRole("button", { name: /^Workshop/ })).not.toBeInTheDocument());
   });
 });

@@ -1,5 +1,5 @@
 import { newIdempotencyKey, type ApiClient } from "@/api/client";
-import type { OwnershipTransfer, TaskComment, TaskDependency } from "../project-domain";
+import type { OwnershipTransfer, ProjectRolePolicy, TaskComment, TaskDependency } from "../project-domain";
 import type {
   CommentRepository,
   DependencyRepository,
@@ -22,6 +22,13 @@ import {
   createApiProjectTaskDetailRepository,
 } from "./api-project-task-work-repository";
 import { createApiProjectScheduleRepository } from "./api-project-schedule-repository";
+import { createApiProjectInvitations } from "./api-project-invitations";
+import { createApiProjectCreateRepository } from "./api-project-create-repository";
+import { createApiProjectMilestoneRepository } from "./api-project-milestones-repository";
+import { createApiProjectFileRepository } from "./api-project-files-repository";
+import { createApiProjectMemberInviteRepository } from "./api-project-member-invites";
+import { createApiProjectWorkInsights } from "./api-project-work-insights";
+import { createApiProjectRiskRepository } from "./api-project-risks-repository";
 import { conflictAware, liveOnly, personOf, projectRoster, projectsClient, projectViewItems, toProjectPerson, type ProjectsData } from "./api-project-shared";
 
 /*
@@ -40,6 +47,20 @@ type ApiComponent = ProjectsData<"/api/v1/projects/{id}/components/{kind}", "get
 const ASSOCIATION_READS = 8;
 
 type ApiHandover = ProjectsData<"/api/v1/projects/{id}/ownership-handovers", "get">["items"][number];
+type ApiPolicy = ProjectsData<"/api/v1/projects/{id}/access-policy", "get">;
+
+const toRolePolicy = (policy: ApiPolicy): ProjectRolePolicy => ({
+  roleDefaults: {
+    owner: policy.roleDefaults.OWNER,
+    admin: policy.roleDefaults.ADMIN,
+    manager: policy.roleDefaults.MANAGER,
+    member: policy.roleDefaults.MEMBER,
+    viewer: policy.roleDefaults.VIEWER,
+  },
+  exportMaxRecords: policy.exportMaxRecords,
+  exportMaxBytes: policy.exportMaxBytes,
+  version: policy.version,
+});
 
 function createApiProjectSettingsRepository(client: ApiClient): ProjectSettingsRepository {
   const api = projectsClient(client);
@@ -63,9 +84,35 @@ function createApiProjectSettingsRepository(client: ApiClient): ProjectSettingsR
   });
 
   return liveOnly<ProjectSettingsRepository>(
-    "the access policy is versioned role defaults, not the screen's toggles; the successor completes a handover with their own password (no owner confirmation step)",
+    "the access toggles (invite role, guests, grant expiry) are not served — the policy is role defaults (rolePolicy); the successor completes a handover with their own password (no owner confirmation step)",
     {
     ...createApiProjectLifecycle(client),
+    // PJ-14 › Access: the server's role defaults. Publish = PUT with the version the user saw (no silent retry on 409).
+    rolePolicy: (projectId) =>
+      mapErrors(async () => toRolePolicy((await api.request("get", "/api/v1/projects/{id}/access-policy", { path: { id: projectId } })).data)),
+    setRolePolicy: (projectId, roleDefaults, version) =>
+      mapErrors(async () => {
+        const { data: current } = await api.request("get", "/api/v1/projects/{id}/access-policy", { path: { id: projectId } });
+        if (current.version !== version) throw new RepositoryError("conflict", "The access policy changed");
+        const { data } = await conflictAware(() =>
+          api.request("put", "/api/v1/projects/{id}/access-policy", {
+            path: { id: projectId },
+            header: { "If-Match": revisionTag(version) },
+            body: {
+              roleDefaults: {
+                OWNER: [...roleDefaults.owner],
+                ADMIN: [...roleDefaults.admin],
+                MANAGER: [...roleDefaults.manager],
+                MEMBER: [...roleDefaults.member],
+                VIEWER: [...roleDefaults.viewer],
+              },
+              exportMaxRecords: current.exportMaxRecords,
+              exportMaxBytes: current.exportMaxBytes,
+            },
+          }),
+        );
+        return toRolePolicy(data);
+      }),
     transfer: (projectId) =>
       mapErrors(async () => {
         const handover = await pending(projectId);
@@ -206,18 +253,19 @@ function createApiProjectDependencyRepository(client: ApiClient, schedule: Sched
 
 export function createApiProjectRepositories(client: ApiClient, options: { today(): string }): ProjectRepositories {
   const schedule = createApiProjectScheduleRepository(client);
+  const insights = createApiProjectWorkInsights(client, options);
   return {
     projects: liveOnly<ProjectRepository>(NO_STATUS, {
       ...createApiProjectSummary(client, options),
       ...createApiProjectDirectory(client),
       restore: createApiProjectLifecycle(client).restore,
     }),
-    projectCreate: liveOnly("creating a project needs the operator-supplied retentionPolicyVersion; keys have no availability read"),
-    invitations: liveOnly("no endpoint lists the current user's pending invitations; accept / decline need the invitation proof the app never receives"),
-    memberInvites: liveOnly("no endpoint lists a project's pending invitations (email, role, sent / expiry) or re-sends one; how the invitee receives the proof is unspecified"),
+    projectCreate: createApiProjectCreateRepository(client),
+    invitations: createApiProjectInvitations(client),
+    memberInvites: createApiProjectMemberInviteRepository(client),
     members: createApiProjectMemberRepository(client),
     grants: liveOnly("no guest role, no list of task grants per person; a grant needs the recipient's user id"),
-    milestones: liveOnly("phases have no dates or progress; a milestone's phase and date are optional and it has no status, owner or remaining-task count"),
+    milestones: createApiProjectMilestoneRepository(client, options),
     workflows: createApiProjectWorkflowRepository(client),
     workflowDrafts: liveOnly("the contract has workflow versions but no draft / publish-impact read model"),
     fields: createApiProjectFieldRepository(client),
@@ -225,11 +273,11 @@ export function createApiProjectRepositories(client: ApiClient, options: { today
     taskDetails: createApiProjectTaskDetailRepository(client),
     comments: createApiProjectCommentRepository(client),
     dependencies: createApiProjectDependencyRepository(client, schedule),
-    risks: liveOnly("register items have no code, updatedAt, 3-level probability, checklist, close reason or risk → issue conversion; comments cannot target a register item"),
-    files: liveOnly("files have no folders, versions, uploader, upload-policy read model or cancel / retry state"),
+    risks: createApiProjectRiskRepository(client),
+    files: createApiProjectFileRepository(client),
     activity: liveOnly("activity `action` values are undocumented strings without the changed field / value or target title"),
-    reports: liveOnly("reports/current returns counts only: no per-assignee, trend or milestone series"),
-    workload: liveOnly("workload rows have no task breakdown per cell; capacity is optional per day while the week card needs a weekly number"),
+    reports: insights.reports,
+    workload: insights.workload,
     assignments: createApiProjectAssignmentRepository(client),
     reassign: createApiProjectReassignRepository(client),
     imports: createApiProjectImportRepository(client),

@@ -111,6 +111,12 @@ describe("finance adapter", () => {
     expect(t.writes()).toEqual([]);
   });
 
+  it("refuses a posting later than now without a request (the ledger answers 400)", async () => {
+    const t = setup();
+    await expect(t.finance.addTransaction({ ...lunch, day: "2100-01-01" })).rejects.toMatchObject({ code: "invalid" });
+    expect(t.writes()).toEqual([]);
+  });
+
   it("posts an expense in IRR, creating the account and category once", async () => {
     const t = setup();
     const tx = await t.finance.addTransaction(lunch);

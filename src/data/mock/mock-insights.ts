@@ -246,9 +246,9 @@ export function createMockInsights({ today, historyDays, failing, highlight, hab
       let headline: InsightsSummary["headline"] = null;
       const focus = build("focus", period);
       const topHabit = habitRows(period)[0];
-      if (activeDays >= INSIGHTS_REQUIRED_DAYS && focus.status === "ready" && topHabit) {
-        const pattern = focus.pattern as Extract<InsightPattern, { id: "focus" }>;
-        headline = { focusWindow: pattern.byDays.all.bestWindow, habitId: topHabit.habitId, habitTitle: topHabit.title };
+      const window = focus.status === "ready" ? (focus.pattern as Extract<InsightPattern, { id: "focus" }>).byDays.all.bestWindow : null;
+      if (activeDays >= INSIGHTS_REQUIRED_DAYS && window && topHabit) {
+        headline = { focusWindow: window, habitId: topHabit.habitId, habitTitle: topHabit.title };
       }
       return respond({ period, activeDays, requiredDays: INSIGHTS_REQUIRED_DAYS, headline });
     },

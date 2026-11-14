@@ -144,11 +144,14 @@ export function createApiFinanceRepository(client: ApiClient, { today }: { today
     const note = input.note?.trim();
     const text = note ? `${title}\n${note}` : title;
     if (text.length > MAX_NOTE) invalid("The title and note are too long");
+    const occurredAt = new Date(instantAtTime(input.day, input.time ?? "00:00"));
+    // The ledger refuses postings later than the server clock (400, verified in ledger.service): say so without a request.
+    if (occurredAt.getTime() > Date.now()) invalid("A transaction cannot be in the future");
     const base = {
       accountId: await accountId(),
       amount: tomanToRial(input.amountToman),
       // The API accepts instants in UTC ("…Z") only.
-      occurredAt: new Date(instantAtTime(input.day, input.time ?? "00:00")).toISOString(),
+      occurredAt: occurredAt.toISOString(),
       timezone: getPlannerTimeZone(),
       localDate: input.day,
       note: text,

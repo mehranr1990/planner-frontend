@@ -46,8 +46,8 @@ describe("live Companies repository", () => {
     if (access.status !== "ok") return;
     expect(access.me).toEqual({ id: "m1", name: "Mehran Raeeszade", initials: "MR" });
     expect(access.myDepartmentIds).toEqual(["d1"]);
-    expect(access.capabilities).toMatchObject({ allDepartments: true, managedDepartmentIds: ["d1"], manageDepartments: true, lifecycle: true, invite: false, approve: false, createExpense: false });
-    expect(access.capabilities.modules).toMatchObject({ overview: true, departments: true, settings: true, expenses: false, people: false });
+    expect(access.capabilities).toMatchObject({ allDepartments: true, managedDepartmentIds: ["d1"], manageDepartments: true, lifecycle: true, invite: false, approve: true, createExpense: true, companyBudgets: true, createCompanyGoal: true });
+    expect(access.capabilities.modules).toMatchObject({ overview: true, departments: true, settings: true, expenses: true, people: false, approvals: true, budgets: true, goals: true });
     await expect(repo.access("other")).resolves.toEqual({ status: "not-available" });
     expect(api.writes()).toEqual([]);
   });
@@ -139,7 +139,8 @@ describe("live Companies repository", () => {
   it("refuses unmapped and owner-decision modules without a request (no mock fallback, no proof bypass)", async () => {
     const api = fakeApi(() => err(500));
     const repo = createApiCompanyRepository(api.client);
-    for (const call of [() => repo.expenses(C), () => repo.goals(C), () => repo.acceptInvitation("i1"), () => repo.employeeFile(C, "p1"), () => repo.settings(C), () => repo.overview(C, null, "owner")])
+    // Contract gaps (Session 4): no request, an explicit reason.
+    for (const call of [() => repo.markNotReceived(C, "r1", "note"), () => repo.chains(C), () => repo.effectivePolicies(C, "d1"), () => repo.addResource(C, { name: "x", tag: "t", type: "other", departmentId: null }), () => repo.create({ name: "x", legalName: "", currency: "rial", fiscalStartMonth: 1, departments: [] })])
       await expect(call()).rejects.toMatchObject({ code: "unsupported", message: expect.stringContaining("Companies API:") });
     expect(api.calls).toEqual([]);
   });

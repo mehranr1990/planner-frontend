@@ -128,7 +128,7 @@ export function TeamGate({ children }: { children: ReactNode }) {
     content = invitation ? (
       <AccessState
         kind="team-invite"
-        values={{ team: invitation.teamName, inviter: invitation.inviter.name, role: labels.role(invitation.role) }}
+        values={{ team: invitation.teamName ?? "", inviter: invitation.inviter?.name ?? "", role: invitation.role ? labels.role(invitation.role) : "" }}
         primaryAction={
           <Button
             disabled={accept.isPending}

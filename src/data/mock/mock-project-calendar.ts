@@ -32,7 +32,7 @@ export function createMockProjectCalendar({ store, respond, roleOf, withCan }: M
         role === "guest"
           ? []
           : (store.milestones.get(projectId) ?? [])
-              .filter((milestone) => within(milestone.due))
+              .flatMap((milestone) => (milestone.due !== null && within(milestone.due) ? [{ ...milestone, due: milestone.due }] : []))
               .map((milestone) => ({
                 id: `milestone:${milestone.id}`,
                 kind: "milestone",

@@ -297,6 +297,7 @@ export function useTeamEventActions(teamId: string) {
   const refresh = () => {
     void client.invalidateQueries({ queryKey: teamScoped(teamId, "events") });
     void client.invalidateQueries({ queryKey: teamScoped(teamId, "calendar") });
+    void client.invalidateQueries({ queryKey: teamScoped(teamId, "time-off") });
   };
   return {
     create: useMutation({ mutationFn: (input: TeamEventInput) => teamEvents.create(teamId, input), onSuccess: refresh }),
@@ -308,6 +309,45 @@ export function useTeamEventActions(teamId: string) {
       mutationFn: ({ eventId, rsvp }: { eventId: string; rsvp: TeamRsvp }) => teamEvents.rsvp(eventId, rsvp),
       onSuccess: refresh,
     }),
+    // A conflict (already canceled / changed elsewhere) also refreshes, so the card shows the server state.
+    cancel: useMutation({ mutationFn: (eventId: string) => teamEvents.cancel(eventId), onSettled: refresh }),
+  };
+}
+
+/** TM-03 time-off requests the viewer may see (managers: everyone's; others: their own). */
+export function useTeamTimeOff(teamId: string) {
+  const { teamEvents } = useRepositories();
+  return useTeamQuery(teamId, "time-off", () => teamEvents.timeOff(teamId));
+}
+
+export function useTeamTimeOffHistory(teamId: string, requestId: string | null) {
+  const { teamEvents } = useRepositories();
+  return useTeamQuery(
+    teamId,
+    "time-off",
+    () => teamEvents.timeOffHistory(teamId, requestId!),
+    requestId !== null,
+    "history",
+    requestId,
+  );
+}
+
+/** Approve / reject (Lead+) and cancel (requester); every outcome refreshes requests and the calendar. */
+export function useTeamTimeOffActions(teamId: string) {
+  const { teamEvents } = useRepositories();
+  const client = useQueryClient();
+  const refresh = () => {
+    void client.invalidateQueries({ queryKey: teamScoped(teamId, "time-off") });
+    void client.invalidateQueries({ queryKey: teamScoped(teamId, "events") });
+    void client.invalidateQueries({ queryKey: teamScoped(teamId, "calendar") });
+  };
+  return {
+    decide: useMutation({
+      mutationFn: ({ id, decision, note }: { id: string; decision: "approve" | "reject"; note: string | null }) =>
+        teamEvents.decideTimeOff(teamId, id, decision, note),
+      onSettled: refresh,
+    }),
+    cancel: useMutation({ mutationFn: (id: string) => teamEvents.cancelTimeOff(teamId, id), onSettled: refresh }),
   };
 }
 

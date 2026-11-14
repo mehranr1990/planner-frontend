@@ -11,6 +11,7 @@ import { useAccessSettings, useSettingsActions } from "@/data/project-queries";
 import { useProjectLabels } from "../labels";
 import { useProject } from "../project-gate";
 import { SettingRow, useSettingsError } from "./settings-shared";
+import { RolePolicyPanel } from "./settings-role-policy";
 
 /*
  * PJ-14 › Access (Admin+): default invite role, allow guests, guest grant
@@ -29,6 +30,8 @@ export function AccessTab() {
   const access = useAccessSettings(project.id);
   const actions = useSettingsActions(project.id);
   const onError = useSettingsError();
+  // Live: the toggles are not served; the server policy is role defaults (RolePolicyPanel).
+  if (access.isError) return <RolePolicyPanel projectId={project.id} canEdit={capabilities.editAccess} />;
   if (!access.data) return <AccessLoading />;
   const value = access.data;
   const canEdit = capabilities.editAccess;

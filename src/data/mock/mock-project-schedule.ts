@@ -240,7 +240,7 @@ export function createMockProjectSchedule({
         end: task.due!,
         revision: task.revision,
       })),
-      ...(store.milestones.get(projectId) ?? []).map((milestone) => ({
+      ...(store.milestones.get(projectId) ?? []).flatMap((milestone) => (milestone.due ? [{ ...milestone, due: milestone.due }] : [])).map((milestone) => ({
         id: milestone.id,
         kind: "milestone" as const,
         title: milestone.title,

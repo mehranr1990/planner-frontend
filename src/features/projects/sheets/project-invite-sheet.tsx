@@ -9,6 +9,7 @@ import { Icon } from "@/components/ui/icon";
 import { toast } from "@/components/ui/toast";
 import type { InviteRole } from "@/data/project-domain";
 import { useInviteActions, usePendingInvites } from "@/data/project-queries";
+import { RepositoryError } from "@/data/repositories";
 import { cn } from "@/lib/cn";
 import { useProjectFormat } from "../format";
 import { useCurrentProjectAccess } from "../use-current-project";
@@ -34,6 +35,7 @@ export function ProjectInviteSheet({ onDone }: { onDone: () => void }) {
   const [draft, setDraft] = useState("");
   const [role, setRole] = useState<InviteRole>("member");
   const [invalid, setInvalid] = useState(false);
+  const [failure, setFailure] = useState<string | null>(null);
   const inputId = useId();
   const roleLabelId = useId();
 
@@ -75,6 +77,7 @@ export function ProjectInviteSheet({ onDone }: { onDone: () => void }) {
       return;
     }
     setInvalid(false);
+    setFailure(null);
     actions.send.mutate(
       { emails: all, role },
       {
@@ -93,7 +96,17 @@ export function ProjectInviteSheet({ onDone }: { onDone: () => void }) {
           setDraft("");
           onDone();
         },
-        onError: () => setInvalid(true),
+        onError: (cause) => {
+          if (cause instanceof RepositoryError && cause.code === "partial" && cause.failedIds) {
+            // Some were sent: keep only the unsent emails (nothing is resent automatically).
+            setEmails([...cause.failedIds]);
+            setDraft("");
+            setFailure(t("invite.partial", { n: all.length - cause.failedIds.length }));
+          } else if (cause instanceof RepositoryError && cause.code === "unsupported")
+            setFailure(t(cause.message === "guest-role" ? "invite.guestUnavailable" : "invite.unavailable"));
+          else if (cause instanceof RepositoryError && cause.code === "invalid") setInvalid(true);
+          else setFailure(t("invite.failed"));
+        },
       },
     );
   };
@@ -165,6 +178,7 @@ export function ProjectInviteSheet({ onDone }: { onDone: () => void }) {
 
       <p className="text-xs text-fg-secondary">{t("invite.verified")}</p>
       {invalid ? <InlineAlert tone="danger" title={t("invite.invalid")} /> : null}
+      {failure ? <InlineAlert tone="danger" title={failure} /> : null}
 
       {pending.data && pending.data.length > 0 ? (
         <section

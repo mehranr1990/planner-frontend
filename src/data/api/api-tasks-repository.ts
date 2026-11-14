@@ -1,7 +1,8 @@
 import type { ApiClient, RequestBody, ResponseData } from "@/api/client";
 import { ApiHttpError } from "@/api/errors";
-import { newIdempotencyKey } from "@/api/client";
-import type { Subtask, Task, TaskLink, TaskNote, TaskPriority } from "../domain";
+import { newIdempotencyKey, typedAs } from "@/api/client";
+import type { paths as PersonalPaths } from "@/api/generated/openapi-p6-personal";
+import type { Subtask, Task, TaskActivity, TaskCategory, TaskLink, TaskNote, TaskPriority } from "../domain";
 import {
   RepositoryError,
   type PartialField,
@@ -15,6 +16,7 @@ import { countTasks, filterTasks, priorityRank, sortTasks } from "../task-query"
 import { dayOfInstant, instantAtTime, instantToClockTime } from "@/lib/dates/clock-time";
 import { getPlannerTimeZone } from "@/lib/dates/zone";
 import type { DayPlans } from "./api-day-plans";
+import { revisionTag } from "./api-shared";
 
 /*
  * Tasks on the Phase 0/1 API (live mode). The server owns title, status,
@@ -76,6 +78,10 @@ interface Entry {
   recurring?: boolean;
   /** Position in its day's server Day plan (manual order), when planned. */
   order?: number;
+  /** Personal category (GET/PUT /tasks/{id}/category); undefined = not loaded or unreadable. */
+  category?: TaskCategory | null;
+  /** Task history mapped to the Activity kinds it can state truthfully, newest first. */
+  activity?: TaskActivity[];
 }
 
 const PAGE = "100";
@@ -132,6 +138,8 @@ export function toDomainTask(entry: Entry): Task {
   if (entry.notes?.length) task.notes = entry.notes.map((note) => ({ ...note }));
   if (entry.recurring) task.recurring = true;
   if (entry.order !== undefined) task.order = entry.order;
+  if (entry.category !== undefined) task.category = entry.category;
+  if (entry.activity?.length) task.activity = entry.activity.map((item) => ({ ...item }));
   return task;
 }
 
@@ -177,8 +185,8 @@ function scheduleFields(date: string | null | undefined, deadline: string | null
 export interface ApiTasksRepositoryOptions {
   /** The planner's "today" (YYYY-MM-DD) for views and counts. */
   today: () => string;
-  /** Repository for concepts the API does not have yet (areas, goal titles). */
-  fallback: Pick<TasksRepository, "listAreas">;
+  /** Areas source; the Task API has no area, so live mode passes none and lists no areas (never mock data). */
+  fallback?: Pick<TasksRepository, "listAreas">;
   /** Day plans (Phase 03): manual order and plan moves. Without it, manual order is unsupported. */
   dayPlans?: DayPlans;
 }
@@ -195,6 +203,7 @@ export type ApiTasksRepository = TasksRepository & {
 
 export function createApiTasksRepository(client: ApiClient, options: ApiTasksRepositoryOptions): ApiTasksRepository {
   const entries = new Map<string, Entry>();
+  const personal = typedAs<PersonalPaths>(client);
   const deletedEtags = new Map<string, string>();
   let labelsByName = new Map<string, ApiLabel>();
 
@@ -431,7 +440,7 @@ export function createApiTasksRepository(client: ApiClient, options: ApiTasksRep
       if (error instanceof ApiHttpError && error.status === 404) return null;
       throw error;
     }
-    const [checklist, labels, attachments, duration, notes] = await Promise.all([
+    const [checklist, labels, attachments, duration, notes, category, activity] = await Promise.all([
       pages((cursor) =>
         client
           .request("get", "/api/v1/tasks/{id}/checklist-items", { path: { id }, query: { limit: PAGE, cursor } })
@@ -451,6 +460,8 @@ export function createApiTasksRepository(client: ApiClient, options: ApiTasksRep
           .request("get", "/api/v1/notes", { query: { limit: PAGE, cursor, taskId: id, state: "ACTIVE" } })
           .then((r) => r.data),
       ),
+      loadCategory(id),
+      loadActivity(id),
     ]);
     entries.set(id, {
       server: response.data,
@@ -462,9 +473,70 @@ export function createApiTasksRepository(client: ApiClient, options: ApiTasksRep
         .map((file) => ({ id: file.fileId, kind: "file" as const, name: file.filename, sizeBytes: file.size ?? 0 })),
       duration: { minutes: duration.data.estimatedMinutes, etag: duration.etag },
       notes: toNotes(notes),
+      category,
+      activity,
     });
     markRecurring(id);
     return entries.get(id)!;
+  }
+
+  /** The category is optional detail: an unreadable one stays unknown (no selector) instead of failing the task. */
+  async function loadCategory(id: string): Promise<TaskCategory | null | undefined> {
+    try {
+      return (await personal.request("get", "/api/v1/tasks/{id}/category", { path: { id } })).data.category;
+    } catch (error) {
+      if (error instanceof ApiHttpError && error.status === 401) throw error;
+      return undefined;
+    }
+  }
+
+  /**
+   * GET /tasks/{id}/history (latest page) → Activity. Only what a history row states: created, priority set,
+   * completed, reopened (no creation source, previous time or subtask title is served). Unreadable → no activity.
+   */
+  async function loadActivity(id: string): Promise<TaskActivity[] | undefined> {
+    let rows;
+    try {
+      rows = (await client.request("get", "/api/v1/tasks/{id}/history", { path: { id }, query: { limit: PAGE } })).data.items;
+    } catch (error) {
+      if (error instanceof ApiHttpError && error.status === 401) throw error;
+      return undefined;
+    }
+    const out: TaskActivity[] = [];
+    for (const row of rows) {
+      const base = { id: row.id, at: row.createdAt };
+      if (row.kind === "CREATED") out.push({ ...base, kind: "created", source: "manual" });
+      else if (row.kind === "COMPLETED") out.push({ ...base, kind: "completed" });
+      else if (row.kind === "REOPENED") out.push({ ...base, kind: "reopened" });
+      else if (row.kind === "UPDATED" && row.fields.includes("priority")) {
+        const priority = PRIORITY_FROM_API[row.afterPriority];
+        if (priority) out.push({ ...base, kind: "priority", priority });
+      }
+    }
+    return out.sort((a, b) => b.at.localeCompare(a.at));
+  }
+
+  /** PUT the category with the Task revision (If-Match); it bumps that revision. On 409 refetch and re-send once. */
+  async function setCategory(id: string, category: TaskCategory | null) {
+    const send = (revision: number) =>
+      personal.request("put", "/api/v1/tasks/{id}/category", {
+        path: { id },
+        header: { "If-Match": revisionTag(revision) },
+        body: { category },
+      });
+    let result;
+    try {
+      result = await send(entries.get(id)!.server.revision);
+    } catch (error) {
+      if (!(error instanceof ApiHttpError && error.status === 409)) throw error;
+      const fresh = await loadDetail(id);
+      if (!fresh) throw error;
+      result = await send(fresh.server.revision);
+    }
+    const entry = entries.get(id)!;
+    entry.server = { ...entry.server, revision: result.data.revision };
+    entry.etag = result.etag ?? revisionTag(result.data.revision);
+    entry.category = result.data.category;
   }
 
   const toNotes = (notes: ApiNote[]): TaskNote[] =>
@@ -718,6 +790,7 @@ export function createApiTasksRepository(client: ApiClient, options: ApiTasksRep
       ["duration", patch.durationMinutes !== undefined && (() => setDuration(id, patch.durationMinutes ?? null))],
       ["labels", patch.labels !== undefined && (() => syncLabels(id, patch.labels!))],
       ["checklist", patch.checklist !== undefined && (() => syncChecklist(shown, patch.checklist!))],
+      ["category", patch.category !== undefined && (() => setCategory(shown, patch.category ?? null))],
     ]);
     return shown;
   }
@@ -757,8 +830,8 @@ export function createApiTasksRepository(client: ApiClient, options: ApiTasksRep
     async counts(query = {}) {
       return countTasks(await loadAll(), query, { today: options.today() });
     },
-    listAreas() {
-      return options.fallback.listAreas();
+    async listAreas() {
+      return options.fallback ? options.fallback.listAreas() : [];
     },
     async create(input: NewTaskInput) {
       const title = input.title.trim();
@@ -870,8 +943,8 @@ export function createApiTasksRepository(client: ApiClient, options: ApiTasksRep
     },
     async bulkUpdate(requested, patch) {
       const ids = [...new Set(requested.map(resolve))];
-      // Follow-up resources (duration, labels, checklist, recurrence) are per task: sequential updates.
-      const perTask = ["durationMinutes", "labels", "checklist", "recurring"].some((key) => key in patch);
+      // Follow-up resources (duration, labels, checklist, recurrence, category) are per task: sequential updates.
+      const perTask = ["durationMinutes", "labels", "checklist", "recurring", "category"].some((key) => key in patch);
       if (perTask) {
         const out: Task[] = [];
         for (const id of ids) out.push(await this.update(id, patch));

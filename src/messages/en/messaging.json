@@ -126,7 +126,10 @@
     "notAvailable": "Not available yet.",
     "reasonRequired": "Add a comment first: approval is saved with a reason.",
     "oneReviewer": "Choose exactly one reviewer.",
-    "generic": "Something went wrong. Try again."
+    "generic": "Something went wrong. Try again.",
+    "forbidden": "You don’t have access to that anymore.",
+    "notFound": "It’s no longer available.",
+    "conflict": "It changed in the meantime. Refresh and try again."
   },
   "moderate": {
     "title": "Remove this message?",
@@ -483,7 +486,9 @@
     "fieldTitle": "Title",
     "fieldLink": "Meeting link (https)",
     "fieldDescription": "Description",
-    "save": "Save"
+    "save": "Save",
+    "download": "Download {name}",
+    "downloading": "Downloading…"
   },
   "minutes": {
     "title": "Minutes",
@@ -547,7 +552,12 @@
       "pending": "Pending",
       "approved": "Approved",
       "changes": "Changes requested"
-    }
+    },
+    "withdraw": "Withdraw to Draft",
+    "withdrawTitle": "Withdraw these minutes?",
+    "withdrawDescription": "Version {version} goes back to Draft and leaves review. The reviewer’s decision is cleared; earlier versions are kept.",
+    "withdrawConfirm": "Withdraw",
+    "withdrawn": "Back to Draft"
   },
   "announcements": {
     "title": "Announcements",
@@ -586,5 +596,32 @@
     "ackRequired": "Acknowledgement required",
     "noAck": "No acknowledgement needed",
     "ackOf": "of {total} · {waiting} waiting"
+  },
+  "invitations": {
+    "title": "Invitations",
+    "from": "From {name}",
+    "unknownInviter": "Someone invited you",
+    "kind": {
+      "direct": "Direct message",
+      "group": "Group",
+      "channel": "Channel"
+    },
+    "expires": "Expires {date}",
+    "accept": "Accept",
+    "decline": "Decline",
+    "accepted": "You joined the conversation",
+    "declined": "Invitation declined",
+    "gone": "This invitation is no longer available.",
+    "error": "Couldn’t load invitations."
+  },
+  "notices": {
+    "section": "Messages",
+    "message": "New message",
+    "invitation": "Conversation invitation",
+    "announcement": "Please read: {title}",
+    "announcementGeneric": "Announcement to read",
+    "markRead": "Mark as read",
+    "error": "Couldn’t load message notifications.",
+    "readFailed": "Couldn’t mark it as read."
   }
 }

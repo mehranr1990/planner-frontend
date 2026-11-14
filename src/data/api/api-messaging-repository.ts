@@ -12,9 +12,11 @@ import type {
   ConversationTab,
   Message,
   MessagePage,
+  MessagingNotice,
   MsgPerson,
   MsgSource,
   Participant,
+  SearchHit,
 } from "../messaging-domain";
 import {
   MessagingError,
@@ -28,6 +30,7 @@ import { createWorkSources } from "./api-meeting-sources";
 import { createApiAnnouncements } from "./api-announcements-repository";
 import { createApiMeetings } from "./api-meetings-repository";
 import { revisionTag } from "./api-shared";
+import { catalogVersion } from "./api-retention";
 import { initialsOf } from "./api-project-shared";
 
 /*
@@ -40,8 +43,9 @@ import { initialsOf } from "./api-project-shared";
  * - Rights: `GET /conversations/{id}/access/me` capabilities (`message.send`,
  *   `membership.manage`, `conversation.rename`); the 48 h author window and
  *   the author-delete policy mirror the server, which re-checks every command.
- * - Not served, so never shown as facts: presence (hidden), receipts (null),
- *   mention counts (0), edited time, thread counts, link previews.
+ * - Not served, so never shown as facts: presence (hidden),
+ *   edited time, thread counts, link previews. Receipts: server counts for my
+ *   latest messages only; unread mentions: `/mentions` after my read-through.
  * - Message commands carry only a message id: the adapter remembers which
  *   conversation each loaded message belongs to.
  * - No realtime transport: `subscribe` never emits.
@@ -56,6 +60,19 @@ type ApiMe = Data<"/api/v1/conversations/{id}/access/me", "get">;
 type ApiItem = Data<"/api/v1/conversations/{id}/timeline", "get">["items"][number];
 type ApiMediaItem = Data<"/api/v1/conversations/{id}/media-timeline", "get">["items"][number];
 type ApiAttachment = ApiMediaItem["attachments"][number];
+type ApiInvitation = Data<"/api/v1/conversation-invitations", "get">["items"][number];
+type ApiNotice = Data<"/api/v1/messaging-notifications", "get">["items"][number];
+
+const toNotice = (dto: ApiNotice): MessagingNotice => ({
+  id: dto.id,
+  revision: dto.revision,
+  conversationId: dto.conversationId,
+  kind: dto.kind === "INVITATION" ? "invitation" : "message",
+  messageId: dto.messageId,
+  invitationId: dto.invitationId,
+  read: dto.read,
+  at: dto.createdAt,
+});
 /** One message as both timelines serve it (text timeline items have no attachments). */
 type Item = Omit<ApiItem, "content" | "kind"> & { kind: ApiMediaItem["kind"]; text: string | null; attachments: ApiAttachment[]; sourceId?: string | null };
 const fromTimeline = ({ content, ...item }: ApiItem): Item => ({ ...item, text: content?.text ?? null, attachments: [] });
@@ -77,6 +94,8 @@ export interface MessagingUser {
 }
 
 const PAGE = 100;
+/** How many of my latest messages per page get a receipt read (one request each). */
+const RECEIPTS = 20;
 const AUTHOR_WINDOW_MS = 48 * 3_600_000;
 
 
@@ -176,11 +195,26 @@ export function createApiMessaging(client: ApiClient, user: MessagingUser): Mess
     return { id: member.actorId, name, initials: initialsOf(name), ...(member.state === "ACTIVE" || member.displayName ? {} : { deleted: true }) };
   };
 
+  /** Visible messages that mention my membership after my read-through (only asked when something is unread). */
+  const unreadMentions = async (row: ApiConversation) => {
+    if (row.unreadCount === 0) return 0;
+    const [progress, items] = await Promise.all([
+      api.request("get", "/api/v1/conversations/{id}/progress", { path: { id: row.id } }).then(({ data }) => BigInt(data.readThrough)),
+      allPages(async (cursor) => (await api.request("get", "/api/v1/conversations/{id}/mentions", { path: { id: row.id }, query: { cursor, limit: PAGE } })).data),
+    ]);
+    return items.filter((item) => item.state === "VISIBLE" && BigInt(item.sequence) > progress).length;
+  };
+
   const summaryOf = async (row: ApiConversation, blocks: ReadonlySet<string>): Promise<ConversationSummary> => {
     const kind = KIND[row.kind];
     // Names: direct titles and the last author come from the roster (only read when needed).
     const needRoster = (kind === "direct" && !row.title) || row.lastMessage !== null;
-    const [members, me, source] = await Promise.all([needRoster ? roster(row.id) : Promise.resolve([]), needRoster ? accessMe(row.id) : Promise.resolve(null), sourceOf(row)]);
+    const [members, me, source, mentions] = await Promise.all([
+      needRoster ? roster(row.id) : Promise.resolve([]),
+      needRoster ? accessMe(row.id) : Promise.resolve(null),
+      sourceOf(row),
+      unreadMentions(row),
+    ]);
     const other = kind === "direct" ? members.find((member) => me && member.actorId !== me.actorId) : undefined;
     const title = row.title ?? other?.displayName ?? "";
     const last = row.lastMessage;
@@ -201,8 +235,7 @@ export function createApiMessaging(client: ApiClient, user: MessagingUser): Mess
           }
         : null,
       unread: row.unreadCount,
-      // Not served per conversation.
-      mentions: 0,
+      mentions,
       muted: row.muted,
       blocked: kind === "direct" && blocks.has(row.id),
     };
@@ -311,6 +344,30 @@ export function createApiMessaging(client: ApiClient, user: MessagingUser): Mess
       shareable: true,
     };
   }
+  /**
+   * Receipts of my latest visible messages, as the server counts them after its
+   * privacy rules (share flag, consent, blocks). Not sharing, unreadable or older
+   * than the last RECEIPTS of mine → left null (nothing shown). Direct
+   * conversations may show "seen"; groups and channels stop at "delivered".
+   */
+  const receiptsOf = async (conversationId: string, ordered: readonly Item[], context: Awaited<ReturnType<typeof contextOf>>) => {
+    const mine = ordered.filter((item) => item.state === "VISIBLE" && item.memberId === context.me.accessId).slice(-RECEIPTS);
+    const rows = await Promise.all(
+      mine.map(async (item) => {
+        try {
+          const { data } = await api.request("get", "/api/v1/conversations/{id}/messages/{messageId}/receipts", { path: { id: conversationId, messageId: item.id } });
+          if (!data.sharing || data.deliveredCount === null || data.readCount === null) return null;
+          const receipt: NonNullable<Message["receipt"]> = context.kind === "direct" && data.readCount > 0 ? "seen" : data.deliveredCount > 0 ? "delivered" : "sent";
+          return [item.id, receipt] as const;
+        } catch (error) {
+          if (error instanceof ApiHttpError && (error.status === 403 || error.status === 404)) return null;
+          throw error;
+        }
+      }),
+    );
+    return new Map(rows.filter((row) => row !== null));
+  };
+
   const mapLoaded = async (items: readonly Item[], context: Awaited<ReturnType<typeof contextOf>>) => {
     await prefetch(items);
     return mapItems(items, context);
@@ -346,7 +403,7 @@ export function createApiMessaging(client: ApiClient, user: MessagingUser): Mess
   };
 
   const conversationRepo: ConversationRepository = refused<ConversationRepository>(
-    "creating a direct or group conversation needs the operator-supplied retentionPolicyVersion (OD-1); per-conversation link-preview / newcomer / collapse settings, the members-can-pin policy, conversation reports and workspace mention counts are not in the API",
+    "every conversation call is mapped",
     {
       list: (tab) =>
         mapped(async () => {
@@ -412,6 +469,63 @@ export function createApiMessaging(client: ApiClient, user: MessagingUser): Mess
         }),
 
       // Exact-email discovery only; the answer never says whether an account exists.
+      // OD-1: direct / private group conversations take the single approved CONVERSATION policy of the operator catalog.
+      create: (input) =>
+        mapped(async () => {
+          if (input.personIds.length === 0) throw new MessagingError("invalid", "Choose at least one person");
+          const retentionPolicyVersion = await catalogVersion(client, "CONVERSATION").catch((error: unknown) => {
+            throw new MessagingError("unavailable", error instanceof Error ? error.message : "No approved retention policy");
+          });
+          const id = newIdempotencyKey();
+          const header = { "Idempotency-Key": /^[0-9a-f-]{36}$/i.test(input.clientOpId) ? input.clientOpId : newIdempotencyKey() };
+          const body =
+            input.personIds.length === 1 && !input.name?.trim()
+              ? { id, kind: "DM" as const, participants: [input.personIds[0]!] as [string], retentionPolicyVersion }
+              : { id, kind: "PRIVATE_GROUP" as const, title: (input.name?.trim() || "").slice(0, 200), participants: input.personIds, retentionPolicyVersion };
+          const { data } = await api.request("post", "/api/v1/conversations", { header, body });
+          return data.id;
+        }),
+
+      // OD-10: my own view (link previews, collapse blocked) is a preference; newcomer history is the conversation's setting.
+      updateSettings: (id, patch) =>
+        mapped(async () => {
+          const read = async () => (await api.request("get", "/api/v1/conversations/{id}/settings", { path: { id } })).data;
+          let current = await read();
+          if (patch.linkPreviews !== undefined || patch.collapseBlocked !== undefined) {
+            current = (
+              await api.request("patch", "/api/v1/conversations/{id}/preferences", {
+                path: { id },
+                header: { "If-Match": revisionTag(current.me.revision) },
+                body: { ...(patch.linkPreviews !== undefined ? { linkPreviews: patch.linkPreviews } : {}), ...(patch.collapseBlocked !== undefined ? { collapseBlocked: patch.collapseBlocked } : {}) },
+              })
+            ).data;
+          }
+          if (patch.newcomerHistory !== undefined) {
+            await api.request("patch", "/api/v1/conversations/{id}/settings", {
+              path: { id },
+              header: { "If-Match": revisionTag(current.revision) },
+              body: { newcomerHistory: patch.newcomerHistory === "full" ? "FULL" : "FROM_JOIN" },
+            });
+          }
+        }),
+
+      updatePolicy: (id, patch) =>
+        mapped(async () => {
+          if (patch.authorDeleteForEveryone !== undefined) throw new MessagingError("unavailable", "Messaging API: the author-delete policy is read-only");
+          const { data: current } = await api.request("get", "/api/v1/conversations/{id}/settings", { path: { id } });
+          await api.request("patch", "/api/v1/conversations/{id}/settings", {
+            path: { id },
+            header: { "If-Match": revisionTag(current.revision) },
+            body: {
+              ...(patch.newcomerHistory !== undefined ? { newcomerHistory: patch.newcomerHistory === "full" ? ("FULL" as const) : ("FROM_JOIN" as const) } : {}),
+              ...(patch.membersCanPin !== undefined ? { membersCanPin: patch.membersCanPin } : {}),
+            },
+          });
+        }),
+
+      // OD-10: a conversation-level report goes to the conversation's moderators.
+      report: (id, reason) => mapped(async () => void (await api.request("post", "/api/v1/conversations/{id}/reports", { path: { id }, body: { id: newIdempotencyKey(), reason: String(reason).slice(0, 2000) } }))),
+
       lookup: (query) =>
         mapped(async () => {
           const email = query.trim();
@@ -482,6 +596,44 @@ export function createApiMessaging(client: ApiClient, user: MessagingUser): Mess
         }),
 
       unreadCount: () => mapped(async () => (await conversations()).reduce((total, row) => total + row.unreadCount, 0)),
+
+      // Rail badge: unread mentions across the workspace's channels I am admitted to.
+      workspaceMentions: (workspaceId) =>
+        mapped(async () => {
+          const channels = (await conversations()).filter((row) => KIND[row.kind] === "channel" && row.sourceId === workspaceId);
+          return (await Promise.all(channels.map(unreadMentions))).reduce((total, count) => total + count, 0);
+        }),
+
+      // Recipient-only: the server lists PENDING, unexpired invitations it still authorises (no conversation title is served).
+      invitations: () =>
+        mapped(async () =>
+          (await allPages<ApiInvitation>(async (cursor) => (await api.request("get", "/api/v1/conversation-invitations", { query: { cursor, limit: PAGE } })).data))
+            .filter((row) => row.state === "PENDING" && Date.parse(row.expiresAt) > Date.now())
+            .map((row) => ({ id: row.id, revision: row.revision, conversationId: row.conversationId, kind: KIND[row.kind], inviterName: row.inviterDisplayName ?? null, expiresAt: row.expiresAt })),
+        ),
+
+      // If-Match = the invitation revision; a revoked / expired / already-answered one comes back 409 / 404 (shown, never retried).
+      respondInvitation: (invitation, accept) =>
+        mapped(async () => {
+          const call = { path: { invitationId: invitation.id }, header: { "If-Match": revisionTag(invitation.revision) }, body: {} };
+          const { data } = accept
+            ? await api.request("post", "/api/v1/conversation-invitations/{invitationId}/accept", call)
+            : await api.request("post", "/api/v1/conversation-invitations/{invitationId}/decline", call);
+          return data.conversationId;
+        }),
+
+      notices: () =>
+        mapped(async () =>
+          (await allPages<ApiNotice>(async (cursor) => (await api.request("get", "/api/v1/messaging-notifications", { query: { cursor, limit: PAGE } })).data))
+            .map(toNotice)
+            .sort((a, b) => b.at.localeCompare(a.at)),
+        ),
+
+      readNotice: (notice) =>
+        mapped(async () => {
+          if (notice.read) return;
+          await api.request("post", "/api/v1/messaging-notifications/{noticeId}/read", { path: { noticeId: notice.id }, header: { "If-Match": revisionTag(notice.revision) }, body: {} });
+        }),
     },
   );
 
@@ -525,7 +677,7 @@ export function createApiMessaging(client: ApiClient, user: MessagingUser): Mess
   const sha256 = async (blob: Blob) =>
     [...new Uint8Array(await crypto.subtle.digest("SHA-256", await blob.arrayBuffer()))].map((byte) => byte.toString(16).padStart(2, "0")).join("");
 
-  const messageRepo: MessageRepository = refused<MessageRepository>("search is per conversation (OD-11)", {
+  const messageRepo: MessageRepository = refused<MessageRepository>("not in the API", {
     page: (conversationId) =>
       mapped(async (): Promise<MessagePage> => {
         const [items, context, progress] = await Promise.all([
@@ -534,7 +686,8 @@ export function createApiMessaging(client: ApiClient, user: MessagingUser): Mess
           api.request("get", "/api/v1/conversations/{id}/progress", { path: { id: conversationId } }).then(({ data }) => data),
         ]);
         const ordered = [...items].sort((a, b) => (BigInt(a.sequence) < BigInt(b.sequence) ? -1 : 1));
-        const messages = await mapLoaded(ordered, context);
+        const [mappedMessages, receipts] = await Promise.all([mapLoaded(ordered, context), receiptsOf(conversationId, ordered, context)]);
+        const messages = mappedMessages.map((message) => (receipts.has(message.id) ? { ...message, receipt: receipts.get(message.id)! } : message));
         const readThrough = BigInt(progress.readThrough);
         const unread = ordered.filter((item) => item.state === "VISIBLE" && item.memberId !== context.me.accessId && BigInt(item.sequence) > readThrough);
         const mine = context.members.find((member) => member.id === context.me.accessId);
@@ -674,21 +827,44 @@ export function createApiMessaging(client: ApiClient, user: MessagingUser): Mess
 
     report: (messageId, reason) => mapped(async () => void (await act(conversationOfMessage(messageId), { action: "report", id: crypto.randomUUID(), messageId, reason }))),
 
-    // Search runs inside one conversation (`in`); the API has no cross-conversation search (OD-11).
+    // OD-11: text search over the caller's current conversations (one or all); `has` supports only links; no media / OCR search.
     search: (query, filters) =>
       mapped(async () => {
-        if (!filters.in) throw new MessagingError("unavailable", "Messaging API: search is per conversation (OD-11)");
-        if (filters.from || filters.has || filters.after || filters.before) throw new MessagingError("unavailable", "Messaging API: search has no author, type or date filters");
-        const conversationId = filters.in;
-        const [items, context, row] = await Promise.all([
-          allPages<ApiItem>(
-            async (cursor) => (await api.request("get", "/api/v1/conversations/{id}/message-search", { path: { id: conversationId }, query: { q: query, cursor, limit: PAGE } })).data,
-          ),
-          contextOf(conversationId),
-          readConversation(conversationId),
-        ]);
-        const source = await sourceOf(row.conversation);
-        return (await mapLoaded(items.map(fromTimeline), context)).map((message) => ({ message, conversationId, conversationTitle: row.conversation.title ?? "", kind: context.kind, source }));
+        if (filters.has && filters.has !== "link") throw new MessagingError("unavailable", "Messaging API: search finds text and links only (no file, image or voice search)");
+        let fromMemberId: string | undefined;
+        if (filters.from) {
+          if (!filters.in) throw new MessagingError("unavailable", "Messaging API: filtering by person needs a conversation");
+          const member = (await contextOf(filters.in)).members.find((entry) => entry.actorId === filters.from || entry.id === filters.from);
+          if (!member) return [];
+          fromMemberId = member.id;
+        }
+        const hits = await allPages<{ conversationId: string; conversationTitle: string | null; message: ApiItem }>(
+          async (cursor) =>
+            (
+              await api.request("get", "/api/v1/messaging/search", {
+                query: {
+                  q: query,
+                  cursor,
+                  limit: PAGE,
+                  ...(filters.in ? { conversationId: filters.in } : {}),
+                  ...(fromMemberId ? { fromMemberId } : {}),
+                  ...(filters.has ? { has: "link" as const } : {}),
+                  ...(filters.after ? { after: filters.after } : {}),
+                  ...(filters.before ? { before: filters.before } : {}),
+                },
+              })
+            ).data,
+        );
+        const results: SearchHit[] = [];
+        for (const conversationId of [...new Set(hits.map((hit) => hit.conversationId))]) {
+          const [context, row] = await Promise.all([contextOf(conversationId), readConversation(conversationId)]);
+          const source = await sourceOf(row.conversation);
+          const own = hits.filter((hit) => hit.conversationId === conversationId);
+          for (const message of await mapLoaded(own.map((hit) => fromTimeline(hit.message)), context)) {
+            results.push({ message, conversationId, conversationTitle: own[0]!.conversationTitle ?? row.conversation.title ?? "", kind: context.kind, source });
+          }
+        }
+        return results;
       }),
 
     /**
@@ -777,14 +953,15 @@ export function createApiMessaging(client: ApiClient, user: MessagingUser): Mess
     },
   );
 
+  const work = createWorkSources(client);
   return {
     me: ME,
     conversations: conversationRepo,
     messages: messageRepo,
     channels: channelRepo,
     settings: settingsRepo,
-    ...createApiMeetings(api, { me: ME, mapped, allPages, workspaceName, work: createWorkSources(client) }),
-    announcements: createApiAnnouncements(api, { mapped, allPages, workspaceName }),
+    ...createApiMeetings(api, { me: ME, mapped, allPages, workspaceName, work, retention: () => catalogVersion(client, "MEETING") }),
+    announcements: createApiAnnouncements(api, { mapped, allPages, workspaceName, work }),
     // No realtime transport in the contract: nothing is emitted (never simulated).
     subscribe: () => () => undefined,
   };

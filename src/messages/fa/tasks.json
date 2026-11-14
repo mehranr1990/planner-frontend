@@ -212,7 +212,8 @@
       "note": "یادداشت",
       "recurrence": "تکرار",
       "plan": "برنامهٔ روز",
-      "time": "زمان کار"
+      "time": "زمان کار",
+      "category": "دسته"
     },
     "unavailable": "هنوز در دسترس نیست",
     "bulkPartial": "{n} کار به‌روز نشد."
@@ -327,6 +328,13 @@
     "duration": "مدت",
     "energy": "انرژی",
     "priority": "اولویت",
+    "category": "دسته",
+    "categories": {
+      "design": "طراحی",
+      "admin": "اداری و قبض‌ها",
+      "writing": "نوشتن",
+      "errands": "کارهای بیرون"
+    },
     "goal": "هدف مرتبط",
     "areaLabels": "حوزه · برچسب‌ها",
     "inMyDay": "در روز من",
@@ -341,7 +349,9 @@
       "subtasks": "زیرکارها",
       "notes": "یادداشت‌ها",
       "activity": "فعالیت",
-      "links": "پیوندها"
+      "links": "پیوندها",
+      "files": "فایل‌ها",
+      "reminders": "یادآورها"
     },
     "subtasks": {
       "progress": "{done} از {total}",
@@ -365,7 +375,9 @@
       },
       "scheduled": "از بدون‌زمان به {time} منتقل شد",
       "subtaskDone": "زیرکار «{title}» انجام شد",
-      "priority": "اولویت روی {priority} گذاشته شد"
+      "priority": "اولویت روی {priority} گذاشته شد",
+      "completed": "انجام شد",
+      "reopened": "به انجام‌نشده برگشت"
     },
     "links": {
       "blockedBy": "منتظرِ",

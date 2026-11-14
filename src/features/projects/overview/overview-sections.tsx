@@ -43,7 +43,7 @@ export function NextMilestones({
   const t = useTranslations("Project.milestones");
   const format = useProjectFormat();
   const upcoming = milestones.filter((milestone) => !milestone.done).slice(0, 3);
-  const phaseName = (id: string) => phases.find((phase) => phase.id === id)?.name ?? "";
+  const phaseName = (id: string | null) => phases.find((phase) => phase.id === id)?.name ?? "";
   return (
     <ProductCard as="section" aria-labelledby="milestones-title" className="gap-3">
       <div className="flex items-baseline justify-between gap-2">
@@ -82,7 +82,7 @@ export function NextMilestones({
                   >
                     {blocked
                       ? t("blocked", { what: milestone.blockedBy! })
-                      : isLast && milestone.phaseId === "launch"
+                      : (isLast && milestone.phaseId === "launch") || milestone.tasksLeft === null
                         ? t("phase", { phase: phaseName(milestone.phaseId) })
                         : t("tasksLeft", {
                             n: format.number(milestone.tasksLeft),
@@ -91,7 +91,7 @@ export function NextMilestones({
                   </span>
                 </span>
                 <span className={cn("shrink-0 text-xs font-bold", blocked ? "text-danger-text" : "text-scope-deep")}>
-                  {format.day(milestone.due)}
+                  {milestone.due ? format.day(milestone.due) : null}
                 </span>
               </li>
             );
@@ -119,11 +119,14 @@ export function ProjectSectionsTabs({
   showTeamLoad: boolean;
 }) {
   const t = useTranslations("Project.tabs");
+  const tShell = useTranslations("ContextShell");
   const format = useProjectFormat();
   const activity = useProjectActivity(projectId, 6);
   const risks = useProjectRisks(projectId, true);
   const workload = useProjectWorkload(projectId, showTeamLoad);
   const openRisks = risks.data ?? [];
+  // Live: project activity is not served in this shape (unavailable, no endless skeleton); risks and team load are.
+  const unavailable = <p className="text-sm text-fg-muted">{tShell("unavailable")}</p>;
 
   const tabs: FolderTab[] = [
     {
@@ -131,6 +134,8 @@ export function ProjectSectionsTabs({
       label: t("activity"),
       content: activity.data ? (
         <ActivityList items={activity.data} workflow={workflow} />
+      ) : activity.isError ? (
+        unavailable
       ) : (
         <Skeleton className="h-32 rounded-row" />
       ),
@@ -139,7 +144,13 @@ export function ProjectSectionsTabs({
       value: "risks",
       label: t("risks"),
       count: risks.data ? t("risksCount", { n: format.number(openRisks.length) }) : undefined,
-      content: risks.data ? <RiskList risks={openRisks} /> : <Skeleton className="h-24 rounded-row" />,
+      content: risks.data ? (
+        <RiskList risks={openRisks} />
+      ) : risks.isError ? (
+        unavailable
+      ) : (
+        <Skeleton className="h-24 rounded-row" />
+      ),
     },
   ];
   if (showTeamLoad) {
@@ -147,7 +158,13 @@ export function ProjectSectionsTabs({
       value: "load",
       label: t("load"),
       count: t("loadHint"),
-      content: workload.data ? <TeamLoad entries={workload.data} /> : <Skeleton className="h-32 rounded-row" />,
+      content: workload.data ? (
+        <TeamLoad entries={workload.data} />
+      ) : workload.isError ? (
+        unavailable
+      ) : (
+        <Skeleton className="h-32 rounded-row" />
+      ),
     });
   }
   return <FolderTabsCard label={t("label")} tabs={tabs} defaultValue="activity" />;
@@ -237,12 +254,13 @@ function TeamLoad({ entries }: { entries: readonly WorkloadEntry[] }) {
   const tActivity = useTranslations("Project.activity");
   const format = useProjectFormat();
   if (entries.length === 0) return <p className="py-4 text-sm text-fg-muted">{t("empty")}</p>;
-  const max = Math.max(...entries.map((entry) => Math.max(entry.hours, entry.capacity)));
+  const max = Math.max(1, ...entries.map((entry) => Math.max(entry.hours, entry.capacity ?? 0)));
   return (
     <div className="flex flex-col gap-3">
       <ul className="flex flex-col gap-3">
         {entries.map((entry) => {
-          const over = entry.hours > entry.capacity;
+          const over = entry.capacity !== null && entry.hours > entry.capacity;
+          const hours = format.number(entry.hours);
           const name = entry.person.id === "me" ? tActivity("you") : entry.person.name;
           return (
             <li key={entry.person.id} className="grid grid-cols-[minmax(6rem,9rem)_1fr_auto] items-center gap-3">
@@ -258,11 +276,11 @@ function TeamLoad({ entries }: { entries: readonly WorkloadEntry[] }) {
               </span>
               <span
                 role="meter"
-                aria-label={t("row", {
-                  name,
-                  hours: format.number(entry.hours),
-                  capacity: format.number(entry.capacity),
-                })}
+                aria-label={
+                  entry.capacity === null
+                    ? t("rowOnly", { name, hours })
+                    : t("row", { name, hours, capacity: format.number(entry.capacity) })
+                }
                 aria-valuemin={0}
                 aria-valuemax={max}
                 aria-valuenow={entry.hours}
@@ -274,7 +292,7 @@ function TeamLoad({ entries }: { entries: readonly WorkloadEntry[] }) {
                 />
               </span>
               <span className={cn("text-xs font-semibold tabular", over ? "text-danger-text" : "text-fg-secondary")}>
-                {t("hours", { hours: format.number(entry.hours), capacity: format.number(entry.capacity) })}
+                {entry.capacity === null ? t("hoursOnly", { hours }) : t("hours", { hours, capacity: format.number(entry.capacity) })}
                 {over ? <span className="sr-only"> · {t("over")}</span> : null}
               </span>
             </li>

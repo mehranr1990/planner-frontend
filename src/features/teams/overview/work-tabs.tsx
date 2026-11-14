@@ -54,7 +54,7 @@ export function WorkTabs({ teamId }: { teamId: string }) {
   return <FolderTabsCard label={t("label")} tabs={tabs} defaultValue="in-progress" surface="subtle" />;
 }
 
-export const PRIORITY_DOT: Record<TeamTask["priority"], string> = {
+export const PRIORITY_DOT: Record<NonNullable<TeamTask["priority"]>, string> = {
   urgent: "text-danger",
   high: "text-warning",
   medium: "text-fg-muted",
@@ -74,10 +74,12 @@ function WorkCard({ teamId, task }: { teamId: string; task: TeamTask }) {
             {t("due", { date: format.day(task.due) })}
           </span>
         ) : null}
-        <span className="ms-auto inline-flex items-center gap-1 text-xs font-semibold text-fg">
-          <Circle aria-hidden size={7} strokeWidth={0} className={cn("fill-current", PRIORITY_DOT[task.priority])} />
-          {tWork(`priority.${task.priority}`)}
-        </span>
+        {task.priority ? (
+          <span className="ms-auto inline-flex items-center gap-1 text-xs font-semibold text-fg">
+            <Circle aria-hidden size={7} strokeWidth={0} className={cn("fill-current", PRIORITY_DOT[task.priority])} />
+            {tWork(`priority.${task.priority}`)}
+          </span>
+        ) : null}
       </div>
       <h3 className="text-sm font-bold text-fg">
         <Link

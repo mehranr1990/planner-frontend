@@ -121,14 +121,28 @@ describe("live meetings (X1-M via access/me)", () => {
     expect(await code(createApiMessaging(meetingsApi().client, USER).meetings.rsvp(M1, "going"))).toMatch(/^unavailable:/);
   });
 
-  it("update: organiser PATCH with the meeting ETag; personal create / invitees stay refused (OD-1)", async () => {
+  it("update: organiser PATCH with the meeting ETag", async () => {
     const api = meetingsApi();
     const repo = createApiMessaging(api.client, USER);
     await repo.meetings.update(M1, { title: "Renamed", link: null });
     expect(api.calls.find((call) => call.method === "PATCH")).toMatchObject({ path: `/meetings/${M1}`, ifMatch: '"mt-4"', body: { event: { title: "Renamed" }, externalUrl: null } });
+  });
+
+  it("personal create (S5): INDEPENDENT with the catalog's MEETING policy, organiser only; invitees / empty catalog refused truthfully", async () => {
+    const policy = { version: "mp-rpc-v1.0-meeting", applicableContexts: ["MEETING"], marketScope: "IR", classRules: {}, createdAt: "x" };
+    const api = fakeApi((call) => (call.path === "/retention-policies" ? json({ items: [policy] }) : json({ id: call.body.id }, 201)));
+    const repo = createApiMessaging(api.client, USER);
     const personal = { kind: "personal", workspaceId: null, name: "" } as const;
-    expect(await code(repo.meetings.create({ title: "x", source: personal, start: iso(1), end: iso(2), inviteeIds: [], link: null, clientOpId: "op" }))).toMatch(/OD-1/);
-    expect(await code(repo.meetings.invitable(personal))).toMatch(/OD-1/);
+    const input = { title: " Dentist ", source: personal, start: iso(1), end: iso(2), inviteeIds: [], link: null, clientOpId: "op-p" };
+    expect(await repo.meetings.invitable(personal)).toEqual([]);
+    const id = await repo.meetings.create(input);
+    const post = api.calls.at(-1)!;
+    expect(post).toMatchObject({ method: "POST", path: "/meetings", key: "op-p", body: { id, kind: "INDEPENDENT", retentionPolicyVersion: "mp-rpc-v1.0-meeting", event: { title: "Dentist" } } });
+    expect(post.body).not.toHaveProperty("participantActorIds");
+    expect(await code(repo.meetings.create({ ...input, inviteeIds: ["u2"], clientOpId: "op-q" }))).toMatch(/^unavailable:.*account ids/);
+    const empty = fakeApi(() => json({ items: [] }));
+    expect(await code(createApiMessaging(empty.client, USER).meetings.create(input))).toMatch(/^unavailable:/);
+    expect(empty.writes()).toEqual([]);
   });
 });
 
@@ -155,9 +169,10 @@ function workApi(opts: { createStatus?: number } = {}) {
 }
 
 describe("live meeting creation (M-X4 / M-X5)", () => {
-  it("sources = only workspaces whose access/me reports meeting.create (not roles); unreadable ones are left out", async () => {
+  it("sources = Personal + only workspaces whose access/me reports meeting.create (not roles); unreadable ones are left out", async () => {
     const api = workApi();
     expect(await createApiMessaging(api.client, USER).meetings.sources()).toEqual([
+      { kind: "personal", workspaceId: null, name: "" },
       { kind: "team", workspaceId: "t1", name: "Design Team" },
       { kind: "company", workspaceId: "c1", name: "Euroly" },
     ]);
@@ -227,11 +242,11 @@ describe("live minutes (immutable versions, one reviewer)", () => {
     const minutes = (await repo.minutes.get(M1))!;
     expect(minutes).toMatchObject({ status: "draft", version: 1, summary: "Summary", personal: false, reviews: [], changesComment: null });
     expect(minutes.decisions).toEqual([{ id: "d1", text: "Ship it", proposedBy: null }]);
-    expect(minutes.can).toEqual({ write: true, submit: true, review: false, finalize: false, makeTask: false });
+    expect(minutes.can).toEqual({ write: true, submit: true, review: false, finalize: false, makeTask: false, withdraw: false });
     expect(minutes.versions[0]).toMatchObject({ version: 1, status: "draft", by: { id: "u1" } });
   });
 
-  it("save creates a child version with fresh row ids; assignees are refused before any write", async () => {
+  it("save creates a child version with fresh row ids; assignee (member id) and due date are sent (M-X6/M-X7)", async () => {
     const api = meetingsApi({ versions: [version()] });
     const repo = createApiMessaging(api.client, USER);
     await repo.minutes.save(M1, { summary: "New summary" });
@@ -239,9 +254,9 @@ describe("live minutes (immutable versions, one reviewer)", () => {
     expect(post.path).toBe(`/meetings/${M1}/versions`);
     expect(post.body).toMatchObject({ parentId: "v1", minutes: "New summary", decisions: [{ text: "Ship it" }], actions: [{ title: "Write notes" }] });
     expect((post.body.decisions as { id: string }[])[0].id).not.toBe("d1");
-    const before = api.writes().length;
-    expect(await code(repo.minutes.save(M1, { actionItems: [{ id: "x1", text: "Write notes", assignee: { id: "a2", name: "Sara", initials: "S" }, due: null, task: null }] }))).toMatch(/^unavailable:/);
-    expect(api.writes().length).toBe(before);
+    await repo.minutes.save(M1, { actionItems: [{ id: "x1", text: "Write notes", assignee: { id: "a2", name: "Sara", initials: "S" }, due: "2026-11-20", task: null }] });
+    const second = api.calls.filter((call) => call.method === "POST").at(-1)!;
+    expect((second.body.actions as unknown[])[0]).toMatchObject({ title: "Write notes", assigneeMemberId: "mm2", dueDate: "2026-11-20" });
   });
 
   it("submit names exactly one reviewer (member id), then submits with the new revision", async () => {

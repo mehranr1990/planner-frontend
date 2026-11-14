@@ -1,4 +1,5 @@
 import type { CalendarSystem } from "@/lib/dates/format";
+import { RepositoryError } from "./repositories";
 import type {
   DeclineReason,
   InviteRole,
@@ -52,6 +53,7 @@ import type {
   ImportTarget,
   OwnershipTransfer,
   ProjectAccessSettings,
+  ProjectRolePolicy,
   ProjectGeneralPatch,
   WorkflowDraft,
   WorkflowMigrationPreview,
@@ -202,6 +204,8 @@ export interface FileUploadInput {
   folderId: string | null;
   /** Same name as an existing file: upload as its next version. */
   asNewVersionOf?: string;
+  /** The bytes (live adapters stream them; the mock ignores them). */
+  file?: Blob;
 }
 
 /** PJ-10 (D14): one folder level, versions by re-upload, scan before download, limits from the server. */
@@ -285,6 +289,12 @@ export interface ProjectSettingsRepository {
   update(projectId: string, patch: ProjectGeneralPatch): Promise<ProjectSummary>;
   access(projectId: string): Promise<ProjectAccessSettings>;
   setAccess(projectId: string, patch: Partial<ProjectAccessSettings>): Promise<ProjectAccessSettings>;
+  /**
+   * Live only: the access policy as role defaults (the toggles above are not served there).
+   * Publishing needs the version the user saw (If-Match); a stale one rejects "conflict".
+   */
+  rolePolicy?(projectId: string): Promise<ProjectRolePolicy>;
+  setRolePolicy?(projectId: string, roleDefaults: ProjectRolePolicy["roleDefaults"], version: number): Promise<ProjectRolePolicy>;
   saveTemplate(projectId: string): Promise<{ name: string }>;
   archive(projectId: string): Promise<ProjectSummary>;
   transfer(projectId: string): Promise<OwnershipTransfer | null>;
@@ -472,8 +482,37 @@ export interface NewProjectInput {
   startDate: string;
   endDate: string;
   template: ProjectTemplate;
+  /**
+   * One id per user attempt (the sheet keeps it until a definitive answer): live
+   * uses it as the project id and Idempotency-Key, so a resubmit after an
+   * unknown outcome (timeout) replays instead of creating a duplicate.
+   */
+  attemptId?: string;
   /** Teams (Phase 3, TM-06): the owning team when created under it (mock until the backend topology lands). */
   ownerTeamId?: string;
+}
+
+/**
+ * The project was created, but a later step did not complete: "details" = the
+ * key and dates were not saved, "read" = everything was saved but the new
+ * project could not be read back. The caller must not create it again.
+ */
+export class ProjectCreatePartialError extends RepositoryError {
+  constructor(
+    readonly projectId: string,
+    readonly projectName: string,
+    readonly stage: "details" | "read",
+    readonly cause?: unknown,
+  ) {
+    super("partial", `project-created-${stage}`);
+  }
+}
+
+/** Live (2026-11-14): Blank only (server templates are project-scoped), independent owner only, no Undo (deletion needs the password). */
+export interface ProjectCreateLimits {
+  templates: readonly ProjectTemplate[];
+  teamOwner: boolean;
+  discard: boolean;
 }
 
 export interface ProjectCreateRepository {
@@ -481,6 +520,8 @@ export interface ProjectCreateRepository {
   create(input: NewProjectInput): Promise<ProjectSummary>;
   /** Uniqueness check for a project key (mock now; the backend stays authoritative). */
   isKeyAvailable(key: string): Promise<boolean>;
+  /** What this adapter can create; absent = everything the sheet offers (mock). */
+  readonly limits?: ProjectCreateLimits;
   /** Undo of create (Owner, right after creating). */
   discard(projectId: string): Promise<void>;
 }

@@ -225,11 +225,10 @@ function InvitationStrip({ invitation }: { invitation: CompanyInvitation }) {
   const accept = useAcceptCompanyInvitation();
   const decline = useDeclineCompanyInvitation();
   const busy = accept.isPending || decline.isPending;
-  const title = tAll("invite.title", {
-    company: invitation.companyName,
-    role: labels.role(invitation.role),
-    department: invitation.departmentName ? ` · ${invitation.departmentName}` : "",
-  });
+  const title =
+    invitation.companyName && invitation.role
+      ? tAll("invite.title", { company: invitation.companyName, role: labels.role(invitation.role), department: invitation.departmentName ? ` · ${invitation.departmentName}` : "" })
+      : tAll("invite.generic");
   return (
     <section
       aria-label={title}
@@ -240,7 +239,7 @@ function InvitationStrip({ invitation }: { invitation: CompanyInvitation }) {
       </span>
       <div className="flex min-w-0 flex-1 flex-col">
         <p className="text-sm font-bold text-fg">{title}</p>
-        <p className="text-xs font-semibold">{tAll("invite.body", { company: invitation.companyName })}</p>
+        {invitation.companyName ? <p className="text-xs font-semibold">{tAll("invite.body", { company: invitation.companyName })}</p> : null}
       </div>
       <div className="flex gap-2">
         <Button

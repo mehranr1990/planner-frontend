@@ -10,7 +10,8 @@
     "short": "Invited as {role}",
     "accept": "Accept",
     "decline": "Decline",
-    "declined": "Invitation declined"
+    "declined": "Invitation declined",
+    "generic": "Team invitation"
   },
   "roles": {
     "owner": "Owner",

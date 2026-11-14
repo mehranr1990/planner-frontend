@@ -3,10 +3,12 @@ import type {
   AgendaItem,
   Announcement,
   AnnouncementAccess,
+  AnnouncementReminder,
   Attachment,
   ChannelPolicy,
   ConversationAccess,
   ConversationDetail,
+  ConversationInvitation,
   ConversationSummary,
   ConversationTab,
   Decision,
@@ -19,6 +21,7 @@ import type {
   Message,
   MessagePage,
   MessagingEvent,
+  MessagingNotice,
   MessagingSettings,
   Minutes,
   MsgPerson,
@@ -85,6 +88,13 @@ export interface ConversationRepository {
   unreadCount(): Promise<number>;
   /** Unread mentions in a workspace's channels (rail badge). */
   workspaceMentions(workspaceId: string): Promise<number>;
+  /** Pending invitations addressed to me (expired / revoked ones are not served). */
+  invitations(): Promise<ConversationInvitation[]>;
+  /** Accept (joins; resolves the conversation id) or decline; a stale / revoked invitation rejects. */
+  respondInvitation(invitation: ConversationInvitation, accept: boolean): Promise<string>;
+  /** Messaging notices for the bell (newest first). */
+  notices(): Promise<MessagingNotice[]>;
+  readNotice(notice: MessagingNotice): Promise<void>;
 }
 
 export interface MessageRepository {
@@ -140,6 +150,8 @@ export interface MeetingRepository {
   saveNotes(id: string, notes: string): Promise<void>;
   /** `blob`: the picked file (live uploads its bytes; the mock keeps name + size only). */
   attach(id: string, file: { name: string; bytes: number; linked: boolean; blob?: Blob }): Promise<void>;
+  /** The private bytes of a READY file, authorised by the server (no storage URL is exposed). */
+  download(id: string, fileId: string): Promise<{ blob: Blob; name: string }>;
   /** People the actor may invite for a source. */
   invitable(source: MsgSource): Promise<MsgPerson[]>;
   /** Sources the actor may create meetings in. */
@@ -154,6 +166,8 @@ export interface MinutesRepository {
   approve(meetingId: string, comment?: string): Promise<void>;
   requestChanges(meetingId: string, comment: string): Promise<void>;
   finalize(meetingId: string): Promise<void>;
+  /** Pulls the in-review / approved version back to Draft (`can.withdraw`); never a final version. */
+  withdraw(meetingId: string): Promise<void>;
   /** Records the task the caller created in the source workspace (explicit "Make task" only). */
   linkTask(meetingId: string, itemId: string, task: NonNullable<ActionItem["task"]>): Promise<void>;
 }
@@ -161,10 +175,13 @@ export interface MinutesRepository {
 export interface AnnouncementRepository {
   /** `kind`: the workspace kind (live reads `/announcements/scopes/{kind}/{scopeId}`). */
   list(workspaceId: string, kind?: MsgSourceKind): Promise<Announcement[]>;
-  access(workspaceId: string): Promise<AnnouncementAccess>;
+  access(workspaceId: string, kind?: MsgSourceKind): Promise<AnnouncementAccess>;
   publish(input: NewAnnouncementInput): Promise<string>;
   ack(id: string): Promise<void>;
   remind(id: string): Promise<void>;
+  /** "Please read" reminders addressed to me (bell). */
+  reminders(): Promise<AnnouncementReminder[]>;
+  readReminder(id: string): Promise<void>;
 }
 
 export interface MessagingRepository {

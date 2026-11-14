@@ -45,7 +45,7 @@
     "label": "Notifications",
     "title": "Notifications",
     "emptyTitle": "You’re all caught up",
-    "emptyDescription": "Notifications arrive in a later step."
+    "emptyDescription": "Reminders you set show up here when they’re due."
   },
   "account": {
     "trigger": "Account menu",

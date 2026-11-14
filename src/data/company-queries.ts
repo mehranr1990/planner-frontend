@@ -122,6 +122,31 @@ export function useStaff(id: string | undefined, role: CompanyRole) {
   const repo = useCompanyRepository();
   return useScoped(id, ["staff", role], (cid) => repo.staff(cid, role));
 }
+/**
+ * Server preview of moving the person's seat between two departments (both chosen).
+ * Kept outside the company scope: the move itself invalidates the scope, and a
+ * preview of a seat that just moved must not hold the dialog open with retries.
+ */
+export function useTransferPreview(id: string, personId: string, fromDepartmentId: string | null, toDepartmentId: string | null) {
+  const repo = useCompanyRepository();
+  const hydrated = useIsClient();
+  return afterHydration(
+    useQuery({
+      queryKey: [...companyKeys.all, "transfer-preview", id, personId, fromDepartmentId, toDepartmentId],
+      queryFn: () => repo.previewTransfer(id, personId, fromDepartmentId!, toDepartmentId!),
+      enabled: !!fromDepartmentId && !!toDepartmentId,
+      retry: false,
+      staleTime: 0,
+      gcTime: 0,
+    }),
+    hydrated,
+  );
+}
+/** Eligible reviewers for a corrective action about this person. */
+export function useCaseReviewers(id: string, personId: string) {
+  const repo = useCompanyRepository();
+  return useScoped(id, ["case-reviewers", personId], (cid) => repo.caseReviewers(cid, personId));
+}
 export function usePendingCompanyInvites(id: string, enabled: boolean) {
   const repo = useCompanyRepository();
   return useScoped(id, ["invites"], (cid) => repo.pendingInvites(cid), enabled);
@@ -229,6 +254,32 @@ export function useAuditLog(id: string, enabled: boolean) {
 export function useCompanySettings(id: string, enabled = true) {
   const repo = useCompanyRepository();
   return useScoped(id, ["settings"], (cid) => repo.settings(cid), enabled);
+}
+
+/** The viewer's notifications in the company in the URL (bell); polled like the Personal unread count. */
+export function useCompanyNotifications(id: string | undefined, enabled = true) {
+  const repo = useCompanyRepository();
+  const hydrated = useIsClient();
+  return afterHydration(
+    useQuery({
+      queryKey: companyKeys.item(id ?? "", "notifications"),
+      queryFn: () => repo.notifications(id!),
+      enabled: id !== undefined && enabled,
+      refetchInterval: COMPANY_NOTIFICATION_POLL_MS,
+    }),
+    hydrated,
+  );
+}
+const COMPANY_NOTIFICATION_POLL_MS = 60_000;
+
+/** Marks one company notification read; refreshes only the notification list. */
+export function useReadCompanyNotification(id: string) {
+  const repo = useCompanyRepository();
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: (notificationId: string) => repo.readNotification(id, notificationId),
+    onSettled: () => client.invalidateQueries({ queryKey: companyKeys.item(id, "notifications") }),
+  });
 }
 
 /* ── writes inside one company ── */

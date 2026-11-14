@@ -425,12 +425,12 @@ export function createMockProjects({
       const index = invitations.findIndex((invitation) => invitation.id === id);
       if (index < 0) throw new RepositoryError("not-found", `No invitation ${id}`);
       const [invitation] = invitations.splice(index, 1);
-      const added = invitedProjectFixtures[invitation!.projectId];
+      const added = invitedProjectFixtures[invitation!.projectId!];
       if (added && !find(added.id)) {
-        projects.unshift({ ...structuredClone(added), role: invitation!.role });
+        projects.unshift({ ...structuredClone(added), role: invitation!.role! });
         recent.unshift(added.id);
       }
-      return respond({ projectId: invitation!.projectId });
+      return respond({ projectId: invitation!.projectId! });
     },
     async decline(id) {
       const index = invitations.findIndex((invitation) => invitation.id === id);

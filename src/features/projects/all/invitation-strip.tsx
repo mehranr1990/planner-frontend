@@ -38,11 +38,13 @@ export function InvitationStrip({
   const [declining, setDeclining] = useState(false);
   const [note, setNote] = useState("");
   const noteId = useId();
-  const role = labels.role(invitation.role);
+  const role = invitation.role ? labels.role(invitation.role) : null;
+  const project = invitation.projectName ?? t("generic");
+  const inviter = invitation.inviter?.name ?? t("someone");
 
   return (
     <section
-      aria-label={t("title", { project: invitation.projectName })}
+      aria-label={(invitation.projectName ? t("title", { project }) : t("generic"))}
       className="flex items-center gap-3 rounded-row bg-info-soft px-4 py-3 text-info-text"
     >
       <span
@@ -53,18 +55,18 @@ export function InvitationStrip({
       </span>
       <div className="flex min-w-0 flex-1 flex-col leading-snug">
         <p className="truncate text-sm font-bold text-fg">
-          <span className="max-sm:hidden">{t("title", { project: invitation.projectName })}</span>
-          <bdi className="sm:hidden">{invitation.projectName}</bdi>
+          <span className="max-sm:hidden">{(invitation.projectName ? t("title", { project }) : t("generic"))}</span>
+          <bdi className="sm:hidden">{project}</bdi>
         </p>
         <p className="truncate text-xs font-semibold">
           <span className="max-sm:hidden">
-            {t("line", { name: invitation.inviter.name, role })} ·{" "}
-            {t("meta", { time: format.relative(invitation.sentAt) })}
+            {invitation.inviter && role ? <>{t("line", { name: inviter, role })} · </> : null}
+            {invitation.sentAt ? t("meta", { time: format.relative(invitation.sentAt) }) : null}
           </span>
-          <span className="sm:hidden">{t("short", { role })}</span>
+          <span className="sm:hidden">{role ? t("short", { role }) : t("generic")}</span>
         </p>
       </div>
-      <Link href={projectHref(invitation.projectId)} className={cn(buttonVariants({ size: "sm" }), "sm:hidden")}>
+      <Link href={invitation.projectId ? projectHref(invitation.projectId) : "#"} aria-hidden={invitation.projectId ? undefined : true} hidden={!invitation.projectId} className={cn(buttonVariants({ size: "sm" }), "sm:hidden")}>
         {t("review")}
       </Link>
       <div className="flex shrink-0 items-center gap-2 max-sm:hidden">
@@ -78,8 +80,8 @@ export function InvitationStrip({
 
       <Dialog open={declining} onOpenChange={setDeclining}>
         <DialogContent
-          title={t("declineTitle", { project: invitation.projectName })}
-          description={t("declineDescription", { name: invitation.inviter.name })}
+          title={t("declineTitle", { project })}
+          description={t("declineDescription", { name: inviter })}
           size="sm"
         >
           <div className="flex flex-col gap-2">
@@ -91,7 +93,7 @@ export function InvitationStrip({
               value={note}
               maxLength={280}
               onChange={(event) => setNote(event.target.value)}
-              placeholder={t("notePlaceholder", { name: invitation.inviter.name })}
+              placeholder={t("notePlaceholder", { name: inviter })}
             />
           </div>
           <div className="flex flex-wrap justify-end gap-2">

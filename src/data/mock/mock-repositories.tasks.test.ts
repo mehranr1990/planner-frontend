@@ -109,7 +109,8 @@ describe("mock tasks · create", () => {
     expect(created.id).toMatch(/^t-new-/);
     // A time never makes a block: that is blocks.schedule.
     expect(ids(await repo.blocks.listForDay(tomorrow))).not.toContain(created.id);
-    expect(await repo.tasks.get(created.id)).toEqual(created);
+    // The detail read also reports the (empty) Personal category, like the live adapter.
+    expect(await repo.tasks.get(created.id)).toEqual({ ...created, category: null });
   });
 
   it("orders each new task after the last", async () => {

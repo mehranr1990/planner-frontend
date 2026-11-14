@@ -18,6 +18,8 @@ import type {
   CompanySummary,
   CorrectiveAction,
   Department,
+  EmployeeFileAccess,
+  FileDocument,
   KbFolder,
   KbPage,
   KbPageSummary,
@@ -27,6 +29,9 @@ import type { CompanyRepository } from "../company-repositories";
 import { RepositoryError } from "../repositories";
 import { invalid, mapErrors, pageAll, retryOnConflict, revisionTag } from "./api-shared";
 import { conflictAware, initialsOf, liveOnlyIn } from "./api-project-shared";
+import { createCompanyCompletion } from "./api-company-completion";
+import { createCompanyFinance, type FinanceScope } from "./api-company-finance";
+import { createCompanyOperations } from "./api-company-operations";
 
 /*
  * Companies (Phase 4) in live mode, over the 860-op subset in
@@ -52,8 +57,8 @@ type ApiMember = Data<"/api/v1/companies/{id}/contexts/{scopeId}/members", "get"
 type ApiDepartment = Data<"/api/v1/companies/{id}/departments", "get">["items"][number];
 
 const PAGE = 100;
-const PROOF = "accepting or declining needs the one-time invitation proof, whose delivery is an open owner decision (OD-4)";
-const MONEY = "the API has no company currency (amounts carry their own currency and scale per row) and its finance model (expense versions, workflow approvals, budget adjustments, per-reimbursement acknowledgements) differs from the screen";
+
+const DOCUMENT_TYPES = ["text/plain", "application/pdf", "image/png", "image/jpeg"] as const;
 
 const refuse = (requirement: string) => () => Promise.reject(new RepositoryError("unsupported", `Companies API: ${requirement}`));
 
@@ -79,48 +84,56 @@ const isHidden = (error: unknown) =>
   (error instanceof ApiHttpError && (error.status === 403 || error.status === 404)) ||
   (error instanceof RepositoryError && (error.code === "forbidden" || error.code === "not-found"));
 
-const LIVE_MODULES: readonly CompanyModule[] = ["overview", "departments"];
+const LIVE_MODULES: readonly CompanyModule[] = ["overview", "departments", "work", "goals", "resources", "approvals", "budgets", "knowledge", "reports"];
 
 /** Backend capability hints ∧ what live mode can do. */
 export function companyCapabilitiesOf(me: ApiMe, managedDepartmentIds: string[]): CompanyCapabilities {
   const has = (capability: string) => me.capabilities.includes(capability);
   const lifecycle = has("custody.archive") || me.role === "OWNER";
+  const orgAdmin = me.role === "OWNER" || me.role === "ORG_ADMIN";
+  const participant = me.role !== "VIEWER" && me.role !== null;
   const modules = Object.fromEntries(
     (["overview", "departments", "people", "work", "goals", "resources", "expenses", "approvals", "budgets", "knowledge", "reports", "settings"] as const).map((module) => [
       module,
-      module === "settings" ? lifecycle : LIVE_MODULES.includes(module),
+      module === "settings" ? lifecycle : module === "people" ? has("directory.read") : module === "expenses" ? participant : LIVE_MODULES.includes(module),
     ]),
   ) as Record<CompanyModule, boolean>;
   return {
     modules,
     allDepartments: me.role === "OWNER" || me.role === "ORG_ADMIN" || me.role === "ADMIN",
     managedDepartmentIds,
-    budgetCard: false,
+    // Budget card from the finance report (company currency only).
+    budgetCard: has("finance.manage"),
     export: false,
     manageDepartments: has("settings.manage"),
+    // Owner / Org Admin, or the manager of both departments (members / viewers only); the server checks each move.
+    transferStaff: orgAdmin || managedDepartmentIds.length > 0,
     overridePolicy: false,
-    // Sending an invitation returns a proof whose delivery is undecided (OD-4).
-    invite: false,
-    editWorkProfile: false,
-    requestFileAccess: false,
-    requestAttach: false,
+    // By email; the server delivers the proof to the recipient (never shown to the inviter).
+    invite: has("invitation.member"),
+    editWorkProfile: has("staff.manage"),
+    requestFileAccess: orgAdmin || me.role === "DEPT_MANAGER",
+    // The caller proposes one of their own projects / teams (association candidates).
+    requestAttach: orgAdmin,
     createWork: false,
     seeWorkBudgets: false,
-    createCompanyGoal: false,
-    createDepartmentGoal: false,
+    createCompanyGoal: orgAdmin,
+    createDepartmentGoal: orgAdmin || me.role === "DEPT_MANAGER",
     linkGoalWork: false,
-    requestResource: false,
+    requestResource: participant,
+    // Adding a resource needs an asset tag the contract does not store.
     manageResources: false,
-    seeCapacity: false,
-    createKbPage: false,
-    manageKb: false,
-    seeAllExpenses: false,
-    createExpense: false,
-    approve: false,
-    approvalHistoryAll: false,
-    companyBudgets: false,
-    requestBudgetChange: false,
-    settleReimbursements: false,
+    seeCapacity: orgAdmin,
+    createKbPage: has("knowledge.manage"),
+    manageKb: has("knowledge.manage"),
+    seeAllExpenses: has("finance.manage"),
+    createExpense: participant,
+    // Approvals list only the steps assigned to the caller as actionable (forMe); the server checks every decision.
+    approve: me.role !== "VIEWER" && me.role !== null,
+    approvalHistoryAll: orgAdmin,
+    companyBudgets: orgAdmin,
+    requestBudgetChange: orgAdmin || me.role === "DEPT_MANAGER",
+    settleReimbursements: orgAdmin,
     companyReports: false,
     departmentReports: false,
     auditLog: false,
@@ -264,6 +277,26 @@ export function createApiCompanyRepository(client: ApiClient): CompanyRepository
   };
   const departments = (id: string) => mapErrors(async () => Promise.all((await structure(id)).map((department) => departmentOf(id, department))));
 
+  const finance = createCompanyFinance(
+    api,
+    async (id) => {
+      const [{ company }, units] = await Promise.all([read(id), structure(id)]);
+      const scopes: FinanceScope[] = [];
+      // Resource approvals count the caller's role in the context plus the root role of an Owner / Org Admin (server rule).
+      let rootRole: string | null = null;
+      for (const entry of [{ scopeId: company.scopeId, departmentId: null as string | null, name: company.title }, ...units.map((unit) => ({ scopeId: unit.scopeId, departmentId: unit.id, name: unit.title }))]) {
+        // A context the caller cannot open is simply left out.
+        const mine = await me(id, entry.scopeId).catch(() => null);
+        if (!mine) continue;
+        if (entry.departmentId === null) rootRole = mine.role;
+        const roles = [mine.role, rootRole === "OWNER" || rootRole === "ORG_ADMIN" ? rootRole : null].filter((role): role is string => !!role);
+        scopes.push({ ...entry, meAccessId: mine.accessId, meGeneration: mine.generation, meRoles: [...new Set(roles)] });
+      }
+      return scopes;
+    },
+    { currencyOf: async (id) => (await api.request("get", "/api/v1/companies/{id}/settings", { path: { id } })).data.currency ?? null },
+  );
+
   const supported: Partial<CompanyRepository> = {
     list: () =>
       mapErrors(async () => {
@@ -330,63 +363,24 @@ export function createApiCompanyRepository(client: ApiClient): CompanyRepository
       }),
 
     ...createCompanyModules(api, { structure, members, me, read: async (id) => (await read(id)).company }),
+    ...createCompanyCompletion(api, { read, structure, members, me, departments }),
+    ...finance,
+    ...createCompanyOperations(api, { read, structure, members, roleOf, approvals: (id) => finance.approvals!(id) }),
 
-    resourceRequests: refuse("resources are allocated directly; there is no request / approval record"),
-    requestResource: refuse("resources are allocated directly; there is no request / approval record"),
-    withdrawResourceRequest: refuse("resources are allocated directly; there is no request / approval record"),
-    addResource: refuse("resources have no asset tag, type or department field to store"),
-    projects: refuse("company project rows need health, progress, spend, lead and milestones the association does not carry"),
-    teams: refuse("company team rows need lead, people and plan completion the association does not carry"),
-    attachRequests: refuse("associations carry no subject name, owner, department, member count or linked-project consent"),
-    attachCandidates: refuse("no read lists the projects / teams the caller may attach"),
-    requestAttach: refuse("the candidate's kind (project / team) and its company-side proposal are not addressable from a candidate id"),
-    openCorrective: refuse("opening a case needs a reviewer, which the screen does not choose (owner policy)"),
-    markNotReceived: refuse(MONEY),
-    markRecordedInPersonal: refuse(MONEY),
-    create: refuse("creating a company needs the operator-supplied retentionPolicyVersion (OD-1)"),
-    overview: refuse("no portfolio quarters, KPIs, department progress or capacity watch; reports are window totals per context"),
-    invite: refuse("sending returns a one-time proof the inviter would have to deliver (OD-4)"),
-    invitations: refuse(`invitee rows carry only a label and expiry; ${PROOF}`),
-    acceptInvitation: refuse(PROOF),
-    declineInvitation: refuse(PROOF),
-    previewMove: refuse("departments cannot be moved (fixed department → unit tree, OD-5)"),
-    moveDepartment: refuse("departments cannot be moved (fixed department → unit tree, OD-5)"),
+    // Contract gaps (BACKEND_REQUIREMENTS.md → "Companies — Session 4"): refused with the reason, never faked.
+    addResource: refuse("resources have no asset tag field (the screen requires one)"),
+    markNotReceived: refuse("a beneficiary acknowledges each payment; there is no free-text 'not received' record"),
+    markRecordedInPersonal: refuse("no company read marks a reimbursement as recorded in Personal finance"),
+    create: refuse("creating a company needs the operator-supplied retentionPolicyVersion (OD-1); no COMPANY retention policy is approved in the catalog"),
     effectivePolicies: refuse("policy rules are capability rules (key, mode, roles) without the screen's named values and levels"),
     overridePolicy: refuse("policy rules are capability rules (key, mode, roles) without the screen's named values and levels"),
-    staff: refuse("staff profiles carry no location, phone, work hours, equipment or booking figures"),
-    updateWorkProfile: refuse("staff profiles carry no location, phone or work hours"),
-    pendingInvites: refuse("pending invitation rows carry no recipient email or department"),
-    goals: refuse("no company goals (OD-2)"),
-    createGoal: refuse("no company goals (OD-2)"),
-    updateKeyResult: refuse("no company goals (OD-2)"),
-    rooms: refuse("no room type or day schedule (OD-3)"),
-    bookRoom: refuse("no room type or day schedule (OD-3)"),
-    capacity: refuse("no per-person / per-day capacity heat (OD-3)"),
-    kbSave: refuse("knowledge documents are file versions, not page text (OD-6)"),
-    kbCreate: refuse("knowledge documents are file versions, not page text (OD-6)"),
-    kbVersionBody: refuse("knowledge documents are file versions, not page text (OD-6)"),
-    kbRestore: refuse("knowledge documents are file versions, not page text (OD-6)"),
-    kbAck: refuse("no knowledge read acknowledgement (OD-6)"),
-    kbRemind: refuse("no knowledge read acknowledgement (OD-6)"),
-    paymentRuns: refuse("no batch payment runs (OD-7)"),
-    createRun: refuse("no batch payment runs (OD-7)"),
-    confirmRun: refuse("no batch payment runs (OD-7)"),
-    employeeFile: refuse("no sealed employee file, access grant or document pack (OD-8)"),
-    requestFileAccess: refuse("no sealed employee file, access grant or document pack (OD-8)"),
-    addDocument: refuse("no sealed employee file, access grant or document pack (OD-8)"),
-    downloadPack: refuse("no sealed employee file, access grant or document pack (OD-8)"),
-    settings: refuse("no legal name, currency, fiscal month, retention or grants (OD-9)"),
-    updateGeneral: refuse("no legal name, currency or fiscal month (OD-9)"),
+    chains: refuse("approval workflow steps name one person each; the screen's role approvers, amount conditions and escalation days are not in the contract"),
+    saveChainDraft: refuse("approval workflow steps name one person each; the screen's role approvers, amount conditions and escalation days are not in the contract"),
+    publishChain: refuse("approval workflow steps name one person each; the screen's role approvers, amount conditions and escalation days are not in the contract"),
     setPolicyLevel: refuse("policy rules have no mandatory / default / optional level"),
-    setGrant: refuse("no time-boxed grants (OD-9)"),
-    requestTransfer: refuse("a handover takes the successor's access id without a password and answers with the handover, not the settings read model"),
   };
 
-  return liveOnlyIn<CompanyRepository>(
-    "Companies",
-    MONEY,
-    supported,
-  );
+  return liveOnlyIn<CompanyRepository>("Companies", "not mapped to the contract", supported);
 }
 
 // ── Modules over existing context operations (resources, knowledge, cases, attach, reports, exports, audit) ──
@@ -438,6 +432,21 @@ const reportWindow = () => {
 
 function createCompanyModules(api: CompaniesClient, deps: ModuleDeps): Partial<CompanyRepository> {
   const ctx = async (id: string) => (await deps.read(id)).scopeId;
+  const PAGE_PATH = "/api/v1/companies/{id}/contexts/{scopeId}/knowledge/documents/{documentId}/page" as const;
+  const readPage = async (id: string, scopeId: string, documentId: string) => (await api.request("get", PAGE_PATH, { path: { id, scopeId, documentId } })).data;
+  /** Unset pages read revision 1; every write sends the last revision. */
+  const savePage = async (id: string, scopeId: string, documentId: string, body: string, note: string) => {
+    if (body.length > 100_000) invalid("A page holds at most 100,000 characters");
+    const page = await readPage(id, scopeId, documentId);
+    const { data: saved } = await conflictAware(() =>
+      api.request("post", `${PAGE_PATH}/versions`, { path: { id, scopeId, documentId }, header: { "If-Match": revisionTag(page.revision) }, body: { body, note: note.trim().slice(0, 300) || null } }),
+    );
+    await conflictAware(() =>
+      api.request("post", `${PAGE_PATH}/publish`, { path: { id, scopeId, documentId }, header: { "If-Match": revisionTag(saved.revision) }, body: { number: saved.number!, ackRequired: saved.ackRequired } }),
+    );
+  };
+  // Filled below (the module object reads its own kbPage after writes).
+  let kbRead: (id: string, pageId: string) => Promise<KbPage | null> = async () => null;
   const hiddenAsEmpty = <T>(error: unknown): T[] => {
     if (isHidden(error)) return [];
     throw error;
@@ -578,7 +587,7 @@ function createCompanyModules(api: CompaniesClient, deps: ModuleDeps): Partial<C
       });
     });
 
-  return {
+  const modules: Partial<CompanyRepository> = {
     resources,
 
     kbFolders: (id) =>
@@ -614,6 +623,21 @@ function createCompanyModules(api: CompaniesClient, deps: ModuleDeps): Partial<C
           if (isHidden(error)) return null;
           throw error;
         }
+        // OD-6: a document with a Markdown page shows the published page (members see only the published version).
+        const page = await readPage(id, scopeId, pageId).catch(() => null);
+        if (page && page.body !== null) {
+          const acks = page.canEdit ? await api.request("get", `${PAGE_PATH}/acknowledgements`, { path: { id, scopeId, documentId: pageId } }).then((r) => r.data, () => null) : null;
+          return {
+            ...pageSummary(document, await versions(id, scopeId, pageId)),
+            body: page.body,
+            versions: page.versions.map((version) => ({ version: version.number, at: version.at, by: version.author.displayName ?? "", note: version.note ?? "" })),
+            files: [],
+            ackCount: acks?.acknowledged ?? (page.acknowledged ? 1 : 0),
+            audience: acks?.audience ?? 0,
+            canEdit: page.canEdit,
+            remindedVersion: page.remindedNumber,
+          };
+        }
         const all = await versions(id, scopeId, pageId);
         const list = published(all);
         const current = list.find((version) => version.id === document.publishedVersionId) ?? list.at(-1);
@@ -639,6 +663,62 @@ function createCompanyModules(api: CompaniesClient, deps: ModuleDeps): Partial<C
         };
       }),
 
+    // A new Markdown version, published at once with the page's acknowledgement rule.
+    kbSave: (id, pageId, body, note) =>
+      mapErrors(async () => {
+        const scopeId = await ctx(id);
+        await savePage(id, scopeId, pageId, body, note);
+        return (await kbRead(id, pageId))!;
+      }),
+
+    // A new document in the folder, then its first Markdown version published (a failed body is reported, the empty document stays listed).
+    kbCreate: (id, input) =>
+      mapErrors(async () => {
+        const title = input.title.trim();
+        if (!title || !input.folderId) invalid("title");
+        const scopeId = await ctx(id);
+        const { data } = await api.request("post", "/api/v1/companies/{id}/contexts/{scopeId}/knowledge/documents", {
+          path: { id, scopeId },
+          header: { "Idempotency-Key": newIdempotencyKey() },
+          body: { id: crypto.randomUUID(), folderId: input.folderId, title: title.slice(0, 300) },
+        });
+        await savePage(id, scopeId, data.id, input.body, "");
+        const page = await kbRead(id, data.id);
+        if (!page) throw new RepositoryError("not-found", "Not found");
+        return page;
+      }),
+
+    kbVersionBody: (id, pageId, version) =>
+      mapErrors(async () => {
+        const scopeId = await ctx(id);
+        const { data } = await api.request("get", PAGE_PATH, { path: { id, scopeId, documentId: pageId }, query: { number: version } });
+        return data.body ?? "";
+      }),
+
+    // Restoring publishes the old text as a new version.
+    kbRestore: (id, pageId, version) =>
+      mapErrors(async () => {
+        const scopeId = await ctx(id);
+        const { data } = await api.request("get", PAGE_PATH, { path: { id, scopeId, documentId: pageId }, query: { number: version } });
+        await savePage(id, scopeId, pageId, data.body ?? "", `Restored v${version}`);
+        return (await kbRead(id, pageId))!;
+      }),
+
+    kbAck: (id, pageId) =>
+      mapErrors(async () => {
+        const scopeId = await ctx(id);
+        await api.request("post", `${PAGE_PATH}/acknowledge`, { path: { id, scopeId, documentId: pageId }, body: {} });
+        return (await kbRead(id, pageId))!;
+      }),
+
+    // OD-6: deduplicated reminders to members who have not acknowledged the published version.
+    kbRemind: (id, pageId) =>
+      mapErrors(async () => {
+        const scopeId = await ctx(id);
+        await api.request("post", `${PAGE_PATH}/remind`, { path: { id, scopeId, documentId: pageId }, body: {} });
+        return (await kbRead(id, pageId))!;
+      }),
+
     kbSearch: (id, query) =>
       mapErrors(async () => {
         const term = query.trim();
@@ -655,6 +735,100 @@ function createCompanyModules(api: CompaniesClient, deps: ModuleDeps): Partial<C
             pageId: document.id,
             snippet: document.description ?? "",
           }));
+      }),
+
+    // OD-8: sealed by default; an open file needs a time-boxed grant (Company OWNER issues it) or is the subject's own.
+    employeeFile: (id, personId) =>
+      mapErrors(async (): Promise<EmployeeFileAccess> => {
+        const scopeId = await ctx(id);
+        const [{ data }, members] = await Promise.all([
+          api.request("get", "/api/v1/companies/{id}/employee-files/{subjectAccessId}", { path: { id, subjectAccessId: personId } }),
+          deps.members(id, scopeId),
+        ]);
+        const member = members.find((entry) => entry.id === personId);
+        const person = { id: personId, name: member?.displayName ?? "", initials: initialsOf(member?.displayName ?? "") };
+        if (data.status === "sealed") return { status: "sealed", person, requested: data.requested };
+        const cases = await pageAll<ApiCase>(async (after) => (await api.request("get", "/api/v1/companies/{id}/contexts/{scopeId}/employee-cases", { path: { id, scopeId }, query: { limit: PAGE, after } })).data).catch(() => [] as ApiCase[]);
+        const corrective: CorrectiveAction[] = [];
+        for (const row of cases.filter((entry) => entry.subject.accessId === personId)) corrective.push(correctiveOf(row, await entries(id, scopeId, row.id)));
+        return {
+          status: "open",
+          person,
+          own: data.own,
+          grant: { kind: data.access.kind === "SELF" ? "self" : "hr", until: data.access.expiresAt },
+          canAddDocument: data.canAddDocument,
+          // Cases are opened in the company context by an Owner / Org Admin, never about themselves.
+          canOpenCorrective: !data.own && (await deps.me(id, scopeId).then((mine) => mine.role === "OWNER" || mine.role === "ORG_ADMIN", () => false)),
+          documents: data.documents
+            .filter((document) => document.status !== "DELETED")
+            .map((document) => ({ id: document.id, name: document.title, kind: document.kind.toLowerCase() as FileDocument["kind"], addedAt: document.createdAt, grantedTo: [], readable: document.status === "READY" })),
+          log: data.log.map((row) => ({ id: row.id, at: row.at, who: row.actorDisplayName ?? "", what: row.action })),
+          corrective,
+        };
+      }),
+
+    requestFileAccess: (id, personId) =>
+      mapErrors(async () => {
+        await api.request("post", "/api/v1/companies/{id}/employee-files/{subjectAccessId}/access-requests", { path: { id, subjectAccessId: personId }, body: {} });
+      }),
+
+    // Real bytes: the document record (title, kind OTHER, expected size) → `complete` with the file; only a READY document is reported.
+    addDocument: (id, personId, name, file) =>
+      mapErrors(async () => {
+        if (!file) invalid("file-required");
+        const type = file!.type as (typeof DOCUMENT_TYPES)[number];
+        if (!DOCUMENT_TYPES.includes(type)) invalid("file-type");
+        const path = { id, subjectAccessId: personId };
+        const { data: created } = await api.request("post", "/api/v1/companies/{id}/employee-files/{subjectAccessId}/documents", {
+          path,
+          header: { "Idempotency-Key": newIdempotencyKey() },
+          body: { id: crypto.randomUUID(), title: (name.trim() || "document").slice(0, 300), kind: "OTHER", upload: { filename: (name.trim() || "document").slice(0, 180), mimeType: type, expectedSize: file!.size } },
+        });
+        const { data: done } = await api.request("post", "/api/v1/companies/{id}/employee-files/{subjectAccessId}/documents/{documentId}/complete", {
+          path: { ...path, documentId: created.id },
+          header: { "If-Match": revisionTag(created.revision) },
+          body: file!,
+        });
+        if (done.status !== "READY") throw new RepositoryError("invalid", "upload-rejected");
+        return modules.employeeFile!(id, personId);
+      }),
+
+    // The pack is a streamed ZIP (private, no-store); the screen saves the returned file.
+    downloadPack: (id, personId) =>
+      mapErrors(async () => {
+        const { data } = await api.request("get", "/api/v1/companies/{id}/employee-files/{subjectAccessId}/pack", { path: { id, subjectAccessId: personId } });
+        const name = `employee-file-${personId.slice(0, 8)}.zip`;
+        return { name, file: data as Blob };
+      }),
+
+    // Server rule: the reviewer is an active Owner / Org Admin, distinct from the author and the subject.
+    caseReviewers: (id, personId) =>
+      mapErrors(async () => {
+        const scopeId = await ctx(id);
+        const [mine, roster] = await Promise.all([deps.me(id, scopeId), deps.members(id, scopeId)]);
+        return roster
+          .filter((member) => member.state === "ACTIVE" && (member.role === "OWNER" || member.role === "ORG_ADMIN") && member.id !== mine.accessId && member.id !== personId)
+          .map((member) => ({ id: member.id, name: member.displayName ?? "" }));
+      }),
+
+    openCorrective: (id, personId, input) =>
+      mapErrors(async () => {
+        const reason = input.reason.trim();
+        const evidence = input.evidence.trim();
+        if (!reason || !evidence) invalid("reason-evidence");
+        const scopeId = await ctx(id);
+        const roster = await deps.members(id, scopeId);
+        const seat = (accessId: string) => {
+          const member = roster.find((entry) => entry.id === accessId && entry.state === "ACTIVE");
+          if (!member) throw new RepositoryError("not-found", "Not found");
+          return { accessId: member.id, generation: member.generation };
+        };
+        const { data } = await api.request("post", "/api/v1/companies/{id}/contexts/{scopeId}/employee-cases", {
+          path: { id, scopeId },
+          header: { "Idempotency-Key": newIdempotencyKey() },
+          body: { id: crypto.randomUUID(), subject: seat(personId), reviewer: seat(input.reviewerId), reason: reason.slice(0, 2000), evidence: evidence.slice(0, 2000) },
+        });
+        return correctiveOf(data, []);
       }),
 
     respondCorrective: caseEntry("RESPONSE"),
@@ -774,4 +948,6 @@ function createCompanyModules(api: CompaniesClient, deps: ModuleDeps): Partial<C
         return rows.map((row): AuditRow => ({ id: row.id, at: row.occurredAt, who: row.actorDisplayName ?? "", action: row.action, subject: row.resourceId ?? "", kind: auditKind(row.action) }));
       }),
   };
+  kbRead = modules.kbPage!;
+  return modules;
 }

@@ -29,6 +29,9 @@ export function errorText(t: (key: string) => string, error: unknown): string {
     if (error.code === "unavailable") return error.message === "rate-limited" ? t("errors.rateLimited") : t("errors.notAvailable");
     if (error.code === "invalid" && error.message === "reason-required") return t("errors.reasonRequired");
     if (error.code === "invalid" && error.message === "one-reviewer") return t("errors.oneReviewer");
+    if (error.code === "invalid" && error.message === "Changed elsewhere") return t("errors.conflict");
+    if (error.code === "forbidden") return t("errors.forbidden");
+    if (error.code === "not-found") return t("errors.notFound");
   }
   return t("errors.generic");
 }

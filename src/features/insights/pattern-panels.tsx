@@ -92,6 +92,14 @@ export function PatternState<Id extends InsightPatternId>({
     );
   }
   const result = query.data;
+  if (result.status === "unavailable") {
+    return (
+      <UtilityCard className="flex flex-col items-start gap-2" data-state="unavailable">
+        <p className="type-title">{t("unavailable.title")}</p>
+        <p className="text-sm text-fg-secondary">{t("unavailable.body")}</p>
+      </UtilityCard>
+    );
+  }
   if (result.status === "collecting") {
     return (
       <UtilityCard className="flex flex-col gap-3" data-state="collecting">
@@ -150,7 +158,8 @@ export function FocusPanel({ pattern }: { pattern: FocusPattern }) {
   const { update } = usePlannerSettingsActions();
   const [filter, setFilter] = useState<InsightDayFilter>("all");
   const stats = pattern.byDays[filter];
-  const [start, end] = stats.bestWindow;
+  const [start, end] = stats.bestWindow ?? [0, 0];
+  const hasWindow = stats.bestWindow !== null;
   const range = () => <HourRange start={start} end={end} format={format} />;
   const protectedFocus = settings.insights.protectedFocus;
   const isProtected = protectedFocus?.start === pad(start) && protectedFocus.end === pad(end);
@@ -171,7 +180,7 @@ export function FocusPanel({ pattern }: { pattern: FocusPattern }) {
         <div className="relative w-full max-w-[26rem]">
           <FocusClock
             minutesByHour={stats.minutesByHour}
-            best={stats.bestWindow}
+            best={stats.bestWindow ?? undefined}
             label={t("clockLabel")}
             formatHour={format.hour}
             describeHour={(hour, minutes) => t("hour", { hour: format.clock(hour * 60), minutes: format.duration(minutes) })}
@@ -184,13 +193,17 @@ export function FocusPanel({ pattern }: { pattern: FocusPattern }) {
             </div>
           </div>
         </div>
-        <span className="rounded-pill bg-deep-card px-3 py-1 text-xs font-bold text-on-deep-card">{t.rich("best", { range: () => <HourRange start={start} end={end} format={format} clock /> })}</span>
+        {hasWindow && (
+          <span className="rounded-pill bg-deep-card px-3 py-1 text-xs font-bold text-on-deep-card">{t.rich("best", { range: () => <HourRange start={start} end={end} format={format} clock /> })}</span>
+        )}
       </div>
       <div className="flex min-w-0 flex-col gap-4">
         <Question question={t("question")} />
-        <Observation>
-          {t.rich("answer", { range: () => <HourRange start={start} end={end} format={format} clock />, share: format.percent(stats.bestShare) })}
-        </Observation>
+        {hasWindow && stats.bestShare !== null && (
+          <Observation>
+            {t.rich("answer", { range: () => <HourRange start={start} end={end} format={format} clock />, share: format.percent(stats.bestShare) })}
+          </Observation>
+        )}
         <PillGroup<InsightDayFilter>
           label={t("filterLabel")}
           value={filter}
@@ -198,11 +211,22 @@ export function FocusPanel({ pattern }: { pattern: FocusPattern }) {
           options={(["all", "work", "weekend"] as const).map((value) => ({ value, label: t(value) }))}
         />
         <dl aria-label={t("stats")} className="flex flex-col gap-1.5 text-xs">
-          {[
-            [t("sessions"), t("sessionsValue", { done: format.number(stats.sessionsCompleted), started: format.number(stats.sessionsStarted) })],
-            [t("average"), format.duration(stats.averageSessionMinutes)],
-            [t("interrupted"), <HourRange key="i" start={stats.interruptedHour} end={stats.interruptedHour + 1} format={format} clock />],
-          ].map(([term, value], index) => (
+          {(
+            [
+              stats.sessionsCompleted === null
+                ? null
+                : [
+                    t("sessions"),
+                    stats.sessionsStarted === null
+                      ? format.number(stats.sessionsCompleted)
+                      : t("sessionsValue", { done: format.number(stats.sessionsCompleted), started: format.number(stats.sessionsStarted) }),
+                  ],
+              stats.averageSessionMinutes === null ? null : [t("average"), format.duration(stats.averageSessionMinutes)],
+              stats.interruptedHour === null
+                ? null
+                : [t("interrupted"), <HourRange key="i" start={stats.interruptedHour} end={stats.interruptedHour + 1} format={format} clock />],
+            ].filter(Boolean) as [string, ReactNode][]
+          ).map(([term, value], index) => (
             <div key={index} className="flex items-center justify-between gap-3 rounded-row bg-subtle px-3 py-2.5">
               <dt className="font-bold text-fg">{term}</dt>
               <dd className="font-semibold text-fg-secondary">{value}</dd>
@@ -240,7 +264,7 @@ export function TimePanel({ pattern, today, compact }: { pattern: TimePattern; t
   const [emphasis, setEmphasis] = useState<InsightContext | null>(null);
   const days = inWeekOrder(pattern.days, settings.week.weekStartsOn);
   const shares = contextShares(pattern);
-  const change = sharePointsChange(shares.personal, pattern.previousShare.personal);
+  const change = pattern.previousShare ? sharePointsChange(shares.personal, pattern.previousShare.personal) : null;
 
   return (
     <div className="flex flex-col gap-4">
@@ -273,7 +297,7 @@ export function TimePanel({ pattern, today, compact }: { pattern: TimePattern; t
       </div>
       <MetricGroup aria-label={t("time.question")} columns={3}>
         <MetricTile label={t("time.personal")} value={format.percent(shares.personal)} hint={changeText(change)} />
-        <MetricTile label={t("time.projects")} value={format.percent(shares.projects)} hint={<bdi>{pattern.topProject}</bdi>} />
+        <MetricTile label={t("time.projects")} value={format.percent(shares.projects)} hint={pattern.topProject === null ? undefined : <bdi>{pattern.topProject}</bdi>} />
         <MetricTile label={t("time.teamsCompanies")} value={format.percent(shares.teams + shares.companies)} />
       </MetricGroup>
       <Observation>{t("observations.time.text", { share: format.percent(shares.personal), change: changeText(change) })}</Observation>
@@ -282,10 +306,10 @@ export function TimePanel({ pattern, today, compact }: { pattern: TimePattern; t
 }
 
 /** Percentage-point change text: "+3 pts" / "−2 pts" / "no change". */
-export function useChangeText(): (points: number) => string {
+export function useChangeText(): (points: number | null) => string {
   const t = useTranslations("Insights.change");
   const format = useInsightsFormat();
-  return (points) => (points === 0 ? t("same") : t(points > 0 ? "up" : "down", { points: format.number(Math.abs(points)) }));
+  return (points) => (points === null ? t("none") : points === 0 ? t("same") : t(points > 0 ? "up" : "down", { points: format.number(Math.abs(points)) }));
 }
 
 // ── Signals · Layered Area ───────────────────────────────────────────────
@@ -335,7 +359,9 @@ export function SignalsPanel({ pattern, compact }: { pattern: SignalsPattern; co
           values: pattern.days.map((day) => day[id]),
         }))}
       />
-      <Observation>{t("observation", { with: format.decimal(pattern.moodWithFocus), without: format.decimal(pattern.moodWithoutFocus) })}</Observation>
+      {pattern.moodWithFocus !== null && pattern.moodWithoutFocus !== null && (
+        <Observation>{t("observation", { with: format.decimal(pattern.moodWithFocus), without: format.decimal(pattern.moodWithoutFocus) })}</Observation>
+      )}
     </div>
   );
 }

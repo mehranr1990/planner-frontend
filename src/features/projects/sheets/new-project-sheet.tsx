@@ -18,7 +18,8 @@ import { toast } from "@/components/ui/toast";
 import { getPlannerToday } from "@/data/clock";
 import type { ProjectTemplate } from "@/data/project-domain";
 import { isValidProjectKey, normalizeProjectKey, PROJECT_KEY_MAX, suggestProjectKey } from "@/data/project-key";
-import { useCreateProject, useProjectDirectory, useProjectKeyAvailable } from "@/data/project-queries";
+import { useCreateProject, useProjectCreateLimits, useProjectDirectory, useProjectKeyAvailable } from "@/data/project-queries";
+import { ProjectCreatePartialError } from "@/data/project-repositories";
 import { RepositoryError } from "@/data/repositories";
 import { projectHref } from "@/features/navigation/contexts";
 import { addDaysToDay } from "@/lib/dates/clock-time";
@@ -59,6 +60,12 @@ export function NewProjectSheet({ onDone, ownerTeam }: { onDone: () => void; own
   const [start, setStart] = useState(today);
   const [end, setEnd] = useState(addDaysToDay(today, 60));
   const [template, setTemplate] = useState<ProjectTemplate>("blank");
+  const limits = useProjectCreateLimits();
+  const templateOff = (value: ProjectTemplate) => limits !== null && !limits.templates.includes(value);
+  // A team owner the server cannot record: say so up front and keep Create off (never a silent independent project).
+  const teamOwnerOff = ownerTeam !== undefined && limits !== null && !limits.teamOwner;
+  // Kept until a definitive answer, so a resubmit after a timeout cannot create a second project.
+  const [attemptId, setAttemptId] = useState(() => crypto.randomUUID());
   const [error, setError] = useState<string | null>(null);
   const [typedKey, setTypedKey] = useState<string | null>(null);
   const [keyTouched, setKeyTouched] = useState(false);
@@ -92,22 +99,42 @@ export function NewProjectSheet({ onDone, ownerTeam }: { onDone: () => void; own
         startDate: start,
         endDate: end,
         template,
+        attemptId,
         ...(ownerTeam ? { ownerTeamId: ownerTeam.teamId } : {}),
       },
       {
         onError: (cause) => {
-          if (cause instanceof RepositoryError && cause.message === "key-taken")
+          // The server answered (nothing was created): the next submit is a new attempt.
+          if (cause instanceof RepositoryError) setAttemptId(crypto.randomUUID());
+          if (cause instanceof ProjectCreatePartialError) {
+            // The project exists: never offer to submit again (that would create a duplicate).
+            toast({ title: t(cause.stage === "details" ? "new.partialDetails" : "new.partialRead", { name: cause.projectName }) });
+            onDone();
+            router.push(cause.stage === "details" ? projectHref(cause.projectId, "settings") : "/projects");
+          } else if (cause instanceof RepositoryError && cause.message === "key-taken")
             setTakenKeys((keys) => [...keys, projectKey]);
           else if (cause instanceof RepositoryError && cause.message === "key-format") setKeyTouched(true);
+          else if (cause instanceof RepositoryError && cause.code === "unsupported")
+            setError(t(cause.message === "template" ? "new.templateUnavailable" : "new.unavailable"));
+          else setError(t("new.failed"));
         },
         onSuccess: (project) => {
           toast({
             title: t("new.created", { name: project.name }),
-            action: {
-              label: t("new.undo"),
-              altText: t("new.undoAlt"),
-              onClick: () => discard.mutate(project.id, { onSuccess: () => router.push("/projects") }),
-            },
+            // Live has no Undo (deletion needs the owner's password in Settings): no action that can only fail.
+            ...(limits?.discard === false
+              ? {}
+              : {
+                  action: {
+                    label: t("new.undo"),
+                    altText: t("new.undoAlt"),
+                    onClick: () =>
+                      discard.mutate(project.id, {
+                        onSuccess: () => router.push("/projects"),
+                        onError: () => toast({ title: t("new.undoUnavailable") }),
+                      }),
+                  },
+                }),
           });
           onDone();
           router.push(projectSheetHref(projectHref(project.id), "", "project-invite"));
@@ -184,8 +211,9 @@ export function NewProjectSheet({ onDone, ownerTeam }: { onDone: () => void; own
           label={t("new.template")}
           value={template}
           onValueChange={setTemplate}
-          options={TEMPLATES.map((value) => ({ value, label: t(`new.templates.${value}`) }))}
+          options={TEMPLATES.map((value) => ({ value, label: t(`new.templates.${value}`), disabled: templateOff(value) }))}
         />
+        {TEMPLATES.some(templateOff) ? <p className="text-xs text-fg-muted">{t("new.templatesLimited")}</p> : null}
       </div>
       <Field>
         <FieldLabel>{t("new.visibility")}</FieldLabel>
@@ -220,12 +248,13 @@ export function NewProjectSheet({ onDone, ownerTeam }: { onDone: () => void; own
           </span>
         </div>
       )}
+      {teamOwnerOff ? <InlineAlert tone="info" title={t("new.teamOwnerUnavailable")} /> : null}
       {error ? <InlineAlert tone="danger" title={error} /> : null}
       <div className="flex justify-end gap-2">
         <Button type="button" variant="secondary" onClick={onDone}>
           {t("cancel")}
         </Button>
-        <Button type="submit" disabled={create.isPending}>
+        <Button type="submit" disabled={create.isPending || teamOwnerOff}>
           {t("new.submit")}
         </Button>
       </div>

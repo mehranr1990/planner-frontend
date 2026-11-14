@@ -1,6 +1,8 @@
 import { personalFixtures } from "@/fixtures/personal";
 import { createMockProjects, projectRepositories } from "./mock-projects";
 import { createMockTeams, teamRepositories, type MockTeamsOptions } from "./mock-teams";
+import { createMockPersonalServices } from "./mock-personal-services";
+import type { PersonalServiceRepositories } from "../personal-services";
 import type { MockProjectsStore } from "./mock-projects";
 import type { TeamRepositories } from "../team-repositories";
 import type { SampleFinance } from "@/fixtures/personal/finance";
@@ -381,6 +383,10 @@ export function createMockRepositories({ fixtures, latencyMs = 0 }: MockReposito
     if (patch.energy !== undefined) task.energy = patch.energy;
     if (patch.scope !== undefined) task.scope = patch.scope;
     if (patch.recurring !== undefined) task.recurring = patch.recurring;
+    if (patch.category !== undefined) {
+      if (task.scope !== "personal") throw new RepositoryError("invalid", "Only Personal tasks have a category");
+      task.category = patch.category;
+    }
     if (patch.area !== undefined) {
       if (patch.area) task.area = resolveArea(patch.area);
       else delete task.area;
@@ -500,7 +506,7 @@ export function createMockRepositories({ fixtures, latencyMs = 0 }: MockReposito
     return resolved.slice(0, MAX_PRIORITIES);
   }
 
-  return {
+  const repositories: Omit<Repositories, keyof PersonalServiceRepositories> = {
     tasks: {
       list(query = {}) {
         const day = query.day ?? today;
@@ -515,7 +521,9 @@ export function createMockRepositories({ fixtures, latencyMs = 0 }: MockReposito
       },
       get(id) {
         const task = tasks.find((item) => item.id === id);
-        return respond(task ? withLinks(task) : null);
+        // Like the live detail read: a Personal task always reports its category (null = none).
+        const detail = task ? withLinks(task) : null;
+        return respond(detail && detail.scope === "personal" ? { ...detail, category: detail.category ?? null } : detail);
       },
       listUnscheduled({ day, range, week = IRAN_WEEK }: UnscheduledQuery) {
         const scheduledToday = new Set(
@@ -924,5 +932,11 @@ export function createMockRepositories({ fixtures, latencyMs = 0 }: MockReposito
       },
     }),
   };
+  return {
+    ...repositories,
+    ...createMockPersonalServices({
+      habitTitles: async () => new Map((await repositories.habits.list()).map((habit) => [habit.id, habit.title])),
+      transactions: (from, to) => repositories.finance.transactions(from, to),
+    }),
+  };
 }
-

@@ -46,7 +46,7 @@
     "end": "End",
     "url": "Meeting link",
     "invitees": "Every team member is invited.",
-    "timeOffHint": "Your own time off. It does not change your status.",
+    "timeOffHint": "A request for your own time off. It shows on the calendar once a Lead approves it.",
     "titleRequired": "Add a title",
     "endBeforeStart": "End must be after start",
     "badUrl": "Enter a full link (https://…)",
@@ -55,5 +55,54 @@
     "save": "Save",
     "created": "Event added",
     "updated": "Event updated"
+  },
+  "cancelEvent": {
+    "action": "Cancel event",
+    "title": "Cancel this event?",
+    "body": "“{title}” is canceled for everyone on the team. This can’t be undone.",
+    "confirm": "Cancel event",
+    "keep": "Keep event",
+    "done": "Event canceled",
+    "conflict": "This event was already canceled or changed. The calendar is refreshed.",
+    "failed": "Couldn’t cancel the event. Try again."
+  },
+  "timeOffRequests": {
+    "title": "Time-off requests",
+    "waiting": "{n, plural, one {# waiting for you} other {# waiting for you}}",
+    "loading": "Loading requests…",
+    "loadFailed": "Couldn’t load time-off requests.",
+    "retry": "Retry",
+    "empty": "No time-off requests.",
+    "you": "You",
+    "state": {
+      "pending": "Pending",
+      "approved": "Approved",
+      "rejected": "Rejected",
+      "canceled": "Canceled"
+    },
+    "decisionNote": "Note:",
+    "approve": "Approve",
+    "reject": "Reject",
+    "cancelRequest": "Cancel request",
+    "history": "History",
+    "action": {
+      "submitted": "Requested",
+      "approved": "Approved",
+      "rejected": "Rejected",
+      "canceled": "Canceled"
+    },
+    "step": "{action} by {name}",
+    "approved": "Time off approved",
+    "rejected": "Time off rejected",
+    "canceled": "Request canceled",
+    "rejectTitle": "Reject {name}’s time off?",
+    "note": "Note (optional)",
+    "cancelTitle": "Cancel this time-off request?",
+    "cancelBody": "If it was approved, it is removed from the team calendar.",
+    "cancelConfirm": "Cancel request",
+    "keep": "Keep",
+    "conflict": "This request changed in the meantime. The list is refreshed.",
+    "forbidden": "You can’t do this for this request.",
+    "failed": "Couldn’t save. Try again."
   }
 }

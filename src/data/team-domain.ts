@@ -61,15 +61,16 @@ export interface TeamDirectory {
 }
 
 /** Public-safe preview of an invitation: team name, inviter, role, size. */
+/** Invitations for me. Live: the recipient list is public-safe (no team, inviter, role or size before accepting) → null. */
 export interface TeamInvitation {
   id: string;
-  teamId: string;
-  teamName: string;
-  initials: string;
-  inviter: TeamPerson;
-  role: Exclude<TeamRole, "owner">;
-  memberCount: number;
-  sentAt: string;
+  teamId: string | null;
+  teamName: string | null;
+  initials: string | null;
+  inviter: TeamPerson | null;
+  role: Exclude<TeamRole, "owner"> | null;
+  memberCount: number | null;
+  sentAt: string | null;
 }
 
 /** Team screens; hidden (not disabled) in the rail when false (TS-01). */
@@ -175,7 +176,8 @@ export interface TeamProjectLink {
   id: string;
   name: string;
   percent: number;
-  health: "on-track" | "at-risk" | "off-track";
+  /** Manual project health (D9), or null = Unknown (no health served, as in Projects live). */
+  health: "on-track" | "at-risk" | "off-track" | null;
   lifecycle: "active" | "paused" | "archived";
 }
 
@@ -190,8 +192,8 @@ export interface TeamPortfolioProject extends TeamProjectLink {
   /** The viewer's own project role (display only). */
   role: "owner" | "admin" | "manager" | "member" | "viewer" | "guest";
   nextMilestone: { title: string; due: string } | null;
-  startDate: string;
-  endDate: string;
+  startDate: string | null;
+  endDate: string | null;
   /** Team members who are also project members (never others). */
   teamPeople: readonly TeamPerson[];
   openHighRisks: number;
@@ -309,7 +311,8 @@ export interface TeamAgendaItem {
   /** User content. */
   title: string;
   owner: TeamPerson | null;
-  minutes: number;
+  /** Planned minutes, or null when not served (live agenda is plain lines). */
+  minutes: number | null;
 }
 
 /**
@@ -327,8 +330,41 @@ export interface TeamEventDetail extends TeamEvent {
   url: string | null;
   /** My answer, or null (no reply / not invited). */
   myRsvp: TeamRsvp | null;
-  /** Server-computed for the viewer. */
-  can: { edit: boolean; rsvp: boolean };
+  /** Server-computed for the viewer; `cancel` = cancel the event for everyone (organiser / Lead+). */
+  can: { edit: boolean; rsvp: boolean; cancel: boolean };
+}
+
+// ── Time-off requests (TM-03) ───────────────────────────────────────────
+
+export type TeamTimeOffState = "pending" | "approved" | "rejected" | "canceled";
+
+/**
+ * A member's time-off request. Only "approved" requests are absences on the
+ * calendar. `reason` / `decisionNote` reach the requester and managers only
+ * (null otherwise); Viewers see only their own requests.
+ */
+export interface TeamTimeOffRequest {
+  id: string;
+  person: TeamPerson;
+  mine: boolean;
+  startDate: string;
+  endDate: string;
+  /** User content. */
+  reason: string | null;
+  state: TeamTimeOffState;
+  /** User content. */
+  decisionNote: string | null;
+  decidedAt: string | null;
+  createdAt: string;
+  /** Server-computed: decide = manager on someone else's pending request; cancel = own pending / not-yet-ended approved. */
+  can: { decide: boolean; cancel: boolean };
+}
+
+export interface TeamTimeOffHistoryEntry {
+  id: string;
+  action: "submitted" | "approved" | "rejected" | "canceled";
+  by: TeamPerson | null;
+  at: string;
 }
 
 /** teamCalendarRepo.overlays: team task due dates and events of projects the viewer can open (never others). */
@@ -414,7 +450,8 @@ export interface TeamTask {
   teamId: string;
   title: string;
   status: TeamTaskStatus;
-  priority: TeamTaskPriority;
+  /** null = no priority (live API NONE). */
+  priority: TeamTaskPriority | null;
   due: string | null;
   estimateHours: number | null;
   assignees: readonly TeamTaskAssignee[];
@@ -489,7 +526,8 @@ export interface TeamSprint {
   days: readonly string[];
   dayIndex: number;
   committed: number;
-  capacity: number;
+  /** People capacity over the sprint days in the unit, or null when it can't be expressed (points). */
+  capacity: number | null;
   done: number;
   unit: SprintEstimateUnit;
   items: readonly SprintItem[];
@@ -501,7 +539,7 @@ export interface TeamSprintState {
   unit: SprintEstimateUnit;
   sprint: TeamSprint | null;
   /** The next sprint as Start would create it (dates, capacity from People × days, items queued for it). */
-  next: { number: number; start: string; end: string; capacity: number; committed: number; items: readonly SprintItem[] };
+  next: { number: number; start: string; end: string; capacity: number | null; committed: number; items: readonly SprintItem[] };
 }
 
 export interface BacklogItem {
@@ -716,10 +754,10 @@ export interface TeamSettings {
   /** Manual status on/off for this team (nothing is ever inferred). */
   statusOn: boolean;
   defaultInviteRole: Exclude<TeamRole, "owner">;
-  /** On: Members may invite Viewers. */
-  membersMayInvite: boolean;
+  /** On: Members may invite Viewers. null = not served (live: the row is hidden). */
+  membersMayInvite: boolean | null;
   /** OPEN(DECISIONS): Viewers see this-week booking — default off. */
-  viewersSeeBooking: boolean;
+  viewersSeeBooking: boolean | null;
   revision: number;
 }
 

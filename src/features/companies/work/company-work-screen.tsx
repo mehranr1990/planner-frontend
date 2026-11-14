@@ -212,8 +212,8 @@ function ProjectsTable({ projects }: { projects: CompanyProjectRow[] }) {
               </td>
               <td className="py-3 pe-3">
                 <div className="flex items-center gap-2">
-                  <Progress value={project.progress} label={project.name} size="sm" className="w-24" indicatorClassName="bg-project-deep" />
-                  <span className="text-xs font-bold tabular text-fg">{format.percent(project.progress)}</span>
+                  <Progress value={project.progress ?? 0} label={project.name} size="sm" className="w-24" indicatorClassName="bg-project-deep" />
+                  <span className="text-xs font-bold tabular text-fg">{project.progress === null ? "—" : format.percent(project.progress)}</span>
                 </div>
               </td>
               <td className="py-3 pe-3 text-xs text-fg">
@@ -290,8 +290,8 @@ function TeamsTable({ teams }: { teams: CompanyTeamRow[] }) {
                   <td className="py-3 pe-3 text-xs font-bold tabular text-fg">{format.number(team.people)}</td>
                   <td className="py-3 pe-3">
                     <div className="flex items-center gap-2">
-                      <Progress value={team.planCompletion} label={team.name} size="sm" className="w-24" indicatorClassName="bg-team-deep" />
-                      <span className="text-xs font-bold tabular text-fg">{format.percent(team.planCompletion)}</span>
+                      <Progress value={team.planCompletion ?? 0} label={team.name} size="sm" className="w-24" indicatorClassName="bg-team-deep" />
+                      <span className="text-xs font-bold tabular text-fg">{team.planCompletion === null ? "—" : format.percent(team.planCompletion)}</span>
                     </div>
                   </td>
                   <td className="py-3 text-xs text-fg-secondary">{t(`custody.${team.custody}`)}</td>
@@ -481,7 +481,7 @@ function AttachDialog({ onClose }: { onClose: () => void }) {
             <Select value={candidateId} onValueChange={setCandidateId} placeholder={t("choose")}>
               {(candidates.data ?? []).map((candidate) => (
                 <SelectItem key={candidate.id} value={candidate.id}>
-                  {`${candidate.name} · ${t(`kind.${candidate.kind}`)} · ${candidate.ownerName}`}
+                  {[candidate.name, t(`kind.${candidate.kind}`), candidate.ownerName].filter(Boolean).join(" · ")}
                 </SelectItem>
               ))}
             </Select>
@@ -499,6 +499,7 @@ function AttachDialog({ onClose }: { onClose: () => void }) {
             {touched && !departmentId ? <FieldError>{t("departmentRequired")}</FieldError> : null}
           </Field>
           <InlineAlert tone="info" title={t("privacyTitle")} description={t("privacy")} />
+          {request.isError ? <InlineAlert tone="danger" title={t("failed")} /> : null}
           <DialogFooter>
             <Button type="button" variant="secondary" onClick={onClose}>
               {t("cancel")}

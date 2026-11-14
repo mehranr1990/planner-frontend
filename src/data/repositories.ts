@@ -1,5 +1,6 @@
 import type { ProjectRepositories } from "./project-repositories";
 import type { TeamRepositories } from "./team-repositories";
+import type { PersonalServiceRepositories } from "./personal-services";
 import type {
   Area,
   BrainDumpDestination,
@@ -37,6 +38,7 @@ import type {
   Subtask,
   Task,
   TaskFilters,
+  TaskCategory,
   TaskPriority,
   TaskSort,
   TaskStatus,
@@ -65,7 +67,7 @@ import type { WeekConfig } from "@/lib/dates/week";
 export type RepositoryErrorCode = "not-found" | "invalid" | "forbidden" | "unsupported" | "partial" | "conflict";
 
 /** "time": a calendar block saved but its Task's day/time/estimate did not follow (Phase 04). */
-export type PartialField = "duration" | "labels" | "checklist" | "note" | "recurrence" | "plan" | "time";
+export type PartialField = "duration" | "labels" | "checklist" | "note" | "recurrence" | "plan" | "time" | "category";
 
 export class RepositoryError extends Error {
   readonly code: RepositoryErrorCode;
@@ -175,6 +177,8 @@ export interface TaskPatch {
   description?: string;
   /** Links (null: unlinks) a goal; `goalTitle` follows. */
   goalId?: string | null;
+  /** Personal tasks only; null clears it. */
+  category?: TaskCategory | null;
   /** Replaces the subtask items (and so the `subtasks` summary); items without an id get one. */
   checklist?: (Omit<Subtask, "id"> & { id?: string })[];
 }
@@ -545,7 +549,7 @@ export interface ReviewRepository {
   save(week: string, patch: WeeklyReviewPatch): Promise<WeeklyReview>;
 }
 
-export interface Repositories extends ProjectRepositories, TeamRepositories {
+export interface Repositories extends ProjectRepositories, TeamRepositories, PersonalServiceRepositories {
   tasks: TasksRepository;
   blocks: BlocksRepository;
   inbox: InboxRepository;

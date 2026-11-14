@@ -51,7 +51,7 @@ export function TeamSwitcherList({
     ...live.filter((team) => !recentIds.includes(team.id)),
   ];
   const archived = teams.filter((team) => team.lifecycle === "archived");
-  const invites = invitations.filter((invitation) => matches(invitation.teamName));
+  const invites = invitations.filter((invitation) => invitation.teamId !== null && matches(invitation.teamName ?? ""));
 
   const row = (team: TeamSummary, line: string, tag?: string) => {
     const selected = team.id === activeTeamId;
@@ -130,20 +130,22 @@ export function TeamSwitcherList({
             key={invitation.id}
             type="button"
             data-switcher-row=""
-            onClick={() => onOpen(invitation.teamId)}
+            onClick={() => onOpen(invitation.teamId!)}
             className="flex min-h-touch items-center gap-2.5 rounded-row px-2 py-1.5 text-start text-fg transition-colors hover:bg-raised"
           >
             <span
               aria-hidden="true"
               className="inline-flex size-9 shrink-0 items-center justify-center rounded-tile bg-raised text-xs font-bold text-fg-secondary"
             >
-              <bdi>{invitation.initials}</bdi>
+              <bdi>{invitation.initials ?? ""}</bdi>
             </span>
             <span className="flex min-w-0 flex-1 flex-col leading-snug">
-              <bdi className="truncate text-sm font-semibold">{invitation.teamName}</bdi>
-              <span className="truncate text-xs font-medium text-fg-secondary">
-                {t("switcher.invitedBy", { name: invitation.inviter.name, role: labels.role(invitation.role) })}
-              </span>
+              <bdi className="truncate text-sm font-semibold">{invitation.teamName ?? t("invite.generic")}</bdi>
+              {invitation.inviter && invitation.role ? (
+                <span className="truncate text-xs font-medium text-fg-secondary">
+                  {t("switcher.invitedBy", { name: invitation.inviter.name, role: labels.role(invitation.role) })}
+                </span>
+              ) : null}
             </span>
             <span className="shrink-0 rounded-pill bg-scope-soft px-2.5 py-1 text-xs font-bold text-scope-deep">
               {t("switcher.review")}

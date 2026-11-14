@@ -30,6 +30,8 @@ export interface ReportInput {
   projectStart: string;
   today: string;
   now: string;
+  /** The caller's person id (a Member sees only this "done by assignee" row); the mock's is "me". */
+  selfId?: string;
 }
 
 export function weekStart(day: string, weekStartsOn: number): string {
@@ -54,9 +56,11 @@ export function computeAnalytics({
   projectStart,
   today,
   now,
+  selfId = CURRENT_USER_ID,
 }: ReportInput): AnalyticsSummary {
   const done = tasks.filter((task) => isTaskDone(task, workflow));
-  const open = tasks.filter((task) => !isTaskDone(task, workflow));
+  const canceled = new Set(workflow.statuses.filter((status) => status.category === "canceled").map((status) => status.id));
+  const open = tasks.filter((task) => !isTaskDone(task, workflow) && !canceled.has(task.statusId));
   const withDue = done.filter((task) => task.due && task.completedAt);
   const onTime = withDue.filter((task) => dayOf(task.completedAt!) <= task.due!).length;
   const cycles = done
@@ -117,7 +121,7 @@ export function computeAnalytics({
       RANK[role] >= RANK.manager
         ? byAssignee
         : RANK[role] === RANK.member
-          ? byAssignee.filter((entry) => entry.person.id === CURRENT_USER_ID)
+          ? byAssignee.filter((entry) => entry.person.id === selfId)
           : [],
     enoughData: throughput.some((n) => n > 0),
   };

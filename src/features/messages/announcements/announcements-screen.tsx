@@ -50,7 +50,7 @@ export function AnnouncementsBody({ source }: { source: MsgSource }) {
   const t = useTranslations("Msg.announcements");
   const available = useMessagingAvailable();
   const list = useAnnouncements(source.workspaceId ?? undefined, source.kind);
-  const access = useAnnouncementAccess(source.workspaceId ?? undefined);
+  const access = useAnnouncementAccess(source.workspaceId ?? undefined, source.kind);
   return (
     <>
       {!available ? (

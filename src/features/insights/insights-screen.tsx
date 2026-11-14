@@ -229,10 +229,11 @@ function ObservationCard({
   let text: ReactNode = null;
   if (query.isPending) text = <Skeleton className="h-16 rounded-tile" />;
   else if (query.isError || !result) text = t("states.error.title");
+  else if (result.status === "unavailable") text = t("states.unavailable.title");
   else if (result.status === "collecting") text = t("states.collecting.title", { have: format.number(result.have), need: format.number(result.need) });
   else if (result.pattern.id === "time") {
     const shares = contextShares(result.pattern);
-    const change = sharePointsChange(shares.personal, result.pattern.previousShare.personal);
+    const change = result.pattern.previousShare ? sharePointsChange(shares.personal, result.pattern.previousShare.personal) : null;
     text = t("observations.time.text", { share: format.percent(shares.personal), change: changeText(change) });
   } else if (result.pattern.id === "estimates") {
     const top = result.pattern.categories[0];

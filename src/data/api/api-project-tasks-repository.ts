@@ -127,6 +127,8 @@ export interface LoadedTasks {
   /** Live assignments per task (for writes). */
   assignments: Map<string, ApiAssignment[]>;
   roster: ApiProjectMember[];
+  /** Planned start day per task (null = none), for the workload spread. */
+  starts: Map<string, string | null>;
 }
 
 /** LIST view pages with the dependency edges of every page. */
@@ -188,7 +190,10 @@ export async function loadProjectTasks(api: ProjectsClient, projectId: string, t
       ...(task.completedAt ? { completedAt: task.completedAt } : {}),
     };
   });
-  return { tasks, catalogue: catalogue(versions), assignments, roster };
+  const starts = new Map(
+    items.map(({ task, schedule }) => [task.id, schedule.plannedStartAt ? dayOfInstant(schedule.plannedStartAt) : (schedule.scheduledDate ?? null)] as const),
+  );
+  return { tasks, catalogue: catalogue(versions), assignments, roster, starts };
 }
 
 export function createApiProjectWorkflowRepository(client: ApiClient): WorkflowRepository {

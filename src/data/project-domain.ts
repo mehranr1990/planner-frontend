@@ -33,6 +33,10 @@ export interface ProjectStatusNote {
   at: string | null;
 }
 
+/** Milestones by target day; undated ones last. */
+export const compareMilestoneDue = (a: { due: string | null }, b: { due: string | null }): number =>
+  a.due === b.due ? 0 : a.due === null ? 1 : b.due === null ? -1 : a.due.localeCompare(b.due);
+
 export interface ProjectMilestoneRef {
   id: string;
   title: string;
@@ -157,13 +161,14 @@ export type ProjectModule =
   | "settings";
 
 /** A pending invitation: public-safe preview only (no tasks, members or files). */
+/** Live: the recipient list is public-safe (no project, inviter, role or time before accepting) → null. */
 export interface ProjectInvitation {
   id: string;
-  projectId: string;
-  projectName: string;
-  inviter: ProjectPerson;
-  role: ProjectRole;
-  sentAt: string;
+  projectId: string | null;
+  projectName: string | null;
+  inviter: ProjectPerson | null;
+  role: ProjectRole | null;
+  sentAt: string | null;
 }
 
 export type ProjectAccess =
@@ -275,22 +280,26 @@ export interface TaskCan {
 export interface ProjectPhase {
   id: string;
   name: string;
-  start: string;
-  end: string;
-  /** Share of the phase's tasks done (0–100). */
-  progress: number;
+  /** Live: null (the API keeps no phase dates). */
+  start: string | null;
+  end: string | null;
+  /** Share of the phase's tasks done (0–100); live: null (not served). */
+  progress: number | null;
   done: boolean;
-  /** Days behind plan (current phase only), 0 when on plan. */
-  behindDays: number;
+  /** Days behind plan (current phase only), 0 when on plan; live: null (not served). */
+  behindDays: number | null;
 }
 
 export interface ProjectMilestone {
   id: string;
   title: string;
-  due: string;
-  phaseId: string;
+  /** Target day; null when the milestone has no date (live). */
+  due: string | null;
+  /** Null when the milestone is not in a phase (live). */
+  phaseId: string | null;
   done: boolean;
-  tasksLeft: number;
+  /** Open linked tasks; null when not served (live). */
+  tasksLeft: number | null;
   /** Short blocker line when blocked ("API access"). */
   blockedBy?: string;
   owner?: ProjectPerson;
@@ -341,8 +350,8 @@ export interface RiskChecklistItem {
 
 export interface ProjectRisk {
   id: string;
-  /** Register code shown in the ID column ("R-07", "I-02"). */
-  code: string;
+  /** Register code shown in the ID column ("R-07", "I-02"); null = not served (live). */
+  code: string | null;
   kind: "risk" | "issue";
   title: string;
   severity: RiskSeverity;
@@ -404,7 +413,8 @@ export type ProjectActivity =
 export interface WorkloadEntry {
   person: ProjectPerson;
   hours: number;
-  capacity: number;
+  /** Weekly project capacity; null = not set / not served (no "over" state). */
+  capacity: number | null;
 }
 
 /** PJ-01 status-card KPIs, counted by the server. */
@@ -840,4 +850,37 @@ export interface ProjectGeneralPatch {
   endDate?: string | null;
   description?: string;
   tint?: ProjectTint;
+}
+
+/** Ordinary capabilities a project's access policy grants per role (live: versioned role defaults). */
+export const POLICY_CAPABILITIES = [
+  "task.read",
+  "task.create",
+  "task.update",
+  "task.complete",
+  "task.delete",
+  "assignment.accept",
+  "assignment.decline",
+  "assignment.assign",
+  "workflow.transition",
+  "workflow.publish",
+  "export.visible",
+  "file.read",
+] as const;
+export type PolicyCapability = (typeof POLICY_CAPABILITIES)[number];
+export type PolicyRole = "owner" | "admin" | "manager" | "member" | "viewer";
+
+/** PJ-14 › Access in live mode: role defaults (server-authoritative), export limits and the policy version (If-Match). */
+export interface ProjectRolePolicy {
+  roleDefaults: Readonly<Record<PolicyRole, readonly PolicyCapability[]>>;
+  exportMaxRecords: number;
+  exportMaxBytes: number;
+  version: number;
+}
+
+/** Server ceiling (shared policy): Viewers only read / export / files; Members never delete tasks or publish workflows. */
+export function withinPolicyCeiling(role: PolicyRole, capability: PolicyCapability): boolean {
+  if (role === "viewer") return capability === "task.read" || capability === "export.visible" || capability === "file.read";
+  if (role === "member") return capability !== "task.delete" && capability !== "workflow.publish";
+  return true;
 }

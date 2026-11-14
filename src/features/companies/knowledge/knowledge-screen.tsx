@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { AccessLoading } from "@/components/feedback/access-state";
+import { InlineAlert } from "@/components/feedback/inline-alert";
 import { EmptyState, ErrorState } from "@/components/feedback/state-views";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogFooter } from "@/components/ui/dialog";
@@ -512,6 +513,7 @@ function CreatePageDialog({ folders, onClose }: { folders: KbFolder[]; onClose: 
             <FieldLabel>{t("body")}</FieldLabel>
             <Textarea dir="auto" rows={6} value={body} onChange={(event) => setBody(event.target.value)} />
           </Field>
+          {create.isError ? <InlineAlert tone="danger" title={t("failed")} /> : null}
           <DialogFooter>
             <Button type="button" variant="secondary" onClick={onClose}>
               {t("cancel")}

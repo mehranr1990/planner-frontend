@@ -62,5 +62,7 @@
     "cancel": "Cancel"
   },
   "guest": "Shown: files shared with guests and files linked to your tasks.",
-  "noMatch": "No files match these filters"
+  "noMatch": "No files match these filters",
+  "uploadUnavailable": "This upload is not available here yet (folders and new versions are not supported).",
+  "uploadFailed": "The file was not uploaded. Check its type and size, then try again."
 }
