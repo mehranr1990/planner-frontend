@@ -18,6 +18,7 @@ import {
   useTasks,
   useWeeklyReview,
 } from "@/data/queries";
+import { useNextWeekCapacity } from "@/features/personal-services/use-week-capacity";
 import { workWindow } from "@/features/my-day/domain/capacity";
 import { usePlannerNow } from "@/features/my-day/my-day-context";
 import { useMyDayFormat } from "@/features/my-day/ui/use-my-day-format";
@@ -164,6 +165,7 @@ export function useWeeklyReviewSession(days: readonly string[]) {
     () => unfinished.filter((task) => routes[task.id] && routes[task.id]!.to !== "inbox" && routes[task.id]!.to !== "drop"),
     [unfinished, routes],
   );
+  const serverCapacity = useNextWeekCapacity(days[0] ? addDaysToDay(days[0], 7) : null);
   const plan = useMemo(() => {
     const placements = Object.fromEntries(
       carried.flatMap((task) => (routes[task.id]?.to === "pick" && routes[task.id]?.day ? [[task.id, routes[task.id]!.day!]] : [])),
@@ -172,8 +174,9 @@ export function useWeeklyReviewSession(days: readonly string[]) {
       workMinutes: workWindow(settings.workHours).totalMinutes,
       defaultDuration: settings.planning.defaultDurationMinutes,
       week: settings.week,
+      serverCapacity,
     });
-  }, [carried, routes, days, tasks, settings.workHours, settings.planning.defaultDurationMinutes, settings.week]);
+  }, [carried, routes, days, tasks, settings.workHours, settings.planning.defaultDurationMinutes, settings.week, serverCapacity]);
   const placeOn = useCallback(
     (taskId: string, day: string | null) =>
       setDraft((current) => ({ ...current, routes: { ...current.routes, [taskId]: day ? { to: "pick", day } : { to: "this-week" } } })),

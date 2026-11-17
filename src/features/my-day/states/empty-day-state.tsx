@@ -86,7 +86,7 @@ export function EmptyDayState({ className }: { className?: string }) {
       ) : (
         <p className="max-w-75 text-[0.8125rem] leading-normal text-fg-secondary">
           {t(isToday ? "description" : "descriptionOtherDay", {
-            free: format.duration(freeMinutes),
+            free: plan.status === "ready" && !plan.capacity.known ? "—" : format.duration(freeMinutes),
             count,
             countText: format.number(count),
             n,

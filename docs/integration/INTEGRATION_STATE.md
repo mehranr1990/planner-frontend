@@ -1,12 +1,13 @@
 # Integration state
 
-Last updated: 2026-11-14 (Projects final gap closure; per-module log in `SESSION_HANDOFF.md`). Detailed per-phase history (00a–03): `docs/INTEGRATION_PROGRESS.md`.
+Last updated: 2026-11-17 (Personal frontend completion against the Personal gap closure; see `docs/PERSONAL_FRONTEND_COMPLETION.md`). Detailed per-phase history (00a–03): `docs/INTEGRATION_PROGRESS.md`.
 
 ## Backend contract in use
 
 | Item | Value |
 |---|---|
-| **Current contract (2026-11-14, Phase 1–5 final)** | `D:New folderplanner-backenddocsapiopenapi.json` at backend `ab37a2c`, **1,045 operations**, sha256 `e05f977716a2c537a8c1b41721668785a82d852ac6b386cddaedaaafd0c9a049`. All subset types regenerated from full prefixes + new `openapi-p6-personal.d.ts`; coverage in `API_COVERAGE_MATRIX.md` → "Consolidated coverage". The untracked `docs/Backend-Handoff/openapi.json` is the older 845-op copy (not used; never commit) |
+| **Current contract (2026-11-17, Personal completion)** | `D:New folderplanner-backenddocsapiopenapi.json` at backend `a17c2e3`, **1,193 operations**, sha256 `99ad4f54cbfc6df01c14bcc2dbe17c3c5d1fc709d928ef4b514f19768b8d8c4b`. `openapi-p6-personal.d.ts` regenerated (13 earlier paths unchanged + 11 Personal gap-closure paths); other subsets untouched |
+| Previous contract (2026-11-14, Phase 1–5 final) | `D:New folderplanner-backenddocsapiopenapi.json` at backend `ab37a2c`, **1,045 operations**, sha256 `e05f977716a2c537a8c1b41721668785a82d852ac6b386cddaedaaafd0c9a049`. All subset types regenerated from full prefixes + new `openapi-p6-personal.d.ts`; coverage in `API_COVERAGE_MATRIX.md` → "Consolidated coverage". The untracked `docs/Backend-Handoff/openapi.json` is the older 845-op copy (not used; never commit) |
 | Package | `docs/Backend-Handoff/Mehran-Backend-Fable-P6-01.zip` (untracked, **not ignored** — do not `git add`) |
 | ZIP sha256 | `ca2b3c5f447c90f174ec5763cced7fbb40154aa7f43ba03a219595e9e4aa59c1` |
 | Release | "Mehran Planner backend through P6-01", 2026-11-11, backend `7bcc10e2b133bc67976e5684f2aba82760890ea8` |

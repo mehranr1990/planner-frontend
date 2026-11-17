@@ -1,4 +1,4 @@
-import { screen, waitFor, within } from "@testing-library/react";
+import { fireEvent, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { NotificationsPopover } from "@/components/shell/notifications-popover";
@@ -156,6 +156,28 @@ describe("RoutinesCard", () => {
     await user.click(screen.getByRole("button", { name: "Delete Morning" }));
     await user.click(await screen.findByRole("button", { name: "Delete routine" }));
     expect(await screen.findByText("No routines yet")).toBeInTheDocument();
+  });
+
+  it("schedules a routine daily and runs today's day (Start → Complete)", async () => {
+    const user = userEvent.setup();
+    const repositories = createMockRepositories();
+    const habits = await repositories.habits.list();
+    renderWith(<RoutinesCard habits={habits} />, repositories);
+    await user.click(await screen.findByRole("button", { name: "New routine" }));
+    const dialog = await screen.findByRole("dialog");
+    await user.type(within(dialog).getByLabelText("Name"), "Night");
+    await user.click(within(dialog).getByRole("checkbox", { name: habits[0]!.title }));
+    await user.click(within(dialog).getByRole("checkbox", { name: "Repeat on a schedule" }));
+    fireEvent.change(within(dialog).getByLabelText("Time"), { target: { value: "00:00" } });
+    await user.click(within(dialog).getByRole("button", { name: "Add routine" }));
+
+    expect(await screen.findByText("Not started")).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: "Start" }));
+    expect(await screen.findByText("In progress")).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Start" })).not.toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: "Complete" }));
+    expect(await screen.findByText("Done")).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Skip" })).not.toBeInTheDocument();
   });
 });
 

@@ -177,7 +177,8 @@
     "moveToTomorrow": "Move {countText} to tomorrow",
     "bar": "Capacity used",
     "loading": "Loading capacity",
-    "unavailable": "Capacity unavailable"
+    "unavailable": "Capacity unavailable",
+    "unknown": "Capacity unknown · set work hours in Settings"
   },
   "reschedule": {
     "title": "Reschedule “<bdi>{title}</bdi>”",

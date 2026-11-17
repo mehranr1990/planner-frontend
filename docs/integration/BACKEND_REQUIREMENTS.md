@@ -260,6 +260,8 @@ Checked against the canonical OpenAPI and backend contracts (read only). Everyth
 | PR-2 | Settings › Delete account · policy version | `POST /me/deletion-request` requires `policyVersion` = the operator's `PERSONAL_ERASURE_POLICY_VERSION`; no endpoint returns it (handoff: "agreed policy supplied in deletion UI") — the frontend reads `NEXT_PUBLIC_ERASURE_POLICY_VERSION` and disables deletion without it | expose the active erasure policy version (+ its retention summary) read-only, e.g. on `GET /me/settings` or `GET /me/deletion-policy` |
 | PR-3 | Bell · unread badge | no count endpoint: the badge reads one `state=UNREAD` page (100) and shows 99+ beyond | optional `GET /notifications/unread-count` (cheap poll) |
 
+**2026-11-17: PR-1, PR-2, PR-3 CLOSED** by backend P1-GAP-CLOSURE (`a17c2e3`) and connected (`docs/PERSONAL_FRONTEND_COMPLETION.md`); the signed-out deletion recovery screen now exists (`/cancel-deletion`).
+
 Not backend gaps (frontend / environment): browser push subscribe needs a service worker (`POST /push/subscriptions` exists); signed-out deletion status / cancel needs a recovery screen (`GET /me/deletion-request`, `POST …/cancel` exist); the export worker must run for `/me/export` to reach READY.
 
 ## Projects final gap closure — backend patch specification (2026-11-14, backend `ab37a2c`, 1,045 ops, sha256 `e05f9777…c9a049`)

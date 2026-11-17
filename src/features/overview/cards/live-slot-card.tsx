@@ -60,7 +60,7 @@ export function LiveSlotCard({ today, nowMinutes, className }: { today: string; 
           exit={{ opacity: 0 }}
           transition={{ duration: 0.2, ease: "easeInOut" }}
         >
-          {slot.kind === "live" ? <NowCard className="h-full" /> : <SuggestionCard slot={slot} onDismiss={dismiss} />}
+          {slot.kind === "live" ? <NowCard className="h-full" /> : <SuggestionCard slot={slot} onDismiss={dismiss} freeKnown={plan.status !== "ready" || plan.capacity.known} />}
         </motion.div>
       </AnimatePresence>
     </div>
@@ -88,9 +88,12 @@ function Actions({ children }: { children: ReactNode }) {
 function SuggestionCard({
   slot,
   onDismiss,
+  freeKnown,
 }: {
   slot: Exclude<LiveSlot, { kind: "live" }>;
   onDismiss: (kind: LiveSlot["kind"]) => void;
+  /** False when the server's availability is unknown: free time shows "—". */
+  freeKnown: boolean;
 }) {
   const t = useTranslations("Overview.slot");
   const format = useMyDayFormat();
@@ -99,7 +102,7 @@ function SuggestionCard({
   switch (slot.kind) {
     case "morning":
       return (
-        <Frame chip={t("morning.chip")} title={t("morning.title", { count: slot.openCount, countText: format.number(slot.openCount), free: format.duration(slot.freeMinutes) })}>
+        <Frame chip={t("morning.chip")} title={t("morning.title", { count: slot.openCount, countText: format.number(slot.openCount), free: freeKnown ? format.duration(slot.freeMinutes) : "—" })}>
           <Actions>
             <Button asChild>
               <Link href={MY_DAY_HREF}>{t("planMyDay")}</Link>

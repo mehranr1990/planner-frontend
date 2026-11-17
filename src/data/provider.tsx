@@ -7,6 +7,7 @@ import { createApiBlocksRepository } from "./api/api-blocks-repository";
 import { createApiNotificationsRepository } from "./api/api-notifications-repository";
 import { createApiRemindersRepository } from "./api/api-reminders-repository";
 import { createApiRoutinesRepository } from "./api/api-routines-repository";
+import { createApiWorkingHoursRepository } from "./api/api-working-hours-repository";
 import { createApiTaskFilesRepository } from "./api/api-task-files-repository";
 import { createApiBrainDumpRepository } from "./api/api-brain-dump-repository";
 import { createApiFinanceRepository } from "./api/api-finance-repository";
@@ -68,6 +69,7 @@ export function createRepositories(): Repositories {
     notifications: createApiNotificationsRepository(client),
     reminders: createApiRemindersRepository(client),
     routines: createApiRoutinesRepository(client),
+    workingHours: createApiWorkingHoursRepository(client),
     taskFiles: createApiTaskFilesRepository(client),
     bills: createApiBillsRepository(client),
     financeReports: createApiFinanceReportsRepository(client),

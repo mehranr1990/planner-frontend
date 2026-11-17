@@ -1,5 +1,6 @@
 import type { ApiClient, RequestBody, ResponseData } from "@/api/client";
-import { newIdempotencyKey } from "@/api/client";
+import { newIdempotencyKey, typedAs } from "@/api/client";
+import type { paths as PersonalPaths } from "@/api/generated/openapi-p6-personal";
 import { parseClockTime } from "@/lib/dates/clock-time";
 import type { NotificationPreferences, NotificationsRepository, PlannerNotification, PushDevice } from "../personal-services";
 import { CHANNEL_FROM_API } from "./api-reminders-repository";
@@ -75,8 +76,9 @@ export function createApiNotificationsRepository(client: ApiClient): Notificatio
 
     unreadCount: () =>
       mapErrors(async () => {
-        const { data } = await client.request("get", "/api/v1/notifications", { query: { limit: PAGE, state: "UNREAD" } });
-        return data.nextCursor ? Number(PAGE) : data.items.length;
+        // Exact count over the whole Personal inbox (read / dismissed excluded).
+        const { data } = await typedAs<PersonalPaths>(client).request("get", "/api/v1/notifications/unread-count", {});
+        return data.count;
       }),
 
     setRead: (notification, read) =>

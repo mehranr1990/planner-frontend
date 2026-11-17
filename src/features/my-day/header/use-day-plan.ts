@@ -1,9 +1,10 @@
 "use client";
 
 import { useMemo } from "react";
+import { useScheduleCapacity } from "@/data/personal-services-queries";
 import { useBlocks, useTasks } from "@/data/queries";
 import { usePlannerSettings } from "@/features/planner-settings/use-planner-settings";
-import { computeCapacity, workWindow, type Capacity } from "../domain/capacity";
+import { computeCapacity, serverCapacity, workWindow, type Capacity } from "../domain/capacity";
 import { toDayBlocks, type DayBlock } from "../domain/day-blocks";
 
 /*
@@ -11,7 +12,9 @@ import { toDayBlocks, type DayBlock } from "../domain/day-blocks";
  * state: one place that joins repository data with the domain maths, so every
  * piece of the screen reads the same numbers. Tasks give task blocks their
  * priority (the order "Move N to tomorrow" picks by); a task list that fails
- * to load only costs that ordering, not the day.
+ * to load only costs that ordering, not the day. Live mode takes totals from
+ * the server's schedule capacity for the day (null = mock: the local
+ * work-hours model); a failed capacity read reads as unknown, not as hours.
  */
 
 export type DayPlan =
@@ -31,6 +34,10 @@ export function useDayPlan(day: string): DayPlan {
   const { workHours } = usePlannerSettings();
   const blocks = useBlocks(day);
   const tasks = useTasks({ view: "all" });
+  const server = useScheduleCapacity({ date: day });
+  const serverDay = server.data?.days.find((item) => item.date === day) ?? null;
+  const serverSettled = !server.isPending;
+  const serverServed = server.isError || server.data !== null;
 
   const blockData = blocks.data;
   const taskData = tasks.data;
@@ -40,9 +47,12 @@ export function useDayPlan(day: string): DayPlan {
 
   return useMemo<DayPlan>(() => {
     if (blocks.isError) return FAILED;
-    if (!blockData || !tasksSettled) return LOADING;
+    if (!blockData || !tasksSettled || !serverSettled) return LOADING;
     const work = workWindow({ start, end });
     const dayBlocks = toDayBlocks(blockData, day, taskData ?? []);
-    return { status: "ready", blocks: dayBlocks, capacity: computeCapacity(dayBlocks, work.totalMinutes), work };
-  }, [blocks.isError, blockData, taskData, tasksSettled, day, start, end]);
+    const capacity = !serverServed
+      ? computeCapacity(dayBlocks, work.totalMinutes)
+      : serverCapacity(dayBlocks, serverDay ?? { state: "UNKNOWN", availableMinutes: null, reservedMinutes: null, remainingMinutes: null, overbookedMinutes: null });
+    return { status: "ready", blocks: dayBlocks, capacity, work };
+  }, [blocks.isError, blockData, taskData, tasksSettled, serverSettled, serverServed, serverDay, day, start, end]);
 }

@@ -158,7 +158,7 @@
   },
   "routines": {
     "title": "Routines",
-    "hint": "A routine is an ordered group of habits. Check in each habit as usual.",
+    "hint": "An ordered group of habits, optionally on a schedule. Check in each habit as usual.",
     "new": "New routine",
     "loadError": "Couldn’t load routines",
     "emptyTitle": "No routines yet",
@@ -178,7 +178,10 @@
     "name": "Name",
     "errors": {
       "title": "Add a name.",
-      "habits": "Pick at least one habit."
+      "habits": "Pick at least one habit.",
+      "time": "Enter a time like 07:30.",
+      "weekdays": "Pick at least one day.",
+      "endDate": "The end day can’t be before the start."
     },
     "pick": "Habits",
     "order": "Order",
@@ -186,7 +189,45 @@
     "moveDown": "Move {title} down",
     "cancel": "Cancel",
     "save": "Save",
-    "create": "Add routine"
+    "create": "Add routine",
+    "daysError": "Couldn’t load this routine’s days",
+    "unscheduled": "Not scheduled",
+    "today": "Today",
+    "progress": "{done} of {total} habits",
+    "startsAt": "Starts {time}",
+    "history": "Last {count} days",
+    "historyEmpty": "Nothing scheduled on earlier days.",
+    "states": {
+      "PENDING": "Not started",
+      "RUNNING": "In progress",
+      "COMPLETED": "Done",
+      "SKIPPED": "Skipped",
+      "DST_GAP": "Skipped by the clock change",
+      "MISSED": "Not done"
+    },
+    "actions": {
+      "START": "Start",
+      "COMPLETE": "Complete",
+      "SKIP": "Skip"
+    },
+    "schedule": "Schedule",
+    "scheduleToggle": "Repeat on a schedule",
+    "repeats": "Repeats",
+    "kinds": {
+      "DAILY": "Every day",
+      "WEEKLY": "Every week",
+      "WEEKDAYS": "On picked days"
+    },
+    "weeklyOn": "Every {day}",
+    "minutes": "{count} min",
+    "time": "Time",
+    "expected": "Minutes (optional)",
+    "weekdays": "Days",
+    "startDate": "Starts",
+    "endDate": "Ends",
+    "noEnd": "No end",
+    "clearEnd": "Remove end day",
+    "reminder": "Remind me at this time"
   },
   "bills": {
     "filter": "Bills",
@@ -366,7 +407,18 @@
       "savedCode": "I saved the request ID and recovery code.",
       "leaveNote": "Confirming closes your account and signs you out on every device.",
       "notNow": "Not now",
-      "confirm": "Delete my account"
+      "confirm": "Delete my account",
+      "current": "Latest deletion request: {state}",
+      "states": {
+        "PENDING": "requested, not confirmed",
+        "WAITING": "confirmed, in grace period",
+        "ERASING": "erasing",
+        "CANCELED": "canceled",
+        "EXPIRED": "expired",
+        "FAILED": "failed",
+        "BLOCKED_POLICY": "blocked by policy",
+        "ERASED": "erased"
+      }
     }
   }
 }

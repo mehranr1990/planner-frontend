@@ -179,8 +179,11 @@ export function goalsWeek(goals: readonly Goal[], days: readonly string[], today
 export interface PlanDay {
   day: string;
   kind: DayKind;
-  /** Working minutes the day offers (half on Thursday, none on Friday). */
-  capacityMinutes: number;
+  /**
+   * Working minutes the day offers (half on Thursday, none on Friday); live
+   * mode: the server's available minutes, null when unknown (shown as "—").
+   */
+  capacityMinutes: number | null;
   /** Minutes already planned there plus carry-over tasks placed on it. */
   loadMinutes: number;
   /** Carry-over task ids placed on the day. */
@@ -192,7 +195,12 @@ export function nextWeekPlan(
   days: readonly string[],
   tasks: readonly Task[],
   placements: Readonly<Record<string, string>>,
-  { workMinutes, defaultDuration, week }: { workMinutes: number; defaultDuration: number; week: WeekConfig },
+  {
+    workMinutes,
+    defaultDuration,
+    week,
+    serverCapacity,
+  }: { workMinutes: number; defaultDuration: number; week: WeekConfig; serverCapacity?: ReadonlyMap<string, number | null> },
 ): PlanDay[] {
   const placedIds = new Set(Object.keys(placements));
   return Array.from({ length: 7 }, (_, index) => {
@@ -202,7 +210,13 @@ export function nextWeekPlan(
     const loadMinutes = tasks
       .filter((task) => task.status === "open" && (placedIds.has(task.id) ? placements[task.id] === day : task.date === day))
       .reduce((sum, task) => sum + (task.durationMinutes ?? defaultDuration), 0);
-    const capacityMinutes = kind === "work" ? workMinutes : kind === "half" ? Math.round(workMinutes / 2) : 0;
+    const capacityMinutes = serverCapacity
+      ? (serverCapacity.get(day) ?? null)
+      : kind === "work"
+        ? workMinutes
+        : kind === "half"
+          ? Math.round(workMinutes / 2)
+          : 0;
     return { day, kind, capacityMinutes, loadMinutes, placed };
   });
 }

@@ -12,11 +12,15 @@ import type {
   Reminder,
   ReminderInput,
   Routine,
+  RoutineAction,
   RoutineInput,
+  RoutineOccurrence,
+  RoutineSchedule,
+  WorkingHours,
 } from "./personal-services";
 import { useRepositories } from "./provider";
 import { afterHydration } from "./queries";
-import { financeKeys } from "./query-keys";
+import { blockKeys, financeKeys } from "./query-keys";
 
 /*
  * React Query hooks for the Personal services seam. Notifications have no
@@ -35,6 +39,10 @@ export const serviceKeys = {
   reminderList: (taskId: string | null) => ["reminders", "list", taskId] as const,
   deliveries: (id: string) => ["reminders", "deliveries", id] as const,
   routines: ["routines"] as const,
+  workingHours: ["working-hours"] as const,
+  // Under the blocks prefix: every timeline write (which invalidates blocks) refreshes capacity.
+  capacity: (query: { date: string } | { weekStartDate: string }) => [...blockKeys.all, "capacity", query] as const,
+  routineDays: (id: string, from: string, to: string) => ["routines", "days", id, from, to] as const,
   attachments: (taskId: string) => ["task-files", taskId] as const,
   bills: (archived: boolean) => [...financeKeys.all, "bill-list", archived] as const,
   billPreview: (id: string, from: string, to: string) => [...financeKeys.all, "bill-preview", id, from, to] as const,
@@ -139,18 +147,58 @@ export function useRoutines() {
   return afterHydration(useQuery({ queryKey: serviceKeys.routines, queryFn: () => routines.list() }), hydrated);
 }
 
+/** `schedule`: undefined = unchanged, null = clear. */
 export type RoutineWrite =
-  | { kind: "create"; input: RoutineInput }
-  | { kind: "update"; routine: Routine; patch: Partial<RoutineInput> }
+  | { kind: "create"; input: RoutineInput; schedule?: RoutineSchedule | null }
+  | { kind: "update"; routine: Routine; patch: Partial<RoutineInput>; schedule?: RoutineSchedule | null }
   | { kind: "remove"; routine: Routine };
 
 export function useRoutineWrite() {
   const { routines } = useRepositories();
   return useInvalidating(async (write: RoutineWrite) => {
-    if (write.kind === "create") await routines.create(write.input);
-    else if (write.kind === "update") await routines.update(write.routine, write.patch);
-    else await routines.remove(write.routine);
+    if (write.kind === "remove") return void (await routines.remove(write.routine));
+    const saved =
+      write.kind === "create" ? await routines.create(write.input) : Object.keys(write.patch).length ? await routines.update(write.routine, write.patch) : write.routine;
+    // The schedule PATCH uses the revision the first write returned.
+    if (write.schedule !== undefined && (write.kind === "create" ? write.schedule !== null : true)) await routines.setSchedule(saved, write.schedule);
   }, [serviceKeys.routines]);
+}
+
+/** The routine's schedule and its days in [from, to) (pending, running and executed). */
+export function useRoutineDays(routineId: string, from: string, to: string, enabled = true) {
+  const { routines } = useRepositories();
+  return useQuery({
+    enabled,
+    queryKey: serviceKeys.routineDays(routineId, from, to),
+    queryFn: async () => {
+      const [schedule, occurrences] = await Promise.all([routines.schedule(routineId), routines.occurrences(routineId, from, to)]);
+      return { schedule, occurrences };
+    },
+  });
+}
+
+export function useRoutineExecute() {
+  const { routines } = useRepositories();
+  return useInvalidating(({ occurrence, action }: { occurrence: RoutineOccurrence; action: RoutineAction }) => routines.execute(occurrence, action), [serviceKeys.routines]);
+}
+
+// ── Working hours & capacity ──────────────────────────────────────────────
+
+export function useWorkingHours(enabled = true) {
+  const { workingHours } = useRepositories();
+  return useQuery({ queryKey: serviceKeys.workingHours, queryFn: () => workingHours.get(), enabled });
+}
+
+/** Read-modify-write of the saved hours (exceptions and untouched days are kept). */
+export function useSaveWorkingHours() {
+  const { workingHours } = useRepositories();
+  return useInvalidating((apply: (current: WorkingHours | null) => WorkingHours | null) => workingHours.update(apply), [serviceKeys.workingHours, [...blockKeys.all, "capacity"]]);
+}
+
+/** Server capacity for a day or an account week; data null = not served (mock). */
+export function useScheduleCapacity(query: { date: string } | { weekStartDate: string } | null) {
+  const { workingHours } = useRepositories();
+  return useQuery({ queryKey: serviceKeys.capacity(query ?? { date: "" }), queryFn: () => workingHours.capacity(query!), enabled: query !== null, staleTime: 30_000 });
 }
 
 // ── Task files ────────────────────────────────────────────────────────────

@@ -92,6 +92,9 @@ function subscribe(listener: Listener) {
   };
 }
 
+/** Store change listener (the live Focus recovery mirror). */
+export const subscribeFocus = subscribe;
+
 export const focusStore = {
   get: load,
   /** Applies a transition to the latest session (no-op when there is none, unless `update` creates one). */

@@ -57,9 +57,12 @@ describe("notifications adapter", () => {
     expect(api.writes()).toEqual([`PATCH /notifications/${ID(1)}/read`, `PATCH /notifications/${ID(1)}/read`]);
   });
 
-  it("counts unread up to one page (99+ beyond)", async () => {
-    const api = fakeApi(() => json({ items: [notification(1)], nextCursor: "more" }));
-    expect(await createApiNotificationsRepository(api.client).unreadCount()).toBe(100);
+  it("reads the exact unread count from /notifications/unread-count", async () => {
+    const api = fakeApi((call, parts) => {
+      expect(parts).toEqual(["notifications", "unread-count"]);
+      return json({ count: 250 });
+    });
+    expect(await createApiNotificationsRepository(api.client).unreadCount()).toBe(250);
   });
 
   it("refuses a snooze in the past without calling the API", async () => {
@@ -222,6 +225,80 @@ describe("routines adapter", () => {
     await expect(repo.create({ title: "x", habitIds: [ID(1), ID(1)] })).rejects.toMatchObject({ code: "invalid" });
     await repo.create({ title: " Evening ", habitIds: [ID(12), ID(11)] });
     expect(api.calls.at(-1)!.body).toEqual({ title: "Evening", habitIds: [ID(12), ID(11)] });
+  });
+
+  const schedule = { kind: "WEEKDAYS" as const, startDate: "2026-11-14", endDate: null, weekdays: [6, 0], startTime: "07:00", expectedMinutes: 20, reminder: true, timezone: "Asia/Tehran" };
+  const day = (patch: Record<string, unknown> = {}) => ({
+    id: `${ID(1)}:2026-11-15`,
+    routineId: ID(1),
+    localDate: "2026-11-15",
+    scheduledAt: "2026-11-15T03:30:00.000Z",
+    timezone: "Asia/Tehran",
+    state: "PENDING",
+    revision: 3,
+    startedAt: null,
+    completedAt: null,
+    linkedHabitCount: 2,
+    completedHabitCount: 1,
+    completionPercentage: 50,
+    ...patch,
+  });
+
+  it("saves the schedule with the routine ETag (sorted weekdays, no null fields) and re-reads once on 409", async () => {
+    let first = true;
+    const api = fakeApi((call) => {
+      if (call.method === "GET") return json(routine({ revision: 5 }));
+      if (first) {
+        first = false;
+        expect(call.ifMatch).toBe(`"1"`);
+        return err(409);
+      }
+      expect(call.ifMatch).toBe(`"5"`);
+      expect(call.body).toEqual({ schedule: { kind: "WEEKDAYS", startDate: "2026-11-14", weekdays: [0, 6], startTime: "07:00", expectedMinutes: 20, reminder: true, timezone: "Asia/Tehran" } });
+      return json({ schedule: call.body.schedule, revision: 6 });
+    });
+    const repo = createApiRoutinesRepository(api.client);
+    const saved = await repo.setSchedule({ id: ID(1), revision: 1, title: "Morning", habits: [] }, schedule);
+    expect(saved.revision).toBe(6);
+    expect(api.writes()).toEqual([`PATCH /routines/${ID(1)}/schedule`, `PATCH /routines/${ID(1)}/schedule`]);
+    await expect(repo.setSchedule({ id: ID(1), revision: 6, title: "Morning", habits: [] }, { ...schedule, weekdays: [] })).rejects.toMatchObject({ code: "invalid" });
+  });
+
+  it("reads and clears a schedule", async () => {
+    const api = fakeApi((call) => {
+      if (call.method === "GET") return json({ schedule: { kind: "DAILY", startDate: "2026-11-14", startTime: "21:15", timezone: "Asia/Tehran" }, revision: 2 });
+      expect(call.body).toEqual({ schedule: null });
+      return json({ schedule: null, revision: 3 });
+    });
+    const repo = createApiRoutinesRepository(api.client);
+    expect(await repo.schedule(ID(1))).toEqual({ kind: "DAILY", startDate: "2026-11-14", endDate: null, weekdays: [], startTime: "21:15", expectedMinutes: null, reminder: false, timezone: "Asia/Tehran" });
+    expect((await repo.setSchedule({ id: ID(1), revision: 2, title: "M", habits: [] }, null)).revision).toBe(3);
+  });
+
+  it("pages occurrences with nextDate as afterDate", async () => {
+    const api = fakeApi((call) => {
+      expect([call.query.from, call.query.to]).toEqual(["2026-11-01", "2026-11-16"]);
+      return call.query.afterDate ? json({ items: [day()], nextDate: null }) : json({ items: [day({ localDate: "2026-11-14", state: "COMPLETED" })], nextDate: "2026-11-14" });
+    });
+    const items = await createApiRoutinesRepository(api.client).occurrences(ID(1), "2026-11-01", "2026-11-16");
+    expect(items.map((item) => [item.date, item.state, item.completedHabits, item.percent])).toEqual([
+      ["2026-11-14", "COMPLETED", 1, 50],
+      ["2026-11-15", "PENDING", 1, 50],
+    ]);
+    expect(api.calls[1]!.query.afterDate).toBe("2026-11-14");
+  });
+
+  it("executes a day with the occurrence revision and an Idempotency-Key", async () => {
+    const api = fakeApi((call) => {
+      expect(call.ifMatch).toBe(`"3"`);
+      expect(call.key).toBeTruthy();
+      expect(call.body).toEqual({ action: "START" });
+      return json(day({ state: "RUNNING", revision: 4, startedAt: T0 }), 201);
+    });
+    const repo = createApiRoutinesRepository(api.client);
+    const [pending] = await createApiRoutinesRepository(fakeApi(() => json({ items: [day()], nextDate: null })).client).occurrences(ID(1), "2026-11-15", "2026-11-16");
+    expect(await repo.execute(pending!, "START")).toMatchObject({ state: "RUNNING", revision: 4 });
+    expect(api.writes()).toEqual([`POST /routines/${ID(1)}/occurrences/2026-11-15/execute`]);
   });
 });
 

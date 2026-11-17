@@ -393,3 +393,20 @@ Contract `planner-backend/docs/api/openapi.json` 1,045 ops, sha256 `e05f9777…c
 - Gates: `tsc` 0; eslint 16 touched files 0; vitest messaging / meetings / announcements adapters + mock messaging + Messages UI + bell: 8 files / 88 passed (new `api-messaging-gap-closure.test.ts` 10, `messages-gap-closure-ui.test.tsx` 7, mock withdraw 1); contract match 4 adapters 103 calls / 90 ops, 0 outside; `npm run build` pass; `logical-css` still fails only on pre-existing `social/activity/poll-screen.tsx:157`. No Playwright / live tests.
 
 NEXT_ACTION: owner review (Invitations section, bell Messages section, Files download, Withdraw dialog; en / fa, RTL, 390, dark); backend MB-1…MB-4 / OD-16 patch; then the authorized Live Test run (migrations 046–054, catalog OD-1, CORS, credentials, Shared activation).
+
+## Personal frontend completion (2026-11-17) — IMPLEMENTED, NOT LIVE VERIFIED
+
+Contract `planner-backend/docs/api/openapi.json` at `a17c2e3` (1,193 ops, sha256 `99ad4f54…8d8c4b`), handoff `PERSONAL_GAP_CLOSURE.md`. Full report: `docs/PERSONAL_FRONTEND_COMPLETION.md`; rows: `API_COVERAGE_MATRIX.md` → "Personal frontend completion"; PR-1…PR-3 closed in `BACKEND_REQUIREMENTS.md`.
+
+- Connected: exact unread count; deletion policy + current request (+ new `/cancel-deletion` signed-out status / cancel, required by the existing Delete dialog copy); routine schedule / occurrences / execution in the Routines card; working hours (Settings write-through, exceptions kept); server day capacity (My Day, Overview; unknown shown as unknown) and week capacity (Weekly review strip); recoverable Focus mirror (`features/focus/focus-recovery.ts`, one STOPWATCH session per focus cycle) with claimed cycles never written as manual time entries.
+- New files: `api-working-hours-repository.ts` (+test), `focus-recovery.ts` (+test), `working-hours-sync.ts`, `use-week-capacity.ts`, `app/(auth)/cancel-deletion/page.tsx`.
+
+- Gates: tsc 0; eslint touched files 0; Personal scope 173 files / 1,628 passed, 11 skipped; `npm run build` compiles + generates 125 pages, then fails on the Next.js 16.4.3 security-advisory gate (needs an owner-approved Next upgrade).
+
+NEXT_ACTION: approve a Next.js patch upgrade (build gate); owner review of the Routines dialog / row, capacity "unknown" pill, `/cancel-deletion` (en / fa, RTL, 390, dark); then the authorized Live Test run (credentials, migrations, `PERSONAL_ERASURE_POLICY_VERSION`).
+
+## Personal live acceptance P1-FRONTEND-LIVE (2026-11-17) — API PASS, NOT ACCEPTED (build blocked)
+
+Report: `docs/PERSONAL_LIVE_ACCEPTANCE.md`. DB `mehran_dev` 101/101 migrations (read only). All existing live suites pass one at a time (sign-in limit 3 / 10 s); new `api-personal-completion.live.test.tsx` passes (unread count, deletion readiness, 401 / 404 / sign-out, working hours + capacity, routines, recoverable Focus incl. 65 s gap, no duplicate manual entry). Fixed: goal milestone insert order (`addMilestone` renumbers positions). UI not visually verified.
+
+NEXT_ACTION: apply the approved Next.js patch upgrade (build still fails on the 16.4.3 advisory gate); browser review in live mode (`NEXT_PUBLIC_API_MODE=live`); configure `PERSONAL_ERASURE_POLICY_VERSION` if deletion should be testable.

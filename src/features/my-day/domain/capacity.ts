@@ -20,6 +20,8 @@ export interface Capacity {
   state: CapacityState;
   overlapCount: number;
   overlapMinutes: number;
+  /** False when the server reports UNKNOWN / DST_GAP availability: totals are 0 and must not be shown as real. */
+  known: boolean;
 }
 
 /** Below this share of the workday the day reads as "partially planned". */
@@ -61,7 +63,33 @@ export function computeCapacity(blocks: readonly DayBlock[], totalMinutes: numbe
     state,
     overlapCount,
     overlapMinutes: overlaps.reduce((sum, overlap) => sum + overlap.minutes, 0),
+    known: true,
   };
+}
+
+/**
+ * Capacity from the server's schedule occupancy (events ∪ time blocks ∩
+ * working hours, overlaps counted once). Local blocks still give the
+ * overlap count (an overlap is "over", as in the local model). UNKNOWN /
+ * DST_GAP availability stays unknown: no invented totals.
+ */
+export function serverCapacity(
+  blocks: readonly DayBlock[],
+  day: { state: string; availableMinutes: number | null; reservedMinutes: number | null; remainingMinutes: number | null; overbookedMinutes: number | null },
+): Capacity {
+  const local = computeCapacity(blocks, 0);
+  if (day.state !== "CONFIGURED" || day.availableMinutes === null || day.reservedMinutes === null) {
+    return { ...local, totalMinutes: 0, freeMinutes: 0, ratio: 0, state: local.state === "over" ? "over" : local.state === "empty" ? "empty" : "partial", known: false };
+  }
+  const total = day.availableMinutes;
+  const planned = day.reservedMinutes;
+  const ratio = total > 0 ? planned / total : planned > 0 ? Infinity : 0;
+  let state: CapacityState;
+  if (blocks.length === 0 && planned === 0) state = "empty";
+  else if ((day.overbookedMinutes ?? 0) > 0 || ratio > 1 || local.overlapCount > 0) state = "over";
+  else if (ratio < PARTIAL_RATIO) state = "partial";
+  else state = "normal";
+  return { ...local, plannedMinutes: planned, totalMinutes: total, freeMinutes: day.remainingMinutes ?? Math.max(0, total - planned), ratio, state, known: true };
 }
 
 const PRIORITY_WEIGHT: Record<TaskPriority | "none", number> = { urgent: 0, high: 1, medium: 2, low: 3, none: 4 };

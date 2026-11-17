@@ -374,6 +374,36 @@ export interface PlanRepository {
    * `spans` the actual time of each cycle (the live API stores them as time entries). Rejects "invalid" for a bad day or count.
    */
   recordFocusSessions(day: string, input: { count: number; cycle: number; spans?: readonly FocusSpan[] }): Promise<FocusSummary>;
+  /** Live mode only: server-recoverable focus sessions (absent in mock mode). */
+  focusRecovery?: FocusRecoveryRepository;
+}
+
+export type FocusRecoveryAction = "START" | "HEARTBEAT" | "PAUSE" | "RESUME" | "FINISH" | "STOP" | "DISCARD" | "EXTEND" | "RECOVER";
+
+export interface ServerFocusSession {
+  id: string;
+  revision: number;
+  state: "IDLE" | "RUNNING" | "PAUSED" | "FINISHED" | "ABANDONED";
+  /** INTERRUPTED = no heartbeat for over 60 s: RECOVER before anything else. */
+  recoveryState: "READY" | "HEALTHY" | "INTERRUPTED" | "TERMINAL" | null;
+  workMs: number;
+}
+
+/**
+ * Recoverable focus sessions (POST /focus/sessions recoverable + /recovery).
+ * One session mirrors one browser focus cycle; FINISH / STOP record its
+ * TRACKED time entry server-side, so a claimed cycle is never also written
+ * as a manual time entry.
+ */
+export interface FocusRecoveryRepository {
+  create(title: string): Promise<ServerFocusSession>;
+  get(id: string): Promise<ServerFocusSession>;
+  /** `key` is stable per logical command; a stale revision re-reads once and retries with the same key. */
+  command(session: ServerFocusSession, action: FocusRecoveryAction, key: string, minutes?: number): Promise<ServerFocusSession>;
+  /** Marks a browser cycle (by its span end) as recorded by its server session. */
+  claim(spanEndAt: number): void;
+  /** Queues server work so readers can wait for it (focus totals after FINISH). */
+  track(work: Promise<unknown>): void;
 }
 
 /*

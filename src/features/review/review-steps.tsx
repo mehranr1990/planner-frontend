@@ -368,13 +368,13 @@ export function PlanStep({ session }: { session: WeeklyReviewSession }) {
         ) : null}
         <ol className="grid grid-cols-7 gap-1.5" aria-label={t("strip")}>
           {session.plan.map((day) => {
-            const ratio = day.capacityMinutes ? day.loadMinutes / day.capacityMinutes : day.loadMinutes ? 1 : 0;
-            const over = day.loadMinutes > day.capacityMinutes;
+            const ratio = day.capacityMinutes === null ? 0 : day.capacityMinutes ? day.loadMinutes / day.capacityMinutes : day.loadMinutes ? 1 : 0;
+            const over = day.capacityMinutes !== null && day.loadMinutes > day.capacityMinutes;
             const weekend = day.kind === "weekend";
             const label = t("dayLabel", {
               day: format.weekdayShort(day.day),
               load: format.durationShort(day.loadMinutes),
-              capacity: format.durationShort(day.capacityMinutes),
+              capacity: day.capacityMinutes === null ? "—" : format.durationShort(day.capacityMinutes),
             });
             return (
               <li key={day.day} className="min-w-0">

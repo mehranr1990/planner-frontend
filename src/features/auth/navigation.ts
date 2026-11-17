@@ -19,6 +19,7 @@ export const AUTH_ROUTES = {
   forgotPassword: "/forgot-password",
   resetPassword: "/reset-password",
   verifyEmail: "/verify-email",
+  cancelDeletion: "/cancel-deletion",
 } as const;
 
 export type SignInReason = "expired" | "signed-out" | "revoked";

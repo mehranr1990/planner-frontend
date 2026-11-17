@@ -1,4 +1,4 @@
-import { addDaysToDay, diffDays, parseDay, weekdayOfDay } from "@/lib/dates/clock-time";
+import { addDaysToDay, diffDays, instantAtTime, parseDay, weekdayOfDay } from "@/lib/dates/clock-time";
 import { shiftDecimal } from "@/lib/locale/decimal";
 import type { Transaction } from "../domain";
 import type {
@@ -10,7 +10,10 @@ import type {
   Reminder,
   RepeatRule,
   Routine,
+  RoutineOccurrence,
+  RoutineSchedule,
   TaskAttachment,
+  WorkingHoursState,
 } from "../personal-services";
 import { ATTACHMENT_MAX_BYTES, ATTACHMENT_TYPES } from "../personal-services";
 import { RepositoryError } from "../repositories";
@@ -29,6 +32,17 @@ const notFound = (what: string): never => {
 const invalid = (message: string): never => {
   throw new RepositoryError("invalid", message);
 };
+const conflict = (): never => {
+  throw new RepositoryError("conflict", "Changed elsewhere");
+};
+
+/** Same due rule as the server: WEEKLY repeats on the start day's weekday. */
+function routineDue(schedule: RoutineSchedule, day: string): boolean {
+  if (day < schedule.startDate || (schedule.endDate !== null && day > schedule.endDate)) return false;
+  if (schedule.kind === "DAILY") return true;
+  const weekday = weekdayOfDay(day);
+  return schedule.kind === "WEEKDAYS" ? schedule.weekdays.includes(weekday) : weekday === weekdayOfDay(schedule.startDate);
+}
 
 let sequence = 0;
 const nextId = (prefix: string) => `${prefix}-${++sequence}`;
@@ -71,6 +85,10 @@ export function createMockPersonalServices({
 }): PersonalServiceRepositories {
   const reminders: Reminder[] = [];
   const routines: Routine[] = [];
+  let workingHours: WorkingHoursState = { workingHours: null, revision: 1, timezone: "Asia/Tehran", firstDayOfWeek: 6 };
+  const routineSchedules = new Map<string, RoutineSchedule>();
+  // Executed days by "routineId:date"; pending days are derived from the schedule.
+  const executions = new Map<string, RoutineOccurrence>();
   const files = new Map<string, { attachment: TaskAttachment; blob: Blob }[]>();
   const bills: { bill: Bill; versions: BillVersion[]; paid: Set<string> }[] = [];
   let preferences: NotificationPreferences = {
@@ -148,6 +166,16 @@ export function createMockPersonalServices({
       },
     },
 
+    workingHours: {
+      get: async () => clone(workingHours),
+      update: async (apply) => {
+        workingHours = { ...workingHours, workingHours: clone(apply(clone(workingHours.workingHours))), revision: workingHours.revision + 1 };
+        return clone(workingHours);
+      },
+      // Not served in mock mode: My Day and the weekly review keep the local work-hours model.
+      capacity: async () => null,
+    },
+
     routines: {
       list: async () => clone(routines),
       create: async (input) => {
@@ -164,6 +192,50 @@ export function createMockPersonalServices({
       },
       remove: async (current) => {
         routines.splice(routines.indexOf(routine(current.id)), 1);
+      },
+      schedule: async (routineId) => {
+        routine(routineId);
+        const schedule = routineSchedules.get(routineId);
+        return schedule ? clone(schedule) : null;
+      },
+      setSchedule: async (current, schedule) => {
+        const item = routine(current.id);
+        if (item.revision !== current.revision) conflict();
+        if (schedule && schedule.endDate !== null && schedule.endDate < schedule.startDate) invalid("The end day must not be before the start day");
+        if (schedule?.kind === "WEEKDAYS" && schedule.weekdays.length === 0) invalid("Pick at least one weekday");
+        if (schedule) routineSchedules.set(item.id, clone(schedule));
+        else routineSchedules.delete(item.id);
+        item.revision += 1;
+        return clone(item);
+      },
+      occurrences: async (routineId, from, to) => {
+        const item = routine(routineId);
+        const schedule = routineSchedules.get(routineId);
+        const out: RoutineOccurrence[] = [];
+        for (let day = from; day < to; day = addDaysToDay(day, 1)) {
+          const done = executions.get(`${routineId}:${day}`);
+          if (done) out.push(clone(done));
+          else if (schedule && routineDue(schedule, day))
+            out.push({ routineId, date: day, scheduledAt: instantAtTime(day, schedule.startTime), state: "PENDING", revision: item.revision, startedAt: null, completedAt: null, linkedHabits: item.habits.length, completedHabits: 0, percent: item.habits.length ? 0 : null });
+        }
+        return out;
+      },
+      execute: async (occurrence, action) => {
+        const key = `${occurrence.routineId}:${occurrence.date}`;
+        const before = executions.get(key);
+        const revision = before?.revision ?? routine(occurrence.routineId).revision;
+        if (revision !== occurrence.revision || (before && before.state !== "RUNNING") || (action === "START" && before)) conflict();
+        if (occurrence.scheduledAt === null || occurrence.scheduledAt > new Date().toISOString()) invalid("This day hasn’t started yet");
+        const now = new Date().toISOString();
+        const next: RoutineOccurrence = {
+          ...occurrence,
+          state: action === "START" ? "RUNNING" : action === "COMPLETE" ? "COMPLETED" : "SKIPPED",
+          revision: revision + 1,
+          startedAt: action === "START" ? now : (before?.startedAt ?? null),
+          completedAt: action === "COMPLETE" ? now : null,
+        };
+        executions.set(key, next);
+        return clone(next);
       },
     },
 

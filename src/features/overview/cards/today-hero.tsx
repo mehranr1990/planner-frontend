@@ -46,6 +46,7 @@ export function TodayHero({ today: day, data, nowMinutes }: { today: string; dat
   const tasks = data.tasks;
   const habits = data.habits;
   const free = plan.status === "ready" ? plan.capacity.freeMinutes : 0;
+  const freeText = plan.status === "ready" && !plan.capacity.known ? "—" : format.duration(free);
   const state =
     tasks?.allDone && (!habits || habits.done === habits.total)
       ? "done"
@@ -98,9 +99,9 @@ export function TodayHero({ today: day, data, nowMinutes }: { today: string; dat
                       tasksText: format.number(tasks!.open),
                       habits: habits!.total - habits!.done,
                       habitsText: format.number(habits!.total - habits!.done),
-                      free: format.duration(free),
+                      free: freeText,
                     })
-                  : t("summaryTasks", { tasks: tasks!.open, tasksText: format.number(tasks!.open), free: format.duration(free) })}
+                  : t("summaryTasks", { tasks: tasks!.open, tasksText: format.number(tasks!.open), free: freeText })}
               </p>
             </SignatureCardHeader>
           </div>

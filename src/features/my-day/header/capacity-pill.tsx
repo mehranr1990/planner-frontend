@@ -71,6 +71,14 @@ export function CapacityPill({ compact = false, className }: CapacityPillProps) 
   }
 
   const { capacity } = plan;
+  if (!capacity.known) {
+    // UNKNOWN / DST_GAP on the server: no invented hours (set them in Settings › Work hours).
+    return (
+      <p role="status" className={cn("inline-flex h-9 items-center rounded-pill bg-surface px-3.5 text-xs font-semibold text-fg-muted", className)}>
+        {t("unknown")}
+      </p>
+    );
+  }
   const over = capacity.state === "over";
   const planned = format.duration(capacity.plannedMinutes);
   const total = format.duration(capacity.totalMinutes);

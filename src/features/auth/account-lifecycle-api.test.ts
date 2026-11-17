@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { fakeApi, json } from "@/data/api/test-support";
-import { confirmDeletion, downloadExport, erasurePolicyVersion, requestDeletion, revisionFromEtag, startExport } from "./account-lifecycle-api";
+import { err, fakeApi, json } from "@/data/api/test-support";
+import { cancelDeletion, confirmDeletion, deletionRecoveryStatus, deletionStatus, downloadExport, erasurePolicyVersion, requestDeletion, revisionFromEtag, startExport } from "./account-lifecycle-api";
 
 /* Account export / deletion calls against a contract fake: proofs travel only in headers. */
 
@@ -49,5 +49,47 @@ describe("account lifecycle", () => {
     expect((await startExport(api.client, "pw", "k-2")).state).toBe("QUEUED");
     expect(await (await downloadExport(api.client, ID, "p")).text()).toBe("{}");
     expect(seen).toEqual([`/me/exports/${ID}/download`]);
+  });
+
+  it("saves an export the server serves as application/json (live behaviour) as a JSON file", async () => {
+    const api = fakeApi(() => json({ format: "mehran-export", items: [1] }));
+    const blob = await downloadExport(api.client, ID, "p");
+    expect(blob).toBeInstanceOf(Blob);
+    expect(blob.type).toBe("application/json");
+    const text = await new Promise<string>((resolve) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(String(reader.result));
+      reader.readAsText(blob);
+    });
+    expect(JSON.parse(text)).toEqual({ format: "mehran-export", items: [1] });
+  });
+
+  it("reads the server deletion policy and the current request; an unset policy (409) falls back to the env version", async () => {
+    let unset = false;
+    const api = fakeApi((_call, parts) => {
+      if (parts[1] === "deletion-policy") return unset ? err(409) : json({ policyVersion: "srv-1", retentionAcknowledgementRequired: true, gracePeriodDays: 7, backupExpiryMaximumDays: 30, cancellationRequiresPassword: true, cancellationRequiresRecoveryCapability: true });
+      expect(parts).toEqual(["me", "deletion-request", "current"]);
+      return json({ job: unset ? null : job });
+    });
+    expect(await deletionStatus(api.client)).toEqual({ policyVersion: "srv-1", job });
+    unset = true;
+    vi.stubEnv("NEXT_PUBLIC_ERASURE_POLICY_VERSION", "env-1");
+    expect(await deletionStatus(api.client)).toEqual({ policyVersion: "env-1", job: null });
+  });
+
+  it("checks and cancels a deletion signed out with the recovery code in a header only", async () => {
+    const seen: string[] = [];
+    const api = fakeApi((call) => {
+      seen.push(`${call.method} ${call.path}?${new URLSearchParams(call.query).toString()}`);
+      if (call.method === "POST") {
+        expect(call.body).toEqual({ jobId: ID, password: "pw" });
+        return json({ ...job, state: "CANCELED", revision: 3 }, 201);
+      }
+      return json({ ...job, state: "WAITING" });
+    });
+    expect((await deletionRecoveryStatus(api.client, ID, "rc-secret")).state).toBe("WAITING");
+    expect((await cancelDeletion(api.client, { jobId: ID, password: "pw" }, "rc-secret")).state).toBe("CANCELED");
+    expect(seen).toEqual([`GET /me/deletion-request?jobId=${ID}`, "POST /me/deletion-request/cancel?"]);
+    expect(seen.join(" ")).not.toContain("rc-secret");
   });
 });

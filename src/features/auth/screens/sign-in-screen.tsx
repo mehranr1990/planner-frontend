@@ -116,6 +116,9 @@ export function SignInScreen({ reason, next }: { reason?: string; next?: string 
           {t("signIn.signUpLink")}
         </Link>
       </p>
+      <Link href={AUTH_ROUTES.cancelDeletion} className="self-start text-xs font-semibold text-fg-muted underline-offset-4 hover:underline">
+        {t("cancelDeletion.link")}
+      </Link>
     </AuthPage>
   );
 }

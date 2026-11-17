@@ -29,12 +29,14 @@ import { AccountSettingsPanel } from "@/features/auth/account-settings-panel";
 import { AccountDeletionRow, AccountExportRow } from "@/features/personal-services/account-data";
 import { NotificationPreferencesPanel } from "@/features/personal-services/notification-settings";
 import { RemindersList } from "@/features/personal-services/reminders-list";
+import { useReconcileWorkHours, useWorkingHoursSync } from "@/features/personal-services/working-hours-sync";
 import { optionalModuleIds } from "@/features/planner-settings/modules";
 import {
   cyclesBeforeLongBreakOptions,
   DEFAULT_PLANNER_SETTINGS,
   focusMinuteOptions,
   longBreakMinuteOptions,
+  mergePlannerSettings,
   shortBreakMinuteOptions,
   type ClockTime,
   type Energy,
@@ -92,6 +94,7 @@ function useSettingsSave() {
   const preferences = usePreferences();
   const { update } = usePlannerSettingsActions();
   const preferenceActions = usePreferenceActions();
+  const syncHours = useWorkingHoursSync();
 
   const saved = (undo: () => void) =>
     toast({
@@ -105,7 +108,13 @@ function useSettingsSave() {
     planner(patch: PlannerSettingsPatch) {
       const undo = undoPatchFor(settings, patch);
       update(patch);
-      saved(() => update(undo));
+      // Work hours and day kinds are also the server's working hours (capacity).
+      const hours = patch.workHours !== undefined || patch.week?.workDays !== undefined || patch.week?.halfDays !== undefined;
+      if (hours) syncHours(mergePlannerSettings(settings, patch));
+      saved(() => {
+        update(undo);
+        if (hours) syncHours(settings);
+      });
     },
     preferences(patch: Partial<Preferences>) {
       const previous = Object.fromEntries(
@@ -405,6 +414,7 @@ function PlanningGroup() {
   const settings = usePlannerSettings();
   const save = useSettingsSave();
   const { workHours, planning, insights } = settings;
+  useReconcileWorkHours();
   const rolloverLabelId = useId();
   const buffers = Object.entries(insights.estimateBuffers).filter((entry): entry is [string, number] => (entry[1] ?? 0) > 0);
   // Buffers are keyed by the Insights estimate categories; unknown keys show as stored.

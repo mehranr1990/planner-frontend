@@ -377,3 +377,15 @@ Identity: other people = user ids; the session user = seam `me`. **X-S1** connec
 | `lending`, `lostFound` | REFUSED | P6-04 not in contract |
 | `albums`, `challenges` | REFUSED | P6-05 not in contract |
 | `/social/restore-replay`, `/social-group-invitations/*` (preview / accept / decline with X-Invitation-Proof), `GET /social/blocks`, `/blocks/{id}/unblock`, handover accept / decline / revoke | NOT USED | no UI surface in the approved Social design (invitation proofs are never stored; restore is an operator procedure) |
+
+## Personal frontend completion (2026-11-17, contract `a17c2e3`, 1,193 ops) — IMPLEMENTED, NOT LIVE VERIFIED
+
+| Feature | Status | Operations |
+|---|---|---|
+| Bell unread badge (exact) | CONNECTED (`api-personal-services.test.ts`) | `GET /notifications/unread-count` |
+| Delete account: server policy + current request | CONNECTED (`account-lifecycle-api.test.ts`) | `GET /me/deletion-policy` (409 → env fallback), `GET /me/deletion-request/current` |
+| Signed-out deletion status / cancel (`/cancel-deletion`) | CONNECTED (`account-lifecycle-api.test.ts`) | `GET /me/deletion-request?jobId`, `POST /me/deletion-request/cancel` (`X-Deletion-Recovery`) |
+| Routines schedule / occurrences / execution | CONNECTED (`api-personal-services.test.ts`, `personal-services-ui.test.tsx`) | `GET/PATCH /routines/{id}/schedule`, `GET /routines/{id}/occurrences`, `POST /routines/{id}/occurrences/{date}/execute` |
+| Working hours (Settings) | CONNECTED (`api-working-hours-repository.test.ts`) | `GET/PUT /planning/working-hours` (read-modify-write, exceptions kept) |
+| Capacity: My Day / Overview (day), Weekly review (week) | CONNECTED (same) | `GET /planning/capacity/schedule?date|weekStartDate`; UNKNOWN / DST_GAP shown as unknown. Supersedes the "NA — decided" capacity row above for live mode |
+| Recoverable Focus + no duplicate accounting | CONNECTED (`api-focus.test.ts`, `focus-recovery.test.tsx`) | `POST /focus/sessions` (recoverable STOPWATCH), `POST /focus/sessions/{id}/recovery`, `GET /focus/sessions/{id}`; claimed cycles write no `POST /time-entries` |

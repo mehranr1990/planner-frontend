@@ -1,6 +1,6 @@
 "use client";
 
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Copy, Download } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useEffect, useId, useRef, useState, type FormEvent } from "react";
@@ -14,6 +14,7 @@ import { newIdempotencyKey } from "@/api/client";
 import { saveBlob } from "@/data/personal-services-queries";
 import {
   confirmDeletion,
+  deletionStatus,
   downloadExport,
   erasurePolicyVersion,
   exportStatus,
@@ -161,13 +162,17 @@ type Step = { kind: "request" } | { kind: "confirm"; start: DeletionStart };
 
 export function AccountDeletionRow() {
   const t = useTranslations("Services.account");
-  const policy = erasurePolicyVersion();
+  // Server policy first (env version only when the server's is unset); read before any request.
+  const status = useQuery({ queryKey: ["account", "deletion-status"], queryFn: () => deletionStatus(getApiClient()), staleTime: 60_000 });
+  const policy = status.isPending ? null : (status.data?.policyVersion ?? erasurePolicyVersion());
+  const job = status.data?.job ?? null;
   const [open, setOpen] = useState(false);
   return (
     <UtilityField className="flex-wrap justify-between gap-x-4 gap-y-2 py-2">
       <div className="flex min-w-0 flex-col">
         <span>{t("delete.title")}</span>
-        <span className="text-xs font-normal text-fg-muted">{policy ? t("delete.hint") : t("delete.unavailable")}</span>
+        <span className="text-xs font-normal text-fg-muted">{policy || status.isPending ? t("delete.hint") : t("delete.unavailable")}</span>
+        {job ? <span className="text-xs font-normal text-fg-muted">{t("delete.current", { state: t(`delete.states.${job.state}`) })}</span> : null}
       </div>
       <Button size="sm" variant="outline" className="text-danger-text" disabled={!policy} onClick={() => setOpen(true)}>
         {t("delete.open")}
@@ -207,6 +212,7 @@ function DeletionFlow({ policy, onCancel }: { policy: string; onCancel(): void }
       const start = await requestDeletion(client, { password, accountRevision, policyVersion: policy }, key.current);
       setPassword("");
       setStep({ kind: "confirm", start });
+      void queryClient.invalidateQueries({ queryKey: ["account", "deletion-status"] });
     } catch (error) {
       toast({ tone: "danger", title: message(error) });
     } finally {

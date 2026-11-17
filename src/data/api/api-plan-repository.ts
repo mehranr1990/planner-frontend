@@ -17,7 +17,7 @@ const MAX_PRIORITIES = 3;
 export function createApiPlanRepository(
   dayPlans: DayPlans,
   tasks: ApiTasksRepository,
-  focus: Pick<PlanRepository, "focusToday" | "recordFocusSessions">,
+  focus: Pick<PlanRepository, "focusToday" | "recordFocusSessions" | "focusRecovery">,
 ): PlanRepository {
   // Always a fresh read (one request): item status changes elsewhere must not show stale priorities.
   async function priorities(day: string): Promise<DayPriority[]> {
@@ -62,5 +62,6 @@ export function createApiPlanRepository(
     },
     focusToday: (day) => focus.focusToday(day),
     recordFocusSessions: (day, input) => focus.recordFocusSessions(day, input),
+    focusRecovery: focus.focusRecovery,
   };
 }

@@ -27,6 +27,7 @@ describe("computeCapacity", () => {
       state: "normal",
       overlapCount: 0,
       overlapMinutes: 0,
+      known: true,
     });
   });
 

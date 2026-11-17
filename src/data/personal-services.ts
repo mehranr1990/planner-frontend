@@ -53,7 +53,7 @@ export interface PushDevice {
 export interface NotificationsRepository {
   /** The inbox, newest first (dismissed ones are gone). */
   list(filter: NotificationFilter): Promise<PlannerNotification[]>;
-  /** Unread notifications, counted up to 100 (the badge shows 99+). */
+  /** Exact unread notifications in the Personal inbox (the badge shows 99+). */
   unreadCount(): Promise<number>;
   setRead(notification: PlannerNotification, read: boolean): Promise<PlannerNotification>;
   dismiss(notification: PlannerNotification): Promise<void>;
@@ -157,6 +157,42 @@ export interface RoutineInput {
   habitIds: string[];
 }
 
+/** DAILY; WEEKLY = the start date's weekday; WEEKDAYS = the picked days (Sunday = 0). */
+export type RoutineScheduleKind = "DAILY" | "WEEKLY" | "WEEKDAYS";
+
+export interface RoutineSchedule {
+  kind: RoutineScheduleKind;
+  /** ISO days; `endDate` inclusive. */
+  startDate: string;
+  endDate: string | null;
+  weekdays: number[];
+  /** Wall-clock "HH:mm" in `timezone` (the account zone when saved). */
+  startTime: string;
+  expectedMinutes: number | null;
+  reminder: boolean;
+  timezone: string;
+}
+
+export type RoutineOccurrenceState = "PENDING" | "RUNNING" | "COMPLETED" | "SKIPPED" | "DST_GAP";
+export type RoutineAction = "START" | "COMPLETE" | "SKIP";
+
+export interface RoutineOccurrence {
+  routineId: string;
+  /** ISO day. */
+  date: string;
+  /** Null for a DST_GAP day (the wall time does not exist). */
+  scheduledAt: string | null;
+  state: RoutineOccurrenceState;
+  /** If-Match for execute (a pending day carries the routine's revision). */
+  revision: number;
+  startedAt: string | null;
+  completedAt: string | null;
+  /** Progress from the linked habits' actual records for that day. */
+  linkedHabits: number;
+  completedHabits: number;
+  percent: number | null;
+}
+
 export interface RoutinesRepository {
   /** Active routines (archived ones are kept by the server, not listed). */
   list(): Promise<Routine[]>;
@@ -164,6 +200,14 @@ export interface RoutinesRepository {
   update(routine: Routine, patch: Partial<RoutineInput>): Promise<Routine>;
   /** Archives the routine; habits and their entries stay. */
   remove(routine: Routine): Promise<void>;
+  /** The routine's optional schedule (null = unscheduled). */
+  schedule(routineId: string): Promise<RoutineSchedule | null>;
+  /** Replaces (or clears) the schedule; advances the routine revision. */
+  setSchedule(routine: Routine, schedule: RoutineSchedule | null): Promise<Routine>;
+  /** Due and executed days in [from, to) (ISO days, ≤ 366 days), oldest first. */
+  occurrences(routineId: string, from: string, to: string): Promise<RoutineOccurrence[]>;
+  /** START / COMPLETE / SKIP one day; terminal days refuse (conflict). */
+  execute(occurrence: RoutineOccurrence, action: RoutineAction): Promise<RoutineOccurrence>;
 }
 
 // ── Task files ────────────────────────────────────────────────────────────
@@ -289,7 +333,70 @@ export interface FinanceReportsRepository {
   exportFile(from: string, to: string, format: FinanceExportFormat): Promise<DownloadFile>;
 }
 
+// ── Working hours & capacity ──────────────────────────────────────────────
+
+/** "HH:mm" wall-clock interval in the account zone; several per day model breaks. */
+export interface WorkingInterval {
+  start: string;
+  end: string;
+}
+
+export interface WorkingHours {
+  /** Seven arrays, Sunday = 0; an empty array is a nonworking day. */
+  intervalsByWeekday: WorkingInterval[][];
+  /** Explicit date overrides (ISO day → intervals; empty = off that day). */
+  exceptions: { date: string; intervals: WorkingInterval[] }[];
+}
+
+export interface WorkingHoursState {
+  /** Null = not configured (capacity stays unknown). */
+  workingHours: WorkingHours | null;
+  revision: number;
+  timezone: string;
+  /** Account week start (Sunday = 0). */
+  firstDayOfWeek: number;
+}
+
+export type ScheduleCapacityState = "CONFIGURED" | "UNKNOWN" | "DST_GAP";
+
+export interface CapacityDay {
+  date: string;
+  state: ScheduleCapacityState;
+  /** Null when unknown — never invented. */
+  availableMinutes: number | null;
+  busyMinutes: number;
+  reservedMinutes: number | null;
+  remainingMinutes: number | null;
+  overbookedMinutes: number | null;
+}
+
+export interface ScheduleCapacity {
+  state: ScheduleCapacityState;
+  days: CapacityDay[];
+  availableMinutes: number | null;
+  reservedMinutes: number | null;
+  remainingMinutes: number | null;
+  overbookedMinutes: number | null;
+}
+
+export interface WorkingHoursRepository {
+  get(): Promise<WorkingHoursState>;
+  /**
+   * Read-modify-write of the whole configuration (exceptions included):
+   * `apply` gets the latest saved hours and returns the next ones (null clears).
+   * A stale write re-reads and re-applies, so untouched entries are kept.
+   */
+  update(apply: (current: WorkingHours | null) => WorkingHours | null): Promise<WorkingHoursState>;
+  /**
+   * Advisory occupancy (calendar events ∪ time blocks ∩ availability) for one
+   * day or one account week. Null = not served (mock mode keeps the local
+   * work-hours model).
+   */
+  capacity(query: { date: string } | { weekStartDate: string }): Promise<ScheduleCapacity | null>;
+}
+
 export interface PersonalServiceRepositories {
+  workingHours: WorkingHoursRepository;
   notifications: NotificationsRepository;
   reminders: RemindersRepository;
   routines: RoutinesRepository;

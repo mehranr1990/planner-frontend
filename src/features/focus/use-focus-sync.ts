@@ -5,14 +5,18 @@ import { getPlannerToday } from "@/data/clock";
 import { useCaptureInbox, useRecordFocusSessions } from "@/data/queries";
 import { drain, summaryCycle, type FocusSession } from "./domain/timer";
 import { focusStore } from "./focus-store";
+import { useFocusRecovery } from "./focus-recovery";
 
 /*
  * Writes what a session produced: finished cycles to the plan (so My Day and
  * Overview count them) and, once the session ends, parked distractions to
  * Inbox. The store is drained synchronously first, so two readers mounted at
- * once never write twice.
+ * once never write twice. Live mode also mirrors the timer onto recoverable
+ * server sessions (focus-recovery.ts); their finished cycles are recorded by
+ * the server, not as manual entries.
  */
 export function useFocusSync(session: FocusSession | null) {
+  useFocusRecovery();
   const { mutate: record } = useRecordFocusSessions();
   const { mutate: capture } = useCaptureInbox();
 

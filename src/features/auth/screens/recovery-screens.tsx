@@ -7,6 +7,7 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import { getApiClient } from "@/api/runtime";
 import { defaultContextId } from "@/features/navigation/contexts";
 import { contextHref } from "@/features/navigation/paths";
+import { cancelDeletion, deletionRecoveryStatus, type DeletionJob } from "../account-lifecycle-api";
 import { requestPasswordReset, resetPassword, sendVerificationEmail } from "../auth-api";
 import {
   AuthNotice,
@@ -250,6 +251,92 @@ export function VerifyEmailScreen({ error }: { error?: string }) {
     <AuthPage title={t("verify.processedTitle")} subtitle={t("verify.processedBody")}>
       <Link href={AUTH_ROUTES.signIn} className={buttonVariants()}>
         {t("verify.signIn")}
+      </Link>
+    </AuthPage>
+  );
+}
+
+/**
+ * Signed out: check or cancel a pending account deletion with the request ID
+ * and recovery code saved at request time, plus the current password. The
+ * code travels only in a header and stays in this component's memory; a
+ * canceled account signs in again (revoked sessions are not restored).
+ */
+export function CancelDeletionScreen() {
+  const t = useTranslations("Auth.cancelDeletion");
+  const tState = useTranslations("Services.account.delete.states");
+  const tAuth = useTranslations("Auth");
+  const [jobId, setJobId] = useState("");
+  const [recovery, setRecovery] = useState("");
+  const [password, setPassword] = useState("");
+  const [submitted, setSubmitted] = useState<"status" | "cancel" | null>(null);
+  const [pending, setPending] = useState<"status" | "cancel" | null>(null);
+  const [problem, setProblem] = useState<AuthProblem | null>(null);
+  const [status, setStatus] = useState<DeletionJob["state"] | null>(null);
+
+  const missing = (value: string, only?: "cancel") => (submitted && (!only || submitted === only) && !value.trim() ? ("required" as const) : null);
+
+  const run = async (kind: "status" | "cancel") => {
+    setSubmitted(kind);
+    if (!jobId.trim() || !recovery.trim() || (kind === "cancel" && !password) || pending) return;
+    setPending(kind);
+    setProblem(null);
+    try {
+      const job =
+        kind === "cancel"
+          ? await cancelDeletion(getApiClient(), { jobId: jobId.trim(), password }, recovery.trim())
+          : await deletionRecoveryStatus(getApiClient(), jobId.trim(), recovery.trim());
+      setStatus(job.state);
+      if (kind === "cancel") setPassword("");
+    } catch (error) {
+      setProblem(toAuthProblem(error));
+    } finally {
+      setPending(null);
+    }
+  };
+
+  if (status === "CANCELED") {
+    return (
+      <AuthPage title={t("doneTitle")} subtitle={t("doneBody")}>
+        <Link href={AUTH_ROUTES.signIn} className={linkClass}>
+          {tAuth("forgot.back")}
+        </Link>
+      </AuthPage>
+    );
+  }
+
+  return (
+    <AuthPage title={t("title")} subtitle={t("subtitle")}>
+      {problem ? <ProblemNotice problem={problem} /> : null}
+      {status ? <AuthNotice tone="info">{t("status", { state: tState(status) })}</AuthNotice> : null}
+      <form
+        noValidate
+        onSubmit={(event: FormEvent) => {
+          event.preventDefault();
+          void run("cancel");
+        }}
+        className="flex flex-col gap-4"
+      >
+        <AuthTextField name="jobId" dir="ltr" autoComplete="off" spellCheck={false} label={t("jobId")} value={jobId} onChange={(event) => setJobId(event.target.value)} problem={missing(jobId)} />
+        <AuthTextField name="recovery" dir="ltr" autoComplete="off" spellCheck={false} label={t("recoveryCode")} value={recovery} onChange={(event) => setRecovery(event.target.value)} problem={missing(recovery)} />
+        <AuthTextField
+          name="password"
+          type="password"
+          autoComplete="current-password"
+          label={tAuth("fields.password")}
+          value={password}
+          onChange={(event) => setPassword(event.target.value)}
+          problem={missing(password, "cancel")}
+        />
+        <Button type="submit" loading={pending === "cancel"}>
+          {t("submit")}
+        </Button>
+        <Button type="button" variant="secondary" loading={pending === "status"} onClick={() => void run("status")}>
+          {t("check")}
+        </Button>
+      </form>
+      <Link href={AUTH_ROUTES.signIn} className={linkClass}>
+        {tAuth("forgot.back")}
       </Link>
     </AuthPage>
   );

@@ -317,8 +317,19 @@ export function createApiGoalsRepository(client: ApiClient, { today, tasks }: Ap
       checkDay(input.dueDay);
       const entry = await knownOrLoad(goalId);
       const at = index === undefined ? entry.milestones.length : Math.max(0, Math.min(entry.milestones.length, index));
+      // The server stores positions as sent and orders by (position, id); it never shifts siblings.
+      // Renumber the journey so the new milestone gets a free slot (only changed positions are sent).
+      for (const [i, item] of [...entry.milestones].entries()) {
+        const want = i < at ? i : i + 1;
+        if (item.position === want) continue;
+        await write(goalId, async (etag, current) => {
+          const { data } = await client.request("patch", "/api/v1/goals/{id}/milestones/{childId}", { path: { id: goalId, childId: item.id }, header: { "If-Match": etag }, body: { position: want } });
+          current.milestones = current.milestones.map((m) => (m.id === item.id ? data.item : m));
+          return data.revision;
+        });
+      }
       await postMilestone(goalId, input, at);
-      // Positions shift on the server: read the journey and the progress back.
+      // Read the journey and the progress back.
       return toGoal(await reload(goalId));
     },
 
