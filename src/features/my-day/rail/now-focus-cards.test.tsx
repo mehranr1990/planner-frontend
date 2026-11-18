@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it } from "vitest";
 import { resetToasts } from "@/components/ui/toast";
 import { personalFixtures } from "@/fixtures/personal";
-import { routerPush } from "@/test/setup";
+import { routerPush, findToastAction } from "@/test/setup";
 import { FocusCard } from "./focus-card";
 import { NowCard } from "./now-card";
 import { renderRail } from "./test-utils";
@@ -52,7 +52,7 @@ describe("NowCard", () => {
 
     const toast = await screen.findByText("Marked done");
     expect(toast.closest("[data-tone]")).toHaveAttribute("data-tone", "success");
-    await user.click(screen.getByRole("button", { name: "Undo" }));
+    await user.click(await findToastAction("Undo"));
     expect(await screen.findByText("Now · 35m left")).toBeInTheDocument();
   });
 

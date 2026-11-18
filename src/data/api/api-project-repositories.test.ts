@@ -456,8 +456,11 @@ describe("live Projects repositories", () => {
     const guest = await live(directoryApi({ projectState: "ACTIVE", role: null, capabilities: ["task.read"] })).projects.access(P);
     expect(guest.status === "ok" && [guest.project.role, guest.capabilities.modules.timeline]).toEqual(["guest", false]);
     expect(await live(directoryApi({ projectState: "ACTIVE", role: "MEMBER", capabilities: [], forbidden: true })).projects.access(P)).toEqual({ status: "not-available" });
-    const directory = await live(directoryApi({ projectState: "ARCHIVED", role: "OWNER", capabilities: ["custody.archive"] })).projects.listAccessible();
+    const archivedApi = directoryApi({ projectState: "ARCHIVED", role: "OWNER", capabilities: ["custody.archive"] });
+    const directory = await live(archivedApi).projects.listAccessible();
     expect(directory.projects.map((project) => [project.id, project.lifecycle, project.restorable])).toEqual([[P, "archived", true]]);
+    // Archived rows read access/me + metadata only: never the rate-capped dashboard (ADR 0058) or the per-project lists.
+    expect(archivedApi.calls.filter((call) => /dashboard|members|components|register-items/.test(call.path))).toEqual([]);
     expect(directory.counts).toEqual({ all: 0, owned: 0, member: 0, invitations: 1, archived: 1 });
     expect(directory.recentIds).toEqual([]);
   });

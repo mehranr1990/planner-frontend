@@ -125,8 +125,19 @@ async function myOpenAssignments(api: ProjectsClient): Promise<ApiMyAssignment[]
   return all.filter(({ assignment }) => !assignment.endedAt && assignment.decision !== "DECLINED");
 }
 
-/** One project's summary from facts only; null when it is not available to the caller. */
-async function summaryOf(api: ProjectsClient, project: ApiProject, mine: readonly ApiMyAssignment[]): Promise<{ summary: ProjectSummary; me: ApiAccessMe } | null> {
+/**
+ * One project's summary from facts only; null when it is not available to the caller.
+ * `brief` (directory rows of archived projects): only access/me + metadata are read. The
+ * Archived tab shows name, date and Restore, the switcher the name, New project the key;
+ * progress / members / milestone / risks stay empty and are never rendered for them. This
+ * keeps the directory off `/dashboard`, which ADR 0058 caps at 30 / user / minute across ids.
+ */
+async function summaryOf(
+  api: ProjectsClient,
+  project: ApiProject,
+  mine: readonly ApiMyAssignment[],
+  brief = false,
+): Promise<{ summary: ProjectSummary; me: ApiAccessMe } | null> {
   const lifecycle = LIFECYCLE[project.state];
   if (!lifecycle) return null;
   const id = project.id;
@@ -134,16 +145,16 @@ async function summaryOf(api: ProjectsClient, project: ApiProject, mine: readonl
     accessMe(api, id),
     api.request("get", "/api/v1/projects/{id}/metadata", { path: { id } }).then((response) => response.data),
     // Only the window-independent progress is read (done over non-canceled visible tasks); the window is the last day.
-    api.request("get", "/api/v1/projects/{id}/dashboard", { path: { id }, query: dayWindow() }).then((response) => response.data),
-    projectRoster(api, id),
-    pageAll<ApiMilestone>(async (after) => (await api.request("get", "/api/v1/projects/{id}/components/{kind}", { path: { id, kind: "milestones" }, query: { limit: PAGE, after } })).data),
-    pageAll<ApiRegisterItem>(async (after) => (await api.request("get", "/api/v1/projects/{projectId}/register-items", { path: { projectId: id }, query: { kind: "RISK", limit: PAGE, after } })).data),
+    brief ? null : api.request("get", "/api/v1/projects/{id}/dashboard", { path: { id }, query: dayWindow() }).then((response) => response.data),
+    brief ? [] : projectRoster(api, id),
+    brief ? [] : pageAll<ApiMilestone>(async (after) => (await api.request("get", "/api/v1/projects/{id}/components/{kind}", { path: { id, kind: "milestones" }, query: { limit: PAGE, after } })).data),
+    brief ? [] : pageAll<ApiRegisterItem>(async (after) => (await api.request("get", "/api/v1/projects/{projectId}/register-items", { path: { projectId: id }, query: { kind: "RISK", limit: PAGE, after } })).data),
   ]);
   const members = roster.filter((member) => member.state === "ACTIVE" && (member.role ?? member.memberRole));
   const next = milestones
     .flatMap((milestone) => (!milestone.completed && milestone.targetDate ? [{ id: milestone.id, title: milestone.title, due: milestone.targetDate.slice(0, 10) }] : []))
     .sort((a, b) => a.due.localeCompare(b.due))[0];
-  const { progress } = dashboard;
+  const progress = dashboard?.progress ?? { completedTasks: 0, eligibleTasks: 0, percent: 0 };
   const tint = TINTS.find((candidate) => candidate === metadata.color?.toLowerCase()) ?? "blue";
   const summary: ProjectSummary = {
     id,
@@ -192,7 +203,7 @@ export function createApiProjectDirectory(client: ApiClient): Pick<ProjectReposi
         for (let at = 0; at < projects.length; at += PROJECT_READS) {
           const batch = await Promise.all(
             projects.slice(at, at + PROJECT_READS).map((project) =>
-              summaryOf(api, project, mine).catch((error: unknown) => {
+              summaryOf(api, project, mine, project.state === "ARCHIVED").catch((error: unknown) => {
                 // Access can end between the list and the reads: such a project is simply not shown.
                 if (isHidden(error)) return null;
                 throw error;

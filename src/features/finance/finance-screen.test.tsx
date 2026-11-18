@@ -6,7 +6,7 @@ import { DataProvider } from "@/data/provider";
 import { DEFAULT_PLANNER_SETTINGS } from "@/features/planner-settings/planner-settings";
 import { preferencesForLocale } from "@/features/preferences/preferences-store";
 import { renderWithProviders } from "@/test/render";
-import { routerPush, routerReplace, setMockSearch } from "@/test/setup";
+import { routerPush, routerReplace, setMockSearch, findToastAction } from "@/test/setup";
 import { FinanceScreen } from "./finance-screen";
 
 function renderFinance(search = "", options: Parameters<typeof renderWithProviders>[1] & { empty?: boolean } = {}) {
@@ -75,7 +75,7 @@ describe("FinanceScreen (P13)", () => {
     const today = screen.getByRole("region", { name: "Today · −186,000" });
     await user.click(within(today).getByRole("button", { name: "Delete Snapp ride" }));
     await waitFor(async () => expect((await repositories.finance.month("2026-10-13")).transactionCount).toBe(45));
-    await user.click(await screen.findByRole("button", { name: "Undo" }));
+    await user.click(await findToastAction("Undo"));
     await waitFor(async () => expect((await repositories.finance.month("2026-10-13")).transactionCount).toBe(46));
   });
 

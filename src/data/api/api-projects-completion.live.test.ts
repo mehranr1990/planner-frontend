@@ -12,31 +12,44 @@ import { liveConfigured, liveSession } from "./live-support";
  * account — never production. One sign-in for the whole run. Every project it
  * creates is archived at the end. File content (upload / download / versions)
  * is blocked by the local test mode (ADR 0057) and is recorded, not asserted.
- * The backend limits Shared requests to 20 per actor and 30 per IP per clock
- * minute (CollaborationLimit, checked before any business logic): requests
- * are paced and a 429 waits for the next minute and is sent again.
+ * Rate limits (ADR 0058, per actor per clock minute and module family): reads
+ * 600, writes 120, sensitive 20, expensive routes an extra 30 each. Requests go
+ * out unpaced, as the app sends them; every request is counted and every 429
+ * is recorded with its Retry-After and failed, never retried silently.
+ * `LIVE_PER_MINUTE` re-enables the old pacing for diagnosis only.
  */
 
-const PER_MINUTE = 15;
+const PER_MINUTE = Number(process.env.LIVE_PER_MINUTE ?? 0);
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 const toNextMinute = () => 61_000 - (Date.now() % 60_000);
-function paceFetch() {
+type Traffic = { requests: number; byMinute: Record<string, number>; limited: string[]; tightest: string };
+function paceFetch(traffic: Traffic = { requests: 0, byMinute: {}, limited: [], tightest: "" }) {
   const real = globalThis.fetch;
   let window = Math.floor(Date.now() / 60_000);
   let used = 0;
+  let lowest = Infinity;
   globalThis.fetch = async (input, init) => {
-    for (let attempt = 0; ; attempt += 1) {
-      const now = Math.floor(Date.now() / 60_000);
-      if (now !== window) [window, used] = [now, 0];
-      if (used >= PER_MINUTE) {
-        await sleep(toNextMinute());
-        continue;
-      }
-      used += 1;
-      const response = await real(input, init);
-      if (response.status !== 429 || attempt >= 3) return response;
-      used = PER_MINUTE;
+    const url = new URL(String(input instanceof Request ? input.url : input));
+    const route = `${init?.method ?? "GET"} ${url.pathname.replace(/[0-9a-f]{8}-[0-9a-f-]{27}/g, ":id")}`;
+    const now = Math.floor(Date.now() / 60_000);
+    if (now !== window) [window, used] = [now, 0];
+    if (PER_MINUTE && used >= PER_MINUTE) {
+      await sleep(toNextMinute());
+      [window, used] = [Math.floor(Date.now() / 60_000), 0];
     }
+    used += 1;
+    const response = await real(input, init);
+    if (url.pathname.startsWith("/api/v1/auth/")) return response;
+    traffic.requests += 1;
+    traffic.byMinute[new Date(window * 60_000).toISOString().slice(11, 16)] = used;
+    const remaining = Number(response.headers.get("RateLimit-Remaining") ?? NaN);
+    const limit = Number(response.headers.get("RateLimit-Limit") ?? NaN);
+    if (remaining / limit < lowest) {
+      lowest = remaining / limit;
+      traffic.tightest = `${route} ${remaining}/${limit} policy ${response.headers.get("RateLimit-Policy")}`;
+    }
+    if (response.status === 429) traffic.limited.push(`${route} Retry-After ${response.headers.get("Retry-After")} policy ${response.headers.get("RateLimit-Policy")}`);
+    return response;
   };
   return () => {
     globalThis.fetch = real;
@@ -46,6 +59,12 @@ function paceFetch() {
 type Step = { step: string; result: string };
 const log: Step[] = [];
 const record = (step: string, result: string) => log.push({ step, result });
+/** Printed, and appended to `LIVE_REPORT` when set (passing tests' console output is hidden). */
+async function report(title: string, value: unknown) {
+  const line = `${title} ${JSON.stringify(value)}\n`;
+  console.log(line);
+  if (process.env.LIVE_REPORT) (await import("node:fs")).appendFileSync(process.env.LIVE_REPORT, line);
+}
 
 /** Runs a step; a refusal / HTTP error is recorded with its status or code and rethrown. */
 async function step<T>(name: string, run: () => Promise<T>): Promise<T> {
@@ -62,7 +81,8 @@ async function step<T>(name: string, run: () => Promise<T>): Promise<T> {
 
 describe.skipIf(!liveConfigured)("Projects completion (live)", () => {
   it("create (Blank / Kanban / Scrum) → tasks, assignments, drafts, members, invitations, structure, risks, reports → archive", async () => {
-    const restoreFetch = paceFetch();
+    const traffic: Traffic = { requests: 0, byMinute: {}, limited: [], tightest: "" };
+    const restoreFetch = paceFetch(traffic);
     const { client, today, end } = await liveSession();
     const repos = createApiProjectRepositories(client, { today: () => today });
     const api = projectsClient(client);
@@ -210,9 +230,53 @@ describe.skipIf(!liveConfigured)("Projects completion (live)", () => {
       for (const projectId of created) await step(`archive ${projectId.slice(0, 8)}`, () => repos.settings.archive(projectId)).catch(() => undefined);
       end();
       restoreFetch();
-      console.log(JSON.stringify(log, null, 1));
+      await report("STEPS", log);
+      await report("TRAFFIC full scenario", traffic);
     }
+    expect(traffic.limited).toEqual([]);
   }, 1_500_000);
+
+  it("rate limit: Projects screen loads with a representative task count, unpaced", async () => {
+    const traffic: Traffic = { requests: 0, byMinute: {}, limited: [], tightest: "" };
+    const restoreFetch = paceFetch(traffic);
+    const { client, today, end } = await liveSession();
+    const repos = createApiProjectRepositories(client, { today: () => today });
+    const api = projectsClient(client);
+    const suffix = Date.now().toString(36).slice(-4).toUpperCase();
+    const loads: Record<string, number> = {};
+    /** Requests one screen load sends (adapter calls only; React Query dedupes / caches above this). */
+    const load = async (name: string, run: () => Promise<unknown>) => {
+      const before = traffic.requests;
+      await run();
+      loads[name] = traffic.requests - before;
+    };
+    const project = await repos.projectCreate.create({ name: `Live R ${suffix}`, key: `R${suffix}`, startDate: today, endDate: today, template: "kanban", attemptId: crypto.randomUUID() });
+    try {
+      const TASKS = 24;
+      for (let index = 0; index < TASKS; index += 1)
+        await api.request("post", "/api/v1/projects/{id}/tasks", {
+          path: { id: project.id },
+          header: { "Idempotency-Key": newIdempotencyKey() },
+          body: { id: crypto.randomUUID(), title: `Rate ${index + 1}` },
+        });
+      await load("directory (Projects home)", () => repos.projects.listAccessible());
+      await load("access gate", () => repos.projects.access(project.id));
+      await load("overview KPIs", () => repos.projects.summary(project.id));
+      await load("task list", async () => expect((await repos.projectTasks.list(project.id)).tasks.length).toBe(TASKS));
+      await load("kanban board (workflow + counts)", () => Promise.all([repos.workflows.published(project.id), repos.projectTasks.countByStatus(project.id)]));
+      await load("workload grid", () => repos.workload.byWeek(project.id, { from: today, weeks: 1 }));
+      await load("analytics", () => repos.reports.summary(project.id, { range: "4w", weekStartsOn: 6 }));
+      // A second visit inside the same minute (refetch on focus / navigation back).
+      await load("overview + list again", () => Promise.all([repos.projects.summary(project.id), repos.projectTasks.list(project.id)]));
+    } finally {
+      await repos.settings.archive(project.id).catch(() => undefined);
+      end();
+      restoreFetch();
+      await report("SCREEN LOADS", loads);
+      await report("TRAFFIC screen loads", traffic);
+    }
+    expect(traffic.limited).toEqual([]);
+  }, 600_000);
 
   it("file content is POLICY-BLOCKED in the local Shared test mode; metadata reads work", async () => {
     const restoreFetch = paceFetch();

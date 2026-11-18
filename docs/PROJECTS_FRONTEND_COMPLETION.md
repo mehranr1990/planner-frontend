@@ -121,3 +121,21 @@ Verified live, step by step: create Blank / Kanban / Scrum (atomic, unique keys)
 **Remaining blockers:** Shared request rate vs adapter read fan-out (above); file content (malware scanning); D9 manual status API + owner values; PB-13; PB-14; guest grants; second test account needed to verify reminders and recipient-side invitation accept / decline live.
 
 **Concurrency / git:** other sessions are modifying Teams, Companies and Messaging files and may edit `docs/integration/*`; this pass changed Projects files only (plus `project-queries.ts`, `project-repositories.ts`, `projectSettings.json` en / fa — none modified by another session) and did not touch `docs/integration/*`. Nothing committed or pushed.
+
+## 12. Rate-limit live verification (2026-11-18, ADR 0058)
+
+**Policy, verified in source and runtime.** `planner-backend/apps/api/src/modules/spaces/domain/http-rate-policy.ts` (and the running `dist` build, API pid on `127.0.0.1:3000`, `NODE_ENV=development`, `SHARED_LOCAL_DEVELOPMENT_TEST_MODE=true`, database `mehran_dev`): per actor per clock minute and module family — reads 600, writes 120, sensitive 20; IP 6,000 / 1,200 / 60; expensive routes (`summary|dashboard|analytics|reports|workload|capacity|…`) an extra 30 / actor per route template across ids. Runtime headers seen: `RateLimit-Policy 600;w=60` (reads), `30;w=60` (dashboard). Backend unchanged.
+
+**Run.** `api-projects-completion.live.test.ts`, all 3 cases, **unpaced** (the old 15 / min pacing is now opt-in via `LIVE_PER_MINUTE`, off). Every request is counted; every 429 is recorded with Retry-After and fails the case (no silent retry). `API_LIVE_ORIGIN=http://127.0.0.1:3000` override needed: `localhost` resolves to `::1`, where a Next dev server also listens on port 3000.
+
+| Case | Result | Requests / 429 |
+|---|---|---|
+| End-to-end (create Blank / Kanban / Scrum → … → archive), 51 steps | **LIVE VERIFIED** (51 PASS; file upload POLICY-BLOCKED as before) | 386 in ~1 min, **0 × 429**; tightest 287 / 600 reads left |
+| New: screen loads with 24 tasks (directory, access gate, overview KPIs, task list, Kanban board, workload, analytics, revisit) | **LIVE VERIFIED** | before fix 464 requests, 0 × 429, but `dashboard` 27 / 30; after fix 380, 0 × 429, tightest 346 / 600 |
+| File policy | **LIVE VERIFIED** (upload 403 as expected) | — |
+
+Retry-After: no 429 occurred, so it was not observed in this run (header exposed by CORS; parsed by `ApiHttpError.retryAfter`).
+
+**Defect found and fixed (frontend).** Projects home (`listAccessible`) read 6 routes per project, archived ones included, one of them the expensive `/dashboard` (30 / user / minute across ids). Measured: 141 requests for one load on the test account; `dashboard` at 27 / 30 → any account with ≥ 30 projects (archived included) gets a guaranteed 429 on Projects home. Fix (`api-project-directory-repository.ts`): archived directory rows read `access/me` + `metadata` only (the Archived tab shows name, date and Restore; the switcher the name; New project the key). Opening an archived project still reads the full summary through `access()`. Re-measured live: **141 → 57 requests**, no expensive route near its cap. Unit: `api-project-repositories.test.ts` asserts no dashboard / members / components / register-items read for archived rows.
+
+Per-screen fan-out with 24 tasks (adapter level; React Query dedupe / caching above it unchanged): access gate 8, overview KPIs 4, task list 52, Kanban 52, workload 53, analytics 53. **DEFERRED (risk, no 429 observed):** task-based screens read ≈ 2 routes per task (association + assignments); one list load of a ≈ 280-task project alone reaches the 600 read budget, and fewer tasks suffice when several task screens load in the same minute (24 tasks × 7 loads used 426 reads in one minute). Needs a batch read in the contract or an owner decision; not changed here.

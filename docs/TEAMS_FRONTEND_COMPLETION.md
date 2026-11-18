@@ -1,6 +1,6 @@
 # Teams frontend completion (P3 gap closure) — 2026-11-17
 
-Status: **IMPLEMENTED; LIVE ACCEPTANCE PARTIAL** — of the 7 remaining operations 4 PASS (invitations + resend, RSVP Maybe / change, file limits, sprint burndown), 3 NOT VERIFIED (assignment Undo, Team↔Project links, Project calendar events: need a second account / an owned project), 0 FAIL; leftover team archived. See §7. Uncommitted by instruction.
+Status: **IMPLEMENTED; LIVE ACCEPTANCE PARTIAL** — 2026-11-18 (§10): Team↔Project link + authorization, unlink, archive LIVE VERIFIED; project calendar endpoint verified, event placement BLOCKED (no project-event create API); assignment Undo BLOCKED (needs a second verified account). Earlier: invitations + resend, RSVP, file limits, sprint burndown PASS (§7). Uncommitted by instruction.
 
 Contract: `planner-backend/docs/api/openapi.json` at backend `bf4f20b` (1,193 ops, sha256 `c5442c60…08b56659`), handoff `docs/frontend-handoff/TEAMS_GAP_CLOSURE.md` (25 new ops). Backend read only, not modified.
 Types: `src/api/generated/openapi-p6-teams.d.ts` regenerated with openapi-typescript 7.8.0 from a subset (previous path set + every `/api/v1/teams*` and `/api/v1/team-invitations*` path): 153 paths / 192 ops (was 130 paths). Raw JSON not committed.
@@ -98,3 +98,20 @@ Not run (no browser / E2E by instruction). The UI changes are limited to the cap
 ## 9. Git status
 
 Nothing committed or pushed. Teams changes: the three Team adapters (unchanged in the live pass) + their tests, `team-domain.ts`, `member-dialogs.tsx`, `teamCal.json` (en / fa), regenerated `openapi-p6-teams.d.ts`, new live test and this file. All uncommitted Projects changes (adapters, tests, `openapi-p6-projects.d.ts`, `project-domain.ts`, new-project sheet, `projects.json`, `docs/PROJECTS_FRONTEND_COMPLETION.md`, untracked `docs/Backend-Handoff/openapi.json`) are untouched.
+
+## 10. Remaining live scenarios (2026-11-18, ADR 0058 limits)
+
+Run: `LIVE_ONLY="undo,link,calendar,archive" npx vitest run src/data/api/api-teams-completion.live.test.ts` with `.env.live.local` and `API_LIVE_ORIGIN=http://127.0.0.1:3000` (`localhost` → `::1` hits a Next dev server). Backend `NODE_ENV=development`, `SHARED_LOCAL_DEVELOPMENT_TEST_MODE=true`, database `mehran_dev`. **Unpaced** (pacing now opt-in via `LIVE_PER_MINUTE`); 429s are recorded, not retried: **none** in 29 s. One account only (`.env.live.local` holds one).
+
+| Scenario | Result | Evidence |
+|---|---|---|
+| Team ↔ Project link: request → pending (name read back) → approve → team project list | **LIVE VERIFIED** | The account owned no ACTIVE project, so the run created a synthetic one (`Live TL …`, `b0658028`), linked through request `318a1c18` |
+| Link authorization: request for a project the caller cannot see | **LIVE VERIFIED** | Refused `not-found` (no discovery) |
+| Unlink | **LIVE VERIFIED** | Removed, read back absent; synthetic project archived afterwards |
+| Archive / lifecycle | **LIVE VERIFIED** | Test team `a70c959e` (test-owned "Live check") archived via `teamSettings.archive` → access reads `archived` → new task refused `not-found`. No real Team touched |
+| Project calendar layer: endpoint + scoping | **LIVE VERIFIED** | `calendar/sources?source=PROJECT` 200 for the linked project, only that project's scope, timezone from `/me/settings` (UTC on this account) |
+| Project calendar layer: a linked project's event appears with correct day / time | **BLOCKED BY ENVIRONMENT / CONTRACT** | 0 items: no contract route creates a project calendar event (`/calendar/events` is Personal; the project occurrence comes from the shared calendar with no create API). Not marked passed |
+| Assignment Undo: authorized undo, wrong actor denied, stale revision rejected | **BLOCKED BY ENVIRONMENT** | Self-assignment is accepted at once, so there is no PENDING offer to accept and revert; wrong-actor needs another member. Needs a **second verified synthetic Development account** that is a member of the test team (not created: not authorized) |
+| Unauthorized project details hidden in the calendar | **DEFERRED** | Needs a second account whose project is linked but unreadable to the viewer |
+
+Test changes only (no adapter defect found): unpaced default + 429 log, synthetic project when none is owned, unknown-project refusal, raw calendar-source scoping check, post-archive write refusal.

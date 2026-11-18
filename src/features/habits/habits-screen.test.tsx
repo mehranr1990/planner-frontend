@@ -6,7 +6,7 @@ import { DataProvider } from "@/data/provider";
 import { preferencesForLocale } from "@/features/preferences/preferences-store";
 import { sampleDays, sampleHabits } from "@/fixtures/personal";
 import { renderWithProviders } from "@/test/render";
-import { routerPush } from "@/test/setup";
+import { routerPush, findToastAction } from "@/test/setup";
 import { bestStreak, cellState, completion, fieldDays, habitStreak, ribbonCopy, streakWeek, trimBeforeStart } from "./domain/habits";
 import { HabitSheet } from "./habit-sheet";
 import { HabitsScreen } from "./habits-screen";
@@ -78,7 +78,7 @@ describe("HabitsScreen (P12)", () => {
     await user.click(await screen.findByRole("button", { name: "Read: not done yet" }));
     await waitFor(async () => expect((await repositories.habits.list()).find((habit) => habit.id === "h-read")!.doneDays).toContain(TODAY));
     expect(await screen.findByText("Read · 12-day streak")).toBeInTheDocument();
-    await user.click(screen.getByRole("button", { name: "Undo" }));
+    await user.click(await findToastAction("Undo"));
     await waitFor(async () => expect((await repositories.habits.list()).find((habit) => habit.id === "h-read")!.doneDays).not.toContain(TODAY));
 
     fireEvent.contextMenu(await screen.findByRole("button", { name: "Journal: not done yet" }));

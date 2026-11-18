@@ -8,6 +8,7 @@ import { DEFAULT_PLANNER_SETTINGS } from "@/features/planner-settings/planner-se
 import { renderWithProviders } from "@/test/render";
 import { nextPrompt, resolveJournalDay } from "./domain/journal";
 import { JournalScreen } from "./journal-screen";
+import { findToastAction } from "@/test/setup";
 
 function renderJournal(date: string | null = null, options: Parameters<typeof renderWithProviders>[1] & { fixtures?: Parameters<typeof createMockRepositories>[0] } = {}) {
   const { fixtures, ...rest } = options;
@@ -98,7 +99,7 @@ describe("JournalScreen (P14)", () => {
     const list = await screen.findByRole("list", { name: "Entries" });
     await user.click(within(list).getAllByRole("button", { name: /Delete entry/ })[0]!);
     await waitFor(async () => expect(await repositories.journal.entry("2026-10-12")).toBeNull());
-    await user.click(await screen.findByRole("button", { name: "Undo" }));
+    await user.click(await findToastAction("Undo"));
     await waitFor(async () => expect((await repositories.journal.entry("2026-10-12"))?.tags).toEqual(["walk"]));
   });
 });

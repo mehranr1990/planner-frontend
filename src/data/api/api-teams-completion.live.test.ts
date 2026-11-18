@@ -1,6 +1,7 @@
 import { afterAll, describe, expect, it, vi } from "vitest";
 import { newIdempotencyKey, typedAs } from "@/api/client";
 import type { paths } from "@/api/generated/openapi-p6-teams";
+import { createApiProjectRepositories } from "./api-project-repositories";
 import { projectsClient } from "./api-project-shared";
 import { accessMe, createApiTeamRepositories } from "./api-team-repositories";
 import { liveConfigured, liveSession } from "./live-support";
@@ -20,8 +21,9 @@ import { liveConfigured, liveSession } from "./live-support";
  * test mode). Every active "Live check" team is archived at the end.
  */
 
-// Observed: a Team / Project request can take the actor budget more than once (guard + kernel), so stay well under 20.
-const PER_MINUTE = Number(process.env.LIVE_PER_MINUTE ?? 9);
+// ADR 0058 (reads 600 / writes 120 / sensitive 20 per actor-minute): unpaced by default; LIVE_PER_MINUTE paces for diagnosis.
+const PER_MINUTE = Number(process.env.LIVE_PER_MINUTE ?? 0);
+const limited: string[] = [];
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 /** Serialized and aligned to clock minutes, as the server counts (fixed window per minute). */
@@ -35,7 +37,7 @@ function pacedFetch(real: typeof fetch): typeof fetch {
       minute = now;
       used = 0;
     }
-    if (used >= PER_MINUTE) {
+    if (PER_MINUTE && used >= PER_MINUTE) {
       // Next clock minute plus a margin for clock skew.
       await sleep((minute + 1) * 60_000 - Date.now() + 2_000);
       minute = Math.floor(Date.now() / 60_000);
@@ -52,6 +54,8 @@ function pacedFetch(real: typeof fetch): typeof fetch {
       if (process.env.LIVE_DEBUG && response.status >= 400)
         console.log("HTTP", response.status, init?.method ?? "GET", new URL(url).pathname.replace(/[0-9a-f]{8}-[0-9a-f-]{27}/g, (id) => id.slice(0, 8)));
       if (response.status !== 429) return response;
+      limited.push(`${init?.method ?? "GET"} ${new URL(url).pathname.replace(/[0-9a-f]{8}-[0-9a-f-]{27}/g, ":id")} Retry-After ${response.headers.get("Retry-After")} policy ${response.headers.get("RateLimit-Policy")}`);
+      if (!PER_MINUTE) return response;
       await sleep(Number(response.headers.get("Retry-After") ?? "60") * 1000 + 2_000);
       minute = Math.floor(Date.now() / 60_000);
       used = 1;
@@ -82,9 +86,13 @@ async function step(op: string, run: () => Promise<string | void>) {
 }
 const notVerified = (why: string) => new Error(`NOT VERIFIED: ${why}`);
 let projectId: string | null = null;
+let createdProjectId: string | null = null;
 
 afterAll(async () => {
-  const report = "TEAMS LIVE RESULTS\n" + results.map((r) => `${r.outcome.padEnd(12)} ${r.op}${r.note ? " — " + r.note : ""}`).join("\n");
+  const report =
+    "TEAMS LIVE RESULTS\n" +
+    results.map((r) => `${r.outcome.padEnd(12)} ${r.op}${r.note ? " — " + r.note : ""}`).join("\n") +
+    `\n429s: ${limited.length ? limited.join("; ") : "none"}`;
   if (process.env.LIVE_REPORT) (await import("node:fs")).writeFileSync(process.env.LIVE_REPORT, report + "\n");
   console.log(report);
 });
@@ -169,7 +177,16 @@ describe.skipIf(!liveConfigured)("Teams completion (live)", () => {
             break;
           }
         }
-        if (!project) throw notVerified(`the test account is Owner / Admin of none of its ${listed.length} active projects`);
+        if (!project) {
+          // None owned: a clearly named synthetic project, archived at the end of the run.
+          const suffix = Date.now().toString(36).slice(-4).toUpperCase();
+          const created = await createApiProjectRepositories(client, { today: () => today }).projectCreate.create({ name: `Live TL ${suffix}`, key: `TL${suffix}`, startDate: today, endDate: today, template: "blank", attemptId: crypto.randomUUID() });
+          project = { id: created.id, name: created.name };
+          createdProjectId = created.id;
+        }
+        // Authorization: a project the caller cannot see (random id) is refused, no discovery.
+        const refused = await repos.projectAssociations.request(teamId, crypto.randomUUID()).then(() => null, (error: { code?: string; status?: number }) => error.code ?? error.status);
+        if (refused === null) throw new Error("link request for an unknown project was accepted");
         if ((await repos.teams.projects(teamId)).some((entry) => entry.id === project.id)) await repos.projectAssociations.unlink(teamId, project.id);
         const request = await repos.projectAssociations.request(teamId, project.id);
         const pending = await repos.projectAssociations.requests(teamId);
@@ -177,17 +194,32 @@ describe.skipIf(!liveConfigured)("Teams completion (live)", () => {
         await repos.projectAssociations.approve(request.id);
         expect((await repos.teams.projects(teamId)).map((entry) => entry.id)).toContain(project.id);
         projectId = project.id;
-        return `project ${project.id.slice(0, 8)} linked through request ${request.id.slice(0, 8)}`;
+        return `project ${project.id.slice(0, 8)}${createdProjectId ? " (synthetic)" : ""} linked through request ${request.id.slice(0, 8)}; unknown project refused (${refused})`;
       });
 
       await step("Project calendar events layer", async () => {
         if (!projectId) throw notVerified("no linked project (link step did not pass)");
         const to = new Date(Date.now() + 27 * 86_400_000).toISOString().slice(0, 10);
+        const timezone = (await client.request("get", "/api/v1/me/settings")).data.timezone;
+        const raw = (
+          await api.request("get", "/api/v1/teams/{id}/calendar/sources", { path: { id: teamId }, query: { from: today, to, timezone, source: "PROJECT", limit: "100" } })
+        ).data.items;
+        // Only linked, readable projects may contribute; nothing from other scopes.
+        expect(raw.every((item) => item.kind === "PROJECT" && item.scopeId === projectId)).toBe(true);
         const events = (await repos.teamCalendar.overlays(teamId, today, to)).filter((entry) => entry.kind === "project-event");
-        return `calendar/sources answered; ${events.length} project event(s) in 28 days`;
+        for (const event of events) expect(event.day >= today && event.day <= to && /^\d{2}:\d{2}$/.test(event.time)).toBe(true);
+        if (events.length === 0)
+          throw notVerified(`calendar/sources answered 200 for the linked project (${raw.length} item(s), timezone ${timezone}); no contract route creates a project calendar event, so placement could not be checked`);
+        return `${events.length} project event(s) in 28 days, timezone ${timezone}`;
       });
 
-      if (projectId) await step("unlink (cleanup)", async () => void (await repos.projectAssociations.unlink(teamId, projectId!)));
+      if (projectId)
+        await step("unlink (cleanup)", async () => {
+          await repos.projectAssociations.unlink(teamId, projectId!);
+          expect((await repos.teams.projects(teamId)).map((entry) => entry.id)).not.toContain(projectId);
+          return "link removed and read back";
+        });
+      if (createdProjectId) await step("archive synthetic project", async () => void (await createApiProjectRepositories(client, { today: () => today }).settings.archive(createdProjectId!)));
 
       await step("sprint burndown + point capacity", async () => {
         await repos.teamSettings.setPlanningMode(teamId, "sprints");
@@ -203,7 +235,11 @@ describe.skipIf(!liveConfigured)("Teams completion (live)", () => {
         await step(`archive ${entry.id.slice(0, 8)}`, async () => {
           await repos.teamSettings.archive(entry.id);
           const access = await repos.teams.access(entry.id);
-          return access.status === "ok" ? `lifecycle ${access.team.lifecycle}` : access.status;
+          if (access.status === "ok") expect(access.team.lifecycle).toBe("archived");
+          // An archived team takes no new work.
+          const write = await repos.teamTasks.create(entry.id, { title: "Live after archive", planned: false }).then(() => "ACCEPTED", (error: { code?: string; status?: number }) => `refused ${error.code ?? error.status}`);
+          expect(write).not.toBe("ACCEPTED");
+          return `${access.status === "ok" ? `lifecycle ${access.team.lifecycle}` : access.status}; new task ${write}`;
         });
       }
     } finally {

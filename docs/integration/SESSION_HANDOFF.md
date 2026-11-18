@@ -443,3 +443,8 @@ Contract backend `bf4f20b` (1,193 ops, sha256 `c5442c60…`), handoff `TEAMS_GAP
 - Live (final): PASS invitations + resend, RSVP Maybe / change, files/config, sprint burndown, capacity, visible tasks, archive of `7f2350d7`; NOT VERIFIED assignment Undo, Team↔Project links, Project calendar events (need a second account and an owned ACTIVE project). Backend limit 20 / min per actor (clock minute, reads count); live file paces itself (`LIVE_ONLY`, `LIVE_PER_MINUTE`, `LIVE_REPORT`).
 
 NEXT_ACTION: owner review of Teams (capacity editor, Maybe RSVP, link requests, project events layer); one paced live run of the Teams file; then Companies only when authorized.
+
+## Projects / Teams final live verification (2026-11-18) — see PROJECTS §12, TEAMS §10
+- ADR 0058 limits confirmed in source + running dist (reads 600, writes 120, sensitive 20 / actor-minute; expensive routes +30). Run live tests with `API_LIVE_ORIGIN=http://127.0.0.1:3000` (`localhost` → `::1` = Next dev server on :3000).
+- Projects live file: 3/3 PASS unpaced, 0 × 429. Fixed: Projects home read `/dashboard` + 4 lists for archived projects (141 requests, dashboard 27/30 cap) → archived rows read access/me + metadata only (57). Deferred risk: ≈2 reads per task on task screens.
+- Teams: link / authorization / unlink / archive LIVE VERIFIED; calendar endpoint verified, event placement blocked (no project-event create API); assignment Undo blocked (needs a second verified synthetic account).

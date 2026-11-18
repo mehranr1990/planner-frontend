@@ -9,6 +9,7 @@ import { blockDragData, blockDragId, taskDragData } from "../drag";
 import { renderRail } from "./test-utils";
 import { UnscheduledCard } from "./unscheduled-card";
 import { UnscheduledTray } from "./unscheduled-tray";
+import { findToastAction } from "@/test/setup";
 
 afterEach(() => resetToasts());
 
@@ -176,7 +177,7 @@ describe("UnscheduledCard", () => {
     await waitFor(() => expect(screen.getByTestId("titles").textContent).toContain("Review October expenses"));
     await waitFor(() => expect(titles(screen.getByRole("list", { name: "Unscheduled tasks" })).join("|")).not.toContain("Review October expenses"));
 
-    await user.click(screen.getByRole("button", { name: "Undo" }));
+    await user.click(await findToastAction("Undo"));
     await waitFor(() => expect(screen.getByTestId("titles").textContent).not.toContain("Review October expenses"));
   });
 

@@ -5,6 +5,7 @@ import { dismiss } from "@/components/ui/toast";
 import { useMyDay, type RescheduleOpenOptions, type RescheduleTarget } from "../my-day-context";
 import { ContextProbe, mockViewport, persian, renderMyDay, type RenderMyDayOptions } from "../states/test-utils";
 import { RescheduleHost } from "./reschedule-host";
+import { findToastAction } from "@/test/setup";
 
 function Launcher({ target, options }: { target: RescheduleTarget; options?: RescheduleOpenOptions }) {
   const { openReschedule } = useMyDay();
@@ -95,7 +96,7 @@ describe("RescheduleHost on desktop", () => {
     expect(moved.map((block) => block.id)).toContain("ui-design");
     expect(await screen.findByText(/Moved “.*UI design · My Day screen.*” to tomorrow at 10:30/)).toBeInTheDocument();
 
-    await user.click(await screen.findByRole("button", { name: "Undo" }));
+    await user.click(await findToastAction("Undo"));
     await waitFor(async () => {
       const today = await repositories.blocks.listForDay("2026-10-13");
       expect(today.map((block) => block.id)).toContain("ui-design");

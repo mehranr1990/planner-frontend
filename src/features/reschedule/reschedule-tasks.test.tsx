@@ -11,6 +11,7 @@ import { RescheduleSurface } from "@/features/my-day/reschedule/reschedule-host"
 import { mockViewport } from "@/features/my-day/states/test-utils";
 import { renderWithProviders } from "@/test/render";
 import { useRescheduleActions } from "./use-reschedule-actions";
+import { findToastAction } from "@/test/setup";
 
 /* The shared Reschedule as Tasks / P06 use it: a task target, the task rows, a repository-snapshot Undo. */
 
@@ -61,7 +62,7 @@ describe("Reschedule for tasks", () => {
       expect((await repositories.blocks.listForDay("2026-10-25")).map((block) => block.id)).not.toContain("ui-design"),
     );
 
-    await user.click(await screen.findByRole("button", { name: "Undo" }));
+    await user.click(await findToastAction("Undo"));
     await waitFor(async () => {
       const restored = (await repositories.blocks.listForDay("2026-10-25")).find((block) => block.id === "ui-design");
       expect(restored).toMatchObject({ start: far.start, end: far.end, taskId: "t-ui-design" });

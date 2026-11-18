@@ -6,6 +6,7 @@ import { createMockRepositories } from "@/data/mock";
 import { DataProvider } from "@/data/provider";
 import { renderWithProviders } from "@/test/render";
 import { InboxScreen } from "./inbox-screen";
+import { findToastAction } from "@/test/setup";
 
 function renderInbox(options: Parameters<typeof renderWithProviders>[1] = {}) {
   const repositories = createMockRepositories();
@@ -51,7 +52,7 @@ describe("InboxScreen (P07)", () => {
     await userEvent.keyboard("j");
     expect(await screen.findByText("Added to today’s Journal entry.")).toBeInTheDocument();
     await waitFor(async () => expect((await repositories.journal.entry("2026-10-13"))?.text).toContain("Call Ali about the apartment lease"));
-    await userEvent.click(screen.getByRole("button", { name: "Undo" }));
+    await userEvent.click(await findToastAction("Undo"));
     await waitFor(async () => expect((await repositories.journal.entry("2026-10-13"))?.text).toBe(""));
     await waitFor(async () => expect(await repositories.inbox.count()).toBe(6));
   });

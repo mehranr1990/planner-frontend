@@ -1,5 +1,5 @@
 import "@testing-library/jest-dom/vitest";
-import { cleanup, configure } from "@testing-library/react";
+import { cleanup, configure, screen, waitFor } from "@testing-library/react";
 import { afterEach, vi } from "vitest";
 
 // findBy*/waitFor poll up to 1s by default: too tight for Radix-heavy renders when the machine is busy.
@@ -11,6 +11,20 @@ afterEach(() => {
   document.cookie = "mp-preferences=; Max-Age=0; Path=/";
   document.cookie = "mp-planner=; Max-Age=0; Path=/";
 });
+
+/**
+ * A toast's action button once it can be clicked. Radix's toast viewport keeps an inline
+ * `pointer-events: none` until it has registered the toast; under full-suite load a click
+ * can land in that window. Waits for it instead of turning off user-event's check.
+ */
+export async function findToastAction(name: string) {
+  const button = await screen.findByRole("button", { name });
+  await waitFor(() => {
+    for (let node: HTMLElement | null = button; node; node = node.parentElement)
+      if (node.style.pointerEvents === "none") throw new Error("toast viewport not interactive yet");
+  });
+  return button;
+}
 
 // The App Router is not mounted in unit tests; preference actions call refresh().
 export const routerRefresh = vi.fn();
