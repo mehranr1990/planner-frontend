@@ -4,14 +4,14 @@ import type { ProjectInvitation } from "../project-domain";
 import type { InvitationRepository } from "../project-repositories";
 import { RepositoryError } from "../repositories";
 import { conflictAware } from "./api-project-shared";
-import { mapErrors, pageAll, revisionTag, unsupported } from "./api-shared";
+import { invalid, mapErrors, pageAll, revisionTag } from "./api-shared";
 
 /*
  * Project invitations for the recipient (OD-4): the list is public-safe (no
  * project, inviter, role or time before accepting → null); the recipient
  * fetches their own one-time proof in the app and answers with it at once
- * (never stored). A decline note is not part of the contract: a decline with
- * a note is refused ("decline-note"), never sent without it.
+ * (never stored). A decline may carry an optional note (≤ 500 characters,
+ * visible to the inviter's management list); a longer note is refused.
  */
 export function createApiProjectInvitations(client: ApiClient): InvitationRepository {
   const api = typedAs<paths>(client);
@@ -42,11 +42,15 @@ export function createApiProjectInvitations(client: ApiClient): InvitationReposi
 
     decline: (id, note) =>
       mapErrors(async () => {
-        // The contract carries no decline note: refused rather than silently dropped.
-        if (note?.trim()) unsupported("decline-note");
+        const text = note?.trim() ?? "";
+        if (text.length > 500) invalid("decline-note");
         const proof = await proofFor(id);
         await conflictAware(() =>
-          api.request("post", "/api/v1/invitations/{id}/decline", { path: { id }, header: { "X-Invitation-Proof": proof.proof, "If-Match": revisionTag(proof.revision) }, body: {} }),
+          api.request("post", "/api/v1/invitations/{id}/decline", {
+            path: { id },
+            header: { "X-Invitation-Proof": proof.proof, "If-Match": revisionTag(proof.revision) },
+            body: text ? { note: text } : {},
+          }),
         );
       }),
   };

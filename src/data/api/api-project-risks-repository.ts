@@ -1,8 +1,8 @@
-import type { ApiClient } from "@/api/client";
-import type { ProjectPerson, ProjectRisk, RiskHistoryEntry, RiskStatus } from "../project-domain";
+import { newIdempotencyKey, type ApiClient } from "@/api/client";
+import type { ProjectPerson, ProjectRisk, RiskCloseReason, RiskHistoryEntry, RiskStatus, TaskComment } from "../project-domain";
 import type { RiskRepository } from "../project-repositories";
 import { RepositoryError } from "../repositories";
-import { mapErrors, pageAll, retryOnConflict, revisionTag, unsupported } from "./api-shared";
+import { invalid, mapErrors, pageAll, retryOnConflict, revisionTag, unsupported } from "./api-shared";
 import { conflictAware, personOf, projectRoster, projectsClient, type ApiProjectMember, type ProjectsClient, type ProjectsData } from "./api-project-shared";
 
 /*
@@ -11,22 +11,33 @@ import { conflictAware, personOf, projectRoster, projectsClient, type ApiProject
  * - severity LOW…CRITICAL = the four levels; status OPEN / MITIGATING, and
  *   RESOLVED / CLOSED = closed; owner = membership (blank when unset or gone);
  *   raised by = the creating actor; updatedAt = the last history entry.
- * - Not served → left out, never derived: register code (null), the 3-level
- *   probability (the API keeps 0–100 and no approved mapping exists), the
- *   "watching" status, blocked task count (0 = no chip), checklist, review
- *   date, trigger, linked milestone / tasks, close reason, risk → issue link.
+ * - P2 gap closure: register code, mitigation checklist (title / done),
+ *   close reason + note, the issue a risk was converted into, comments
+ *   (target REGISTER_ITEM, the shared comment model).
+ * - Not served → left out, never derived: the 3-level probability (the API
+ *   keeps 0–100; the band mapping is owner decision PB-13), the "watching"
+ *   status, blocked task count (0 = no chip), checklist person / dates,
+ *   review date, trigger, linked milestone / tasks, the issue's link back.
  * - Writes need `work.manage` (PUT with If-Match = item revision, one 409
- *   retry on a fresh read only when the user's change still applies). Close /
- *   resolve (reason and note have no field), convert, checklist and comments
- *   (comments cannot target a register item) are refused, never faked.
+ *   retry on a fresh read only when the user's change still applies).
+ *   Checklist ticks = POST checklist UPDATE (revision + key); close = POST
+ *   close {reason (the UI reason key), note} (revision); resolve = close with
+ *   reason "resolved" and the resolution as note; convert = POST convert
+ *   {targetKind ISSUE} (revision + key) — the source risk keeps its status
+ *   (server rule) and the new issue is returned. Linking a checklist row to a
+ *   task is refused.
  */
 
 type ApiItem = ProjectsData<"/api/v1/projects/{projectId}/register-items", "get">["items"][number];
+type ApiComment = ProjectsData<"/api/v1/projects/{projectId}/content/{targetKind}/{targetId}/comments", "get">["items"][number];
 type ApiHistory = ProjectsData<"/api/v1/projects/{projectId}/register-items/{itemId}/history", "get">["items"][number];
 
 const PAGE = 100;
 const READS = 8;
 const BLANK: ProjectPerson = { id: "", name: "", initials: "" };
+
+const REASONS: readonly RiskCloseReason[] = ["mitigated", "not-happened", "accepted", "transferred", "became-issue", "resolved"];
+const reasonOf = (reason: string | undefined): RiskCloseReason | undefined => REASONS.find((candidate) => candidate === reason);
 
 const statusOf = (status: ApiItem["status"]): RiskStatus => (status === "OPEN" ? "open" : status === "MITIGATING" ? "mitigating" : "closed");
 const ownerOf = (roster: readonly ApiProjectMember[], owner: ApiItem["owner"]): ProjectPerson => (owner ? personOf(roster, owner.accessId) : BLANK);
@@ -45,7 +56,7 @@ function toRisk(item: ApiItem, roster: readonly ApiProjectMember[], updatedAt: s
   const status = statusOf(item.status);
   return {
     id: item.id,
-    code: null,
+    code: item.code ?? null,
     kind: item.kind === "RISK" ? "risk" : "issue",
     title: item.title,
     severity: item.severity.toLowerCase() as ProjectRisk["severity"],
@@ -57,6 +68,10 @@ function toRisk(item: ApiItem, roster: readonly ApiProjectMember[], updatedAt: s
     updatedAt,
     blocksTasks: 0,
     ...(item.mitigation ? { mitigation: item.mitigation } : {}),
+    ...(item.checklist ? { checklist: [...item.checklist].sort((a, b) => a.position - b.position).map((row) => ({ id: row.id, text: row.title, done: row.completed })) } : {}),
+    ...(item.convertedIssueId ? { issueId: item.convertedIssueId } : {}),
+    ...(status === "closed" && reasonOf(item.closeReason) ? { closeReason: reasonOf(item.closeReason) } : {}),
+    ...(status === "closed" && item.closeNote ? { closeNote: item.closeNote } : {}),
     commentCount: 0,
     revision: item.revision,
   };
@@ -77,6 +92,9 @@ function toHistory(entries: readonly ApiHistory[], roster: readonly ApiProjectMe
       lines.push({ id: `${entry.id}:severity`, at: entry.createdAt, actor, field: "severity", from: before.severity?.toLowerCase(), to: after.severity.toLowerCase() });
     if (before.status !== after.status && after.status)
       lines.push({ id: `${entry.id}:status`, at: entry.createdAt, actor, field: "status", from: before.status ? statusOf(before.status) : undefined, to: statusOf(after.status) });
+    if (after.closeReason && before.closeReason !== after.closeReason)
+      lines.push({ id: `${entry.id}:closed`, at: entry.createdAt, actor, field: "closed", to: after.closeReason });
+    if (after.convertedIssueId && !before.convertedIssueId) lines.push({ id: `${entry.id}:converted`, at: entry.createdAt, actor, field: "converted" });
     if ((before.owner?.accessId ?? null) !== (after.owner?.accessId ?? null))
       lines.push({
         id: `${entry.id}:owner`,
@@ -101,7 +119,25 @@ export function createApiProjectRiskRepository(client: ApiClient): RiskRepositor
   const lastChange = async (projectId: string, item: ApiItem) =>
     (await history(api, projectId, item.id)).reduce((max, entry) => (entry.createdAt > max ? entry.createdAt : max), item.createdAt);
 
-  const refuse = (what: string) => () => mapErrors(async () => unsupported(`Projects API: ${what}`));
+  /** The current item, refused as "conflict" when the caller's revision is stale. */
+  const current = async (projectId: string, riskId: string, revision: number) => {
+    const [item, roster] = await Promise.all([read(projectId, riskId), projectRoster(api, projectId)]);
+    if (item.revision !== revision) throw new RepositoryError("conflict", "Changed elsewhere");
+    return { item, roster };
+  };
+  const answer = async (projectId: string, item: ApiItem, roster: readonly ApiProjectMember[]) => toRisk(item, roster, await lastChange(projectId, item));
+  const closeWith = (projectId: string, riskId: string, reason: string, note: string | null, revision: number) =>
+    mapErrors(async () => {
+      const { item, roster } = await current(projectId, riskId, revision);
+      const { data } = await conflictAware(() =>
+        api.request("post", "/api/v1/projects/{projectId}/register-items/{itemId}/close", {
+          path: { projectId, itemId: riskId },
+          header: { "If-Match": revisionTag(item.revision) },
+          body: { reason, note },
+        }),
+      );
+      return answer(projectId, data, roster);
+    });
 
   return {
     list: (projectId, options = {}) =>
@@ -165,11 +201,58 @@ export function createApiProjectRiskRepository(client: ApiClient): RiskRepositor
         const saved = await conflictAware(() => retryOnConflict(send, async () => (current = await read(projectId, riskId))));
         return toRisk(saved, roster, await lastChange(projectId, saved));
       }),
-    comments: refuse("comments cannot target a register item"),
-    addComment: refuse("comments cannot target a register item"),
-    setChecklistItem: refuse("register items have no mitigation checklist"),
-    close: refuse("register items have no close reason or note"),
-    resolve: refuse("register items have no resolution note"),
-    convert: refuse("register items have no risk → issue conversion"),
+    comments: (projectId, riskId) =>
+      mapErrors(async (): Promise<TaskComment[]> => {
+        const target = { projectId, targetKind: "REGISTER_ITEM" as const, targetId: riskId };
+        const [list, roster] = await Promise.all([
+          pageAll<ApiComment>(async (after) => (await api.request("get", "/api/v1/projects/{projectId}/content/{targetKind}/{targetId}/comments", { path: target, query: { limit: PAGE, after } })).data),
+          projectRoster(api, projectId),
+        ]);
+        return list
+          .filter((comment) => comment.deletedAt === null)
+          .map((comment) => ({ id: comment.id, author: byActor(roster, comment.createdByActorId), at: comment.createdAt, body: comment.body }))
+          .sort((a, b) => a.at.localeCompare(b.at));
+      }),
+    addComment: (projectId, riskId, body) =>
+      mapErrors(async (): Promise<TaskComment> => {
+        if (!body.trim()) invalid("body");
+        const { data } = await api.request("post", "/api/v1/projects/{projectId}/comments", {
+          path: { projectId },
+          header: { "Idempotency-Key": newIdempotencyKey() },
+          body: { id: crypto.randomUUID(), body: body.trim(), target: { kind: "REGISTER_ITEM", id: riskId } },
+        });
+        return { id: data.id, author: byActor(await projectRoster(api, projectId), data.createdByActorId), at: data.createdAt, body: data.body };
+      }),
+    setChecklistItem: (projectId, riskId, itemId, patch, revision) =>
+      mapErrors(async () => {
+        if (patch.taskId !== undefined) unsupported("Projects API: a checklist row cannot link a task");
+        const { item, roster } = await current(projectId, riskId, revision);
+        if (!item.checklist?.some((row) => row.id === itemId)) throw new RepositoryError("not-found", "Not found");
+        const { data } = await conflictAware(() =>
+          api.request("post", "/api/v1/projects/{projectId}/register-items/{itemId}/checklist", {
+            path: { projectId, itemId: riskId },
+            header: { "If-Match": revisionTag(item.revision), "Idempotency-Key": newIdempotencyKey() },
+            body: { kind: "UPDATE", id: itemId, ...(patch.done !== undefined ? { completed: patch.done } : {}) },
+          }),
+        );
+        return answer(projectId, data, roster);
+      }),
+    close: (projectId, riskId, { reason, note }, revision) => closeWith(projectId, riskId, reason, note?.trim() || null, revision),
+    resolve: (projectId, riskId, resolution, revision) =>
+      resolution.trim() ? closeWith(projectId, riskId, "resolved", resolution.trim(), revision) : mapErrors(async () => invalid("resolution")),
+    convert: (projectId, riskId, revision) =>
+      mapErrors(async () => {
+        const { item, roster } = await current(projectId, riskId, revision);
+        if (item.kind !== "RISK") invalid("not-a-risk");
+        const { data } = await conflictAware(() =>
+          api.request("post", "/api/v1/projects/{projectId}/register-items/{itemId}/convert", {
+            path: { projectId, itemId: riskId },
+            header: { "If-Match": revisionTag(item.revision), "Idempotency-Key": newIdempotencyKey() },
+            body: { id: crypto.randomUUID(), targetKind: "ISSUE" },
+          }),
+        );
+        if (!data.convertedIssueId) throw new RepositoryError("not-found", "Not found");
+        return answer(projectId, await read(projectId, data.convertedIssueId), roster);
+      }),
   };
 }

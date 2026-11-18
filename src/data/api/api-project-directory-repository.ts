@@ -4,7 +4,7 @@ import type { ProjectAccess, ProjectCapabilities, ProjectDirectory, ProjectLifec
 import type { ProjectRepository, ProjectSettingsRepository } from "../project-repositories";
 import { RepositoryError } from "../repositories";
 import { invalid, mapErrors, pageAll, retryOnConflict, revisionTag } from "./api-shared";
-import { conflictAware } from "./api-project-shared";
+import { conflictAware, onConflictReason } from "./api-project-shared";
 import { accessMe, projectRoster, projectsClient, toProjectPerson, type ApiAccessMe, type ProjectsClient, type ProjectsData } from "./api-project-shared";
 
 /*
@@ -13,8 +13,11 @@ import { accessMe, projectRoster, projectsClient, toProjectPerson, type ApiAcces
  * - `/projects` (title, state, updatedAt) + `/metadata` (key, colour, dates,
  *   status note text) + `/dashboard` progress + the members roster +
  *   milestones / risk register + the caller's own assignments (`/me/work`).
- * - `health` and `expectedPercent` are null (no approved definition); the note
- *   has no author or time; undeclared dates are null.
+ * - `health` is null: D9 makes the status manual (not computed), and the API
+ *   has no manual status field; `/health` is the server's computed advisory
+ *   state and is deliberately not shown as it. `expectedPercent` is null (no
+ *   approved definition); the note has no author or time; undeclared dates
+ *   are null.
  * - The caller's role / capabilities come from `access/me` (hints; every
  *   command is still checked). A Project-scope grant without a role is the
  *   screens' "guest". A capability is true only when the backend grants it AND
@@ -74,14 +77,13 @@ export function capabilitiesOf(me: ApiAccessMe): ProjectCapabilities {
     modules,
     // Health has no approved definition: the status chip cannot be saved.
     editStatus: false,
-    // Invitations need the proof-delivery flow (R4).
-    invite: false,
+    // Space invitations: membership admins / managers (the server checks the role ceiling).
+    invite: has("membership.admin") || has("membership.manager"),
     createTask: has("task.create"),
     editTasks: has("task.update"),
     editAnyTask: has("task.update") && manage,
     changeStatus: has("workflow.transition"),
-    // No task deletion operation exists.
-    deleteTasks: false,
+    deleteTasks: has("task.delete"),
     bulkEdit: manage,
     importCsv: manage,
     assignTasks: has("assignment.assign"),
@@ -90,17 +92,17 @@ export function capabilitiesOf(me: ApiAccessMe): ProjectCapabilities {
     comment: has("comment.create"),
     seeTeamLoad: full,
     createMilestone: manage,
-    // No WIP limits and no manual order in the API.
+    // No WIP limits in the API; manual order = task position (task.update, Manager+ per the board rule).
     exceedWip: false,
-    reorderTasks: false,
-    // Register writes need work.manage; creation has no approved form, close needs a reason the API has no field for.
+    reorderTasks: has("task.update") && manage,
+    // Register writes need work.manage; creation has no approved form.
     createRisk: false,
     editOwnRisk: manage,
     editAnyRisk: manage,
-    closeRisk: false,
-    // Root uploads need file.read + work.manage (backend writeCap PROJECT). Folders / versions are not served.
+    closeRisk: manage,
+    // Uploads, versions and restores need file.read + work.manage (backend writeCap PROJECT).
     uploadFile: full && has("file.read") && manage,
-    manageFiles: false,
+    manageFiles: full && has("file.read") && manage,
     manageMembers: has("membership.admin"),
     manageJuniorMembers: has("membership.manager"),
     editCapacity: false,
@@ -151,6 +153,7 @@ async function summaryOf(api: ProjectsClient, project: ApiProject, mine: readonl
     tint,
     description: project.description ?? "",
     role: roleOf(me),
+    // D9: the status is set manually; the server's computed advisory health is not shown as it.
     health: null,
     lifecycle,
     statusNote: metadata.statusNote ? { text: metadata.statusNote, author: null, at: null } : null,
@@ -283,7 +286,10 @@ export function createApiProjectLifecycle(client: ApiClient): Pick<ProjectReposi
             ...(patch.startDate !== undefined ? { startDate: patch.startDate } : {}),
             ...(patch.endDate !== undefined ? { endDate: patch.endDate } : {}),
           };
-          const send = () => api.request("patch", "/api/v1/projects/{id}/metadata", { path: { id: projectId }, header: { "If-Match": current.tag }, body });
+          const send = () =>
+            onConflictReason(() => api.request("patch", "/api/v1/projects/{id}/metadata", { path: { id: projectId }, header: { "If-Match": current.tag }, body }), {
+              PROJECT_KEY_CONFLICT: new RepositoryError("invalid", "key-taken"),
+            });
           await conflictAware(() => retryOnConflict(send, async () => (current = await metadata(projectId))));
         }
         return summary(projectId);

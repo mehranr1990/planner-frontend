@@ -13,7 +13,7 @@ import type { ProjectTaskRepository, ProjectTaskView, WorkflowRepository } from 
 import { RepositoryError } from "../repositories";
 import { localInstant } from "./api-tasks-repository";
 import { invalid, mapErrors, pageAll, revisionTag, unsupported } from "./api-shared";
-import { accessMe, conflictAware, personOf, projectRoster, projectsClient, type ApiProjectMember, type ApiViewItem, type ProjectsClient, type ProjectsData } from "./api-project-shared";
+import { accessMe, conflictAware, onConflictReason, personOf, projectRoster, projectsClient, type ApiProjectMember, type ApiViewItem, type ProjectsClient, type ProjectsData } from "./api-project-shared";
 import { projectPeople } from "./api-project-members-repository";
 
 /*
@@ -29,11 +29,19 @@ import { projectPeople } from "./api-project-members-repository";
  *   Unbound tasks change their base status with PATCH.
  * - Rows join the LIST view (task, schedule, estimate, binding, dependencies),
  *   the task association (section → phase, milestone) and assignments (names
- *   from the roster). Priority NONE = null; no subtasks or comment counts are
- *   readable (null); no updatedAt.
+ *   from the roster), in the server's manual order (section, position, id —
+ *   the `tasks/order` rule). Priority NONE = null; subtasks = the visible
+ *   child tasks (`parentTaskId`, canceled excluded; none = null); no comment
+ *   counts (null); no updatedAt.
  * - A phase is reached through a section: a task placed in a phase goes to the
  *   phase's first section (by position); a phase without sections cannot hold
- *   tasks ("invalid"). No delete or manual order exists (refused).
+ *   tasks ("invalid").
+ * - Delete = DELETE (tombstone, task If-Match + Idempotency-Key), children
+ *   before their parent; a task with live children outside the selection is
+ *   refused before any request ("invalid", has-children); a child added
+ *   meanwhile comes back as the 409 reason TASK_HAS_ACTIVE_CHILDREN (same error). Reorder = PATCH `position` per moved task
+ *   (If-Match = its revision from `tasks/order`) inside one section; a
+ *   selection spanning sections has no single order (refused).
  */
 
 type ApiTask = ProjectsData<"/api/v1/projects/{id}/tasks/{taskId}", "get">;
@@ -42,6 +50,8 @@ type ApiComponent = ProjectsData<"/api/v1/projects/{id}/components/{kind}", "get
 export type ApiAssignment = ProjectsData<"/api/v1/projects/{projectId}/tasks/{taskId}/assignments", "get">["items"][number];
 type ApiAssociation = ProjectsData<"/api/v1/projects/{id}/tasks/{taskId}/association", "get">;
 type ApiEdge = ProjectsData<"/api/v1/projects/{projectId}/views", "get">["dependencies"][number];
+type ApiOrder = ProjectsData<"/api/v1/projects/{projectId}/tasks/order", "get">["items"][number];
+type ApiChild = ProjectsData<"/api/v1/projects/{id}/tasks/{taskId}/subtasks", "get">["items"][number];
 type BaseStatus = ApiTask["status"];
 type Binding = NonNullable<ApiViewItem["workflow"]["binding"]>;
 
@@ -170,6 +180,19 @@ export async function loadProjectTasks(api: ProjectsClient, projectId: string, t
   }
   const phaseOfSection = new Map(sections.map((section) => [section.id, section.phaseId ?? null]));
   const live = edges.filter((edge) => edge.retiredAt === null);
+  items.sort((a, b) => (a.sectionId ?? "").localeCompare(b.sectionId ?? "") || (a.position ?? 0) - (b.position ?? 0) || a.task.id.localeCompare(b.task.id));
+  const children = new Map<string, { done: number; total: number }>();
+  for (const { task } of items) {
+    if (!task.parentTaskId || task.status === "CANCELED") continue;
+    const count = children.get(task.parentTaskId) ?? { done: 0, total: 0 };
+    children.set(task.parentTaskId, { done: count.done + (task.status === "DONE" ? 1 : 0), total: count.total + 1 });
+  }
+  // A single-task read only holds that task: its children come from its own subtasks list.
+  if (taskId) {
+    const own = (await childTasks(api, projectId, taskId)).filter((child) => child.status !== "CANCELED");
+    if (own.length) children.set(taskId, { done: own.filter((child) => child.status === "DONE").length, total: own.length });
+    else children.delete(taskId);
+  }
   const tasks = items.map(({ task, schedule, estimatedMinutes, workflow }): ProjectTask => {
     const place = places.get(task.id);
     return {
@@ -184,16 +207,55 @@ export async function loadProjectTasks(api: ProjectsClient, projectId: string, t
       due: schedule.dueAt ? dayOfInstant(schedule.dueAt) : null,
       estimateHours: estimatedMinutes === null || estimatedMinutes === undefined ? null : estimatedMinutes / 60,
       blockedBy: live.filter((edge) => edge.successorId === task.id).map((edge) => edge.predecessorId),
-      subtasks: null,
+      subtasks: children.get(task.id) ?? null,
       commentCount: null,
       revision: task.revision,
       ...(task.completedAt ? { completedAt: task.completedAt } : {}),
+      // Persisted first IN_PROGRESS evidence (never the creation time); absent = unknown.
+      ...(task.firstStartedAt ? { startedAt: task.firstStartedAt } : {}),
+      ...(task.createdAt ? { createdAt: task.createdAt } : {}),
     };
   });
   const starts = new Map(
     items.map(({ task, schedule }) => [task.id, schedule.plannedStartAt ? dayOfInstant(schedule.plannedStartAt) : (schedule.scheduledDate ?? null)] as const),
   );
   return { tasks, catalogue: catalogue(versions), assignments, roster, starts };
+}
+
+/** The task's live (non-deleted) child tasks. */
+export const childTasks = async (api: ProjectsClient, projectId: string, taskId: string): Promise<ApiChild[]> =>
+  (
+    await pageAll<ApiChild>(async (after) => (await api.request("get", "/api/v1/projects/{id}/tasks/{taskId}/subtasks", { path: { id: projectId, taskId }, query: { limit: PAGE, after } })).data)
+  ).filter((child) => child.deletedAt === null);
+
+/**
+ * Moves a task to a base status: an unbound task by PATCH, a bound one along
+ * the version edge into a state of that status (none → refused, never migrated).
+ */
+export async function moveToBase(api: ProjectsClient, projectId: string, taskId: string, target: BaseStatus): Promise<void> {
+  const [{ data: bound, etag }, { data, etag: taskTag }] = await Promise.all([
+    api.request("get", "/api/v1/projects/{projectId}/tasks/{taskId}/workflow", { path: { projectId, taskId } }),
+    api.request("get", "/api/v1/projects/{id}/tasks/{taskId}", { path: { id: projectId, taskId } }),
+  ]);
+  const tag = taskTag ?? revisionTag(data.revision);
+  if (!bound.binding) {
+    await conflictAware(() =>
+      api.request("patch", "/api/v1/projects/{id}/tasks/{taskId}", { path: { id: projectId, taskId }, header: { "If-Match": tag, "Idempotency-Key": newIdempotencyKey() }, body: { status: target } }),
+    );
+    return;
+  }
+  const binding = bound.binding;
+  const version = (await readVersions(api, projectId, [binding])).get(versionKey(binding.workflowId, binding.version))!;
+  const states = new Map(version.states.map((state) => [state.id, state.status]));
+  const edge = version.edges.find((candidate) => candidate.fromStateId === binding.stateId && states.get(candidate.toStateId) === target);
+  if (!edge) unsupported("The task's workflow version has no such transition");
+  await conflictAware(() =>
+    api.request("post", "/api/v1/projects/{projectId}/tasks/{taskId}/workflow/transitions", {
+      path: { projectId, taskId },
+      header: { "If-Match": etag ?? tag, "Idempotency-Key": newIdempotencyKey() },
+      body: { edgeId: edge.id },
+    }),
+  );
 }
 
 export function createApiProjectWorkflowRepository(client: ApiClient): WorkflowRepository {
@@ -434,8 +496,50 @@ export function createApiProjectTaskRepository(client: ApiClient, options: { tod
         return counts;
       }),
 
-    remove: () => mapErrors(async () => unsupported("The API has no task deletion")),
-    reorder: () => mapErrors(async () => unsupported("The API has no manual task order")),
+    remove: (projectId, taskIds) =>
+      mapErrors(async () => {
+        const selected = new Set(taskIds);
+        const kids = new Map<string, ApiChild[]>();
+        for (const id of taskIds) kids.set(id, await childTasks(api, projectId, id));
+        for (const [id, list] of kids) if (list.some((child) => !selected.has(child.id))) invalid(`has-children:${id}`);
+        // Children before parents: a parent with live children cannot be deleted.
+        const done = new Set<string>();
+        const visit = async (id: string): Promise<void> => {
+          if (done.has(id)) return;
+          done.add(id);
+          for (const child of kids.get(id) ?? []) await visit(child.id);
+          const { tag } = await task(projectId, id);
+          await conflictAware(() =>
+            onConflictReason(
+              () => api.request("delete", "/api/v1/projects/{id}/tasks/{taskId}", { path: { id: projectId, taskId: id }, header: { "If-Match": tag, "Idempotency-Key": newIdempotencyKey() }, body: {} }),
+              { TASK_HAS_ACTIVE_CHILDREN: new RepositoryError("invalid", `has-children:${id}`) },
+            ),
+          );
+        };
+        for (const id of taskIds) await visit(id);
+      }),
+
+    reorder: (projectId, orderedIds) =>
+      mapErrors(async () => {
+        const rows = await pageAll<ApiOrder>(async (after) => (await api.request("get", "/api/v1/projects/{projectId}/tasks/order", { path: { projectId }, query: { limit: PAGE, after } })).data);
+        const moved = orderedIds.map((id) => rows.find((row) => row.id === id));
+        if (moved.some((row) => !row)) throw new RepositoryError("not-found", "Not found");
+        const known = moved as ApiOrder[];
+        if (new Set(known.map((row) => row.sectionId ?? "")).size > 1) unsupported("Tasks in different sections have no shared manual order");
+        // The same slots, handed out in the new order (kept strictly increasing).
+        const slots = known.map((row) => row.position).sort((a, b) => a - b);
+        for (let at = 1; at < slots.length; at += 1) slots[at] = Math.max(slots[at]!, slots[at - 1]! + 1);
+        for (const [at, row] of known.entries()) {
+          if (row.position === slots[at]) continue;
+          await conflictAware(() =>
+            api.request("patch", "/api/v1/projects/{id}/tasks/{taskId}", {
+              path: { id: projectId, taskId: row.id },
+              header: { "If-Match": revisionTag(row.revision), "Idempotency-Key": newIdempotencyKey() },
+              body: { position: slots[at]! },
+            }),
+          );
+        }
+      }),
   };
   return repo;
 }

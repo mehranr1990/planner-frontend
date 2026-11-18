@@ -2,8 +2,8 @@ import { newIdempotencyKey, type ApiClient } from "@/api/client";
 import type { InviteRole, PendingInvite } from "../project-domain";
 import type { MemberInviteRepository } from "../project-repositories";
 import { RepositoryError } from "../repositories";
-import { mapErrors, retryOnConflict, revisionTag, unsupported } from "./api-shared";
-import { conflictAware, projectsClient } from "./api-project-shared";
+import { mapErrors, pageAll, retryOnConflict, revisionTag, unsupported } from "./api-shared";
+import { conflictAware, projectsClient, type ProjectsData } from "./api-project-shared";
 
 /*
  * PJ-13 / PJ-90 invitations, inviter side, through the project's space:
@@ -11,20 +11,41 @@ import { conflictAware, projectsClient } from "./api-project-shared";
  * {email}} one email at a time, cancel = `…/{id}/revoke` with If-Match.
  *
  * The one-time `proof` in the create answer is never kept or shown: the
- * recipient fetches their own proof in the app (OD-4). Not in the contract,
- * refused without a request: a per-project pending list, resend, restoring a
- * revoked invitation, and the Task-only (guest) role (guests are task grants,
- * not memberships).
+ * recipient fetches their own proof in the app (OD-4). Pending list = the
+ * space's management list (`state=PENDING`, MEMBERSHIP kind; `sentAt` is the
+ * in-app offer time, a withheld email stays ""). Resend = `…/{id}/resend`
+ * (If-Match + Idempotency-Key; rotates the proof, which is never shown).
+ * Refused without a request: restoring a revoked invitation and the
+ * Task-only (guest) role (guests are task grants, not memberships).
  */
 
 const ROLE = { admin: "ADMIN", manager: "MANAGER", member: "MEMBER", viewer: "VIEWER" } as const;
+const FROM_ROLE = { ADMIN: "admin", MANAGER: "manager", MEMBER: "member", VIEWER: "viewer" } as const;
+const PAGE = 100;
+
+type ApiSentInvitation = ProjectsData<"/api/v1/spaces/{spaceId}/invitations", "get">["items"][number];
+
+const toPending = (invitation: ApiSentInvitation): PendingInvite => ({
+  id: invitation.id,
+  email: invitation.recipientEmail ?? "",
+  role: FROM_ROLE[invitation.memberRole],
+  sentAt: invitation.sentAt,
+  expiresAt: invitation.expiresAt,
+});
 
 export function createApiProjectMemberInviteRepository(client: ApiClient): MemberInviteRepository {
   const api = projectsClient(client);
   const spaceOf = async (projectId: string) => (await api.request("get", "/api/v1/projects/{id}", { path: { id: projectId } })).data.spaceId;
 
+  const pending = async (spaceId: string): Promise<ApiSentInvitation[]> =>
+    (
+      await pageAll<ApiSentInvitation>(
+        async (after) => (await api.request("get", "/api/v1/spaces/{spaceId}/invitations", { path: { spaceId }, query: { state: "PENDING", limit: PAGE, after } })).data,
+      )
+    ).filter((invitation) => invitation.kind === "MEMBERSHIP");
+
   return {
-    listPending: () => mapErrors(async () => unsupported("The API lists no pending invitations per project")),
+    listPending: (projectId) => mapErrors(async () => (await pending(await spaceOf(projectId))).map(toPending)),
 
     send: (projectId, emails, role) =>
       mapErrors(async () => {
@@ -50,7 +71,23 @@ export function createApiProjectMemberInviteRepository(client: ApiClient): Membe
         return sent;
       }),
 
-    resend: () => mapErrors(async () => unsupported("The API has no resend; a new invitation would need a reissue rule")),
+    resend: (projectId, inviteId) =>
+      mapErrors(async () => {
+        const spaceId = await spaceOf(projectId);
+        const current = (await pending(spaceId)).find((invitation) => invitation.id === inviteId);
+        if (!current) throw new RepositoryError("not-found", "Not found");
+        // The answer carries no acceptance proof for the inviter; the new revision is read back with the list.
+        await conflictAware(() =>
+          api.request("post", "/api/v1/spaces/{spaceId}/invitations/{id}/resend", {
+            path: { spaceId, id: inviteId },
+            header: { "If-Match": revisionTag(current.revision), "Idempotency-Key": newIdempotencyKey() },
+            body: {},
+          }),
+        );
+        const fresh = (await pending(spaceId)).find((invitation) => invitation.id === inviteId);
+        if (!fresh) throw new RepositoryError("not-found", "Not found");
+        return toPending(fresh);
+      }),
 
     cancel: (projectId, inviteId) =>
       mapErrors(async () => {

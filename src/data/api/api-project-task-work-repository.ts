@@ -5,7 +5,7 @@ import type { AssignmentRepository, ProjectCalendarRepository, ReassignRepositor
 import { RepositoryError } from "../repositories";
 import { mapErrors, pageAll, revisionTag, unsupported } from "./api-shared";
 import { accessMe, conflictAware, liveOnly, personOf, projectsClient, type ProjectsClient, type ProjectsData } from "./api-project-shared";
-import { loadProjectTasks, type ApiAssignment, type LoadedTasks } from "./api-project-tasks-repository";
+import { childTasks, loadProjectTasks, moveToBase, type ApiAssignment, type LoadedTasks } from "./api-project-tasks-repository";
 
 /*
  * What hangs off a project task row: the task detail drawer, my assignments
@@ -14,10 +14,13 @@ import { loadProjectTasks, type ApiAssignment, type LoadedTasks } from "./api-pr
  * - Detail: start day, section, logged hours (non-voided work logs), the
  *   predecessors, assignment events as activity, the live comments
  *   (`content/TASK/{id}/comments`, author by actor id) and READY files
- *   (`content/TASK/{id}/files`). No shared subtasks (empty), no personal
+ *   (`content/TASK/{id}/files`), subtasks = the live child tasks (`…/subtasks`,
+ *   canceled hidden; toggle = DONE ⇄ OPEN through `moveToBase`). No personal
  *   calendar projection switch (refused).
- * - Accept / decline act on the caller's own pending assignment (access id
- *   from `access/me`); there is no "back to pending" and no reminder (refused).
+ * - Accept / decline / revert act on the caller's own assignment (access id
+ *   from `access/me`); revert keeps the accepted record and opens a new
+ *   pending one. Remind = POST `…/remind` (assignment revision + key) for
+ *   every pending assignment of the task (the server allows one per UTC day).
  * - Calendar: open tasks on their due day and dated milestones; no project
  *   events and no project-scoped busy read (refused).
  */
@@ -39,10 +42,10 @@ const rowOf = (loaded: LoadedTasks, taskId: string): ProjectTask => {
 
 export function createApiProjectTaskDetailRepository(client: ApiClient): TaskDetailRepository {
   const api = projectsClient(client);
-  return liveOnly<TaskDetailRepository>("the API has no shared subtasks and no personal calendar projection switch", {
+  const repo: Partial<TaskDetailRepository> = {
     get: (projectId, taskId) =>
       mapErrors(async (): Promise<ProjectTaskDetail> => {
-        const [loaded, all, schedule, place, logs, graph] = await Promise.all([
+        const [loaded, all, schedule, place, logs, graph, children] = await Promise.all([
           loadProjectTasks(api, projectId, taskId),
           loadProjectTasks(api, projectId).then((everything) => everything.tasks),
           api.request("get", "/api/v1/projects/{projectId}/tasks/{taskId}/schedule", { path: { projectId, taskId } }).then((response) => response.data),
@@ -51,6 +54,7 @@ export function createApiProjectTaskDetailRepository(client: ApiClient): TaskDet
             async (after) => (await api.request("get", "/api/v1/projects/{projectId}/tasks/{taskId}/work-logs", { path: { projectId, taskId }, query: { limit: PAGE, after } })).data,
           ),
           api.request("get", "/api/v1/projects/{projectId}/dependencies", { path: { projectId } }).then((response) => response.data.edges),
+          childTasks(api, projectId, taskId),
         ]);
         const target = { projectId, targetKind: "TASK" as const, targetId: taskId };
         const [comments, files] = await Promise.all([
@@ -76,7 +80,7 @@ export function createApiProjectTaskDetailRepository(client: ApiClient): TaskDet
           section: sections.find((section) => section.id === place.sectionId)?.title ?? null,
           customFields: [],
           loggedHours: Math.round((seconds / 3600) * 10) / 10,
-          subtasks: [],
+          subtasks: children.filter((child) => child.status !== "CANCELED").map((child) => ({ id: child.id, title: child.title, done: child.status === "DONE" })),
           dependencies: graph
             .filter((edge) => edge.retiredAt === null && edge.successorId === taskId)
             .map((edge) => ({
@@ -99,7 +103,16 @@ export function createApiProjectTaskDetailRepository(client: ApiClient): TaskDet
           showInCalendar: false,
         };
       }),
-  });
+
+    toggleSubtask: (projectId, taskId, subtaskId) =>
+      mapErrors(async () => {
+        const child = (await childTasks(api, projectId, taskId)).find((candidate) => candidate.id === subtaskId);
+        if (!child) throw new RepositoryError("not-found", "Not found");
+        await moveToBase(api, projectId, subtaskId, child.status === "DONE" ? "OPEN" : "DONE");
+        return repo.get!(projectId, taskId);
+      }),
+  };
+  return liveOnly<TaskDetailRepository>("the API has no personal calendar projection switch for project tasks", repo);
 }
 
 /** The caller's own current assignment on a task. */
@@ -117,7 +130,39 @@ export function createApiProjectAssignmentRepository(client: ApiClient): Assignm
   };
   const reload = async (projectId: string, taskId: string) => rowOf(await loadProjectTasks(api, projectId, taskId), taskId);
 
-  return liveOnly<AssignmentRepository>("an accepted assignment cannot go back to pending and the API sends no reminders", {
+  return {
+    revertAccept: (projectId, taskId, revision) =>
+      mapErrors(async () => {
+        const { loaded, own } = await mine(api, projectId, taskId, "ACCEPTED");
+        checkRevision(rowOf(loaded, taskId), revision);
+        await conflictAware(() =>
+          api.request("post", "/api/v1/projects/{projectId}/tasks/{taskId}/assignments/{assignmentId}/revert", {
+            path: { projectId, taskId, assignmentId: own.id },
+            header: { "If-Match": revisionTag(own.revision), "Idempotency-Key": newIdempotencyKey() },
+            body: {},
+          }),
+        );
+        return reload(projectId, taskId);
+      }),
+
+    remind: (projectId, taskId) =>
+      mapErrors(async () => {
+        const [loaded, me] = await Promise.all([loadProjectTasks(api, projectId, taskId), accessMe(api, projectId)]);
+        // The server refuses a reminder to oneself: only other people's pending assignments are reminded.
+        const pending = (loaded.assignments.get(taskId) ?? []).filter(
+          (assignment) => assignment.decision === "PENDING" && !assignment.endedAt && assignment.recipientAccessId !== me.accessId,
+        );
+        if (pending.length === 0) throw new RepositoryError("invalid", "Nobody is pending");
+        for (const assignment of pending)
+          await conflictAware(() =>
+            api.request("post", "/api/v1/projects/{projectId}/tasks/{taskId}/assignments/{assignmentId}/remind", {
+              path: { projectId, taskId, assignmentId: assignment.id },
+              header: { "If-Match": revisionTag(assignment.revision), "Idempotency-Key": newIdempotencyKey() },
+              body: {},
+            }),
+          );
+      }),
+
     listMine: (projectId) =>
       mapErrors(async () => {
         const [loaded, me] = await Promise.all([loadProjectTasks(api, projectId), accessMe(api, projectId)]);
@@ -158,7 +203,7 @@ export function createApiProjectAssignmentRepository(client: ApiClient): Assignm
         );
         return reload(projectId, taskId);
       }),
-  });
+  };
 }
 
 export function createApiProjectReassignRepository(client: ApiClient): ReassignRepository {

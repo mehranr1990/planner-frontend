@@ -8,8 +8,9 @@ import { CURRENT_USER_ID, isTaskDone } from "./mock-project-work";
  * due. Cycle time = first In progress → Done (median days). Overdue = open
  * with due < today. Weeks start on the requested weekday (Saturday fa,
  * Monday en — DECISIONS proposed default, as SPEC states). Scope per week
- * counts tasks that exist (the sample has no creation history, so scope is
- * the current total). Members get only their own "done by assignee" row,
+ * counts tasks that exist by the end of that week (a task without a creation
+ * instant counts in every week; the mock sample has none, so its scope is the
+ * current total). Members get only their own "done by assignee" row,
  * Viewers none. Never reads Personal data.
  */
 
@@ -110,7 +111,10 @@ export function computeAnalytics({
       overdueBlocked: overdue.filter((task) => blockedIds.has(task.statusId)).length,
     },
     weeks,
-    scope: weeks.map(() => tasks.length),
+    scope: weeks.map((start) => {
+      const end = fromDayNumber(dayNumber(start) + 6);
+      return tasks.filter((task) => !task.createdAt || dayOf(task.createdAt) <= end).length;
+    }),
     doneCumulative,
     throughput,
     byStatus: workflow.statuses.map((status) => ({

@@ -17,7 +17,8 @@ describe("live Projects repositories", () => {
     await expect(repos.members.setCapacity(P, "m1", 30)).rejects.toMatchObject({ code: "unsupported" });
     await expect(repos.imports.undo(P, "b1")).rejects.toMatchObject({ code: "unsupported" });
     await expect(repos.settings.confirmTransfer(P, "pw")).rejects.toMatchObject({ code: "unsupported" });
-    await expect(repos.projectTasks.reorder(P, ["t1"])).rejects.toMatchObject({ code: "unsupported" });
+    await expect(repos.workflowDrafts.publish(P, { old: "new" })).rejects.toMatchObject({ code: "unsupported" });
+    await expect(repos.risks.update(P, "r1", { probability: "low" }, 1)).rejects.toMatchObject({ code: "unsupported" });
     await expect(repos.schedule.criticalPath(P)).rejects.toMatchObject({ code: "unsupported" });
     expect(api.calls).toEqual([]);
   });
@@ -480,8 +481,22 @@ describe("live Projects repositories", () => {
   });
 
   const W = "w1";
-  const tasksApi = (over: { binding?: boolean; decision?: string } = {}) =>
+  const tasksApi = (over: { binding?: boolean; decision?: string; children?: boolean } = {}) =>
     fakeApi((call, parts) => {
+      if (parts[4] === "subtasks")
+        return json({
+          items:
+            parts[3] === "t1" && over.children !== false
+              ? [
+                  { id: "t2", title: "Copy", status: "DONE", deletedAt: null },
+                  { id: "t5", title: "Dropped", status: "CANCELED", deletedAt: null },
+                ]
+              : [],
+          nextCursor: null,
+        });
+      if (parts[3] === "order")
+        return json({ items: [{ id: "t1", sectionId: "sec1", position: 4, revision: 5 }, { id: "t2", sectionId: "sec1", position: 9, revision: 6 }, { id: "t7", sectionId: null, position: 0, revision: 1 }], nextCursor: null });
+      if (call.method === "DELETE") return json(null, 204);
       const bound = { workflowId: W, version: 2, stateId: "s-review", taskId: "t1", revision: 1, sourceRevision: 5 };
       const item = (id: string, status: string, priority: string, binding: unknown, dueAt: string | null) => ({
         id,
@@ -597,7 +612,40 @@ describe("live Projects repositories", () => {
       [`/projects/${P}/tasks/t1/assignments/as-m2/decline`, '"4"', { reason: "no-capacity — Full week" }],
     ]);
     await expect(assignments.accept(P, "t1", 3)).rejects.toMatchObject({ code: "conflict" });
-    await expect(assignments.revertAccept(P, "t1", 5)).rejects.toMatchObject({ code: "unsupported" });
+    // The only pending assignee is the caller (m2): the server never reminds oneself → nothing is sent.
+    await expect(assignments.remind(P, "t1")).rejects.toMatchObject({ code: "invalid" });
+    await expect(assignments.remind(P, "t2")).rejects.toMatchObject({ code: "invalid" });
+    expect(api.calls.some((call) => call.path.endsWith("/remind"))).toBe(false);
+
+    const accepted = tasksApi({ decision: "ACCEPTED" });
+    await live(accepted).assignments.revertAccept(P, "t1", 5);
+    const revert = accepted.calls.find((call) => call.method === "POST")!;
+    expect([revert.path, revert.ifMatch, Boolean(revert.key)]).toEqual([`/projects/${P}/tasks/t1/assignments/as-m2/revert`, '"4"', true]);
+  });
+
+  it("tasks: delete children before parents (refused when a live child stays), reorder inside one section, subtask toggle", async () => {
+    const api = tasksApi({ binding: false });
+    const repos = live(api);
+    await expect(repos.projectTasks.remove(P, ["t1"])).rejects.toMatchObject({ code: "invalid" });
+    expect(api.writes()).toEqual([]);
+    await repos.projectTasks.remove(P, ["t1", "t2", "t5"]);
+    const deletes = api.calls.filter((call) => call.method === "DELETE");
+    expect(deletes.map((call) => [call.path, call.ifMatch, Boolean(call.key)])).toEqual([
+      [`/projects/${P}/tasks/t2`, '"5"', true],
+      [`/projects/${P}/tasks/t5`, '"5"', true],
+      [`/projects/${P}/tasks/t1`, '"5"', true],
+    ]);
+
+    await repos.projectTasks.reorder(P, ["t2", "t1"]);
+    const moves = api.calls.filter((call) => call.method === "PATCH");
+    expect(moves.map((call) => [call.path, call.ifMatch, call.body])).toEqual([
+      [`/projects/${P}/tasks/t2`, '"6"', { position: 4 }],
+      [`/projects/${P}/tasks/t1`, '"5"', { position: 9 }],
+    ]);
+    await expect(repos.projectTasks.reorder(P, ["t1", "t7"])).rejects.toMatchObject({ code: "unsupported" });
+
+    await repos.taskDetails.toggleSubtask(P, "t1", "t2");
+    expect(api.calls.filter((call) => call.method === "PATCH").at(-1)).toMatchObject({ path: `/projects/${P}/tasks/t2`, body: { status: "OPEN" } });
   });
 
   it("reassign, calendar and task detail from the shared task loader", async () => {
@@ -609,7 +657,7 @@ describe("live Projects repositories", () => {
     const items = await repos.calendar.range(P, "2026-11-01", "2026-11-30");
     expect(items.map((item) => [item.id, item.kind])).toEqual([["task:t1", "task"]]);
     const detail = await repos.taskDetails.get(P, "t1");
-    expect(detail).toMatchObject({ start: "2026-11-08", section: "A", loggedHours: 1.5, subtasks: [], showInCalendar: false });
+    expect(detail).toMatchObject({ start: "2026-11-08", section: "A", loggedHours: 1.5, subtasks: [{ id: "t2", title: "Copy", done: true }], showInCalendar: false });
     expect(detail.comments.map((comment) => [comment.id, comment.author.name, comment.body])).toEqual([["c1", "Sara Amini", "First"], ["c2", "Omid Karimi", "Later"]]);
     expect(detail.files).toEqual([{ id: "f1", name: "brief.pdf" }]);
     expect(api.calls.some((call) => call.path === `/projects/${P}/content/TASK/t1/comments`)).toBe(true);

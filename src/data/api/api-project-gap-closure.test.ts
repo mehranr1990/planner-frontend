@@ -94,12 +94,18 @@ describe("live project risk register", () => {
           nextCursor: null,
         });
       if (parts[2] === "register-items" && call.method === "PUT") return json(item({ ...call.body, revision: 4 }));
-      if (parts[2] === "register-items" && parts.length === 4) return json(item());
+      if (parts[4] === "close") return json(item({ status: "CLOSED", closeReason: call.body.reason, closeNote: call.body.note, revision: 4 }));
+      if (parts[4] === "checklist") return json(item({ checklist: [{ id: "c1", title: "Call vendor", completed: call.body.completed, position: 0 }], revision: 4 }));
+      if (parts[4] === "convert") return json(item({ convertedIssueId: "i1", revision: 4 }));
+      if (parts[2] === "comments" && call.method === "POST") return json({ id: "k1", body: call.body.body, createdByActorId: "a-m2", createdAt: "2026-11-14T09:00:00.000Z", deletedAt: null }, 201);
+      if (parts[5] === "comments") return json({ items: [{ id: "k0", body: "Earlier", createdByActorId: "a-m1", createdAt: "2026-11-13T09:00:00.000Z", deletedAt: null }], nextCursor: null });
+      if (parts[2] === "register-items" && parts[3] === "i1") return json(item({ id: "i1", kind: "ISSUE", code: "I-01", status: "OPEN" }));
+      if (parts[2] === "register-items" && parts.length === 4) return json(item({ code: "R-07", checklist: [{ id: "c1", title: "Call vendor", completed: false, position: 0 }] }));
       if (parts[2] === "register-items") return json({ items: [item(), item({ id: "r2", status: "CLOSED" }), item({ id: "r3", retiredAt: "2026-11-02T00:00:00.000Z" })], nextCursor: null });
       return err(404);
     });
 
-  it("maps served fields only (no code, no 3-level probability) with updatedAt from the history", async () => {
+  it("maps served fields only (no 3-level probability) with updatedAt from the history", async () => {
     const repo = createApiProjectRiskRepository(register().client);
     const open = await repo.list(P, { open: true });
     expect(open).toHaveLength(1);
@@ -110,7 +116,7 @@ describe("live project risk register", () => {
     expect((await repo.history(P, "r1")).map((line) => [line.field, line.from, line.to])).toEqual([["status", "open", "mitigating"], ["created", undefined, undefined]]);
   });
 
-  it("update = full PUT with If-Match keeping unserved-by-UI fields; probability / close / comments are refused without a request", async () => {
+  it("update = full PUT with If-Match keeping unserved-by-UI fields; probability (PB-13) is refused without a request", async () => {
     const api = register();
     const repo = createApiProjectRiskRepository(api.client);
     await repo.update(P, "r1", { severity: "critical", status: "open", ownerId: "m1" }, 3);
@@ -119,9 +125,38 @@ describe("live project risk register", () => {
     expect(put.body).toEqual({ kind: "RISK", title: "Vendor late", description: "d", severity: "CRITICAL", probability: 70, owner: { accessId: "m1", generation: 1 }, mitigation: "Second vendor", status: "OPEN" });
     const writes = api.writes().length;
     await expect(repo.update(P, "r1", { probability: "low" }, 3)).rejects.toMatchObject({ code: "unsupported" });
-    await expect(repo.close(P, "r1", { reason: "mitigated" }, 3)).rejects.toMatchObject({ code: "unsupported" });
-    await expect(repo.addComment(P, "r1", "x")).rejects.toMatchObject({ code: "unsupported" });
+    await expect(repo.setChecklistItem(P, "r1", "c1", { taskId: "t1" }, 3)).rejects.toMatchObject({ code: "unsupported" });
     expect(api.writes()).toHaveLength(writes);
+  });
+
+  it("checklist tick, close with reason + note, convert to an issue and REGISTER_ITEM comments", async () => {
+    const api = register();
+    const repo = createApiProjectRiskRepository(api.client);
+    const risk = await repo.get(P, "r1");
+    expect([risk.code, risk.checklist]).toEqual(["R-07", [{ id: "c1", text: "Call vendor", done: false }]]);
+    await expect(repo.close(P, "r1", { reason: "mitigated" }, 2)).rejects.toMatchObject({ code: "conflict" });
+    const ticked = await repo.setChecklistItem(P, "r1", "c1", { done: true }, 3);
+    expect(ticked.checklist).toEqual([{ id: "c1", text: "Call vendor", done: true }]);
+    const closed = await repo.close(P, "r1", { reason: "mitigated", note: " Vendor B signed " }, 3);
+    expect([closed.status, closed.closeReason, closed.closeNote]).toEqual(["closed", "mitigated", "Vendor B signed"]);
+    const issue = await repo.convert(P, "r1", 3);
+    expect([issue.id, issue.kind, issue.code]).toEqual(["i1", "issue", "I-01"]);
+    await expect(repo.resolve(P, "r1", " ", 3)).rejects.toMatchObject({ code: "invalid" });
+    expect((await repo.comments(P, "r1")).map((comment) => [comment.body, comment.author.id])).toEqual([["Earlier", "m1"]]);
+    await repo.addComment(P, "r1", " Ping ");
+    const calls = api.calls.filter((call) => call.method === "POST");
+    expect(calls.map((call) => [call.path, call.ifMatch, Boolean(call.key)])).toEqual([
+      [`/projects/${P}/register-items/r1/checklist`, '"3"', true],
+      [`/projects/${P}/register-items/r1/close`, '"3"', false],
+      [`/projects/${P}/register-items/r1/convert`, '"3"', true],
+      [`/projects/${P}/comments`, null, true],
+    ]);
+    expect(calls.map((call) => call.body)).toEqual([
+      { kind: "UPDATE", id: "c1", completed: true },
+      { reason: "mitigated", note: "Vendor B signed" },
+      { id: calls[2]!.body.id, targetKind: "ISSUE" },
+      { id: calls[3]!.body.id, body: "Ping", target: { kind: "REGISTER_ITEM", id: "r1" } },
+    ]);
   });
 });
 

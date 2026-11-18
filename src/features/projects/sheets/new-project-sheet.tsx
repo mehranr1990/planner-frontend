@@ -38,7 +38,7 @@ import { projectSheetHref } from "./project-sheet-params";
  * Create & invite opens the new project with the invite sheet; Undo discards.
  */
 
-const TEMPLATES: readonly ProjectTemplate[] = ["blank", "product-launch", "website", "event"];
+const TEMPLATES: readonly ProjectTemplate[] = ["blank", "kanban", "scrum", "product-launch", "website", "event"];
 
 const toDay = (date: Date) =>
   `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;

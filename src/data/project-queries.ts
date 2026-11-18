@@ -934,6 +934,10 @@ export function useSetRolePolicy(projectId: string) {
 }
 
 /** PJ-90: what the active adapter can create (null = everything the sheet offers). */
+export function useWorkflowKeepsTasksOnPublish(): boolean {
+  return useRepositories().workflowDrafts.keepsTasksOnPublish === true;
+}
+
 export function useProjectCreateLimits(): ProjectCreateLimits | null {
   return useRepositories().projectCreate.limits ?? null;
 }

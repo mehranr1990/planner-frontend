@@ -11,7 +11,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get?: never;
+        get: operations["projectGapgetspacesspaceIdinvitations"];
         put?: never;
         post: operations["sharedpostspacesspaceIdinvitations"];
         delete?: never;
@@ -462,7 +462,7 @@ export interface paths {
         get: operations["projectgetprojectsidtaskstaskId"];
         put?: never;
         post?: never;
-        delete?: never;
+        delete: operations["projectGapdeleteprojectsidtaskstaskId"];
         options?: never;
         head?: never;
         patch: operations["projectpatchprojectsidtaskstaskId"];
@@ -2052,6 +2052,454 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/projects/{id}/tasks/{taskId}/subtasks": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["projectGapgetprojectsidtaskstaskIdsubtasks"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/projects/{projectId}/tasks/order": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["projectGapgetprojectsprojectIdtasksorder"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/projects/{projectId}/tasks/{taskId}/checklist": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["projectGapgetprojectsprojectIdtaskstaskIdchecklist"];
+        put?: never;
+        post: operations["projectGappostprojectsprojectIdtaskstaskIdchecklist"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/projects/{projectId}/tasks/{taskId}/assignments/{assignmentId}/revert": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["projectGappostprojectsprojectIdtaskstaskIdassignmentsassignmentIdrevert"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/projects/{projectId}/tasks/{taskId}/assignments/{assignmentId}/remind": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["projectGappostprojectsprojectIdtaskstaskIdassignmentsassignmentIdremind"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/projects/{projectId}/workflow-drafts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["projectGapgetprojectsprojectIdworkflowdrafts"];
+        put?: never;
+        post: operations["projectGappostprojectsprojectIdworkflowdrafts"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/projects/{projectId}/workflow-drafts/{draftId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["projectGapgetprojectsprojectIdworkflowdraftsdraftId"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["projectGappatchprojectsprojectIdworkflowdraftsdraftId"];
+        trace?: never;
+    };
+    "/api/v1/projects/{projectId}/workflow-drafts/{draftId}/publish-preview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["projectGapgetprojectsprojectIdworkflowdraftsdraftIdpublishpreview"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/projects/{projectId}/workflow-drafts/{draftId}/publish": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["projectGappostprojectsprojectIdworkflowdraftsdraftIdpublish"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/projects/{projectId}/workflow-drafts/{draftId}/discard": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["projectGappostprojectsprojectIdworkflowdraftsdraftIddiscard"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/spaces/{spaceId}/invitations/{id}/resend": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["projectGappostspacesspaceIdinvitationsidresend"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/projects/{projectId}/health": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["projectGapgetprojectsprojectIdhealth"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/projects/{projectId}/structure/progress": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["projectGapgetprojectsprojectIdstructureprogress"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/projects/{projectId}/activity": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["projectGapgetprojectsprojectIdactivity"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/projects/{projectId}/scope-history": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["projectGapgetprojectsprojectIdscopehistory"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/projects/{projectId}/analytics": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["projectGapgetprojectsprojectIdanalytics"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/projects/{projectId}/register-items/{itemId}/checklist": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["projectGappostprojectsprojectIdregisteritemsitemIdchecklist"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/projects/{projectId}/register-items/{itemId}/close": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["projectGappostprojectsprojectIdregisteritemsitemIdclose"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/projects/{projectId}/register-items/{itemId}/convert": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["projectGappostprojectsprojectIdregisteritemsitemIdconvert"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/projects/{projectId}/files/config": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["projectGapgetprojectsprojectIdfilesconfig"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/projects/{projectId}/file-folders": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["projectGapgetprojectsprojectIdfilefolders"];
+        put?: never;
+        post: operations["projectGappostprojectsprojectIdfilefolders"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/projects/{projectId}/file-folders/{folderId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete: operations["projectGapdeleteprojectsprojectIdfilefoldersfolderId"];
+        options?: never;
+        head?: never;
+        patch: operations["projectGappatchprojectsprojectIdfilefoldersfolderId"];
+        trace?: never;
+    };
+    "/api/v1/projects/{projectId}/file-library": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["projectGapgetprojectsprojectIdfilelibrary"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/projects/{projectId}/files/{fileId}/metadata": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["projectGapgetprojectsprojectIdfilesfileIdmetadata"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/projects/{projectId}/files/{fileId}/folder": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["projectGappatchprojectsprojectIdfilesfileIdfolder"];
+        trace?: never;
+    };
+    "/api/v1/projects/{projectId}/files/{fileId}/versions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["projectGapgetprojectsprojectIdfilesfileIdversions"];
+        put?: never;
+        post: operations["projectGappostprojectsprojectIdfilesfileIdversions"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/projects/{projectId}/files/{fileId}/versions/{versionId}/download": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["projectGapgetprojectsprojectIdfilesfileIdversionsversionIddownload"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/projects/templates/catalog": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["projectGapgetprojectstemplatescatalog"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -2078,6 +2526,149 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    projectGapgetspacesspaceIdinvitations: {
+        parameters: {
+            query?: {
+                limit?: number;
+                after?: string;
+                state?: "PENDING" | "ACCEPTED" | "DECLINED" | "REVOKED" | "EXPIRED";
+            };
+            header?: never;
+            path: {
+                spaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Current authorized Projects gap closure result; independent scope, retention and lifecycle fences apply. */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        items: {
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            spaceId: string;
+                            /** Format: uuid */
+                            scopeId: string;
+                            /** @constant */
+                            kind: "MEMBERSHIP";
+                            /** @enum {string} */
+                            memberRole: "ADMIN" | "MANAGER" | "MEMBER" | "VIEWER";
+                            /** @enum {string} */
+                            state: "PENDING" | "ACCEPTED" | "DECLINED" | "REVOKED" | "EXPIRED";
+                            revision: number;
+                            /** Format: date-time */
+                            expiresAt: string;
+                            acceptedAccessId: string | null;
+                            recipientEmail: string | null;
+                            /** Format: date-time */
+                            createdAt: string;
+                            /** Format: date-time */
+                            sentAt: string;
+                            declineNote: string | null;
+                        }[];
+                        nextCursor: string | null;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
     sharedpostspacesspaceIdinvitations: {
         parameters: {
             query?: never;
@@ -2655,7 +3246,9 @@ export interface operations {
         };
         requestBody?: {
             content: {
-                "application/json": Record<string, never>;
+                "application/json": {
+                    note?: string;
+                };
             };
         };
         responses: {
@@ -4046,6 +4639,14 @@ export interface operations {
                     title: string;
                     description?: string | null;
                     retentionPolicyVersion: string;
+                    key?: string | null;
+                    startDate?: string | null;
+                    endDate?: string | null;
+                    color?: string | null;
+                    /** @enum {string} */
+                    template?: "BLANK" | "KANBAN" | "SCRUM";
+                    /** Format: uuid */
+                    ownerTeamId?: string;
                 };
             };
         };
@@ -6110,6 +6711,8 @@ export interface operations {
                             phaseId: string | null;
                             targetDate: string | null;
                             completed: boolean | null;
+                            startDate?: string | null;
+                            endDate?: string | null;
                         }[];
                         nextCursor: string | null;
                     };
@@ -6230,6 +6833,8 @@ export interface operations {
                     position?: number;
                     phaseId?: string | null;
                     targetDate?: string | null;
+                    startDate?: string | null;
+                    endDate?: string | null;
                 };
             };
         };
@@ -6255,6 +6860,8 @@ export interface operations {
                         phaseId: string | null;
                         targetDate: string | null;
                         completed: boolean | null;
+                        startDate?: string | null;
+                        endDate?: string | null;
                     };
                 };
             };
@@ -6501,6 +7108,8 @@ export interface operations {
                     phaseId?: string | null;
                     targetDate?: string | null;
                     completed?: boolean;
+                    startDate?: string | null;
+                    endDate?: string | null;
                 };
             };
         };
@@ -6526,6 +7135,8 @@ export interface operations {
                         phaseId: string | null;
                         targetDate: string | null;
                         completed: boolean | null;
+                        startDate?: string | null;
+                        endDate?: string | null;
                     };
                 };
             };
@@ -6661,6 +7272,10 @@ export interface operations {
                             revision: number;
                             deletedAt: string | null;
                             completedAt: string | null;
+                            /** Format: date-time */
+                            createdAt?: string;
+                            firstStartedAt?: string | null;
+                            parentTaskId?: string | null;
                         }[];
                         nextCursor: string | null;
                     };
@@ -6784,6 +7399,7 @@ export interface operations {
                     priority?: "NONE" | "LOW" | "MEDIUM" | "HIGH" | "URGENT";
                     sectionId?: string | null;
                     milestoneId?: string | null;
+                    parentTaskId?: string | null;
                 };
             };
         };
@@ -6814,6 +7430,10 @@ export interface operations {
                         revision: number;
                         deletedAt: string | null;
                         completedAt: string | null;
+                        /** Format: date-time */
+                        createdAt?: string;
+                        firstStartedAt?: string | null;
+                        parentTaskId?: string | null;
                     };
                 };
             };
@@ -6947,6 +7567,10 @@ export interface operations {
                         revision: number;
                         deletedAt: string | null;
                         completedAt: string | null;
+                        /** Format: date-time */
+                        createdAt?: string;
+                        firstStartedAt?: string | null;
+                        parentTaskId?: string | null;
                     };
                 };
             };
@@ -7042,6 +7666,126 @@ export interface operations {
             };
         };
     };
+    projectGapdeleteprojectsidtaskstaskId: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "If-Match": string;
+                "Idempotency-Key": string;
+            };
+            path: {
+                id: string;
+                taskId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": Record<string, never>;
+            };
+        };
+        responses: {
+            /** @description Current authorized Projects gap closure result; independent scope, retention and lifecycle fences apply. */
+            204: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
     projectpatchprojectsidtaskstaskId: {
         parameters: {
             query?: never;
@@ -7065,6 +7809,9 @@ export interface operations {
                     priority?: "NONE" | "LOW" | "MEDIUM" | "HIGH" | "URGENT";
                     /** @enum {string} */
                     status?: "OPEN" | "IN_PROGRESS" | "DONE" | "CANCELED";
+                    parentTaskId?: string | null;
+                    position?: number;
+                    sectionId?: string | null;
                 };
             };
         };
@@ -7095,6 +7842,10 @@ export interface operations {
                         revision: number;
                         deletedAt: string | null;
                         completedAt: string | null;
+                        /** Format: date-time */
+                        createdAt?: string;
+                        firstStartedAt?: string | null;
+                        parentTaskId?: string | null;
                     };
                 };
             };
@@ -12417,6 +13168,10 @@ export interface operations {
                                 revision: number;
                                 deletedAt: string | null;
                                 completedAt: string | null;
+                                /** Format: date-time */
+                                createdAt?: string;
+                                firstStartedAt?: string | null;
+                                parentTaskId?: string | null;
                             };
                             schedule: {
                                 /** Format: uuid */
@@ -12723,7 +13478,7 @@ export interface operations {
                             /** Format: uuid */
                             assignmentId: string;
                             /** @enum {string} */
-                            kind: "ASSIGNED" | "ACCEPTED" | "DECLINED" | "REVOKED" | "REASSIGNED";
+                            kind: "ASSIGNED" | "ACCEPTED" | "DECLINED" | "REVOKED" | "REASSIGNED" | "WITHDRAWN" | "REMINDER";
                             assignmentRevision: number;
                             revision: number;
                             /** Format: date-time */
@@ -12863,7 +13618,7 @@ export interface operations {
                         /** Format: uuid */
                         assignmentId: string;
                         /** @enum {string} */
-                        kind: "ASSIGNED" | "ACCEPTED" | "DECLINED" | "REVOKED" | "REASSIGNED";
+                        kind: "ASSIGNED" | "ACCEPTED" | "DECLINED" | "REVOKED" | "REASSIGNED" | "WITHDRAWN" | "REMINDER";
                         assignmentRevision: number;
                         revision: number;
                         /** Format: date-time */
@@ -13915,6 +14670,10 @@ export interface operations {
                             revision: number;
                             deletedAt: string | null;
                             completedAt: string | null;
+                            /** Format: date-time */
+                            createdAt?: string;
+                            firstStartedAt?: string | null;
+                            parentTaskId?: string | null;
                         };
                         binding: {
                             /** Format: uuid */
@@ -14248,6 +15007,10 @@ export interface operations {
                             revision: number;
                             deletedAt: string | null;
                             completedAt: string | null;
+                            /** Format: date-time */
+                            createdAt?: string;
+                            firstStartedAt?: string | null;
+                            parentTaskId?: string | null;
                         };
                         binding: {
                             /** Format: uuid */
@@ -14432,6 +15195,10 @@ export interface operations {
                             revision: number;
                             deletedAt: string | null;
                             completedAt: string | null;
+                            /** Format: date-time */
+                            createdAt?: string;
+                            firstStartedAt?: string | null;
+                            parentTaskId?: string | null;
                         };
                         binding: {
                             /** Format: uuid */
@@ -15694,6 +16461,10 @@ export interface operations {
                             revision: number;
                             deletedAt: string | null;
                             completedAt: string | null;
+                            /** Format: date-time */
+                            createdAt?: string;
+                            firstStartedAt?: string | null;
+                            parentTaskId?: string | null;
                         }[];
                         nextCursor: string | null;
                     };
@@ -17414,6 +18185,8 @@ export interface operations {
                             mitigation: string;
                             /** @enum {string} */
                             status: "OPEN" | "MITIGATING" | "RESOLVED" | "CLOSED";
+                            closeReason?: string;
+                            closeNote?: string | null;
                             /** Format: uuid */
                             id: string;
                             /** Format: uuid */
@@ -17424,6 +18197,18 @@ export interface operations {
                             /** Format: date-time */
                             createdAt: string;
                             retiredAt: string | null;
+                            code?: string | null;
+                            checklist?: {
+                                /** Format: uuid */
+                                id: string;
+                                title: string;
+                                completed: boolean;
+                                position: number;
+                            }[];
+                            closedAt?: string | null;
+                            closedByActorId?: string | null;
+                            convertedIssueId?: string | null;
+                            convertedTaskId?: string | null;
                         }[];
                         nextCursor: string | null;
                     };
@@ -17551,6 +18336,8 @@ export interface operations {
                     mitigation: string;
                     /** @enum {string} */
                     status: "OPEN" | "MITIGATING" | "RESOLVED" | "CLOSED";
+                    closeReason?: string;
+                    closeNote?: string | null;
                     /** Format: uuid */
                     id: string;
                 };
@@ -17581,6 +18368,8 @@ export interface operations {
                         mitigation: string;
                         /** @enum {string} */
                         status: "OPEN" | "MITIGATING" | "RESOLVED" | "CLOSED";
+                        closeReason?: string;
+                        closeNote?: string | null;
                         /** Format: uuid */
                         id: string;
                         /** Format: uuid */
@@ -17591,6 +18380,18 @@ export interface operations {
                         /** Format: date-time */
                         createdAt: string;
                         retiredAt: string | null;
+                        code?: string | null;
+                        checklist?: {
+                            /** Format: uuid */
+                            id: string;
+                            title: string;
+                            completed: boolean;
+                            position: number;
+                        }[];
+                        closedAt?: string | null;
+                        closedByActorId?: string | null;
+                        convertedIssueId?: string | null;
+                        convertedTaskId?: string | null;
                     };
                 };
             };
@@ -17722,6 +18523,8 @@ export interface operations {
                         mitigation: string;
                         /** @enum {string} */
                         status: "OPEN" | "MITIGATING" | "RESOLVED" | "CLOSED";
+                        closeReason?: string;
+                        closeNote?: string | null;
                         /** Format: uuid */
                         id: string;
                         /** Format: uuid */
@@ -17732,6 +18535,18 @@ export interface operations {
                         /** Format: date-time */
                         createdAt: string;
                         retiredAt: string | null;
+                        code?: string | null;
+                        checklist?: {
+                            /** Format: uuid */
+                            id: string;
+                            title: string;
+                            completed: boolean;
+                            position: number;
+                        }[];
+                        closedAt?: string | null;
+                        closedByActorId?: string | null;
+                        convertedIssueId?: string | null;
+                        convertedTaskId?: string | null;
                     };
                 };
             };
@@ -17858,6 +18673,8 @@ export interface operations {
                     mitigation: string;
                     /** @enum {string} */
                     status: "OPEN" | "MITIGATING" | "RESOLVED" | "CLOSED";
+                    closeReason?: string;
+                    closeNote?: string | null;
                 };
             };
         };
@@ -17886,6 +18703,8 @@ export interface operations {
                         mitigation: string;
                         /** @enum {string} */
                         status: "OPEN" | "MITIGATING" | "RESOLVED" | "CLOSED";
+                        closeReason?: string;
+                        closeNote?: string | null;
                         /** Format: uuid */
                         id: string;
                         /** Format: uuid */
@@ -17896,6 +18715,18 @@ export interface operations {
                         /** Format: date-time */
                         createdAt: string;
                         retiredAt: string | null;
+                        code?: string | null;
+                        checklist?: {
+                            /** Format: uuid */
+                            id: string;
+                            title: string;
+                            completed: boolean;
+                            position: number;
+                        }[];
+                        closedAt?: string | null;
+                        closedByActorId?: string | null;
+                        convertedIssueId?: string | null;
+                        convertedTaskId?: string | null;
                     };
                 };
             };
@@ -18034,6 +18865,8 @@ export interface operations {
                         mitigation: string;
                         /** @enum {string} */
                         status: "OPEN" | "MITIGATING" | "RESOLVED" | "CLOSED";
+                        closeReason?: string;
+                        closeNote?: string | null;
                         /** Format: uuid */
                         id: string;
                         /** Format: uuid */
@@ -18044,6 +18877,18 @@ export interface operations {
                         /** Format: date-time */
                         createdAt: string;
                         retiredAt: string | null;
+                        code?: string | null;
+                        checklist?: {
+                            /** Format: uuid */
+                            id: string;
+                            title: string;
+                            completed: boolean;
+                            position: number;
+                        }[];
+                        closedAt?: string | null;
+                        closedByActorId?: string | null;
+                        convertedIssueId?: string | null;
+                        convertedTaskId?: string | null;
                     };
                 };
             };
@@ -22564,6 +23409,10 @@ export interface operations {
                                 revision: number;
                                 deletedAt: string | null;
                                 completedAt: string | null;
+                                /** Format: date-time */
+                                createdAt?: string;
+                                firstStartedAt?: string | null;
+                                parentTaskId?: string | null;
                             };
                             schedule: {
                                 /** Format: uuid */
@@ -22613,7 +23462,7 @@ export interface operations {
                             id: string;
                             target: {
                                 /** @enum {string} */
-                                kind: "PROJECT" | "TASK" | "GOAL" | "DOCUMENT";
+                                kind: "PROJECT" | "TASK" | "GOAL" | "DOCUMENT" | "REGISTER_ITEM";
                                 /** Format: uuid */
                                 id: string;
                             };
@@ -22651,6 +23500,8 @@ export interface operations {
                             /** Format: date-time */
                             uploadExpiresAt: string;
                             completedAt: string | null;
+                            /** Format: uuid */
+                            createdByActorId?: string;
                         }[];
                     };
                     "text/csv": string;
@@ -22878,7 +23729,7 @@ export interface operations {
             header?: never;
             path: {
                 projectId: string;
-                targetKind: "PROJECT" | "TASK" | "GOAL" | "DOCUMENT";
+                targetKind: "PROJECT" | "TASK" | "GOAL" | "DOCUMENT" | "REGISTER_ITEM";
                 targetId: string;
                 commentId: string;
             };
@@ -25223,7 +26074,7 @@ export interface operations {
                     id: string;
                     target: {
                         /** @enum {string} */
-                        kind: "PROJECT" | "TASK" | "GOAL" | "DOCUMENT";
+                        kind: "PROJECT" | "TASK" | "GOAL" | "DOCUMENT" | "REGISTER_ITEM";
                         /** Format: uuid */
                         id: string;
                     };
@@ -25245,7 +26096,7 @@ export interface operations {
                         id: string;
                         target: {
                             /** @enum {string} */
-                            kind: "PROJECT" | "TASK" | "GOAL" | "DOCUMENT";
+                            kind: "PROJECT" | "TASK" | "GOAL" | "DOCUMENT" | "REGISTER_ITEM";
                             /** Format: uuid */
                             id: string;
                         };
@@ -25361,7 +26212,7 @@ export interface operations {
             header?: never;
             path: {
                 projectId: string;
-                targetKind: "PROJECT" | "TASK" | "GOAL" | "DOCUMENT";
+                targetKind: "PROJECT" | "TASK" | "GOAL" | "DOCUMENT" | "REGISTER_ITEM";
                 targetId: string;
             };
             cookie?: never;
@@ -25382,7 +26233,7 @@ export interface operations {
                             id: string;
                             target: {
                                 /** @enum {string} */
-                                kind: "PROJECT" | "TASK" | "GOAL" | "DOCUMENT";
+                                kind: "PROJECT" | "TASK" | "GOAL" | "DOCUMENT" | "REGISTER_ITEM";
                                 /** Format: uuid */
                                 id: string;
                             };
@@ -25500,7 +26351,7 @@ export interface operations {
             };
             path: {
                 projectId: string;
-                targetKind: "PROJECT" | "TASK" | "GOAL" | "DOCUMENT";
+                targetKind: "PROJECT" | "TASK" | "GOAL" | "DOCUMENT" | "REGISTER_ITEM";
                 targetId: string;
                 commentId: string;
             };
@@ -25528,7 +26379,7 @@ export interface operations {
                         id: string;
                         target: {
                             /** @enum {string} */
-                            kind: "PROJECT" | "TASK" | "GOAL" | "DOCUMENT";
+                            kind: "PROJECT" | "TASK" | "GOAL" | "DOCUMENT" | "REGISTER_ITEM";
                             /** Format: uuid */
                             id: string;
                         };
@@ -25644,7 +26495,7 @@ export interface operations {
             };
             path: {
                 projectId: string;
-                targetKind: "PROJECT" | "TASK" | "GOAL" | "DOCUMENT";
+                targetKind: "PROJECT" | "TASK" | "GOAL" | "DOCUMENT" | "REGISTER_ITEM";
                 targetId: string;
                 commentId: string;
             };
@@ -25670,7 +26521,7 @@ export interface operations {
                         id: string;
                         target: {
                             /** @enum {string} */
-                            kind: "PROJECT" | "TASK" | "GOAL" | "DOCUMENT";
+                            kind: "PROJECT" | "TASK" | "GOAL" | "DOCUMENT" | "REGISTER_ITEM";
                             /** Format: uuid */
                             id: string;
                         };
@@ -25808,7 +26659,7 @@ export interface operations {
                             projectId: string;
                             target: {
                                 /** @enum {string} */
-                                kind: "PROJECT" | "TASK" | "GOAL" | "DOCUMENT";
+                                kind: "PROJECT" | "TASK" | "GOAL" | "DOCUMENT" | "REGISTER_ITEM";
                                 /** Format: uuid */
                                 id: string;
                             };
@@ -25944,6 +26795,7 @@ export interface operations {
                         /** Format: uuid */
                         id: string;
                     };
+                    folderId?: string | null;
                 };
             };
         };
@@ -25981,6 +26833,8 @@ export interface operations {
                         /** Format: date-time */
                         uploadExpiresAt: string;
                         completedAt: string | null;
+                        /** Format: uuid */
+                        createdByActorId?: string;
                     };
                 };
             };
@@ -26125,6 +26979,8 @@ export interface operations {
                             /** Format: date-time */
                             uploadExpiresAt: string;
                             completedAt: string | null;
+                            /** Format: uuid */
+                            createdByActorId?: string;
                         }[];
                         nextCursor: string | null;
                     };
@@ -26269,6 +27125,8 @@ export interface operations {
                         /** Format: date-time */
                         uploadExpiresAt: string;
                         completedAt: string | null;
+                        /** Format: uuid */
+                        createdByActorId?: string;
                     };
                 };
             };
@@ -26418,6 +27276,8 @@ export interface operations {
                         /** Format: date-time */
                         uploadExpiresAt: string;
                         completedAt: string | null;
+                        /** Format: uuid */
+                        createdByActorId?: string;
                     };
                 };
             };
@@ -26567,6 +27427,8 @@ export interface operations {
                         /** Format: date-time */
                         uploadExpiresAt: string;
                         completedAt: string | null;
+                        /** Format: uuid */
+                        createdByActorId?: string;
                     };
                 };
             };
@@ -26811,6 +27673,8 @@ export interface operations {
                         items: {
                             /** Format: uuid */
                             id: string;
+                            position?: number;
+                            sectionId?: string | null;
                             task: {
                                 /** Format: uuid */
                                 id: string;
@@ -26829,6 +27693,10 @@ export interface operations {
                                 revision: number;
                                 deletedAt: string | null;
                                 completedAt: string | null;
+                                /** Format: date-time */
+                                createdAt?: string;
+                                firstStartedAt?: string | null;
+                                parentTaskId?: string | null;
                             };
                             schedule: {
                                 /** Format: uuid */
@@ -27079,6 +27947,4995 @@ export interface operations {
                             grantId: string | null;
                         };
                         proof: string | null;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    projectGapgetprojectsidtaskstaskIdsubtasks: {
+        parameters: {
+            query?: {
+                limit?: number;
+                after?: string;
+            };
+            header?: never;
+            path: {
+                id: string;
+                taskId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Current authorized Projects gap closure result; independent scope, retention and lifecycle fences apply. */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        items: {
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            spaceId: string;
+                            /** Format: uuid */
+                            scopeId: string;
+                            /** Format: uuid */
+                            createdByActorId: string;
+                            title: string;
+                            description: string | null;
+                            /** @enum {string} */
+                            status: "OPEN" | "IN_PROGRESS" | "DONE" | "CANCELED";
+                            /** @enum {string} */
+                            priority: "NONE" | "LOW" | "MEDIUM" | "HIGH" | "URGENT";
+                            revision: number;
+                            deletedAt: string | null;
+                            completedAt: string | null;
+                            /** Format: date-time */
+                            createdAt?: string;
+                            firstStartedAt?: string | null;
+                            parentTaskId?: string | null;
+                        }[];
+                        nextCursor: string | null;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    projectGapgetprojectsprojectIdtasksorder: {
+        parameters: {
+            query?: {
+                limit?: number;
+                after?: string;
+                sectionId?: string;
+            };
+            header?: never;
+            path: {
+                projectId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Current authorized Projects gap closure result; independent scope, retention and lifecycle fences apply. */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        items: {
+                            /** Format: uuid */
+                            id: string;
+                            sectionId: string | null;
+                            position: number;
+                            revision: number;
+                        }[];
+                        nextCursor: string | null;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    projectGapgetprojectsprojectIdtaskstaskIdchecklist: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                projectId: string;
+                taskId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Current authorized Projects gap closure result; independent scope, retention and lifecycle fences apply. */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        taskId: string;
+                        revision: number;
+                        items: {
+                            /** Format: uuid */
+                            id: string;
+                            title: string;
+                            completed: boolean;
+                            position: number;
+                        }[];
+                        done: number;
+                        total: number;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    projectGappostprojectsprojectIdtaskstaskIdchecklist: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "If-Match": string;
+                "Idempotency-Key": string;
+            };
+            path: {
+                projectId: string;
+                taskId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @constant */
+                    kind: "ADD";
+                    /** Format: uuid */
+                    id: string;
+                    title: string;
+                } | {
+                    /** @constant */
+                    kind: "UPDATE";
+                    /** Format: uuid */
+                    id: string;
+                    title?: string;
+                    completed?: boolean;
+                } | {
+                    /** @constant */
+                    kind: "DELETE";
+                    /** Format: uuid */
+                    id: string;
+                } | {
+                    /** @constant */
+                    kind: "REORDER";
+                    ids: string[];
+                };
+            };
+        };
+        responses: {
+            /** @description Current authorized Projects gap closure result; independent scope, retention and lifecycle fences apply. */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        taskId: string;
+                        revision: number;
+                        items: {
+                            /** Format: uuid */
+                            id: string;
+                            title: string;
+                            completed: boolean;
+                            position: number;
+                        }[];
+                        done: number;
+                        total: number;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    projectGappostprojectsprojectIdtaskstaskIdassignmentsassignmentIdrevert: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "If-Match": string;
+                "Idempotency-Key": string;
+            };
+            path: {
+                projectId: string;
+                taskId: string;
+                assignmentId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": Record<string, never>;
+            };
+        };
+        responses: {
+            /** @description Current authorized Projects gap closure result; independent scope, retention and lifecycle fences apply. */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        previous: {
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            recipientAccessId: string;
+                            recipientGeneration: number;
+                            /** @enum {string} */
+                            kind: "PRIMARY" | "CONTRIBUTOR";
+                            /** Format: uuid */
+                            spaceId: string;
+                            /** Format: uuid */
+                            scopeId: string;
+                            /** Format: uuid */
+                            projectId: string;
+                            /** Format: uuid */
+                            taskId: string;
+                            /** @enum {string} */
+                            decision: "PENDING" | "ACCEPTED" | "DECLINED";
+                            revision: number;
+                            selectedTaskRevision: number;
+                            /** Format: uuid */
+                            createdByActorId: string;
+                            /** Format: date-time */
+                            createdAt: string;
+                            respondedAt: string | null;
+                            declineReason: string | null;
+                            endedAt: string | null;
+                            endReason: ("DECLINED" | "REVOKED" | "REASSIGNED") | null;
+                        };
+                        current: {
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            recipientAccessId: string;
+                            recipientGeneration: number;
+                            /** @enum {string} */
+                            kind: "PRIMARY" | "CONTRIBUTOR";
+                            /** Format: uuid */
+                            spaceId: string;
+                            /** Format: uuid */
+                            scopeId: string;
+                            /** Format: uuid */
+                            projectId: string;
+                            /** Format: uuid */
+                            taskId: string;
+                            /** @enum {string} */
+                            decision: "PENDING" | "ACCEPTED" | "DECLINED";
+                            revision: number;
+                            selectedTaskRevision: number;
+                            /** Format: uuid */
+                            createdByActorId: string;
+                            /** Format: date-time */
+                            createdAt: string;
+                            respondedAt: string | null;
+                            declineReason: string | null;
+                            endedAt: string | null;
+                            endReason: ("DECLINED" | "REVOKED" | "REASSIGNED") | null;
+                        };
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    projectGappostprojectsprojectIdtaskstaskIdassignmentsassignmentIdremind: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "If-Match": string;
+                "Idempotency-Key": string;
+            };
+            path: {
+                projectId: string;
+                taskId: string;
+                assignmentId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": Record<string, never>;
+            };
+        };
+        responses: {
+            /** @description Current authorized Projects gap closure result; independent scope, retention and lifecycle fences apply. */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        /** Format: uuid */
+                        recipientAccessId: string;
+                        recipientGeneration: number;
+                        /** @enum {string} */
+                        kind: "PRIMARY" | "CONTRIBUTOR";
+                        /** Format: uuid */
+                        spaceId: string;
+                        /** Format: uuid */
+                        scopeId: string;
+                        /** Format: uuid */
+                        projectId: string;
+                        /** Format: uuid */
+                        taskId: string;
+                        /** @enum {string} */
+                        decision: "PENDING" | "ACCEPTED" | "DECLINED";
+                        revision: number;
+                        selectedTaskRevision: number;
+                        /** Format: uuid */
+                        createdByActorId: string;
+                        /** Format: date-time */
+                        createdAt: string;
+                        respondedAt: string | null;
+                        declineReason: string | null;
+                        endedAt: string | null;
+                        endReason: ("DECLINED" | "REVOKED" | "REASSIGNED") | null;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    projectGapgetprojectsprojectIdworkflowdrafts: {
+        parameters: {
+            query?: {
+                limit?: number;
+                after?: string;
+            };
+            header?: never;
+            path: {
+                projectId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Current authorized Projects gap closure result; independent scope, retention and lifecycle fences apply. */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        items: {
+                            /** Format: uuid */
+                            id: string;
+                            /** @default null */
+                            workflowId: string | null;
+                            /** @default 0 */
+                            baseRevision: number;
+                            definition: {
+                                name: string;
+                                states: {
+                                    /** Format: uuid */
+                                    id: string;
+                                    label: string;
+                                    /** @enum {string} */
+                                    status: "OPEN" | "IN_PROGRESS" | "DONE" | "CANCELED";
+                                }[];
+                                edges: {
+                                    /** Format: uuid */
+                                    id: string;
+                                    /** Format: uuid */
+                                    fromStateId: string;
+                                    /** Format: uuid */
+                                    toStateId: string;
+                                    requiresApproval: boolean;
+                                    approvers: {
+                                        /** Format: uuid */
+                                        accessId: string;
+                                        generation: number;
+                                    }[];
+                                }[];
+                            };
+                            /** @enum {string} */
+                            state: "DRAFT" | "PUBLISHED" | "DISCARDED";
+                            revision: number;
+                            publishedVersion: number | null;
+                            /** Format: uuid */
+                            createdByActorId: string;
+                            /** Format: date-time */
+                            createdAt: string;
+                            /** Format: date-time */
+                            updatedAt: string;
+                        }[];
+                        nextCursor: string | null;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    projectGappostprojectsprojectIdworkflowdrafts: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "Idempotency-Key": string;
+            };
+            path: {
+                projectId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** Format: uuid */
+                    id: string;
+                    /** @default null */
+                    workflowId?: string | null;
+                    /** @default 0 */
+                    baseRevision?: number;
+                    definition: {
+                        name: string;
+                        states: {
+                            /** Format: uuid */
+                            id: string;
+                            label: string;
+                            /** @enum {string} */
+                            status: "OPEN" | "IN_PROGRESS" | "DONE" | "CANCELED";
+                        }[];
+                        edges: {
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            fromStateId: string;
+                            /** Format: uuid */
+                            toStateId: string;
+                            requiresApproval: boolean;
+                            approvers: {
+                                /** Format: uuid */
+                                accessId: string;
+                                generation: number;
+                            }[];
+                        }[];
+                    };
+                };
+            };
+        };
+        responses: {
+            /** @description Current authorized Projects gap closure result; independent scope, retention and lifecycle fences apply. */
+            201: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        /** @default null */
+                        workflowId: string | null;
+                        /** @default 0 */
+                        baseRevision: number;
+                        definition: {
+                            name: string;
+                            states: {
+                                /** Format: uuid */
+                                id: string;
+                                label: string;
+                                /** @enum {string} */
+                                status: "OPEN" | "IN_PROGRESS" | "DONE" | "CANCELED";
+                            }[];
+                            edges: {
+                                /** Format: uuid */
+                                id: string;
+                                /** Format: uuid */
+                                fromStateId: string;
+                                /** Format: uuid */
+                                toStateId: string;
+                                requiresApproval: boolean;
+                                approvers: {
+                                    /** Format: uuid */
+                                    accessId: string;
+                                    generation: number;
+                                }[];
+                            }[];
+                        };
+                        /** @enum {string} */
+                        state: "DRAFT" | "PUBLISHED" | "DISCARDED";
+                        revision: number;
+                        publishedVersion: number | null;
+                        /** Format: uuid */
+                        createdByActorId: string;
+                        /** Format: date-time */
+                        createdAt: string;
+                        /** Format: date-time */
+                        updatedAt: string;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    projectGapgetprojectsprojectIdworkflowdraftsdraftId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                projectId: string;
+                draftId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Current authorized Projects gap closure result; independent scope, retention and lifecycle fences apply. */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        /** @default null */
+                        workflowId: string | null;
+                        /** @default 0 */
+                        baseRevision: number;
+                        definition: {
+                            name: string;
+                            states: {
+                                /** Format: uuid */
+                                id: string;
+                                label: string;
+                                /** @enum {string} */
+                                status: "OPEN" | "IN_PROGRESS" | "DONE" | "CANCELED";
+                            }[];
+                            edges: {
+                                /** Format: uuid */
+                                id: string;
+                                /** Format: uuid */
+                                fromStateId: string;
+                                /** Format: uuid */
+                                toStateId: string;
+                                requiresApproval: boolean;
+                                approvers: {
+                                    /** Format: uuid */
+                                    accessId: string;
+                                    generation: number;
+                                }[];
+                            }[];
+                        };
+                        /** @enum {string} */
+                        state: "DRAFT" | "PUBLISHED" | "DISCARDED";
+                        revision: number;
+                        publishedVersion: number | null;
+                        /** Format: uuid */
+                        createdByActorId: string;
+                        /** Format: date-time */
+                        createdAt: string;
+                        /** Format: date-time */
+                        updatedAt: string;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    projectGappatchprojectsprojectIdworkflowdraftsdraftId: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "If-Match": string;
+                "Idempotency-Key": string;
+            };
+            path: {
+                projectId: string;
+                draftId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    definition: {
+                        name: string;
+                        states: {
+                            /** Format: uuid */
+                            id: string;
+                            label: string;
+                            /** @enum {string} */
+                            status: "OPEN" | "IN_PROGRESS" | "DONE" | "CANCELED";
+                        }[];
+                        edges: {
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            fromStateId: string;
+                            /** Format: uuid */
+                            toStateId: string;
+                            requiresApproval: boolean;
+                            approvers: {
+                                /** Format: uuid */
+                                accessId: string;
+                                generation: number;
+                            }[];
+                        }[];
+                    };
+                };
+            };
+        };
+        responses: {
+            /** @description Current authorized Projects gap closure result; independent scope, retention and lifecycle fences apply. */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        /** @default null */
+                        workflowId: string | null;
+                        /** @default 0 */
+                        baseRevision: number;
+                        definition: {
+                            name: string;
+                            states: {
+                                /** Format: uuid */
+                                id: string;
+                                label: string;
+                                /** @enum {string} */
+                                status: "OPEN" | "IN_PROGRESS" | "DONE" | "CANCELED";
+                            }[];
+                            edges: {
+                                /** Format: uuid */
+                                id: string;
+                                /** Format: uuid */
+                                fromStateId: string;
+                                /** Format: uuid */
+                                toStateId: string;
+                                requiresApproval: boolean;
+                                approvers: {
+                                    /** Format: uuid */
+                                    accessId: string;
+                                    generation: number;
+                                }[];
+                            }[];
+                        };
+                        /** @enum {string} */
+                        state: "DRAFT" | "PUBLISHED" | "DISCARDED";
+                        revision: number;
+                        publishedVersion: number | null;
+                        /** Format: uuid */
+                        createdByActorId: string;
+                        /** Format: date-time */
+                        createdAt: string;
+                        /** Format: date-time */
+                        updatedAt: string;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    projectGapgetprojectsprojectIdworkflowdraftsdraftIdpublishpreview: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                projectId: string;
+                draftId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Current authorized Projects gap closure result; independent scope, retention and lifecycle fences apply. */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        revision: number;
+                        /** @constant */
+                        preservesExistingBindings: true;
+                        removedStates: {
+                            version: number;
+                            /** Format: uuid */
+                            stateId: string;
+                            taskCount: number;
+                        }[];
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    projectGappostprojectsprojectIdworkflowdraftsdraftIdpublish: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "If-Match": string;
+                "Idempotency-Key": string;
+            };
+            path: {
+                projectId: string;
+                draftId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": Record<string, never>;
+            };
+        };
+        responses: {
+            /** @description Current authorized Projects gap closure result; independent scope, retention and lifecycle fences apply. */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        /** @default null */
+                        workflowId: string | null;
+                        /** @default 0 */
+                        baseRevision: number;
+                        definition: {
+                            name: string;
+                            states: {
+                                /** Format: uuid */
+                                id: string;
+                                label: string;
+                                /** @enum {string} */
+                                status: "OPEN" | "IN_PROGRESS" | "DONE" | "CANCELED";
+                            }[];
+                            edges: {
+                                /** Format: uuid */
+                                id: string;
+                                /** Format: uuid */
+                                fromStateId: string;
+                                /** Format: uuid */
+                                toStateId: string;
+                                requiresApproval: boolean;
+                                approvers: {
+                                    /** Format: uuid */
+                                    accessId: string;
+                                    generation: number;
+                                }[];
+                            }[];
+                        };
+                        /** @enum {string} */
+                        state: "DRAFT" | "PUBLISHED" | "DISCARDED";
+                        revision: number;
+                        publishedVersion: number | null;
+                        /** Format: uuid */
+                        createdByActorId: string;
+                        /** Format: date-time */
+                        createdAt: string;
+                        /** Format: date-time */
+                        updatedAt: string;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    projectGappostprojectsprojectIdworkflowdraftsdraftIddiscard: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "If-Match": string;
+                "Idempotency-Key": string;
+            };
+            path: {
+                projectId: string;
+                draftId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": Record<string, never>;
+            };
+        };
+        responses: {
+            /** @description Current authorized Projects gap closure result; independent scope, retention and lifecycle fences apply. */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        /** @default null */
+                        workflowId: string | null;
+                        /** @default 0 */
+                        baseRevision: number;
+                        definition: {
+                            name: string;
+                            states: {
+                                /** Format: uuid */
+                                id: string;
+                                label: string;
+                                /** @enum {string} */
+                                status: "OPEN" | "IN_PROGRESS" | "DONE" | "CANCELED";
+                            }[];
+                            edges: {
+                                /** Format: uuid */
+                                id: string;
+                                /** Format: uuid */
+                                fromStateId: string;
+                                /** Format: uuid */
+                                toStateId: string;
+                                requiresApproval: boolean;
+                                approvers: {
+                                    /** Format: uuid */
+                                    accessId: string;
+                                    generation: number;
+                                }[];
+                            }[];
+                        };
+                        /** @enum {string} */
+                        state: "DRAFT" | "PUBLISHED" | "DISCARDED";
+                        revision: number;
+                        publishedVersion: number | null;
+                        /** Format: uuid */
+                        createdByActorId: string;
+                        /** Format: date-time */
+                        createdAt: string;
+                        /** Format: date-time */
+                        updatedAt: string;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    projectGappostspacesspaceIdinvitationsidresend: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "If-Match": string;
+                "Idempotency-Key": string;
+            };
+            path: {
+                spaceId: string;
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": Record<string, never>;
+            };
+        };
+        responses: {
+            /** @description Current authorized Projects gap closure result; independent scope, retention and lifecycle fences apply. */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        /** Format: uuid */
+                        spaceId: string;
+                        /** Format: uuid */
+                        scopeId: string;
+                        /** @constant */
+                        kind: "MEMBERSHIP";
+                        /** @enum {string} */
+                        memberRole: "ADMIN" | "MANAGER" | "MEMBER" | "VIEWER";
+                        /** @enum {string} */
+                        state: "PENDING" | "ACCEPTED" | "DECLINED" | "REVOKED" | "EXPIRED";
+                        revision: number;
+                        /** Format: date-time */
+                        expiresAt: string;
+                        acceptedAccessId: string | null;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    projectGapgetprojectsprojectIdhealth: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                projectId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Current authorized Projects gap closure result; independent scope, retention and lifecycle fences apply. */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @enum {string} */
+                        state: "ON_TRACK" | "AT_RISK" | "OFF_TRACK" | "UNKNOWN";
+                        /** @constant */
+                        advisory: true;
+                        /** Format: date-time */
+                        asOf: string;
+                        reasons: ("PROJECT_DEADLINE_PASSED" | "OVERDUE_WORK" | "BLOCKED_WORK" | "ALL_ELIGIBLE_WORK_COMPLETED" | "INSUFFICIENT_BASELINE")[];
+                        observed: {
+                            eligibleTasks: number;
+                            completedTasks: number;
+                            overdueTasks: number;
+                            blockedTasks: number;
+                            progressPercent: number | null;
+                            endDate: string | null;
+                        };
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    projectGapgetprojectsprojectIdstructureprogress: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                projectId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Current authorized Projects gap closure result; independent scope, retention and lifecycle fences apply. */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: date-time */
+                        asOf: string;
+                        items: {
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string} */
+                            kind: "PHASE" | "MILESTONE";
+                            title: string;
+                            phaseId: string | null;
+                            startDate: string | null;
+                            endDate: string | null;
+                            status: ("OPEN" | "COMPLETED") | null;
+                            totalTasks: number;
+                            eligibleTasks: number;
+                            openTasks: number;
+                            completedTasks: number;
+                            progressPercent: number | null;
+                            revision: number;
+                        }[];
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    projectGapgetprojectsprojectIdactivity: {
+        parameters: {
+            query?: {
+                limit?: number;
+                after?: string;
+                taskId?: string;
+                actorId?: string;
+                action?: string;
+            };
+            header?: never;
+            path: {
+                projectId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Current authorized Projects gap closure result; independent scope, retention and lifecycle fences apply. */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        items: {
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            actorId: string;
+                            action: string;
+                            /** @enum {string} */
+                            entityType: "PROJECT" | "TASK" | "GOAL" | "DOCUMENT" | "PHASE" | "SECTION" | "MILESTONE" | "REGISTER_ITEM" | "FILE" | "WORKFLOW";
+                            /** Format: uuid */
+                            entityId: string;
+                            /** Format: date-time */
+                            at: string;
+                            target: {
+                                /** Format: uuid */
+                                id: string;
+                                title: string | null;
+                            };
+                            changes: {
+                                field: string;
+                                from: string | number | boolean | null;
+                                to: string | number | boolean | null;
+                            }[];
+                            /** @enum {string} */
+                            kind: "TASK_STATUS" | "TASK_COMPLETED" | "MILESTONE_REACHED" | "STATUS_NOTE" | "SCOPE_CHANGED" | "CONTENT" | "OTHER";
+                        }[];
+                        nextCursor: string | null;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    projectGapgetprojectsprojectIdscopehistory: {
+        parameters: {
+            query?: {
+                limit?: number;
+                after?: string;
+                taskId?: string;
+                actorId?: string;
+                action?: string;
+            };
+            header?: never;
+            path: {
+                projectId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Current authorized Projects gap closure result; independent scope, retention and lifecycle fences apply. */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        items: {
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            actorId: string;
+                            action: string;
+                            /** @enum {string} */
+                            entityType: "PROJECT" | "TASK" | "GOAL" | "DOCUMENT" | "PHASE" | "SECTION" | "MILESTONE" | "REGISTER_ITEM" | "FILE" | "WORKFLOW";
+                            /** Format: uuid */
+                            entityId: string;
+                            /** Format: date-time */
+                            at: string;
+                            target: {
+                                /** Format: uuid */
+                                id: string;
+                                title: string | null;
+                            };
+                            changes: {
+                                field: string;
+                                from: string | number | boolean | null;
+                                to: string | number | boolean | null;
+                            }[];
+                            /** @enum {string} */
+                            kind: "TASK_STATUS" | "TASK_COMPLETED" | "MILESTONE_REACHED" | "STATUS_NOTE" | "SCOPE_CHANGED" | "CONTENT" | "OTHER";
+                        }[];
+                        nextCursor: string | null;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    projectGapgetprojectsprojectIdanalytics: {
+        parameters: {
+            query: {
+                fromAt: string;
+                toAt: string;
+            };
+            header?: never;
+            path: {
+                projectId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Current authorized Projects gap closure result; independent scope, retention and lifecycle fences apply. */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        projectId: string;
+                        /** Format: date-time */
+                        fromAt: string;
+                        /** Format: date-time */
+                        toAt: string;
+                        /** Format: date-time */
+                        asOf: string;
+                        /** @constant */
+                        basis: "CURRENT_VISIBLE_TASKS_CURRENT_PRIMARY_ASSIGNEES_AND_SHARED_LOGS";
+                        /** @constant */
+                        cycleBasis: "FIRST_RECORDED_IN_PROGRESS_TO_CURRENT_DONE_INCLUDES_REOPEN_INTERVALS";
+                        /** @constant */
+                        recordedWorkBasis: "UNION_PER_RECORDED_MEMBER";
+                        taskCount: number;
+                        completedTasks: number;
+                        overdueTasks: number;
+                        estimatedMinutes: number;
+                        unknownEstimates: number;
+                        recordedSeconds: number;
+                        onTime: {
+                            completedWithDueDate: number;
+                            completedOnTime: number;
+                            percent: number | null;
+                        };
+                        cycleTime: {
+                            knownCompletedTasks: number;
+                            unknownCompletedTasks: number;
+                            medianSeconds: number | null;
+                        };
+                        weeklyThroughput: {
+                            /** Format: date-time */
+                            fromAt: string;
+                            /** Format: date-time */
+                            toAt: string;
+                            completedTasks: number;
+                        }[];
+                        assignees: {
+                            /** Format: uuid */
+                            accessId: string;
+                            generation: number;
+                            taskCount: number;
+                            completedTasks: number;
+                            overdueTasks: number;
+                            estimatedMinutes: number;
+                            unknownEstimates: number;
+                            recordedSeconds: number;
+                        }[];
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    projectGappostprojectsprojectIdregisteritemsitemIdchecklist: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "If-Match": string;
+                "Idempotency-Key": string;
+            };
+            path: {
+                projectId: string;
+                itemId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @constant */
+                    kind: "ADD";
+                    /** Format: uuid */
+                    id: string;
+                    title: string;
+                } | {
+                    /** @constant */
+                    kind: "UPDATE";
+                    /** Format: uuid */
+                    id: string;
+                    title?: string;
+                    completed?: boolean;
+                } | {
+                    /** @constant */
+                    kind: "DELETE";
+                    /** Format: uuid */
+                    id: string;
+                } | {
+                    /** @constant */
+                    kind: "REORDER";
+                    ids: string[];
+                };
+            };
+        };
+        responses: {
+            /** @description Current authorized Projects gap closure result; independent scope, retention and lifecycle fences apply. */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @enum {string} */
+                        kind: "RISK" | "ISSUE";
+                        title: string;
+                        description: string;
+                        /** @enum {string} */
+                        severity: "LOW" | "MEDIUM" | "HIGH" | "CRITICAL";
+                        probability: number | null;
+                        owner: {
+                            /** Format: uuid */
+                            accessId: string;
+                            generation: number;
+                        } | null;
+                        mitigation: string;
+                        /** @enum {string} */
+                        status: "OPEN" | "MITIGATING" | "RESOLVED" | "CLOSED";
+                        closeReason?: string;
+                        closeNote?: string | null;
+                        /** Format: uuid */
+                        id: string;
+                        /** Format: uuid */
+                        projectId: string;
+                        revision: number;
+                        /** Format: uuid */
+                        createdByActorId: string;
+                        /** Format: date-time */
+                        createdAt: string;
+                        retiredAt: string | null;
+                        code?: string | null;
+                        checklist?: {
+                            /** Format: uuid */
+                            id: string;
+                            title: string;
+                            completed: boolean;
+                            position: number;
+                        }[];
+                        closedAt?: string | null;
+                        closedByActorId?: string | null;
+                        convertedIssueId?: string | null;
+                        convertedTaskId?: string | null;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    projectGappostprojectsprojectIdregisteritemsitemIdclose: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "If-Match": string;
+            };
+            path: {
+                projectId: string;
+                itemId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    reason: string;
+                    note?: string | null;
+                };
+            };
+        };
+        responses: {
+            /** @description Current authorized Projects gap closure result; independent scope, retention and lifecycle fences apply. */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @enum {string} */
+                        kind: "RISK" | "ISSUE";
+                        title: string;
+                        description: string;
+                        /** @enum {string} */
+                        severity: "LOW" | "MEDIUM" | "HIGH" | "CRITICAL";
+                        probability: number | null;
+                        owner: {
+                            /** Format: uuid */
+                            accessId: string;
+                            generation: number;
+                        } | null;
+                        mitigation: string;
+                        /** @enum {string} */
+                        status: "OPEN" | "MITIGATING" | "RESOLVED" | "CLOSED";
+                        closeReason?: string;
+                        closeNote?: string | null;
+                        /** Format: uuid */
+                        id: string;
+                        /** Format: uuid */
+                        projectId: string;
+                        revision: number;
+                        /** Format: uuid */
+                        createdByActorId: string;
+                        /** Format: date-time */
+                        createdAt: string;
+                        retiredAt: string | null;
+                        code?: string | null;
+                        checklist?: {
+                            /** Format: uuid */
+                            id: string;
+                            title: string;
+                            completed: boolean;
+                            position: number;
+                        }[];
+                        closedAt?: string | null;
+                        closedByActorId?: string | null;
+                        convertedIssueId?: string | null;
+                        convertedTaskId?: string | null;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    projectGappostprojectsprojectIdregisteritemsitemIdconvert: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "If-Match": string;
+                "Idempotency-Key": string;
+            };
+            path: {
+                projectId: string;
+                itemId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** Format: uuid */
+                    id: string;
+                    /** @enum {string} */
+                    targetKind: "ISSUE" | "TASK";
+                };
+            };
+        };
+        responses: {
+            /** @description Current authorized Projects gap closure result; independent scope, retention and lifecycle fences apply. */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @enum {string} */
+                        kind: "RISK" | "ISSUE";
+                        title: string;
+                        description: string;
+                        /** @enum {string} */
+                        severity: "LOW" | "MEDIUM" | "HIGH" | "CRITICAL";
+                        probability: number | null;
+                        owner: {
+                            /** Format: uuid */
+                            accessId: string;
+                            generation: number;
+                        } | null;
+                        mitigation: string;
+                        /** @enum {string} */
+                        status: "OPEN" | "MITIGATING" | "RESOLVED" | "CLOSED";
+                        closeReason?: string;
+                        closeNote?: string | null;
+                        /** Format: uuid */
+                        id: string;
+                        /** Format: uuid */
+                        projectId: string;
+                        revision: number;
+                        /** Format: uuid */
+                        createdByActorId: string;
+                        /** Format: date-time */
+                        createdAt: string;
+                        retiredAt: string | null;
+                        code?: string | null;
+                        checklist?: {
+                            /** Format: uuid */
+                            id: string;
+                            title: string;
+                            completed: boolean;
+                            position: number;
+                        }[];
+                        closedAt?: string | null;
+                        closedByActorId?: string | null;
+                        convertedIssueId?: string | null;
+                        convertedTaskId?: string | null;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    projectGapgetprojectsprojectIdfilesconfig: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                projectId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Current authorized Projects gap closure result; independent scope, retention and lifecycle fences apply. */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        maxBytes: number;
+                        allowedTypes: ("text/plain" | "application/pdf" | "image/png" | "image/jpeg")[];
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    projectGapgetprojectsprojectIdfilefolders: {
+        parameters: {
+            query?: {
+                limit?: number;
+                after?: string;
+            };
+            header?: never;
+            path: {
+                projectId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Current authorized Projects gap closure result; independent scope, retention and lifecycle fences apply. */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        items: {
+                            /** Format: uuid */
+                            id: string;
+                            /** @default null */
+                            parentId: string | null;
+                            title: string;
+                            revision: number;
+                            /** Format: date-time */
+                            createdAt: string;
+                            /** Format: date-time */
+                            updatedAt: string;
+                            archivedAt: string | null;
+                        }[];
+                        nextCursor: string | null;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    projectGappostprojectsprojectIdfilefolders: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "Idempotency-Key": string;
+            };
+            path: {
+                projectId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** Format: uuid */
+                    id: string;
+                    /** @default null */
+                    parentId?: string | null;
+                    title: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Current authorized Projects gap closure result; independent scope, retention and lifecycle fences apply. */
+            201: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        /** @default null */
+                        parentId: string | null;
+                        title: string;
+                        revision: number;
+                        /** Format: date-time */
+                        createdAt: string;
+                        /** Format: date-time */
+                        updatedAt: string;
+                        archivedAt: string | null;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    projectGapdeleteprojectsprojectIdfilefoldersfolderId: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "If-Match": string;
+            };
+            path: {
+                projectId: string;
+                folderId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": Record<string, never>;
+            };
+        };
+        responses: {
+            /** @description Current authorized Projects gap closure result; independent scope, retention and lifecycle fences apply. */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        /** @default null */
+                        parentId: string | null;
+                        title: string;
+                        revision: number;
+                        /** Format: date-time */
+                        createdAt: string;
+                        /** Format: date-time */
+                        updatedAt: string;
+                        archivedAt: string | null;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    projectGappatchprojectsprojectIdfilefoldersfolderId: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "If-Match": string;
+            };
+            path: {
+                projectId: string;
+                folderId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    title?: string;
+                    parentId?: string | null;
+                };
+            };
+        };
+        responses: {
+            /** @description Current authorized Projects gap closure result; independent scope, retention and lifecycle fences apply. */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        /** @default null */
+                        parentId: string | null;
+                        title: string;
+                        revision: number;
+                        /** Format: date-time */
+                        createdAt: string;
+                        /** Format: date-time */
+                        updatedAt: string;
+                        archivedAt: string | null;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    projectGapgetprojectsprojectIdfilelibrary: {
+        parameters: {
+            query?: {
+                limit?: number;
+                after?: string;
+                folderId?: string;
+            };
+            header?: never;
+            path: {
+                projectId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Current authorized Projects gap closure result; independent scope, retention and lifecycle fences apply. */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        items: {
+                            /** Format: uuid */
+                            id: string;
+                            folderId: string | null;
+                            revision: number;
+                            /** Format: uuid */
+                            createdByActorId: string;
+                            currentVersionId: string | null;
+                            versionCount: number;
+                        }[];
+                        nextCursor: string | null;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    projectGapgetprojectsprojectIdfilesfileIdmetadata: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                projectId: string;
+                fileId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Current authorized Projects gap closure result; independent scope, retention and lifecycle fences apply. */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        folderId: string | null;
+                        revision: number;
+                        /** Format: uuid */
+                        createdByActorId: string;
+                        currentVersionId: string | null;
+                        versionCount: number;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    projectGappatchprojectsprojectIdfilesfileIdfolder: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "If-Match": string;
+            };
+            path: {
+                projectId: string;
+                fileId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    folderId: string | null;
+                };
+            };
+        };
+        responses: {
+            /** @description Current authorized Projects gap closure result; independent scope, retention and lifecycle fences apply. */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        folderId: string | null;
+                        revision: number;
+                        /** Format: uuid */
+                        createdByActorId: string;
+                        currentVersionId: string | null;
+                        versionCount: number;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    projectGapgetprojectsprojectIdfilesfileIdversions: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                projectId: string;
+                fileId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Current authorized Projects gap closure result; independent scope, retention and lifecycle fences apply. */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        items: {
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            rootFileId: string;
+                            number: number;
+                            /** Format: uuid */
+                            createdByActorId: string;
+                            filename: string;
+                            /** @enum {string} */
+                            mimeType: "text/plain" | "application/pdf" | "image/png" | "image/jpeg";
+                            /** @enum {string} */
+                            status: "INITIATED" | "READY" | "REJECTED" | "DELETED";
+                            revision: number;
+                            size: number | null;
+                            /** Format: date-time */
+                            createdAt: string;
+                        }[];
+                        currentVersionId: string | null;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    projectGappostprojectsprojectIdfilesfileIdversions: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "If-Match": string;
+                "Idempotency-Key": string;
+            };
+            path: {
+                projectId: string;
+                fileId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    filename: string;
+                    /** @enum {string} */
+                    mimeType: "text/plain" | "application/pdf" | "image/png" | "image/jpeg";
+                    expectedSize: number;
+                    sha256?: string;
+                    /** Format: uuid */
+                    id: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Current authorized Projects gap closure result; independent scope, retention and lifecycle fences apply. */
+            201: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        /** Format: uuid */
+                        projectId: string;
+                        target: {
+                            /** @enum {string} */
+                            kind: "PROJECT" | "TASK" | "GOAL" | "DOCUMENT";
+                            /** Format: uuid */
+                            id: string;
+                        };
+                        filename: string;
+                        /** @enum {string} */
+                        mimeType: "text/plain" | "application/pdf" | "image/png" | "image/jpeg";
+                        expectedSize: number;
+                        actualSize: number | null;
+                        sha256: string | null;
+                        /** @enum {string} */
+                        status: "INITIATED" | "READY" | "REJECTED" | "DELETED";
+                        revision: number;
+                        /** Format: date-time */
+                        createdAt: string;
+                        /** Format: date-time */
+                        uploadExpiresAt: string;
+                        completedAt: string | null;
+                        /** Format: uuid */
+                        createdByActorId?: string;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    projectGapgetprojectsprojectIdfilesfileIdversionsversionIddownload: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                projectId: string;
+                fileId: string;
+                versionId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Current authorized Projects gap closure result; independent scope, retention and lifecycle fences apply. */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/octet-stream": string;
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    projectGapgetprojectstemplatescatalog: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Current authorized Projects gap closure result; independent scope, retention and lifecycle fences apply. */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        items: {
+                            /** @enum {string} */
+                            id: "BLANK" | "KANBAN" | "SCRUM";
+                            /** @constant */
+                            version: 1;
+                            name: string;
+                            sections: string[];
+                            workflow: "BASE_TASK_STATUSES" | null;
+                        }[];
                     };
                 };
             };

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { createMockProjects } from "./mock-projects";
-import { weekStart } from "./mock-project-reports";
+import { computeAnalytics, weekStart } from "./mock-project-reports";
 
 const respond = <T>(value: T) => Promise.resolve(structuredClone(value));
 
@@ -25,5 +25,22 @@ describe("mock reports (PJ-12)", () => {
     await expect(
       store.reports.summary("website-redesign", { range: "all", weekStartsOn: 6 }, { previewRole: "guest" }),
     ).rejects.toMatchObject({ code: "forbidden" });
+  });
+  it("burn-up scope counts a task from the week it was created (no creation instant = every week)", () => {
+    const task = (id: string, createdAt?: string) => ({
+      id, projectId: "p1", title: id, statusId: "s-open", phaseId: null, milestoneId: null, assignees: [], priority: null, due: null,
+      estimateHours: null, blockedBy: [], subtasks: null, commentCount: null, revision: 1, ...(createdAt ? { createdAt } : {}),
+    });
+    const summary = computeAnalytics({
+      tasks: [task("old"), task("new", "2026-11-12T09:00:00.000Z")],
+      workflow: { version: 1, statuses: [{ id: "s-open", name: "Open", category: "todo" }], transitions: {} },
+      role: "owner",
+      range: "4w",
+      weekStartsOn: 6,
+      projectStart: "2026-10-01",
+      today: "2026-11-14",
+      now: "2026-11-14T10:00:00.000Z",
+    });
+    expect(summary.scope).toEqual([1, 1, 2, 2]);
   });
 });

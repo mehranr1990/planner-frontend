@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { createApiProjectMilestoneRepository } from "./api-project-milestones-repository";
 import { err, fakeApi, json } from "./test-support";
 
-/* Contract fake: phases and milestones from `components/{kind}`; unserved facts stay null; PJ-08 rows from the visible tasks. */
+/* Contract fake: phases and milestones from `components/{kind}` + `structure/progress` (dates, percent, open tasks); PJ-08 rows from the visible tasks. */
 
 const P = "p1";
 const component = (id: string, title: string, position: number, over: Record<string, unknown> = {}) => ({
@@ -21,6 +21,14 @@ function project(phases: unknown[] = [component("ph2", "Build", 2), component("p
         items: [component("m1", "Beta", 1, { revision: 4, phaseId: "ph2", targetDate: "2026-11-20", completed: null }), component("m2", "Later", 2, { completed: true })],
         nextCursor: null,
       });
+    if (parts[2] === "structure")
+      return json({
+        asOf: "2026-11-14T09:00:00.000Z",
+        items: [
+          { id: "ph2", kind: "PHASE", title: "Build", phaseId: null, startDate: "2026-11-01", endDate: "2026-11-30", status: null, totalTasks: 2, eligibleTasks: 2, openTasks: 1, completedTasks: 1, progressPercent: 50, revision: 1 },
+          { id: "m1", kind: "MILESTONE", title: "Beta", phaseId: "ph2", startDate: null, endDate: null, status: "OPEN", totalTasks: 2, eligibleTasks: 2, openTasks: 1, completedTasks: 1, progressPercent: 50, revision: 4 },
+        ],
+      });
     if (parts[3] === "sections") return json({ items: [component("s1", "Build · default", 1, { phaseId: "ph2" })], nextCursor: null });
     if (parts[2] === "views") return json({ kind: "LIST", items: [viewItem("t1", "OPEN"), viewItem("t2", "DONE"), viewItem("t3", "OPEN")], nextCursor: null, dependencies: [] });
     if (parts[2] === "members") return json({ items: [], nextCursor: null });
@@ -32,15 +40,15 @@ function project(phases: unknown[] = [component("ph2", "Build", 2), component("p
 }
 
 describe("live project phases and milestones", () => {
-  it("lists components in position order with null dates / progress / open-task counts", async () => {
+  it("lists components in position order with the server's dates / progress / open-task counts (unknown stays null)", async () => {
     const api = project();
     const repo = createApiProjectMilestoneRepository(api.client, { today: () => "2026-11-14" });
     expect(await repo.listPhases(P)).toEqual([
       { id: "ph1", name: "Plan", start: null, end: null, progress: null, done: true, behindDays: null },
-      { id: "ph2", name: "Build", start: null, end: null, progress: null, done: false, behindDays: null },
+      { id: "ph2", name: "Build", start: "2026-11-01", end: "2026-11-30", progress: 50, done: false, behindDays: null },
     ]);
     expect(await repo.listMilestones(P)).toEqual([
-      { id: "m1", title: "Beta", due: "2026-11-20", phaseId: "ph2", done: false, tasksLeft: null, revision: 4 },
+      { id: "m1", title: "Beta", due: "2026-11-20", phaseId: "ph2", done: false, tasksLeft: 1, revision: 4 },
       { id: "m2", title: "Later", due: null, phaseId: null, done: true, tasksLeft: null, revision: 1 },
     ]);
   });

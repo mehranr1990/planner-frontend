@@ -264,6 +264,8 @@ export interface ProjectTask {
   updatedAt?: string;
   /** When the task entered a done status (instant); absent while open. */
   completedAt?: string;
+  /** When the task was created (instant); absent = unknown (counted in every burn-up week). */
+  createdAt?: string;
   /** When the task first entered an active (In progress) status (instant); cycle time = startedAt → completedAt. */
   startedAt?: string;
   /** What the current user may do to this task (server-computed per request). */
@@ -280,10 +282,10 @@ export interface TaskCan {
 export interface ProjectPhase {
   id: string;
   name: string;
-  /** Live: null (the API keeps no phase dates). */
+  /** Live: the phase dates from `structure/progress` (null = not set). */
   start: string | null;
   end: string | null;
-  /** Share of the phase's tasks done (0–100); live: null (not served). */
+  /** Share of the phase's tasks done (0–100); null = no eligible task / not readable. */
   progress: number | null;
   done: boolean;
   /** Days behind plan (current phase only), 0 when on plan; live: null (not served). */
@@ -479,7 +481,7 @@ export interface ProjectTaskDetail {
 
 // ── Sheets (PJ-90) ───────────────────────────────────────────────────────
 
-export type ProjectTemplate = "blank" | "product-launch" | "website" | "event";
+export type ProjectTemplate = "blank" | "kanban" | "scrum" | "product-launch" | "website" | "event";
 
 /** Roles an invitation can offer (Task-only = verified guest with a task grant). */
 export type InviteRole = "admin" | "manager" | "member" | "viewer" | "guest";

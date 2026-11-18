@@ -1,4 +1,5 @@
 import type { ApiClient } from "@/api/client";
+import { ApiHttpError } from "@/api/errors";
 import type { ProjectMilestone, ProjectPhase } from "../project-domain";
 import type { MilestoneRepository } from "../project-repositories";
 import { RepositoryError } from "../repositories";
@@ -12,9 +13,10 @@ import { loadProjectTasks } from "./api-project-tasks-repository";
  * `components/milestones`, in position order): what the task list, board,
  * task detail, overview and timeline group and filter by.
  *
- * The API serves a phase's title and completion only, and a milestone's title,
- * optional phase, optional target day and completion: phase dates, progress
- * and delay and the list's open-task count stay null (never derived).
+ * Lists join `structure/progress` (P2 gap closure): phase start / end dates,
+ * the server's progress percent (canceled excluded; no eligible task = null)
+ * and a milestone's open-task count. A phase's delay is not served (null);
+ * a caller without full task.read gets the components only (progress null).
  *
  * PJ-08 rows (gap closure 2026-11-14): done / all counts per phase and per
  * milestone from every task the caller can see (section → phase, association
@@ -26,6 +28,18 @@ import { loadProjectTasks } from "./api-project-tasks-repository";
  */
 
 type ApiComponent = ProjectsData<"/api/v1/projects/{id}/components/{kind}", "get">["items"][number];
+type ApiProgress = ProjectsData<"/api/v1/projects/{projectId}/structure/progress", "get">["items"][number];
+
+/** Server progress per phase / milestone id; empty when the caller may not read it (403). */
+const progressOf = async (api: ProjectsClient, projectId: string): Promise<Map<string, ApiProgress>> => {
+  try {
+    const { data } = await api.request("get", "/api/v1/projects/{projectId}/structure/progress", { path: { projectId } });
+    return new Map(data.items.map((item) => [item.id, item]));
+  } catch (error) {
+    if (error instanceof ApiHttpError && error.status === 403) return new Map();
+    throw error;
+  }
+};
 
 const components = async (api: ProjectsClient, projectId: string, kind: "phases" | "milestones") =>
   (
@@ -34,23 +48,23 @@ const components = async (api: ProjectsClient, projectId: string, kind: "phases"
     )
   ).sort((a, b) => a.position - b.position);
 
-const toPhase = (phase: ApiComponent): ProjectPhase => ({
+const toPhase = (phase: ApiComponent, progress?: ApiProgress): ProjectPhase => ({
   id: phase.id,
   name: phase.title,
-  start: null,
-  end: null,
-  progress: null,
+  start: progress?.startDate ?? null,
+  end: progress?.endDate ?? null,
+  progress: progress?.progressPercent === null || progress?.progressPercent === undefined ? null : Math.round(progress.progressPercent),
   done: phase.completed === true,
   behindDays: null,
 });
 
-const toMilestone = (milestone: ApiComponent): ProjectMilestone => ({
+const toMilestone = (milestone: ApiComponent, progress?: ApiProgress): ProjectMilestone => ({
   id: milestone.id,
   title: milestone.title,
   due: milestone.targetDate ?? null,
   phaseId: milestone.phaseId ?? null,
   done: milestone.completed === true,
-  tasksLeft: null,
+  tasksLeft: progress ? progress.openTasks : null,
   revision: milestone.revision,
 });
 
@@ -64,20 +78,28 @@ export function createApiProjectMilestoneRepository(client: ApiClient, options: 
     });
 
   return {
-    listPhases: (projectId) => mapErrors(async () => (await components(api, projectId, "phases")).map(toPhase)),
-    listMilestones: (projectId) => mapErrors(async () => (await components(api, projectId, "milestones")).map(toMilestone)),
+    listPhases: (projectId) =>
+      mapErrors(async () => {
+        const [phases, progress] = await Promise.all([components(api, projectId, "phases"), progressOf(api, projectId)]);
+        return phases.map((phase) => toPhase(phase, progress.get(phase.id)));
+      }),
+    listMilestones: (projectId) =>
+      mapErrors(async () => {
+        const [milestones, progress] = await Promise.all([components(api, projectId, "milestones"), progressOf(api, projectId)]);
+        return milestones.map((milestone) => toMilestone(milestone, progress.get(milestone.id)));
+      }),
 
     phaseRows: (projectId) =>
       mapErrors(async () => {
-        const [phases, loaded] = await Promise.all([components(api, projectId, "phases"), loadProjectTasks(api, projectId)]);
-        return computePhaseRows(phases.map(toPhase), loaded.tasks, loaded.catalogue.workflow);
+        const [phases, loaded, progress] = await Promise.all([components(api, projectId, "phases"), loadProjectTasks(api, projectId), progressOf(api, projectId)]);
+        return computePhaseRows(phases.map((phase) => toPhase(phase, progress.get(phase.id))), loaded.tasks, loaded.catalogue.workflow);
       }),
 
     milestoneRows: (projectId) =>
       mapErrors(async () => {
-        const [milestones, loaded] = await Promise.all([components(api, projectId, "milestones"), loadProjectTasks(api, projectId)]);
+        const [milestones, loaded, progress] = await Promise.all([components(api, projectId, "milestones"), loadProjectTasks(api, projectId), progressOf(api, projectId)]);
         return computeMilestoneRows({
-          milestones: milestones.map(toMilestone),
+          milestones: milestones.map((milestone) => toMilestone(milestone, progress.get(milestone.id))),
           tasks: loaded.tasks,
           workflow: loaded.catalogue.workflow,
           risks: [],
@@ -95,7 +117,7 @@ export function createApiProjectMilestoneRepository(client: ApiClient, options: 
         let current = await find();
         if (current.revision !== revision) throw new RepositoryError("conflict", "Changed elsewhere");
         const { data } = await conflictAware(() => retryOnConflict(() => patch(projectId, "milestones", current, { title: title.trim() }), async () => (current = await find())));
-        return toMilestone(data);
+        return toMilestone(data, (await progressOf(api, projectId)).get(data.id));
       }),
 
     reorderPhases: (projectId, phaseIds) =>
@@ -112,7 +134,8 @@ export function createApiProjectMilestoneRepository(client: ApiClient, options: 
             const phase = phases.find((candidate) => candidate.id === id)!;
             await conflictAware(() => patch(projectId, "phases", phase, { position: base + index }));
           }
-        return (await components(api, projectId, "phases")).map(toPhase);
+        const [after, progress] = await Promise.all([components(api, projectId, "phases"), progressOf(api, projectId)]);
+        return after.map((phase) => toPhase(phase, progress.get(phase.id)));
       }),
   };
 }

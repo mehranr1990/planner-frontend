@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectItem } from "@/components/ui/select";
 import { toast } from "@/components/ui/toast";
 import type { WorkflowCategory, WorkflowDraft, WorkflowStatus } from "@/data/project-domain";
-import { useProjectWorkflow, useSettingsActions, useWorkflowDraft, useWorkflowPreview } from "@/data/project-queries";
+import { useProjectWorkflow, useSettingsActions, useWorkflowDraft, useWorkflowKeepsTasksOnPublish, useWorkflowPreview } from "@/data/project-queries";
 import { RepositoryError } from "@/data/repositories";
 import { cn } from "@/lib/cn";
 import { useProjectFormat } from "../format";
@@ -43,6 +43,8 @@ export function WorkflowTab({ readOnly }: { readOnly: boolean }) {
   const onError = useSettingsError();
   const canEdit = capabilities.editWorkflow && !readOnly;
   const preview = useWorkflowPreview(project.id, !!draft.data);
+  // Live: tasks keep their current version and status on publish (no mapping).
+  const keepsTasks = useWorkflowKeepsTasksOnPublish();
   const [mapping, setMapping] = useState<Record<string, string>>({});
   // "Keep draft" hides the preview for this draft version only.
   const [hiddenFor, setHiddenFor] = useState<number | null>(null);
@@ -271,7 +273,7 @@ export function WorkflowTab({ readOnly }: { readOnly: boolean }) {
           {draft.data && preview.data && showPreview && canEdit ? (
             <section aria-labelledby="wf-preview" className="flex flex-col gap-2 rounded-[20px] bg-warning-soft p-4">
               <h4 id="wf-preview" className="text-sm font-bold text-warning-text">
-                {t("workflow.previewTitle", { n: format.number(preview.data.version) })}
+                {t(keepsTasks ? "workflow.publishTitle" : "workflow.previewTitle", { n: format.number(preview.data.version) })}
               </h4>
               <ul className="flex flex-col gap-1 text-sm text-fg">
                 {preview.data.staying
@@ -285,8 +287,14 @@ export function WorkflowTab({ readOnly }: { readOnly: boolean }) {
                       })}
                     </li>
                   ))}
-                {preview.data.removed.length === 0 ? <li>{t("workflow.noRemoved")}</li> : null}
-                {preview.data.removed.map((entry) => (
+                {keepsTasks ? <li>{t("workflow.keepsTasks")}</li> : null}
+                {preview.data.removed.length === 0 && !keepsTasks ? <li>{t("workflow.noRemoved")}</li> : null}
+                {keepsTasks
+                  ? preview.data.removed.map((entry) => (
+                      <li key={entry.status.id}>{t("workflow.removedPinned", { status: name(entry.status), n: entry.tasks })}</li>
+                    ))
+                  : null}
+                {(keepsTasks ? [] : preview.data.removed).map((entry) => (
                   <li key={entry.status.id} className="flex flex-wrap items-center gap-2">
                     <span>{t("workflow.removed", { status: name(entry.status), n: entry.tasks })}</span>
                     {entry.tasks > 0 ? (
@@ -327,11 +335,11 @@ export function WorkflowTab({ readOnly }: { readOnly: boolean }) {
                 <Button
                   disabled={
                     actions.publish.isPending ||
-                    preview.data.removed.some((entry) => entry.tasks > 0 && !mapping[entry.status.id])
+                    (!keepsTasks && preview.data.removed.some((entry) => entry.tasks > 0 && !mapping[entry.status.id]))
                   }
                   onClick={() =>
                     // Publishing removes the draft (this box unmounts): toast from the promise.
-                    actions.publish.mutateAsync(mapping).then(
+                    actions.publish.mutateAsync(keepsTasks ? {} : mapping).then(
                       (workflow) => {
                         setMapping({});
                         toast({ title: t("workflow.publishedToast", { n: format.number(workflow.version) }) });

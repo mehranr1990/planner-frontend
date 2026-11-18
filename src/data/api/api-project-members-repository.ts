@@ -153,7 +153,11 @@ export function createApiProjectSummary(client: ApiClient, options: { today(): s
         const weekStart = addDaysToDay(today, -((weekdayOfDay(today) + 1) % 7));
         const weekEnd = addDaysToDay(weekStart, 6);
         const [dashboard, milestones, risks, items] = await Promise.all([
-          api.request("get", "/api/v1/projects/{id}/dashboard", { path: { id: projectId }, query: { fromAt: instantAt(weekStart, 0), toAt: instantAt(addDaysToDay(weekEnd, 1), 0) } }),
+          api.request("get", "/api/v1/projects/{id}/dashboard", {
+            path: { id: projectId },
+            // Report windows accept UTC instants only (`…Z`): the local week bounds are sent in UTC spelling.
+            query: { fromAt: new Date(instantAt(weekStart, 0)).toISOString(), toAt: new Date(instantAt(addDaysToDay(weekEnd, 1), 0)).toISOString() },
+          }),
           pageAll<ApiMilestone>(
             async (after) => (await api.request("get", "/api/v1/projects/{id}/components/{kind}", { path: { id: projectId, kind: "milestones" }, query: { limit: PAGE, after } })).data,
           ),

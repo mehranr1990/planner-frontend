@@ -1,4 +1,5 @@
 import { typedAs, type ApiClient, type ApiClientFor, type ResponseDataIn } from "@/api/client";
+import { ApiHttpError } from "@/api/errors";
 import type { paths } from "@/api/generated/openapi-p6-projects";
 import type { ProjectPerson } from "../project-domain";
 import { RepositoryError } from "../repositories";
@@ -38,6 +39,21 @@ export async function conflictAware<T>(call: () => Promise<T>): Promise<T> {
     return await call();
   } catch (error) {
     if (isConflict(error)) throw new RepositoryError("conflict", "Changed elsewhere");
+    throw error;
+  }
+}
+
+/** The optional resource reason of a 409 (`details[].path === ""`); absent / unknown = the generic conflict. */
+export const conflictReason = (error: unknown): string | undefined =>
+  error instanceof ApiHttpError && error.status === 409 ? error.details.find((detail) => detail.path === "")?.code : undefined;
+
+/** Runs `call`; a 409 with one of the listed reasons becomes that seam error (never retried), anything else is rethrown. */
+export async function onConflictReason<T>(call: () => Promise<T>, reasons: Readonly<Record<string, RepositoryError>>): Promise<T> {
+  try {
+    return await call();
+  } catch (error) {
+    const reason = conflictReason(error);
+    if (reason && reasons[reason]) throw reasons[reason];
     throw error;
   }
 }

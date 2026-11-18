@@ -262,8 +262,10 @@ export interface WorkflowDraftRepository {
   saveDraft(projectId: string, input: Pick<WorkflowDraft, "statuses" | "transitions">): Promise<WorkflowDraft>;
   discardDraft(projectId: string): Promise<void>;
   previewPublish(projectId: string): Promise<WorkflowMigrationPreview>;
-  /** `mapping`: removed status id → kept status id (required for every removed status with tasks). */
+  /** `mapping`: removed status id → kept status id (required for every removed status with tasks, unless `keepsTasksOnPublish`). */
   publish(projectId: string, mapping: Readonly<Record<string, string>>): Promise<ProjectWorkflow>;
+  /** Live (ADR 0053): publishing never moves tasks; they keep their current version and status, so no mapping is asked. */
+  readonly keepsTasksOnPublish?: boolean;
 }
 
 /** PJ-14 Fields: per project; the type can't change once values exist ("invalid" "type-locked"). */
@@ -508,7 +510,7 @@ export class ProjectCreatePartialError extends RepositoryError {
   }
 }
 
-/** Live (2026-11-14): Blank only (server templates are project-scoped), independent owner only, no Undo (deletion needs the password). */
+/** Live: the server catalogue (Blank / Kanban / Scrum), team owner allowed, no Undo (deletion needs the password). */
 export interface ProjectCreateLimits {
   templates: readonly ProjectTemplate[];
   teamOwner: boolean;

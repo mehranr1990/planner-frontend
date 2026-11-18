@@ -29,6 +29,8 @@ import { createApiProjectFileRepository } from "./api-project-files-repository";
 import { createApiProjectMemberInviteRepository } from "./api-project-member-invites";
 import { createApiProjectWorkInsights } from "./api-project-work-insights";
 import { createApiProjectRiskRepository } from "./api-project-risks-repository";
+import { createApiProjectWorkflowDraftRepository } from "./api-project-workflow-drafts";
+import { createApiProjectActivityRepository } from "./api-project-activity-repository";
 import { conflictAware, liveOnly, personOf, projectRoster, projectsClient, projectViewItems, toProjectPerson, type ProjectsData } from "./api-project-shared";
 
 /*
@@ -267,7 +269,7 @@ export function createApiProjectRepositories(client: ApiClient, options: { today
     grants: liveOnly("no guest role, no list of task grants per person; a grant needs the recipient's user id"),
     milestones: createApiProjectMilestoneRepository(client, options),
     workflows: createApiProjectWorkflowRepository(client),
-    workflowDrafts: liveOnly("the contract has workflow versions but no draft / publish-impact read model"),
+    workflowDrafts: createApiProjectWorkflowDraftRepository(client),
     fields: createApiProjectFieldRepository(client),
     projectTasks: createApiProjectTaskRepository(client, options),
     taskDetails: createApiProjectTaskDetailRepository(client),
@@ -275,7 +277,7 @@ export function createApiProjectRepositories(client: ApiClient, options: { today
     dependencies: createApiProjectDependencyRepository(client, schedule),
     risks: createApiProjectRiskRepository(client),
     files: createApiProjectFileRepository(client),
-    activity: liveOnly("activity `action` values are undocumented strings without the changed field / value or target title"),
+    activity: createApiProjectActivityRepository(client),
     reports: insights.reports,
     workload: insights.workload,
     assignments: createApiProjectAssignmentRepository(client),

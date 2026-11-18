@@ -20,9 +20,10 @@ import { loadProjectTasks } from "./api-project-tasks-repository";
  * - `GET …/workload` is not used: it only sums explicit per-day work
  *   allocations (no editor exists) and its per-day task counts cannot be
  *   rolled up into weeks without double counting.
- * - Analytics: cycle time needs the first In progress instant, which the
- *   contract does not serve → null with sample 0. Scope per week = the current
- *   total (no task creation series), as in the mock definition.
+ * - Analytics: cycle time = the task's recorded `firstStartedAt` → completion
+ *   (tasks without start evidence are not sampled). Scope per week = visible
+ *   tasks created by the week end (`createdAt`); deleted tasks are not in the
+ *   visible list, so earlier weeks never count them.
  * - Visibility follows `access/me`: Viewers / guests are refused the grid,
  *   Members get their own row only (no Unassigned row), Manager+ everything.
  */

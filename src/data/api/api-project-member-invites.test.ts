@@ -3,7 +3,7 @@ import { createApiProjectInvitations } from "./api-project-invitations";
 import { createApiProjectMemberInviteRepository } from "./api-project-member-invites";
 import { err, fakeApi, json } from "./test-support";
 
-/* Contract fakes: inviter-side space invitations (proof never kept) and the recipient's decline without a note. */
+/* Contract fakes: inviter-side space invitations (proof never kept, pending list, resend) and the recipient's decline with an optional note. */
 
 const P = "p1";
 const invitation = (id: string, over: Record<string, unknown> = {}) => ({
@@ -44,7 +44,7 @@ describe("live project invitations (inviter)", () => {
     });
   });
 
-  it("cancel = revoke with the invitation's revision; already answered sends nothing; the rest is refused", async () => {
+  it("cancel = revoke with the invitation's revision; already answered sends nothing; guest / restore are refused", async () => {
     const api = fakeApi((call, parts) => {
       if (parts[0] === "projects") return json({ id: P, spaceId: "s1", revision: 1 });
       if (call.method === "GET") return json(invitation(parts[3]!, parts[3] === "i9" ? { state: "ACCEPTED" } : {}));
@@ -57,14 +57,34 @@ describe("live project invitations (inviter)", () => {
     expect(api.calls.filter((call) => call.method === "POST").map((call) => [call.path, call.ifMatch])).toEqual([["/spaces/s1/invitations/i1/revoke", '"3"']]);
     const before = api.calls.length;
     await expect(repo.send(P, ["g@x.io"], "guest")).rejects.toMatchObject({ code: "unsupported", message: "guest-role" });
-    await expect(repo.listPending(P)).rejects.toMatchObject({ code: "unsupported" });
-    await expect(repo.resend(P, "i1")).rejects.toMatchObject({ code: "unsupported" });
+    await expect(repo.restore(P, { id: "i1", email: "a@x.io", role: "member", sentAt: "x" })).rejects.toMatchObject({ code: "unsupported" });
     expect(api.calls.length).toBe(before);
+  });
+
+  it("pending list = the space's PENDING membership invitations; resend uses the revision + key and re-reads", async () => {
+    let revision = 3;
+    const sent = (id: string, over: Record<string, unknown> = {}) => ({ ...invitation(id, { revision }), recipientEmail: "a@x.io", createdAt: "2026-11-14T09:00:00.000Z", sentAt: "2026-11-14T09:00:00.000Z", declineNote: null, ...over });
+    const api = fakeApi((call, parts) => {
+      if (parts[0] === "projects") return json({ id: P, spaceId: "s1", revision: 1 });
+      if (call.method === "GET" && parts[2] === "invitations")
+        return json({ items: [sent("i1"), sent("i2", { kind: "RESOURCE", recipientEmail: null }), sent("i3", { recipientEmail: null, memberRole: "VIEWER" })], nextCursor: null });
+      if (call.method === "POST" && parts[4] === "resend") return ((revision = 4), json(invitation("i1", { revision: 4 })));
+      return err(404);
+    });
+    const repo = createApiProjectMemberInviteRepository(api.client);
+    expect(await repo.listPending(P)).toEqual([
+      { id: "i1", email: "a@x.io", role: "member", sentAt: "2026-11-14T09:00:00.000Z", expiresAt: "2026-11-21T09:00:00.000Z" },
+      { id: "i3", email: "", role: "viewer", sentAt: "2026-11-14T09:00:00.000Z", expiresAt: "2026-11-21T09:00:00.000Z" },
+    ]);
+    expect(api.calls.find((call) => call.path === "/spaces/s1/invitations")!.query.state).toBe("PENDING");
+    await repo.resend(P, "i1");
+    const resend = api.calls.find((call) => call.method === "POST")!;
+    expect([resend.path, resend.ifMatch, Boolean(resend.key)]).toEqual(["/spaces/s1/invitations/i1/resend", '"3"', true]);
   });
 });
 
 describe("live project invitations (recipient)", () => {
-  it("a decline with a note is refused without a request; without a note it answers with the proof", async () => {
+  it("a decline sends the optional note with the proof; an over-long note is refused without a request", async () => {
     const api = fakeApi((call, parts) => {
       if (parts[0] === "project-invitations") return json({ items: [{ id: "i1", contextLabel: "Project", revision: 2, expiresAt: "2026-11-21T09:00:00.000Z" }], nextCursor: null });
       if (parts[2] === "proof") return json({ proof: "p", revision: 2 });
@@ -72,9 +92,12 @@ describe("live project invitations (recipient)", () => {
       return err(404);
     });
     const repo = createApiProjectInvitations(api.client);
-    await expect(repo.decline("i1", "Busy this quarter")).rejects.toMatchObject({ code: "unsupported", message: "decline-note" });
+    await expect(repo.decline("i1", "x".repeat(501))).rejects.toMatchObject({ code: "invalid", message: "decline-note" });
     expect(api.calls).toEqual([]);
+    await repo.decline("i1", " Busy this quarter ");
     await repo.decline("i1");
-    expect(api.writes()).toEqual(["POST /invitations/i1/proof", "POST /invitations/i1/decline"]);
+    expect(api.writes()).toEqual(["POST /invitations/i1/proof", "POST /invitations/i1/decline", "POST /invitations/i1/proof", "POST /invitations/i1/decline"]);
+    const declines = api.calls.filter((call) => call.path === "/invitations/i1/decline");
+    expect(declines.map((call) => call.body)).toEqual([{ note: "Busy this quarter" }, {}]);
   });
 });
