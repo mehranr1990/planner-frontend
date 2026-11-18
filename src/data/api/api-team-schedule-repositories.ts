@@ -48,6 +48,7 @@ const TIME_OFF_STATE: Record<ApiTimeOff["state"], TeamTimeOffRequest["state"]> =
 };
 const TIME_OFF_ACTION: Record<ApiTimeOffStep["action"], TeamTimeOffHistoryEntry["action"]> = {
   SUBMITTED: "submitted",
+  EDITED: "edited",
   APPROVED: "approved",
   REJECTED: "rejected",
   CANCELED: "canceled",
@@ -67,7 +68,10 @@ interface EventRef {
   revision: number | null;
 }
 
-const RSVP: Partial<Record<ApiInvite["state"], TeamRsvp | null>> = { PENDING: null, ACCEPTED: "going", DECLINED: "no" };
+const RSVP: Partial<Record<ApiInvite["state"], TeamRsvp | null>> = { PENDING: null, ACCEPTED: "going", DECLINED: "no", MAYBE: "maybe" };
+/** States the recipient can still answer or change (P3 gap closure: changeable while the invitation is valid). */
+const ANSWERABLE: ReadonlySet<ApiInvite["state"]> = new Set<ApiInvite["state"]>(["PENDING", "ACCEPTED", "DECLINED", "MAYBE"]);
+const DECISION: Record<TeamRsvp, "ACCEPTED" | "DECLINED" | "MAYBE"> = { going: "ACCEPTED", no: "DECLINED", maybe: "MAYBE" };
 const URL_ONLY = /^https?:\/\/\S+$/;
 
 /** All-day `endDate` is exclusive in the API (calendar expansion uses `endDate > from`). */
@@ -194,7 +198,7 @@ export function createApiTeamEvents(api: TeamsClient): TeamEventRepository {
       // Cancel = DELETE of the meeting event (`work.manage`); recurring series are not offered.
       can: {
         edit: ctx.canEdit,
-        rsvp: mine?.state === "PENDING",
+        rsvp: mine !== undefined && ANSWERABLE.has(mine.state),
         cancel: ctx.canEdit && meeting !== null && !meeting.event.seriesId,
       },
     };
@@ -364,7 +368,7 @@ export function createApiTeamEvents(api: TeamsClient): TeamEventRepository {
     update: (eventId, input) =>
       mapErrors(async () => {
         const ref = refOf(eventId);
-        if (!ref.eventId) throw unsupported("time off cannot be edited (cancel the request and ask again)");
+        if (!ref.eventId) throw unsupported("approved time off cannot be edited (cancel the request and ask again)");
         if (input.kind !== "meeting") throw unsupported("an event cannot become time off");
         const title = input.title.trim();
         if (!title) invalid("A team event needs a title");
@@ -395,18 +399,17 @@ export function createApiTeamEvents(api: TeamsClient): TeamEventRepository {
       mapErrors(async () => {
         const ref = refOf(eventId);
         if (!ref.meetingId) throw new RepositoryError("forbidden", "Not invited");
-        if (rsvp === "maybe") throw unsupported("invitations are answered with accept or decline only");
         const me = await accessMe(api, ref.teamId);
         const mine = (await invitesOf(ref.teamId, ref.meetingId)).find(
           (invite) => invite.member.accessId === me.accessId,
         );
         if (!mine) throw new RepositoryError("forbidden", "Not invited");
-        if (mine.state !== "PENDING") throw new RepositoryError("conflict", "Already answered");
+        if (!ANSWERABLE.has(mine.state)) throw new RepositoryError("conflict", "The invitation is no longer open");
         await conflictAware(() =>
           api.request("post", "/api/v1/teams/{id}/meetings/{meetingId}/invitations/{invitationId}/respond", {
             path: { id: ref.teamId, meetingId: ref.meetingId!, invitationId: mine.id },
             header: { "If-Match": revisionTag(mine.revision) },
-            body: { decision: rsvp === "going" ? "ACCEPTED" : "DECLINED" },
+            body: { decision: DECISION[rsvp] },
           }),
         );
         return reread(ref.teamId, ref.meetingId, eventId);
@@ -533,6 +536,48 @@ export async function teamDueOverlays(
   });
 }
 
+/**
+ * Events of linked projects the viewer can read (P3 gap closure,
+ * `calendar/sources?source=PROJECT`, end exclusive). Timed, active events only
+ * (the overlay has no all-day form). Names from the viewer's own Projects
+ * directory; a project they cannot open stays unnamed.
+ */
+export async function teamProjectEventOverlays(
+  api: TeamsClient,
+  client: ApiClient,
+  teamId: string,
+  from: string,
+  to: string,
+): Promise<TeamCalendarOverlay[]> {
+  type ApiSource = Data<"/api/v1/teams/{id}/calendar/sources", "get">["items"][number];
+  const query = { from, to: addDaysToDay(to, 1), timezone: getPlannerTimeZone(), source: "PROJECT" as const, limit: String(PAGE) };
+  const [items, directory] = await Promise.all([
+    pageAll<ApiSource>(
+      async (cursor) => (await api.request("get", "/api/v1/teams/{id}/calendar/sources", { path: { id: teamId }, query: { ...query, cursor } })).data,
+    ),
+    createApiProjectDirectory(client).listAccessible().catch(() => null),
+  ]);
+  const names = new Map((directory?.projects ?? []).map((project) => [project.id, project.name]));
+  return items.flatMap((item): TeamCalendarOverlay[] => {
+    const occurrence = item.occurrence;
+    if (item.kind !== "PROJECT" || occurrence.kind !== "EVENT" || occurrence.status !== "ACTIVE") return [];
+    const when = timesOf(occurrence);
+    if (!when?.time || when.day < from || when.day > to) return [];
+    return [
+      {
+        id: `project:${occurrence.identity}`,
+        kind: "project-event",
+        day: when.day,
+        time: when.time,
+        end: when.end,
+        title: occurrence.title,
+        projectId: item.scopeId,
+        projectName: names.get(item.scopeId) ?? "",
+      },
+    ];
+  });
+}
+
 // ── TM-05 sprints ───────────────────────────────────────────────────────
 
 /** Working days follow the Iran week (Sat–Wed), as in the approved sprint screen. */
@@ -596,14 +641,23 @@ export function createApiTeamSprints(api: TeamsClient): TeamSprintRepository {
       });
   }
 
-  /** People capacity over the days in hours; null in points or beyond the API's 31-day window (never converted). */
+  /**
+   * People capacity over the days in hours, or the plan's explicit point capacity
+   * (null = UNKNOWN; hours are never converted to points). Null beyond the API's 31-day window.
+   */
   async function capacityOf(
     teamId: string,
     unit: "points" | "hours",
     start: string,
     end: string,
+    planId: string | null = null,
   ): Promise<number | null> {
-    if (unit === "points" || spanOf({ startDate: start, endDate: end } as ApiPlan) > 31) return null;
+    if (unit === "points") {
+      if (!planId) return null;
+      const { data } = await api.request("get", "/api/v1/teams/{id}/plans/{planId}/point-capacity", { path: { id: teamId, planId } });
+      return data.capacityPoints;
+    }
+    if (spanOf({ startDate: start, endDate: end } as ApiPlan) > 31) return null;
     const { data } = await api.request("get", "/api/v1/teams/{id}/capacity/summary", {
       path: { id: teamId },
       query: { from: start, to: end, timezone: getPlannerTimeZone() },
@@ -641,15 +695,16 @@ export function createApiTeamSprints(api: TeamsClient): TeamSprintRepository {
       const { summary, committed, done } = await totals(teamId, r.unit, active.id);
       const days = workDays(active.startDate, active.endDate);
       const now = today();
-      const remaining = new Map(summary.days.map((entry) => [entry.date, entry.remainingMinutes]));
-      // Daily remaining is served in minutes only: a points burndown is not drawn.
+      // Recorded daily observations (points or minutes); the line stops at the first day without evidence.
+      const { data: recorded } = await api.request("get", "/api/v1/teams/{id}/plans/{planId}/burndown", { path: { id: teamId, planId: active.id } });
+      const remaining = new Map(
+        recorded.days.map((entry) => [entry.date, r.unit === "points" ? entry.remainingPoints : entry.remainingMinutes === null ? null : round2(entry.remainingMinutes / 60)]),
+      );
       const burndown: { day: string; remaining: number }[] = [];
-      if (r.unit === "hours") {
-        for (const day of days) {
-          const minutes = remaining.get(day);
-          if (day > now || minutes === null || minutes === undefined) break;
-          burndown.push({ day, remaining: round2(minutes / 60) });
-        }
+      for (const day of days) {
+        const value = remaining.get(day);
+        if (day > now || value === null || value === undefined) break;
+        burndown.push({ day, remaining: value });
       }
       sprint = {
         id: active.id,
@@ -660,7 +715,7 @@ export function createApiTeamSprints(api: TeamsClient): TeamSprintRepository {
         days,
         dayIndex: days.filter((day) => day <= now).length,
         committed,
-        capacity: await capacityOf(teamId, r.unit, active.startDate, active.endDate),
+        capacity: await capacityOf(teamId, r.unit, active.startDate, active.endDate, active.id),
         done,
         unit: r.unit,
         items: itemsOf(teamId, r, active.id),
@@ -676,7 +731,7 @@ export function createApiTeamSprints(api: TeamsClient): TeamSprintRepository {
       next: {
         number: draft ? numberOf(r, draft, served) : r.sprints.filter((plan) => plan.state !== "DRAFT").length + 1,
         ...dates,
-        capacity: await capacityOf(teamId, r.unit, dates.start, dates.end),
+        capacity: await capacityOf(teamId, r.unit, dates.start, dates.end, draft?.id ?? null),
         committed: round2(items.reduce((sum, item) => sum + item.estimate, 0)),
         items,
       },

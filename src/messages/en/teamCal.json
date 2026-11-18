@@ -89,7 +89,8 @@
       "submitted": "Requested",
       "approved": "Approved",
       "rejected": "Rejected",
-      "canceled": "Canceled"
+      "canceled": "Canceled",
+      "edited": "Edited"
     },
     "step": "{action} by {name}",
     "approved": "Time off approved",

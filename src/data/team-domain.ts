@@ -205,7 +205,8 @@ export interface TeamLinkRequest {
   projectId: string;
   projectName: string;
   requestedAt: string;
-  requestedBy: TeamPerson;
+  /** null when the source does not say who asked (live). */
+  requestedBy: TeamPerson | null;
 }
 
 /** planRepo.week: the published weekly plan's summary (week = its Saturday). */
@@ -259,7 +260,8 @@ export interface TeamCapacityEntry {
 /** capacityRepo.get/set (TM-08): weekly hours for this team and the working days (not linked to Personal settings). */
 export interface TeamCapacity {
   personId: string;
-  hours: number;
+  /** Weekly hours; null = UNKNOWN (no weekly template configured yet, live). */
+  hours: number | null;
   /** JS weekdays (0 = Sunday … 6 = Saturday). */
   days: readonly Weekday[];
 }
@@ -362,7 +364,7 @@ export interface TeamTimeOffRequest {
 
 export interface TeamTimeOffHistoryEntry {
   id: string;
-  action: "submitted" | "approved" | "rejected" | "canceled";
+  action: "submitted" | "edited" | "approved" | "rejected" | "canceled";
   by: TeamPerson | null;
   at: string;
 }

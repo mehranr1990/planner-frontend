@@ -4,13 +4,14 @@ import type { paths } from "@/api/generated/openapi-p6-teams";
 import { addDaysToDay, dayOfInstant, instantToClockTime } from "@/lib/dates/clock-time";
 import { getPlannerTimeZone } from "@/lib/dates/zone";
 import type { Weekday } from "@/lib/dates/week";
-import type { TeamAccess, TeamCapabilities, TeamDirectory, TeamEvent, TeamMemberRow, TeamModule, TeamPerson, TeamRole, TeamSettings, TeamSummary } from "../team-domain";
+import type { TeamAccess, TeamCapabilities, TeamDirectory, TeamEvent, TeamLinkRequest, TeamMemberRow, TeamModule, TeamPendingInvite, TeamPerson, TeamRole, TeamSettings, TeamSummary } from "../team-domain";
 import type { TeamCalendarRepository, TeamMemberRepository, TeamRepositories, TeamRepository, TeamSettingsRepository, ProjectAssociationRepository } from "../team-repositories";
 import { RepositoryError } from "../repositories";
 import { invalid, mapErrors, pageAll, retryOnConflict, revisionTag } from "./api-shared";
 import { conflictAware, initialsOf, liveOnlyIn } from "./api-project-shared";
+import { createApiProjectDirectory } from "./api-project-directory-repository";
 import { catalogVersion } from "./api-retention";
-import { createApiTeamEvents, createApiTeamSprints, teamDueOverlays, teamPortfolio } from "./api-team-schedule-repositories";
+import { createApiTeamEvents, createApiTeamSprints, teamDueOverlays, teamPortfolio, teamProjectEventOverlays } from "./api-team-schedule-repositories";
 import {
   createApiPresence,
   createApiTeamBacklog,
@@ -53,9 +54,17 @@ type ApiTeam = Data<"/api/v1/teams/{id}", "get">;
 type ApiMe = Data<"/api/v1/teams/{id}/access/me", "get">;
 type ApiMembership = Data<"/api/v1/teams/{id}/memberships", "get">["items"][number];
 type ApiTask = Data<"/api/v1/teams/{id}/tasks", "get">["items"][number];
+type ApiSentInvite = Data<"/api/v1/teams/{id}/sent-invitations", "get">["items"][number];
+
+const pendingInvite = (row: Pick<ApiSentInvite, "id" | "memberRole" | "expiresAt">, email: string, sentAt: string): TeamPendingInvite => ({
+  id: row.id,
+  email,
+  role: roleOf(row.memberRole) as Exclude<TeamRole, "owner">,
+  sentAt,
+  expiresAt: row.expiresAt,
+});
 
 const PAGE = 100;
-const PROOF = "the API has no re-send (revoke the invitation and invite again)";
 
 const ROLE_TO_API: Record<Exclude<TeamRole, "owner">, "ADMIN" | "LEAD" | "MEMBER" | "VIEWER"> = { admin: "ADMIN", lead: "LEAD", member: "MEMBER", viewer: "VIEWER" };
 const TINTS = ["blue", "indigo", "amber", "purple"] as const;
@@ -274,6 +283,12 @@ function createApiTeamMembers(api: TeamsClient): TeamMemberRepository {
       return (await conflictAware(() => retryOnConflict(send, async () => (member = await current(teamId, personId))))).data;
     });
 
+  const sentInvites = (teamId: string) =>
+    pageAll<ApiSentInvite>(
+      async (after) =>
+        (await api.request("get", "/api/v1/teams/{id}/sent-invitations", { path: { id: teamId }, query: { state: "PENDING", limit: PAGE, after } })).data,
+    );
+
   const titles = async (teamId: string) =>
     new Map(
       (
@@ -283,7 +298,7 @@ function createApiTeamMembers(api: TeamsClient): TeamMemberRepository {
       ).map((profile) => [profile.member.accessId, profile.jobTitle ?? ""]),
     );
 
-  return liveOnly<TeamMemberRepository>("moving a member between teams is not in the API", {
+  return liveOnly<TeamMemberRepository>("moving a member between teams is deferred (TB-3): invite them to the other team, then remove them here", {
     removalPreview: (teamId, personId) =>
       mapErrors(async () => {
         const [{ data }, member] = await Promise.all([
@@ -306,7 +321,8 @@ function createApiTeamMembers(api: TeamsClient): TeamMemberRepository {
               person: teamPerson(member),
               role: roleOf(member.role),
               title: title.get(member.id) ?? "",
-              can: { changeRole: manageable, editCapacity: false, move: false, remove: manageable, leave: false },
+              // Weekly capacity PUT needs work.manage. Move stays off (TB-3 deferred: invite to the other team, then remove here).
+              can: { changeRole: manageable, editCapacity: has("work.manage"), move: false, remove: manageable, leave: false },
             };
           });
       }),
@@ -325,9 +341,26 @@ function createApiTeamMembers(api: TeamsClient): TeamMemberRepository {
         });
       }),
 
-    // The pending rows carry no recipient email or send time, which the Invitations tab shows.
-    invitations: () => Promise.reject(new RepositoryError("unsupported", "Teams API: pending invitation rows carry no recipient email or send time")),
-    resendInvite: () => Promise.reject(new RepositoryError("unsupported", `Teams API: ${PROOF}`)),
+    // P3 gap closure: sent offers with the authorized recipient email (withheld → ""); sentAt = in-app offer time.
+    invitations: (teamId) =>
+      mapErrors(async () => (await sentInvites(teamId)).map((row) => pendingInvite(row, row.recipientEmail ?? "", row.sentAt))),
+
+    // Resend keeps the offer identity and invalidates older proofs; If-Match = the revision just read.
+    resendInvite: (teamId, inviteId) =>
+      mapErrors(async () => {
+        const row = (await sentInvites(teamId)).find((candidate) => candidate.id === inviteId);
+        if (!row) throw new RepositoryError("not-found", "Not found");
+        await conflictAware(() =>
+          api.request("post", "/api/v1/teams/{id}/invitations/{offerId}/resend", {
+            path: { id: teamId, offerId: inviteId },
+            header: { "If-Match": revisionTag(row.revision), "Idempotency-Key": newIdempotencyKey() },
+            body: {},
+          }),
+        );
+        // The resend response has no sentAt: read the row again for the new offer time.
+        const sent = (await sentInvites(teamId)).find((candidate) => candidate.id === inviteId) ?? row;
+        return pendingInvite(sent, sent.recipientEmail ?? "", sent.sentAt);
+      }),
 
     cancelInvite: (teamId, inviteId) =>
       mapErrors(async () => {
@@ -351,9 +384,13 @@ const eventOf = (item: Data<"/api/v1/teams/{id}/calendar", "get">["items"][numbe
   return { id: item.identity, title: item.title, kind: "meeting", day: dayOfInstant(item.schedule.startAt), time: instantToClockTime(item.schedule.startAt) };
 };
 
-function createApiTeamCalendar(api: TeamsClient): TeamCalendarRepository {
+function createApiTeamCalendar(api: TeamsClient, client: ApiClient): TeamCalendarRepository {
   return liveOnly<TeamCalendarRepository>("—", {
-    overlays: (teamId, from, to) => mapErrors(() => teamDueOverlays(api, teamId, from, to)),
+    overlays: (teamId, from, to) =>
+      mapErrors(async () => {
+        const [due, events] = await Promise.all([teamDueOverlays(api, teamId, from, to), teamProjectEventOverlays(api, client, teamId, from, to)]);
+        return [...due, ...events];
+      }),
     range: (teamId, from, to) =>
       mapErrors(async () => {
         const items = await pageAll<Data<"/api/v1/teams/{id}/calendar", "get">["items"][number]>(
@@ -513,8 +550,71 @@ function createApiTeamSettings(api: TeamsClient): TeamSettingsRepository {
   );
 }
 
-function createApiProjectAssociations(api: TeamsClient): ProjectAssociationRepository {
-  return liveOnly<ProjectAssociationRepository>("links are direct (PUT), there is no request / approval flow", {
+type ApiAssociation = Data<"/api/v1/teams/{id}/projects/{projectId}/association-request", "get">;
+
+/**
+ * Link requests (P3 gap closure): pending LINK requests of this team, request =
+ * POST association-requests {LINK} with the current association revision,
+ * approve = decision APPROVE (both settings authorities, checked by the server).
+ * Requests never grant project membership. Project names come from the
+ * caller's own Projects directory; a project they cannot open stays unnamed.
+ */
+function createApiProjectAssociations(api: TeamsClient, client: ApiClient): ProjectAssociationRepository {
+  const known = new Map<string, { teamId: string; projectId: string }>();
+  const read = async (teamId: string, projectId: string): Promise<ApiAssociation> =>
+    (await api.request("get", "/api/v1/teams/{id}/projects/{projectId}/association-request", { path: { id: teamId, projectId } })).data;
+  const names = async () => {
+    const directory = await createApiProjectDirectory(client).listAccessible().catch(() => null);
+    return new Map((directory?.projects ?? []).map((project) => [project.id, project.name]));
+  };
+  const toRequest = (row: ApiAssociation, name: Map<string, string>): TeamLinkRequest | null => {
+    if (!row.request || row.request.state !== "PENDING" || row.request.action !== "LINK") return null;
+    known.set(row.request.id, { teamId: row.teamId, projectId: row.projectId });
+    return { id: row.request.id, projectId: row.projectId, projectName: name.get(row.projectId) ?? "", requestedAt: row.request.requestedAt, requestedBy: null };
+  };
+  return {
+    requests: (teamId) =>
+      mapErrors(async () => {
+        const [rows, name] = await Promise.all([
+          pageAll<ApiAssociation>(
+            async (after) => (await api.request("get", "/api/v1/teams/{id}/project-association-requests", { path: { id: teamId }, query: { limit: PAGE, after } })).data,
+          ),
+          names(),
+        ]);
+        return rows.flatMap((row) => toRequest(row, name) ?? []);
+      }),
+
+    request: (teamId, projectId) =>
+      mapErrors(async () => {
+        const current = await read(teamId, projectId);
+        if (current.active || current.request?.state === "PENDING") throw new RepositoryError("conflict", "Already linked or requested");
+        const { data } = await conflictAware(() =>
+          api.request("post", "/api/v1/teams/{id}/projects/{projectId}/association-requests", {
+            path: { id: teamId, projectId },
+            header: { "If-Match": revisionTag(current.revision), "Idempotency-Key": newIdempotencyKey() },
+            body: { id: newIdempotencyKey(), action: "LINK" },
+          }),
+        );
+        const request = toRequest(data, await names());
+        if (!request) throw new RepositoryError("conflict", "The request was not recorded");
+        return request;
+      }),
+
+    approve: (requestId) =>
+      mapErrors(async () => {
+        const where = known.get(requestId);
+        if (!where) throw new RepositoryError("not-found", "Request not loaded (open the list again)");
+        const current = await read(where.teamId, where.projectId);
+        if (current.request?.id !== requestId || current.request.state !== "PENDING") throw new RepositoryError("conflict", "The request changed");
+        await conflictAware(() =>
+          api.request("post", "/api/v1/teams/{id}/projects/{projectId}/association-request/decision", {
+            path: { id: where.teamId, projectId: where.projectId },
+            header: { "If-Match": revisionTag(current.revision) },
+            body: { decision: "APPROVE" },
+          }),
+        );
+      }),
+
     unlink: (teamId, projectId) =>
       mapErrors(async () => {
         const read = async () => {
@@ -530,7 +630,7 @@ function createApiProjectAssociations(api: TeamsClient): ProjectAssociationRepos
           api.request("delete", "/api/v1/teams/{id}/projects/{projectId}", { path: { id: teamId, projectId }, header: { "If-Match": revisionTag(link.revision) } });
         await conflictAware(() => retryOnConflict(send, async () => (link = await read())));
       }),
-  });
+  };
 }
 
 export function createApiTeamRepositories(client: ApiClient): TeamRepositories {
@@ -541,7 +641,7 @@ export function createApiTeamRepositories(client: ApiClient): TeamRepositories {
     presence: createApiPresence(api),
     teamPlans: createApiTeamPlans(api),
     teamCapacity: createApiTeamCapacity(api),
-    teamCalendar: createApiTeamCalendar(api),
+    teamCalendar: createApiTeamCalendar(api, client),
     teamEvents: createApiTeamEvents(api),
     teamActivity: createApiTeamActivity(api),
     teamCheckins: createApiTeamCheckins(api),
@@ -552,7 +652,7 @@ export function createApiTeamRepositories(client: ApiClient): TeamRepositories {
     teamSettings: createApiTeamSettings(api),
     teamTasks: createApiTeamTasks(api),
     teamSprints: createApiTeamSprints(api),
-    projectAssociations: createApiProjectAssociations(api),
+    projectAssociations: createApiProjectAssociations(api, client),
     teamGoals: createApiTeamGoals(api),
     teamMembers: createApiTeamMembers(api),
     teamBacklog: createApiTeamBacklog(api),

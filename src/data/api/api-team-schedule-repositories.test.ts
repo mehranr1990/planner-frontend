@@ -5,6 +5,7 @@ import {
   createApiTeamEvents,
   createApiTeamSprints,
   teamDueOverlays,
+  teamProjectEventOverlays,
   teamPortfolio,
 } from "./api-team-schedule-repositories";
 import { err, fakeApi, json, type FakeCall } from "./test-support";
@@ -12,7 +13,8 @@ import { err, fakeApi, json, type FakeCall } from "./test-support";
 /* Team events / time off, sprints and portfolio (1,045-op contract) against in-memory fakes (no network, not live evidence). */
 
 const access = vi.fn();
-vi.mock("./api-project-directory-repository", () => ({ createApiProjectDirectory: () => ({ access }) }));
+const listAccessible = vi.fn(() => Promise.reject(new Error("403")));
+vi.mock("./api-project-directory-repository", () => ({ createApiProjectDirectory: () => ({ access, listAccessible }) }));
 
 const TEAM = "t1";
 const member = (id: string, actorId: string, displayName: string) => ({
@@ -152,12 +154,13 @@ describe("team events adapter (TM-03)", () => {
     expect(fake.writes()).toEqual([]);
   });
 
-  it("rsvp: maybe is refused without a request; going answers my invitation with its revision", async () => {
+  it("rsvp: going / maybe answer my invitation with its revision", async () => {
     const fake = api();
     const events = createApiTeamEvents(typedAs<paths>(fake.client));
     await events.range(TEAM, "2026-11-15", "2026-11-15");
-    await expect(events.rsvp("e1", "maybe")).rejects.toMatchObject({ code: "unsupported" });
-    expect(fake.writes()).toEqual([]);
+    await events.rsvp("e1", "maybe");
+    expect(fake.calls.find((call) => call.path.endsWith("/respond"))!.body).toEqual({ decision: "MAYBE" });
+    fake.calls.length = 0;
     await events.rsvp("e1", "going");
     const respond = fake.calls.find((call) => call.path.endsWith("/respond"))!;
     expect([respond.path, respond.ifMatch, respond.body]).toEqual([
@@ -254,6 +257,31 @@ describe("team events adapter (TM-03)", () => {
     const overlays = await teamDueOverlays(typedAs<paths>(fake.client), TEAM, "2026-11-14", "2026-11-20");
     expect(overlays.map((entry) => entry.kind === "task-due" && [entry.taskId, entry.blocked])).toEqual([["k1", true]]);
   });
+
+  it("project events layer: active timed PROJECT events from calendar/sources (end exclusive), unnamed when unreadable", async () => {
+    const occurrence = (identity: string, over: Record<string, unknown> = {}) => ({
+      identity, resourceId: "r1", kind: "EVENT", seriesId: null, recurrenceKey: null, revision: 1, exceptionRevision: 0, title: `Event ${identity}`, status: "ACTIVE", reason: null,
+      schedule: { kind: "TIMED", timezone: "Asia/Tehran", localStart: "2026-11-15T10:00", localEnd: "2026-11-15T11:00", startAt: "2026-11-15T06:30:00.000Z", endAt: "2026-11-15T07:30:00.000Z" },
+      displayStart: "x", displayEnd: "x", taskId: null, taskDisposition: null, foldPolicy: "x", gapPolicy: "x", ...over,
+    });
+    const fake = fakeApi((call, parts) => {
+      if (parts[3] === "sources")
+        return json({
+          items: [
+            { kind: "PROJECT", spaceId: "ps", scopeId: "p1", occurrence: occurrence("o1") },
+            { kind: "PROJECT", spaceId: "ps", scopeId: "p1", occurrence: occurrence("o2", { status: "CANCELED" }) },
+            { kind: "PROJECT", spaceId: "ps", scopeId: "p1", occurrence: occurrence("o3", { kind: "TIME_BLOCK" }) },
+          ],
+          nextCursor: null,
+        });
+      return err(403);
+    });
+    const overlays = await teamProjectEventOverlays(typedAs<paths>(fake.client), fake.client, TEAM, "2026-11-14", "2026-11-20");
+    expect(fake.calls.find((call) => call.path.endsWith("/sources"))!.query).toMatchObject({ from: "2026-11-14", to: "2026-11-21", source: "PROJECT" });
+    expect(overlays).toEqual([
+      { id: "project:o1", kind: "project-event", day: "2026-11-15", time: expect.any(String), end: expect.any(String), title: "Event o1", projectId: "p1", projectName: "" },
+    ]);
+  });
 });
 
 describe("team sprints adapter (TM-05)", () => {
@@ -305,6 +333,16 @@ describe("team sprints adapter (TM-05)", () => {
           201,
         );
       if (parts[4] === "summary") return json(summary({ planId: parts[3] }));
+      if (parts[4] === "burndown")
+        return json({
+          planId: parts[3],
+          basis: "RECORDED_OBSERVATIONS",
+          days: [
+            { date: "2026-11-08", remainingPoints: 8, remainingMinutes: 600, scopeTasks: 2, completedTasks: 0 },
+            { date: "2026-11-09", remainingPoints: null, remainingMinutes: null, scopeTasks: null, completedTasks: null },
+            { date: "2026-11-10", remainingPoints: 5, remainingMinutes: 300, scopeTasks: 2, completedTasks: 1 },
+          ],
+        });
       if (parts[2] === "plans" && parts.length === 4)
         return json(plan(parts[3]!, "ACTIVE", "2026-11-08", "2026-11-21"));
       if (parts[2] === "capacity")
@@ -339,7 +377,7 @@ describe("team sprints adapter (TM-05)", () => {
     });
   });
 
-  it("current: hours from the plan summary, capacity from the capacity summary, items of the sprint plan", async () => {
+  it("current: hours from the plan summary, capacity from the capacity summary, burndown from recorded observations", async () => {
     const fake = sprintApi("SPRINTS", [
       plan("s0", "CLOSED", "2026-10-25", "2026-11-07"),
       plan("s1", "ACTIVE", "2026-11-08", "2026-11-21"),
@@ -355,6 +393,8 @@ describe("team sprints adapter (TM-05)", () => {
       capacity: 50,
     });
     expect(state.sprint!.items).toMatchObject([{ taskId: "k1", estimate: 2, status: "todo" }]);
+    // The line stops at the first day without a recorded observation (never interpolated).
+    expect(state.sprint!.burndown).toEqual([{ day: "2026-11-08", remaining: 10 }]);
     // Next sprint: the day after the active one, same length (14 days).
     expect([state.next.start, state.next.end, state.next.number]).toEqual(["2026-11-22", "2026-12-05", 3]);
     expect(fake.writes()).toEqual([]);

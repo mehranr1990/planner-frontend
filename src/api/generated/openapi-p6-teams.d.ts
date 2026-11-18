@@ -2084,6 +2084,374 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/teams/{id}/projects/{projectId}/association-history": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["teamGapgetteamsidprojectsprojectIdassociationhistory"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/teams/{id}/calendar/occupancy": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["teamGapgetteamsidcalendaroccupancy"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/teams/{id}/files/config": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["teamGapgetteamsidfilesconfig"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/teams/{id}/assignments/{assignmentId}/revert": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["teamGappostteamsidassignmentsassignmentIdrevert"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/teams/{id}/project-association-requests": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["teamGapgetteamsidprojectassociationrequests"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/teams/{id}/projects/{projectId}/association-request": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["teamGapgetteamsidprojectsprojectIdassociationrequest"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/teams/{id}/projects/{projectId}/association-requests": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["teamGappostteamsidprojectsprojectIdassociationrequests"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/teams/{id}/projects/{projectId}/association-request/decision": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["teamGappostteamsidprojectsprojectIdassociationrequestdecision"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/teams/{id}/visible-tasks": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["teamGapgetteamsidvisibletasks"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/teams/{id}/calendar/sources": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["teamGapgetteamsidcalendarsources"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/teams/{id}/cross-team-workload": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["teamGapgetteamsidcrossteamworkload"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/teams/{id}/plans/{planId}/burndown": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["teamGapgetteamsidplansplanIdburndown"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/teams/{id}/plans/{planId}/history": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["teamGapgetteamsidplansplanIdhistory"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/teams/{id}/sprint-velocity": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["teamGapgetteamsidsprintvelocity"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/teams/{id}/sent-invitations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["teamGapgetteamsidsentinvitations"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/teams/{id}/invitations/{offerId}/resend": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["teamGappostteamsidinvitationsofferIdresend"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/teams/{id}/memberships/{accessId}/weekly-capacity": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["teamGapgetteamsidmembershipsaccessIdweeklycapacity"];
+        put: operations["teamGapputteamsidmembershipsaccessIdweeklycapacity"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/teams/{id}/availability": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["teamGapgetteamsidavailability"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/teams/{id}/forecast": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["teamGapgetteamsidforecast"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/teams/{id}/meetings/{meetingId}/rsvp-summary": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["teamGapgetteamsidmeetingsmeetingIdrsvpsummary"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/teams/{id}/time-off/{timeOffId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["teamGappatchteamsidtimeofftimeOffId"];
+        trace?: never;
+    };
+    "/api/v1/teams/{id}/plans/{planId}/point-capacity": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["teamGapgetteamsidplansplanIdpointcapacity"];
+        put: operations["teamGapputteamsidplansplanIdpointcapacity"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/teams/{id}/recorded-activity": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["teamGapgetteamsidrecordedactivity"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -4788,6 +5156,10 @@ export interface operations {
                             revision: number;
                             deletedAt: string | null;
                             completedAt: string | null;
+                            /** Format: date-time */
+                            createdAt?: string;
+                            firstStartedAt?: string | null;
+                            parentTaskId?: string | null;
                         }[];
                         nextCursor: string | null;
                     };
@@ -4941,6 +5313,10 @@ export interface operations {
                         revision: number;
                         deletedAt: string | null;
                         completedAt: string | null;
+                        /** Format: date-time */
+                        createdAt?: string;
+                        firstStartedAt?: string | null;
+                        parentTaskId?: string | null;
                     };
                 };
             };
@@ -5074,6 +5450,10 @@ export interface operations {
                         revision: number;
                         deletedAt: string | null;
                         completedAt: string | null;
+                        /** Format: date-time */
+                        createdAt?: string;
+                        firstStartedAt?: string | null;
+                        parentTaskId?: string | null;
                     };
                 };
             };
@@ -5222,6 +5602,10 @@ export interface operations {
                         revision: number;
                         deletedAt: string | null;
                         completedAt: string | null;
+                        /** Format: date-time */
+                        createdAt?: string;
+                        firstStartedAt?: string | null;
+                        parentTaskId?: string | null;
                     };
                 };
             };
@@ -7373,6 +7757,10 @@ export interface operations {
             content: {
                 "application/json": {
                     /** @constant */
+                    scope: "CANCEL_FUTURE";
+                    recurrenceKey: string;
+                } | {
+                    /** @constant */
                     scope: "THIS_OCCURRENCE";
                     recurrenceKey: string;
                     exceptionRevision: number;
@@ -8892,6 +9280,10 @@ export interface operations {
                                 revision: number;
                                 deletedAt: string | null;
                                 completedAt: string | null;
+                                /** Format: date-time */
+                                createdAt?: string;
+                                firstStartedAt?: string | null;
+                                parentTaskId?: string | null;
                             } | {
                                 /** Format: uuid */
                                 id: string;
@@ -9087,6 +9479,10 @@ export interface operations {
                             revision: number;
                             deletedAt: string | null;
                             completedAt: string | null;
+                            /** Format: date-time */
+                            createdAt?: string;
+                            firstStartedAt?: string | null;
+                            parentTaskId?: string | null;
                         } | {
                             /** Format: uuid */
                             id: string;
@@ -9395,6 +9791,10 @@ export interface operations {
                             revision: number;
                             deletedAt: string | null;
                             completedAt: string | null;
+                            /** Format: date-time */
+                            createdAt?: string;
+                            firstStartedAt?: string | null;
+                            parentTaskId?: string | null;
                         } | {
                             /** Format: uuid */
                             id: string;
@@ -12675,6 +13075,56 @@ export interface operations {
                             localStart: string;
                             localEnd: string;
                         };
+                        recurrence?: {
+                            /**
+                             * @default 1
+                             * @constant
+                             */
+                            version?: 1;
+                            /** Format: date */
+                            startDate: string;
+                            endDate: string | null;
+                            localTime: string;
+                            timezone: string;
+                            rule: {
+                                /** @constant */
+                                kind: "DAILY";
+                                interval: number;
+                            } | {
+                                /** @constant */
+                                kind: "WEEKLY";
+                                interval: number;
+                            } | {
+                                /** @constant */
+                                kind: "WEEKDAYS";
+                                interval: number;
+                                weekdays: number[];
+                            } | {
+                                /** @constant */
+                                kind: "MONTHLY_DATE";
+                                interval: number;
+                                day: number;
+                            } | {
+                                /** @constant */
+                                kind: "MONTHLY_NTH";
+                                interval: number;
+                                weekday: number;
+                                nth: -1 | number;
+                            } | {
+                                /** @constant */
+                                kind: "YEARLY";
+                                interval: number;
+                                month: number;
+                                day: number;
+                            } | {
+                                /** @constant */
+                                kind: "INTERVAL";
+                                interval: number;
+                                /** @enum {string} */
+                                unit: "DAY" | "WEEK" | "MONTH" | "YEAR";
+                            };
+                            exclusionDates: string[];
+                        };
                     };
                     agenda: string;
                 };
@@ -13372,12 +13822,13 @@ export interface operations {
                                 accessId: string;
                                 generation: number;
                             };
+                            recurrenceKey?: string | null;
                             /** Format: date-time */
                             expiresAt: string;
                             /** Format: uuid */
                             meetingId: string;
                             /** @enum {string} */
-                            state: "PENDING" | "ACCEPTED" | "DECLINED" | "REVOKED" | "EXPIRED" | "UNAVAILABLE";
+                            state: "PENDING" | "ACCEPTED" | "DECLINED" | "MAYBE" | "REVOKED" | "EXPIRED" | "UNAVAILABLE";
                             revision: number;
                         }[];
                         nextCursor: string | null;
@@ -13500,6 +13951,7 @@ export interface operations {
                         accessId: string;
                         generation: number;
                     };
+                    recurrenceKey?: string | null;
                     /** Format: date-time */
                     expiresAt: string;
                 };
@@ -13522,12 +13974,13 @@ export interface operations {
                             accessId: string;
                             generation: number;
                         };
+                        recurrenceKey?: string | null;
                         /** Format: date-time */
                         expiresAt: string;
                         /** Format: uuid */
                         meetingId: string;
                         /** @enum {string} */
-                        state: "PENDING" | "ACCEPTED" | "DECLINED" | "REVOKED" | "EXPIRED" | "UNAVAILABLE";
+                        state: "PENDING" | "ACCEPTED" | "DECLINED" | "MAYBE" | "REVOKED" | "EXPIRED" | "UNAVAILABLE";
                         revision: number;
                     };
                 };
@@ -13642,7 +14095,7 @@ export interface operations {
             content: {
                 "application/json": {
                     /** @enum {string} */
-                    decision: "ACCEPTED" | "DECLINED";
+                    decision: "ACCEPTED" | "DECLINED" | "MAYBE";
                 };
             };
         };
@@ -13663,12 +14116,13 @@ export interface operations {
                             accessId: string;
                             generation: number;
                         };
+                        recurrenceKey?: string | null;
                         /** Format: date-time */
                         expiresAt: string;
                         /** Format: uuid */
                         meetingId: string;
                         /** @enum {string} */
-                        state: "PENDING" | "ACCEPTED" | "DECLINED" | "REVOKED" | "EXPIRED" | "UNAVAILABLE";
+                        state: "PENDING" | "ACCEPTED" | "DECLINED" | "MAYBE" | "REVOKED" | "EXPIRED" | "UNAVAILABLE";
                         revision: number;
                     };
                 };
@@ -13801,12 +14255,13 @@ export interface operations {
                             accessId: string;
                             generation: number;
                         };
+                        recurrenceKey?: string | null;
                         /** Format: date-time */
                         expiresAt: string;
                         /** Format: uuid */
                         meetingId: string;
                         /** @enum {string} */
-                        state: "PENDING" | "ACCEPTED" | "DECLINED" | "REVOKED" | "EXPIRED" | "UNAVAILABLE";
+                        state: "PENDING" | "ACCEPTED" | "DECLINED" | "MAYBE" | "REVOKED" | "EXPIRED" | "UNAVAILABLE";
                         revision: number;
                     };
                 };
@@ -15190,6 +15645,10 @@ export interface operations {
                                 revision: number;
                                 deletedAt: string | null;
                                 completedAt: string | null;
+                                /** Format: date-time */
+                                createdAt?: string;
+                                firstStartedAt?: string | null;
+                                parentTaskId?: string | null;
                             };
                             /** @enum {string} */
                             boardState: "TODO" | "IN_PROGRESS" | "REVIEW" | "BLOCKED" | "DONE" | "CANCELED";
@@ -15350,6 +15809,10 @@ export interface operations {
                             revision: number;
                             deletedAt: string | null;
                             completedAt: string | null;
+                            /** Format: date-time */
+                            createdAt?: string;
+                            firstStartedAt?: string | null;
+                            parentTaskId?: string | null;
                         };
                         /** @enum {string} */
                         boardState: "TODO" | "IN_PROGRESS" | "REVIEW" | "BLOCKED" | "DONE" | "CANCELED";
@@ -15507,6 +15970,10 @@ export interface operations {
                             revision: number;
                             deletedAt: string | null;
                             completedAt: string | null;
+                            /** Format: date-time */
+                            createdAt?: string;
+                            firstStartedAt?: string | null;
+                            parentTaskId?: string | null;
                         };
                         /** @enum {string} */
                         boardState: "TODO" | "IN_PROGRESS" | "REVIEW" | "BLOCKED" | "DONE" | "CANCELED";
@@ -17540,7 +18007,7 @@ export interface operations {
                             /** @enum {string} */
                             state: "PENDING" | "ACCEPTED" | "DECLINED" | "REMOVED";
                             declineReason: string | null;
-                            endReason: ("REMOVED" | "REASSIGNED") | null;
+                            endReason: ("REMOVED" | "REASSIGNED" | "WITHDRAWN") | null;
                             revision: number;
                             /** Format: date-time */
                             createdAt: string;
@@ -17703,7 +18170,7 @@ export interface operations {
                         /** @enum {string} */
                         state: "PENDING" | "ACCEPTED" | "DECLINED" | "REMOVED";
                         declineReason: string | null;
-                        endReason: ("REMOVED" | "REASSIGNED") | null;
+                        endReason: ("REMOVED" | "REASSIGNED" | "WITHDRAWN") | null;
                         revision: number;
                         /** Format: date-time */
                         createdAt: string;
@@ -17856,7 +18323,7 @@ export interface operations {
                         /** @enum {string} */
                         state: "PENDING" | "ACCEPTED" | "DECLINED" | "REMOVED";
                         declineReason: string | null;
-                        endReason: ("REMOVED" | "REASSIGNED") | null;
+                        endReason: ("REMOVED" | "REASSIGNED" | "WITHDRAWN") | null;
                         revision: number;
                         /** Format: date-time */
                         createdAt: string;
@@ -18009,7 +18476,7 @@ export interface operations {
                         /** @enum {string} */
                         state: "PENDING" | "ACCEPTED" | "DECLINED" | "REMOVED";
                         declineReason: string | null;
-                        endReason: ("REMOVED" | "REASSIGNED") | null;
+                        endReason: ("REMOVED" | "REASSIGNED" | "WITHDRAWN") | null;
                         revision: number;
                         /** Format: date-time */
                         createdAt: string;
@@ -18165,7 +18632,7 @@ export interface operations {
                         /** @enum {string} */
                         state: "PENDING" | "ACCEPTED" | "DECLINED" | "REMOVED";
                         declineReason: string | null;
-                        endReason: ("REMOVED" | "REASSIGNED") | null;
+                        endReason: ("REMOVED" | "REASSIGNED" | "WITHDRAWN") | null;
                         revision: number;
                         /** Format: date-time */
                         createdAt: string;
@@ -18326,7 +18793,7 @@ export interface operations {
                             /** @enum {string} */
                             state: "PENDING" | "ACCEPTED" | "DECLINED" | "REMOVED";
                             declineReason: string | null;
-                            endReason: ("REMOVED" | "REASSIGNED") | null;
+                            endReason: ("REMOVED" | "REASSIGNED" | "WITHDRAWN") | null;
                             revision: number;
                             /** Format: date-time */
                             createdAt: string;
@@ -18358,7 +18825,7 @@ export interface operations {
                             /** @enum {string} */
                             state: "PENDING" | "ACCEPTED" | "DECLINED" | "REMOVED";
                             declineReason: string | null;
-                            endReason: ("REMOVED" | "REASSIGNED") | null;
+                            endReason: ("REMOVED" | "REASSIGNED" | "WITHDRAWN") | null;
                             revision: number;
                             /** Format: date-time */
                             createdAt: string;
@@ -18616,7 +19083,7 @@ export interface operations {
                             /** Format: uuid */
                             id: string;
                             /** @enum {string} */
-                            action: "ASSIGNED" | "ACCEPTED" | "DECLINED" | "REMOVED" | "REASSIGNED" | "REMINDED";
+                            action: "ASSIGNED" | "ACCEPTED" | "DECLINED" | "REMOVED" | "REASSIGNED" | "REMINDED" | "REVERTED";
                             by: {
                                 /** Format: uuid */
                                 accessId: string;
@@ -18764,7 +19231,7 @@ export interface operations {
                                 /** @enum {string} */
                                 state: "PENDING" | "ACCEPTED" | "DECLINED" | "REMOVED";
                                 declineReason: string | null;
-                                endReason: ("REMOVED" | "REASSIGNED") | null;
+                                endReason: ("REMOVED" | "REASSIGNED" | "WITHDRAWN") | null;
                                 revision: number;
                                 /** Format: date-time */
                                 createdAt: string;
@@ -18810,7 +19277,7 @@ export interface operations {
                                 /** @enum {string} */
                                 state: "PENDING" | "ACCEPTED" | "DECLINED" | "REMOVED";
                                 declineReason: string | null;
-                                endReason: ("REMOVED" | "REASSIGNED") | null;
+                                endReason: ("REMOVED" | "REASSIGNED" | "WITHDRAWN") | null;
                                 revision: number;
                                 /** Format: date-time */
                                 createdAt: string;
@@ -20347,7 +20814,7 @@ export interface operations {
                             /** Format: uuid */
                             id: string;
                             /** @enum {string} */
-                            action: "SUBMITTED" | "APPROVED" | "REJECTED" | "CANCELED";
+                            action: "SUBMITTED" | "APPROVED" | "REJECTED" | "CANCELED" | "EDITED";
                             by: {
                                 /** Format: uuid */
                                 accessId: string;
@@ -27620,6 +28087,3703 @@ export interface operations {
                         revision: number;
                         /** @constant */
                         state: "CANCELED";
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    teamGapgetteamsidprojectsprojectIdassociationhistory: {
+        parameters: {
+            query?: {
+                limit?: number;
+                after?: string;
+            };
+            header?: never;
+            path: {
+                id: string;
+                projectId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Current authorized Team result; explicit capacity and independent source permissions apply. */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        items: {
+                            /** Format: uuid */
+                            id: string;
+                            actorId: string | null;
+                            /** Format: date-time */
+                            at: string;
+                            action: string;
+                            resourceId: string | null;
+                            changedFields: string[];
+                            /** @constant */
+                            detailsBasis: "RECORDED_METADATA_ONLY";
+                            request: {
+                                /** Format: uuid */
+                                id: string;
+                                /** @enum {string} */
+                                action: "LINK" | "UNLINK";
+                                /** @enum {string} */
+                                state: "PENDING" | "APPROVED" | "REJECTED" | "CANCELED";
+                                /** Format: date-time */
+                                requestedAt: string;
+                                reviewedAt: string | null;
+                            } | null;
+                        }[];
+                        nextCursor: string | null;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    teamGapgetteamsidcalendaroccupancy: {
+        parameters: {
+            query: {
+                limit?: string;
+                cursor?: string;
+                from: string;
+                to: string;
+                timezone: string;
+                source?: "ALL" | "TEAM" | "PROJECT";
+            };
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Current authorized Team result; explicit capacity and independent source permissions apply. */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: date */
+                        from: string;
+                        /** Format: date */
+                        to: string;
+                        timezone: string;
+                        /** Format: date-time */
+                        asOf: string;
+                        /** @constant */
+                        basis: "UNION_OF_AUTHORIZED_ACTIVE_CALENDAR_OCCURRENCES";
+                        visibleEvents: number;
+                        unknownIntervals: number;
+                        occupiedMinutes: number;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    teamGapgetteamsidfilesconfig: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Current authorized Team result; explicit capacity and independent source permissions apply. */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        maxBytes: number;
+                        allowedTypes: ("text/plain" | "application/pdf" | "image/png" | "image/jpeg")[];
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    teamGappostteamsidassignmentsassignmentIdrevert: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "If-Match": string;
+                "Idempotency-Key": string;
+            };
+            path: {
+                id: string;
+                assignmentId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** Format: uuid */
+                    id: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Current authorized Team result; explicit capacity and independent source permissions apply. */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        previous: {
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            taskId: string;
+                            assignee: {
+                                /** Format: uuid */
+                                accessId: string;
+                                generation: number;
+                            };
+                            issuer: {
+                                /** Format: uuid */
+                                accessId: string;
+                                generation: number;
+                            };
+                            /** @enum {string} */
+                            state: "PENDING" | "ACCEPTED" | "DECLINED" | "REMOVED";
+                            declineReason: string | null;
+                            endReason: ("REMOVED" | "REASSIGNED" | "WITHDRAWN") | null;
+                            revision: number;
+                            /** Format: date-time */
+                            createdAt: string;
+                            respondedAt: string | null;
+                            endedAt: string | null;
+                            can: {
+                                accept: boolean;
+                                decline: boolean;
+                                remove: boolean;
+                                reassign: boolean;
+                                remind: boolean;
+                            };
+                        };
+                        current: {
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            taskId: string;
+                            assignee: {
+                                /** Format: uuid */
+                                accessId: string;
+                                generation: number;
+                            };
+                            issuer: {
+                                /** Format: uuid */
+                                accessId: string;
+                                generation: number;
+                            };
+                            /** @enum {string} */
+                            state: "PENDING" | "ACCEPTED" | "DECLINED" | "REMOVED";
+                            declineReason: string | null;
+                            endReason: ("REMOVED" | "REASSIGNED" | "WITHDRAWN") | null;
+                            revision: number;
+                            /** Format: date-time */
+                            createdAt: string;
+                            respondedAt: string | null;
+                            endedAt: string | null;
+                            can: {
+                                accept: boolean;
+                                decline: boolean;
+                                remove: boolean;
+                                reassign: boolean;
+                                remind: boolean;
+                            };
+                        };
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    teamGapgetteamsidprojectassociationrequests: {
+        parameters: {
+            query?: {
+                limit?: number;
+                after?: string;
+            };
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Current authorized Team result; explicit capacity and independent source permissions apply. */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        items: {
+                            /** Format: uuid */
+                            teamId: string;
+                            /** Format: uuid */
+                            projectId: string;
+                            revision: number;
+                            active: boolean;
+                            request: {
+                                /** Format: uuid */
+                                id: string;
+                                /** @enum {string} */
+                                action: "LINK" | "UNLINK";
+                                /** @enum {string} */
+                                state: "PENDING" | "APPROVED" | "REJECTED" | "CANCELED";
+                                /** Format: date-time */
+                                requestedAt: string;
+                                reviewedAt: string | null;
+                            } | null;
+                            implications: {
+                                /** @constant */
+                                grantsProjectMembership: false;
+                                /** @constant */
+                                changesCustody: false;
+                                /** @constant */
+                                changesRetention: false;
+                            };
+                        }[];
+                        nextCursor: string | null;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    teamGapgetteamsidprojectsprojectIdassociationrequest: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+                projectId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Current authorized Team result; explicit capacity and independent source permissions apply. */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        teamId: string;
+                        /** Format: uuid */
+                        projectId: string;
+                        revision: number;
+                        active: boolean;
+                        request: {
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string} */
+                            action: "LINK" | "UNLINK";
+                            /** @enum {string} */
+                            state: "PENDING" | "APPROVED" | "REJECTED" | "CANCELED";
+                            /** Format: date-time */
+                            requestedAt: string;
+                            reviewedAt: string | null;
+                        } | null;
+                        implications: {
+                            /** @constant */
+                            grantsProjectMembership: false;
+                            /** @constant */
+                            changesCustody: false;
+                            /** @constant */
+                            changesRetention: false;
+                        };
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    teamGappostteamsidprojectsprojectIdassociationrequests: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "If-Match": string;
+                "Idempotency-Key": string;
+            };
+            path: {
+                id: string;
+                projectId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** Format: uuid */
+                    id: string;
+                    /** @enum {string} */
+                    action: "LINK" | "UNLINK";
+                };
+            };
+        };
+        responses: {
+            /** @description Current authorized Team result; explicit capacity and independent source permissions apply. */
+            201: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        teamId: string;
+                        /** Format: uuid */
+                        projectId: string;
+                        revision: number;
+                        active: boolean;
+                        request: {
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string} */
+                            action: "LINK" | "UNLINK";
+                            /** @enum {string} */
+                            state: "PENDING" | "APPROVED" | "REJECTED" | "CANCELED";
+                            /** Format: date-time */
+                            requestedAt: string;
+                            reviewedAt: string | null;
+                        } | null;
+                        implications: {
+                            /** @constant */
+                            grantsProjectMembership: false;
+                            /** @constant */
+                            changesCustody: false;
+                            /** @constant */
+                            changesRetention: false;
+                        };
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    teamGappostteamsidprojectsprojectIdassociationrequestdecision: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "If-Match": string;
+            };
+            path: {
+                id: string;
+                projectId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @enum {string} */
+                    decision: "APPROVE" | "REJECT" | "CANCEL";
+                };
+            };
+        };
+        responses: {
+            /** @description Current authorized Team result; explicit capacity and independent source permissions apply. */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        teamId: string;
+                        /** Format: uuid */
+                        projectId: string;
+                        revision: number;
+                        active: boolean;
+                        request: {
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string} */
+                            action: "LINK" | "UNLINK";
+                            /** @enum {string} */
+                            state: "PENDING" | "APPROVED" | "REJECTED" | "CANCELED";
+                            /** Format: date-time */
+                            requestedAt: string;
+                            reviewedAt: string | null;
+                        } | null;
+                        implications: {
+                            /** @constant */
+                            grantsProjectMembership: false;
+                            /** @constant */
+                            changesCustody: false;
+                            /** @constant */
+                            changesRetention: false;
+                        };
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    teamGapgetteamsidvisibletasks: {
+        parameters: {
+            query?: {
+                limit?: number;
+                after?: string;
+                source?: "ALL" | "TEAM" | "PROJECT";
+                status?: "OPEN" | "IN_PROGRESS" | "DONE" | "CANCELED";
+            };
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Current authorized Team result; explicit capacity and independent source permissions apply. */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        items: {
+                            /** @enum {string} */
+                            kind: "TEAM" | "PROJECT";
+                            /** Format: uuid */
+                            spaceId: string;
+                            /** Format: uuid */
+                            scopeId: string;
+                            /** @constant */
+                            visibility: "FULL";
+                            task: {
+                                /** Format: uuid */
+                                id: string;
+                                /** Format: uuid */
+                                spaceId: string;
+                                /** Format: uuid */
+                                scopeId: string;
+                                /** Format: uuid */
+                                createdByActorId: string;
+                                title: string;
+                                description: string | null;
+                                /** @enum {string} */
+                                status: "OPEN" | "IN_PROGRESS" | "DONE" | "CANCELED";
+                                /** @enum {string} */
+                                priority: "NONE" | "LOW" | "MEDIUM" | "HIGH" | "URGENT";
+                                revision: number;
+                                deletedAt: string | null;
+                                completedAt: string | null;
+                                /** Format: date-time */
+                                createdAt?: string;
+                                firstStartedAt?: string | null;
+                                parentTaskId?: string | null;
+                            };
+                        }[];
+                        nextCursor: string | null;
+                        /** @constant */
+                        hiddenWork: "UNKNOWN";
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    teamGapgetteamsidcalendarsources: {
+        parameters: {
+            query: {
+                limit?: string;
+                cursor?: string;
+                from: string;
+                to: string;
+                timezone: string;
+                source?: "ALL" | "TEAM" | "PROJECT";
+            };
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Current authorized Team result; explicit capacity and independent source permissions apply. */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        items: {
+                            /** @enum {string} */
+                            kind: "TEAM" | "PROJECT";
+                            /** Format: uuid */
+                            spaceId: string;
+                            /** Format: uuid */
+                            scopeId: string;
+                            occurrence: {
+                                identity: string;
+                                /** Format: uuid */
+                                resourceId: string;
+                                /** @enum {string} */
+                                kind: "EVENT" | "TIME_BLOCK";
+                                seriesId: string | null;
+                                recurrenceKey: string | null;
+                                revision: number;
+                                exceptionRevision: number;
+                                title: string;
+                                /** @enum {string} */
+                                status: "ACTIVE" | "CANCELED" | "SKIPPED";
+                                reason: "DST_GAP" | null;
+                                schedule: {
+                                    /** @constant */
+                                    kind: "ALL_DAY";
+                                    timezone: string;
+                                    /** Format: date */
+                                    startDate: string;
+                                    /** Format: date */
+                                    endDate: string;
+                                    startAt: null;
+                                    endAt: null;
+                                } | {
+                                    /** @constant */
+                                    kind: "TIMED";
+                                    timezone: string;
+                                    localStart: string;
+                                    localEnd: string;
+                                    startAt: string | null;
+                                    endAt: string | null;
+                                };
+                                displayStart: string;
+                                displayEnd: string;
+                                taskId: string | null;
+                                taskDisposition: ("READY" | "STALE" | "COMPLETED" | "DELETED" | "SKIPPED" | "CANCELED" | "BLOCKED") | null;
+                                /** @constant */
+                                foldPolicy: "EARLIER";
+                                /** @constant */
+                                gapPolicy: "REJECT_EXPLICIT_SKIP_RECURRENCE";
+                            };
+                        }[];
+                        nextCursor: string | null;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    teamGapgetteamsidcrossteamworkload: {
+        parameters: {
+            query: {
+                from: string;
+                to: string;
+                timezone: string;
+            };
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Current authorized Team result; explicit capacity and independent source permissions apply. */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: date-time */
+                        asOf: string;
+                        /** @constant */
+                        basis: "REQUESTER_OWN_VISIBLE_TEAM_ASSIGNMENTS_DISTINCT_TASKS";
+                        /** @constant */
+                        capacityBasis: "INDEPENDENT_TEAM_BUDGETS_NO_SHARED_PERSONAL_CAPACITY";
+                        /** @constant */
+                        personalAvailability: "UNKNOWN";
+                        items: {
+                            /** Format: uuid */
+                            teamId: string;
+                            capacity: {
+                                /** Format: date */
+                                from: string;
+                                /** Format: date */
+                                to: string;
+                                timezone: string;
+                                members: {
+                                    member: {
+                                        /** Format: uuid */
+                                        accessId: string;
+                                        generation: number;
+                                    };
+                                    days: {
+                                        /** Format: date */
+                                        date: string;
+                                        availableMinutes: number | null;
+                                        timeOffMinutes: number;
+                                        netAvailableMinutes: number | null;
+                                        reservedMinutes: number;
+                                        actualMinutes: number;
+                                    }[];
+                                    totals: {
+                                        availableMinutes: number;
+                                        unknownDays: number;
+                                        timeOffMinutes: number;
+                                        netAvailableMinutes: number;
+                                        reservedMinutes: number;
+                                        actualMinutes: number;
+                                        bookedBasisPoints: number | null;
+                                    };
+                                }[];
+                                totals: {
+                                    availableMinutes: number;
+                                    unknownDays: number;
+                                    timeOffMinutes: number;
+                                    netAvailableMinutes: number;
+                                    reservedMinutes: number;
+                                    actualMinutes: number;
+                                    bookedBasisPoints: number | null;
+                                };
+                            };
+                        }[];
+                        knownEstimatedMinutes: number;
+                        unknownEstimates: number;
+                        recordedMinutes: number;
+                        allocatedProjectMinutes: number;
+                        distinctTasks: number;
+                        capacityMinutes: number | null;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    teamGapgetteamsidplansplanIdburndown: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+                planId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Current authorized Team result; explicit capacity and independent source permissions apply. */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @constant */
+                        sourceBasis: "TEAM_OWNED_TASKS";
+                        /** Format: uuid */
+                        planId: string;
+                        /** Format: date */
+                        startDate: string;
+                        /** Format: date */
+                        endDate: string;
+                        timezone: string;
+                        /** Format: date-time */
+                        asOf: string;
+                        /** @enum {string} */
+                        basis: "RECORDED_OBSERVATIONS" | "INSUFFICIENT_HISTORY";
+                        originalCommittedTasks: number | null;
+                        originalCommittedPoints: number | null;
+                        originalCommittedMinutes: number | null;
+                        currentPoints: number | null;
+                        currentMinutes: number | null;
+                        currentTasks: number;
+                        addedTasks: number | null;
+                        removedTasks: number | null;
+                        days: {
+                            /** Format: date */
+                            date: string;
+                            remainingPoints: number | null;
+                            remainingMinutes: number | null;
+                            scopeTasks: number | null;
+                            completedTasks: number | null;
+                        }[];
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    teamGapgetteamsidplansplanIdhistory: {
+        parameters: {
+            query?: {
+                limit?: number;
+                after?: string;
+            };
+            header?: never;
+            path: {
+                id: string;
+                planId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Current authorized Team result; explicit capacity and independent source permissions apply. */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        items: {
+                            /** Format: uuid */
+                            id: string;
+                            actorId: string | null;
+                            /** Format: date-time */
+                            at: string;
+                            action: string;
+                            resourceId: string | null;
+                            changedFields: string[];
+                            /** @constant */
+                            detailsBasis: "RECORDED_METADATA_ONLY";
+                            observation: {
+                                scopeTasks: number;
+                                completedTasks: number;
+                                remainingPoints: number | null;
+                                remainingMinutes: number | null;
+                            } | null;
+                        }[];
+                        nextCursor: string | null;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    teamGapgetteamsidsprintvelocity: {
+        parameters: {
+            query?: {
+                limit?: number;
+            };
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Current authorized Team result; explicit capacity and independent source permissions apply. */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @constant */
+                        sourceBasis: "TEAM_OWNED_TASKS";
+                        /** @constant */
+                        basis: "RECORDED_CLOSED_SPRINT_EVIDENCE_NO_TIME_CONVERSION";
+                        items: {
+                            /** Format: uuid */
+                            planId: string;
+                            closedAt: string | null;
+                            completedPoints: number | null;
+                            completedTasks: number | null;
+                            unestimatedTasks: number | null;
+                            /** @enum {string} */
+                            state: "KNOWN" | "INSUFFICIENT_HISTORY";
+                            /** @constant */
+                            scopePolicy: "COMPLETED_IN_SPRINT_AND_PRESENT_AT_CLOSE";
+                        }[];
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    teamGapgetteamsidsentinvitations: {
+        parameters: {
+            query?: {
+                limit?: number;
+                after?: string;
+                state?: "PENDING" | "ACCEPTED" | "DECLINED" | "REVOKED" | "EXPIRED";
+            };
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Current authorized Team result; explicit capacity and independent source permissions apply. */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        items: {
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            spaceId: string;
+                            /** Format: uuid */
+                            scopeId: string;
+                            /** @constant */
+                            kind: "MEMBERSHIP";
+                            /** @enum {string} */
+                            memberRole: "ADMIN" | "LEAD" | "MEMBER" | "VIEWER";
+                            /** @enum {string} */
+                            state: "PENDING" | "ACCEPTED" | "DECLINED" | "REVOKED" | "EXPIRED";
+                            revision: number;
+                            /** Format: date-time */
+                            expiresAt: string;
+                            acceptedAccessId: string | null;
+                            recipientEmail: string | null;
+                            /** Format: date-time */
+                            createdAt: string;
+                            /** Format: date-time */
+                            sentAt: string;
+                        }[];
+                        nextCursor: string | null;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    teamGappostteamsidinvitationsofferIdresend: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "If-Match": string;
+                "Idempotency-Key": string;
+            };
+            path: {
+                id: string;
+                offerId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": Record<string, never>;
+            };
+        };
+        responses: {
+            /** @description Current authorized Team result; explicit capacity and independent source permissions apply. */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        /** Format: uuid */
+                        spaceId: string;
+                        /** Format: uuid */
+                        scopeId: string;
+                        /** @constant */
+                        kind: "MEMBERSHIP";
+                        /** @enum {string} */
+                        memberRole: "ADMIN" | "LEAD" | "MEMBER" | "VIEWER";
+                        /** @enum {string} */
+                        state: "PENDING" | "ACCEPTED" | "DECLINED" | "REVOKED" | "EXPIRED";
+                        revision: number;
+                        /** Format: date-time */
+                        expiresAt: string;
+                        acceptedAccessId: string | null;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    teamGapgetteamsidmembershipsaccessIdweeklycapacity: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+                accessId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Current authorized Team result; explicit capacity and independent source permissions apply. */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        member: {
+                            /** Format: uuid */
+                            accessId: string;
+                            generation: number;
+                        };
+                        template: {
+                            timezone: string;
+                            /** Format: date */
+                            effectiveFrom: string;
+                            weekdays: (number | null)[];
+                        } | null;
+                        revision: number;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    teamGapputteamsidmembershipsaccessIdweeklycapacity: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "If-Match": string;
+            };
+            path: {
+                id: string;
+                accessId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    timezone: string;
+                    /** Format: date */
+                    effectiveFrom: string;
+                    weekdays: (number | null)[];
+                };
+            };
+        };
+        responses: {
+            /** @description Current authorized Team result; explicit capacity and independent source permissions apply. */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        member: {
+                            /** Format: uuid */
+                            accessId: string;
+                            generation: number;
+                        };
+                        template: {
+                            timezone: string;
+                            /** Format: date */
+                            effectiveFrom: string;
+                            weekdays: (number | null)[];
+                        } | null;
+                        revision: number;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    teamGapgetteamsidavailability: {
+        parameters: {
+            query: {
+                from: string;
+                to: string;
+                timezone: string;
+            };
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Current authorized Team result; explicit capacity and independent source permissions apply. */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @constant */
+                        basis: "EXPLICIT_TEAM_CAPACITY_APPROVED_TIME_OFF_AND_VISIBLE_TEAM_WORK";
+                        /** @constant */
+                        personalAvailability: "UNKNOWN";
+                        /** @constant */
+                        busyIntervals: "UNKNOWN";
+                        /** Format: date-time */
+                        asOf: string;
+                        capacity: {
+                            /** Format: date */
+                            from: string;
+                            /** Format: date */
+                            to: string;
+                            timezone: string;
+                            members: {
+                                member: {
+                                    /** Format: uuid */
+                                    accessId: string;
+                                    generation: number;
+                                };
+                                days: {
+                                    /** Format: date */
+                                    date: string;
+                                    availableMinutes: number | null;
+                                    timeOffMinutes: number;
+                                    netAvailableMinutes: number | null;
+                                    reservedMinutes: number;
+                                    actualMinutes: number;
+                                }[];
+                                totals: {
+                                    availableMinutes: number;
+                                    unknownDays: number;
+                                    timeOffMinutes: number;
+                                    netAvailableMinutes: number;
+                                    reservedMinutes: number;
+                                    actualMinutes: number;
+                                    bookedBasisPoints: number | null;
+                                };
+                            }[];
+                            totals: {
+                                availableMinutes: number;
+                                unknownDays: number;
+                                timeOffMinutes: number;
+                                netAvailableMinutes: number;
+                                reservedMinutes: number;
+                                actualMinutes: number;
+                                bookedBasisPoints: number | null;
+                            };
+                        };
+                        missingEstimates: number;
+                        /** @constant */
+                        hiddenProjectWork: "UNKNOWN";
+                        projectAllocations: {
+                            member: {
+                                /** Format: uuid */
+                                accessId: string;
+                                generation: number;
+                            };
+                            /** Format: date */
+                            date: string;
+                            /** Format: uuid */
+                            projectId: string;
+                            /** Format: uuid */
+                            taskId: string;
+                            plannedMinutes: number;
+                        }[];
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    teamGapgetteamsidforecast: {
+        parameters: {
+            query: {
+                from: string;
+                to: string;
+                timezone: string;
+            };
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Current authorized Team result; explicit capacity and independent source permissions apply. */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @constant */
+                        basis: "EXPLICIT_TEAM_CAPACITY_APPROVED_TIME_OFF_AND_VISIBLE_TEAM_WORK";
+                        /** @constant */
+                        personalAvailability: "UNKNOWN";
+                        /** @constant */
+                        busyIntervals: "UNKNOWN";
+                        /** Format: date-time */
+                        asOf: string;
+                        capacity: {
+                            /** Format: date */
+                            from: string;
+                            /** Format: date */
+                            to: string;
+                            timezone: string;
+                            members: {
+                                member: {
+                                    /** Format: uuid */
+                                    accessId: string;
+                                    generation: number;
+                                };
+                                days: {
+                                    /** Format: date */
+                                    date: string;
+                                    availableMinutes: number | null;
+                                    timeOffMinutes: number;
+                                    netAvailableMinutes: number | null;
+                                    reservedMinutes: number;
+                                    actualMinutes: number;
+                                }[];
+                                totals: {
+                                    availableMinutes: number;
+                                    unknownDays: number;
+                                    timeOffMinutes: number;
+                                    netAvailableMinutes: number;
+                                    reservedMinutes: number;
+                                    actualMinutes: number;
+                                    bookedBasisPoints: number | null;
+                                };
+                            }[];
+                            totals: {
+                                availableMinutes: number;
+                                unknownDays: number;
+                                timeOffMinutes: number;
+                                netAvailableMinutes: number;
+                                reservedMinutes: number;
+                                actualMinutes: number;
+                                bookedBasisPoints: number | null;
+                            };
+                        };
+                        missingEstimates: number;
+                        /** @constant */
+                        hiddenProjectWork: "UNKNOWN";
+                        projectAllocations: {
+                            member: {
+                                /** Format: uuid */
+                                accessId: string;
+                                generation: number;
+                            };
+                            /** Format: date */
+                            date: string;
+                            /** Format: uuid */
+                            projectId: string;
+                            /** Format: uuid */
+                            taskId: string;
+                            plannedMinutes: number;
+                        }[];
+                        /** @constant */
+                        advisory: true;
+                        periods: {
+                            member: {
+                                /** Format: uuid */
+                                accessId: string;
+                                generation: number;
+                            };
+                            /** Format: date */
+                            date: string;
+                            knownWorkloadMinutes: number;
+                            unknownEstimates: number;
+                            remainingMinutes: number | null;
+                            overallocatedMinutes: number | null;
+                            /** @enum {string} */
+                            state: "KNOWN" | "UNKNOWN";
+                        }[];
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    teamGapgetteamsidmeetingsmeetingIdrsvpsummary: {
+        parameters: {
+            query?: {
+                recurrenceKey?: string;
+            };
+            header?: never;
+            path: {
+                id: string;
+                meetingId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Current authorized Team result; explicit capacity and independent source permissions apply. */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        meetingId: string;
+                        recurrenceKey: string | null;
+                        accepted: number;
+                        declined: number;
+                        maybe: number;
+                        pending: number;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    teamGappatchteamsidtimeofftimeOffId: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "If-Match": string;
+            };
+            path: {
+                id: string;
+                timeOffId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** Format: uuid */
+                    id: string;
+                    /** Format: date */
+                    startDate: string;
+                    /** Format: date */
+                    endDate: string;
+                    /** @default null */
+                    minutesPerDay?: number | null;
+                    /** @default null */
+                    reason?: string | null;
+                };
+            };
+        };
+        responses: {
+            /** @description Current authorized Team result; explicit capacity and independent source permissions apply. */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        member: {
+                            /** Format: uuid */
+                            accessId: string;
+                            generation: number;
+                        };
+                        /** Format: date */
+                        startDate: string;
+                        /** Format: date */
+                        endDate: string;
+                        minutesPerDay: number | null;
+                        reason: string | null;
+                        /** @enum {string} */
+                        state: "PENDING" | "APPROVED" | "REJECTED" | "CANCELED";
+                        decisionNote: string | null;
+                        decidedAt: string | null;
+                        revision: number;
+                        /** Format: date-time */
+                        createdAt: string;
+                        can: {
+                            decide: boolean;
+                            cancel: boolean;
+                        };
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    teamGapgetteamsidplansplanIdpointcapacity: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+                planId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Current authorized Team result; explicit capacity and independent source permissions apply. */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        capacityPoints: number | null;
+                        /** @constant */
+                        sourceBasis: "TEAM_OWNED_TASKS";
+                        /** Format: uuid */
+                        planId: string;
+                        revision: number;
+                        committedPoints: number;
+                        unestimatedTasks: number;
+                        remainingPoints: number | null;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    teamGapputteamsidplansplanIdpointcapacity: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "If-Match": string;
+            };
+            path: {
+                id: string;
+                planId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    capacityPoints: number | null;
+                };
+            };
+        };
+        responses: {
+            /** @description Current authorized Team result; explicit capacity and independent source permissions apply. */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        capacityPoints: number | null;
+                        /** @constant */
+                        sourceBasis: "TEAM_OWNED_TASKS";
+                        /** Format: uuid */
+                        planId: string;
+                        revision: number;
+                        committedPoints: number;
+                        unestimatedTasks: number;
+                        remainingPoints: number | null;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    teamGapgetteamsidrecordedactivity: {
+        parameters: {
+            query?: {
+                limit?: number;
+                after?: string;
+                action?: string;
+                resourceId?: string;
+            };
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Current authorized Team result; explicit capacity and independent source permissions apply. */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        items: {
+                            /** Format: uuid */
+                            id: string;
+                            actorId: string | null;
+                            /** Format: date-time */
+                            at: string;
+                            action: string;
+                            resourceId: string | null;
+                            changedFields: string[];
+                            /** @constant */
+                            detailsBasis: "RECORDED_METADATA_ONLY";
+                        }[];
+                        nextCursor: string | null;
                     };
                 };
             };

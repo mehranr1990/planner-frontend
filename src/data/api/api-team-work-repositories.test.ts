@@ -8,6 +8,7 @@ import { err, fakeApi, json } from "./test-support";
 /* Team modules (1,045-op contract) against in-memory fakes of their endpoints (no network). */
 
 const TEAM = "t1";
+const CONFIG = { maxBytes: 104_857_600, allowedTypes: ["text/plain", "application/pdf", "image/png", "image/jpeg"] };
 const member = (id: string, displayName: string) => ({ id, displayName, role: "MEMBER", state: "ACTIVE" });
 const version = (over: Record<string, unknown> = {}) => ({
   id: "v1", fileId: "f1", number: 1, filename: "brief.pdf", mimeType: "application/pdf", expectedSize: 10, size: 10, sha256: null, status: "READY",
@@ -37,6 +38,7 @@ describe("team files adapter", () => {
     let completed = false;
     const api = fakeApi((call, parts) => {
       if (parts[2] === "memberships") return json({ items: [member("a1", "Sara")], nextCursor: null });
+      if (parts[3] === "config") return json(CONFIG);
       if (call.method === "POST" && parts.length === 3) return json(file({ id: "f9", current: null, latest: version({ id: "v9", fileId: "f9", status: "INITIATED", revision: 4 }) }), 201);
       if (parts[6] === "complete") {
         completed = true;
@@ -57,12 +59,18 @@ describe("team files adapter", () => {
     expect(result).toMatchObject({ id: "f9", state: "ready" });
   });
 
-  it("refuses types outside the allow-list and uploads without bytes, without a request", async () => {
-    const api = fakeApi(() => err(500));
+  it("checks type and size against the server's files/config before any write; no bytes = no request", async () => {
+    const api = fakeApi((call, parts) => (parts[3] === "config" ? json({ maxBytes: 4, allowedTypes: ["application/pdf"] }) : err(500)));
     const files = createApiTeamFiles(typedAs<paths>(api.client));
+    await expect(files.config(TEAM)).resolves.toEqual({ maxBytes: 4, blockedExtensions: [] });
     await expect(files.upload(TEAM, { name: "a.exe", sizeBytes: 3, folderId: null, file: new Blob(["abc"]) })).rejects.toMatchObject({ code: "invalid" });
+    // PNG is allowed by the client list but not by this server.
+    await expect(files.upload(TEAM, { name: "a.png", sizeBytes: 3, folderId: null, file: new Blob(["abc"], { type: "image/png" }) })).rejects.toMatchObject({ code: "invalid" });
+    await expect(files.upload(TEAM, { name: "a.pdf", sizeBytes: 5, folderId: null, file: new Blob(["abcde"]) })).rejects.toMatchObject({ code: "invalid" });
+    const calls = api.calls.length;
     await expect(files.upload(TEAM, { name: "a.pdf", sizeBytes: 3, folderId: null })).rejects.toMatchObject({ code: "invalid" });
-    expect(api.calls).toHaveLength(0);
+    expect(api.calls).toHaveLength(calls);
+    expect(api.writes()).toEqual([]);
   });
 
   it("downloads the current READY version as bytes", async () => {
@@ -84,7 +92,7 @@ describe("team tasks adapter", () => {
     createdAt: "2026-11-10T08:00:00.000Z", respondedAt: null, endedAt: null, can: { accept: true, decline: true, remove: false, reassign: false, remind: false }, ...over,
   });
   function setup() {
-    const state = { board: "TODO" };
+    const state = { board: "TODO", assignment: "PENDING" };
     const api = fakeApi((call, parts) => {
       const r = parts[2];
       if (r === "access") return json({ accessId: "me", actorId: "act", role: "MEMBER", generation: 1, capabilities: ["task.create"] });
@@ -99,8 +107,18 @@ describe("team tasks adapter", () => {
           nextCursor: null,
         });
       if (r === "plans") return json({ items: [{ id: "p1", kind: "WEEK", title: "W", startDate: "2026-11-14", endDate: "2026-11-20", timezone: "Asia/Tehran", spaceId: "s1", state: "ACTIVE", revision: 1, createdByActorId: "x", reviewSummary: null, reviewedByActorId: null, reviewedAt: null }], nextCursor: null });
-      if (r === "assignments" && call.method === "GET") return json({ items: [assignment()], nextCursor: null });
+      if (r === "assignments" && call.method === "GET") return json({ items: [assignment({ state: state.assignment })], nextCursor: null });
       if (r === "assignments" && parts[4] === "accept") return json(assignment({ state: "ACCEPTED" }));
+      if (r === "assignments" && parts[4] === "revert") return json({});
+      if (r === "visible-tasks")
+        return json({
+          items: [
+            { kind: "PROJECT", spaceId: "ps", scopeId: "p1", visibility: "PROJECT", task: task("pk1", { scopeId: "p1", status: "IN_PROGRESS", createdAt: "2026-11-01T00:00:00.000Z" }) },
+            { kind: "PROJECT", spaceId: "ps", scopeId: "p1", visibility: "PROJECT", task: task("pk2", { scopeId: "p1", status: "CANCELED" }) },
+          ],
+          nextCursor: null,
+          hiddenWork: "UNKNOWN",
+        });
       if (r === "dependencies") return json({ revision: 1, edges: [{ id: "e1", predecessorId: "k1", successorId: "k3", kind: "FS", lagMinutes: 0, spaceId: "s1", scopeId: TEAM, revision: 1, retiredAt: null }] });
       if (r === "tasks" && parts[4] === "checklist") return json({ taskId: parts[3], revision: 1, items: [], done: parts[3] === "k1" ? 1 : 0, total: parts[3] === "k1" ? 4 : 0 });
       if (r === "tasks" && parts[4] === "board-state") {
@@ -109,7 +127,7 @@ describe("team tasks adapter", () => {
       }
       return err(404);
     });
-    return { ...api, tasks: createApiTeamTasks(typedAs<paths>(api.client)) };
+    return { ...api, state, tasks: createApiTeamTasks(typedAs<paths>(api.client)) };
   }
 
   it("maps board state, priority, estimate, plan week, assignments, dependencies and checklist progress", async () => {
@@ -134,8 +152,29 @@ describe("team tasks adapter", () => {
   it("refuses what the contract does not serve", async () => {
     const t = setup();
     await expect(t.tasks.addComment("k1", "x")).rejects.toMatchObject({ code: "unsupported" });
-    await expect(t.tasks.revertAccept("k1", 1)).rejects.toMatchObject({ code: "unsupported" });
     await expect(t.tasks.get("unknown")).rejects.toMatchObject({ code: "not-found" });
+  });
+
+  it("revert accept: only my ACCEPTED assignment, with its revision, a fresh key and a new offer id", async () => {
+    const t = setup();
+    await t.tasks.list(TEAM);
+    // The only assignment is still PENDING: nothing to withdraw, no request.
+    await expect(t.tasks.revertAccept("k1", 3)).rejects.toMatchObject({ code: "conflict" });
+    expect(t.writes()).toEqual([]);
+    t.state.assignment = "ACCEPTED";
+    await t.tasks.revertAccept("k1", 3);
+    const revert = t.calls.find((call) => call.path.endsWith("/revert"))!;
+    expect(revert.path).toBe(`/teams/${TEAM}/assignments/as1/revert`);
+    expect([revert.ifMatch, Boolean(revert.key), typeof revert.body.id]).toEqual(['"7"', true, "string"]);
+  });
+
+  it("project read-through: visible PROJECT tasks, read-only with their source; canceled left out", async () => {
+    const t = setup();
+    const refs = await t.tasks.projectRefs(TEAM);
+    expect(t.calls[0]!.query).toMatchObject({ source: "PROJECT" });
+    expect(refs).toEqual([
+      expect.objectContaining({ id: "pk1", status: "in-progress", source: { kind: "project", projectId: "p1", projectName: "" }, assignees: [], due: null, can: { edit: false, status: false } }),
+    ]);
   });
 });
 

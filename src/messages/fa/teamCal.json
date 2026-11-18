@@ -89,7 +89,8 @@
       "submitted": "درخواست شد",
       "approved": "تأیید شد",
       "rejected": "رد شد",
-      "canceled": "لغو شد"
+      "canceled": "لغو شد",
+      "edited": "ویرایش شد"
     },
     "step": "{action} توسط {name}",
     "approved": "مرخصی تأیید شد",

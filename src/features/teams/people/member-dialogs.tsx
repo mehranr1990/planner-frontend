@@ -76,7 +76,7 @@ function CapacityForm({
   onDone,
 }: {
   row: TeamMemberRow;
-  hours: number;
+  hours: number | null;
   days: readonly Weekday[];
   onDone: () => void;
 }) {
@@ -84,7 +84,7 @@ function CapacityForm({
   const weekday = useWeekdayName();
   const { team } = useTeam();
   const { setCapacity } = useTeamMemberActions(team.id);
-  const [hours, setHours] = useState(String(initialHours));
+  const [hours, setHours] = useState(initialHours === null ? "" : String(initialHours));
   const [days, setDays] = useState<ReadonlySet<Weekday>>(new Set(initialDays));
   const [error, setError] = useState<string | null>(null);
   return (
@@ -93,7 +93,7 @@ function CapacityForm({
       onSubmit={(event) => {
         event.preventDefault();
         const value = Number(hours);
-        if (!Number.isFinite(value) || value < 0 || value > 80 || days.size === 0) return setError(t("invalid"));
+        if (hours.trim() === "" || !Number.isFinite(value) || value < 0 || value > 80 || days.size === 0) return setError(t("invalid"));
         setError(null);
         setCapacity.mutate(
           { personId: row.person.id, hours: value, days: WEEK_ORDER.filter((day) => days.has(day)) },

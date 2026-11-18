@@ -73,7 +73,7 @@ describe("live Teams repositories", () => {
     ]);
   });
 
-  it("revokes a sent invitation with its revision; listing, resend and invitee answers stay refused (OD-4)", async () => {
+  it("revokes a sent invitation with its revision; an invitation not in my recipient list has no proof to fetch", async () => {
     const api = teamApi((call, parts) => {
       if (call.method === "GET" && parts[2] === "invitations") return json({ id: "i1", spaceId: T, scopeId: T, kind: "MEMBERSHIP", memberRole: "MEMBER", state: "PENDING", revision: 4, expiresAt: "2026-12-01T00:00:00Z", acceptedAccessId: null });
       if (call.method === "POST") return json({ id: "i1", revision: 5 }, 201);
@@ -83,9 +83,92 @@ describe("live Teams repositories", () => {
     await repos.teamMembers.cancelInvite(T, "i1");
     expect(api.writes()).toEqual([`POST /teams/${T}/invitations/i1/revoke`]);
     expect(api.calls.at(-1)!.ifMatch).toBe('"4"');
-    // Pending rows carry no email / send time; an invitation not in my recipient list has no proof to fetch.
-    await expect(repos.teamMembers.invitations(T)).rejects.toMatchObject({ code: "unsupported" });
     await expect(repos.teamInvitations.accept("i1")).rejects.toMatchObject({ code: "not-found" });
+  });
+
+  it("sent invitations: PENDING rows with the authorized email (withheld → blank); resend with If-Match + Idempotency-Key", async () => {
+    let sentAt = "2026-11-10T08:00:00Z";
+    const row = (id: string, email: string | null, revision: number) => ({ id, spaceId: T, scopeId: T, kind: "MEMBERSHIP", memberRole: "LEAD", state: "PENDING", revision, expiresAt: "2026-11-20T00:00:00Z", acceptedAccessId: null, recipientEmail: email, createdAt: "2026-11-10T08:00:00Z", sentAt });
+    const api = teamApi((call, parts) => {
+      if (parts[2] === "sent-invitations") return json({ items: [row("i1", "sara@example.com", 4), row("i2", null, 1)], nextCursor: null });
+      if (call.method === "POST" && parts[4] === "resend") {
+        sentAt = "2026-11-17T09:00:00Z";
+        return json({ ...row("i1", null, 5), recipientEmail: undefined });
+      }
+      return null;
+    });
+    const repos = createApiTeamRepositories(api.client);
+    const pending = await repos.teamMembers.invitations(T);
+    expect(api.calls[0]!.query).toMatchObject({ state: "PENDING", limit: "100" });
+    expect(pending).toEqual([
+      { id: "i1", email: "sara@example.com", role: "lead", sentAt: "2026-11-10T08:00:00Z", expiresAt: "2026-11-20T00:00:00Z" },
+      { id: "i2", email: "", role: "lead", sentAt: "2026-11-10T08:00:00Z", expiresAt: "2026-11-20T00:00:00Z" },
+    ]);
+    const resent = await repos.teamMembers.resendInvite(T, "i1");
+    const post = api.calls.find((call) => call.method === "POST")!;
+    expect(post.path).toBe(`/teams/${T}/invitations/i1/resend`);
+    expect(post.ifMatch).toBe('"4"');
+    expect(post.key).toBeTruthy();
+    expect(post.body).toEqual({});
+    // The new offer time comes from a fresh read, never from the client clock.
+    expect(resent.sentAt).toBe("2026-11-17T09:00:00Z");
+  });
+
+  it("weekly capacity: no template = UNKNOWN; save splits hours over the chosen days (others 0) with If-Match", async () => {
+    let template: { timezone: string; effectiveFrom: string; weekdays: (number | null)[] } | null = null;
+    const api = teamApi((call, parts) => {
+      if (parts[4] !== "weekly-capacity") return null;
+      if (call.method === "PUT") {
+        template = call.body as typeof template;
+        return json({ member: { accessId: "m2", generation: 1 }, template, revision: 2 });
+      }
+      return json({ member: { accessId: "m2", generation: 1 }, template, revision: 1 });
+    });
+    const repos = createApiTeamRepositories(api.client);
+    await expect(repos.teamCapacity.get(T, "m2")).resolves.toEqual({ personId: "m2", hours: null, days: [] });
+    // 10 h over Sat, Sun, Mon = 200 + 200 + 200 minutes.
+    const saved = await repos.teamCapacity.set(T, "m2", { hours: 10, days: [6, 0, 1] });
+    const put = api.calls.find((call) => call.method === "PUT")!;
+    expect(put.ifMatch).toBe('"1"');
+    expect((put.body as { weekdays: number[] }).weekdays).toEqual([200, 200, 0, 0, 0, 0, 200]);
+    expect(saved).toEqual({ personId: "m2", hours: 10, days: [0, 1, 6] });
+    // More than 24 h on one day is refused before a request.
+    await expect(repos.teamCapacity.set(T, "m2", { hours: 30, days: [6] })).rejects.toMatchObject({ code: "invalid" });
+    expect(api.writes()).toHaveLength(1);
+  });
+
+  it("link requests: pending LINK rows, request with the association revision, approve the remembered request", async () => {
+    const association = (request: { id: string; state: string } | null, revision = 1) => ({
+      teamId: T,
+      projectId: "p9",
+      revision,
+      active: false,
+      request: request && { ...request, action: "LINK", requestedAt: "2026-11-16T10:00:00Z", reviewedAt: null },
+      implications: { grantsProjectMembership: false, changesCustody: false, changesRetention: false },
+    });
+    const api = teamApi((call, parts) => {
+      if (parts[2] === "project-association-requests") return json({ items: [association({ id: "r1", state: "PENDING" }, 2), association({ id: "r0", state: "REJECTED" })], nextCursor: null });
+      if (parts[4] === "association-request" && parts.length === 5) return json(association(call.path.includes("p9") ? { id: "r1", state: "PENDING" } : null, 2));
+      if (call.method === "POST" && parts[4] === "association-requests") return json(association({ id: "r2", state: "PENDING" }, 2), 201);
+      if (call.method === "POST" && parts[5] === "decision") return json(association({ id: "r1", state: "APPROVED" }, 3));
+      return null;
+    });
+    const repos = createApiTeamRepositories(api.client);
+    const requests = await repos.projectAssociations.requests(T);
+    // The project name comes from my Projects directory (unreadable here → blank, never invented).
+    expect(requests).toEqual([{ id: "r1", projectId: "p9", projectName: "", requestedAt: "2026-11-16T10:00:00Z", requestedBy: null }]);
+    await expect(repos.projectAssociations.request(T, "p9")).rejects.toMatchObject({ code: "conflict" });
+    await repos.projectAssociations.approve("r1");
+    const decision = api.calls.find((call) => call.path.endsWith("/decision"))!;
+    expect(decision.ifMatch).toBe('"2"');
+    expect(decision.body).toEqual({ decision: "APPROVE" });
+    expect(api.writes()).toEqual([`POST /teams/${T}/projects/p9/association-request/decision`]);
+    // A project without a link or request: POST {LINK} with the current revision and a fresh key.
+    await expect(repos.projectAssociations.request(T, "p8")).resolves.toMatchObject({ id: "r2", requestedBy: null });
+    const post = api.calls.find((call) => call.path.endsWith("/p8/association-requests"))!;
+    expect(post.ifMatch).toBe('"2"');
+    expect(post.key).toBeTruthy();
+    expect(post.body).toMatchObject({ action: "LINK" });
   });
 
   it("calendar: active events of the range (to inclusive), task blocks and cancelled items left out", async () => {
@@ -153,7 +236,6 @@ describe("live Teams repositories", () => {
   it("refuses unsupported modules without a request (never mock data)", async () => {
     const api = fakeApi(() => err(500));
     const repos = createApiTeamRepositories(api.client);
-    await expect(repos.teamCapacity.set(T, "m1", { hours: 10, days: [6] })).rejects.toMatchObject({ code: "unsupported" });
     await expect(repos.teamTasks.addComment("k1", "x")).rejects.toMatchObject({ code: "unsupported" });
     await expect(repos.teamMembers.move(T, "m1", "t2")).rejects.toMatchObject({ code: "unsupported" });
     expect(api.calls).toEqual([]);

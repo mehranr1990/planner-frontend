@@ -79,14 +79,14 @@ export async function teamPeople(api: TeamsClient, teamId: string): Promise<(acc
 // ── TM-11 Team files ────────────────────────────────────────────────────
 
 /** The contract's limits: an allow-list of four media types and `expectedSize` ≤ 100 MiB. */
-const MAX_BYTES = 104_857_600;
 const MIME_BY_EXTENSION: Readonly<Record<string, Mime>> = { txt: "text/plain", pdf: "application/pdf", png: "image/png", jpg: "image/jpeg", jpeg: "image/jpeg" };
 const ALLOWED = new Set<string>(Object.values(MIME_BY_EXTENSION));
 
-function mimeOf(name: string, blob: Blob): Mime | null {
-  if (ALLOWED.has(blob.type)) return blob.type as Mime;
+function mimeOf(name: string, blob: Blob, allowed: ReadonlySet<string> = ALLOWED): Mime | null {
+  if (allowed.has(blob.type)) return blob.type as Mime;
   const extension = name.split(".").pop()?.toLowerCase() ?? "";
-  return MIME_BY_EXTENSION[extension] ?? null;
+  const mime = MIME_BY_EXTENSION[extension] ?? null;
+  return mime && allowed.has(mime) ? mime : null;
 }
 
 const mediaOf = (mime: Mime | undefined): ProjectFile["media"] => (mime?.startsWith("image/") ? "image" : mime === "application/pdf" ? "pdf" : mime === "text/plain" ? "doc" : "other");
@@ -103,6 +103,7 @@ export function createApiTeamFiles(api: TeamsClient): TeamFileRepository {
   const pending = new Map<string, { versionId: string; blob: Blob }>();
   const inFlight = new Set<string>();
 
+  const limitsOf = async (teamId: string) => (await api.request("get", "/api/v1/teams/{id}/files/config", { path: { id: teamId } })).data;
   const getFile = async (teamId: string, fileId: string) => (await api.request("get", "/api/v1/teams/{id}/files/{fileId}", { path: { id: teamId, fileId } })).data;
   const versionsOf = (teamId: string, fileId: string) =>
     pageAll<ApiVersion>(async (after) => (await api.request("get", "/api/v1/teams/{id}/files/{fileId}/versions", { path: { id: teamId, fileId }, query: { limit: PAGE, after } })).data);
@@ -184,15 +185,17 @@ export function createApiTeamFiles(api: TeamsClient): TeamFileRepository {
         };
       }),
 
-    config: async () => ({ maxBytes: MAX_BYTES, blockedExtensions: [] }),
+    // Effective server limits (P3 gap closure: GET /teams/{id}/files/config).
+    config: (teamId) => mapErrors(async () => ({ maxBytes: (await limitsOf(teamId)).maxBytes, blockedExtensions: [] })),
 
     upload: (teamId, input: FileUploadInput) =>
       mapErrors(async () => {
         const blob = input.file;
         if (!blob) invalid("The file's bytes are needed to upload");
-        const mimeType = mimeOf(input.name, blob);
-        if (!mimeType) invalid("This file type is not allowed (text, PDF, PNG or JPEG only)");
-        if (blob.size < 1 || blob.size > MAX_BYTES) invalid("This file is empty or larger than the server allows");
+        const limits = await limitsOf(teamId);
+        const mimeType = mimeOf(input.name, blob, new Set(limits.allowedTypes));
+        if (!mimeType) invalid("This file type is not allowed by the server");
+        if (blob.size < 1 || blob.size > limits.maxBytes) invalid("This file is empty or larger than the server allows");
         const upload = { filename: input.name.slice(0, 180), mimeType, expectedSize: blob.size };
         let fileId: string;
         let version: ApiVersion;
@@ -267,6 +270,7 @@ type ApiBoard = Exclude<ApiPlanning["boardState"], "CANCELED">;
 const BOARD: Record<ApiBoard, TeamTaskStatus> = { TODO: "todo", IN_PROGRESS: "in-progress", REVIEW: "review", BLOCKED: "blocked", DONE: "done" };
 const BOARD_TO_API: Record<TeamTaskStatus, ApiBoard> = { todo: "TODO", "in-progress": "IN_PROGRESS", review: "REVIEW", blocked: "BLOCKED", done: "DONE" };
 const PRIORITY: Record<ApiPlanning["task"]["priority"], TeamTaskPriority | null> = { NONE: null, LOW: "low", MEDIUM: "medium", HIGH: "high", URGENT: "urgent" };
+const VISIBLE_STATUS: Partial<Record<string, TeamTaskStatus>> = { OPEN: "todo", IN_PROGRESS: "in-progress", DONE: "done" };
 const PRIORITY_TO_API: Record<TeamTaskPriority, ApiPlanning["task"]["priority"]> = { low: "LOW", medium: "MEDIUM", high: "HIGH", urgent: "URGENT" };
 const ASSIGNMENT: Partial<Record<ApiAssignment["state"], TeamAssignmentState>> = { PENDING: "pending", ACCEPTED: "accepted", DECLINED: "declined" };
 const ACTIVITY: Partial<Record<string, TeamTaskActivity["kind"]>> = { ASSIGNED: "assigned", REASSIGNED: "assigned", ACCEPTED: "accepted", DECLINED: "declined" };
@@ -349,9 +353,9 @@ export function toTeamTask(teamId: string, snap: TeamWorkSnapshot, row: ApiPlann
  * Team tasks (TM-02 / TM-15) over task-planning (board state, estimate, due,
  * plan items), assignments (accept / decline / remind, history), checklist
  * progress and FS dependencies. Not served, so refused by rule: project task
- * read-through for team members (T5), team task comments (not approved for
- * Team), "revert accept" (an accepted assignment can only be removed or
- * reassigned by a manager), goal links (write-only). Removing a task (Undo of
+ * read-through is `visible-tasks` (source PROJECT); refused by rule: team task
+ * comments (not approved for Team), goal links (write-only). Revert accept =
+ * the recipient's assignment revert (P3 gap closure). Removing a task (Undo of
  * create) cancels it: the contract has no delete.
  */
 export function createApiTeamTasks(api: TeamsClient): TeamTaskRepository {
@@ -406,7 +410,40 @@ export function createApiTeamTasks(api: TeamsClient): TeamTaskRepository {
         return query.status ? tasks.filter((task) => task.status === query.status) : tasks;
       }),
 
-    projectRefs: () => Promise.reject(new RepositoryError("unsupported", "Teams API: no read of team members' project tasks (T5 read-through)")),
+    // P3 gap closure: authorized Project tasks visible to this Team, read-only and with their source kept.
+    // hiddenWork is UNKNOWN: absence never means a colleague has no work. Due / estimate / assignees are not served.
+    projectRefs: (teamId) =>
+      mapErrors(async () => {
+        const items = await pageAll<Data<"/api/v1/teams/{id}/visible-tasks", "get">["items"][number]>(
+          async (after) => (await api.request("get", "/api/v1/teams/{id}/visible-tasks", { path: { id: teamId }, query: { source: "PROJECT", limit: PAGE, after } })).data,
+        );
+        return items.flatMap((item): TeamTask[] => {
+          const status = VISIBLE_STATUS[item.task.status];
+          if (!status || item.task.deletedAt) return [];
+          return [
+            {
+              id: item.task.id,
+              teamId,
+              title: item.task.title,
+              status,
+              priority: PRIORITY[item.task.priority],
+              due: null,
+              estimateHours: null,
+              assignees: [],
+              // The project title is not part of the read; a neutral empty name, never a cached one.
+              source: { kind: "project", projectId: item.scopeId, projectName: "" },
+              planWeek: null,
+              progress: status === "done" ? 100 : 0,
+              blockedBy: [],
+              goal: null,
+              revision: item.task.revision,
+              updatedAt: item.task.completedAt ?? item.task.createdAt ?? "",
+              ...(item.task.completedAt ? { completedAt: item.task.completedAt } : {}),
+              can: { edit: false, status: false },
+            },
+          ];
+        });
+      }),
 
     doneByMe: (teamId, week) =>
       mapErrors(async () => {
@@ -540,7 +577,25 @@ export function createApiTeamTasks(api: TeamsClient): TeamTaskRepository {
         return one(taskId);
       }),
 
-    revertAccept: () => Promise.reject(new RepositoryError("unsupported", "Teams API: an accepted assignment cannot go back to pending (a manager removes or reassigns it)")),
+    // P3 gap closure: the recipient withdraws their acceptance; the accepted offer ends WITHDRAWN and a new PENDING offer is returned.
+    revertAccept: (taskId) =>
+      mapErrors(async () => {
+        const teamId = team(taskId);
+        const [items, me] = await Promise.all([
+          pageAll<ApiAssignment>(async (after) => (await api.request("get", "/api/v1/teams/{id}/assignments", { path: { id: teamId }, query: { limit: PAGE, after, taskId, open: "true" } })).data),
+          accessMe(api, teamId),
+        ]);
+        const accepted = items.find((entry) => entry.state === "ACCEPTED" && entry.assignee.accessId === me.accessId);
+        if (!accepted) throw new RepositoryError("conflict", "No accepted assignment to withdraw");
+        await conflictAware(() =>
+          api.request("post", "/api/v1/teams/{id}/assignments/{assignmentId}/revert", {
+            path: { id: teamId, assignmentId: accepted.id },
+            header: { "If-Match": revisionTag(accepted.revision), "Idempotency-Key": newIdempotencyKey() },
+            body: { id: newIdempotencyKey() },
+          }),
+        );
+        return one(taskId);
+      }),
 
     remind: (taskId) =>
       mapErrors(async () => {
@@ -1030,13 +1085,17 @@ export function createApiTeamGoals(api: TeamsClient): TeamGoalRepository {
 
 // ── TM-08 Capacity (per-day minutes) ─────────────────────────────────────
 
+/** Weekly template index = JS weekday (the API array is [sun, mon, …, sat]). */
+const WEEKDAYS: readonly Weekday[] = [0, 1, 2, 3, 4, 5, 6];
+
 /**
  * Capacity over /teams/{id}/capacity/summary (net available after time off,
- * reserved and booked). The API stores explicit minutes per member per day; a
- * day without a value is unknown (never assumed). The weekly-hours editor has
- * no template to write to, so `set` is refused; `get` reads the week's days.
+ * reserved and booked); a day without a value is unknown (never assumed).
+ * `get` / `set` use the member's weekly template (dated rows still override it).
  */
 export function createApiTeamCapacity(api: TeamsClient): TeamCapacityRepository {
+  const weekly = (teamId: string, personId: string) =>
+    api.request("get", "/api/v1/teams/{id}/memberships/{accessId}/weekly-capacity", { path: { id: teamId, accessId: personId } });
   const weekRange = (week?: string) => {
     const from = weekOf(week ?? dayOfInstant(new Date().toISOString()));
     return { from, to: addDaysToDay(from, 6), timezone: getPlannerTimeZone() };
@@ -1047,15 +1106,39 @@ export function createApiTeamCapacity(api: TeamsClient): TeamCapacityRepository 
         const { data } = await api.request("get", "/api/v1/teams/{id}/capacity/summary", { path: { id: teamId }, query: weekRange(week) });
         return data.members.map((row) => ({ personId: row.member.accessId, bookedHours: row.totals.reservedMinutes / 60, capacityHours: row.totals.netAvailableMinutes / 60 }));
       }),
+    // P3 gap closure: weekly template [sun…sat] of nullable minutes. No template / all-null = UNKNOWN; 0 = nonworking.
     get: (teamId, personId) =>
       mapErrors(async () => {
-        const { data } = await api.request("get", "/api/v1/teams/{id}/capacity/summary", { path: { id: teamId }, query: weekRange() });
-        const row = data.members.find((entry) => entry.member.accessId === personId);
-        if (!row) throw new RepositoryError("not-found", "Not found");
-        const days = row.days.filter((day) => (day.availableMinutes ?? 0) > 0);
-        return { personId, hours: days.reduce((sum, day) => sum + (day.availableMinutes ?? 0), 0) / 60, days: days.map((day) => new Date(`${day.date}T12:00:00Z`).getUTCDay() as Weekday) };
+        const { data } = await weekly(teamId, personId);
+        const minutes = data.template?.weekdays ?? [];
+        if (!minutes.some((value) => value !== null)) return { personId, hours: null, days: [] };
+        const days = WEEKDAYS.filter((day) => (minutes[day] ?? 0) > 0);
+        return { personId, hours: days.reduce((sum: number, day) => sum + (minutes[day] ?? 0), 0) / 60, days };
       }),
-    set: () => Promise.reject(new RepositoryError("unsupported", "Teams API: capacity is explicit minutes per day; there is no weekly-hours template to save")),
+    // Weekly hours split evenly over the chosen days (remainder minute by minute from the first); other days 0 (nonworking).
+    set: (teamId, personId, input) =>
+      mapErrors(async () => {
+        const total = Math.round(input.hours * 60);
+        const chosen = [...new Set(input.days)];
+        if (chosen.length === 0) invalid("Choose at least one working day");
+        const base = Math.floor(total / chosen.length);
+        const weekdays = WEEKDAYS.map((day): number => {
+          const at = chosen.indexOf(day);
+          return at < 0 ? 0 : base + (at < total - base * chosen.length ? 1 : 0);
+        });
+        if (weekdays.some((value) => value > 1440)) invalid("More than 24 hours on one day");
+        const { data: current } = await weekly(teamId, personId);
+        const { data } = await conflictAware(() =>
+          api.request("put", "/api/v1/teams/{id}/memberships/{accessId}/weekly-capacity", {
+            path: { id: teamId, accessId: personId },
+            header: { "If-Match": revisionTag(current.revision) },
+            body: { timezone: current.template?.timezone ?? getPlannerTimeZone(), effectiveFrom: dayOfInstant(new Date().toISOString()), weekdays },
+          }),
+        );
+        const saved = data.template?.weekdays ?? weekdays;
+        const days = WEEKDAYS.filter((day) => (saved[day] ?? 0) > 0);
+        return { personId, hours: days.reduce((sum: number, day) => sum + (saved[day] ?? 0), 0) / 60, days };
+      }),
   };
 }
 
