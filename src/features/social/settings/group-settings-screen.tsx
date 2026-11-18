@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useState, type ReactNode } from "react";
+import { isLiveApi } from "@/api/runtime";
 import { InlineAlert } from "@/components/feedback/inline-alert";
 import { Button } from "@/components/ui/button";
 import { ConfirmDialog } from "@/components/ui/alert-dialog";
@@ -21,6 +22,7 @@ import type { GroupDetail, GroupSettings, SocialCurrency } from "@/data/social-d
 import { useLeaveChecklist, useSocialMutation } from "@/data/social-queries";
 import { FolderTabsCard } from "@/design-system/surfaces/folder-tabs-card";
 import { useSocialFormat } from "../format";
+import { LiveLeave } from "../live/group-live";
 import { socialHref } from "../paths";
 import { useSocialGroup } from "../social-gate";
 import { SocialPageHeader, SocialUnsupported } from "../social-ui";
@@ -59,7 +61,7 @@ export function GroupSettingsScreen() {
               </div>
             ),
           },
-          { value: "leave", label: t("tabs.leave"), content: <Leave group={group} /> },
+          { value: "leave", label: t("tabs.leave"), content: isLiveApi() ? <LiveLeave group={group} /> : <Leave group={group} /> },
         ]}
       />
     </>
@@ -118,7 +120,7 @@ function General({ group }: { group: GroupDetail }) {
         <Field>
           <FieldLabel>{t("settings.currency")}</FieldLabel>
           <Select value={currency ?? ""} onValueChange={(v) => setCurrency(v as SocialCurrency)} disabled={group.currencyLocked || !editable || currency === null}>
-            {(["toman", "try", "eur"] as const).map((c) => (
+            {(isLiveApi() ? (["irr", "try", "eur"] as const) : (["toman", "try", "eur"] as const)).map((c) => (
               <SelectItem key={c} value={c}>{t(`currencyName.${c}`)}</SelectItem>
             ))}
           </Select>

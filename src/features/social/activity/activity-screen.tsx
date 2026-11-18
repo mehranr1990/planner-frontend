@@ -29,6 +29,7 @@ import { convertDigits } from "@/lib/locale/digits";
 import { cn } from "@/lib/cn";
 import { useSocialFormat } from "../format";
 import { useOpenSocialConversation } from "../group/group-chat";
+import { ActivityLivePanel } from "../live/activity-live";
 import { socialHref } from "../paths";
 import { isUnsupported, PersonAvatar, RsvpTag, SocialPageHeader, SocialUnsupported } from "../social-ui";
 import { useSocialErrorText } from "../use-social";
@@ -103,9 +104,15 @@ export function ActivityScreen() {
         {past ? <InlineAlert tone="info" title={t("activity.past")} /> : null}
       </div>
       <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,24rem)]">
-        <ActivityTabs activity={a} readOnly={past || a.status === "cancelled"} />
+        <ActivityTabs activity={a} readOnly={past || a.status === "cancelled" || (a.server !== undefined && a.server.state !== "planned")} />
         <div className="flex min-w-0 flex-col gap-4">
           <RsvpCard activity={a} />
+          <ActivityLivePanel activity={a} />
+          {a.server ? (
+            <Button asChild variant="ghost" className="self-start">
+              <Link href={`${socialHref.activity(a.id)}/goals`}>{t("live.goal.screenTitle")}</Link>
+            </Button>
+          ) : null}
           {a.capabilities.cancel ? <CancelActivity activity={a} /> : null}
         </div>
       </div>
@@ -379,8 +386,12 @@ function Checklist({ activity: a, readOnly }: { activity: ActivityDetail; readOn
   const add = useSocialMutation((repo, value: string) => repo.checklist.add(a.id, value));
   const link = useSocialMutation((repo, input: { itemId: string; taskId: string }) => repo.checklist.linkTask(a.id, input.itemId, input.taskId));
   const createTask = useCreateTask();
+  // Live API: the server creates the Personal task once (idempotent); the client never creates and links one.
+  const serverTask = useSocialMutation((repo, itemId: string) => repo.checklist.makeTask!(a.id, itemId));
   const makeTask = (item: ChecklistItem) =>
-    createTask.mutate(
+    a.server
+      ? serverTask.mutate(item.id, { onSuccess: () => toast({ title: t("activity.taskCreated"), tone: "success" }), onError: (e) => toast({ title: errorText(e), tone: "danger" }) })
+      : createTask.mutate(
       { title: item.title, date: a.startDay, scope: "personal" },
       {
         onSuccess: (task) => link.mutate({ itemId: item.id, taskId: task.id }, { onSuccess: () => toast({ title: t("activity.taskCreated"), tone: "success" }) }),

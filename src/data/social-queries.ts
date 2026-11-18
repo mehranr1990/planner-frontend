@@ -4,6 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useIsClient } from "@/hooks/use-is-client";
 import type { FileUploadInput } from "./project-repositories";
 import type { ActivityFilter, ExpenseScope, GroupTopic } from "./social-domain";
+import { messagingKeys } from "./messaging-queries";
 import { afterHydration } from "./queries";
 import { useSocialAvailable, useSocialRepository } from "./social-provider";
 import type { SocialRepository } from "./social-repositories";
@@ -89,3 +90,38 @@ export const useAlbums = (groupId: string) => useRead(["albums", groupId], (r) =
 export const usePhotos = (albumId: string) => useRead(["photos", albumId], (r) => r.albums.photos(albumId));
 export const useChallenges = (groupId: string) => useRead(["challenges", groupId], (r) => r.challenges.list(groupId));
 export const useNeedsYou = () => useRead(["needs-you"], (r) => r.inbox.list());
+
+// ── Live-contract flows (Phase 6 server; Mock Mode answers "unsupported") ──
+
+export const useBlocks = () => useRead(["blocks"], (r) => r.blocks.list());
+export const useInvitationPreview = (id: string, proof: string | null) => useRead(["invitation", id, proof ? "proof" : "none"], (r) => r.invitations.preview(id, proof!), Boolean(proof));
+export const useHandover = (groupId: string, handoverId: string | null) => useRead(["handover", groupId, handoverId], (r) => r.handovers.get(groupId, handoverId!), Boolean(handoverId));
+export const useInvitable = (activityId: string, enabled = true) => useRead(["invitable", activityId], (r) => r.activityAdmin.invitable(activityId), enabled);
+export const useFinanceAccounts = (enabled = true) => useRead(["finance-accounts"], (r) => r.finance.accounts(), enabled);
+export const useLoanEvidence = (loanId: string, enabled = true) => useRead(["loan-evidence", loanId], (r) => r.lendingServer.loanEvidence(loanId), enabled);
+export const useClaims = (postId: string, enabled = true) => useRead(["claims", postId], (r) => r.lendingServer.claims(postId), enabled);
+export const useGoalsFor = (context: { groupId: string } | { activityId: string }) => useRead(["goals", JSON.stringify(context)], (r) => r.goals.listFor(context));
+export const useGoalEntries = (goalId: string, enabled = true) => useRead(["goal-entries", goalId], (r) => r.goals.entries(goalId), enabled);
+export const useNotices = () => useRead(["notices"], (r) => r.notices.list());
+export const useExitCheck = (groupId: string) => useRead(["exit-check", groupId], (r) => r.exit.check(groupId));
+export const useGroupLifecycle = (groupId: string) => useRead(["lifecycle", groupId], (r) => r.exit.lifecycle(groupId));
+export const useOwnObligations = (groupId: string) => useRead(["own-obligations", groupId], (r) => r.exit.ownObligations(groupId));
+
+/**
+ * A command after which cached Social data must not be shown again (leave,
+ * removal, deletion, recovery, handover): every Social query is dropped, not
+ * just refetched, so a stale group view never flashes.
+ */
+export function useSocialPurgeMutation<TVars, TResult = void>(fn: (repo: SocialRepository, vars: TVars) => Promise<TResult>) {
+  const repo = useSocialRepository();
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: (vars: TVars) => fn(repo, vars),
+    onSuccess: () => {
+      client.removeQueries({ queryKey: socialKeys.all });
+      // ADR 0067: Group chat access ends with membership; cached conversations must not linger.
+      client.removeQueries({ queryKey: messagingKeys.all });
+    },
+    onSettled: () => client.invalidateQueries({ queryKey: socialKeys.all }),
+  });
+}

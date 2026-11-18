@@ -4,6 +4,7 @@ import { Check, CircleCheck, Paperclip } from "lucide-react";
 import { useParams, usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
+import { isLiveApi } from "@/api/runtime";
 import { AccessLoading, AccessState } from "@/components/feedback/access-state";
 import { InlineAlert } from "@/components/feedback/inline-alert";
 import { ErrorState } from "@/components/feedback/state-views";
@@ -25,6 +26,7 @@ import { useSocialFormat } from "../format";
 import { socialHref } from "../paths";
 import { ExpenseStatusTag, isUnsupported, PersonAvatar, SocialPageHeader, SocialUnsupported } from "../social-ui";
 import { useSocialErrorText } from "../use-social";
+import { FinancePosting } from "../live/activity-live";
 import { ExpenseForm, usePostToPersonalFinance } from "./expense-form";
 
 /*
@@ -252,7 +254,9 @@ function MyShareCard({ expense: e, currency }: { expense: SharedExpense; currenc
         {t("expense.yourShare")}
       </h2>
       <p className="text-2xl font-bold text-fg tabular">{format.money(e.myShare, currency)}</p>
-      {counted && e.myShare > 0 ? (
+      {isLiveApi() ? (
+        <FinancePosting expense={e} />
+      ) : counted && e.myShare > 0 ? (
         <div className="flex flex-col gap-2 rounded-row bg-surface p-3">
           <p className="text-sm font-semibold text-fg">{t("expense.finance.title")}</p>
           {currency !== "toman" ? (

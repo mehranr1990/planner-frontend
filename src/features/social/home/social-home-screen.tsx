@@ -3,6 +3,7 @@
 import { ArrowRight, Plus, UserPlus } from "lucide-react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
+import { isLiveApi } from "@/api/runtime";
 import { AccessLoading } from "@/components/feedback/access-state";
 import { ErrorState } from "@/components/feedback/state-views";
 import { Button } from "@/components/ui/button";
@@ -14,6 +15,7 @@ import { ProductCard } from "@/design-system/surfaces/product-card";
 import { cn } from "@/lib/cn";
 import { ActivityRow, NextActivityCard, PlanSomethingCard } from "../activity/activity-parts";
 import { useSocialFormat } from "../format";
+import { NoticesCard } from "../live/group-live";
 import { socialHref } from "../paths";
 import { useOpenSocialSheet } from "../sheets/social-sheet-params";
 import { isUnsupported, PersonAvatar, SectionHead, SocialPageHeader, SocialUnsupported } from "../social-ui";
@@ -156,6 +158,11 @@ export function SocialHomeScreen() {
               <p className="rounded-row bg-subtle p-4 text-sm text-fg-secondary">{t("home.noNeeds")}</p>
             )}
           </ProductCard>
+          {isLiveApi() ? (
+            <ProductCard as="section" className="flex flex-col gap-3">
+              <NoticesCard />
+            </ProductCard>
+          ) : null}
           <ProductCard as="section" aria-labelledby="home-balances" className="flex flex-col gap-3">
             <SectionHead
               id="home-balances"

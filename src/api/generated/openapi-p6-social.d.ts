@@ -4,6 +4,22 @@
  */
 
 export interface paths {
+    "/api/v1/retention-policies": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["backendCompletiongetretentionpolicies"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/social/privacy": {
         parameters: {
             query?: never;
@@ -516,6 +532,1398 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/social-activities": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["socialActivitygetsocialactivities"];
+        put?: never;
+        post: operations["socialActivitypostsocialactivities"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/social-activities/calendar": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["socialActivitygetsocialactivitiescalendar"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/social-activities/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["socialActivitygetsocialactivitiesid"];
+        put?: never;
+        post?: never;
+        delete: operations["socialActivitydeletesocialactivitiesid"];
+        options?: never;
+        head?: never;
+        patch: operations["socialActivitypatchsocialactivitiesid"];
+        trace?: never;
+    };
+    "/api/v1/social-activities/{id}/lifecycle/{action}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["socialActivitypostsocialactivitiesidlifecycleaction"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/social-activities/{id}/join": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["socialActivitypostsocialactivitiesidjoin"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/social-activities/{id}/rsvp": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["socialActivitypostsocialactivitiesidrsvp"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/social-activities/{id}/leave": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["socialActivitypostsocialactivitiesidleave"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/social-activities/{id}/participants": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["socialActivitygetsocialactivitiesidparticipants"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/social-activities/{id}/invitations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["socialActivitypostsocialactivitiesidinvitations"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/social-activities/{id}/participants/{participantId}/remove": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["socialActivitypostsocialactivitiesidparticipantsparticipantIdremove"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/social-activities/{id}/participants/{participantId}/role": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["socialActivityputsocialactivitiesidparticipantsparticipantIdrole"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/social-activities/{id}/items": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["socialActivitygetsocialactivitiesiditems"];
+        put?: never;
+        post: operations["socialActivitypostsocialactivitiesiditems"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/social-activities/{id}/items/{itemId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete: operations["socialActivitydeletesocialactivitiesiditemsitemId"];
+        options?: never;
+        head?: never;
+        patch: operations["socialActivitypatchsocialactivitiesiditemsitemId"];
+        trace?: never;
+    };
+    "/api/v1/social-activities/{id}/items/{itemId}/task": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["socialActivitypostsocialactivitiesiditemsitemIdtask"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/social-activities/{id}/polls": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["socialActivitygetsocialactivitiesidpolls"];
+        put?: never;
+        post: operations["socialActivitypostsocialactivitiesidpolls"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/social-activities/{id}/polls/{pollId}/vote": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["socialActivityputsocialactivitiesidpollspollIdvote"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/social-activities/{id}/polls/{pollId}/close": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["socialActivitypostsocialactivitiesidpollspollIdclose"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/social-activities/{id}/free-busy": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["socialActivitygetsocialactivitiesidfreebusy"];
+        put: operations["socialActivityputsocialactivitiesidfreebusy"];
+        post?: never;
+        delete: operations["socialActivitydeletesocialactivitiesidfreebusy"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/social-activities/{id}/conversation": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["socialActivityputsocialactivitiesidconversation"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/social-activities/{id}/reminder": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["socialActivityputsocialactivitiesidreminder"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/social-activities/{id}/restore": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["socialActivitypostsocialactivitiesidrestore"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/social-activities/{id}/items/{itemId}/restore": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["socialActivitypostsocialactivitiesiditemsitemIdrestore"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/social-activities/{id}/succession": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["socialActivitypostsocialactivitiesidsuccession"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/social-activities/{id}/succession/{action}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["socialActivitypostsocialactivitiesidsuccessionaction"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/social-activities/{id}/conversation/open": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["socialActivitypostsocialactivitiesidconversationopen"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/social-activities/{id}/conversation/join": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["socialActivitypostsocialactivitiesidconversationjoin"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/social-notices": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["socialActivitygetsocialnotices"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/social-notices/{id}/read": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["socialActivitypostsocialnoticesidread"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/social-groups/{id}/expenses": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["socialActivitygetsocialgroupsidexpenses"];
+        put?: never;
+        post: operations["socialActivitypostsocialgroupsidexpenses"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/social-groups/{id}/expenses/{expenseId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["socialActivitygetsocialgroupsidexpensesexpenseId"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/social-groups/{id}/expenses/{expenseId}/history": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["socialActivitygetsocialgroupsidexpensesexpenseIdhistory"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/social-groups/{id}/expenses/{expenseId}/revisions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["socialActivitypostsocialgroupsidexpensesexpenseIdrevisions"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/social-groups/{id}/expenses/{expenseId}/decisions/{action}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["socialActivitypostsocialgroupsidexpensesexpenseIddecisionsaction"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/social-groups/{id}/balances": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["socialActivitygetsocialgroupsidbalances"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/social-groups/{id}/balances/me": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["socialActivitygetsocialgroupsidbalancesme"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/social-groups/{id}/settlements": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["socialActivitygetsocialgroupsidsettlements"];
+        put?: never;
+        post: operations["socialActivitypostsocialgroupsidsettlements"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/social-groups/{id}/settlements/{settlementId}/decisions/{action}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["socialActivitypostsocialgroupsidsettlementssettlementIddecisionsaction"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/social-groups/{id}/expenses/{expenseId}/finance-posting/preview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["socialActivitypostsocialgroupsidexpensesexpenseIdfinancepostingpreview"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/social-groups/{id}/expenses/{expenseId}/finance-posting": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["socialActivitypostsocialgroupsidexpensesexpenseIdfinanceposting"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/social-activities/{id}/expenses": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["socialActivitygetsocialactivitiesidexpenses"];
+        put?: never;
+        post: operations["socialActivitypostsocialactivitiesidexpenses"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/social-activities/{id}/expenses/{expenseId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["socialActivitygetsocialactivitiesidexpensesexpenseId"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/social-activities/{id}/expenses/{expenseId}/history": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["socialActivitygetsocialactivitiesidexpensesexpenseIdhistory"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/social-activities/{id}/expenses/{expenseId}/revisions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["socialActivitypostsocialactivitiesidexpensesexpenseIdrevisions"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/social-activities/{id}/expenses/{expenseId}/decisions/{action}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["socialActivitypostsocialactivitiesidexpensesexpenseIddecisionsaction"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/social-activities/{id}/balances": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["socialActivitygetsocialactivitiesidbalances"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/social-activities/{id}/balances/me": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["socialActivitygetsocialactivitiesidbalancesme"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/social-activities/{id}/settlements": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["socialActivitygetsocialactivitiesidsettlements"];
+        put?: never;
+        post: operations["socialActivitypostsocialactivitiesidsettlements"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/social-activities/{id}/settlements/{settlementId}/decisions/{action}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["socialActivitypostsocialactivitiesidsettlementssettlementIddecisionsaction"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/social-activities/{id}/expenses/{expenseId}/finance-posting/preview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["socialActivitypostsocialactivitiesidexpensesexpenseIdfinancepostingpreview"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/social-activities/{id}/expenses/{expenseId}/finance-posting": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["socialActivitypostsocialactivitiesidexpensesexpenseIdfinanceposting"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/social-assets": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["socialLendinggetsocialassets"];
+        put?: never;
+        post: operations["socialLendingpostsocialassets"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/social-assets/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["socialLendinggetsocialassetsid"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["socialLendingpatchsocialassetsid"];
+        trace?: never;
+    };
+    "/api/v1/social-assets/{id}/actions/{action}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["socialLendingpostsocialassetsidactionsaction"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/social-loans": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["socialLendinggetsocialloans"];
+        put?: never;
+        post: operations["socialLendingpostsocialloans"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/social-loans/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["socialLendinggetsocialloansid"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/social-loans/{id}/actions/{action}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["socialLendingpostsocialloansidactionsaction"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/social-loans/{id}/due-date": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["socialLendingpostsocialloansidduedate"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/social-loans/{id}/history": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["socialLendinggetsocialloansidhistory"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/social-loans/{id}/evidence": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["socialLendinggetsocialloansidevidence"];
+        put?: never;
+        post: operations["socialLendingpostsocialloansidevidence"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/social-lost-found": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["socialLendinggetsociallostfound"];
+        put?: never;
+        post: operations["socialLendingpostsociallostfound"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/social-lost-found/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["socialLendinggetsociallostfoundid"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/social-lost-found/{id}/actions/{action}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["socialLendingpostsociallostfoundidactionsaction"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/social-lost-found/{id}/matches": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["socialLendinggetsociallostfoundidmatches"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/social-lost-found/{id}/history": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["socialLendinggetsociallostfoundidhistory"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/social-lost-found/{id}/evidence": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["socialLendinggetsociallostfoundidevidence"];
+        put?: never;
+        post: operations["socialLendingpostsociallostfoundidevidence"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/social-lost-found/{id}/claims": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["socialLendinggetsociallostfoundidclaims"];
+        put?: never;
+        post: operations["socialLendingpostsociallostfoundidclaims"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/social-lost-found/{id}/claims/{claimId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["socialLendinggetsociallostfoundidclaimsclaimId"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/social-lost-found/{id}/claims/{claimId}/actions/{action}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["socialLendingpostsociallostfoundidclaimsclaimIdactionsaction"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/social-lost-found/{id}/claims/{claimId}/evidence": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["socialLendinggetsociallostfoundidclaimsclaimIdevidence"];
+        put?: never;
+        post: operations["socialLendingpostsociallostfoundidclaimsclaimIdevidence"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/social-goals": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["socialGoalsgetsocialgoals"];
+        put?: never;
+        post: operations["socialGoalspostsocialgoals"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/social-goals/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["socialGoalsgetsocialgoalsid"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["socialGoalspatchsocialgoalsid"];
+        trace?: never;
+    };
+    "/api/v1/social-goals/{id}/actions/{action}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["socialGoalspostsocialgoalsidactionsaction"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/social-goals/{id}/join": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["socialGoalspostsocialgoalsidjoin"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/social-goals/{id}/withdraw": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["socialGoalspostsocialgoalsidwithdraw"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/social-goals/{id}/participants": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["socialGoalsgetsocialgoalsidparticipants"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/social-goals/{id}/entries": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["socialGoalsgetsocialgoalsidentries"];
+        put?: never;
+        post: operations["socialGoalspostsocialgoalsidentries"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/social-goals/{id}/entries/{entryId}/actions/{action}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["socialGoalspostsocialgoalsidentriesentryIdactionsaction"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/social-goals/{id}/corrections": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["socialGoalspostsocialgoalsidcorrections"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/social-goals/{id}/history": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["socialGoalsgetsocialgoalsidhistory"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/social-groups/{id}/exit-check": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["socialGroupLifecyclegetsocialgroupsidexitcheck"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/social-groups/{id}/delete": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["socialGroupLifecyclepostsocialgroupsiddelete"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/social-groups/{id}/lifecycle-job": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["socialGroupLifecyclegetsocialgroupsidlifecyclejob"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/social-groups/{id}/lifecycle-job/recovery-proof": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["socialGroupLifecyclepostsocialgroupsidlifecyclejobrecoveryproof"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/social-groups/{id}/lifecycle-job/recover": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["socialGroupLifecyclepostsocialgroupsidlifecyclejobrecover"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/social-groups/{id}/conversation": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["socialActivitygetsocialgroupsidconversation"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/social-groups/{id}/conversation/open": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["socialActivitypostsocialgroupsidconversationopen"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/social-groups/{id}/conversation/join": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["socialActivitypostsocialgroupsidconversationjoin"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -542,6 +1950,154 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    backendCompletiongetretentionpolicies: {
+        parameters: {
+            query: {
+                context: "PROJECT" | "TEAM" | "COMPANY" | "CONVERSATION" | "MEETING" | "SOCIAL_GROUP";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Current authorized result */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        items: {
+                            version: string;
+                            applicableContexts: ("PROJECT" | "TEAM" | "COMPANY" | "CONVERSATION" | "MEETING" | "SOCIAL_GROUP")[];
+                            marketScope: string;
+                            classRules: {
+                                workContent: {
+                                    retainAfterClosureSeconds: number;
+                                    /** @enum {string} */
+                                    disposalAction: "PURGE" | "PSEUDONYMIZE";
+                                };
+                                commentsHistory: {
+                                    retainAfterClosureSeconds: number;
+                                    /** @enum {string} */
+                                    disposalAction: "PURGE" | "PSEUDONYMIZE";
+                                };
+                                filesDerivatives: {
+                                    retainAfterClosureSeconds: number;
+                                    /** @enum {string} */
+                                    disposalAction: "PURGE" | "PSEUDONYMIZE";
+                                };
+                                exports: {
+                                    retainAfterClosureSeconds: number;
+                                    /** @enum {string} */
+                                    disposalAction: "PURGE" | "PSEUDONYMIZE";
+                                };
+                                accessAuditLifecycle: {
+                                    retainAfterClosureSeconds: number;
+                                    /** @enum {string} */
+                                    disposalAction: "PURGE" | "PSEUDONYMIZE";
+                                };
+                            };
+                            /** Format: date-time */
+                            createdAt: string;
+                        }[];
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
     socialgetsocialprivacy: {
         parameters: {
             query?: never;
@@ -4874,7 +6430,9 @@ export interface operations {
         };
         requestBody?: {
             content: {
-                "application/json": Record<string, never>;
+                "application/json": {
+                    outstandingBalanceConfirmation?: string;
+                };
             };
         };
         responses: {
@@ -6027,6 +7585,16845 @@ export interface operations {
                 };
             };
             /** @description Safe absence or unavailable contact/invitation */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialActivitygetsocialactivities: {
+        parameters: {
+            query?: {
+                limit?: number;
+                after?: string;
+                groupId?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Authorized P6-02/P6-03 result; records never move money or grant Group access */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        items: {
+                            /** Format: uuid */
+                            id: string;
+                            groupId: string | null;
+                            /** @enum {string} */
+                            template: "GENERAL" | "TRAVEL" | "SPORT" | "FAMILY" | "GATHERING";
+                            title: string;
+                            timezone: string;
+                            /** Format: date-time */
+                            startsAt: string;
+                            /** Format: date-time */
+                            endsAt: string;
+                            /** @enum {string} */
+                            state: "PLANNED" | "CANCELED" | "CLOSED" | "DELETED";
+                            capacity: number | null;
+                            seatsTaken: number;
+                            waitlistCount: number;
+                            me: {
+                                /** Format: uuid */
+                                participantId: string;
+                                /** @enum {string} */
+                                role: "ORGANIZER" | "PARTICIPANT";
+                                /** @enum {string} */
+                                state: "INVITED" | "ACTIVE" | "DECLINED" | "LEFT" | "REMOVED";
+                                /** @enum {string} */
+                                rsvp: "PENDING" | "GOING" | "MAYBE" | "DECLINED";
+                                /** @enum {string} */
+                                seat: "NONE" | "HELD" | "WAITLISTED" | "OFFERED";
+                                guest: boolean;
+                                offerExpiresAt: string | null;
+                                reminderMinutes: number | null;
+                                generation: number;
+                                revision: number;
+                            } | null;
+                        }[];
+                        nextCursor: string | null;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; unauthorized Activity or ledger data is indistinguishable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialActivitypostsocialactivities: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "Idempotency-Key": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** Format: uuid */
+                    id: string;
+                    /** @default null */
+                    groupId?: string | null;
+                    /** @enum {string} */
+                    template: "GENERAL" | "TRAVEL" | "SPORT" | "FAMILY" | "GATHERING";
+                    title: string;
+                    description?: string | null;
+                    location?: string | null;
+                    timezone: string;
+                    /** Format: date-time */
+                    startsAt: string;
+                    /** Format: date-time */
+                    endsAt: string;
+                    capacity?: number | null;
+                };
+            };
+        };
+        responses: {
+            /** @description Authorized P6-02/P6-03 result; records never move money or grant Group access */
+            201: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        groupId: string | null;
+                        /** @enum {string} */
+                        template: "GENERAL" | "TRAVEL" | "SPORT" | "FAMILY" | "GATHERING";
+                        title: string;
+                        timezone: string;
+                        /** Format: date-time */
+                        startsAt: string;
+                        /** Format: date-time */
+                        endsAt: string;
+                        /** @enum {string} */
+                        state: "PLANNED" | "CANCELED" | "CLOSED" | "DELETED";
+                        capacity: number | null;
+                        seatsTaken: number;
+                        waitlistCount: number;
+                        me: {
+                            /** Format: uuid */
+                            participantId: string;
+                            /** @enum {string} */
+                            role: "ORGANIZER" | "PARTICIPANT";
+                            /** @enum {string} */
+                            state: "INVITED" | "ACTIVE" | "DECLINED" | "LEFT" | "REMOVED";
+                            /** @enum {string} */
+                            rsvp: "PENDING" | "GOING" | "MAYBE" | "DECLINED";
+                            /** @enum {string} */
+                            seat: "NONE" | "HELD" | "WAITLISTED" | "OFFERED";
+                            guest: boolean;
+                            offerExpiresAt: string | null;
+                            reminderMinutes: number | null;
+                            generation: number;
+                            revision: number;
+                        } | null;
+                        description: string | null;
+                        location: string | null;
+                        conversationId: string | null;
+                        conversationManaged: boolean;
+                        successorParticipantId: string | null;
+                        orphanedAt: string | null;
+                        deletedAt: string | null;
+                        recoverUntil: string | null;
+                        manage: boolean;
+                        revision: number;
+                        /** Format: date-time */
+                        createdAt: string;
+                        /** Format: date-time */
+                        updatedAt: string;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; unauthorized Activity or ledger data is indistinguishable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialActivitygetsocialactivitiescalendar: {
+        parameters: {
+            query?: {
+                from?: string;
+                to?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Authorized P6-02/P6-03 result; records never move money or grant Group access */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        items: {
+                            /** Format: uuid */
+                            activityId: string;
+                            itemId: string | null;
+                            /** @enum {string} */
+                            kind: "ACTIVITY" | "ITINERARY";
+                            title: string;
+                            /** Format: date-time */
+                            startsAt: string;
+                            /** Format: date-time */
+                            endsAt: string;
+                            timezone: string;
+                        }[];
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; unauthorized Activity or ledger data is indistinguishable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialActivitygetsocialactivitiesid: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Authorized P6-02/P6-03 result; records never move money or grant Group access */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        groupId: string | null;
+                        /** @enum {string} */
+                        template: "GENERAL" | "TRAVEL" | "SPORT" | "FAMILY" | "GATHERING";
+                        title: string;
+                        timezone: string;
+                        /** Format: date-time */
+                        startsAt: string;
+                        /** Format: date-time */
+                        endsAt: string;
+                        /** @enum {string} */
+                        state: "PLANNED" | "CANCELED" | "CLOSED" | "DELETED";
+                        capacity: number | null;
+                        seatsTaken: number;
+                        waitlistCount: number;
+                        me: {
+                            /** Format: uuid */
+                            participantId: string;
+                            /** @enum {string} */
+                            role: "ORGANIZER" | "PARTICIPANT";
+                            /** @enum {string} */
+                            state: "INVITED" | "ACTIVE" | "DECLINED" | "LEFT" | "REMOVED";
+                            /** @enum {string} */
+                            rsvp: "PENDING" | "GOING" | "MAYBE" | "DECLINED";
+                            /** @enum {string} */
+                            seat: "NONE" | "HELD" | "WAITLISTED" | "OFFERED";
+                            guest: boolean;
+                            offerExpiresAt: string | null;
+                            reminderMinutes: number | null;
+                            generation: number;
+                            revision: number;
+                        } | null;
+                        description: string | null;
+                        location: string | null;
+                        conversationId: string | null;
+                        conversationManaged: boolean;
+                        successorParticipantId: string | null;
+                        orphanedAt: string | null;
+                        deletedAt: string | null;
+                        recoverUntil: string | null;
+                        manage: boolean;
+                        revision: number;
+                        /** Format: date-time */
+                        createdAt: string;
+                        /** Format: date-time */
+                        updatedAt: string;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; unauthorized Activity or ledger data is indistinguishable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialActivitydeletesocialactivitiesid: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "Idempotency-Key": string;
+                "If-Match": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": Record<string, never>;
+            };
+        };
+        responses: {
+            /** @description Authorized P6-02/P6-03 result; records never move money or grant Group access */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        groupId: string | null;
+                        /** @enum {string} */
+                        template: "GENERAL" | "TRAVEL" | "SPORT" | "FAMILY" | "GATHERING";
+                        title: string;
+                        timezone: string;
+                        /** Format: date-time */
+                        startsAt: string;
+                        /** Format: date-time */
+                        endsAt: string;
+                        /** @enum {string} */
+                        state: "PLANNED" | "CANCELED" | "CLOSED" | "DELETED";
+                        capacity: number | null;
+                        seatsTaken: number;
+                        waitlistCount: number;
+                        me: {
+                            /** Format: uuid */
+                            participantId: string;
+                            /** @enum {string} */
+                            role: "ORGANIZER" | "PARTICIPANT";
+                            /** @enum {string} */
+                            state: "INVITED" | "ACTIVE" | "DECLINED" | "LEFT" | "REMOVED";
+                            /** @enum {string} */
+                            rsvp: "PENDING" | "GOING" | "MAYBE" | "DECLINED";
+                            /** @enum {string} */
+                            seat: "NONE" | "HELD" | "WAITLISTED" | "OFFERED";
+                            guest: boolean;
+                            offerExpiresAt: string | null;
+                            reminderMinutes: number | null;
+                            generation: number;
+                            revision: number;
+                        } | null;
+                        description: string | null;
+                        location: string | null;
+                        conversationId: string | null;
+                        conversationManaged: boolean;
+                        successorParticipantId: string | null;
+                        orphanedAt: string | null;
+                        deletedAt: string | null;
+                        recoverUntil: string | null;
+                        manage: boolean;
+                        revision: number;
+                        /** Format: date-time */
+                        createdAt: string;
+                        /** Format: date-time */
+                        updatedAt: string;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; unauthorized Activity or ledger data is indistinguishable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialActivitypatchsocialactivitiesid: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "Idempotency-Key": string;
+                "If-Match": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @enum {string} */
+                    template?: "GENERAL" | "TRAVEL" | "SPORT" | "FAMILY" | "GATHERING";
+                    title?: string;
+                    description?: string | null;
+                    location?: string | null;
+                    timezone?: string;
+                    /** Format: date-time */
+                    startsAt?: string;
+                    /** Format: date-time */
+                    endsAt?: string;
+                    capacity?: number | null;
+                };
+            };
+        };
+        responses: {
+            /** @description Authorized P6-02/P6-03 result; records never move money or grant Group access */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        groupId: string | null;
+                        /** @enum {string} */
+                        template: "GENERAL" | "TRAVEL" | "SPORT" | "FAMILY" | "GATHERING";
+                        title: string;
+                        timezone: string;
+                        /** Format: date-time */
+                        startsAt: string;
+                        /** Format: date-time */
+                        endsAt: string;
+                        /** @enum {string} */
+                        state: "PLANNED" | "CANCELED" | "CLOSED" | "DELETED";
+                        capacity: number | null;
+                        seatsTaken: number;
+                        waitlistCount: number;
+                        me: {
+                            /** Format: uuid */
+                            participantId: string;
+                            /** @enum {string} */
+                            role: "ORGANIZER" | "PARTICIPANT";
+                            /** @enum {string} */
+                            state: "INVITED" | "ACTIVE" | "DECLINED" | "LEFT" | "REMOVED";
+                            /** @enum {string} */
+                            rsvp: "PENDING" | "GOING" | "MAYBE" | "DECLINED";
+                            /** @enum {string} */
+                            seat: "NONE" | "HELD" | "WAITLISTED" | "OFFERED";
+                            guest: boolean;
+                            offerExpiresAt: string | null;
+                            reminderMinutes: number | null;
+                            generation: number;
+                            revision: number;
+                        } | null;
+                        description: string | null;
+                        location: string | null;
+                        conversationId: string | null;
+                        conversationManaged: boolean;
+                        successorParticipantId: string | null;
+                        orphanedAt: string | null;
+                        deletedAt: string | null;
+                        recoverUntil: string | null;
+                        manage: boolean;
+                        revision: number;
+                        /** Format: date-time */
+                        createdAt: string;
+                        /** Format: date-time */
+                        updatedAt: string;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; unauthorized Activity or ledger data is indistinguishable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialActivitypostsocialactivitiesidlifecycleaction: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "Idempotency-Key": string;
+                "If-Match": string;
+            };
+            path: {
+                id: string;
+                action: "cancel" | "close";
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": Record<string, never>;
+            };
+        };
+        responses: {
+            /** @description Authorized P6-02/P6-03 result; records never move money or grant Group access */
+            201: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        groupId: string | null;
+                        /** @enum {string} */
+                        template: "GENERAL" | "TRAVEL" | "SPORT" | "FAMILY" | "GATHERING";
+                        title: string;
+                        timezone: string;
+                        /** Format: date-time */
+                        startsAt: string;
+                        /** Format: date-time */
+                        endsAt: string;
+                        /** @enum {string} */
+                        state: "PLANNED" | "CANCELED" | "CLOSED" | "DELETED";
+                        capacity: number | null;
+                        seatsTaken: number;
+                        waitlistCount: number;
+                        me: {
+                            /** Format: uuid */
+                            participantId: string;
+                            /** @enum {string} */
+                            role: "ORGANIZER" | "PARTICIPANT";
+                            /** @enum {string} */
+                            state: "INVITED" | "ACTIVE" | "DECLINED" | "LEFT" | "REMOVED";
+                            /** @enum {string} */
+                            rsvp: "PENDING" | "GOING" | "MAYBE" | "DECLINED";
+                            /** @enum {string} */
+                            seat: "NONE" | "HELD" | "WAITLISTED" | "OFFERED";
+                            guest: boolean;
+                            offerExpiresAt: string | null;
+                            reminderMinutes: number | null;
+                            generation: number;
+                            revision: number;
+                        } | null;
+                        description: string | null;
+                        location: string | null;
+                        conversationId: string | null;
+                        conversationManaged: boolean;
+                        successorParticipantId: string | null;
+                        orphanedAt: string | null;
+                        deletedAt: string | null;
+                        recoverUntil: string | null;
+                        manage: boolean;
+                        revision: number;
+                        /** Format: date-time */
+                        createdAt: string;
+                        /** Format: date-time */
+                        updatedAt: string;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; unauthorized Activity or ledger data is indistinguishable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialActivitypostsocialactivitiesidjoin: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "Idempotency-Key": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": Record<string, never>;
+            };
+        };
+        responses: {
+            /** @description Authorized P6-02/P6-03 result; records never move money or grant Group access */
+            201: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        groupId: string | null;
+                        /** @enum {string} */
+                        template: "GENERAL" | "TRAVEL" | "SPORT" | "FAMILY" | "GATHERING";
+                        title: string;
+                        timezone: string;
+                        /** Format: date-time */
+                        startsAt: string;
+                        /** Format: date-time */
+                        endsAt: string;
+                        /** @enum {string} */
+                        state: "PLANNED" | "CANCELED" | "CLOSED" | "DELETED";
+                        capacity: number | null;
+                        seatsTaken: number;
+                        waitlistCount: number;
+                        me: {
+                            /** Format: uuid */
+                            participantId: string;
+                            /** @enum {string} */
+                            role: "ORGANIZER" | "PARTICIPANT";
+                            /** @enum {string} */
+                            state: "INVITED" | "ACTIVE" | "DECLINED" | "LEFT" | "REMOVED";
+                            /** @enum {string} */
+                            rsvp: "PENDING" | "GOING" | "MAYBE" | "DECLINED";
+                            /** @enum {string} */
+                            seat: "NONE" | "HELD" | "WAITLISTED" | "OFFERED";
+                            guest: boolean;
+                            offerExpiresAt: string | null;
+                            reminderMinutes: number | null;
+                            generation: number;
+                            revision: number;
+                        } | null;
+                        description: string | null;
+                        location: string | null;
+                        conversationId: string | null;
+                        conversationManaged: boolean;
+                        successorParticipantId: string | null;
+                        orphanedAt: string | null;
+                        deletedAt: string | null;
+                        recoverUntil: string | null;
+                        manage: boolean;
+                        revision: number;
+                        /** Format: date-time */
+                        createdAt: string;
+                        /** Format: date-time */
+                        updatedAt: string;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; unauthorized Activity or ledger data is indistinguishable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialActivitypostsocialactivitiesidrsvp: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "Idempotency-Key": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @enum {string} */
+                    rsvp: "GOING" | "MAYBE" | "DECLINED";
+                };
+            };
+        };
+        responses: {
+            /** @description Authorized P6-02/P6-03 result; records never move money or grant Group access */
+            201: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        groupId: string | null;
+                        /** @enum {string} */
+                        template: "GENERAL" | "TRAVEL" | "SPORT" | "FAMILY" | "GATHERING";
+                        title: string;
+                        timezone: string;
+                        /** Format: date-time */
+                        startsAt: string;
+                        /** Format: date-time */
+                        endsAt: string;
+                        /** @enum {string} */
+                        state: "PLANNED" | "CANCELED" | "CLOSED" | "DELETED";
+                        capacity: number | null;
+                        seatsTaken: number;
+                        waitlistCount: number;
+                        me: {
+                            /** Format: uuid */
+                            participantId: string;
+                            /** @enum {string} */
+                            role: "ORGANIZER" | "PARTICIPANT";
+                            /** @enum {string} */
+                            state: "INVITED" | "ACTIVE" | "DECLINED" | "LEFT" | "REMOVED";
+                            /** @enum {string} */
+                            rsvp: "PENDING" | "GOING" | "MAYBE" | "DECLINED";
+                            /** @enum {string} */
+                            seat: "NONE" | "HELD" | "WAITLISTED" | "OFFERED";
+                            guest: boolean;
+                            offerExpiresAt: string | null;
+                            reminderMinutes: number | null;
+                            generation: number;
+                            revision: number;
+                        } | null;
+                        description: string | null;
+                        location: string | null;
+                        conversationId: string | null;
+                        conversationManaged: boolean;
+                        successorParticipantId: string | null;
+                        orphanedAt: string | null;
+                        deletedAt: string | null;
+                        recoverUntil: string | null;
+                        manage: boolean;
+                        revision: number;
+                        /** Format: date-time */
+                        createdAt: string;
+                        /** Format: date-time */
+                        updatedAt: string;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; unauthorized Activity or ledger data is indistinguishable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialActivitypostsocialactivitiesidleave: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "Idempotency-Key": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": Record<string, never>;
+            };
+        };
+        responses: {
+            /** @description Authorized P6-02/P6-03 result; records never move money or grant Group access */
+            201: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        groupId: string | null;
+                        /** @enum {string} */
+                        template: "GENERAL" | "TRAVEL" | "SPORT" | "FAMILY" | "GATHERING";
+                        title: string;
+                        timezone: string;
+                        /** Format: date-time */
+                        startsAt: string;
+                        /** Format: date-time */
+                        endsAt: string;
+                        /** @enum {string} */
+                        state: "PLANNED" | "CANCELED" | "CLOSED" | "DELETED";
+                        capacity: number | null;
+                        seatsTaken: number;
+                        waitlistCount: number;
+                        me: {
+                            /** Format: uuid */
+                            participantId: string;
+                            /** @enum {string} */
+                            role: "ORGANIZER" | "PARTICIPANT";
+                            /** @enum {string} */
+                            state: "INVITED" | "ACTIVE" | "DECLINED" | "LEFT" | "REMOVED";
+                            /** @enum {string} */
+                            rsvp: "PENDING" | "GOING" | "MAYBE" | "DECLINED";
+                            /** @enum {string} */
+                            seat: "NONE" | "HELD" | "WAITLISTED" | "OFFERED";
+                            guest: boolean;
+                            offerExpiresAt: string | null;
+                            reminderMinutes: number | null;
+                            generation: number;
+                            revision: number;
+                        } | null;
+                        description: string | null;
+                        location: string | null;
+                        conversationId: string | null;
+                        conversationManaged: boolean;
+                        successorParticipantId: string | null;
+                        orphanedAt: string | null;
+                        deletedAt: string | null;
+                        recoverUntil: string | null;
+                        manage: boolean;
+                        revision: number;
+                        /** Format: date-time */
+                        createdAt: string;
+                        /** Format: date-time */
+                        updatedAt: string;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; unauthorized Activity or ledger data is indistinguishable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialActivitygetsocialactivitiesidparticipants: {
+        parameters: {
+            query?: {
+                limit?: number;
+                after?: string;
+            };
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Authorized P6-02/P6-03 result; records never move money or grant Group access */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        items: {
+                            /** Format: uuid */
+                            id: string;
+                            userId: string | null;
+                            displayName: string | null;
+                            /** @enum {string} */
+                            role: "ORGANIZER" | "PARTICIPANT";
+                            /** @enum {string} */
+                            state: "INVITED" | "ACTIVE" | "DECLINED" | "LEFT" | "REMOVED";
+                            /** @enum {string} */
+                            rsvp: "PENDING" | "GOING" | "MAYBE" | "DECLINED";
+                            /** @enum {string} */
+                            seat: "NONE" | "HELD" | "WAITLISTED" | "OFFERED";
+                            guest: boolean;
+                            waitlistedAt: string | null;
+                            offerExpiresAt: string | null;
+                            revision: number;
+                        }[];
+                        nextCursor: string | null;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; unauthorized Activity or ledger data is indistinguishable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialActivitypostsocialactivitiesidinvitations: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "Idempotency-Key": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** Format: uuid */
+                    userId: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Authorized P6-02/P6-03 result; records never move money or grant Group access */
+            201: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        userId: string | null;
+                        displayName: string | null;
+                        /** @enum {string} */
+                        role: "ORGANIZER" | "PARTICIPANT";
+                        /** @enum {string} */
+                        state: "INVITED" | "ACTIVE" | "DECLINED" | "LEFT" | "REMOVED";
+                        /** @enum {string} */
+                        rsvp: "PENDING" | "GOING" | "MAYBE" | "DECLINED";
+                        /** @enum {string} */
+                        seat: "NONE" | "HELD" | "WAITLISTED" | "OFFERED";
+                        guest: boolean;
+                        waitlistedAt: string | null;
+                        offerExpiresAt: string | null;
+                        revision: number;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; unauthorized Activity or ledger data is indistinguishable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialActivitypostsocialactivitiesidparticipantsparticipantIdremove: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "Idempotency-Key": string;
+                "If-Match": string;
+            };
+            path: {
+                id: string;
+                participantId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": Record<string, never>;
+            };
+        };
+        responses: {
+            /** @description Authorized P6-02/P6-03 result; records never move money or grant Group access */
+            201: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        userId: string | null;
+                        displayName: string | null;
+                        /** @enum {string} */
+                        role: "ORGANIZER" | "PARTICIPANT";
+                        /** @enum {string} */
+                        state: "INVITED" | "ACTIVE" | "DECLINED" | "LEFT" | "REMOVED";
+                        /** @enum {string} */
+                        rsvp: "PENDING" | "GOING" | "MAYBE" | "DECLINED";
+                        /** @enum {string} */
+                        seat: "NONE" | "HELD" | "WAITLISTED" | "OFFERED";
+                        guest: boolean;
+                        waitlistedAt: string | null;
+                        offerExpiresAt: string | null;
+                        revision: number;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; unauthorized Activity or ledger data is indistinguishable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialActivityputsocialactivitiesidparticipantsparticipantIdrole: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "Idempotency-Key": string;
+                "If-Match": string;
+            };
+            path: {
+                id: string;
+                participantId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @enum {string} */
+                    role: "ORGANIZER" | "PARTICIPANT";
+                };
+            };
+        };
+        responses: {
+            /** @description Authorized P6-02/P6-03 result; records never move money or grant Group access */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        userId: string | null;
+                        displayName: string | null;
+                        /** @enum {string} */
+                        role: "ORGANIZER" | "PARTICIPANT";
+                        /** @enum {string} */
+                        state: "INVITED" | "ACTIVE" | "DECLINED" | "LEFT" | "REMOVED";
+                        /** @enum {string} */
+                        rsvp: "PENDING" | "GOING" | "MAYBE" | "DECLINED";
+                        /** @enum {string} */
+                        seat: "NONE" | "HELD" | "WAITLISTED" | "OFFERED";
+                        guest: boolean;
+                        waitlistedAt: string | null;
+                        offerExpiresAt: string | null;
+                        revision: number;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; unauthorized Activity or ledger data is indistinguishable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialActivitygetsocialactivitiesiditems: {
+        parameters: {
+            query?: {
+                limit?: number;
+                after?: string;
+            };
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Authorized P6-02/P6-03 result; records never move money or grant Group access */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        items: {
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            activityId: string;
+                            /** @enum {string} */
+                            kind: "ITINERARY" | "AGENDA" | "CHECKLIST";
+                            title: string;
+                            notes: string | null;
+                            location: string | null;
+                            startsAt: string | null;
+                            endsAt: string | null;
+                            localDate: string | null;
+                            dayIndex: number | null;
+                            position: number;
+                            done: boolean;
+                            assigneeParticipantId: string | null;
+                            /** Format: uuid */
+                            createdByParticipantId: string;
+                            revision: number;
+                            /** Format: date-time */
+                            createdAt: string;
+                            /** Format: date-time */
+                            updatedAt: string;
+                        }[];
+                        nextCursor: string | null;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; unauthorized Activity or ledger data is indistinguishable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialActivitypostsocialactivitiesiditems: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "Idempotency-Key": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** Format: uuid */
+                    id: string;
+                    /** @enum {string} */
+                    kind: "ITINERARY" | "AGENDA" | "CHECKLIST";
+                    title: string;
+                    notes?: string | null;
+                    location?: string | null;
+                    startsAt?: string | null;
+                    endsAt?: string | null;
+                    assigneeParticipantId?: string | null;
+                };
+            };
+        };
+        responses: {
+            /** @description Authorized P6-02/P6-03 result; records never move money or grant Group access */
+            201: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        /** Format: uuid */
+                        activityId: string;
+                        /** @enum {string} */
+                        kind: "ITINERARY" | "AGENDA" | "CHECKLIST";
+                        title: string;
+                        notes: string | null;
+                        location: string | null;
+                        startsAt: string | null;
+                        endsAt: string | null;
+                        localDate: string | null;
+                        dayIndex: number | null;
+                        position: number;
+                        done: boolean;
+                        assigneeParticipantId: string | null;
+                        /** Format: uuid */
+                        createdByParticipantId: string;
+                        revision: number;
+                        /** Format: date-time */
+                        createdAt: string;
+                        /** Format: date-time */
+                        updatedAt: string;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; unauthorized Activity or ledger data is indistinguishable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialActivitydeletesocialactivitiesiditemsitemId: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "Idempotency-Key": string;
+                "If-Match": string;
+            };
+            path: {
+                id: string;
+                itemId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": Record<string, never>;
+            };
+        };
+        responses: {
+            /** @description Authorized P6-02/P6-03 result; records never move money or grant Group access */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        /** Format: uuid */
+                        activityId: string;
+                        /** @enum {string} */
+                        kind: "ITINERARY" | "AGENDA" | "CHECKLIST";
+                        title: string;
+                        notes: string | null;
+                        location: string | null;
+                        startsAt: string | null;
+                        endsAt: string | null;
+                        localDate: string | null;
+                        dayIndex: number | null;
+                        position: number;
+                        done: boolean;
+                        assigneeParticipantId: string | null;
+                        /** Format: uuid */
+                        createdByParticipantId: string;
+                        revision: number;
+                        /** Format: date-time */
+                        createdAt: string;
+                        /** Format: date-time */
+                        updatedAt: string;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; unauthorized Activity or ledger data is indistinguishable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialActivitypatchsocialactivitiesiditemsitemId: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "Idempotency-Key": string;
+                "If-Match": string;
+            };
+            path: {
+                id: string;
+                itemId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    title?: string;
+                    notes?: string | null;
+                    location?: string | null;
+                    startsAt?: string | null;
+                    endsAt?: string | null;
+                    assigneeParticipantId?: string | null;
+                    done?: boolean;
+                };
+            };
+        };
+        responses: {
+            /** @description Authorized P6-02/P6-03 result; records never move money or grant Group access */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        /** Format: uuid */
+                        activityId: string;
+                        /** @enum {string} */
+                        kind: "ITINERARY" | "AGENDA" | "CHECKLIST";
+                        title: string;
+                        notes: string | null;
+                        location: string | null;
+                        startsAt: string | null;
+                        endsAt: string | null;
+                        localDate: string | null;
+                        dayIndex: number | null;
+                        position: number;
+                        done: boolean;
+                        assigneeParticipantId: string | null;
+                        /** Format: uuid */
+                        createdByParticipantId: string;
+                        revision: number;
+                        /** Format: date-time */
+                        createdAt: string;
+                        /** Format: date-time */
+                        updatedAt: string;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; unauthorized Activity or ledger data is indistinguishable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialActivitypostsocialactivitiesiditemsitemIdtask: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "Idempotency-Key": string;
+            };
+            path: {
+                id: string;
+                itemId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": Record<string, never>;
+            };
+        };
+        responses: {
+            /** @description Authorized P6-02/P6-03 result; records never move money or grant Group access */
+            201: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        itemId: string;
+                        /** Format: uuid */
+                        taskId: string;
+                        created: boolean;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; unauthorized Activity or ledger data is indistinguishable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialActivitygetsocialactivitiesidpolls: {
+        parameters: {
+            query?: {
+                limit?: number;
+                after?: string;
+            };
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Authorized P6-02/P6-03 result; records never move money or grant Group access */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        items: {
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            activityId: string;
+                            /** @enum {string} */
+                            kind: "GENERAL" | "SCHEDULE";
+                            question: string;
+                            multiple: boolean;
+                            /** @enum {string} */
+                            state: "OPEN" | "CLOSED";
+                            chosenOptionId: string | null;
+                            revision: number;
+                            /** Format: date-time */
+                            createdAt: string;
+                            closedAt: string | null;
+                            options: {
+                                /** Format: uuid */
+                                id: string;
+                                label: string;
+                                startsAt: string | null;
+                                endsAt: string | null;
+                                votes: number;
+                            }[];
+                            myOptionIds: string[];
+                        }[];
+                        nextCursor: string | null;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; unauthorized Activity or ledger data is indistinguishable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialActivitypostsocialactivitiesidpolls: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "Idempotency-Key": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** Format: uuid */
+                    id: string;
+                    /** @enum {string} */
+                    kind: "GENERAL" | "SCHEDULE";
+                    question: string;
+                    /** @default false */
+                    multiple?: boolean;
+                    options: {
+                        /** Format: uuid */
+                        id: string;
+                        label: string;
+                        /** Format: date-time */
+                        startsAt?: string;
+                        /** Format: date-time */
+                        endsAt?: string;
+                    }[];
+                };
+            };
+        };
+        responses: {
+            /** @description Authorized P6-02/P6-03 result; records never move money or grant Group access */
+            201: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        /** Format: uuid */
+                        activityId: string;
+                        /** @enum {string} */
+                        kind: "GENERAL" | "SCHEDULE";
+                        question: string;
+                        multiple: boolean;
+                        /** @enum {string} */
+                        state: "OPEN" | "CLOSED";
+                        chosenOptionId: string | null;
+                        revision: number;
+                        /** Format: date-time */
+                        createdAt: string;
+                        closedAt: string | null;
+                        options: {
+                            /** Format: uuid */
+                            id: string;
+                            label: string;
+                            startsAt: string | null;
+                            endsAt: string | null;
+                            votes: number;
+                        }[];
+                        myOptionIds: string[];
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; unauthorized Activity or ledger data is indistinguishable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialActivityputsocialactivitiesidpollspollIdvote: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "Idempotency-Key": string;
+            };
+            path: {
+                id: string;
+                pollId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    optionIds: string[];
+                };
+            };
+        };
+        responses: {
+            /** @description Authorized P6-02/P6-03 result; records never move money or grant Group access */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        /** Format: uuid */
+                        activityId: string;
+                        /** @enum {string} */
+                        kind: "GENERAL" | "SCHEDULE";
+                        question: string;
+                        multiple: boolean;
+                        /** @enum {string} */
+                        state: "OPEN" | "CLOSED";
+                        chosenOptionId: string | null;
+                        revision: number;
+                        /** Format: date-time */
+                        createdAt: string;
+                        closedAt: string | null;
+                        options: {
+                            /** Format: uuid */
+                            id: string;
+                            label: string;
+                            startsAt: string | null;
+                            endsAt: string | null;
+                            votes: number;
+                        }[];
+                        myOptionIds: string[];
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; unauthorized Activity or ledger data is indistinguishable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialActivitypostsocialactivitiesidpollspollIdclose: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "Idempotency-Key": string;
+                "If-Match": string;
+            };
+            path: {
+                id: string;
+                pollId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @default null */
+                    chosenOptionId?: string | null;
+                };
+            };
+        };
+        responses: {
+            /** @description Authorized P6-02/P6-03 result; records never move money or grant Group access */
+            201: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        /** Format: uuid */
+                        activityId: string;
+                        /** @enum {string} */
+                        kind: "GENERAL" | "SCHEDULE";
+                        question: string;
+                        multiple: boolean;
+                        /** @enum {string} */
+                        state: "OPEN" | "CLOSED";
+                        chosenOptionId: string | null;
+                        revision: number;
+                        /** Format: date-time */
+                        createdAt: string;
+                        closedAt: string | null;
+                        options: {
+                            /** Format: uuid */
+                            id: string;
+                            label: string;
+                            startsAt: string | null;
+                            endsAt: string | null;
+                            votes: number;
+                        }[];
+                        myOptionIds: string[];
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; unauthorized Activity or ledger data is indistinguishable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialActivitygetsocialactivitiesidfreebusy: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Authorized P6-02/P6-03 result; records never move money or grant Group access */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        items: {
+                            /** Format: uuid */
+                            participantId: string;
+                            /** Format: date-time */
+                            capturedAt: string;
+                            intervals: {
+                                /** Format: date-time */
+                                start: string;
+                                /** Format: date-time */
+                                end: string;
+                            }[];
+                            displayName: string | null;
+                        }[];
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; unauthorized Activity or ledger data is indistinguishable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialActivityputsocialactivitiesidfreebusy: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "Idempotency-Key": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": Record<string, never>;
+            };
+        };
+        responses: {
+            /** @description Authorized P6-02/P6-03 result; records never move money or grant Group access */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        participantId: string;
+                        /** Format: date-time */
+                        capturedAt: string;
+                        intervals: {
+                            /** Format: date-time */
+                            start: string;
+                            /** Format: date-time */
+                            end: string;
+                        }[];
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; unauthorized Activity or ledger data is indistinguishable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialActivitydeletesocialactivitiesidfreebusy: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "Idempotency-Key": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": Record<string, never>;
+            };
+        };
+        responses: {
+            /** @description Authorized P6-02/P6-03 result; records never move money or grant Group access */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        participantId: string;
+                        /** @enum {string} */
+                        role: "ORGANIZER" | "PARTICIPANT";
+                        /** @enum {string} */
+                        state: "INVITED" | "ACTIVE" | "DECLINED" | "LEFT" | "REMOVED";
+                        /** @enum {string} */
+                        rsvp: "PENDING" | "GOING" | "MAYBE" | "DECLINED";
+                        /** @enum {string} */
+                        seat: "NONE" | "HELD" | "WAITLISTED" | "OFFERED";
+                        guest: boolean;
+                        offerExpiresAt: string | null;
+                        reminderMinutes: number | null;
+                        generation: number;
+                        revision: number;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; unauthorized Activity or ledger data is indistinguishable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialActivityputsocialactivitiesidconversation: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "Idempotency-Key": string;
+                "If-Match": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    conversationId: string | null;
+                };
+            };
+        };
+        responses: {
+            /** @description Authorized P6-02/P6-03 result; records never move money or grant Group access */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        groupId: string | null;
+                        /** @enum {string} */
+                        template: "GENERAL" | "TRAVEL" | "SPORT" | "FAMILY" | "GATHERING";
+                        title: string;
+                        timezone: string;
+                        /** Format: date-time */
+                        startsAt: string;
+                        /** Format: date-time */
+                        endsAt: string;
+                        /** @enum {string} */
+                        state: "PLANNED" | "CANCELED" | "CLOSED" | "DELETED";
+                        capacity: number | null;
+                        seatsTaken: number;
+                        waitlistCount: number;
+                        me: {
+                            /** Format: uuid */
+                            participantId: string;
+                            /** @enum {string} */
+                            role: "ORGANIZER" | "PARTICIPANT";
+                            /** @enum {string} */
+                            state: "INVITED" | "ACTIVE" | "DECLINED" | "LEFT" | "REMOVED";
+                            /** @enum {string} */
+                            rsvp: "PENDING" | "GOING" | "MAYBE" | "DECLINED";
+                            /** @enum {string} */
+                            seat: "NONE" | "HELD" | "WAITLISTED" | "OFFERED";
+                            guest: boolean;
+                            offerExpiresAt: string | null;
+                            reminderMinutes: number | null;
+                            generation: number;
+                            revision: number;
+                        } | null;
+                        description: string | null;
+                        location: string | null;
+                        conversationId: string | null;
+                        conversationManaged: boolean;
+                        successorParticipantId: string | null;
+                        orphanedAt: string | null;
+                        deletedAt: string | null;
+                        recoverUntil: string | null;
+                        manage: boolean;
+                        revision: number;
+                        /** Format: date-time */
+                        createdAt: string;
+                        /** Format: date-time */
+                        updatedAt: string;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; unauthorized Activity or ledger data is indistinguishable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialActivityputsocialactivitiesidreminder: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "Idempotency-Key": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    minutesBefore: number | null;
+                };
+            };
+        };
+        responses: {
+            /** @description Authorized P6-02/P6-03 result; records never move money or grant Group access */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        participantId: string;
+                        /** @enum {string} */
+                        role: "ORGANIZER" | "PARTICIPANT";
+                        /** @enum {string} */
+                        state: "INVITED" | "ACTIVE" | "DECLINED" | "LEFT" | "REMOVED";
+                        /** @enum {string} */
+                        rsvp: "PENDING" | "GOING" | "MAYBE" | "DECLINED";
+                        /** @enum {string} */
+                        seat: "NONE" | "HELD" | "WAITLISTED" | "OFFERED";
+                        guest: boolean;
+                        offerExpiresAt: string | null;
+                        reminderMinutes: number | null;
+                        generation: number;
+                        revision: number;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; unauthorized Activity or ledger data is indistinguishable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialActivitypostsocialactivitiesidrestore: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "Idempotency-Key": string;
+                "If-Match": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": Record<string, never>;
+            };
+        };
+        responses: {
+            /** @description Authorized P6-02/P6-03 result; records never move money or grant Group access */
+            201: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        groupId: string | null;
+                        /** @enum {string} */
+                        template: "GENERAL" | "TRAVEL" | "SPORT" | "FAMILY" | "GATHERING";
+                        title: string;
+                        timezone: string;
+                        /** Format: date-time */
+                        startsAt: string;
+                        /** Format: date-time */
+                        endsAt: string;
+                        /** @enum {string} */
+                        state: "PLANNED" | "CANCELED" | "CLOSED" | "DELETED";
+                        capacity: number | null;
+                        seatsTaken: number;
+                        waitlistCount: number;
+                        me: {
+                            /** Format: uuid */
+                            participantId: string;
+                            /** @enum {string} */
+                            role: "ORGANIZER" | "PARTICIPANT";
+                            /** @enum {string} */
+                            state: "INVITED" | "ACTIVE" | "DECLINED" | "LEFT" | "REMOVED";
+                            /** @enum {string} */
+                            rsvp: "PENDING" | "GOING" | "MAYBE" | "DECLINED";
+                            /** @enum {string} */
+                            seat: "NONE" | "HELD" | "WAITLISTED" | "OFFERED";
+                            guest: boolean;
+                            offerExpiresAt: string | null;
+                            reminderMinutes: number | null;
+                            generation: number;
+                            revision: number;
+                        } | null;
+                        description: string | null;
+                        location: string | null;
+                        conversationId: string | null;
+                        conversationManaged: boolean;
+                        successorParticipantId: string | null;
+                        orphanedAt: string | null;
+                        deletedAt: string | null;
+                        recoverUntil: string | null;
+                        manage: boolean;
+                        revision: number;
+                        /** Format: date-time */
+                        createdAt: string;
+                        /** Format: date-time */
+                        updatedAt: string;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; unauthorized Activity or ledger data is indistinguishable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialActivitypostsocialactivitiesiditemsitemIdrestore: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "Idempotency-Key": string;
+                "If-Match": string;
+            };
+            path: {
+                id: string;
+                itemId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": Record<string, never>;
+            };
+        };
+        responses: {
+            /** @description Authorized P6-02/P6-03 result; records never move money or grant Group access */
+            201: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        /** Format: uuid */
+                        activityId: string;
+                        /** @enum {string} */
+                        kind: "ITINERARY" | "AGENDA" | "CHECKLIST";
+                        title: string;
+                        notes: string | null;
+                        location: string | null;
+                        startsAt: string | null;
+                        endsAt: string | null;
+                        localDate: string | null;
+                        dayIndex: number | null;
+                        position: number;
+                        done: boolean;
+                        assigneeParticipantId: string | null;
+                        /** Format: uuid */
+                        createdByParticipantId: string;
+                        revision: number;
+                        /** Format: date-time */
+                        createdAt: string;
+                        /** Format: date-time */
+                        updatedAt: string;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; unauthorized Activity or ledger data is indistinguishable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialActivitypostsocialactivitiesidsuccession: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "Idempotency-Key": string;
+                "If-Match": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** Format: uuid */
+                    participantId: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Authorized P6-02/P6-03 result; records never move money or grant Group access */
+            201: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        groupId: string | null;
+                        /** @enum {string} */
+                        template: "GENERAL" | "TRAVEL" | "SPORT" | "FAMILY" | "GATHERING";
+                        title: string;
+                        timezone: string;
+                        /** Format: date-time */
+                        startsAt: string;
+                        /** Format: date-time */
+                        endsAt: string;
+                        /** @enum {string} */
+                        state: "PLANNED" | "CANCELED" | "CLOSED" | "DELETED";
+                        capacity: number | null;
+                        seatsTaken: number;
+                        waitlistCount: number;
+                        me: {
+                            /** Format: uuid */
+                            participantId: string;
+                            /** @enum {string} */
+                            role: "ORGANIZER" | "PARTICIPANT";
+                            /** @enum {string} */
+                            state: "INVITED" | "ACTIVE" | "DECLINED" | "LEFT" | "REMOVED";
+                            /** @enum {string} */
+                            rsvp: "PENDING" | "GOING" | "MAYBE" | "DECLINED";
+                            /** @enum {string} */
+                            seat: "NONE" | "HELD" | "WAITLISTED" | "OFFERED";
+                            guest: boolean;
+                            offerExpiresAt: string | null;
+                            reminderMinutes: number | null;
+                            generation: number;
+                            revision: number;
+                        } | null;
+                        description: string | null;
+                        location: string | null;
+                        conversationId: string | null;
+                        conversationManaged: boolean;
+                        successorParticipantId: string | null;
+                        orphanedAt: string | null;
+                        deletedAt: string | null;
+                        recoverUntil: string | null;
+                        manage: boolean;
+                        revision: number;
+                        /** Format: date-time */
+                        createdAt: string;
+                        /** Format: date-time */
+                        updatedAt: string;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; unauthorized Activity or ledger data is indistinguishable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialActivitypostsocialactivitiesidsuccessionaction: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "Idempotency-Key": string;
+                "If-Match": string;
+            };
+            path: {
+                id: string;
+                action: "accept" | "decline" | "cancel";
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": Record<string, never>;
+            };
+        };
+        responses: {
+            /** @description Authorized P6-02/P6-03 result; records never move money or grant Group access */
+            201: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        groupId: string | null;
+                        /** @enum {string} */
+                        template: "GENERAL" | "TRAVEL" | "SPORT" | "FAMILY" | "GATHERING";
+                        title: string;
+                        timezone: string;
+                        /** Format: date-time */
+                        startsAt: string;
+                        /** Format: date-time */
+                        endsAt: string;
+                        /** @enum {string} */
+                        state: "PLANNED" | "CANCELED" | "CLOSED" | "DELETED";
+                        capacity: number | null;
+                        seatsTaken: number;
+                        waitlistCount: number;
+                        me: {
+                            /** Format: uuid */
+                            participantId: string;
+                            /** @enum {string} */
+                            role: "ORGANIZER" | "PARTICIPANT";
+                            /** @enum {string} */
+                            state: "INVITED" | "ACTIVE" | "DECLINED" | "LEFT" | "REMOVED";
+                            /** @enum {string} */
+                            rsvp: "PENDING" | "GOING" | "MAYBE" | "DECLINED";
+                            /** @enum {string} */
+                            seat: "NONE" | "HELD" | "WAITLISTED" | "OFFERED";
+                            guest: boolean;
+                            offerExpiresAt: string | null;
+                            reminderMinutes: number | null;
+                            generation: number;
+                            revision: number;
+                        } | null;
+                        description: string | null;
+                        location: string | null;
+                        conversationId: string | null;
+                        conversationManaged: boolean;
+                        successorParticipantId: string | null;
+                        orphanedAt: string | null;
+                        deletedAt: string | null;
+                        recoverUntil: string | null;
+                        manage: boolean;
+                        revision: number;
+                        /** Format: date-time */
+                        createdAt: string;
+                        /** Format: date-time */
+                        updatedAt: string;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; unauthorized Activity or ledger data is indistinguishable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialActivitypostsocialactivitiesidconversationopen: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "Idempotency-Key": string;
+                "If-Match": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** Format: uuid */
+                    id: string;
+                    retentionPolicyVersion: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Authorized P6-02/P6-03 result; records never move money or grant Group access */
+            201: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        groupId: string | null;
+                        /** @enum {string} */
+                        template: "GENERAL" | "TRAVEL" | "SPORT" | "FAMILY" | "GATHERING";
+                        title: string;
+                        timezone: string;
+                        /** Format: date-time */
+                        startsAt: string;
+                        /** Format: date-time */
+                        endsAt: string;
+                        /** @enum {string} */
+                        state: "PLANNED" | "CANCELED" | "CLOSED" | "DELETED";
+                        capacity: number | null;
+                        seatsTaken: number;
+                        waitlistCount: number;
+                        me: {
+                            /** Format: uuid */
+                            participantId: string;
+                            /** @enum {string} */
+                            role: "ORGANIZER" | "PARTICIPANT";
+                            /** @enum {string} */
+                            state: "INVITED" | "ACTIVE" | "DECLINED" | "LEFT" | "REMOVED";
+                            /** @enum {string} */
+                            rsvp: "PENDING" | "GOING" | "MAYBE" | "DECLINED";
+                            /** @enum {string} */
+                            seat: "NONE" | "HELD" | "WAITLISTED" | "OFFERED";
+                            guest: boolean;
+                            offerExpiresAt: string | null;
+                            reminderMinutes: number | null;
+                            generation: number;
+                            revision: number;
+                        } | null;
+                        description: string | null;
+                        location: string | null;
+                        conversationId: string | null;
+                        conversationManaged: boolean;
+                        successorParticipantId: string | null;
+                        orphanedAt: string | null;
+                        deletedAt: string | null;
+                        recoverUntil: string | null;
+                        manage: boolean;
+                        revision: number;
+                        /** Format: date-time */
+                        createdAt: string;
+                        /** Format: date-time */
+                        updatedAt: string;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; unauthorized Activity or ledger data is indistinguishable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialActivitypostsocialactivitiesidconversationjoin: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "Idempotency-Key": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": Record<string, never>;
+            };
+        };
+        responses: {
+            /** @description Authorized P6-02/P6-03 result; records never move money or grant Group access */
+            201: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        /** @enum {string} */
+                        kind: "DM" | "PRIVATE_GROUP" | "PROJECT" | "TEAM" | "COMPANY";
+                        sourceId: string | null;
+                        title: string | null;
+                        revision: number;
+                        writable: boolean;
+                        /** Format: date-time */
+                        createdAt: string;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; unauthorized Activity or ledger data is indistinguishable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialActivitygetsocialnotices: {
+        parameters: {
+            query?: {
+                limit?: number;
+                after?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Authorized P6-02/P6-03 result; records never move money or grant Group access */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        items: {
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string} */
+                            kind: "ACTIVITY_INVITED" | "ACTIVITY_UPDATED" | "ACTIVITY_CANCELED" | "ACTIVITY_REMOVED" | "SEAT_OFFERED" | "ACTIVITY_REMINDER" | "EXPENSE_PROPOSED" | "EXPENSE_DECIDED" | "SETTLEMENT_RECORDED" | "SETTLEMENT_DECIDED" | "ORGANIZER_NOMINATED" | "ACTIVITY_DELETED" | "LOAN_REQUESTED" | "LOAN_OFFERED" | "LOAN_DECIDED" | "LOAN_HANDOVER" | "LOAN_RECEIVED" | "LOAN_RETURN_REQUESTED" | "LOAN_RETURNED" | "LOAN_DISPUTED" | "LOAN_OUTCOME_PROPOSED" | "LOAN_OUTCOME_CONFIRMED" | "LOAN_DUE_PROPOSED" | "LOAN_DUE_DECIDED" | "CLAIM_SUBMITTED" | "CLAIM_DECIDED" | "CLAIM_HANDOVER" | "CLAIM_RESOLVED" | "CLAIM_DISPUTED" | "GOAL_ENTRY_SUBMITTED" | "GOAL_ENTRY_DECIDED" | "GOAL_CORRECTED" | "GOAL_COMPLETED" | "GOAL_ENDED";
+                            activityId: string | null;
+                            groupId: string | null;
+                            /** Format: uuid */
+                            resourceId: string;
+                            /** Format: date-time */
+                            createdAt: string;
+                            readAt: string | null;
+                        }[];
+                        nextCursor: string | null;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; unauthorized Activity or ledger data is indistinguishable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialActivitypostsocialnoticesidread: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "Idempotency-Key": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": Record<string, never>;
+            };
+        };
+        responses: {
+            /** @description Authorized P6-02/P6-03 result; records never move money or grant Group access */
+            201: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        /** @enum {string} */
+                        kind: "ACTIVITY_INVITED" | "ACTIVITY_UPDATED" | "ACTIVITY_CANCELED" | "ACTIVITY_REMOVED" | "SEAT_OFFERED" | "ACTIVITY_REMINDER" | "EXPENSE_PROPOSED" | "EXPENSE_DECIDED" | "SETTLEMENT_RECORDED" | "SETTLEMENT_DECIDED" | "ORGANIZER_NOMINATED" | "ACTIVITY_DELETED" | "LOAN_REQUESTED" | "LOAN_OFFERED" | "LOAN_DECIDED" | "LOAN_HANDOVER" | "LOAN_RECEIVED" | "LOAN_RETURN_REQUESTED" | "LOAN_RETURNED" | "LOAN_DISPUTED" | "LOAN_OUTCOME_PROPOSED" | "LOAN_OUTCOME_CONFIRMED" | "LOAN_DUE_PROPOSED" | "LOAN_DUE_DECIDED" | "CLAIM_SUBMITTED" | "CLAIM_DECIDED" | "CLAIM_HANDOVER" | "CLAIM_RESOLVED" | "CLAIM_DISPUTED" | "GOAL_ENTRY_SUBMITTED" | "GOAL_ENTRY_DECIDED" | "GOAL_CORRECTED" | "GOAL_COMPLETED" | "GOAL_ENDED";
+                        activityId: string | null;
+                        groupId: string | null;
+                        /** Format: uuid */
+                        resourceId: string;
+                        /** Format: date-time */
+                        createdAt: string;
+                        readAt: string | null;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; unauthorized Activity or ledger data is indistinguishable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialActivitygetsocialgroupsidexpenses: {
+        parameters: {
+            query?: {
+                limit?: number;
+                after?: string;
+            };
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Authorized P6-02/P6-03 result; records never move money or grant Group access */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        items: {
+                            /** Format: uuid */
+                            id: string;
+                            groupId: string | null;
+                            activityId: string | null;
+                            /** @enum {string} */
+                            state: "PENDING" | "APPROVED" | "REJECTED" | "WITHDRAWN";
+                            proposedByUserId: string | null;
+                            revision: number;
+                            /** Format: date-time */
+                            createdAt: string;
+                            /** Format: date-time */
+                            updatedAt: string;
+                            canDecide: boolean;
+                            effective: {
+                                /** Format: uuid */
+                                id: string;
+                                number: number;
+                                /** @enum {string} */
+                                state: "PENDING" | "APPROVED" | "REJECTED" | "SUPERSEDED" | "WITHDRAWN";
+                                title: string;
+                                note: string | null;
+                                currency: string;
+                                scale: number;
+                                amountMinor: string;
+                                payerUserId: string | null;
+                                payerActorId: string | null;
+                                /** @enum {string} */
+                                method: "EQUAL" | "PERCENT" | "FIXED" | "WEIGHTED";
+                                /** Format: date */
+                                incurredOn: string;
+                                proposedByUserId: string | null;
+                                decidedByUserId: string | null;
+                                decidedAt: string | null;
+                                decisionNote: string | null;
+                                /** Format: date-time */
+                                createdAt: string;
+                                sharesRestricted: boolean;
+                                shares: {
+                                    position: number;
+                                    userId: string | null;
+                                    actorId: string | null;
+                                    input: string | null;
+                                    shareMinor: string;
+                                }[];
+                            } | null;
+                            pending: {
+                                /** Format: uuid */
+                                id: string;
+                                number: number;
+                                /** @enum {string} */
+                                state: "PENDING" | "APPROVED" | "REJECTED" | "SUPERSEDED" | "WITHDRAWN";
+                                title: string;
+                                note: string | null;
+                                currency: string;
+                                scale: number;
+                                amountMinor: string;
+                                payerUserId: string | null;
+                                payerActorId: string | null;
+                                /** @enum {string} */
+                                method: "EQUAL" | "PERCENT" | "FIXED" | "WEIGHTED";
+                                /** Format: date */
+                                incurredOn: string;
+                                proposedByUserId: string | null;
+                                decidedByUserId: string | null;
+                                decidedAt: string | null;
+                                decisionNote: string | null;
+                                /** Format: date-time */
+                                createdAt: string;
+                                sharesRestricted: boolean;
+                                shares: {
+                                    position: number;
+                                    userId: string | null;
+                                    actorId: string | null;
+                                    input: string | null;
+                                    shareMinor: string;
+                                }[];
+                            } | null;
+                        }[];
+                        nextCursor: string | null;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; unauthorized Activity or ledger data is indistinguishable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialActivitypostsocialgroupsidexpenses: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "Idempotency-Key": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    title: string;
+                    note?: string | null;
+                    currency: string;
+                    amountMinor: string;
+                    /** Format: uuid */
+                    payerUserId?: string;
+                    /** Format: uuid */
+                    payerActorId?: string;
+                    /** @enum {string} */
+                    method: "EQUAL" | "PERCENT" | "FIXED" | "WEIGHTED";
+                    /** Format: date */
+                    incurredOn: string;
+                    shares: {
+                        /** Format: uuid */
+                        userId?: string;
+                        /** Format: uuid */
+                        actorId?: string;
+                        value?: string;
+                    }[];
+                    /** Format: uuid */
+                    id: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Authorized P6-02/P6-03 result; records never move money or grant Group access */
+            201: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        groupId: string | null;
+                        activityId: string | null;
+                        /** @enum {string} */
+                        state: "PENDING" | "APPROVED" | "REJECTED" | "WITHDRAWN";
+                        proposedByUserId: string | null;
+                        revision: number;
+                        /** Format: date-time */
+                        createdAt: string;
+                        /** Format: date-time */
+                        updatedAt: string;
+                        canDecide: boolean;
+                        effective: {
+                            /** Format: uuid */
+                            id: string;
+                            number: number;
+                            /** @enum {string} */
+                            state: "PENDING" | "APPROVED" | "REJECTED" | "SUPERSEDED" | "WITHDRAWN";
+                            title: string;
+                            note: string | null;
+                            currency: string;
+                            scale: number;
+                            amountMinor: string;
+                            payerUserId: string | null;
+                            payerActorId: string | null;
+                            /** @enum {string} */
+                            method: "EQUAL" | "PERCENT" | "FIXED" | "WEIGHTED";
+                            /** Format: date */
+                            incurredOn: string;
+                            proposedByUserId: string | null;
+                            decidedByUserId: string | null;
+                            decidedAt: string | null;
+                            decisionNote: string | null;
+                            /** Format: date-time */
+                            createdAt: string;
+                            sharesRestricted: boolean;
+                            shares: {
+                                position: number;
+                                userId: string | null;
+                                actorId: string | null;
+                                input: string | null;
+                                shareMinor: string;
+                            }[];
+                        } | null;
+                        pending: {
+                            /** Format: uuid */
+                            id: string;
+                            number: number;
+                            /** @enum {string} */
+                            state: "PENDING" | "APPROVED" | "REJECTED" | "SUPERSEDED" | "WITHDRAWN";
+                            title: string;
+                            note: string | null;
+                            currency: string;
+                            scale: number;
+                            amountMinor: string;
+                            payerUserId: string | null;
+                            payerActorId: string | null;
+                            /** @enum {string} */
+                            method: "EQUAL" | "PERCENT" | "FIXED" | "WEIGHTED";
+                            /** Format: date */
+                            incurredOn: string;
+                            proposedByUserId: string | null;
+                            decidedByUserId: string | null;
+                            decidedAt: string | null;
+                            decisionNote: string | null;
+                            /** Format: date-time */
+                            createdAt: string;
+                            sharesRestricted: boolean;
+                            shares: {
+                                position: number;
+                                userId: string | null;
+                                actorId: string | null;
+                                input: string | null;
+                                shareMinor: string;
+                            }[];
+                        } | null;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; unauthorized Activity or ledger data is indistinguishable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialActivitygetsocialgroupsidexpensesexpenseId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+                expenseId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Authorized P6-02/P6-03 result; records never move money or grant Group access */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        groupId: string | null;
+                        activityId: string | null;
+                        /** @enum {string} */
+                        state: "PENDING" | "APPROVED" | "REJECTED" | "WITHDRAWN";
+                        proposedByUserId: string | null;
+                        revision: number;
+                        /** Format: date-time */
+                        createdAt: string;
+                        /** Format: date-time */
+                        updatedAt: string;
+                        canDecide: boolean;
+                        effective: {
+                            /** Format: uuid */
+                            id: string;
+                            number: number;
+                            /** @enum {string} */
+                            state: "PENDING" | "APPROVED" | "REJECTED" | "SUPERSEDED" | "WITHDRAWN";
+                            title: string;
+                            note: string | null;
+                            currency: string;
+                            scale: number;
+                            amountMinor: string;
+                            payerUserId: string | null;
+                            payerActorId: string | null;
+                            /** @enum {string} */
+                            method: "EQUAL" | "PERCENT" | "FIXED" | "WEIGHTED";
+                            /** Format: date */
+                            incurredOn: string;
+                            proposedByUserId: string | null;
+                            decidedByUserId: string | null;
+                            decidedAt: string | null;
+                            decisionNote: string | null;
+                            /** Format: date-time */
+                            createdAt: string;
+                            sharesRestricted: boolean;
+                            shares: {
+                                position: number;
+                                userId: string | null;
+                                actorId: string | null;
+                                input: string | null;
+                                shareMinor: string;
+                            }[];
+                        } | null;
+                        pending: {
+                            /** Format: uuid */
+                            id: string;
+                            number: number;
+                            /** @enum {string} */
+                            state: "PENDING" | "APPROVED" | "REJECTED" | "SUPERSEDED" | "WITHDRAWN";
+                            title: string;
+                            note: string | null;
+                            currency: string;
+                            scale: number;
+                            amountMinor: string;
+                            payerUserId: string | null;
+                            payerActorId: string | null;
+                            /** @enum {string} */
+                            method: "EQUAL" | "PERCENT" | "FIXED" | "WEIGHTED";
+                            /** Format: date */
+                            incurredOn: string;
+                            proposedByUserId: string | null;
+                            decidedByUserId: string | null;
+                            decidedAt: string | null;
+                            decisionNote: string | null;
+                            /** Format: date-time */
+                            createdAt: string;
+                            sharesRestricted: boolean;
+                            shares: {
+                                position: number;
+                                userId: string | null;
+                                actorId: string | null;
+                                input: string | null;
+                                shareMinor: string;
+                            }[];
+                        } | null;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; unauthorized Activity or ledger data is indistinguishable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialActivitygetsocialgroupsidexpensesexpenseIdhistory: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+                expenseId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Authorized P6-02/P6-03 result; records never move money or grant Group access */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        items: {
+                            /** Format: uuid */
+                            id: string;
+                            number: number;
+                            /** @enum {string} */
+                            state: "PENDING" | "APPROVED" | "REJECTED" | "SUPERSEDED" | "WITHDRAWN";
+                            title: string;
+                            note: string | null;
+                            currency: string;
+                            scale: number;
+                            amountMinor: string;
+                            payerUserId: string | null;
+                            payerActorId: string | null;
+                            /** @enum {string} */
+                            method: "EQUAL" | "PERCENT" | "FIXED" | "WEIGHTED";
+                            /** Format: date */
+                            incurredOn: string;
+                            proposedByUserId: string | null;
+                            decidedByUserId: string | null;
+                            decidedAt: string | null;
+                            decisionNote: string | null;
+                            /** Format: date-time */
+                            createdAt: string;
+                            sharesRestricted: boolean;
+                            shares: {
+                                position: number;
+                                userId: string | null;
+                                actorId: string | null;
+                                input: string | null;
+                                shareMinor: string;
+                            }[];
+                        }[];
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; unauthorized Activity or ledger data is indistinguishable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialActivitypostsocialgroupsidexpensesexpenseIdrevisions: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "Idempotency-Key": string;
+                "If-Match": string;
+            };
+            path: {
+                id: string;
+                expenseId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    title: string;
+                    note?: string | null;
+                    currency: string;
+                    amountMinor: string;
+                    /** Format: uuid */
+                    payerUserId?: string;
+                    /** Format: uuid */
+                    payerActorId?: string;
+                    /** @enum {string} */
+                    method: "EQUAL" | "PERCENT" | "FIXED" | "WEIGHTED";
+                    /** Format: date */
+                    incurredOn: string;
+                    shares: {
+                        /** Format: uuid */
+                        userId?: string;
+                        /** Format: uuid */
+                        actorId?: string;
+                        value?: string;
+                    }[];
+                };
+            };
+        };
+        responses: {
+            /** @description Authorized P6-02/P6-03 result; records never move money or grant Group access */
+            201: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        groupId: string | null;
+                        activityId: string | null;
+                        /** @enum {string} */
+                        state: "PENDING" | "APPROVED" | "REJECTED" | "WITHDRAWN";
+                        proposedByUserId: string | null;
+                        revision: number;
+                        /** Format: date-time */
+                        createdAt: string;
+                        /** Format: date-time */
+                        updatedAt: string;
+                        canDecide: boolean;
+                        effective: {
+                            /** Format: uuid */
+                            id: string;
+                            number: number;
+                            /** @enum {string} */
+                            state: "PENDING" | "APPROVED" | "REJECTED" | "SUPERSEDED" | "WITHDRAWN";
+                            title: string;
+                            note: string | null;
+                            currency: string;
+                            scale: number;
+                            amountMinor: string;
+                            payerUserId: string | null;
+                            payerActorId: string | null;
+                            /** @enum {string} */
+                            method: "EQUAL" | "PERCENT" | "FIXED" | "WEIGHTED";
+                            /** Format: date */
+                            incurredOn: string;
+                            proposedByUserId: string | null;
+                            decidedByUserId: string | null;
+                            decidedAt: string | null;
+                            decisionNote: string | null;
+                            /** Format: date-time */
+                            createdAt: string;
+                            sharesRestricted: boolean;
+                            shares: {
+                                position: number;
+                                userId: string | null;
+                                actorId: string | null;
+                                input: string | null;
+                                shareMinor: string;
+                            }[];
+                        } | null;
+                        pending: {
+                            /** Format: uuid */
+                            id: string;
+                            number: number;
+                            /** @enum {string} */
+                            state: "PENDING" | "APPROVED" | "REJECTED" | "SUPERSEDED" | "WITHDRAWN";
+                            title: string;
+                            note: string | null;
+                            currency: string;
+                            scale: number;
+                            amountMinor: string;
+                            payerUserId: string | null;
+                            payerActorId: string | null;
+                            /** @enum {string} */
+                            method: "EQUAL" | "PERCENT" | "FIXED" | "WEIGHTED";
+                            /** Format: date */
+                            incurredOn: string;
+                            proposedByUserId: string | null;
+                            decidedByUserId: string | null;
+                            decidedAt: string | null;
+                            decisionNote: string | null;
+                            /** Format: date-time */
+                            createdAt: string;
+                            sharesRestricted: boolean;
+                            shares: {
+                                position: number;
+                                userId: string | null;
+                                actorId: string | null;
+                                input: string | null;
+                                shareMinor: string;
+                            }[];
+                        } | null;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; unauthorized Activity or ledger data is indistinguishable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialActivitypostsocialgroupsidexpensesexpenseIddecisionsaction: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "Idempotency-Key": string;
+                "If-Match": string;
+            };
+            path: {
+                id: string;
+                expenseId: string;
+                action: "approve" | "reject" | "withdraw";
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    note?: string | null;
+                };
+            };
+        };
+        responses: {
+            /** @description Authorized P6-02/P6-03 result; records never move money or grant Group access */
+            201: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        groupId: string | null;
+                        activityId: string | null;
+                        /** @enum {string} */
+                        state: "PENDING" | "APPROVED" | "REJECTED" | "WITHDRAWN";
+                        proposedByUserId: string | null;
+                        revision: number;
+                        /** Format: date-time */
+                        createdAt: string;
+                        /** Format: date-time */
+                        updatedAt: string;
+                        canDecide: boolean;
+                        effective: {
+                            /** Format: uuid */
+                            id: string;
+                            number: number;
+                            /** @enum {string} */
+                            state: "PENDING" | "APPROVED" | "REJECTED" | "SUPERSEDED" | "WITHDRAWN";
+                            title: string;
+                            note: string | null;
+                            currency: string;
+                            scale: number;
+                            amountMinor: string;
+                            payerUserId: string | null;
+                            payerActorId: string | null;
+                            /** @enum {string} */
+                            method: "EQUAL" | "PERCENT" | "FIXED" | "WEIGHTED";
+                            /** Format: date */
+                            incurredOn: string;
+                            proposedByUserId: string | null;
+                            decidedByUserId: string | null;
+                            decidedAt: string | null;
+                            decisionNote: string | null;
+                            /** Format: date-time */
+                            createdAt: string;
+                            sharesRestricted: boolean;
+                            shares: {
+                                position: number;
+                                userId: string | null;
+                                actorId: string | null;
+                                input: string | null;
+                                shareMinor: string;
+                            }[];
+                        } | null;
+                        pending: {
+                            /** Format: uuid */
+                            id: string;
+                            number: number;
+                            /** @enum {string} */
+                            state: "PENDING" | "APPROVED" | "REJECTED" | "SUPERSEDED" | "WITHDRAWN";
+                            title: string;
+                            note: string | null;
+                            currency: string;
+                            scale: number;
+                            amountMinor: string;
+                            payerUserId: string | null;
+                            payerActorId: string | null;
+                            /** @enum {string} */
+                            method: "EQUAL" | "PERCENT" | "FIXED" | "WEIGHTED";
+                            /** Format: date */
+                            incurredOn: string;
+                            proposedByUserId: string | null;
+                            decidedByUserId: string | null;
+                            decidedAt: string | null;
+                            decisionNote: string | null;
+                            /** Format: date-time */
+                            createdAt: string;
+                            sharesRestricted: boolean;
+                            shares: {
+                                position: number;
+                                userId: string | null;
+                                actorId: string | null;
+                                input: string | null;
+                                shareMinor: string;
+                            }[];
+                        } | null;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; unauthorized Activity or ledger data is indistinguishable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialActivitygetsocialgroupsidbalances: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Authorized P6-02/P6-03 result; records never move money or grant Group access */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        items: {
+                            /** Format: uuid */
+                            userId: string;
+                            actorId: string | null;
+                            displayName: string | null;
+                            currency: string;
+                            paidMinor: string;
+                            shareMinor: string;
+                            settledOutMinor: string;
+                            settledInMinor: string;
+                            netMinor: string;
+                            owedMinor: string;
+                            receivableMinor: string;
+                        }[];
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; unauthorized Activity or ledger data is indistinguishable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialActivitygetsocialgroupsidbalancesme: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Authorized P6-02/P6-03 result; records never move money or grant Group access */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        items: {
+                            /** Format: uuid */
+                            userId: string;
+                            actorId: string | null;
+                            displayName: string | null;
+                            currency: string;
+                            paidMinor: string;
+                            shareMinor: string;
+                            settledOutMinor: string;
+                            settledInMinor: string;
+                            netMinor: string;
+                            owedMinor: string;
+                            receivableMinor: string;
+                        }[];
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; unauthorized Activity or ledger data is indistinguishable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialActivitygetsocialgroupsidsettlements: {
+        parameters: {
+            query?: {
+                limit?: number;
+                after?: string;
+            };
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Authorized P6-02/P6-03 result; records never move money or grant Group access */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        items: {
+                            /** Format: uuid */
+                            id: string;
+                            groupId: string | null;
+                            activityId: string | null;
+                            payerUserId: string | null;
+                            payeeUserId: string | null;
+                            payerActorId: string | null;
+                            payeeActorId: string | null;
+                            currency: string;
+                            scale: number;
+                            amountMinor: string;
+                            /** @enum {string} */
+                            state: "RECORDED" | "CONFIRMED" | "DISPUTED" | "CANCELED";
+                            note: string | null;
+                            disputeNote: string | null;
+                            revision: number;
+                            /** Format: date-time */
+                            createdAt: string;
+                            decidedAt: string | null;
+                        }[];
+                        nextCursor: string | null;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; unauthorized Activity or ledger data is indistinguishable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialActivitypostsocialgroupsidsettlements: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "Idempotency-Key": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** Format: uuid */
+                    id: string;
+                    /** Format: uuid */
+                    payeeUserId?: string;
+                    /** Format: uuid */
+                    payeeActorId?: string;
+                    currency: string;
+                    amountMinor: string;
+                    note?: string | null;
+                };
+            };
+        };
+        responses: {
+            /** @description Authorized P6-02/P6-03 result; records never move money or grant Group access */
+            201: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        groupId: string | null;
+                        activityId: string | null;
+                        payerUserId: string | null;
+                        payeeUserId: string | null;
+                        payerActorId: string | null;
+                        payeeActorId: string | null;
+                        currency: string;
+                        scale: number;
+                        amountMinor: string;
+                        /** @enum {string} */
+                        state: "RECORDED" | "CONFIRMED" | "DISPUTED" | "CANCELED";
+                        note: string | null;
+                        disputeNote: string | null;
+                        revision: number;
+                        /** Format: date-time */
+                        createdAt: string;
+                        decidedAt: string | null;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; unauthorized Activity or ledger data is indistinguishable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialActivitypostsocialgroupsidsettlementssettlementIddecisionsaction: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "Idempotency-Key": string;
+                "If-Match": string;
+            };
+            path: {
+                id: string;
+                settlementId: string;
+                action: "confirm" | "dispute" | "cancel";
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    note?: string | null;
+                };
+            };
+        };
+        responses: {
+            /** @description Authorized P6-02/P6-03 result; records never move money or grant Group access */
+            201: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        groupId: string | null;
+                        activityId: string | null;
+                        payerUserId: string | null;
+                        payeeUserId: string | null;
+                        payerActorId: string | null;
+                        payeeActorId: string | null;
+                        currency: string;
+                        scale: number;
+                        amountMinor: string;
+                        /** @enum {string} */
+                        state: "RECORDED" | "CONFIRMED" | "DISPUTED" | "CANCELED";
+                        note: string | null;
+                        disputeNote: string | null;
+                        revision: number;
+                        /** Format: date-time */
+                        createdAt: string;
+                        decidedAt: string | null;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; unauthorized Activity or ledger data is indistinguishable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialActivitypostsocialgroupsidexpensesexpenseIdfinancepostingpreview: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+            };
+            path: {
+                id: string;
+                expenseId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** Format: uuid */
+                    accountId: string;
+                    /** @default null */
+                    categoryId?: string | null;
+                };
+            };
+        };
+        responses: {
+            /** @description Authorized P6-02/P6-03 result; records never move money or grant Group access */
+            201: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        expenseId: string;
+                        /** Format: uuid */
+                        revisionId: string;
+                        currency: string;
+                        scale: number;
+                        amountMinor: string;
+                        amount: string;
+                        /** Format: date */
+                        localDate: string;
+                        /** @constant */
+                        transactionType: "EXPENSE";
+                        /** Format: uuid */
+                        accountId: string;
+                        accountName: string;
+                        categoryId: string | null;
+                        alreadyPosted: {
+                            /** Format: uuid */
+                            transactionId: string;
+                            revisionId: string | null;
+                        } | null;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; unauthorized Activity or ledger data is indistinguishable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialActivitypostsocialgroupsidexpensesexpenseIdfinanceposting: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "Idempotency-Key": string;
+            };
+            path: {
+                id: string;
+                expenseId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** Format: uuid */
+                    accountId: string;
+                    /** @default null */
+                    categoryId?: string | null;
+                    /** Format: uuid */
+                    revisionId: string;
+                    /** @constant */
+                    confirm: true;
+                };
+            };
+        };
+        responses: {
+            /** @description Authorized P6-02/P6-03 result; records never move money or grant Group access */
+            201: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        expenseId: string;
+                        /** Format: uuid */
+                        revisionId: string;
+                        /** Format: uuid */
+                        transactionId: string;
+                        created: boolean;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; unauthorized Activity or ledger data is indistinguishable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialActivitygetsocialactivitiesidexpenses: {
+        parameters: {
+            query?: {
+                limit?: number;
+                after?: string;
+            };
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Authorized P6-02/P6-03 result; records never move money or grant Group access */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        items: {
+                            /** Format: uuid */
+                            id: string;
+                            groupId: string | null;
+                            activityId: string | null;
+                            /** @enum {string} */
+                            state: "PENDING" | "APPROVED" | "REJECTED" | "WITHDRAWN";
+                            proposedByUserId: string | null;
+                            revision: number;
+                            /** Format: date-time */
+                            createdAt: string;
+                            /** Format: date-time */
+                            updatedAt: string;
+                            canDecide: boolean;
+                            effective: {
+                                /** Format: uuid */
+                                id: string;
+                                number: number;
+                                /** @enum {string} */
+                                state: "PENDING" | "APPROVED" | "REJECTED" | "SUPERSEDED" | "WITHDRAWN";
+                                title: string;
+                                note: string | null;
+                                currency: string;
+                                scale: number;
+                                amountMinor: string;
+                                payerUserId: string | null;
+                                payerActorId: string | null;
+                                /** @enum {string} */
+                                method: "EQUAL" | "PERCENT" | "FIXED" | "WEIGHTED";
+                                /** Format: date */
+                                incurredOn: string;
+                                proposedByUserId: string | null;
+                                decidedByUserId: string | null;
+                                decidedAt: string | null;
+                                decisionNote: string | null;
+                                /** Format: date-time */
+                                createdAt: string;
+                                sharesRestricted: boolean;
+                                shares: {
+                                    position: number;
+                                    userId: string | null;
+                                    actorId: string | null;
+                                    input: string | null;
+                                    shareMinor: string;
+                                }[];
+                            } | null;
+                            pending: {
+                                /** Format: uuid */
+                                id: string;
+                                number: number;
+                                /** @enum {string} */
+                                state: "PENDING" | "APPROVED" | "REJECTED" | "SUPERSEDED" | "WITHDRAWN";
+                                title: string;
+                                note: string | null;
+                                currency: string;
+                                scale: number;
+                                amountMinor: string;
+                                payerUserId: string | null;
+                                payerActorId: string | null;
+                                /** @enum {string} */
+                                method: "EQUAL" | "PERCENT" | "FIXED" | "WEIGHTED";
+                                /** Format: date */
+                                incurredOn: string;
+                                proposedByUserId: string | null;
+                                decidedByUserId: string | null;
+                                decidedAt: string | null;
+                                decisionNote: string | null;
+                                /** Format: date-time */
+                                createdAt: string;
+                                sharesRestricted: boolean;
+                                shares: {
+                                    position: number;
+                                    userId: string | null;
+                                    actorId: string | null;
+                                    input: string | null;
+                                    shareMinor: string;
+                                }[];
+                            } | null;
+                        }[];
+                        nextCursor: string | null;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; unauthorized Activity or ledger data is indistinguishable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialActivitypostsocialactivitiesidexpenses: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "Idempotency-Key": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    title: string;
+                    note?: string | null;
+                    currency: string;
+                    amountMinor: string;
+                    /** Format: uuid */
+                    payerUserId?: string;
+                    /** Format: uuid */
+                    payerActorId?: string;
+                    /** @enum {string} */
+                    method: "EQUAL" | "PERCENT" | "FIXED" | "WEIGHTED";
+                    /** Format: date */
+                    incurredOn: string;
+                    shares: {
+                        /** Format: uuid */
+                        userId?: string;
+                        /** Format: uuid */
+                        actorId?: string;
+                        value?: string;
+                    }[];
+                    /** Format: uuid */
+                    id: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Authorized P6-02/P6-03 result; records never move money or grant Group access */
+            201: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        groupId: string | null;
+                        activityId: string | null;
+                        /** @enum {string} */
+                        state: "PENDING" | "APPROVED" | "REJECTED" | "WITHDRAWN";
+                        proposedByUserId: string | null;
+                        revision: number;
+                        /** Format: date-time */
+                        createdAt: string;
+                        /** Format: date-time */
+                        updatedAt: string;
+                        canDecide: boolean;
+                        effective: {
+                            /** Format: uuid */
+                            id: string;
+                            number: number;
+                            /** @enum {string} */
+                            state: "PENDING" | "APPROVED" | "REJECTED" | "SUPERSEDED" | "WITHDRAWN";
+                            title: string;
+                            note: string | null;
+                            currency: string;
+                            scale: number;
+                            amountMinor: string;
+                            payerUserId: string | null;
+                            payerActorId: string | null;
+                            /** @enum {string} */
+                            method: "EQUAL" | "PERCENT" | "FIXED" | "WEIGHTED";
+                            /** Format: date */
+                            incurredOn: string;
+                            proposedByUserId: string | null;
+                            decidedByUserId: string | null;
+                            decidedAt: string | null;
+                            decisionNote: string | null;
+                            /** Format: date-time */
+                            createdAt: string;
+                            sharesRestricted: boolean;
+                            shares: {
+                                position: number;
+                                userId: string | null;
+                                actorId: string | null;
+                                input: string | null;
+                                shareMinor: string;
+                            }[];
+                        } | null;
+                        pending: {
+                            /** Format: uuid */
+                            id: string;
+                            number: number;
+                            /** @enum {string} */
+                            state: "PENDING" | "APPROVED" | "REJECTED" | "SUPERSEDED" | "WITHDRAWN";
+                            title: string;
+                            note: string | null;
+                            currency: string;
+                            scale: number;
+                            amountMinor: string;
+                            payerUserId: string | null;
+                            payerActorId: string | null;
+                            /** @enum {string} */
+                            method: "EQUAL" | "PERCENT" | "FIXED" | "WEIGHTED";
+                            /** Format: date */
+                            incurredOn: string;
+                            proposedByUserId: string | null;
+                            decidedByUserId: string | null;
+                            decidedAt: string | null;
+                            decisionNote: string | null;
+                            /** Format: date-time */
+                            createdAt: string;
+                            sharesRestricted: boolean;
+                            shares: {
+                                position: number;
+                                userId: string | null;
+                                actorId: string | null;
+                                input: string | null;
+                                shareMinor: string;
+                            }[];
+                        } | null;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; unauthorized Activity or ledger data is indistinguishable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialActivitygetsocialactivitiesidexpensesexpenseId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+                expenseId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Authorized P6-02/P6-03 result; records never move money or grant Group access */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        groupId: string | null;
+                        activityId: string | null;
+                        /** @enum {string} */
+                        state: "PENDING" | "APPROVED" | "REJECTED" | "WITHDRAWN";
+                        proposedByUserId: string | null;
+                        revision: number;
+                        /** Format: date-time */
+                        createdAt: string;
+                        /** Format: date-time */
+                        updatedAt: string;
+                        canDecide: boolean;
+                        effective: {
+                            /** Format: uuid */
+                            id: string;
+                            number: number;
+                            /** @enum {string} */
+                            state: "PENDING" | "APPROVED" | "REJECTED" | "SUPERSEDED" | "WITHDRAWN";
+                            title: string;
+                            note: string | null;
+                            currency: string;
+                            scale: number;
+                            amountMinor: string;
+                            payerUserId: string | null;
+                            payerActorId: string | null;
+                            /** @enum {string} */
+                            method: "EQUAL" | "PERCENT" | "FIXED" | "WEIGHTED";
+                            /** Format: date */
+                            incurredOn: string;
+                            proposedByUserId: string | null;
+                            decidedByUserId: string | null;
+                            decidedAt: string | null;
+                            decisionNote: string | null;
+                            /** Format: date-time */
+                            createdAt: string;
+                            sharesRestricted: boolean;
+                            shares: {
+                                position: number;
+                                userId: string | null;
+                                actorId: string | null;
+                                input: string | null;
+                                shareMinor: string;
+                            }[];
+                        } | null;
+                        pending: {
+                            /** Format: uuid */
+                            id: string;
+                            number: number;
+                            /** @enum {string} */
+                            state: "PENDING" | "APPROVED" | "REJECTED" | "SUPERSEDED" | "WITHDRAWN";
+                            title: string;
+                            note: string | null;
+                            currency: string;
+                            scale: number;
+                            amountMinor: string;
+                            payerUserId: string | null;
+                            payerActorId: string | null;
+                            /** @enum {string} */
+                            method: "EQUAL" | "PERCENT" | "FIXED" | "WEIGHTED";
+                            /** Format: date */
+                            incurredOn: string;
+                            proposedByUserId: string | null;
+                            decidedByUserId: string | null;
+                            decidedAt: string | null;
+                            decisionNote: string | null;
+                            /** Format: date-time */
+                            createdAt: string;
+                            sharesRestricted: boolean;
+                            shares: {
+                                position: number;
+                                userId: string | null;
+                                actorId: string | null;
+                                input: string | null;
+                                shareMinor: string;
+                            }[];
+                        } | null;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; unauthorized Activity or ledger data is indistinguishable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialActivitygetsocialactivitiesidexpensesexpenseIdhistory: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+                expenseId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Authorized P6-02/P6-03 result; records never move money or grant Group access */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        items: {
+                            /** Format: uuid */
+                            id: string;
+                            number: number;
+                            /** @enum {string} */
+                            state: "PENDING" | "APPROVED" | "REJECTED" | "SUPERSEDED" | "WITHDRAWN";
+                            title: string;
+                            note: string | null;
+                            currency: string;
+                            scale: number;
+                            amountMinor: string;
+                            payerUserId: string | null;
+                            payerActorId: string | null;
+                            /** @enum {string} */
+                            method: "EQUAL" | "PERCENT" | "FIXED" | "WEIGHTED";
+                            /** Format: date */
+                            incurredOn: string;
+                            proposedByUserId: string | null;
+                            decidedByUserId: string | null;
+                            decidedAt: string | null;
+                            decisionNote: string | null;
+                            /** Format: date-time */
+                            createdAt: string;
+                            sharesRestricted: boolean;
+                            shares: {
+                                position: number;
+                                userId: string | null;
+                                actorId: string | null;
+                                input: string | null;
+                                shareMinor: string;
+                            }[];
+                        }[];
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; unauthorized Activity or ledger data is indistinguishable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialActivitypostsocialactivitiesidexpensesexpenseIdrevisions: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "Idempotency-Key": string;
+                "If-Match": string;
+            };
+            path: {
+                id: string;
+                expenseId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    title: string;
+                    note?: string | null;
+                    currency: string;
+                    amountMinor: string;
+                    /** Format: uuid */
+                    payerUserId?: string;
+                    /** Format: uuid */
+                    payerActorId?: string;
+                    /** @enum {string} */
+                    method: "EQUAL" | "PERCENT" | "FIXED" | "WEIGHTED";
+                    /** Format: date */
+                    incurredOn: string;
+                    shares: {
+                        /** Format: uuid */
+                        userId?: string;
+                        /** Format: uuid */
+                        actorId?: string;
+                        value?: string;
+                    }[];
+                };
+            };
+        };
+        responses: {
+            /** @description Authorized P6-02/P6-03 result; records never move money or grant Group access */
+            201: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        groupId: string | null;
+                        activityId: string | null;
+                        /** @enum {string} */
+                        state: "PENDING" | "APPROVED" | "REJECTED" | "WITHDRAWN";
+                        proposedByUserId: string | null;
+                        revision: number;
+                        /** Format: date-time */
+                        createdAt: string;
+                        /** Format: date-time */
+                        updatedAt: string;
+                        canDecide: boolean;
+                        effective: {
+                            /** Format: uuid */
+                            id: string;
+                            number: number;
+                            /** @enum {string} */
+                            state: "PENDING" | "APPROVED" | "REJECTED" | "SUPERSEDED" | "WITHDRAWN";
+                            title: string;
+                            note: string | null;
+                            currency: string;
+                            scale: number;
+                            amountMinor: string;
+                            payerUserId: string | null;
+                            payerActorId: string | null;
+                            /** @enum {string} */
+                            method: "EQUAL" | "PERCENT" | "FIXED" | "WEIGHTED";
+                            /** Format: date */
+                            incurredOn: string;
+                            proposedByUserId: string | null;
+                            decidedByUserId: string | null;
+                            decidedAt: string | null;
+                            decisionNote: string | null;
+                            /** Format: date-time */
+                            createdAt: string;
+                            sharesRestricted: boolean;
+                            shares: {
+                                position: number;
+                                userId: string | null;
+                                actorId: string | null;
+                                input: string | null;
+                                shareMinor: string;
+                            }[];
+                        } | null;
+                        pending: {
+                            /** Format: uuid */
+                            id: string;
+                            number: number;
+                            /** @enum {string} */
+                            state: "PENDING" | "APPROVED" | "REJECTED" | "SUPERSEDED" | "WITHDRAWN";
+                            title: string;
+                            note: string | null;
+                            currency: string;
+                            scale: number;
+                            amountMinor: string;
+                            payerUserId: string | null;
+                            payerActorId: string | null;
+                            /** @enum {string} */
+                            method: "EQUAL" | "PERCENT" | "FIXED" | "WEIGHTED";
+                            /** Format: date */
+                            incurredOn: string;
+                            proposedByUserId: string | null;
+                            decidedByUserId: string | null;
+                            decidedAt: string | null;
+                            decisionNote: string | null;
+                            /** Format: date-time */
+                            createdAt: string;
+                            sharesRestricted: boolean;
+                            shares: {
+                                position: number;
+                                userId: string | null;
+                                actorId: string | null;
+                                input: string | null;
+                                shareMinor: string;
+                            }[];
+                        } | null;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; unauthorized Activity or ledger data is indistinguishable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialActivitypostsocialactivitiesidexpensesexpenseIddecisionsaction: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "Idempotency-Key": string;
+                "If-Match": string;
+            };
+            path: {
+                id: string;
+                expenseId: string;
+                action: "approve" | "reject" | "withdraw";
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    note?: string | null;
+                };
+            };
+        };
+        responses: {
+            /** @description Authorized P6-02/P6-03 result; records never move money or grant Group access */
+            201: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        groupId: string | null;
+                        activityId: string | null;
+                        /** @enum {string} */
+                        state: "PENDING" | "APPROVED" | "REJECTED" | "WITHDRAWN";
+                        proposedByUserId: string | null;
+                        revision: number;
+                        /** Format: date-time */
+                        createdAt: string;
+                        /** Format: date-time */
+                        updatedAt: string;
+                        canDecide: boolean;
+                        effective: {
+                            /** Format: uuid */
+                            id: string;
+                            number: number;
+                            /** @enum {string} */
+                            state: "PENDING" | "APPROVED" | "REJECTED" | "SUPERSEDED" | "WITHDRAWN";
+                            title: string;
+                            note: string | null;
+                            currency: string;
+                            scale: number;
+                            amountMinor: string;
+                            payerUserId: string | null;
+                            payerActorId: string | null;
+                            /** @enum {string} */
+                            method: "EQUAL" | "PERCENT" | "FIXED" | "WEIGHTED";
+                            /** Format: date */
+                            incurredOn: string;
+                            proposedByUserId: string | null;
+                            decidedByUserId: string | null;
+                            decidedAt: string | null;
+                            decisionNote: string | null;
+                            /** Format: date-time */
+                            createdAt: string;
+                            sharesRestricted: boolean;
+                            shares: {
+                                position: number;
+                                userId: string | null;
+                                actorId: string | null;
+                                input: string | null;
+                                shareMinor: string;
+                            }[];
+                        } | null;
+                        pending: {
+                            /** Format: uuid */
+                            id: string;
+                            number: number;
+                            /** @enum {string} */
+                            state: "PENDING" | "APPROVED" | "REJECTED" | "SUPERSEDED" | "WITHDRAWN";
+                            title: string;
+                            note: string | null;
+                            currency: string;
+                            scale: number;
+                            amountMinor: string;
+                            payerUserId: string | null;
+                            payerActorId: string | null;
+                            /** @enum {string} */
+                            method: "EQUAL" | "PERCENT" | "FIXED" | "WEIGHTED";
+                            /** Format: date */
+                            incurredOn: string;
+                            proposedByUserId: string | null;
+                            decidedByUserId: string | null;
+                            decidedAt: string | null;
+                            decisionNote: string | null;
+                            /** Format: date-time */
+                            createdAt: string;
+                            sharesRestricted: boolean;
+                            shares: {
+                                position: number;
+                                userId: string | null;
+                                actorId: string | null;
+                                input: string | null;
+                                shareMinor: string;
+                            }[];
+                        } | null;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; unauthorized Activity or ledger data is indistinguishable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialActivitygetsocialactivitiesidbalances: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Authorized P6-02/P6-03 result; records never move money or grant Group access */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        items: {
+                            /** Format: uuid */
+                            userId: string;
+                            actorId: string | null;
+                            displayName: string | null;
+                            currency: string;
+                            paidMinor: string;
+                            shareMinor: string;
+                            settledOutMinor: string;
+                            settledInMinor: string;
+                            netMinor: string;
+                            owedMinor: string;
+                            receivableMinor: string;
+                        }[];
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; unauthorized Activity or ledger data is indistinguishable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialActivitygetsocialactivitiesidbalancesme: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Authorized P6-02/P6-03 result; records never move money or grant Group access */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        items: {
+                            /** Format: uuid */
+                            userId: string;
+                            actorId: string | null;
+                            displayName: string | null;
+                            currency: string;
+                            paidMinor: string;
+                            shareMinor: string;
+                            settledOutMinor: string;
+                            settledInMinor: string;
+                            netMinor: string;
+                            owedMinor: string;
+                            receivableMinor: string;
+                        }[];
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; unauthorized Activity or ledger data is indistinguishable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialActivitygetsocialactivitiesidsettlements: {
+        parameters: {
+            query?: {
+                limit?: number;
+                after?: string;
+            };
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Authorized P6-02/P6-03 result; records never move money or grant Group access */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        items: {
+                            /** Format: uuid */
+                            id: string;
+                            groupId: string | null;
+                            activityId: string | null;
+                            payerUserId: string | null;
+                            payeeUserId: string | null;
+                            payerActorId: string | null;
+                            payeeActorId: string | null;
+                            currency: string;
+                            scale: number;
+                            amountMinor: string;
+                            /** @enum {string} */
+                            state: "RECORDED" | "CONFIRMED" | "DISPUTED" | "CANCELED";
+                            note: string | null;
+                            disputeNote: string | null;
+                            revision: number;
+                            /** Format: date-time */
+                            createdAt: string;
+                            decidedAt: string | null;
+                        }[];
+                        nextCursor: string | null;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; unauthorized Activity or ledger data is indistinguishable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialActivitypostsocialactivitiesidsettlements: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "Idempotency-Key": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** Format: uuid */
+                    id: string;
+                    /** Format: uuid */
+                    payeeUserId?: string;
+                    /** Format: uuid */
+                    payeeActorId?: string;
+                    currency: string;
+                    amountMinor: string;
+                    note?: string | null;
+                };
+            };
+        };
+        responses: {
+            /** @description Authorized P6-02/P6-03 result; records never move money or grant Group access */
+            201: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        groupId: string | null;
+                        activityId: string | null;
+                        payerUserId: string | null;
+                        payeeUserId: string | null;
+                        payerActorId: string | null;
+                        payeeActorId: string | null;
+                        currency: string;
+                        scale: number;
+                        amountMinor: string;
+                        /** @enum {string} */
+                        state: "RECORDED" | "CONFIRMED" | "DISPUTED" | "CANCELED";
+                        note: string | null;
+                        disputeNote: string | null;
+                        revision: number;
+                        /** Format: date-time */
+                        createdAt: string;
+                        decidedAt: string | null;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; unauthorized Activity or ledger data is indistinguishable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialActivitypostsocialactivitiesidsettlementssettlementIddecisionsaction: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "Idempotency-Key": string;
+                "If-Match": string;
+            };
+            path: {
+                id: string;
+                settlementId: string;
+                action: "confirm" | "dispute" | "cancel";
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    note?: string | null;
+                };
+            };
+        };
+        responses: {
+            /** @description Authorized P6-02/P6-03 result; records never move money or grant Group access */
+            201: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        groupId: string | null;
+                        activityId: string | null;
+                        payerUserId: string | null;
+                        payeeUserId: string | null;
+                        payerActorId: string | null;
+                        payeeActorId: string | null;
+                        currency: string;
+                        scale: number;
+                        amountMinor: string;
+                        /** @enum {string} */
+                        state: "RECORDED" | "CONFIRMED" | "DISPUTED" | "CANCELED";
+                        note: string | null;
+                        disputeNote: string | null;
+                        revision: number;
+                        /** Format: date-time */
+                        createdAt: string;
+                        decidedAt: string | null;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; unauthorized Activity or ledger data is indistinguishable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialActivitypostsocialactivitiesidexpensesexpenseIdfinancepostingpreview: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+            };
+            path: {
+                id: string;
+                expenseId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** Format: uuid */
+                    accountId: string;
+                    /** @default null */
+                    categoryId?: string | null;
+                };
+            };
+        };
+        responses: {
+            /** @description Authorized P6-02/P6-03 result; records never move money or grant Group access */
+            201: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        expenseId: string;
+                        /** Format: uuid */
+                        revisionId: string;
+                        currency: string;
+                        scale: number;
+                        amountMinor: string;
+                        amount: string;
+                        /** Format: date */
+                        localDate: string;
+                        /** @constant */
+                        transactionType: "EXPENSE";
+                        /** Format: uuid */
+                        accountId: string;
+                        accountName: string;
+                        categoryId: string | null;
+                        alreadyPosted: {
+                            /** Format: uuid */
+                            transactionId: string;
+                            revisionId: string | null;
+                        } | null;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; unauthorized Activity or ledger data is indistinguishable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialActivitypostsocialactivitiesidexpensesexpenseIdfinanceposting: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "Idempotency-Key": string;
+            };
+            path: {
+                id: string;
+                expenseId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** Format: uuid */
+                    accountId: string;
+                    /** @default null */
+                    categoryId?: string | null;
+                    /** Format: uuid */
+                    revisionId: string;
+                    /** @constant */
+                    confirm: true;
+                };
+            };
+        };
+        responses: {
+            /** @description Authorized P6-02/P6-03 result; records never move money or grant Group access */
+            201: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        expenseId: string;
+                        /** Format: uuid */
+                        revisionId: string;
+                        /** Format: uuid */
+                        transactionId: string;
+                        created: boolean;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; unauthorized Activity or ledger data is indistinguishable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialLendinggetsocialassets: {
+        parameters: {
+            query?: {
+                limit?: number;
+                after?: string;
+                view?: "MINE" | "CONNECTIONS" | "GROUP";
+                groupId?: string;
+                q?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Authorized P6-04 result; records never prove legal ownership, move money or expose file content */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        items: {
+                            /** Format: uuid */
+                            id: string;
+                            ownerUserId: string | null;
+                            isOwner: boolean;
+                            /** @enum {string} */
+                            audience: "PRIVATE" | "CONNECTIONS" | "GROUP";
+                            groupId: string | null;
+                            title: string;
+                            description: string | null;
+                            /** @enum {string} */
+                            state: "ACTIVE" | "ARCHIVED";
+                            available: boolean;
+                            revision: number;
+                            /** Format: date-time */
+                            createdAt: string;
+                            /** Format: date-time */
+                            updatedAt: string;
+                        }[];
+                        nextCursor: string | null;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; unauthorized assets, loans, reports, claims and evidence are indistinguishable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialLendingpostsocialassets: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "Idempotency-Key": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** Format: uuid */
+                    id: string;
+                    /** @enum {string} */
+                    audience: "PRIVATE" | "CONNECTIONS" | "GROUP";
+                    groupId?: string | null;
+                    title: string;
+                    description?: string | null;
+                };
+            };
+        };
+        responses: {
+            /** @description Authorized P6-04 result; records never prove legal ownership, move money or expose file content */
+            201: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        ownerUserId: string | null;
+                        isOwner: boolean;
+                        /** @enum {string} */
+                        audience: "PRIVATE" | "CONNECTIONS" | "GROUP";
+                        groupId: string | null;
+                        title: string;
+                        description: string | null;
+                        /** @enum {string} */
+                        state: "ACTIVE" | "ARCHIVED";
+                        available: boolean;
+                        revision: number;
+                        /** Format: date-time */
+                        createdAt: string;
+                        /** Format: date-time */
+                        updatedAt: string;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; unauthorized assets, loans, reports, claims and evidence are indistinguishable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialLendinggetsocialassetsid: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Authorized P6-04 result; records never prove legal ownership, move money or expose file content */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        ownerUserId: string | null;
+                        isOwner: boolean;
+                        /** @enum {string} */
+                        audience: "PRIVATE" | "CONNECTIONS" | "GROUP";
+                        groupId: string | null;
+                        title: string;
+                        description: string | null;
+                        /** @enum {string} */
+                        state: "ACTIVE" | "ARCHIVED";
+                        available: boolean;
+                        revision: number;
+                        /** Format: date-time */
+                        createdAt: string;
+                        /** Format: date-time */
+                        updatedAt: string;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; unauthorized assets, loans, reports, claims and evidence are indistinguishable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialLendingpatchsocialassetsid: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "Idempotency-Key": string;
+                "If-Match": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    title?: string;
+                    description?: string | null;
+                    /** @enum {string} */
+                    audience?: "PRIVATE" | "CONNECTIONS" | "GROUP";
+                    groupId?: string | null;
+                };
+            };
+        };
+        responses: {
+            /** @description Authorized P6-04 result; records never prove legal ownership, move money or expose file content */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        ownerUserId: string | null;
+                        isOwner: boolean;
+                        /** @enum {string} */
+                        audience: "PRIVATE" | "CONNECTIONS" | "GROUP";
+                        groupId: string | null;
+                        title: string;
+                        description: string | null;
+                        /** @enum {string} */
+                        state: "ACTIVE" | "ARCHIVED";
+                        available: boolean;
+                        revision: number;
+                        /** Format: date-time */
+                        createdAt: string;
+                        /** Format: date-time */
+                        updatedAt: string;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; unauthorized assets, loans, reports, claims and evidence are indistinguishable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialLendingpostsocialassetsidactionsaction: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "Idempotency-Key": string;
+                "If-Match": string;
+            };
+            path: {
+                id: string;
+                action: "archive";
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": Record<string, never>;
+            };
+        };
+        responses: {
+            /** @description Authorized P6-04 result; records never prove legal ownership, move money or expose file content */
+            201: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        ownerUserId: string | null;
+                        isOwner: boolean;
+                        /** @enum {string} */
+                        audience: "PRIVATE" | "CONNECTIONS" | "GROUP";
+                        groupId: string | null;
+                        title: string;
+                        description: string | null;
+                        /** @enum {string} */
+                        state: "ACTIVE" | "ARCHIVED";
+                        available: boolean;
+                        revision: number;
+                        /** Format: date-time */
+                        createdAt: string;
+                        /** Format: date-time */
+                        updatedAt: string;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; unauthorized assets, loans, reports, claims and evidence are indistinguishable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialLendinggetsocialloans: {
+        parameters: {
+            query?: {
+                limit?: number;
+                after?: string;
+                role?: "ANY" | "LENDER" | "BORROWER";
+                groupId?: string;
+                assetId?: string;
+                actionRequired?: "true" | "false";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Authorized P6-04 result; records never prove legal ownership, move money or expose file content */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        items: {
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            assetId: string;
+                            assetTitle: string;
+                            groupId: string | null;
+                            lenderUserId: string | null;
+                            borrowerUserId: string | null;
+                            /** @enum {string} */
+                            myRole: "LENDER" | "BORROWER" | "MODERATOR";
+                            /** @enum {string} */
+                            origin: "REQUEST" | "OFFER";
+                            /** @enum {string} */
+                            state: "REQUESTED" | "OFFERED" | "ACCEPTED" | "HANDED_OVER" | "RETURN_REQUESTED" | "DISPUTED" | "RETURNED" | "LOST" | "DAMAGED" | "REJECTED" | "CANCELED";
+                            dueAt: string | null;
+                            overdue: boolean;
+                            custodyConfirmed: boolean;
+                            note: string | null;
+                            lenderHandoverAt: string | null;
+                            borrowerReceiptAt: string | null;
+                            handedOverAt: string | null;
+                            returnRequestedAt: string | null;
+                            returnedAt: string | null;
+                            closedAt: string | null;
+                            pendingOutcome: ("LOST" | "DAMAGED") | null;
+                            pendingOutcomeByUserId: string | null;
+                            proposedDueAt: string | null;
+                            dueProposedByUserId: string | null;
+                            dueProposedAt: string | null;
+                            stateBeforeDispute: ("REQUESTED" | "OFFERED" | "ACCEPTED" | "HANDED_OVER" | "RETURN_REQUESTED" | "DISPUTED" | "RETURNED" | "LOST" | "DAMAGED" | "REJECTED" | "CANCELED") | null;
+                            disputedByUserId: string | null;
+                            disputeNote: string | null;
+                            orphaned: boolean;
+                            allowedActions: ("accept" | "reject" | "cancel" | "handover" | "receive" | "return" | "confirm-return" | "report-lost" | "report-damaged" | "accept-outcome" | "dispute" | "resume" | "accept-due" | "decline-due" | "withdraw-due")[];
+                            revision: number;
+                            /** Format: date-time */
+                            createdAt: string;
+                            /** Format: date-time */
+                            updatedAt: string;
+                        }[];
+                        nextCursor: string | null;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; unauthorized assets, loans, reports, claims and evidence are indistinguishable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialLendingpostsocialloans: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "Idempotency-Key": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** Format: uuid */
+                    id: string;
+                    /** Format: uuid */
+                    assetId: string;
+                    /** @enum {string} */
+                    mode: "REQUEST" | "OFFER";
+                    /** Format: uuid */
+                    borrowerUserId?: string;
+                    dueAt?: string | null;
+                    note?: string | null;
+                    alreadyWithBorrower?: boolean;
+                };
+            };
+        };
+        responses: {
+            /** @description Authorized P6-04 result; records never prove legal ownership, move money or expose file content */
+            201: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        /** Format: uuid */
+                        assetId: string;
+                        assetTitle: string;
+                        groupId: string | null;
+                        lenderUserId: string | null;
+                        borrowerUserId: string | null;
+                        /** @enum {string} */
+                        myRole: "LENDER" | "BORROWER" | "MODERATOR";
+                        /** @enum {string} */
+                        origin: "REQUEST" | "OFFER";
+                        /** @enum {string} */
+                        state: "REQUESTED" | "OFFERED" | "ACCEPTED" | "HANDED_OVER" | "RETURN_REQUESTED" | "DISPUTED" | "RETURNED" | "LOST" | "DAMAGED" | "REJECTED" | "CANCELED";
+                        dueAt: string | null;
+                        overdue: boolean;
+                        custodyConfirmed: boolean;
+                        note: string | null;
+                        lenderHandoverAt: string | null;
+                        borrowerReceiptAt: string | null;
+                        handedOverAt: string | null;
+                        returnRequestedAt: string | null;
+                        returnedAt: string | null;
+                        closedAt: string | null;
+                        pendingOutcome: ("LOST" | "DAMAGED") | null;
+                        pendingOutcomeByUserId: string | null;
+                        proposedDueAt: string | null;
+                        dueProposedByUserId: string | null;
+                        dueProposedAt: string | null;
+                        stateBeforeDispute: ("REQUESTED" | "OFFERED" | "ACCEPTED" | "HANDED_OVER" | "RETURN_REQUESTED" | "DISPUTED" | "RETURNED" | "LOST" | "DAMAGED" | "REJECTED" | "CANCELED") | null;
+                        disputedByUserId: string | null;
+                        disputeNote: string | null;
+                        orphaned: boolean;
+                        allowedActions: ("accept" | "reject" | "cancel" | "handover" | "receive" | "return" | "confirm-return" | "report-lost" | "report-damaged" | "accept-outcome" | "dispute" | "resume" | "accept-due" | "decline-due" | "withdraw-due")[];
+                        revision: number;
+                        /** Format: date-time */
+                        createdAt: string;
+                        /** Format: date-time */
+                        updatedAt: string;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; unauthorized assets, loans, reports, claims and evidence are indistinguishable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialLendinggetsocialloansid: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Authorized P6-04 result; records never prove legal ownership, move money or expose file content */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        /** Format: uuid */
+                        assetId: string;
+                        assetTitle: string;
+                        groupId: string | null;
+                        lenderUserId: string | null;
+                        borrowerUserId: string | null;
+                        /** @enum {string} */
+                        myRole: "LENDER" | "BORROWER" | "MODERATOR";
+                        /** @enum {string} */
+                        origin: "REQUEST" | "OFFER";
+                        /** @enum {string} */
+                        state: "REQUESTED" | "OFFERED" | "ACCEPTED" | "HANDED_OVER" | "RETURN_REQUESTED" | "DISPUTED" | "RETURNED" | "LOST" | "DAMAGED" | "REJECTED" | "CANCELED";
+                        dueAt: string | null;
+                        overdue: boolean;
+                        custodyConfirmed: boolean;
+                        note: string | null;
+                        lenderHandoverAt: string | null;
+                        borrowerReceiptAt: string | null;
+                        handedOverAt: string | null;
+                        returnRequestedAt: string | null;
+                        returnedAt: string | null;
+                        closedAt: string | null;
+                        pendingOutcome: ("LOST" | "DAMAGED") | null;
+                        pendingOutcomeByUserId: string | null;
+                        proposedDueAt: string | null;
+                        dueProposedByUserId: string | null;
+                        dueProposedAt: string | null;
+                        stateBeforeDispute: ("REQUESTED" | "OFFERED" | "ACCEPTED" | "HANDED_OVER" | "RETURN_REQUESTED" | "DISPUTED" | "RETURNED" | "LOST" | "DAMAGED" | "REJECTED" | "CANCELED") | null;
+                        disputedByUserId: string | null;
+                        disputeNote: string | null;
+                        orphaned: boolean;
+                        allowedActions: ("accept" | "reject" | "cancel" | "handover" | "receive" | "return" | "confirm-return" | "report-lost" | "report-damaged" | "accept-outcome" | "dispute" | "resume" | "accept-due" | "decline-due" | "withdraw-due")[];
+                        revision: number;
+                        /** Format: date-time */
+                        createdAt: string;
+                        /** Format: date-time */
+                        updatedAt: string;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; unauthorized assets, loans, reports, claims and evidence are indistinguishable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialLendingpostsocialloansidactionsaction: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "Idempotency-Key": string;
+                "If-Match": string;
+            };
+            path: {
+                id: string;
+                action: "accept" | "reject" | "cancel" | "handover" | "receive" | "return" | "confirm-return" | "report-lost" | "report-damaged" | "accept-outcome" | "dispute" | "resume" | "accept-due" | "decline-due" | "withdraw-due";
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    note?: string | null;
+                };
+            };
+        };
+        responses: {
+            /** @description Authorized P6-04 result; records never prove legal ownership, move money or expose file content */
+            201: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        /** Format: uuid */
+                        assetId: string;
+                        assetTitle: string;
+                        groupId: string | null;
+                        lenderUserId: string | null;
+                        borrowerUserId: string | null;
+                        /** @enum {string} */
+                        myRole: "LENDER" | "BORROWER" | "MODERATOR";
+                        /** @enum {string} */
+                        origin: "REQUEST" | "OFFER";
+                        /** @enum {string} */
+                        state: "REQUESTED" | "OFFERED" | "ACCEPTED" | "HANDED_OVER" | "RETURN_REQUESTED" | "DISPUTED" | "RETURNED" | "LOST" | "DAMAGED" | "REJECTED" | "CANCELED";
+                        dueAt: string | null;
+                        overdue: boolean;
+                        custodyConfirmed: boolean;
+                        note: string | null;
+                        lenderHandoverAt: string | null;
+                        borrowerReceiptAt: string | null;
+                        handedOverAt: string | null;
+                        returnRequestedAt: string | null;
+                        returnedAt: string | null;
+                        closedAt: string | null;
+                        pendingOutcome: ("LOST" | "DAMAGED") | null;
+                        pendingOutcomeByUserId: string | null;
+                        proposedDueAt: string | null;
+                        dueProposedByUserId: string | null;
+                        dueProposedAt: string | null;
+                        stateBeforeDispute: ("REQUESTED" | "OFFERED" | "ACCEPTED" | "HANDED_OVER" | "RETURN_REQUESTED" | "DISPUTED" | "RETURNED" | "LOST" | "DAMAGED" | "REJECTED" | "CANCELED") | null;
+                        disputedByUserId: string | null;
+                        disputeNote: string | null;
+                        orphaned: boolean;
+                        allowedActions: ("accept" | "reject" | "cancel" | "handover" | "receive" | "return" | "confirm-return" | "report-lost" | "report-damaged" | "accept-outcome" | "dispute" | "resume" | "accept-due" | "decline-due" | "withdraw-due")[];
+                        revision: number;
+                        /** Format: date-time */
+                        createdAt: string;
+                        /** Format: date-time */
+                        updatedAt: string;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; unauthorized assets, loans, reports, claims and evidence are indistinguishable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialLendingpostsocialloansidduedate: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "Idempotency-Key": string;
+                "If-Match": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** Format: date-time */
+                    dueAt: string;
+                    note?: string | null;
+                };
+            };
+        };
+        responses: {
+            /** @description Authorized P6-04 result; records never prove legal ownership, move money or expose file content */
+            201: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        /** Format: uuid */
+                        assetId: string;
+                        assetTitle: string;
+                        groupId: string | null;
+                        lenderUserId: string | null;
+                        borrowerUserId: string | null;
+                        /** @enum {string} */
+                        myRole: "LENDER" | "BORROWER" | "MODERATOR";
+                        /** @enum {string} */
+                        origin: "REQUEST" | "OFFER";
+                        /** @enum {string} */
+                        state: "REQUESTED" | "OFFERED" | "ACCEPTED" | "HANDED_OVER" | "RETURN_REQUESTED" | "DISPUTED" | "RETURNED" | "LOST" | "DAMAGED" | "REJECTED" | "CANCELED";
+                        dueAt: string | null;
+                        overdue: boolean;
+                        custodyConfirmed: boolean;
+                        note: string | null;
+                        lenderHandoverAt: string | null;
+                        borrowerReceiptAt: string | null;
+                        handedOverAt: string | null;
+                        returnRequestedAt: string | null;
+                        returnedAt: string | null;
+                        closedAt: string | null;
+                        pendingOutcome: ("LOST" | "DAMAGED") | null;
+                        pendingOutcomeByUserId: string | null;
+                        proposedDueAt: string | null;
+                        dueProposedByUserId: string | null;
+                        dueProposedAt: string | null;
+                        stateBeforeDispute: ("REQUESTED" | "OFFERED" | "ACCEPTED" | "HANDED_OVER" | "RETURN_REQUESTED" | "DISPUTED" | "RETURNED" | "LOST" | "DAMAGED" | "REJECTED" | "CANCELED") | null;
+                        disputedByUserId: string | null;
+                        disputeNote: string | null;
+                        orphaned: boolean;
+                        allowedActions: ("accept" | "reject" | "cancel" | "handover" | "receive" | "return" | "confirm-return" | "report-lost" | "report-damaged" | "accept-outcome" | "dispute" | "resume" | "accept-due" | "decline-due" | "withdraw-due")[];
+                        revision: number;
+                        /** Format: date-time */
+                        createdAt: string;
+                        /** Format: date-time */
+                        updatedAt: string;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; unauthorized assets, loans, reports, claims and evidence are indistinguishable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialLendinggetsocialloansidhistory: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Authorized P6-04 result; records never prove legal ownership, move money or expose file content */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        items: {
+                            /** Format: uuid */
+                            id: string;
+                            claimId: string | null;
+                            actorUserId: string | null;
+                            action: string;
+                            fromState: string | null;
+                            toState: string | null;
+                            note: string | null;
+                            /** Format: date-time */
+                            occurredAt: string;
+                        }[];
+                        truncated: boolean;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; unauthorized assets, loans, reports, claims and evidence are indistinguishable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialLendinggetsocialloansidevidence: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Authorized P6-04 result; records never prove legal ownership, move money or expose file content */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        items: {
+                            /** Format: uuid */
+                            id: string;
+                            loanId: string | null;
+                            reportId: string | null;
+                            claimId: string | null;
+                            addedByUserId: string | null;
+                            /** @enum {string} */
+                            kind: "CONDITION" | "HANDOVER" | "RETURN" | "DAMAGE" | "LOSS" | "IDENTIFYING" | "OTHER";
+                            label: string;
+                            note: string | null;
+                            observedAt: string | null;
+                            content: null;
+                            /** Format: date-time */
+                            createdAt: string;
+                        }[];
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; unauthorized assets, loans, reports, claims and evidence are indistinguishable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialLendingpostsocialloansidevidence: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "Idempotency-Key": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** Format: uuid */
+                    id: string;
+                    /** @enum {string} */
+                    kind: "CONDITION" | "HANDOVER" | "RETURN" | "DAMAGE" | "LOSS" | "IDENTIFYING" | "OTHER";
+                    label: string;
+                    note?: string | null;
+                    observedAt?: string | null;
+                };
+            };
+        };
+        responses: {
+            /** @description Authorized P6-04 result; records never prove legal ownership, move money or expose file content */
+            201: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        loanId: string | null;
+                        reportId: string | null;
+                        claimId: string | null;
+                        addedByUserId: string | null;
+                        /** @enum {string} */
+                        kind: "CONDITION" | "HANDOVER" | "RETURN" | "DAMAGE" | "LOSS" | "IDENTIFYING" | "OTHER";
+                        label: string;
+                        note: string | null;
+                        observedAt: string | null;
+                        content: null;
+                        /** Format: date-time */
+                        createdAt: string;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; unauthorized assets, loans, reports, claims and evidence are indistinguishable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialLendinggetsociallostfound: {
+        parameters: {
+            query?: {
+                limit?: number;
+                after?: string;
+                kind?: "LOST" | "FOUND";
+                view?: "MINE" | "CONNECTIONS" | "GROUP" | "CLAIMED";
+                groupId?: string;
+                q?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Authorized P6-04 result; records never prove legal ownership, move money or expose file content */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        items: {
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string} */
+                            kind: "LOST" | "FOUND";
+                            /** @enum {string} */
+                            audience: "CONNECTIONS" | "GROUP";
+                            groupId: string | null;
+                            reporterUserId: string | null;
+                            isReporter: boolean;
+                            title: string | null;
+                            description: string | null;
+                            occurredOn: string | null;
+                            assetId: string | null;
+                            /** @enum {string} */
+                            state: "OPEN" | "RESOLVED" | "WITHDRAWN" | "HIDDEN";
+                            contested: boolean | null;
+                            openClaimCount: number | null;
+                            myClaimId: string | null;
+                            revision: number;
+                            /** Format: date-time */
+                            createdAt: string;
+                            /** Format: date-time */
+                            updatedAt: string;
+                            closedAt: string | null;
+                        }[];
+                        nextCursor: string | null;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; unauthorized assets, loans, reports, claims and evidence are indistinguishable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialLendingpostsociallostfound: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "Idempotency-Key": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** Format: uuid */
+                    id: string;
+                    /** @enum {string} */
+                    kind: "LOST" | "FOUND";
+                    /** @enum {string} */
+                    audience: "CONNECTIONS" | "GROUP";
+                    groupId?: string | null;
+                    title: string;
+                    description?: string | null;
+                    occurredOn?: string | null;
+                    assetId?: string | null;
+                };
+            };
+        };
+        responses: {
+            /** @description Authorized P6-04 result; records never prove legal ownership, move money or expose file content */
+            201: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        /** @enum {string} */
+                        kind: "LOST" | "FOUND";
+                        /** @enum {string} */
+                        audience: "CONNECTIONS" | "GROUP";
+                        groupId: string | null;
+                        reporterUserId: string | null;
+                        isReporter: boolean;
+                        title: string | null;
+                        description: string | null;
+                        occurredOn: string | null;
+                        assetId: string | null;
+                        /** @enum {string} */
+                        state: "OPEN" | "RESOLVED" | "WITHDRAWN" | "HIDDEN";
+                        contested: boolean | null;
+                        openClaimCount: number | null;
+                        myClaimId: string | null;
+                        revision: number;
+                        /** Format: date-time */
+                        createdAt: string;
+                        /** Format: date-time */
+                        updatedAt: string;
+                        closedAt: string | null;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; unauthorized assets, loans, reports, claims and evidence are indistinguishable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialLendinggetsociallostfoundid: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Authorized P6-04 result; records never prove legal ownership, move money or expose file content */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        /** @enum {string} */
+                        kind: "LOST" | "FOUND";
+                        /** @enum {string} */
+                        audience: "CONNECTIONS" | "GROUP";
+                        groupId: string | null;
+                        reporterUserId: string | null;
+                        isReporter: boolean;
+                        title: string | null;
+                        description: string | null;
+                        occurredOn: string | null;
+                        assetId: string | null;
+                        /** @enum {string} */
+                        state: "OPEN" | "RESOLVED" | "WITHDRAWN" | "HIDDEN";
+                        contested: boolean | null;
+                        openClaimCount: number | null;
+                        myClaimId: string | null;
+                        revision: number;
+                        /** Format: date-time */
+                        createdAt: string;
+                        /** Format: date-time */
+                        updatedAt: string;
+                        closedAt: string | null;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; unauthorized assets, loans, reports, claims and evidence are indistinguishable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialLendingpostsociallostfoundidactionsaction: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "Idempotency-Key": string;
+                "If-Match": string;
+            };
+            path: {
+                id: string;
+                action: "withdraw" | "hide" | "unhide";
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": Record<string, never>;
+            };
+        };
+        responses: {
+            /** @description Authorized P6-04 result; records never prove legal ownership, move money or expose file content */
+            201: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        /** @enum {string} */
+                        kind: "LOST" | "FOUND";
+                        /** @enum {string} */
+                        audience: "CONNECTIONS" | "GROUP";
+                        groupId: string | null;
+                        reporterUserId: string | null;
+                        isReporter: boolean;
+                        title: string | null;
+                        description: string | null;
+                        occurredOn: string | null;
+                        assetId: string | null;
+                        /** @enum {string} */
+                        state: "OPEN" | "RESOLVED" | "WITHDRAWN" | "HIDDEN";
+                        contested: boolean | null;
+                        openClaimCount: number | null;
+                        myClaimId: string | null;
+                        revision: number;
+                        /** Format: date-time */
+                        createdAt: string;
+                        /** Format: date-time */
+                        updatedAt: string;
+                        closedAt: string | null;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; unauthorized assets, loans, reports, claims and evidence are indistinguishable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialLendinggetsociallostfoundidmatches: {
+        parameters: {
+            query?: {
+                limit?: number;
+                after?: string;
+                q?: string;
+            };
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Authorized P6-04 result; records never prove legal ownership, move money or expose file content */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        items: {
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string} */
+                            kind: "LOST" | "FOUND";
+                            /** @enum {string} */
+                            audience: "CONNECTIONS" | "GROUP";
+                            groupId: string | null;
+                            reporterUserId: string | null;
+                            isReporter: boolean;
+                            title: string | null;
+                            description: string | null;
+                            occurredOn: string | null;
+                            assetId: string | null;
+                            /** @enum {string} */
+                            state: "OPEN" | "RESOLVED" | "WITHDRAWN" | "HIDDEN";
+                            contested: boolean | null;
+                            openClaimCount: number | null;
+                            myClaimId: string | null;
+                            revision: number;
+                            /** Format: date-time */
+                            createdAt: string;
+                            /** Format: date-time */
+                            updatedAt: string;
+                            closedAt: string | null;
+                        }[];
+                        nextCursor: string | null;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; unauthorized assets, loans, reports, claims and evidence are indistinguishable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialLendinggetsociallostfoundidhistory: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Authorized P6-04 result; records never prove legal ownership, move money or expose file content */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        items: {
+                            /** Format: uuid */
+                            id: string;
+                            claimId: string | null;
+                            actorUserId: string | null;
+                            action: string;
+                            fromState: string | null;
+                            toState: string | null;
+                            note: string | null;
+                            /** Format: date-time */
+                            occurredAt: string;
+                        }[];
+                        truncated: boolean;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; unauthorized assets, loans, reports, claims and evidence are indistinguishable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialLendinggetsociallostfoundidevidence: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Authorized P6-04 result; records never prove legal ownership, move money or expose file content */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        items: {
+                            /** Format: uuid */
+                            id: string;
+                            loanId: string | null;
+                            reportId: string | null;
+                            claimId: string | null;
+                            addedByUserId: string | null;
+                            /** @enum {string} */
+                            kind: "CONDITION" | "HANDOVER" | "RETURN" | "DAMAGE" | "LOSS" | "IDENTIFYING" | "OTHER";
+                            label: string;
+                            note: string | null;
+                            observedAt: string | null;
+                            content: null;
+                            /** Format: date-time */
+                            createdAt: string;
+                        }[];
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; unauthorized assets, loans, reports, claims and evidence are indistinguishable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialLendingpostsociallostfoundidevidence: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "Idempotency-Key": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** Format: uuid */
+                    id: string;
+                    /** @enum {string} */
+                    kind: "CONDITION" | "HANDOVER" | "RETURN" | "DAMAGE" | "LOSS" | "IDENTIFYING" | "OTHER";
+                    label: string;
+                    note?: string | null;
+                    observedAt?: string | null;
+                };
+            };
+        };
+        responses: {
+            /** @description Authorized P6-04 result; records never prove legal ownership, move money or expose file content */
+            201: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        loanId: string | null;
+                        reportId: string | null;
+                        claimId: string | null;
+                        addedByUserId: string | null;
+                        /** @enum {string} */
+                        kind: "CONDITION" | "HANDOVER" | "RETURN" | "DAMAGE" | "LOSS" | "IDENTIFYING" | "OTHER";
+                        label: string;
+                        note: string | null;
+                        observedAt: string | null;
+                        content: null;
+                        /** Format: date-time */
+                        createdAt: string;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; unauthorized assets, loans, reports, claims and evidence are indistinguishable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialLendinggetsociallostfoundidclaims: {
+        parameters: {
+            query?: {
+                limit?: number;
+                after?: string;
+            };
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Authorized P6-04 result; records never prove legal ownership, move money or expose file content */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        items: {
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            reportId: string;
+                            claimantUserId: string | null;
+                            /** @enum {string} */
+                            holder: "CLAIMANT" | "REPORTER";
+                            note: string | null;
+                            linkedReportId: string | null;
+                            /** @enum {string} */
+                            state: "PENDING" | "ACKNOWLEDGED" | "DISPUTED" | "RESOLVED" | "REJECTED" | "WITHDRAWN" | "SUPERSEDED";
+                            handoverAt: string | null;
+                            receiptAt: string | null;
+                            resolvedAt: string | null;
+                            disputedByUserId: string | null;
+                            disputeNote: string | null;
+                            /** @constant */
+                            ownershipVerified: false;
+                            allowedActions: ("acknowledge" | "reject" | "withdraw" | "handover" | "receive" | "dispute" | "resume")[];
+                            revision: number;
+                            /** Format: date-time */
+                            createdAt: string;
+                            /** Format: date-time */
+                            updatedAt: string;
+                        }[];
+                        nextCursor: string | null;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; unauthorized assets, loans, reports, claims and evidence are indistinguishable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialLendingpostsociallostfoundidclaims: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "Idempotency-Key": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** Format: uuid */
+                    id: string;
+                    note: string;
+                    linkedReportId?: string | null;
+                };
+            };
+        };
+        responses: {
+            /** @description Authorized P6-04 result; records never prove legal ownership, move money or expose file content */
+            201: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        /** Format: uuid */
+                        reportId: string;
+                        claimantUserId: string | null;
+                        /** @enum {string} */
+                        holder: "CLAIMANT" | "REPORTER";
+                        note: string | null;
+                        linkedReportId: string | null;
+                        /** @enum {string} */
+                        state: "PENDING" | "ACKNOWLEDGED" | "DISPUTED" | "RESOLVED" | "REJECTED" | "WITHDRAWN" | "SUPERSEDED";
+                        handoverAt: string | null;
+                        receiptAt: string | null;
+                        resolvedAt: string | null;
+                        disputedByUserId: string | null;
+                        disputeNote: string | null;
+                        /** @constant */
+                        ownershipVerified: false;
+                        allowedActions: ("acknowledge" | "reject" | "withdraw" | "handover" | "receive" | "dispute" | "resume")[];
+                        revision: number;
+                        /** Format: date-time */
+                        createdAt: string;
+                        /** Format: date-time */
+                        updatedAt: string;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; unauthorized assets, loans, reports, claims and evidence are indistinguishable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialLendinggetsociallostfoundidclaimsclaimId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+                claimId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Authorized P6-04 result; records never prove legal ownership, move money or expose file content */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        /** Format: uuid */
+                        reportId: string;
+                        claimantUserId: string | null;
+                        /** @enum {string} */
+                        holder: "CLAIMANT" | "REPORTER";
+                        note: string | null;
+                        linkedReportId: string | null;
+                        /** @enum {string} */
+                        state: "PENDING" | "ACKNOWLEDGED" | "DISPUTED" | "RESOLVED" | "REJECTED" | "WITHDRAWN" | "SUPERSEDED";
+                        handoverAt: string | null;
+                        receiptAt: string | null;
+                        resolvedAt: string | null;
+                        disputedByUserId: string | null;
+                        disputeNote: string | null;
+                        /** @constant */
+                        ownershipVerified: false;
+                        allowedActions: ("acknowledge" | "reject" | "withdraw" | "handover" | "receive" | "dispute" | "resume")[];
+                        revision: number;
+                        /** Format: date-time */
+                        createdAt: string;
+                        /** Format: date-time */
+                        updatedAt: string;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; unauthorized assets, loans, reports, claims and evidence are indistinguishable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialLendingpostsociallostfoundidclaimsclaimIdactionsaction: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "Idempotency-Key": string;
+                "If-Match": string;
+            };
+            path: {
+                id: string;
+                claimId: string;
+                action: "acknowledge" | "reject" | "withdraw" | "handover" | "receive" | "dispute" | "resume";
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    note?: string | null;
+                };
+            };
+        };
+        responses: {
+            /** @description Authorized P6-04 result; records never prove legal ownership, move money or expose file content */
+            201: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        /** Format: uuid */
+                        reportId: string;
+                        claimantUserId: string | null;
+                        /** @enum {string} */
+                        holder: "CLAIMANT" | "REPORTER";
+                        note: string | null;
+                        linkedReportId: string | null;
+                        /** @enum {string} */
+                        state: "PENDING" | "ACKNOWLEDGED" | "DISPUTED" | "RESOLVED" | "REJECTED" | "WITHDRAWN" | "SUPERSEDED";
+                        handoverAt: string | null;
+                        receiptAt: string | null;
+                        resolvedAt: string | null;
+                        disputedByUserId: string | null;
+                        disputeNote: string | null;
+                        /** @constant */
+                        ownershipVerified: false;
+                        allowedActions: ("acknowledge" | "reject" | "withdraw" | "handover" | "receive" | "dispute" | "resume")[];
+                        revision: number;
+                        /** Format: date-time */
+                        createdAt: string;
+                        /** Format: date-time */
+                        updatedAt: string;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; unauthorized assets, loans, reports, claims and evidence are indistinguishable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialLendinggetsociallostfoundidclaimsclaimIdevidence: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+                claimId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Authorized P6-04 result; records never prove legal ownership, move money or expose file content */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        items: {
+                            /** Format: uuid */
+                            id: string;
+                            loanId: string | null;
+                            reportId: string | null;
+                            claimId: string | null;
+                            addedByUserId: string | null;
+                            /** @enum {string} */
+                            kind: "CONDITION" | "HANDOVER" | "RETURN" | "DAMAGE" | "LOSS" | "IDENTIFYING" | "OTHER";
+                            label: string;
+                            note: string | null;
+                            observedAt: string | null;
+                            content: null;
+                            /** Format: date-time */
+                            createdAt: string;
+                        }[];
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; unauthorized assets, loans, reports, claims and evidence are indistinguishable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialLendingpostsociallostfoundidclaimsclaimIdevidence: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "Idempotency-Key": string;
+            };
+            path: {
+                id: string;
+                claimId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** Format: uuid */
+                    id: string;
+                    /** @enum {string} */
+                    kind: "CONDITION" | "HANDOVER" | "RETURN" | "DAMAGE" | "LOSS" | "IDENTIFYING" | "OTHER";
+                    label: string;
+                    note?: string | null;
+                    observedAt?: string | null;
+                };
+            };
+        };
+        responses: {
+            /** @description Authorized P6-04 result; records never prove legal ownership, move money or expose file content */
+            201: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        loanId: string | null;
+                        reportId: string | null;
+                        claimId: string | null;
+                        addedByUserId: string | null;
+                        /** @enum {string} */
+                        kind: "CONDITION" | "HANDOVER" | "RETURN" | "DAMAGE" | "LOSS" | "IDENTIFYING" | "OTHER";
+                        label: string;
+                        note: string | null;
+                        observedAt: string | null;
+                        content: null;
+                        /** Format: date-time */
+                        createdAt: string;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; unauthorized assets, loans, reports, claims and evidence are indistinguishable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialGoalsgetsocialgoals: {
+        parameters: {
+            query?: {
+                limit?: number;
+                after?: string;
+                groupId?: string;
+                activityId?: string;
+                kind?: "GOAL" | "CHALLENGE";
+                state?: "ACTIVE" | "CLOSED" | "CANCELED";
+                participation?: "ANY" | "JOINED" | "NOT_JOINED";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Authorized P6-05 result; progress is self-reported Social data, never ranked, verified or rewarded */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        items: {
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string} */
+                            kind: "GOAL" | "CHALLENGE";
+                            groupId: string | null;
+                            activityId: string | null;
+                            title: string;
+                            description: string | null;
+                            unit: string;
+                            target: number;
+                            /** Format: date */
+                            startsOn: string;
+                            /** Format: date */
+                            endsOn: string;
+                            timezone: string;
+                            reviewRequired: boolean;
+                            /** @enum {string} */
+                            state: "ACTIVE" | "CLOSED" | "CANCELED";
+                            /** @enum {string} */
+                            window: "UPCOMING" | "OPEN" | "ENDED";
+                            createdByUserId: string | null;
+                            completedAt: string | null;
+                            closedAt: string | null;
+                            aggregate: {
+                                participantCount: number;
+                                completedCount: number;
+                                approvedTotal: number;
+                                percent: number;
+                                pendingReviewCount: number | null;
+                            };
+                            viewer: {
+                                organizer: boolean;
+                                independentReviewerAvailable: boolean;
+                                participant: {
+                                    /** Format: uuid */
+                                    id: string;
+                                    /** Format: uuid */
+                                    goalId: string;
+                                    userId: string | null;
+                                    /** @enum {string} */
+                                    state: "ACTIVE" | "WITHDRAWN";
+                                    /** Format: date-time */
+                                    joinedAt: string;
+                                    withdrawnAt: string | null;
+                                    approvedTotal: number;
+                                    pendingTotal: number | null;
+                                    percent: number;
+                                    completed: boolean;
+                                    badge: {
+                                        /** @constant */
+                                        kind: "COMPLETION";
+                                        /** Format: date-time */
+                                        awardedAt: string;
+                                    } | null;
+                                    revision: number;
+                                } | null;
+                            };
+                            revision: number;
+                            /** Format: date-time */
+                            createdAt: string;
+                            /** Format: date-time */
+                            updatedAt: string;
+                        }[];
+                        nextCursor: string | null;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; goals, participants and entries outside the caller’s current Group or Activity are indistinguishable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialGoalspostsocialgoals: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "Idempotency-Key": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** Format: uuid */
+                    id: string;
+                    /** @enum {string} */
+                    kind: "GOAL" | "CHALLENGE";
+                    groupId?: string | null;
+                    activityId?: string | null;
+                    title: string;
+                    description?: string | null;
+                    unit: string;
+                    target: number;
+                    /** Format: date */
+                    startsOn: string;
+                    /** Format: date */
+                    endsOn: string;
+                    timezone: string;
+                    /** @default false */
+                    reviewRequired?: boolean;
+                };
+            };
+        };
+        responses: {
+            /** @description Authorized P6-05 result; progress is self-reported Social data, never ranked, verified or rewarded */
+            201: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        /** @enum {string} */
+                        kind: "GOAL" | "CHALLENGE";
+                        groupId: string | null;
+                        activityId: string | null;
+                        title: string;
+                        description: string | null;
+                        unit: string;
+                        target: number;
+                        /** Format: date */
+                        startsOn: string;
+                        /** Format: date */
+                        endsOn: string;
+                        timezone: string;
+                        reviewRequired: boolean;
+                        /** @enum {string} */
+                        state: "ACTIVE" | "CLOSED" | "CANCELED";
+                        /** @enum {string} */
+                        window: "UPCOMING" | "OPEN" | "ENDED";
+                        createdByUserId: string | null;
+                        completedAt: string | null;
+                        closedAt: string | null;
+                        aggregate: {
+                            participantCount: number;
+                            completedCount: number;
+                            approvedTotal: number;
+                            percent: number;
+                            pendingReviewCount: number | null;
+                        };
+                        viewer: {
+                            organizer: boolean;
+                            independentReviewerAvailable: boolean;
+                            participant: {
+                                /** Format: uuid */
+                                id: string;
+                                /** Format: uuid */
+                                goalId: string;
+                                userId: string | null;
+                                /** @enum {string} */
+                                state: "ACTIVE" | "WITHDRAWN";
+                                /** Format: date-time */
+                                joinedAt: string;
+                                withdrawnAt: string | null;
+                                approvedTotal: number;
+                                pendingTotal: number | null;
+                                percent: number;
+                                completed: boolean;
+                                badge: {
+                                    /** @constant */
+                                    kind: "COMPLETION";
+                                    /** Format: date-time */
+                                    awardedAt: string;
+                                } | null;
+                                revision: number;
+                            } | null;
+                        };
+                        revision: number;
+                        /** Format: date-time */
+                        createdAt: string;
+                        /** Format: date-time */
+                        updatedAt: string;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; goals, participants and entries outside the caller’s current Group or Activity are indistinguishable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialGoalsgetsocialgoalsid: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Authorized P6-05 result; progress is self-reported Social data, never ranked, verified or rewarded */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        /** @enum {string} */
+                        kind: "GOAL" | "CHALLENGE";
+                        groupId: string | null;
+                        activityId: string | null;
+                        title: string;
+                        description: string | null;
+                        unit: string;
+                        target: number;
+                        /** Format: date */
+                        startsOn: string;
+                        /** Format: date */
+                        endsOn: string;
+                        timezone: string;
+                        reviewRequired: boolean;
+                        /** @enum {string} */
+                        state: "ACTIVE" | "CLOSED" | "CANCELED";
+                        /** @enum {string} */
+                        window: "UPCOMING" | "OPEN" | "ENDED";
+                        createdByUserId: string | null;
+                        completedAt: string | null;
+                        closedAt: string | null;
+                        aggregate: {
+                            participantCount: number;
+                            completedCount: number;
+                            approvedTotal: number;
+                            percent: number;
+                            pendingReviewCount: number | null;
+                        };
+                        viewer: {
+                            organizer: boolean;
+                            independentReviewerAvailable: boolean;
+                            participant: {
+                                /** Format: uuid */
+                                id: string;
+                                /** Format: uuid */
+                                goalId: string;
+                                userId: string | null;
+                                /** @enum {string} */
+                                state: "ACTIVE" | "WITHDRAWN";
+                                /** Format: date-time */
+                                joinedAt: string;
+                                withdrawnAt: string | null;
+                                approvedTotal: number;
+                                pendingTotal: number | null;
+                                percent: number;
+                                completed: boolean;
+                                badge: {
+                                    /** @constant */
+                                    kind: "COMPLETION";
+                                    /** Format: date-time */
+                                    awardedAt: string;
+                                } | null;
+                                revision: number;
+                            } | null;
+                        };
+                        revision: number;
+                        /** Format: date-time */
+                        createdAt: string;
+                        /** Format: date-time */
+                        updatedAt: string;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; goals, participants and entries outside the caller’s current Group or Activity are indistinguishable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialGoalspatchsocialgoalsid: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "Idempotency-Key": string;
+                "If-Match": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    title?: string;
+                    description?: string | null;
+                    target?: number;
+                    /** Format: date */
+                    endsOn?: string;
+                    reviewRequired?: boolean;
+                };
+            };
+        };
+        responses: {
+            /** @description Authorized P6-05 result; progress is self-reported Social data, never ranked, verified or rewarded */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        /** @enum {string} */
+                        kind: "GOAL" | "CHALLENGE";
+                        groupId: string | null;
+                        activityId: string | null;
+                        title: string;
+                        description: string | null;
+                        unit: string;
+                        target: number;
+                        /** Format: date */
+                        startsOn: string;
+                        /** Format: date */
+                        endsOn: string;
+                        timezone: string;
+                        reviewRequired: boolean;
+                        /** @enum {string} */
+                        state: "ACTIVE" | "CLOSED" | "CANCELED";
+                        /** @enum {string} */
+                        window: "UPCOMING" | "OPEN" | "ENDED";
+                        createdByUserId: string | null;
+                        completedAt: string | null;
+                        closedAt: string | null;
+                        aggregate: {
+                            participantCount: number;
+                            completedCount: number;
+                            approvedTotal: number;
+                            percent: number;
+                            pendingReviewCount: number | null;
+                        };
+                        viewer: {
+                            organizer: boolean;
+                            independentReviewerAvailable: boolean;
+                            participant: {
+                                /** Format: uuid */
+                                id: string;
+                                /** Format: uuid */
+                                goalId: string;
+                                userId: string | null;
+                                /** @enum {string} */
+                                state: "ACTIVE" | "WITHDRAWN";
+                                /** Format: date-time */
+                                joinedAt: string;
+                                withdrawnAt: string | null;
+                                approvedTotal: number;
+                                pendingTotal: number | null;
+                                percent: number;
+                                completed: boolean;
+                                badge: {
+                                    /** @constant */
+                                    kind: "COMPLETION";
+                                    /** Format: date-time */
+                                    awardedAt: string;
+                                } | null;
+                                revision: number;
+                            } | null;
+                        };
+                        revision: number;
+                        /** Format: date-time */
+                        createdAt: string;
+                        /** Format: date-time */
+                        updatedAt: string;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; goals, participants and entries outside the caller’s current Group or Activity are indistinguishable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialGoalspostsocialgoalsidactionsaction: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "Idempotency-Key": string;
+                "If-Match": string;
+            };
+            path: {
+                id: string;
+                action: "close" | "cancel";
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": Record<string, never>;
+            };
+        };
+        responses: {
+            /** @description Authorized P6-05 result; progress is self-reported Social data, never ranked, verified or rewarded */
+            201: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        /** @enum {string} */
+                        kind: "GOAL" | "CHALLENGE";
+                        groupId: string | null;
+                        activityId: string | null;
+                        title: string;
+                        description: string | null;
+                        unit: string;
+                        target: number;
+                        /** Format: date */
+                        startsOn: string;
+                        /** Format: date */
+                        endsOn: string;
+                        timezone: string;
+                        reviewRequired: boolean;
+                        /** @enum {string} */
+                        state: "ACTIVE" | "CLOSED" | "CANCELED";
+                        /** @enum {string} */
+                        window: "UPCOMING" | "OPEN" | "ENDED";
+                        createdByUserId: string | null;
+                        completedAt: string | null;
+                        closedAt: string | null;
+                        aggregate: {
+                            participantCount: number;
+                            completedCount: number;
+                            approvedTotal: number;
+                            percent: number;
+                            pendingReviewCount: number | null;
+                        };
+                        viewer: {
+                            organizer: boolean;
+                            independentReviewerAvailable: boolean;
+                            participant: {
+                                /** Format: uuid */
+                                id: string;
+                                /** Format: uuid */
+                                goalId: string;
+                                userId: string | null;
+                                /** @enum {string} */
+                                state: "ACTIVE" | "WITHDRAWN";
+                                /** Format: date-time */
+                                joinedAt: string;
+                                withdrawnAt: string | null;
+                                approvedTotal: number;
+                                pendingTotal: number | null;
+                                percent: number;
+                                completed: boolean;
+                                badge: {
+                                    /** @constant */
+                                    kind: "COMPLETION";
+                                    /** Format: date-time */
+                                    awardedAt: string;
+                                } | null;
+                                revision: number;
+                            } | null;
+                        };
+                        revision: number;
+                        /** Format: date-time */
+                        createdAt: string;
+                        /** Format: date-time */
+                        updatedAt: string;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; goals, participants and entries outside the caller’s current Group or Activity are indistinguishable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialGoalspostsocialgoalsidjoin: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "Idempotency-Key": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": Record<string, never>;
+            };
+        };
+        responses: {
+            /** @description Authorized P6-05 result; progress is self-reported Social data, never ranked, verified or rewarded */
+            201: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        /** Format: uuid */
+                        goalId: string;
+                        userId: string | null;
+                        /** @enum {string} */
+                        state: "ACTIVE" | "WITHDRAWN";
+                        /** Format: date-time */
+                        joinedAt: string;
+                        withdrawnAt: string | null;
+                        approvedTotal: number;
+                        pendingTotal: number | null;
+                        percent: number;
+                        completed: boolean;
+                        badge: {
+                            /** @constant */
+                            kind: "COMPLETION";
+                            /** Format: date-time */
+                            awardedAt: string;
+                        } | null;
+                        revision: number;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; goals, participants and entries outside the caller’s current Group or Activity are indistinguishable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialGoalspostsocialgoalsidwithdraw: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "Idempotency-Key": string;
+                "If-Match": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": Record<string, never>;
+            };
+        };
+        responses: {
+            /** @description Authorized P6-05 result; progress is self-reported Social data, never ranked, verified or rewarded */
+            201: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        /** Format: uuid */
+                        goalId: string;
+                        userId: string | null;
+                        /** @enum {string} */
+                        state: "ACTIVE" | "WITHDRAWN";
+                        /** Format: date-time */
+                        joinedAt: string;
+                        withdrawnAt: string | null;
+                        approvedTotal: number;
+                        pendingTotal: number | null;
+                        percent: number;
+                        completed: boolean;
+                        badge: {
+                            /** @constant */
+                            kind: "COMPLETION";
+                            /** Format: date-time */
+                            awardedAt: string;
+                        } | null;
+                        revision: number;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; goals, participants and entries outside the caller’s current Group or Activity are indistinguishable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialGoalsgetsocialgoalsidparticipants: {
+        parameters: {
+            query?: {
+                limit?: number;
+                after?: string;
+            };
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Authorized P6-05 result; progress is self-reported Social data, never ranked, verified or rewarded */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        items: {
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            goalId: string;
+                            userId: string | null;
+                            /** @enum {string} */
+                            state: "ACTIVE" | "WITHDRAWN";
+                            /** Format: date-time */
+                            joinedAt: string;
+                            withdrawnAt: string | null;
+                            approvedTotal: number;
+                            pendingTotal: number | null;
+                            percent: number;
+                            completed: boolean;
+                            badge: {
+                                /** @constant */
+                                kind: "COMPLETION";
+                                /** Format: date-time */
+                                awardedAt: string;
+                            } | null;
+                            revision: number;
+                        }[];
+                        nextCursor: string | null;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; goals, participants and entries outside the caller’s current Group or Activity are indistinguishable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialGoalsgetsocialgoalsidentries: {
+        parameters: {
+            query?: {
+                limit?: number;
+                after?: string;
+                state?: "PENDING" | "APPROVED" | "REJECTED" | "RETRACTED";
+                participantId?: string;
+            };
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Authorized P6-05 result; progress is self-reported Social data, never ranked, verified or rewarded */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        items: {
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            goalId: string;
+                            /** Format: uuid */
+                            participantId: string;
+                            participantUserId: string | null;
+                            /** @enum {string} */
+                            kind: "SUBMISSION" | "CORRECTION";
+                            amount: number;
+                            occurredOn: string | null;
+                            note: string | null;
+                            /** @enum {string} */
+                            state: "PENDING" | "APPROVED" | "REJECTED" | "RETRACTED";
+                            submittedByUserId: string | null;
+                            /** Format: date-time */
+                            submittedAt: string;
+                            reviewedByUserId: string | null;
+                            reviewedAt: string | null;
+                            reviewNote: string | null;
+                            correctsEntryId: string | null;
+                            revision: number;
+                        }[];
+                        nextCursor: string | null;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; goals, participants and entries outside the caller’s current Group or Activity are indistinguishable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialGoalspostsocialgoalsidentries: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "Idempotency-Key": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** Format: uuid */
+                    id: string;
+                    amount: number;
+                    /** Format: date */
+                    occurredOn: string;
+                    note?: string | null;
+                };
+            };
+        };
+        responses: {
+            /** @description Authorized P6-05 result; progress is self-reported Social data, never ranked, verified or rewarded */
+            201: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        /** Format: uuid */
+                        goalId: string;
+                        /** Format: uuid */
+                        participantId: string;
+                        participantUserId: string | null;
+                        /** @enum {string} */
+                        kind: "SUBMISSION" | "CORRECTION";
+                        amount: number;
+                        occurredOn: string | null;
+                        note: string | null;
+                        /** @enum {string} */
+                        state: "PENDING" | "APPROVED" | "REJECTED" | "RETRACTED";
+                        submittedByUserId: string | null;
+                        /** Format: date-time */
+                        submittedAt: string;
+                        reviewedByUserId: string | null;
+                        reviewedAt: string | null;
+                        reviewNote: string | null;
+                        correctsEntryId: string | null;
+                        revision: number;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; goals, participants and entries outside the caller’s current Group or Activity are indistinguishable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialGoalspostsocialgoalsidentriesentryIdactionsaction: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "Idempotency-Key": string;
+                "If-Match": string;
+            };
+            path: {
+                id: string;
+                entryId: string;
+                action: "approve" | "reject" | "retract";
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    note?: string | null;
+                };
+            };
+        };
+        responses: {
+            /** @description Authorized P6-05 result; progress is self-reported Social data, never ranked, verified or rewarded */
+            201: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        /** Format: uuid */
+                        goalId: string;
+                        /** Format: uuid */
+                        participantId: string;
+                        participantUserId: string | null;
+                        /** @enum {string} */
+                        kind: "SUBMISSION" | "CORRECTION";
+                        amount: number;
+                        occurredOn: string | null;
+                        note: string | null;
+                        /** @enum {string} */
+                        state: "PENDING" | "APPROVED" | "REJECTED" | "RETRACTED";
+                        submittedByUserId: string | null;
+                        /** Format: date-time */
+                        submittedAt: string;
+                        reviewedByUserId: string | null;
+                        reviewedAt: string | null;
+                        reviewNote: string | null;
+                        correctsEntryId: string | null;
+                        revision: number;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; goals, participants and entries outside the caller’s current Group or Activity are indistinguishable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialGoalspostsocialgoalsidcorrections: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "Idempotency-Key": string;
+                "If-Match": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** Format: uuid */
+                    id: string;
+                    /** Format: uuid */
+                    participantId: string;
+                    delta: number;
+                    reason: string;
+                    correctsEntryId?: string | null;
+                };
+            };
+        };
+        responses: {
+            /** @description Authorized P6-05 result; progress is self-reported Social data, never ranked, verified or rewarded */
+            201: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        /** Format: uuid */
+                        goalId: string;
+                        /** Format: uuid */
+                        participantId: string;
+                        participantUserId: string | null;
+                        /** @enum {string} */
+                        kind: "SUBMISSION" | "CORRECTION";
+                        amount: number;
+                        occurredOn: string | null;
+                        note: string | null;
+                        /** @enum {string} */
+                        state: "PENDING" | "APPROVED" | "REJECTED" | "RETRACTED";
+                        submittedByUserId: string | null;
+                        /** Format: date-time */
+                        submittedAt: string;
+                        reviewedByUserId: string | null;
+                        reviewedAt: string | null;
+                        reviewNote: string | null;
+                        correctsEntryId: string | null;
+                        revision: number;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; goals, participants and entries outside the caller’s current Group or Activity are indistinguishable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialGoalsgetsocialgoalsidhistory: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Authorized P6-05 result; progress is self-reported Social data, never ranked, verified or rewarded */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        truncated: boolean;
+                        items: {
+                            /** Format: uuid */
+                            id: string;
+                            participantId: string | null;
+                            entryId: string | null;
+                            actorUserId: string | null;
+                            action: string;
+                            fromState: string | null;
+                            toState: string | null;
+                            amount: number | null;
+                            /** Format: date-time */
+                            occurredAt: string;
+                        }[];
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; goals, participants and entries outside the caller’s current Group or Activity are indistinguishable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialGroupLifecyclegetsocialgroupsidexitcheck: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Authorized P6-06 result; recovery restores only the primary Owner seat */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        groupId: string;
+                        membershipRevision: number;
+                        obligations: {
+                            /** @enum {string} */
+                            ledgerKind: "GROUP" | "ACTIVITY";
+                            /** Format: uuid */
+                            ledgerId: string;
+                            currency: string;
+                            netMinor: string;
+                            owedMinor: string;
+                            receivableMinor: string;
+                        }[];
+                        departureConfirmation: string | null;
+                        deletion: {
+                            groupRevision: number;
+                            outstandingLedgerCount: number;
+                            outstandingPartyCount: number;
+                            confirmation: string | null;
+                        } | null;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; departed, revoked and non-members cannot distinguish deleted Groups */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialGroupLifecyclepostsocialgroupsiddelete: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "If-Match": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    password: string;
+                    outstandingBalanceConfirmation?: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Authorized P6-06 result; recovery restores only the primary Owner seat */
+            201: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        /** Format: uuid */
+                        groupId: string;
+                        revision: number;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; departed, revoked and non-members cannot distinguish deleted Groups */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialGroupLifecyclegetsocialgroupsidlifecyclejob: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Authorized P6-06 result; recovery restores only the primary Owner seat */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        jobId: string;
+                        generation: number;
+                        revision: number;
+                        /** @enum {string} */
+                        state: "OWNER_EXIT_FROZEN" | "CLOSING_GRACE" | "CLEANUP_PENDING" | "WAITING_OBLIGATIONS" | "BLOCKED_POLICY" | "PURGING" | "DELETED" | "FAILED" | "CANCELED";
+                        /** Format: date-time */
+                        recoveryDeadline: string;
+                        /** Format: date-time */
+                        nextAt: string;
+                        stage: string | null;
+                        failureCode: string | null;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; departed, revoked and non-members cannot distinguish deleted Groups */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialGroupLifecyclepostsocialgroupsidlifecyclejobrecoveryproof: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "If-Match": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    password: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Authorized P6-06 result; recovery restores only the primary Owner seat */
+            201: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        jobId: string;
+                        generation: number;
+                        revision: number;
+                        /** Format: date-time */
+                        recoveryDeadline: string;
+                        proof: string;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; departed, revoked and non-members cannot distinguish deleted Groups */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialGroupLifecyclepostsocialgroupsidlifecyclejobrecover: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "If-Match": string;
+                "X-Deletion-Recovery": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    password: string;
+                    generation: number;
+                };
+            };
+        };
+        responses: {
+            /** @description Authorized P6-06 result; recovery restores only the primary Owner seat */
+            201: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        jobId: string;
+                        generation: number;
+                        revision: number;
+                        /** @constant */
+                        state: "CANCELED";
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; departed, revoked and non-members cannot distinguish deleted Groups */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialActivitygetsocialgroupsidconversation: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Authorized P6-02/P6-03 result; records never move money or grant Group access */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        groupId: string;
+                        conversationId: string | null;
+                        canOpen: boolean;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; unauthorized Activity or ledger data is indistinguishable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialActivitypostsocialgroupsidconversationopen: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "Idempotency-Key": string;
+                "If-Match": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** Format: uuid */
+                    id: string;
+                    retentionPolicyVersion: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Authorized P6-02/P6-03 result; records never move money or grant Group access */
+            201: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        groupId: string;
+                        conversationId: string | null;
+                        canOpen: boolean;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; unauthorized Activity or ledger data is indistinguishable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    socialActivitypostsocialgroupsidconversationjoin: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "Idempotency-Key": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": Record<string, never>;
+            };
+        };
+        responses: {
+            /** @description Authorized P6-02/P6-03 result; records never move money or grant Group access */
+            201: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        /** @enum {string} */
+                        kind: "DM" | "PRIVATE_GROUP" | "PROJECT" | "TEAM" | "COMPANY";
+                        sourceId: string | null;
+                        title: string | null;
+                        revision: number;
+                        writable: boolean;
+                        /** Format: date-time */
+                        createdAt: string;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe absence; unauthorized Activity or ledger data is indistinguishable */
             404: {
                 headers: {
                     [name: string]: unknown;

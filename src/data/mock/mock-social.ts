@@ -1368,6 +1368,12 @@ export function createMockSocial(options: MockSocialOptions = {}): SocialReposit
         circles.set(c.id, c);
         return { id: c.id, name: c.name };
       },
+      async rename(circleId, name) {
+        const c = circles.get(circleId);
+        if (!c) throw new SocialError("not-found");
+        if (!name.trim()) throw new SocialError("invalid");
+        c.name = name.trim();
+      },
       async remove(circleId) {
         circles.delete(circleId);
       },
@@ -2102,6 +2108,12 @@ export function createMockSocial(options: MockSocialOptions = {}): SocialReposit
         s.status = "disputed";
         s.disputeNote = note.trim();
       },
+      async cancel(id) {
+        const s = settlements.get(id);
+        if (!s) throw new SocialError("not-found");
+        if (s.recordedById !== ME || s.status === "confirmed") throw new SocialError("forbidden");
+        settlements.delete(id);
+      },
     },
     lending: {
       async groupThings(groupId) {
@@ -2386,6 +2398,21 @@ export function createMockSocial(options: MockSocialOptions = {}): SocialReposit
         return items;
       },
     },
+    // Phase 6 server flows (proof links, handovers, lifecycle, review, notices…) exist only against the live API.
+    blocks: notModelled(),
+    invitations: notModelled(),
+    handovers: notModelled(),
+    activityAdmin: notModelled(),
+    finance: notModelled(),
+    lendingServer: notModelled(),
+    goals: notModelled(),
+    notices: notModelled(),
+    exit: notModelled(),
   };
   return repo;
+}
+
+function notModelled<T extends object>(): T {
+  const reject = () => Promise.reject(new SocialError("unsupported", "Mock Mode does not model this server flow"));
+  return new Proxy({} as T, { get: (_, name) => (typeof name === "string" && name !== "then" ? reject : undefined) });
 }

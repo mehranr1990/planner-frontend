@@ -27,6 +27,7 @@ import { socialHref } from "../paths";
 import { useSocialGroup } from "../social-gate";
 import { isUnsupported, PersonAvatar, SocialPageHeader, SocialUnsupported } from "../social-ui";
 import { newClientOpId, useSocialErrorText } from "../use-social";
+import { SettlementCancel } from "../live/activity-live";
 import { usePostToPersonalFinance } from "./expense-form";
 
 /*
@@ -254,6 +255,7 @@ export function SettlementRow({ settlement: s }: { settlement: Settlement }) {
           </Button>
         </div>
       ) : null}
+      <SettlementCancel settlement={s} />
       {s.status === "confirmed" && s.currency === "toman" ? (
         s.postedToFinance || post.data === true ? (
           <span className="flex items-center gap-1 text-xs font-bold text-success-text">

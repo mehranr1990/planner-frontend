@@ -4,10 +4,11 @@ import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { AccessLoading } from "@/components/feedback/access-state";
-import { ErrorState } from "@/components/feedback/state-views";
+import { EmptyState, ErrorState } from "@/components/feedback/state-views";
 import { toast } from "@/components/ui/toast";
 import { useMessagingRepository } from "@/data/messaging-provider";
 import { useSocialRepository } from "@/data/social-provider";
+import { SocialError } from "@/data/social-repositories";
 import { messagesHref } from "@/features/messages/paths";
 import { useSocialGroup } from "../social-gate";
 import { isUnsupported, SocialUnsupported } from "../social-ui";
@@ -56,16 +57,20 @@ export function GroupChat() {
   const group = useSocialGroup();
   const social = useSocialRepository();
   const open = useOpenSocialConversation();
+  const router = useRouter();
+  const t = useTranslations("Social.common");
   const started = useRef(false);
   const [failed, setFailed] = useState<unknown>(null);
   useEffect(() => {
     if (started.current) return;
     started.current = true;
-    void social.groups
-      .chatMembers(group.id)
-      .then(({ name, personIds }) => open(`group:${group.id}`, name, personIds, true))
-      .catch((error: unknown) => setFailed(error ?? new Error("chat")));
-  }, [group.id, social, open]);
+    // Live: the group's primary conversation (ADR 0067). Mock: the mock Messages engine.
+    const target = social.groups.openChat
+      ? social.groups.openChat(group.id).then((id) => router.replace(messagesHref.conversation(id)))
+      : social.groups.chatMembers(group.id).then(({ name, personIds }) => open(`group:${group.id}`, name, personIds, true));
+    void target.catch((error: unknown) => setFailed(error ?? new Error("chat")));
+  }, [group.id, social, open, router]);
+  if (failed instanceof SocialError && failed.reason === "CONVERSATION_NOT_OPEN") return <EmptyState title={t("chatNotOpenTitle")} description={t("chatNotOpenBody")} />;
   if (failed) return isUnsupported(failed) ? <SocialUnsupported /> : <ErrorState onRetry={() => window.location.reload()} />;
   return <AccessLoading />;
 }

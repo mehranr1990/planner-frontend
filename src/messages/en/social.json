@@ -2,12 +2,14 @@
   "currency": {
     "toman": "T",
     "try": "TL",
-    "eur": "€"
+    "eur": "€",
+    "irr": "IRR"
   },
   "currencyName": {
     "toman": "Toman",
     "try": "Turkish lira",
-    "eur": "Euro"
+    "eur": "Euro",
+    "irr": "Iranian rial"
   },
   "roles": {
     "owner": "Owner",
@@ -93,6 +95,8 @@
     "guest": "guest",
     "noTime": "All day",
     "notShown": "—",
+    "chatNotOpenTitle": "Group chat has not started",
+    "chatNotOpenBody": "An owner or admin starts the group chat. You can join once it is open.",
     "unsupportedTitle": "Not available yet",
     "unsupportedBody": "The server doesn’t offer this part of Social yet. Nothing is shown in its place."
   },
@@ -276,7 +280,11 @@
       "settled": "{name} settled up",
       "photos": "{name} added photos to {subject}",
       "lent": "{name} lent {subject}",
-      "left": "{name} left the group"
+      "left": "{name} left the group",
+      "created": "{name} created the group",
+      "updated": "{name} updated the group",
+      "role": "{name} changed a member role",
+      "handover": "{name} became the owner"
     },
     "noEvents": "Nothing happened yet",
     "noLending": "Nothing lent right now",
@@ -939,5 +947,312 @@
     "dayEmpty": "Nothing this day",
     "cancelledTag": "Cancelled",
     "inCalendar": "Social activities"
+  },
+  "live": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "password": "Password",
+    "settlementCancel": "Cancel record",
+    "blocked": {
+      "title": "Blocked people",
+      "empty": "You have not blocked anyone.",
+      "row": "Blocked person {n}",
+      "unblock": "Unblock",
+      "done": "Unblocked",
+      "note": "Names of blocked people are not shown."
+    },
+    "circles": {
+      "rename": "Rename {name}",
+      "name": "Circle name"
+    },
+    "invite": {
+      "linksTitle": "Invitation links",
+      "linksNote": "Send each link to the person yourself. A link works once, for seven days, and only for that person.",
+      "link": "Invitation {n}",
+      "copy": "Copy link",
+      "copied": "Link copied",
+      "noProof": "Already sent — no new link",
+      "afterCreate": "After creating the group, invite people from Members: each invitation is a private link you send yourself."
+    },
+    "invitation": {
+      "title": "Group invitation",
+      "noProof": "This link is incomplete. Ask for a new invitation link.",
+      "body": "You were invited to a Social group. The invitation expires {until}.",
+      "accept": "Join the group",
+      "decline": "Decline"
+    },
+    "handover": {
+      "title": "Ownership handover",
+      "pending": "Waiting for the new owner to accept (expires {until}).",
+      "state": {
+        "accepted": "The handover was accepted.",
+        "declined": "The handover was declined.",
+        "revoked": "The handover was withdrawn.",
+        "expired": "The handover expired."
+      },
+      "passwordNote": "Enter your password to confirm you take over the group.",
+      "accept": "Become the owner",
+      "decline": "Decline",
+      "copy": "Copy handover link",
+      "revoke": "Withdraw"
+    },
+    "exit": {
+      "obligations": "Your open balances",
+      "noObligations": "You have no open balance in this group.",
+      "ledger": {
+        "group": "Group expenses",
+        "activity": "An activity's expenses"
+      },
+      "note": "Leaving never moves money. While a balance stays open you can still see and settle your own part.",
+      "ownerFirst": "Hand the group to another member before you leave.",
+      "successor": "New owner",
+      "startHandover": "Start handover",
+      "leave": "Leave group",
+      "leaveBody": "You lose access to the group, its members, activities and records right away.",
+      "confirmTitle": "Leave {group}?",
+      "owingWarning": "You still have an open balance. You can leave, but it stays open between you and the others.",
+      "continue": "Continue",
+      "secondTitle": "Leave with an open balance?",
+      "secondBody": "Your balance is not settled or cancelled by leaving. You can still settle it from Balances.",
+      "understood": "I understand my open balance stays open",
+      "left": "You left {group}",
+      "deleteBody": "Deleting ends access for every member, including you. You can recover the group for 30 days.",
+      "deleteOutstanding": "{ledgers} ledgers still have open balances between {people} people.",
+      "delete": "Delete group",
+      "deleteConfirm": "Enter your password to delete the group.",
+      "deleted": "Group deleted. You can recover it for 30 days."
+    },
+    "recover": {
+      "title": "Recover a deleted group",
+      "state": {
+        "OWNER_EXIT_FROZEN": "The group is frozen.",
+        "CLOSING_GRACE": "The group is deleted and can still be recovered.",
+        "CLEANUP_PENDING": "Cleanup is pending.",
+        "WAITING_OBLIGATIONS": "Waiting for open balances.",
+        "BLOCKED_POLICY": "Some records must be kept.",
+        "PURGING": "The group is being removed.",
+        "DELETED": "The group was removed.",
+        "FAILED": "Removal stopped with an error.",
+        "CANCELED": "The group was recovered."
+      },
+      "blockedPolicy": "Expenses, settlements or history are kept because no approved disposal policy exists. Nobody can see the group's content.",
+      "deadline": "Recovery ends {when}.",
+      "note": "Only your owner seat returns. Members must be invited again.",
+      "action": "Recover group",
+      "done": "Group recovered",
+      "balances": "Open my balances"
+    },
+    "notices": {
+      "title": "Updates",
+      "empty": "No updates.",
+      "markRead": "Mark read",
+      "note": "Updates refresh when you open Social; there are no push notifications yet.",
+      "kind": {
+        "ACTIVITY_INVITED": "Activity invited",
+        "ACTIVITY_UPDATED": "Activity updated",
+        "ACTIVITY_CANCELED": "Activity canceled",
+        "ACTIVITY_REMOVED": "Activity removed",
+        "SEAT_OFFERED": "Seat offered",
+        "ACTIVITY_REMINDER": "Activity reminder",
+        "EXPENSE_PROPOSED": "Expense proposed",
+        "EXPENSE_DECIDED": "Expense decided",
+        "SETTLEMENT_RECORDED": "Settlement recorded",
+        "SETTLEMENT_DECIDED": "Settlement decided",
+        "ORGANIZER_NOMINATED": "Organizer nominated",
+        "ACTIVITY_DELETED": "Activity deleted",
+        "LOAN_REQUESTED": "Loan requested",
+        "LOAN_OFFERED": "Loan offered",
+        "LOAN_DECIDED": "Loan decided",
+        "LOAN_HANDOVER": "Loan handover",
+        "LOAN_RECEIVED": "Loan received",
+        "LOAN_RETURN_REQUESTED": "Loan return requested",
+        "LOAN_RETURNED": "Loan returned",
+        "LOAN_DISPUTED": "Loan disputed",
+        "LOAN_OUTCOME_PROPOSED": "Loan outcome proposed",
+        "LOAN_OUTCOME_CONFIRMED": "Loan outcome confirmed",
+        "LOAN_DUE_PROPOSED": "Loan due proposed",
+        "LOAN_DUE_DECIDED": "Loan due decided",
+        "CLAIM_SUBMITTED": "Claim submitted",
+        "CLAIM_DECIDED": "Claim decided",
+        "CLAIM_HANDOVER": "Claim handover",
+        "CLAIM_RESOLVED": "Claim resolved",
+        "CLAIM_DISPUTED": "Claim disputed",
+        "GOAL_ENTRY_SUBMITTED": "Goal entry submitted",
+        "GOAL_ENTRY_DECIDED": "Goal entry decided",
+        "GOAL_CORRECTED": "Goal corrected",
+        "GOAL_COMPLETED": "Goal completed",
+        "GOAL_ENDED": "Goal ended",
+        "other": "Update"
+      }
+    },
+    "activity": {
+      "title": "Organise",
+      "state": {
+        "cancelled": "This activity was cancelled.",
+        "closed": "This activity is closed.",
+        "deleted": "This activity was deleted."
+      },
+      "orphaned": "No organiser is left; the activity is read-only.",
+      "recoverUntil": "Can be restored until {when}.",
+      "restore": "Restore",
+      "restored": "Activity restored",
+      "succession": {
+        "toMe": "You were asked to become an organiser.",
+        "pending": "{name} was asked to become an organiser.",
+        "accept": "Accept",
+        "decline": "Decline",
+        "cancel": "Withdraw",
+        "nominate": "Ask someone to organise",
+        "pick": "Choose a participant",
+        "note": "Only people who said they are coming can be asked.",
+        "send": "Ask",
+        "sent": "Request sent"
+      },
+      "reminder": "My reminder",
+      "reminderNone": "No reminder",
+      "reminderBefore": "{minutes, plural, =15 {15 minutes before} =60 {1 hour before} =1440 {1 day before} other {# minutes before}}",
+      "reminderSaved": "Reminder saved",
+      "invite": "Invite a connection",
+      "invitePick": "Choose a connection",
+      "inviteSend": "Invite",
+      "invited": "Invitation sent",
+      "chatOpen": "Open activity chat",
+      "chatOpened": "Activity chat opened",
+      "chatJoin": "Join activity chat",
+      "close": "Close activity",
+      "closed": "Activity closed",
+      "delete": "Delete",
+      "deleted": "Activity deleted — restorable for 30 days",
+      "leave": "Leave activity"
+    },
+    "poll": {
+      "new": "New poll",
+      "general": "Choice poll",
+      "schedule": "Date poll",
+      "question": "Question",
+      "option": "Option {n}",
+      "day": "Day",
+      "time": "Time",
+      "addOption": "Add option",
+      "multiple": "Allow several choices",
+      "scheduleNote": "Closing with a chosen date moves the activity to it.",
+      "anonymous": "Only totals are shown; nobody sees who voted for what.",
+      "create": "Create poll",
+      "created": "Poll created",
+      "cancel": "Cancel"
+    },
+    "finance": {
+      "open": "Add my share to Finance",
+      "title": "Add my share to Personal Finance",
+      "note": "Only your own share is recorded, once, after you confirm. Settlements are never posted.",
+      "account": "Account",
+      "preview": "Preview",
+      "summary": "{amount} {currency} to {account} on {day}",
+      "already": "Already recorded in Finance",
+      "confirm": "Record in Finance",
+      "posted": "Recorded in Finance"
+    },
+    "loan": {
+      "moderator": "Group moderation view (read-only)",
+      "dueProposed": "New return date proposed: {day}",
+      "note": "Note",
+      "newDue": "New return date",
+      "proposeDue": "Propose new date",
+      "dueSent": "New date proposed",
+      "evidence": "Notes on condition",
+      "evidenceLabel": "What you noticed",
+      "evidenceAdd": "Add note",
+      "evidenceNote": "Text only — no photos or files.",
+      "evidenceKind": {
+        "CONDITION": "Condition",
+        "HANDOVER": "Handover",
+        "RETURN": "Return",
+        "DAMAGE": "Damage",
+        "LOSS": "Loss",
+        "IDENTIFYING": "Identifying",
+        "OTHER": "Other"
+      },
+      "action": {
+        "accept": "Accept",
+        "reject": "Decline",
+        "cancel": "Cancel",
+        "handover": "I handed it over",
+        "receive": "I received it",
+        "return": "I returned it",
+        "confirm-return": "Confirm return",
+        "report-lost": "Report lost",
+        "report-damaged": "Report damaged",
+        "accept-outcome": "Accept outcome",
+        "dispute": "Disagree",
+        "resume": "Resume",
+        "accept-due": "Accept new date",
+        "decline-due": "Keep old date",
+        "withdraw-due": "Withdraw date"
+      }
+    },
+    "claim": {
+      "contested": "Contested",
+      "note": "How do you know it is yours?",
+      "send": "Claim",
+      "sent": "Claim sent",
+      "claims": "Claims ({n})",
+      "withdraw": "Withdraw post",
+      "noProof": "A claim is not proof of ownership.",
+      "state": {
+        "pending": "Pending",
+        "acknowledged": "Acknowledged",
+        "disputed": "Disputed",
+        "resolved": "Resolved",
+        "rejected": "Rejected",
+        "withdrawn": "Withdrawn",
+        "superseded": "Superseded"
+      },
+      "action": {
+        "acknowledge": "Acknowledge",
+        "reject": "Reject",
+        "withdraw": "Withdraw",
+        "handover": "Handed over",
+        "receive": "Received",
+        "dispute": "Disagree",
+        "resume": "Resume"
+      }
+    },
+    "goal": {
+      "kind": {
+        "goal": "Shared goal",
+        "challenge": "Challenge"
+      },
+      "window": {
+        "upcoming": "Starts soon",
+        "open": "Open",
+        "ended": "Ended"
+      },
+      "percent": "{n}%",
+      "badge": "Completed",
+      "pending": "{n} awaiting review (not counted yet)",
+      "noReviewer": "No other organiser can review your progress right now; it stays pending until one can.",
+      "review": "Review ({n})",
+      "close": "Close",
+      "cancel": "Cancel",
+      "approve": "Approve",
+      "reject": "Reject",
+      "retract": "Retract",
+      "ownEntry": "Another organiser reviews this",
+      "fair": "No rankings: progress counts only after approval.",
+      "empty": "No goals for this activity yet.",
+      "progress": "{total} of {target} {unit} · {people} taking part",
+      "amount": "Amount",
+      "log": "Add progress",
+      "withdraw": "Withdraw",
+      "join": "Join",
+      "new": "New goal",
+      "titleField": "Title",
+      "unit": "Unit",
+      "target": "Target",
+      "endDay": "Ends",
+      "reviewRequired": "Organisers approve progress",
+      "create": "Create",
+      "screenTitle": "Goals"
+    }
   }
 }

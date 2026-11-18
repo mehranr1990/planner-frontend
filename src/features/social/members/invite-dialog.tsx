@@ -2,12 +2,14 @@
 
 import { useTranslations } from "next-intl";
 import { useState } from "react";
+import { isLiveApi } from "@/api/runtime";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Dialog, DialogContent, DialogFooter } from "@/components/ui/dialog";
 import { toast } from "@/components/ui/toast";
-import type { GroupDetail } from "@/data/social-domain";
+import type { GroupDetail, GroupInviteLink } from "@/data/social-domain";
 import { useConnections, useSocialMutation } from "@/data/social-queries";
+import { InviteLinks } from "../live/group-live";
 import { useSocialErrorText } from "../use-social";
 
 /** Invite connections to a group (SO-03 / SO-04 / SO-19): only my connections, never a lookup. */
@@ -18,7 +20,9 @@ export function InviteDialog({ group, onClose }: { group: GroupDetail; onClose: 
   const memberIds = new Set(group.members.map((m) => m.person.id));
   const candidates = (connections.data ?? []).filter((c) => !memberIds.has(c.person.id));
   const [picked, setPicked] = useState<string[]>([]);
-  const invite = useSocialMutation((repo, ids: string[]) => repo.groups.invite(group.id, ids));
+  // Live API: each invitation returns a private proof link the inviter hands over (shown before closing).
+  const [links, setLinks] = useState<GroupInviteLink[] | null>(null);
+  const invite = useSocialMutation((repo, ids: string[]) => (isLiveApi() ? repo.invitations.send(group.id, ids) : repo.groups.invite(group.id, ids).then(() => null)));
   return (
     <Dialog open onOpenChange={(open) => (open ? undefined : onClose())}>
       <DialogContent title={t("members.inviteTitle")} description={t("members.inviteHint")}>
@@ -32,6 +36,7 @@ export function InviteDialog({ group, onClose }: { group: GroupDetail; onClose: 
             />
           ))}
         </div>
+        {links ? <InviteLinks links={links} /> : null}
         {invite.isError ? <p className="text-sm font-semibold text-danger-text">{errorText(invite.error)}</p> : null}
         <DialogFooter>
           <Button variant="secondary" onClick={onClose}>
@@ -41,9 +46,12 @@ export function InviteDialog({ group, onClose }: { group: GroupDetail; onClose: 
             disabled={picked.length === 0 || invite.isPending}
             onClick={() =>
               invite.mutate(picked, {
-                onSuccess: () => {
+                onSuccess: (sent) => {
                   toast({ title: t("members.invited"), tone: "success" });
-                  onClose();
+                  if (sent) {
+                    setLinks(sent);
+                    setPicked([]);
+                  } else onClose();
                 },
               })
             }

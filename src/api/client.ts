@@ -222,7 +222,7 @@ export function createApiClient({ origin, fetch: fetchImpl }: ApiClientOptions):
 
     if (!response.ok) {
       const envelope = isJsonMedia(contentType) ? parseErrorEnvelope(await readJson(response)) : undefined;
-      throw new ApiHttpError(response.status, envelope, requestId);
+      throw new ApiHttpError(response.status, envelope, requestId, response.headers.get("Retry-After"));
     }
 
     let data: unknown;

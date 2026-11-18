@@ -10,10 +10,10 @@ import type { Share, SplitMethod, SplitSpec, Transfer } from "./social-money";
  * display); instants are ISO strings.
  */
 
-export type SocialCurrency = "toman" | "try" | "eur";
+export type SocialCurrency = "toman" | "try" | "eur" | "irr";
 
-/** Minor-unit digits per currency (Toman has none). */
-export const CURRENCY_DECIMALS: Record<SocialCurrency, number> = { toman: 0, try: 2, eur: 2 };
+/** Minor-unit digits per currency (Toman has none; live ledgers use ISO IRR, scale 2). */
+export const CURRENCY_DECIMALS: Record<SocialCurrency, number> = { toman: 0, try: 2, eur: 2, irr: 2 };
 
 export type SocialRole = "owner" | "admin" | "member";
 
@@ -169,7 +169,7 @@ export type GroupAccess =
   | { kind: "left"; groupName: string; openBalance: boolean }
   | { kind: "not-available" };
 
-export type GroupEventKind = "joined" | "activity" | "expense-approved" | "settled" | "photos" | "lent" | "left";
+export type GroupEventKind = "joined" | "activity" | "expense-approved" | "settled" | "photos" | "lent" | "left" | "created" | "updated" | "role" | "handover";
 
 export interface GroupEvent {
   id: string;
@@ -278,6 +278,8 @@ export interface ActivityDetail extends ActivitySummary {
   /** Going/Maybe → Personal calendar projection; the private time block is optional. */
   calendarBlock: boolean;
   capabilities: { edit: boolean; cancel: boolean; rsvp: boolean; uploadFiles: boolean };
+  /** Live API only: lifecycle, succession, reminder, conversation. */
+  server?: ActivityServerState;
 }
 
 export interface CalendarProjection {
@@ -493,11 +495,17 @@ export interface Loan {
   /** The viewer's next confirmation, if any. */
   myStep: "accept" | "record-handover" | "confirm-handover" | "record-return" | "confirm-return" | null;
   iAmLender: boolean;
+  /** Live API only: render exactly these actions (never inferred). */
+  allowedActions?: LoanAction[];
+  serverState?: string;
+  proposedDue?: string | null;
+  moderator?: boolean;
 }
 
 export interface LostFoundPost {
   id: string;
-  group: { id: string; name: string };
+  /** null = shared with connections (live API), not a group. */
+  group: { id: string; name: string } | null;
   kind: "missing" | "found";
   title: string;
   note: string;
@@ -508,6 +516,11 @@ export interface LostFoundPost {
   confirmedByClaimer: boolean;
   resolved: boolean;
   mine: boolean;
+  /** Live API only. */
+  contested?: boolean;
+  openClaims?: number | null;
+  myClaimId?: string | null;
+  serverState?: "open" | "resolved" | "withdrawn" | "hidden";
 }
 
 // ── Albums & challenges (SO-11 / SO-12) ─────────────────────────────────
@@ -553,6 +566,22 @@ export interface Challenge {
   /** Owner setting: individual totals without ranks (S9), A–Z. */
   individualTotals: { person: SocialPerson; total: number }[] | null;
   myEntries: { id: string; day: string; amount: number }[];
+  /** Live API only (Social Goals P6-05). */
+  server?: {
+    kind: GoalKind;
+    activityId: string | null;
+    state: "active" | "closed" | "canceled";
+    window: "upcoming" | "open" | "ended";
+    reviewRequired: boolean;
+    organizer: boolean;
+    independentReviewerAvailable: boolean;
+    percent: number;
+    myPercent: number | null;
+    myPending: number | null;
+    completedCount: number;
+    pendingReviewCount: number | null;
+    badgeAt: string | null;
+  };
 }
 
 // ── Home (SO-15) ────────────────────────────────────────────────────────
@@ -574,6 +603,196 @@ export interface SocialDirectory {
   groups: GroupSummary[];
   incomingRequests: number;
   joinRequestsPending: { groupId: string; groupName: string }[];
+}
+
+// ── Server flows (Phase 6 live contract; Mock Mode does not model them) ─
+
+/** A block row: the contract carries no identity for the blocked person. */
+export interface BlockedEntry {
+  id: string;
+  active: boolean;
+}
+
+/** A sent group invitation; `href` carries the private proof in the URL fragment (null = no usable proof). */
+export interface GroupInviteLink {
+  inviteId: string;
+  href: string | null;
+}
+
+export interface InvitationPreview {
+  contextLabel: string;
+  expiresAt: string;
+}
+
+export type HandoverState = "pending" | "accepted" | "declined" | "revoked" | "expired";
+
+export interface HandoverInfo {
+  id: string;
+  groupId: string;
+  state: HandoverState;
+  expiresAt: string;
+  /** The viewer is the proposed successor (accept / decline). */
+  toMe: boolean;
+  /** The viewer started it (revoke). */
+  fromMe: boolean;
+}
+
+/** Server state of an activity the screens did not model (live only). */
+export interface ActivityServerState {
+  state: "planned" | "cancelled" | "closed" | "deleted";
+  timezone: string;
+  /** Organisers / group owner-admins (server `manage`). */
+  manage: boolean;
+  myParticipantId: string | null;
+  myRole: "organiser" | "participant" | null;
+  reminderMinutes: number | null;
+  offerExpiresAt: string | null;
+  orphaned: boolean;
+  recoverUntil: string | null;
+  successor: SocialPerson | null;
+  successorIsMe: boolean;
+  conversation: { id: string | null; managed: boolean };
+  /** People the managers may still invite (accepted connections not yet participating). */
+  description: string;
+}
+
+export interface NewPollInput {
+  kind: "general" | "schedule";
+  question: string;
+  multiple: boolean;
+  options: { label: string; day?: string; startTime?: string; endTime?: string }[];
+}
+
+export interface FinancePostingPreview {
+  expenseId: string;
+  revisionId: string;
+  currency: string;
+  /** Exact decimal string from the server (display only). */
+  amount: string;
+  localDate: string;
+  accountId: string;
+  accountName: string;
+  alreadyPosted: boolean;
+}
+
+export type LoanAction =
+  | "accept"
+  | "reject"
+  | "cancel"
+  | "handover"
+  | "receive"
+  | "return"
+  | "confirm-return"
+  | "report-lost"
+  | "report-damaged"
+  | "accept-outcome"
+  | "dispute"
+  | "resume"
+  | "accept-due"
+  | "decline-due"
+  | "withdraw-due";
+
+export type EvidenceKind = "CONDITION" | "HANDOVER" | "RETURN" | "DAMAGE" | "LOSS" | "IDENTIFYING" | "OTHER";
+
+export interface EvidenceNote {
+  id: string;
+  kind: EvidenceKind;
+  label: string;
+  note: string;
+  by: SocialPerson;
+  at: string;
+}
+
+export interface RecordHistoryRow {
+  id: string;
+  action: string;
+  by: SocialPerson;
+  at: string;
+  note: string;
+}
+
+export type ClaimAction = "acknowledge" | "reject" | "withdraw" | "handover" | "receive" | "dispute" | "resume";
+
+export interface LostFoundClaim {
+  id: string;
+  postId: string;
+  claimant: SocialPerson;
+  note: string;
+  state: "pending" | "acknowledged" | "disputed" | "resolved" | "rejected" | "withdrawn" | "superseded";
+  allowedActions: ClaimAction[];
+  at: string;
+}
+
+export type GoalKind = "goal" | "challenge";
+
+export interface GoalEntry {
+  id: string;
+  person: SocialPerson;
+  kind: "submission" | "correction";
+  amount: number;
+  day: string | null;
+  note: string;
+  state: "pending" | "approved" | "rejected" | "retracted";
+  mine: boolean;
+  /** Organiser may review (never their own entry). */
+  canReview: boolean;
+  participantId: string;
+}
+
+export interface NewGoalInput {
+  kind: GoalKind;
+  context: { groupId: string } | { activityId: string };
+  title: string;
+  unit: string;
+  target: number;
+  startDay: string;
+  endDay: string;
+  reviewRequired: boolean;
+  clientOpId: string;
+}
+
+export type SocialNoticeKind = string;
+
+export interface SocialNotice {
+  id: string;
+  kind: SocialNoticeKind;
+  /** Where to re-read the resource (the notice itself carries no authority or content). */
+  href: string;
+  at: string;
+  read: boolean;
+}
+
+export interface ExitObligation {
+  ledger: ExpenseScope;
+  currency: SocialCurrency | string;
+  net: number | null;
+}
+
+export interface ExitCheck {
+  groupId: string;
+  obligations: ExitObligation[];
+  /** Needed on the second confirmation when obligations exist. */
+  departureConfirmation: string | null;
+  /** Primary owner only. */
+  deletion: { outstandingLedgerCount: number; outstandingPartyCount: number; confirmation: string | null } | null;
+}
+
+export type GroupLifecycleState =
+  | "OWNER_EXIT_FROZEN"
+  | "CLOSING_GRACE"
+  | "CLEANUP_PENDING"
+  | "WAITING_OBLIGATIONS"
+  | "BLOCKED_POLICY"
+  | "PURGING"
+  | "DELETED"
+  | "FAILED"
+  | "CANCELED";
+
+export interface GroupLifecycle {
+  state: GroupLifecycleState;
+  recoveryDeadline: string;
+  failureCode: string | null;
+  recoverable: boolean;
 }
 
 export type { Share, SplitMethod, SplitSpec, Transfer };

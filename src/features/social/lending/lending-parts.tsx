@@ -18,6 +18,7 @@ import { ProductCard } from "@/design-system/surfaces/product-card";
 import { SignatureCard, SignatureCardAction } from "@/design-system/surfaces/signature-card";
 import { cn } from "@/lib/cn";
 import { useSocialFormat } from "../format";
+import { ClaimPanel, LoanLiveActions } from "../live/activity-live";
 import { GlyphTile } from "../social-ui";
 import { useSocialErrorText } from "../use-social";
 
@@ -156,7 +157,8 @@ export function LoanCard({ loan }: { loan: Loan }) {
           })}
         </ul>
       ) : null}
-      {loan.status === "out" || loan.status === "accepted" ? (
+      {loan.allowedActions ? <LoanLiveActions loan={loan} /> : null}
+      {!loan.allowedActions && (loan.status === "out" || loan.status === "accepted") ? (
         <Button size="sm" variant="ghost" className="self-start" aria-haspopup="dialog" onClick={() => setReporting(true)}>
           {t("issue")}
         </Button>
@@ -275,14 +277,15 @@ export function LostFoundList({ posts, showGroup = false }: { posts: readonly Lo
                 <bdi className="text-sm font-bold text-fg">{p.title}</bdi>
                 <span className="text-xs text-fg-secondary">
                   <bdi>{p.by.id === "me" ? t("common.you") : p.by.name}</bdi> · {format.relative(p.at)}
-                  {showGroup ? <> · <bdi>{p.group.name}</bdi></> : null}
+                  {showGroup && p.group ? <> · <bdi>{p.group.name}</bdi></> : null}
                 </span>
               </span>
               {p.resolved ? <span className="rounded-pill bg-success-soft px-2.5 py-0.5 text-xs font-bold text-success-text">{t("lending.lostFound.resolved")}</span> : null}
             </div>
             {p.note ? <bdi className="text-xs text-fg-secondary">{p.note}</bdi> : null}
             {p.claim ? <p className="text-xs font-semibold text-fg">{t("lending.lostFound.claimedBy", { name: p.claim.by.name, claim: claimText })}</p> : null}
-            {!p.resolved ? (
+            {p.serverState ? <ClaimPanel post={p} /> : null}
+            {!p.resolved && !p.serverState ? (
               <div className="flex flex-wrap items-center gap-2">
                 {!p.mine && !p.claim ? (
                   <Button size="sm" variant="secondary" onClick={() => claim.mutate(p.id)}>{claimText}</Button>

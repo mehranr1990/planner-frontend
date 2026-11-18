@@ -19,6 +19,7 @@ import { ProductCard } from "@/design-system/surfaces/product-card";
 import { SignatureCard, SignatureCardAction } from "@/design-system/surfaces/signature-card";
 import { toLatinDigits } from "@/lib/locale/digits";
 import { useSocialFormat } from "../format";
+import { GoalLivePanel } from "../live/activity-live";
 import { useSocialGroup } from "../social-gate";
 import { queryGate, SocialPageHeader } from "../social-ui";
 import { useSocialErrorText } from "../use-social";
@@ -108,7 +109,7 @@ function ChallengeBody({ challenge: c, compact = false }: { challenge: Challenge
           </ul>
         </div>
       ) : null}
-      {group.myRole === "owner" && !compact ? <Switch checked={c.individualTotals !== null} onCheckedChange={(on) => totals.mutate(on)} label={t("showTotals")} /> : null}
+      {group.myRole === "owner" && !compact && !c.server ? <Switch checked={c.individualTotals !== null} onCheckedChange={(on) => totals.mutate(on)} label={t("showTotals")} /> : null}
       <div className="flex flex-wrap gap-2">
         <Button
           size="sm"
@@ -119,6 +120,7 @@ function ChallengeBody({ challenge: c, compact = false }: { challenge: Challenge
           {c.joined ? t("leave") : t("join")}
         </Button>
       </div>
+      <GoalLivePanel challenge={c} />
     </>
   );
 }

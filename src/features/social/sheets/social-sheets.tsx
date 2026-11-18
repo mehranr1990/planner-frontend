@@ -3,6 +3,7 @@
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useCallback, useRef, useState } from "react";
+import { isLiveApi } from "@/api/runtime";
 import { InlineAlert } from "@/components/feedback/inline-alert";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -37,7 +38,8 @@ import { isSocialSheetId, socialSheetHref, type SocialSheetId } from "./social-s
  */
 
 const TOPICS: GroupTopic[] = ["outdoors", "sport", "family", "food", "travel", "books", "other"];
-const CURRENCIES: SocialCurrency[] = ["toman", "try", "eur"];
+// Live ledgers record ISO currencies exactly (Rial, scale 2); Toman stays a Mock-Mode unit.
+const CURRENCIES: SocialCurrency[] = isLiveApi() ? ["irr", "try", "eur"] : ["toman", "try", "eur"];
 const TEMPLATES: ActivityTemplate[] = ["trip", "sport", "gathering", "family", "blank"];
 const CATEGORIES: ThingCategory[] = ["outdoor", "tools", "books", "games", "kitchen", "other"];
 
@@ -127,7 +129,7 @@ function GroupNewForm({ onDone }: { onDone: (groupId?: string) => void }) {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [topic, setTopic] = useState<GroupTopic>("outdoors");
-  const [currency, setCurrency] = useState<SocialCurrency>("toman");
+  const [currency, setCurrency] = useState<SocialCurrency>(CURRENCIES[0]!);
   const [visibility, setVisibility] = useState<"private" | "discoverable">("private");
   const [invites, setInvites] = useState<string[]>([]);
   const [touched, setTouched] = useState(false);
@@ -187,7 +189,7 @@ function GroupNewForm({ onDone }: { onDone: (groupId?: string) => void }) {
           <RadioGroupItem value="discoverable" label={t("sheets.groupNew.discoverable")} />
         </RadioGroup>
       </fieldset>
-      <ConnectionPicker label={t("sheets.groupNew.invite")} value={invites} onChange={setInvites} />
+      {isLiveApi() ? <p className="text-xs text-fg-secondary">{t("live.invite.afterCreate")}</p> : <ConnectionPicker label={t("sheets.groupNew.invite")} value={invites} onChange={setInvites} />}
       {create.isError ? <InlineAlert tone="danger" title={errorText(create.error)} /> : null}
       <Actions pending={create.isPending} submit={t("sheets.groupNew.create")} onCancel={() => onDone()} />
     </form>
@@ -210,7 +212,7 @@ function ActivityNewForm({ groupId: initialGroup, onDone }: { groupId: string | 
   const [weekly, setWeekly] = useState(false);
   const [poll, setPoll] = useState(true);
   const [guests, setGuests] = useState<string[]>([]);
-  const [currency, setCurrency] = useState<SocialCurrency>("toman");
+  const [currency, setCurrency] = useState<SocialCurrency>(CURRENCIES[0]!);
   const [touched, setTouched] = useState(false);
   const opId = useRef(newClientOpId("activity"));
   const capacityNumber = capacity.trim() === "" ? null : Number(toLatinDigits(capacity.trim()));

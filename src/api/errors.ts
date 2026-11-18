@@ -18,14 +18,18 @@ export class ApiHttpError extends Error {
   readonly details: readonly ApiErrorDetail[];
   /** For support display only; never log request/response content alongside it. */
   readonly requestId: string | undefined;
+  /** Seconds from a `Retry-After` header (429 / 503); undefined when absent or not delta-seconds. */
+  readonly retryAfter: number | undefined;
 
-  constructor(status: number, envelope: ApiErrorEnvelope | undefined, requestId: string | undefined) {
+  constructor(status: number, envelope: ApiErrorEnvelope | undefined, requestId: string | undefined, retryAfter?: string | null) {
     super(envelope?.error.code ?? `HTTP ${status}`);
     this.name = "ApiHttpError";
     this.status = status;
     this.code = envelope?.error.code;
     this.details = envelope?.error.details ?? [];
     this.requestId = envelope?.error.requestId ?? requestId;
+    const seconds = retryAfter?.trim();
+    this.retryAfter = seconds && /^\d+$/.test(seconds) ? Number(seconds) : undefined;
   }
 
   get isUnauthorized() {

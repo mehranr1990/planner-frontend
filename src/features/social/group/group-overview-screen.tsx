@@ -2,6 +2,7 @@
 
 import { Plus, UserPlus } from "lucide-react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -13,6 +14,7 @@ import { ProductCard } from "@/design-system/surfaces/product-card";
 import { cn } from "@/lib/cn";
 import { ActivityRow, NextActivityCard, PlanSomethingCard } from "../activity/activity-parts";
 import { useSocialFormat } from "../format";
+import { HandoverPanel } from "../live/group-live";
 import { InviteDialog } from "../members/invite-dialog";
 import { socialHref } from "../paths";
 import { useOpenSocialSheet } from "../sheets/social-sheet-params";
@@ -34,12 +36,15 @@ export function GroupOverviewScreen() {
   const openSheet = useOpenSocialSheet();
   const activities = useActivities("all", group.id);
   const [inviting, setInviting] = useState(false);
+  /** ?handover=… — the ownership-handover link the owner handed to the successor. */
+  const handoverId = useSearchParams().get("handover");
   const planned = (activities.data ?? []).filter((a) => a.status === "planned");
   const next = planned.find((a) => a.myRsvp === "going" || a.myRsvp === "maybe") ?? planned[0];
   const others = planned.filter((a) => a.id !== next?.id);
 
   return (
     <>
+      {handoverId ? <HandoverPanel groupId={group.id} handoverId={handoverId} /> : null}
       <SocialPageHeader
         title={<bdi>{group.name}</bdi>}
         titleAddon={

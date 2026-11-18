@@ -154,7 +154,7 @@ function PollCard({ poll }: { poll: Poll }) {
                 </span>
               </span>
               {o.voters.length > 0 ? (
-                <span className="flex -space-x-1.5 rtl:space-x-reverse" aria-hidden="true">
+                <span className="flex [&>*+*]:-ms-1.5" aria-hidden="true">
                   {o.voters.slice(0, 5).map((v) => (
                     <PersonAvatar key={v.person.id} person={v.person} className={cn(v.vote === "if-needed" && "opacity-60")} />
                   ))}

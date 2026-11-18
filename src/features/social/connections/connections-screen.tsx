@@ -3,6 +3,7 @@
 import { MessageCircle, Plus, UserPlus } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
+import { isLiveApi } from "@/api/runtime";
 import { AccessLoading } from "@/components/feedback/access-state";
 import { EmptyState, ErrorState } from "@/components/feedback/state-views";
 import { ConfirmDialog } from "@/components/ui/alert-dialog";
@@ -22,6 +23,7 @@ import { UtilityCard } from "@/design-system/surfaces/utility-card";
 import { cn } from "@/lib/cn";
 import { useSocialFormat } from "../format";
 import { useOpenDirectMessage } from "../group/group-chat";
+import { BlockedSection, CircleRename } from "../live/group-live";
 import { useOpenSocialSheet } from "../sheets/social-sheet-params";
 import { PersonAvatar, SectionHead, SocialPageHeader, SocialUnsupported } from "../social-ui";
 import { useSocialErrorText } from "../use-social";
@@ -266,8 +268,9 @@ function CirclesCard() {
       <p className="text-xs text-fg-secondary">{t("circlesHint")}</p>
       <ul className="flex flex-wrap gap-1.5">
         {(circles.data ?? []).map((c) => (
-          <li key={c.id} className="rounded-pill bg-surface px-3 py-1 text-xs font-semibold text-fg">
+          <li key={c.id} className="flex items-center gap-1 rounded-pill bg-surface ps-3 text-xs font-semibold text-fg">
             {c.name}
+            <CircleRename circle={c} />
           </li>
         ))}
       </ul>
@@ -304,6 +307,7 @@ function PrivacyCard() {
         <RadioGroupItem value="groups" label={t("groups")} />
         <RadioGroupItem value="nobody" label={t("nobody")} />
       </RadioGroup>
+      {isLiveApi() ? <BlockedSection /> : null}
     </UtilityCard>
   );
 }
