@@ -104,6 +104,17 @@ Contract: backend `ab37a2c`, 1,045 ops, sha256 `e05f9777…c9a049` (`planner-bac
 - Tests added/updated: brain dump 9, insights 5, team work 9, company closure 5, messaging create 1, meetings minutes, plus stale refusal assertions updated in team / company / messaging / announcements suites.
 - Gates (run once at the end): `npm run typecheck` pass · `eslint src` 0 problems · formatting: no formatter configured in the repo (skipped) · `vitest run` 309 files: 296 passed, 12 skipped (env-gated live), **1 failed — pre-existing** `src/styles/logical-css.test.ts` (`src/features/social/activity/poll-screen.tsx:157 -space-x-1.5`, file unchanged vs HEAD); tests 2,293 passed / 1 failed / 12 skipped · `npm run build` pass · contract match 0 mismatches. NOT RUN (instruction): Playwright, visual regression, live tests.
 
+## Company P4 gap closure (2026-11-17) — IMPLEMENTED, LIVE NOT VERIFIED (429)
+
+`openapi-p6-companies.d.ts` regenerated from `planner-backend/docs/api/openapi.json` (sha256 `c5442c60a77ebe6a…`; 236 paths / 296 ops, +53 paths, additive). Connected: `sent-invitations` (CB-3), resource create + `asset-tag` read/write (CB-4), `ownership-handovers` GET list (CB-8), finance `decision-receipts`. Details, remaining gaps and results: `docs/COMPANY_FRONTEND_COMPLETION.md`. Env-gated `api-company-completion.live.test.ts` (one sign-in, 10 req/min) hit `RATE_LIMITED` twice → rerun later after the actor limit resets.
+
+## Social Phase 6 full integration (2026-11-18) — IMPLEMENTED ≠ LIVE VERIFIED
+- Batches 1–8 done in one run (foundation, connections / groups, activities, polls / free-busy / activity messaging, ledgers, lending / lost & found, goals, notices / exit / recovery). Matrix: "Social"; decisions + B-S1 in `DECISIONS_AND_BLOCKERS.md`.
+- UI: live-only flows in `src/features/social/live/` (`group-live.tsx`, `activity-live.tsx`, `live-routes.tsx`) wired into existing screens; new routes `/social/invitations/[id]`, `/social/recover/[id]`, `/social/activities/[id]/goals`; copy `Social.live` (en + fa). Transport: `ApiHttpError.retryAfter`; `SocialError.reason` / `retryAfter`.
+- Gates: `tsc` 0; eslint (social, data, api, routes) 0; vitest focused 9 files / 92 tests (incl. logical-css, now passing). Full suite / Playwright / live NOT RUN.
+- Blocker review (2026-11-18): invitation revision now travels with the proof (fixed, tested); X-S3 backend change specified; SOCIAL_GROUP retention = NO_APPROVED_RULE (B-S2); `next build` PASS once.
+- Live (Batch 9): blocked by B-S1 / B-S2. Next: apply the 6 migrations via the approved process, start the API, confirm the SOCIAL_GROUP and CONVERSATION catalog policies, then a live smoke per module.
+
 ## Next task
 
 Live Test stage (needs authorization): deploy 046–054, load the approved retention catalog, start the backend with CORS for the frontend origin, then run the env-gated `*.live.test.ts` one file at a time with `.env.live.local`. Phase 1–5 module integration is complete (Teams S3, Companies S4, Messages & Meetings S5); next is the cross-module closure of accumulated contract gaps / missing UI controls / live blockers (not started). Design decision: task-category control.
@@ -410,3 +421,25 @@ NEXT_ACTION: approve a Next.js patch upgrade (build gate); owner review of the R
 Report: `docs/PERSONAL_LIVE_ACCEPTANCE.md`. DB `mehran_dev` 101/101 migrations (read only). All existing live suites pass one at a time (sign-in limit 3 / 10 s); new `api-personal-completion.live.test.tsx` passes (unread count, deletion readiness, 401 / 404 / sign-out, working hours + capacity, routines, recoverable Focus incl. 65 s gap, no duplicate manual entry). Fixed: goal milestone insert order (`addMilestone` renumbers positions). UI not visually verified.
 
 NEXT_ACTION: apply the approved Next.js patch upgrade (build still fails on the 16.4.3 advisory gate); browser review in live mode (`NEXT_PUBLIC_API_MODE=live`); configure `PERSONAL_ERASURE_POLICY_VERSION` if deletion should be testable.
+
+## Projects frontend completion (2026-11-17) — IMPLEMENTED, NOT LIVE VERIFIED (uncommitted)
+
+Contract `a17c2e3` (1,193 ops), handoff `PROJECTS_GAP_CLOSURE.md`. Full report: `docs/PROJECTS_FRONTEND_COMPLETION.md`. Types `openapi-p6-projects.d.ts` regenerated (156 paths / 204 ops).
+
+- Connected: atomic create (key / dates / BLANK·KANBAN·SCRUM / team owner), task delete + order + subtasks, revert / remind, workflow drafts (new `api-project-workflow-drafts.ts`), activity (new `api-project-activity-repository.ts`), pending invitations + resend + decline note, burn-up scope from `createdAt` (computed `/health` NOT shown — D9 manual status), phase dates / progress + milestone open tasks, cycle time (`firstStartedAt`), risk code / checklist / close / resolve / convert / comments, file folders / versions / restore / server limits.
+- Gates: tsc 0; eslint touched 0; Projects scope 47 files / 248 passed / 1 skipped; contract match 145 calls / 102 ops, 0 outside.
+- Live: blocked — Shared not activated for the test account (`/retention-policies`, `/projects`, template catalog → 403). Env-gated `api-projects-completion.live.test.ts` ready.
+
+Second pass: Shared 403 = `SHARED_ACTIVATION_GATED` (backend `.env` lacks `SHARED_CONTROL_KEYS`, `SHARED_CONTROL_ACTIVE_KEY_ID`, `SHARED_SECURITY_ACCEPTANCE_REFERENCE`; retention catalog already seeded); build pass; details in the report §10.
+
+NEXT_ACTION: owner — Shared activation for the test account (then run the live file once), PB-13 / PB-14 decisions, backend: deliver 409 reason codes in the error envelope; owner review of the Kanban / Scrum template options (en / fa).
+
+## Teams frontend completion (2026-11-17) — IMPLEMENTED, LIVE PARTIAL (uncommitted)
+
+Contract backend `bf4f20b` (1,193 ops, sha256 `c5442c60…`), handoff `TEAMS_GAP_CLOSURE.md`. Report: `docs/TEAMS_FRONTEND_COMPLETION.md`.
+- Connected in the existing Team adapters: TB-1 sent invitations + resend, TB-2 weekly capacity (UNKNOWN until configured; editor offered with `work.manage`), TB-4 RSVP Maybe / change, TB-5 recorded burndown + point capacity, TB-6 link request / pending / approve, TB-7 project event layer, TB-8 revert accept + project read-through, files/config limits. TB-3 move deferred (owner).
+- FA: `TeamCapacity.hours` nullable (form starts empty), `TeamLinkRequest.requestedBy` nullable, time-off history `edited`.
+- Gates: tsc 0; eslint touched 0; vitest Teams 21 files / 146 passed; contract match 168 calls / 124 ops, 0 outside; `npm run build` pass.
+- Live (final): PASS invitations + resend, RSVP Maybe / change, files/config, sprint burndown, capacity, visible tasks, archive of `7f2350d7`; NOT VERIFIED assignment Undo, Team↔Project links, Project calendar events (need a second account and an owned ACTIVE project). Backend limit 20 / min per actor (clock minute, reads count); live file paces itself (`LIVE_ONLY`, `LIVE_PER_MINUTE`, `LIVE_REPORT`).
+
+NEXT_ACTION: owner review of Teams (capacity editor, Maybe RSVP, link requests, project events layer); one paced live run of the Teams file; then Companies only when authorized.

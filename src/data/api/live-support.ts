@@ -16,8 +16,8 @@ const password = process.env.API_LIVE_PASSWORD;
 
 export const liveConfigured = Boolean(origin && trusted && email && password);
 
-/** A signed-in client in the account's time zone; `end()` restores the app zone. */
-export async function liveSession(): Promise<{ client: ApiClient; today: string; end: () => void }> {
+/** A signed-in client in the account's time zone (default: the env account); `end()` restores the app zone. */
+export async function liveSession(account?: { email: string; password: string }): Promise<{ client: ApiClient; today: string; end: () => void }> {
   const cookies = new Map<string, string>();
   const jarFetch: typeof fetch = async (input, init = {}) => {
     const headers: Record<string, string> = Object.fromEntries(new Headers(init.headers));
@@ -32,7 +32,7 @@ export async function liveSession(): Promise<{ client: ApiClient; today: string;
     return response;
   };
   const client = createApiClient({ origin: origin!, fetch: jarFetch });
-  await client.request("post", "/api/v1/auth/sign-in/email", { body: { email: email!, password: password! } });
+  await client.request("post", "/api/v1/auth/sign-in/email", { body: account ?? { email: email!, password: password! } });
   setPlannerTimeZone((await client.request("get", "/api/v1/me/settings")).data.timezone);
   return { client, today: dayOfInstant(new Date().toISOString()), end: () => setPlannerTimeZone(APP_TIME_ZONE) };
 }

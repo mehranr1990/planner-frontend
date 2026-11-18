@@ -78,7 +78,7 @@ Legend: **CONNECTED** = real adapter, no mock in live mode · **VERIFIED** = CON
 | **Company · S4** resource requests (CO-06) | CONNECTED | `resource-requests` list, POST `resources/{r}/requests` (whole local days), `…/withdraw` (If-Match). Decisions in the Approvals inbox: CONNECTED (row below) |
 | **Company · S4** resource approvals in the Approvals inbox: list, approve, reject (reason required), history | CONNECTED (contract fakes: approve + reject) | `resource-requests` per context + `resource-workflows/{v}` (role steps, shown as role names; no version number → `chainVersion` null, copy without "vN") + `…/history` (per-step decisions); `forMe` = pending step roles ∩ my roles (context role + root Owner / Org Admin role), never my own request (server rule `SELF_APPROVAL_FORBIDDEN`); decide = POST `…/decision` with If-Match = the request's own revision, no automatic 409 retry, a non-pending request → conflict. Finance approvals unchanged (workflow-version revision path) |
 | **Company · S4** expenses (CO-08): list, draft, edit, submit, withdraw, receipt bytes | CONNECTED | `expenses` CRUD, `finance/categories` (title = screen key; never created), `finance/project-references`, receipts create → `complete` (octet-stream), `workflow-submit` with the PUBLISHED EXPENSE workflow version, `cancel`. Fixed company currency from `/settings` (refused before it is set). Partial success → "saved-as-draft" (toast, no duplicate retry) |
-| **Company · S4** KB page creation, employee document upload, grants, ownership handover, invitations | CONNECTED | POST `knowledge/documents` → page version + publish; `employee-files/{s}/documents` → `complete` with bytes (pdf/png/jpeg/txt), READY only; `employee-grants` (Owner, always expiring, no self-grant) + revoke; `ownership-handovers` (eligible Org Admin; pending shown in-session only — no list op); `contexts/{s}/invitations` by email, proof dropped |
+| **Company · S4** KB page creation, employee document upload, grants, ownership handover, invitations | CONNECTED | POST `knowledge/documents` → page version + publish; `employee-files/{s}/documents` → `complete` with bytes (pdf/png/jpeg/txt), READY only; `employee-grants` (Owner, always expiring, no self-grant) + revoke; `ownership-handovers` (eligible Org Admin) + GET list for the pending handover (2026-11-17); `contexts/{s}/invitations` by email, proof dropped; pending list from `sent-invitations` (recipient email). Assets: create + `asset-tag` (2026-11-17). Finance decisions via `decision-receipts` (If-Match + Idempotency-Key) |
 | **Company · gap closure** notifications in the bell (2026-11-14) | CONNECTED (contract fake + bell UI test) | `GET contexts/{s}/notifications` for every context the caller can open (403 / 404 → left out), newest first; `POST …/{n}/read` in the notification's own context. Kinds: `KNOWLEDGE_ACK_REMINDER` → `/companies/{id}/knowledge/{documentId}`, `EMPLOYEE_FILE_REQUEST` (Owner) → `/companies/{id}/people/{accessId}/file`. Shown only on company routes as a "This company" section of the existing bell; badge = Personal unread + company unread; polled 60 s. No snooze / dismiss / unread in the contract → not offered |
 | **Company · gap closure** employee department transfer (CO-03, OD-5) | CONNECTED (contract fakes + People UI test) | `GET department-transfers/preview` (accessId = the person's seat in the source department, from / to scopes) → allocations / pending resource requests / expense reviews / allowed; `POST department-transfers` with If-Match = source seat revision, role kept (TEAM_LEAD / MEMBER / VIEWER). Dept Manager / Org Admin seats and own seat never post (role change). 409 → conflict + fresh preview. Same company only (department or unit contexts of this company). Staff rows now keyed by actor across contexts (one row per person with all department seats) |
 | **Company · gap closure** pending invitations (CO-03, CB-3) | CONNECTED (email not served) | `GET contexts/{s}/invitations` per context, PENDING only; row shows "{role} invitation" + department, never an invented email; error state instead of "No pending invitations" |
@@ -344,39 +344,24 @@ Contract delta 863 → 864 (sha256 `022c3121…cdabf`): `GET /teams/{id}/ownersh
 - Pending: organiser `/share` of an upload as agenda material; minutes `withdraw`; work-meeting Make task via `actions/{id}/release` + `/tasks` (also needs Project phases / Team tasks in live); invite more people into an existing meeting (`POST /meetings/{id}/invitations` {id, actorId} is in the contract, but MT-02 has no add-invitee surface — invitees are chosen only at creation, which uses `participantActorIds`).
 - Done 2026-11-13 (864 ops): OD-15 reduced invitation rows (MT-01 Upcoming, Accept / Maybe / Decline via `rsvp`); OD-16 live agenda = proposals (Propose form when `agenda.propose`, Accept / Reject for `meeting.manage`, no done checkbox when `done` is null; Notes tab hidden when notes are not served); OD-17 one reviewer (radio) + approval reason required (en/fa); OD-18 explicit Save (summary / decisions / actions are a local draft, one Save = one new version; Send for review blocked while unsaved). Mock Mode keeps its own agenda / notes (no proposals, no invitation rows).
 
-## Social (2026-11-13, contract 860 ops sha256 `2373647c…` — `planner-backend/docs/api/openapi.json`; Social ops identical to the P6-01 handoff; types `src/api/generated/openapi-p6-social.d.ts`, 30 paths / 40 ops)
+## Social (2026-11-18, backend `33ef598`, `planner-backend/docs/api/openapi.json` 1,300 ops, sha256 `f308147153bd5859…`) — IMPLEMENTED ≠ LIVE VERIFIED
 
-Live adapter: `src/data/api/api-social-repository.ts`; `social-provider.tsx` serves it for the signed-in session user (no session → `createUnavailableSocial()`, Social shows "Sign in"). Mock Mode unchanged (`mock-social.ts`). Contract fakes: `api-social-repository.test.ts` 9/9. IMPLEMENTED ≠ LIVE VERIFIED. Unsupported seams reject `SocialError("unsupported", <reason>)`; screens show "Not available yet" in that slot — never placeholder data.
+Types: `src/api/generated/openapi-p6-social.d.ts` — all 149 Social operations + `GET /retention-policies` (117 paths / 150 ops; scratchpad subset + openapi-typescript 7.8.0). Adapters: `api-social-repository.ts` (composition root: connections, circles, blocks, groups, invitations, handovers, notices, exit), `api-social-activities.ts`, `api-social-ledger.ts`, `api-social-lending.ts`, `api-social-goals.ts`, shared plumbing `api-social-shared.ts` (error → SocialError with server `reason` + `retryAfter`, If-Match revisions that never go stale, Idempotency-Key per intent, exact minor units via BigInt-checked strings, IANA wall clock ⇄ instants). Contract fakes: `api-social-repository.test.ts` 14, `api-social-modules.test.ts` 11, `api-social-shared.test.ts` 6. Mock Mode unchanged (`mock-social.ts`; new server flows answer "Mock Mode does not model this server flow").
 
-Identity: other people = user ids; the session user = seam `me`. **X-S1** connections, join requests and memberships carry no display names → names blank (only discovery returns a name). **X-S2** no caller membership / role for a Social Group (no access/me; membership actor ids are space-local) → `myRole` null, owner-only rights off; admin review rights = the server answering `GET join-requests` (403 → none).
+| Module | Ops | Status | Notes |
+|---|---|---|---|
+| Connections & Circles | 18 | IMPL (17) | display names from the server; blocks list (no identity by contract) + unblock; circle rename. `/social/restore-replay` not exposed (operator procedure) |
+| Groups & membership | 23 | IMPL (23) | rights only from `access/me` capabilities; history → events; create via the operator catalog's single SOCIAL_GROUP policy (empty / ambiguous catalog → refused, never guessed); invitations return a proof link (`/social/invitations/[id]#proof=…`, fragment only); handover start / get / accept (password) / decline / revoke |
+| Activities, RSVP, items, polls, free/busy | 31 | IMPL (31) | instants in the activity's IANA zone; templates mapped; waitlist / 12 h offer = RSVP GOING; checklist → Personal task by the server only (`makeTask`); succession, reminders, delete / restore, close, invitations, participant role / remove; polls GENERAL / SCHEDULE (counts only; “if needed” refused); free/busy = own consent PUT / DELETE |
+| Activity messaging | 3 | IMPL (2) | open (CONVERSATION catalog policy) / join → existing Messages adapter; legacy `PUT …/conversation` not used; Group chat stays refused (no backend) |
+| Expenses & settlements (Group + Activity) | 26 | IMPL (26) | IRR proposals; split methods + ordered shares; revisions / decisions / history; balances all → 403 → own row; settlements record (payer) / confirm / dispute / cancel; Finance posting = preview → explicit confirm with the previewed revisionId; never settlements |
+| Lending & Lost & Found | 27 | IMPL (27) | actions only from `allowedActions`; due-date proposals; text evidence; moderator view; claims (note required) with their own actions; matches; withdraw / hide |
+| Goals & Challenges | 13 | IMPL (13) | Group + Activity context (`/social/activities/[id]/goals`); review / retract / corrections / close / cancel; no ranking; pending outside totals; independent-reviewer warning |
+| Notices | 2 | IMPL (2) | Social home "Updates" + needs-you (rsvp / approve-expense / payment / loan); mark read; no push |
+| Exit, deletion, recovery | 6 | IMPL (6) | exit-check → leave (second confirmation with departureConfirmation); owner delete (password); recovery proof → recover inside one call; `/social/recover/[id]`; own obligations via `balances/me`; Social cache purged after leave / delete / recover / handover / invitation |
+| Albums / media | 0 | REFUSED | deferred (no routes); activity files / receipts / photo evidence disabled (ADR 0063) |
 
-| Seam | Status | Operations / reason |
-|---|---|---|
-| `connections.list`, `requests` | IMPL | GET `/social/connections` (ACCEPTED → list, PENDING → requests; direction from requesterUserId = session user) + GET `/social/circles` + `/circles/{id}/members` (labels by connection id). sharedGroups / mutualGroups null (not served) |
-| `connections.request` | IMPL | POST `/social/discovery` {email} → POST `/social/connections` {id, recipientUserId} (Idempotency-Key); empty discovery and 409 give the same "sent" answer. Phone / note not in contract (note dropped; phone → invalid) |
-| `accept`, `ignore` (decline), `cancel`, `remove` | IMPL | POST `/social/connections/{id}/{action}` (If-Match revision, Idempotency-Key) |
-| `block` | IMPL | POST `/social/blocks` {targetUserId} (If-Match "1" initial, Idempotency-Key). Blocked list not shown (rows carry no identity, by contract) |
-| `privacy`, `setPrivacy` | IMPL (part) | GET / PATCH `/social/privacy` allowFriendRequests (If-Match, Idempotency-Key); "people in my groups" → REFUSED (no such option); `discoverable` not surfaced (no UI) |
-| `circles.list / create / remove / setMembership` | IMPL | `/social/circles` GET / POST {id, name}; DELETE `/{id}` and PUT / DELETE `/{id}/members/{connectionId}` with the circle revision (refetched after labels) |
-| `groups.directory` | IMPL | GET `/social-groups` + memberships (ACTIVE count) + join-requests (admin probe). topic / currency / role / unread not served (null / 0) |
-| `groups.access` | IMPL | GET `/social-groups/{id}` (+ memberships, join-requests) → member; 403/404 → join-requested (only for a request sent this session, with the discover preview) else not-available. Guest / left states not served |
-| `discover` | IMPL | GET `/social-groups/discover` {id, name, publicSummary}; text filter client-side; topic filter REFUSED (not served) |
-| `requestJoin`, `cancelJoin` | IMPL | POST `/{id}/join-requests` {id}; cancel = `/{requestId}/cancel` (If-Match) — only for requests sent this session (no own-request list) |
-| `joinRequests`, `decide` | IMPL | GET `/{id}/join-requests`; `/{requestId}/approve|reject` (If-Match) |
-| `invite`, `cancelInvite` | IMPL | POST `/{id}/invitations` {kind MEMBERSHIP, memberRole MEMBER, recipient {userId}}; revoke after GET (If-Match) |
-| `setRole`, `removeMember` | IMPL | PATCH `/{id}/memberships/{accessId}` {state ACTIVE / REVOKED, memberRole} (If-Match) — UI shows them only when the role is known (X-S2) |
-| `transferOwnership` | IMPL (start only) | POST `/{id}/handovers` {successorAccessId}; accept (password reauth) / decline / revoke UI not built |
-| `updateSettings` | IMPL (part) | PATCH `/social-groups/{id}` name / description / discoverable (If-Match); invites, approvers, balances, originals, rules, currency → REFUSED |
-| `inbox.list` | IMPL (part) | composed from served data only: incoming connection requests + reviewable join requests |
-| `groups.create` | REFUSED OD-1 | needs operator `retentionPolicyVersion` |
-| `groups.leave` | REFUSED X-S2 | If-Match needs the caller's own membership revision |
-| `events`, `invites` list, `resendInvite`, `setMyStatus`, `leaveChecklist`, `deleteGroup` | REFUSED | no activity log (P6-06), no invitation list, no per-group status, checklist needs P6-03…05, no delete (30-day closure) |
-| `chatMembers` (group chat), direct messages | REFUSED | Social Group Chat integration not available (handoff §7); DMs go through the Messages adapter, whose create is refused (OD-1) |
-| `activities`, `checklist`, `files`, `polls`, `freeBusy` | REFUSED | P6-02 not in contract |
-| `expenses`, `balances`, `settlements` (+ Personal Finance posting) | REFUSED | P6-03 not in contract |
-| `lending`, `lostFound` | REFUSED | P6-04 not in contract |
-| `albums`, `challenges` | REFUSED | P6-05 not in contract |
-| `/social/restore-replay`, `/social-group-invitations/*` (preview / accept / decline with X-Invitation-Proof), `GET /social/blocks`, `/blocks/{id}/unblock`, handover accept / decline / revoke | NOT USED | no UI surface in the approved Social design (invitation proofs are never stored; restore is an operator procedure) |
+Remaining refusals (contract gaps, not frontend gaps): group topic / size / currency settings / rules / invite policy / approvers / balance visibility; per-member status; pending-invite list + resend; cross-scope "balance between two people"; weekly recurrence; private calendar block; free/busy request; poll "if needed"; challenge individual-totals switch; **X-S3** Group memberships carry no user id → a Group-ledger split can name only people already in that ledger (+ me).
 
 ## Personal frontend completion (2026-11-17, contract `a17c2e3`, 1,193 ops) — IMPLEMENTED, NOT LIVE VERIFIED
 
@@ -389,3 +374,26 @@ Identity: other people = user ids; the session user = seam `me`. **X-S1** connec
 | Working hours (Settings) | CONNECTED (`api-working-hours-repository.test.ts`) | `GET/PUT /planning/working-hours` (read-modify-write, exceptions kept) |
 | Capacity: My Day / Overview (day), Weekly review (week) | CONNECTED (same) | `GET /planning/capacity/schedule?date|weekStartDate`; UNKNOWN / DST_GAP shown as unknown. Supersedes the "NA — decided" capacity row above for live mode |
 | Recoverable Focus + no duplicate accounting | CONNECTED (`api-focus.test.ts`, `focus-recovery.test.tsx`) | `POST /focus/sessions` (recoverable STOPWATCH), `POST /focus/sessions/{id}/recovery`, `GET /focus/sessions/{id}`; claimed cycles write no `POST /time-entries` |
+
+## Projects frontend completion (2026-11-17, contract `a17c2e3`, 1,193 ops) — IMPLEMENTED, NOT LIVE VERIFIED
+
+Details: `docs/PROJECTS_FRONTEND_COMPLETION.md` §2 / §4.
+
+| Operation(s) | Seam | Status |
+|---|---|---|
+| `POST /projects` (key, dates, template, ownerTeamId) | projectCreate.create | IMPL |
+| `DELETE /projects/{id}/tasks/{taskId}`, `GET …/tasks/{taskId}/subtasks` | projectTasks.remove, taskDetails.get / toggleSubtask | IMPL |
+| `GET …/tasks/order`, `PATCH …/tasks/{taskId}` {position} | projectTasks.reorder | IMPL (one section) |
+| `POST …/assignments/{id}/revert`, `…/remind` | assignments.revertAccept / remind | IMPL |
+| `…/workflow-drafts` (6 ops) | workflowDrafts.* | IMPL (publish with task mapping refused) |
+| `GET /spaces/{spaceId}/invitations`, `POST …/{id}/resend`, decline {note} | memberInvites.listPending / resend, invitations.decline | IMPL |
+| `GET …/structure/progress` | milestones.* | IMPL |
+| `GET …/health` | — | NA (D9: status is manual; computed health not shown) |
+| `GET …/activity` | activity.list | IMPL (task status / completed kinds) |
+| register-items checklist / close / convert, comments REGISTER_ITEM | risks.* | IMPL (probability: PB-13) |
+| files/config, file-folders (GET), file-library, files/{id}/metadata, versions (GET / POST / download) | files.* | IMPL |
+| `GET …/scope-history`, `GET …/analytics`, task checklist, folder create / patch / delete, file move | — | NA (no approved UI surface) |
+
+## Teams frontend completion (2026-11-17, contract `bf4f20b`, 1,193 ops) — IMPLEMENTED, LIVE PARTIAL
+
+Types `openapi-p6-teams.d.ts` 153 paths / 192 ops. Connected: sent-invitations + resend (TB-1), weekly-capacity GET/PUT (TB-2), RSVP MAYBE + changeable answers (TB-4), plan burndown + point-capacity GET (TB-5), association request / pending list / decision APPROVE (TB-6), calendar/sources PROJECT event layer (TB-7), assignment revert + visible-tasks PROJECT read-through (TB-8), files/config. Deferred: TB-3 move (owner). Not wired (no UI slot): time-off PATCH, point-capacity PUT, sprint history / velocity, availability, forecast, cross-team workload, recorded activity, occupancy, RSVP summary, CANCEL_FUTURE. Contract match 168 calls / 124 ops, 0 outside. Details: `docs/TEAMS_FRONTEND_COMPLETION.md`.
