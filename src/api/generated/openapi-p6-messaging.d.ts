@@ -459,7 +459,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get?: never;
+        get: operations["messaginggetmeetingsidinvitations"];
         put?: never;
         post: operations["meetingspostmeetingsidinvitations"];
         delete?: never;
@@ -1788,6 +1788,86 @@ export interface paths {
             cookie?: never;
         };
         get: operations["messaginggetmessagingnotificationsnoticeIddeliveries"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/announcements/{id}/versions/{versionId}/schedule": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["messaginggetannouncementsidversionsversionIdschedule"];
+        put?: never;
+        post: operations["messagingpostannouncementsidversionsversionIdschedule"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/announcements/{id}/versions/{versionId}/schedule/cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["messagingpostannouncementsidversionsversionIdschedulecancel"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/meetings/{id}/agenda/{entryId}/details": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["messaginggetmeetingsidagendaentryIddetails"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["messagingpatchmeetingsidagendaentryIddetails"];
+        trace?: never;
+    };
+    "/api/v1/meetings/{id}/agenda/{entryId}/history": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["messaginggetmeetingsidagendaentryIdhistory"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/meetings/{id}/agenda-summary": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["messaginggetmeetingsidagendasummary"];
         put?: never;
         post?: never;
         delete?: never;
@@ -7322,6 +7402,159 @@ export interface operations {
             };
         };
     };
+    messaginggetmeetingsidinvitations: {
+        parameters: {
+            query?: {
+                cursor?: string;
+                limit?: number;
+            };
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Current authorized messaging result */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        items: {
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            meetingId: string;
+                            title: string;
+                            schedule: {
+                                /** @constant */
+                                kind: "ALL_DAY";
+                                timezone: string;
+                                /** Format: date */
+                                startDate: string;
+                                /** Format: date */
+                                endDate: string;
+                                startAt: null;
+                                endAt: null;
+                            } | {
+                                /** @constant */
+                                kind: "TIMED";
+                                timezone: string;
+                                localStart: string;
+                                localEnd: string;
+                                startAt: string | null;
+                                endAt: string | null;
+                            };
+                            /** @enum {string} */
+                            state: "PENDING" | "ACCEPTED" | "TENTATIVE" | "DECLINED" | "REVOKED" | "EXPIRED" | "UNAVAILABLE";
+                            revision: number;
+                            /** Format: date-time */
+                            expiresAt: string;
+                            /** Format: uuid */
+                            recipientActorId: string;
+                            acceptedMemberId: string | null;
+                        }[];
+                        nextCursor: string | null;
+                        hasMore: boolean;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
     meetingspostmeetingsidinvitations: {
         parameters: {
             query?: never;
@@ -10437,6 +10670,7 @@ export interface operations {
             query?: {
                 cursor?: string;
                 limit?: number;
+                order?: "ID" | "PINNED_FIRST";
             };
             header?: never;
             path: {
@@ -10468,6 +10702,7 @@ export interface operations {
                             /** @enum {string} */
                             state: "DRAFT" | "PUBLISHED" | "WITHDRAWN";
                             pinned: boolean;
+                            pinnedAt?: string | null;
                             revision: number;
                             publishedAt: string | null;
                             /** Format: date-time */
@@ -10865,6 +11100,7 @@ export interface operations {
                             /** @enum {string} */
                             state: "DRAFT" | "PUBLISHED" | "WITHDRAWN";
                             pinned: boolean;
+                            pinnedAt?: string | null;
                             revision: number;
                             publishedAt: string | null;
                             /** Format: date-time */
@@ -11016,6 +11252,7 @@ export interface operations {
                         /** @enum {string} */
                         state: "DRAFT" | "PUBLISHED" | "WITHDRAWN";
                         pinned: boolean;
+                        pinnedAt?: string | null;
                         revision: number;
                         publishedAt: string | null;
                         /** Format: date-time */
@@ -11149,6 +11386,7 @@ export interface operations {
                         /** @enum {string} */
                         state: "DRAFT" | "PUBLISHED" | "WITHDRAWN";
                         pinned: boolean;
+                        pinnedAt?: string | null;
                         revision: number;
                         publishedAt: string | null;
                         /** Format: date-time */
@@ -11301,6 +11539,7 @@ export interface operations {
                         /** @enum {string} */
                         state: "DRAFT" | "PUBLISHED" | "WITHDRAWN";
                         pinned: boolean;
+                        pinnedAt?: string | null;
                         revision: number;
                         publishedAt: string | null;
                         /** Format: date-time */
@@ -11442,6 +11681,7 @@ export interface operations {
                         /** @enum {string} */
                         state: "DRAFT" | "PUBLISHED" | "WITHDRAWN";
                         pinned: boolean;
+                        pinnedAt?: string | null;
                         revision: number;
                         publishedAt: string | null;
                         /** Format: date-time */
@@ -11585,6 +11825,7 @@ export interface operations {
                         /** @enum {string} */
                         state: "DRAFT" | "PUBLISHED" | "WITHDRAWN";
                         pinned: boolean;
+                        pinnedAt?: string | null;
                         revision: number;
                         publishedAt: string | null;
                         /** Format: date-time */
@@ -13969,7 +14210,13 @@ export interface operations {
             /** @description Safe error */
             429: {
                 headers: {
-                    "Retry-After"?: "60";
+                    "Retry-After"?: string;
+                    "RateLimit-Limit"?: string;
+                    "RateLimit-Remaining"?: string;
+                    /** @description Seconds until the applied minute window resets. */
+                    "RateLimit-Reset"?: string;
+                    /** @example 20;w=60 */
+                    "RateLimit-Policy"?: string;
                     [name: string]: unknown;
                 };
                 content: {
@@ -14109,7 +14356,13 @@ export interface operations {
             /** @description Safe error */
             429: {
                 headers: {
-                    "Retry-After"?: "60";
+                    "Retry-After"?: string;
+                    "RateLimit-Limit"?: string;
+                    "RateLimit-Remaining"?: string;
+                    /** @description Seconds until the applied minute window resets. */
+                    "RateLimit-Reset"?: string;
+                    /** @example 20;w=60 */
+                    "RateLimit-Policy"?: string;
                     [name: string]: unknown;
                 };
                 content: {
@@ -14245,7 +14498,13 @@ export interface operations {
             /** @description Safe error */
             429: {
                 headers: {
-                    "Retry-After"?: "60";
+                    "Retry-After"?: string;
+                    "RateLimit-Limit"?: string;
+                    "RateLimit-Remaining"?: string;
+                    /** @description Seconds until the applied minute window resets. */
+                    "RateLimit-Reset"?: string;
+                    /** @example 20;w=60 */
+                    "RateLimit-Policy"?: string;
                     [name: string]: unknown;
                 };
                 content: {
@@ -14365,7 +14624,13 @@ export interface operations {
             /** @description Safe error */
             429: {
                 headers: {
-                    "Retry-After"?: "60";
+                    "Retry-After"?: string;
+                    "RateLimit-Limit"?: string;
+                    "RateLimit-Remaining"?: string;
+                    /** @description Seconds until the applied minute window resets. */
+                    "RateLimit-Reset"?: string;
+                    /** @example 20;w=60 */
+                    "RateLimit-Policy"?: string;
                     [name: string]: unknown;
                 };
                 content: {
@@ -14489,7 +14754,13 @@ export interface operations {
             /** @description Safe error */
             429: {
                 headers: {
-                    "Retry-After"?: "60";
+                    "Retry-After"?: string;
+                    "RateLimit-Limit"?: string;
+                    "RateLimit-Remaining"?: string;
+                    /** @description Seconds until the applied minute window resets. */
+                    "RateLimit-Reset"?: string;
+                    /** @example 20;w=60 */
+                    "RateLimit-Policy"?: string;
                     [name: string]: unknown;
                 };
                 content: {
@@ -14624,7 +14895,13 @@ export interface operations {
             /** @description Safe error */
             429: {
                 headers: {
-                    "Retry-After"?: "60";
+                    "Retry-After"?: string;
+                    "RateLimit-Limit"?: string;
+                    "RateLimit-Remaining"?: string;
+                    /** @description Seconds until the applied minute window resets. */
+                    "RateLimit-Reset"?: string;
+                    /** @example 20;w=60 */
+                    "RateLimit-Policy"?: string;
                     [name: string]: unknown;
                 };
                 content: {
@@ -14745,7 +15022,13 @@ export interface operations {
             /** @description Safe error */
             429: {
                 headers: {
-                    "Retry-After"?: "60";
+                    "Retry-After"?: string;
+                    "RateLimit-Limit"?: string;
+                    "RateLimit-Remaining"?: string;
+                    /** @description Seconds until the applied minute window resets. */
+                    "RateLimit-Reset"?: string;
+                    /** @example 20;w=60 */
+                    "RateLimit-Policy"?: string;
                     [name: string]: unknown;
                 };
                 content: {
@@ -14873,7 +15156,13 @@ export interface operations {
             /** @description Safe error */
             429: {
                 headers: {
-                    "Retry-After"?: "60";
+                    "Retry-After"?: string;
+                    "RateLimit-Limit"?: string;
+                    "RateLimit-Remaining"?: string;
+                    /** @description Seconds until the applied minute window resets. */
+                    "RateLimit-Reset"?: string;
+                    /** @example 20;w=60 */
+                    "RateLimit-Policy"?: string;
                     [name: string]: unknown;
                 };
                 content: {
@@ -15005,7 +15294,13 @@ export interface operations {
             /** @description Safe error */
             429: {
                 headers: {
-                    "Retry-After"?: "60";
+                    "Retry-After"?: string;
+                    "RateLimit-Limit"?: string;
+                    "RateLimit-Remaining"?: string;
+                    /** @description Seconds until the applied minute window resets. */
+                    "RateLimit-Reset"?: string;
+                    /** @example 20;w=60 */
+                    "RateLimit-Policy"?: string;
                     [name: string]: unknown;
                 };
                 content: {
@@ -15138,7 +15433,13 @@ export interface operations {
             /** @description Safe error */
             429: {
                 headers: {
-                    "Retry-After"?: "60";
+                    "Retry-After"?: string;
+                    "RateLimit-Limit"?: string;
+                    "RateLimit-Remaining"?: string;
+                    /** @description Seconds until the applied minute window resets. */
+                    "RateLimit-Reset"?: string;
+                    /** @example 20;w=60 */
+                    "RateLimit-Policy"?: string;
                     [name: string]: unknown;
                 };
                 content: {
@@ -15266,7 +15567,13 @@ export interface operations {
             /** @description Safe error */
             429: {
                 headers: {
-                    "Retry-After"?: "60";
+                    "Retry-After"?: string;
+                    "RateLimit-Limit"?: string;
+                    "RateLimit-Remaining"?: string;
+                    /** @description Seconds until the applied minute window resets. */
+                    "RateLimit-Reset"?: string;
+                    /** @example 20;w=60 */
+                    "RateLimit-Policy"?: string;
                     [name: string]: unknown;
                 };
                 content: {
@@ -15398,7 +15705,13 @@ export interface operations {
             /** @description Safe error */
             429: {
                 headers: {
-                    "Retry-After"?: "60";
+                    "Retry-After"?: string;
+                    "RateLimit-Limit"?: string;
+                    "RateLimit-Remaining"?: string;
+                    /** @description Seconds until the applied minute window resets. */
+                    "RateLimit-Reset"?: string;
+                    /** @example 20;w=60 */
+                    "RateLimit-Policy"?: string;
                     [name: string]: unknown;
                 };
                 content: {
@@ -15531,7 +15844,13 @@ export interface operations {
             /** @description Safe error */
             429: {
                 headers: {
-                    "Retry-After"?: "60";
+                    "Retry-After"?: string;
+                    "RateLimit-Limit"?: string;
+                    "RateLimit-Remaining"?: string;
+                    /** @description Seconds until the applied minute window resets. */
+                    "RateLimit-Reset"?: string;
+                    /** @example 20;w=60 */
+                    "RateLimit-Policy"?: string;
                     [name: string]: unknown;
                 };
                 content: {
@@ -20708,6 +21027,967 @@ export interface operations {
                             notBefore: string;
                             code: string | null;
                         }[];
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    messaginggetannouncementsidversionsversionIdschedule: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+                versionId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Current authorized messaging result */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        versionId: string;
+                        revision: number;
+                        /** @enum {string} */
+                        status: "SCHEDULED" | "CANCELED" | "PUBLISHED";
+                        /** Format: date-time */
+                        scheduledAt: string;
+                        timezone: string;
+                        publishedAt: string | null;
+                        audience: {
+                            /** @constant */
+                            audience: "ALL";
+                        } | {
+                            /** @constant */
+                            audience: "NAMED";
+                            members: {
+                                /** Format: uuid */
+                                accessId: string;
+                                generation: number;
+                            }[];
+                        };
+                    } | null;
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    messagingpostannouncementsidversionsversionIdschedule: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "If-Match": string;
+                "Idempotency-Key": string;
+            };
+            path: {
+                id: string;
+                versionId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** Format: date-time */
+                    scheduledAt: string;
+                    timezone: string;
+                    audience: {
+                        /** @constant */
+                        audience: "ALL";
+                    } | {
+                        /** @constant */
+                        audience: "NAMED";
+                        members: {
+                            /** Format: uuid */
+                            accessId: string;
+                            generation: number;
+                        }[];
+                    };
+                };
+            };
+        };
+        responses: {
+            /** @description Current authorized messaging result */
+            201: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        versionId: string;
+                        revision: number;
+                        /** @enum {string} */
+                        status: "SCHEDULED" | "CANCELED" | "PUBLISHED";
+                        /** Format: date-time */
+                        scheduledAt: string;
+                        timezone: string;
+                        publishedAt: string | null;
+                        audience: {
+                            /** @constant */
+                            audience: "ALL";
+                        } | {
+                            /** @constant */
+                            audience: "NAMED";
+                            members: {
+                                /** Format: uuid */
+                                accessId: string;
+                                generation: number;
+                            }[];
+                        };
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    messagingpostannouncementsidversionsversionIdschedulecancel: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "If-Match": string;
+                "Idempotency-Key": string;
+            };
+            path: {
+                id: string;
+                versionId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": Record<string, never>;
+            };
+        };
+        responses: {
+            /** @description Current authorized messaging result */
+            201: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        versionId: string;
+                        revision: number;
+                        /** @enum {string} */
+                        status: "SCHEDULED" | "CANCELED" | "PUBLISHED";
+                        /** Format: date-time */
+                        scheduledAt: string;
+                        timezone: string;
+                        publishedAt: string | null;
+                        audience: {
+                            /** @constant */
+                            audience: "ALL";
+                        } | {
+                            /** @constant */
+                            audience: "NAMED";
+                            members: {
+                                /** Format: uuid */
+                                accessId: string;
+                                generation: number;
+                            }[];
+                        };
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    messaginggetmeetingsidagendaentryIddetails: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+                entryId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Current authorized messaging result */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        /** Format: uuid */
+                        meetingId: string;
+                        revision: number;
+                        plannedMinutes: number | null;
+                        completed: boolean;
+                        completedAt: string | null;
+                        notes: string;
+                        updatedByMemberId: string | null;
+                        updatedAt: string | null;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    messagingpatchmeetingsidagendaentryIddetails: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "If-Match": string;
+                "Idempotency-Key": string;
+            };
+            path: {
+                id: string;
+                entryId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    plannedMinutes?: number | null;
+                    completed?: boolean;
+                    notes?: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Current authorized messaging result */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        /** Format: uuid */
+                        meetingId: string;
+                        revision: number;
+                        plannedMinutes: number | null;
+                        completed: boolean;
+                        completedAt: string | null;
+                        notes: string;
+                        updatedByMemberId: string | null;
+                        updatedAt: string | null;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    messaginggetmeetingsidagendaentryIdhistory: {
+        parameters: {
+            query?: {
+                cursor?: string;
+                limit?: number;
+            };
+            header?: never;
+            path: {
+                id: string;
+                entryId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Current authorized messaging result */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        items: {
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            meetingId: string;
+                            revision: number;
+                            plannedMinutes: number | null;
+                            completed: boolean;
+                            completedAt: string | null;
+                            notes: string;
+                            updatedByMemberId: string | null;
+                            updatedAt: string | null;
+                            /** Format: uuid */
+                            entryId: string;
+                        }[];
+                        nextCursor: string | null;
+                        hasMore: boolean;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    messaginggetmeetingsidagendasummary: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Current authorized messaging result */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        totalPlannedMinutes: number;
+                        meetingMinutes: number | null;
+                        exceedsMeetingLength: boolean;
                     };
                 };
             };

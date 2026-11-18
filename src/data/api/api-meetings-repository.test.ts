@@ -125,7 +125,7 @@ describe("live meetings (X1-M via access/me)", () => {
     const api = meetingsApi();
     const repo = createApiMessaging(api.client, USER);
     await repo.meetings.update(M1, { title: "Renamed", link: null });
-    expect(api.calls.find((call) => call.method === "PATCH")).toMatchObject({ path: `/meetings/${M1}`, ifMatch: '"mt-4"', body: { event: { title: "Renamed" }, externalUrl: null } });
+    expect(api.calls.find((call) => call.method === "PATCH")).toMatchObject({ path: `/meetings/${M1}`, ifMatch: '"4"', body: { event: { title: "Renamed" }, externalUrl: null } });
   });
 
   it("personal create (S5): INDEPENDENT with the catalog's MEETING policy, organiser only; invitees / empty catalog refused truthfully", async () => {

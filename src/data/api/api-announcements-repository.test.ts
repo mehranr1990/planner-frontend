@@ -143,7 +143,7 @@ describe("live announcements (M-A1)", () => {
     expect(writes[0]!.body.id).toBe(id);
   });
 
-  it("schedule, pin end and audience subsets are refused before any write", async () => {
+  it("pin end and audience subsets are refused before any write", async () => {
     const api = announcementsApi();
     const repo = createApiMessaging(api.client, USER).announcements;
     const base = {
@@ -156,9 +156,97 @@ describe("live announcements (M-A1)", () => {
       scheduleAt: null,
       clientOpId: "op-2",
     };
-    await expect(repo.publish({ ...base, scheduleAt: "2026-11-20T06:00:00.000Z" })).rejects.toMatchObject({ code: "unavailable" });
     await expect(repo.publish({ ...base, pinDays: 7 })).rejects.toMatchObject({ code: "unavailable" });
     await expect(repo.publish({ ...base, audience: { kind: "subset", label: "Design", memberIds: ["x"] } })).rejects.toMatchObject({ code: "unavailable" });
     expect(api.writes()).toEqual([]);
+  });
+});
+
+/* P5 gap closure: scheduled publication (`…/versions/{versionId}/schedule`, manager only). */
+describe("live announcement scheduling", () => {
+  const D1 = "33333333-3333-4333-8333-333333333333";
+  const schedule = (over: Record<string, unknown> = {}) => ({
+    versionId: "d1",
+    revision: 5,
+    status: "SCHEDULED",
+    scheduledAt: "2026-11-20T06:00:00.000Z",
+    timezone: "Asia/Tehran",
+    publishedAt: null,
+    audience: { audience: "ALL" },
+    ...over,
+  });
+  function scheduleApi(opts: { status?: string | null; capabilities?: string[]; existing?: boolean } = {}) {
+    return fakeApi((call: FakeCall, parts) => {
+      const tail = parts.join("/");
+      if (tail === "teams/t1") return json({ id: "t1", title: "Design Team" });
+      if (tail === "teams/t1/access/me") return opts.capabilities ? json({ actorId: "act-me", capabilities: opts.capabilities }) : err(403);
+      if (call.method === "POST" && tail === "announcements") return json({ ...call.body, revision: 1, createdAt: "2026-11-14T08:00:00.000Z" }, 201);
+      if (call.method === "POST" && /^announcements\/[^/]+\/versions$/.test(tail)) return json(version({ ...call.body, announcementId: parts[1], state: "DRAFT", revision: 4, publishedAt: null }), 201);
+      if (/^announcements\/[^/]+\/versions\/[^/]+\/schedule$/.test(tail)) {
+        if (call.method === "POST") return json(schedule({ versionId: parts[3], scheduledAt: call.body.scheduledAt, timezone: call.body.timezone }), 201);
+        if (opts.existing) return json(schedule({ versionId: parts[3] }), 200, '"5"');
+        if (opts.status === undefined) return json(null);
+        return opts.status === null ? err(403) : json(schedule({ status: opts.status }), 200, '"5"');
+      }
+      if (tail === "announcements/scopes/TEAM/t1")
+        return page([version({ id: "d1", announcementId: D1, state: "DRAFT", publishedAt: null, title: "Holiday hours", acknowledgement: false })]);
+      return err(404);
+    });
+  }
+  const input = {
+    workspace: { kind: "team" as const, workspaceId: "t1", name: "Design Team" },
+    title: "Holiday hours",
+    body: "Closed on Friday",
+    audience: { kind: "workspace" as const, label: "Design Team", memberIds: [] },
+    pinDays: null,
+    requireAck: false,
+    scheduleAt: "2026-11-20T06:00:00.000Z",
+    clientOpId: "op-s",
+  };
+
+  it("schedules the draft instead of publishing: UTC instant, IANA zone, ALL, If-Match draft revision", async () => {
+    const api = scheduleApi();
+    const id = await createApiMessaging(api.client, USER).announcements.publish(input);
+    const posts = api.calls.filter((call) => call.method === "POST");
+    expect(posts.map((call) => call.path.replace(id, "{id}").replace(String(posts[1]!.body.id), "{v}"))).toEqual([
+      "/announcements",
+      "/announcements/{id}/versions",
+      "/announcements/{id}/versions/{v}/schedule",
+    ]);
+    expect(posts[2]).toMatchObject({ ifMatch: '"4"', body: { scheduledAt: "2026-11-20T06:00:00.000Z", audience: { audience: "ALL" } } });
+    expect(posts[2]!.body.timezone).toMatch(/\//);
+    expect(posts[2]!.key).toBeTruthy();
+    expect(api.writes().some((write) => write.endsWith("/publish"))).toBe(false);
+  });
+
+  it("live finding: a retry after success replays the same ids and keys (no second announcement)", async () => {
+    const api = scheduleApi();
+    const repo = createApiMessaging(api.client, USER).announcements;
+    const op = { ...input, clientOpId: "op-again" };
+    const id = await repo.publish(op);
+    expect(await repo.publish(op)).toBe(id);
+    const creates = api.calls.filter((call) => call.method === "POST" && call.path === "/announcements");
+    expect(creates.map((call) => [call.key, call.body.id])).toEqual([
+      [creates[0]!.key, id],
+      [creates[0]!.key, id],
+    ]);
+  });
+
+  it("a replay whose schedule already exists sends no second schedule", async () => {
+    const api = scheduleApi({ existing: true });
+    await createApiMessaging(api.client, USER).announcements.publish(input);
+    expect(api.writes().filter((write) => write.endsWith("/schedule"))).toEqual([]);
+  });
+
+  it("managers see a SCHEDULED draft with its due instant; canceled / unreadable schedules and non-managers see nothing", async () => {
+    const managerList = await createApiMessaging(scheduleApi({ status: "SCHEDULED", capabilities: ["announcement.publish"] }).client, USER).announcements.list("t1", "team");
+    expect(managerList).toEqual([
+      expect.objectContaining({ id: D1, title: "Holiday hours", publishedAt: null, scheduledFor: "2026-11-20T06:00:00.000Z", pinned: false, ack: null, audience: null, canRemind: false }),
+    ]);
+    expect(await createApiMessaging(scheduleApi({ status: "CANCELED", capabilities: ["announcement.publish"] }).client, USER).announcements.list("t1", "team")).toEqual([]);
+    expect(await createApiMessaging(scheduleApi({ status: null, capabilities: ["announcement.publish"] }).client, USER).announcements.list("t1", "team")).toEqual([]);
+    const outsider = scheduleApi({ status: "SCHEDULED" });
+    expect(await createApiMessaging(outsider.client, USER).announcements.list("t1", "team")).toEqual([]);
+    expect(outsider.calls.some((call) => call.path.endsWith("/schedule"))).toBe(false);
   });
 });

@@ -1,6 +1,7 @@
 import { newIdempotencyKey, type ApiClientFor, type ResponseDataIn } from "@/api/client";
 import { ApiHttpError } from "@/api/errors";
 import type { paths } from "@/api/generated/openapi-p6-messaging";
+import { getPlannerTimeZone } from "@/lib/dates/zone";
 import type { Announcement, AnnouncementReminder, MsgSourceKind } from "../messaging-domain";
 import { MessagingError, type AnnouncementRepository } from "../messaging-repositories";
 import type { WorkSources } from "./api-meetings-repository";
@@ -14,13 +15,18 @@ import { revisionTag } from "./api-shared";
  *   `authorDisplayName` (null → no author shown, never invented).
  * - Acknowledgement totals: the manager-only `…/acknowledgements` summary
  *   ({eligible, acknowledged}); 403 → none. Pending names are not served.
- * - Not served, so never shown: audience, schedule, pin end, reminder history.
+ * - Not served, so never shown: audience, pin end, reminder history.
  * - Publish (S5): announcement → DRAFT version → publish to the whole source
  *   (audience ALL; NAMED takes access ids, and the API serves no subsets to
  *   offer). The composer shows only where the root access/me allows it (Team /
  *   Company `announcement.publish`; Projects serve no such hint and the server
- *   applies the same source-manager rule as `meeting.create`). Scheduling and
- *   pins with an end date are refused before any write.
+ *   applies the same source-manager rule as `meeting.create`). Pins with an
+ *   end date are refused before any write (API pins have no end).
+ * - Schedule (P5 gap closure): the DRAFT is scheduled instead of published —
+ *   `POST …/schedule` {scheduledAt (UTC Z), timezone (planner IANA zone),
+ *   audience ALL}, If-Match = the draft revision. Managers see a SCHEDULED
+ *   draft (manager-only `GET …/schedule`) as a card with `scheduledFor`; a
+ *   null / CANCELED / PUBLISHED schedule is never shown as scheduled.
  * - Remind (OD-13): offered when the manager-only totals are readable (the same
  *   source-manager rule) and someone is still pending.
  * `API_COVERAGE_MATRIX.md` → "Messages & Meetings".
@@ -28,6 +34,7 @@ import { revisionTag } from "./api-shared";
 
 type AnnClient = ApiClientFor<paths>;
 type ApiVersion = ResponseDataIn<paths, "/api/v1/announcements/scopes/{kind}/{scopeId}", "get">["items"][number];
+type ApiSchedule = ResponseDataIn<paths, "/api/v1/announcements/{id}/versions/{versionId}/schedule", "get">;
 type Page<T> = { items: T[]; nextCursor?: string | null; hasMore?: boolean };
 type WorkKind = "PROJECT" | "TEAM" | "COMPANY";
 
@@ -59,6 +66,18 @@ export function createApiAnnouncements(api: AnnClient, { mapped, allPages, works
     }
   };
 
+  /** The version's schedule; null when there is none or the caller is not a manager (403 / 404). */
+  const scheduleOf = async (id: string, versionId: string): Promise<ApiSchedule> => {
+    try {
+      return (await api.request("get", "/api/v1/announcements/{id}/versions/{versionId}/schedule", { path: { id, versionId } })).data;
+    } catch (error) {
+      if (error instanceof ApiHttpError && (error.status === 403 || error.status === 404)) return null;
+      throw error;
+    }
+  };
+  const canPublishIn = async (scope: WorkKind, workspaceId: string) =>
+    !!(await work.capabilities(scope, workspaceId))?.includes(scope === "PROJECT" ? "meeting.create" : "announcement.publish");
+
   return {
     list: (workspaceId, kind) =>
       mapped(async () => {
@@ -68,9 +87,19 @@ export function createApiAnnouncements(api: AnnClient, { mapped, allPages, works
           async (cursor) => (await api.request("get", "/api/v1/announcements/scopes/{kind}/{scopeId}", { path: { kind: scope, scopeId: workspaceId }, query: { cursor, limit: PAGE } })).data,
         );
         const latest = new Map<string, ApiVersion>();
-        for (const version of versions)
-          if (version.state === "PUBLISHED" && (latest.get(version.announcementId)?.number ?? 0) < version.number) latest.set(version.announcementId, version);
-        const name = await workspaceName(scope, workspaceId);
+        const newestDraft = new Map<string, ApiVersion>();
+        for (const version of versions) {
+          const into = version.state === "PUBLISHED" ? latest : version.state === "DRAFT" ? newestDraft : null;
+          if (into && (into.get(version.announcementId)?.number ?? 0) < version.number) into.set(version.announcementId, version);
+        }
+        // Never-published announcements whose draft a manager scheduled (the schedule read is manager-only).
+        const drafts = [...newestDraft.values()].filter((draft) => !latest.has(draft.announcementId));
+        const [name, manager] = await Promise.all([workspaceName(scope, workspaceId), drafts.length ? canPublishIn(scope, workspaceId) : false]);
+        const scheduled = manager
+          ? (await Promise.all(drafts.map(async (draft) => ({ draft, schedule: await scheduleOf(draft.announcementId, draft.id) })))).filter(
+              (row): row is { draft: ApiVersion; schedule: NonNullable<ApiSchedule> } => row.schedule?.status === "SCHEDULED",
+            )
+          : [];
         const rows = await Promise.all(
           [...latest.values()].map(async (version): Promise<Announcement> => {
             shown.set(version.announcementId, version.id);
@@ -94,6 +123,23 @@ export function createApiAnnouncements(api: AnnClient, { mapped, allPages, works
             };
           }),
         );
+        for (const { draft, schedule } of scheduled)
+          rows.push({
+            id: draft.announcementId,
+            workspace: { kind: kind!, workspaceId, name },
+            title: draft.title,
+            body: draft.text,
+            author: draft.authorDisplayName ? { id: "", name: draft.authorDisplayName, initials: initialsOf(draft.authorDisplayName) } : null,
+            publishedAt: null,
+            scheduledFor: schedule.scheduledAt,
+            audience: null,
+            pinned: false,
+            pinnedUntil: null,
+            requireAck: draft.acknowledgement,
+            acked: false,
+            ack: null,
+            canRemind: false,
+          });
         return rows.sort((a, b) => Number(b.pinned) - Number(a.pinned) || (b.publishedAt ?? "").localeCompare(a.publishedAt ?? ""));
       }),
     ack: (id) =>
@@ -106,8 +152,7 @@ export function createApiAnnouncements(api: AnnClient, { mapped, allPages, works
       mapped(async () => {
         const scope = kind && WORK_KIND[kind];
         if (!scope) return { canPublish: false, audiences: [] };
-        const capabilities = await work.capabilities(scope, workspaceId);
-        const canPublish = !!capabilities?.includes(scope === "PROJECT" ? "meeting.create" : "announcement.publish");
+        const canPublish = await canPublishIn(scope, workspaceId);
         return { canPublish, audiences: canPublish ? [{ kind: "workspace" as const, label: await workspaceName(scope, workspaceId), memberIds: [] }] : [] };
       }),
     publish: (input) =>
@@ -115,7 +160,6 @@ export function createApiAnnouncements(api: AnnClient, { mapped, allPages, works
         const scope = WORK_KIND[input.workspace.kind];
         if (!scope || !input.workspace.workspaceId) throw new MessagingError("unavailable", "Announcements API: announcements belong to a Project, Team or Company");
         if (input.audience.kind !== "workspace") throw new MessagingError("unavailable", "Announcements API: audience subsets are not served (whole source only)");
-        if (input.scheduleAt) throw new MessagingError("unavailable", "Announcements API: scheduled publishing is not in the API");
         if (input.pinDays !== null) throw new MessagingError("unavailable", "Announcements API: pins have no end date in the API");
         const run = publishing.get(input.clientOpId) ?? { id: newIdempotencyKey(), versionId: newIdempotencyKey(), keys: [newIdempotencyKey(), newIdempotencyKey(), newIdempotencyKey()] };
         publishing.set(input.clientOpId, run);
@@ -126,14 +170,23 @@ export function createApiAnnouncements(api: AnnClient, { mapped, allPages, works
           header: { "Idempotency-Key": keys[1] },
           body: { id: versionId, title: input.title.trim().slice(0, 300), text: input.body.trim(), acknowledgement: input.requireAck },
         });
+        if (input.scheduleAt) {
+          // A replay whose schedule already went through needs no second schedule.
+          if (draft.state === "DRAFT" && (await scheduleOf(id, versionId))?.status !== "SCHEDULED")
+            await api.request("post", "/api/v1/announcements/{id}/versions/{versionId}/schedule", {
+              path: { id, versionId },
+              header: { "If-Match": revisionTag(draft.revision), "Idempotency-Key": keys[2] },
+              body: { scheduledAt: new Date(input.scheduleAt).toISOString(), timezone: getPlannerTimeZone(), audience: { audience: "ALL" } },
+            });
+        }
         // A replayed draft that already went out needs no second publish.
-        if (draft.state === "DRAFT")
+        else if (draft.state === "DRAFT")
           await api.request("post", "/api/v1/announcements/{id}/versions/{versionId}/publish", {
             path: { id, versionId },
             header: { "If-Match": revisionTag(draft.revision), "Idempotency-Key": keys[2] },
             body: { audience: "ALL" },
           });
-        publishing.delete(input.clientOpId);
+        // Kept: a later retry of the same intent replays (same ids, keys) instead of creating a second announcement.
         return id;
       }),
     // OD-13: one in-app reminder per recipient per day for the latest published version (the server deduplicates).

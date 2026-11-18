@@ -74,6 +74,7 @@ const toNotice = (dto: ApiNotice): MessagingNotice => ({
   at: dto.createdAt,
 });
 /** One message as both timelines serve it (text timeline items have no attachments). */
+const MESSAGE_CONDITIONAL: ReadonlySet<string> = new Set(["edit", "delete", "pin", "moderate"]);
 type Item = Omit<ApiItem, "content" | "kind"> & { kind: ApiMediaItem["kind"]; text: string | null; attachments: ApiAttachment[]; sourceId?: string | null };
 const fromTimeline = ({ content, ...item }: ApiItem): Item => ({ ...item, text: content?.text ?? null, attachments: [] });
 const fromMedia = (item: ApiMediaItem): Item => ({ ...item });
@@ -154,6 +155,8 @@ export function createApiMessaging(client: ApiClient, user: MessagingUser): Mess
   /** Uploads staged by `upload` until `send` posts them into a conversation. */
   const staged = new Map<string, { blob: Blob; sha256: string; kind: Attachment["kind"]; name: string; mime: string }>();
   const workspaceNames = new Map<string, Promise<string>>();
+  /** clientOpId → the resource id and key of one conversation create (replayed on retry). */
+  const creating = new Map<string, { id: string; key: string }>();
 
   const conversations = () => allPages<ApiConversation>(async (cursor) => (await api.request("get", "/api/v1/conversations", { query: { cursor, limit: PAGE } })).data);
   const roster = (id: string) => allPages<ApiMember>(async (cursor) => (await api.request("get", "/api/v1/conversations/{id}/members", { path: { id }, query: { cursor, limit: PAGE } })).data);
@@ -379,8 +382,19 @@ export function createApiMessaging(client: ApiClient, user: MessagingUser): Mess
     return at;
   };
   const conversationOfMessage = (messageId: string) => located(messageId).conversationId;
-  const act = (conversationId: string, body: RequestBodyIn<paths, "/api/v1/conversations/{id}/advanced-actions", "post">) =>
-    api.request("post", "/api/v1/conversations/{id}/advanced-actions", { path: { id: conversationId }, header: { "Idempotency-Key": newIdempotencyKey() }, body });
+  /** Edit / delete / pin / moderate are conditional on the message's current revision (contract: If-Match required). */
+  const act = async (conversationId: string, body: RequestBodyIn<paths, "/api/v1/conversations/{id}/advanced-actions", "post">) => {
+    let ifMatch: string | undefined;
+    if ("messageId" in body && MESSAGE_CONDITIONAL.has(body.action)) {
+      const current = where.get(body.messageId)?.media ? await mediaDetails(conversationId, body.messageId) : await details(conversationId, body.messageId);
+      ifMatch = revisionTag(current.revision);
+    }
+    return api.request("post", "/api/v1/conversations/{id}/advanced-actions", {
+      path: { id: conversationId },
+      header: { "Idempotency-Key": newIdempotencyKey(), ...(ifMatch ? { "If-Match": ifMatch } : {}) },
+      body,
+    });
+  };
   const details = async (conversationId: string, messageId: string): Promise<Item> =>
     fromTimeline((await api.request("get", "/api/v1/conversations/{id}/message-details/{messageId}", { path: { id: conversationId, messageId } })).data);
   /** A media message by id (text detail when it is not a media message). */
@@ -476,8 +490,11 @@ export function createApiMessaging(client: ApiClient, user: MessagingUser): Mess
           const retentionPolicyVersion = await catalogVersion(client, "CONVERSATION").catch((error: unknown) => {
             throw new MessagingError("unavailable", error instanceof Error ? error.message : "No approved retention policy");
           });
-          const id = newIdempotencyKey();
-          const header = { "Idempotency-Key": /^[0-9a-f-]{36}$/i.test(input.clientOpId) ? input.clientOpId : newIdempotencyKey() };
+          // A retry of the same intent (clientOpId) replays the same id, key and body.
+          const run = creating.get(input.clientOpId) ?? { id: newIdempotencyKey(), key: /^[0-9a-f-]{36}$/i.test(input.clientOpId) ? input.clientOpId : newIdempotencyKey() };
+          creating.set(input.clientOpId, run);
+          const { id } = run;
+          const header = { "Idempotency-Key": run.key };
           const body =
             input.personIds.length === 1 && !input.name?.trim()
               ? { id, kind: "DM" as const, participants: [input.personIds[0]!] as [string], retentionPolicyVersion }

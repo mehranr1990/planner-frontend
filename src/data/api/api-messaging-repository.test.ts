@@ -145,9 +145,10 @@ describe("live Messaging repository", () => {
     const writes = api.calls.filter((call) => call.method !== "GET");
     expect(writes.map((call) => [call.method, call.path, call.ifMatch])).toEqual([
       ["POST", `/conversations/${CV}/advanced-actions`, null],
+      // edit / pin are conditional on the message revision (contract If-Match); compose / reaction are not.
+      ["POST", `/conversations/${CV}/advanced-actions`, '"1"'],
       ["POST", `/conversations/${CV}/advanced-actions`, null],
-      ["POST", `/conversations/${CV}/advanced-actions`, null],
-      ["POST", `/conversations/${CV}/advanced-actions`, null],
+      ["POST", `/conversations/${CV}/advanced-actions`, '"1"'],
       ["PATCH", `/conversations/${CV}/notification-settings`, '"7"'],
       ["PATCH", `/conversations/${CV}`, '"cv-3"'],
       ["POST", `/conversations/${CV}/leave`, '"4"'],
@@ -224,5 +225,28 @@ describe("live Messaging repository", () => {
     const empty = fakeApi(() => json({ items: [] }));
     await expect(createApiMessaging(empty.client, USER).conversations.create({ personIds: ["u2"], clientOpId: "op" })).rejects.toMatchObject({ code: "unavailable" });
     expect(empty.calls.map((call) => call.path)).toEqual(["/retention-policies"]);
+  });
+
+  it("live finding: a retry of the same clientOpId replays the same conversation id, key and body", async () => {
+    const policy = { version: "mp-rpc-v1.0-conversation", applicableContexts: ["CONVERSATION"], marketScope: "IR", classRules: {}, createdAt: "x" };
+    const api = fakeApi((call) => (call.path === "/retention-policies" ? json({ items: [policy] }) : json({ id: call.body.id, kind: "DM", sourceId: null, title: null, revision: 1, writable: true, createdAt: "x" }, 201)));
+    const repo = createApiMessaging(api.client, USER);
+    const op = "0b5a3c1e-1111-4111-8111-111111111111";
+    const first = await repo.conversations.create({ personIds: ["u2"], clientOpId: op });
+    expect(await repo.conversations.create({ personIds: ["u2"], clientOpId: op })).toBe(first);
+    const posts = api.calls.filter((call) => call.method === "POST");
+    expect(posts.map((call) => [call.key, call.body.id])).toEqual([
+      [op, first],
+      [op, first],
+    ]);
+  });
+
+  it("live finding: delete for everyone sends If-Match = the message's current revision", async () => {
+    const api = messagingApi();
+    const repo = createApiMessaging(api.client, USER);
+    await repo.messages.page(CV);
+    await repo.messages.deleteForEveryone("x3");
+    const post = api.calls.find((call) => call.method === "POST")!;
+    expect(post).toMatchObject({ path: `/conversations/${CV}/advanced-actions`, ifMatch: '"1"', body: { action: "delete", messageId: "x3" } });
   });
 });

@@ -19,8 +19,12 @@ import { initialsOf } from "./api-project-shared";
  *   the organiser who created the meeting has none.
  * - Minutes: immutable versions. A save is a new version (parent = latest)
  *   with fresh decision / action ids (they are global keys); one reviewer.
- * - Not served, so never shown as facts: location, minute-taker role, agenda
- *   durations / done state, meeting notes, source channel.
+ * - Agenda (P5 gap closure): each entry's `…/agenda/{entryId}/details` gives
+ *   planned minutes (null = unspecified, never 0) and completion; details share
+ *   the entry revision (If-Match). Organiser add = create → accept → set
+ *   minutes; done toggles `completed`. Unreadable details (403 / 404) stay null.
+ * - Not served, so never shown as facts: location, minute-taker role, meeting
+ *   notes (the API's notes are per agenda entry), source channel.
  * `API_COVERAGE_MATRIX.md` → "Messages & Meetings".
  */
 
@@ -32,6 +36,7 @@ type ApiMeetingMember = Data<"/api/v1/meetings/{id}/members", "get">["items"][nu
 type ApiVersion = Data<"/api/v1/meetings/{id}/versions/{versionId}", "get">;
 type ApiInvitation = Data<"/api/v1/meetings/invitations", "get">["items"][number];
 type ApiAgendaEntry = Data<"/api/v1/meetings/{id}/agenda", "get">["items"][number];
+type ApiAgendaDetail = Data<"/api/v1/meetings/{id}/agenda/{entryId}/details", "get">;
 type ApiMeetingFile = Data<"/api/v1/meetings/{id}/attachments", "get">["items"][number];
 type ApiTaskLink = Data<"/api/v1/meetings/{id}/actions/{actionId}/tasks", "get">["items"][number];
 type Page<T> = { items: T[]; nextCursor?: string | null; hasMore?: boolean };
@@ -118,13 +123,24 @@ export function createApiMeetings(api: MeetClient, { me: ME, mapped, allPages, w
   const roster = (id: string) => list<ApiMeetingMember>((cursor) => api.request("get", "/api/v1/meetings/{id}/members", { path: { id }, query: { cursor, limit: PAGE } }));
   const versionsOf = (id: string) => list<ApiVersion>((cursor) => api.request("get", "/api/v1/meetings/{id}/versions", { path: { id }, query: { cursor, limit: PAGE } }));
   const readMeeting = async (id: string) => {
-    const { data, etag } = await api.request("get", "/api/v1/meetings/{id}", { path: { id } });
-    return { meeting: data, tag: etag ?? revisionTag(data.revision) };
+    // Meetings use the JSON revision; this GET sets no ETag of its own (an automatic hash ETag is not an If-Match value).
+    const { data } = await api.request("get", "/api/v1/meetings/{id}", { path: { id } });
+    return { meeting: data, tag: revisionTag(data.revision) };
   };
   /** My admission (X1-M); null when the server does not admit me (403 / 404). */
   const admitted = async (id: string): Promise<ApiMeetingMe | null> => {
     try {
       return (await api.request("get", "/api/v1/meetings/{id}/access/me", { path: { id } })).data;
+    } catch (error) {
+      if (error instanceof ApiHttpError && (error.status === 403 || error.status === 404)) return null;
+      throw error;
+    }
+  };
+  /** An agenda entry's details and their ETag; null when the caller may not read them (403 / 404). */
+  const detailsOf = async (id: string, entryId: string): Promise<{ detail: ApiAgendaDetail; tag: string } | null> => {
+    try {
+      const { data, etag } = await api.request("get", "/api/v1/meetings/{id}/agenda/{entryId}/details", { path: { id, entryId } });
+      return { detail: data, tag: etag ?? revisionTag(data.revision) };
     } catch (error) {
       if (error instanceof ApiHttpError && (error.status === 403 || error.status === 404)) return null;
       throw error;
@@ -258,29 +274,33 @@ export function createApiMeetings(api: MeetClient, { me: ME, mapped, allPages, w
           orEmpty(list<ApiAgendaEntry>((cursor) => api.request("get", "/api/v1/meetings/{id}/agenda", { path: { id }, query: { cursor, limit: PAGE } }))),
           orEmpty(list<ApiMeetingFile>((cursor) => api.request("get", "/api/v1/meetings/{id}/attachments", { path: { id }, query: { cursor, limit: PAGE } }))),
         ]);
+        const shownAgenda = agenda.filter((entry) => entry.state !== "REJECTED");
+        const details = new Map((await Promise.all(shownAgenda.map(async (entry) => [entry.id, (await detailsOf(id, entry.id))?.detail] as const))).filter(([, detail]) => detail));
         const invitees = members
           .filter((member) => member.state === "ACTIVE")
           .map((member): Invitee => ({ ...personOf(member, me), rsvp: RSVP[member.rsvp], role: member.role === "ORGANIZER" ? "organizer" : "attendee" }));
         const detail: MeetingDetail = {
           ...summary,
           invitees,
-          // OD-16: accepted entries + proposals the server shows me (no duration / done state in the API); rejected ones are dropped.
-          agenda: agenda
-            .filter((entry) => entry.state !== "REJECTED")
-            .map((entry) => ({
+          // OD-16: accepted entries + proposals the server shows me; rejected ones are dropped. Completion applies to accepted entries only.
+          agenda: shownAgenda.map((entry) => {
+            const detail = details.get(entry.id);
+            return {
               id: entry.id,
               title: entry.text,
               owner: personOf(members.find((member) => member.id === entry.memberId), me),
-              minutes: null,
-              done: null,
+              minutes: detail?.plannedMinutes ?? null,
+              done: detail && entry.state === "ACCEPTED" ? detail.completed : null,
               proposed: entry.state === "PROPOSED",
-            })),
+            };
+          }),
           notes: null,
           files: files.filter((file) => file.status === "READY").map((file) => ({ id: file.id, name: file.filename, bytes: file.actualSize ?? file.expectedSize, linked: false })),
           channelId: null,
           myRole: me.role === "ORGANIZER" ? "organizer" : "attendee",
           canEdit: me.capabilities.includes("meeting.manage"),
-          canEditAgenda: false,
+          // Only organisers manage duration / completion (the server re-checks).
+          canEditAgenda: me.capabilities.includes("meeting.manage"),
           canProposeAgenda: me.capabilities.includes("agenda.propose"),
           canDecideAgenda: me.capabilities.includes("meeting.manage"),
           description: meeting.event.description ?? "",
@@ -332,8 +352,36 @@ export function createApiMeetings(api: MeetClient, { me: ME, mapped, allPages, w
           })
           .sort((a, b) => (a.start ?? "").localeCompare(b.start ?? ""));
       }),
-    addAgenda: unavailable("agenda entries are text proposals the organiser accepts or rejects (OD-16: use proposeAgenda); no duration or owner choice"),
-    toggleAgenda: unavailable("no done state on agenda entries"),
+    // Organiser: create the stable entry, accept it, then set its planned minutes (each step If-Match = the entry's latest revision).
+    addAgenda: (id, title, minutes) =>
+      mapped(async () => {
+        const { data: created } = await api.request("post", "/api/v1/meetings/{id}/agenda", { path: { id }, header: { "Idempotency-Key": newIdempotencyKey() }, body: { id: newId(), text: title.trim() } });
+        let revision = created.revision;
+        if (created.state === "PROPOSED")
+          revision = (
+            await api.request("patch", "/api/v1/meetings/{id}/agenda/{entryId}", {
+              path: { id, entryId: created.id },
+              header: { "If-Match": revisionTag(revision), "Idempotency-Key": newIdempotencyKey() },
+              body: { state: "ACCEPTED" },
+            })
+          ).data.revision;
+        if (!Number.isInteger(minutes) || minutes < 1) return;
+        await api.request("patch", "/api/v1/meetings/{id}/agenda/{entryId}/details", {
+          path: { id, entryId: created.id },
+          header: { "If-Match": revisionTag(revision), "Idempotency-Key": newIdempotencyKey() },
+          body: { plannedMinutes: minutes },
+        });
+      }),
+    toggleAgenda: (id, entryId) =>
+      mapped(async () => {
+        const current = await detailsOf(id, entryId);
+        if (!current) throw new MessagingError("not-found");
+        await api.request("patch", "/api/v1/meetings/{id}/agenda/{entryId}/details", {
+          path: { id, entryId },
+          header: { "If-Match": current.tag, "Idempotency-Key": newIdempotencyKey() },
+          body: { completed: !current.detail.completed },
+        });
+      }),
     proposeAgenda: (id, text) =>
       mapped(async () => {
         await api.request("post", "/api/v1/meetings/{id}/agenda", { path: { id }, header: { "Idempotency-Key": newIdempotencyKey() }, body: { id: newId(), text: text.trim() } });
