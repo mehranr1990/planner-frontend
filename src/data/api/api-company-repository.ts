@@ -25,11 +25,12 @@ import type {
   KbPageSummary,
   KbSearchHit,
 } from "../company-domain";
-import type { CompanyRepository } from "../company-repositories";
+import type { CompanyRepository, NewCompanyInput } from "../company-repositories";
 import { RepositoryError } from "../repositories";
 import { invalid, mapErrors, pageAll, retryOnConflict, revisionTag } from "./api-shared";
 import { conflictAware, initialsOf, liveOnlyIn } from "./api-project-shared";
-import { createCompanyCompletion } from "./api-company-completion";
+import { createCompanyCompletion, CURRENCY_TO_API } from "./api-company-completion";
+import { catalogVersion } from "./api-retention";
 import { createCompanyFinance, type FinanceScope } from "./api-company-finance";
 import { createCompanyOperations } from "./api-company-operations";
 
@@ -121,8 +122,8 @@ export function companyCapabilitiesOf(me: ApiMe, managedDepartmentIds: string[])
     createDepartmentGoal: orgAdmin || me.role === "DEPT_MANAGER",
     linkGoalWork: false,
     requestResource: participant,
-    // Adding a resource needs an asset tag the contract does not store.
-    manageResources: false,
+    // Assets: Owner / Org Admin, or a Dept Manager in that department (server-checked per context).
+    manageResources: orgAdmin || me.role === "DEPT_MANAGER",
     seeCapacity: orgAdmin,
     createKbPage: has("knowledge.manage"),
     manageKb: has("knowledge.manage"),
@@ -134,6 +135,9 @@ export function companyCapabilitiesOf(me: ApiMe, managedDepartmentIds: string[])
     companyBudgets: orgAdmin,
     requestBudgetChange: orgAdmin || me.role === "DEPT_MANAGER",
     settleReimbursements: orgAdmin,
+    // CB-6: the acknowledgement decision takes no note and no Personal-recorded marker exists → unavailable, never faked.
+    reportNotReceived: false,
+    recordReimbursementInPersonal: false,
     companyReports: false,
     departmentReports: false,
     auditLog: false,
@@ -297,7 +301,62 @@ export function createApiCompanyRepository(client: ApiClient): CompanyRepository
     { currencyOf: async (id) => (await api.request("get", "/api/v1/companies/{id}/settings", { path: { id } })).data.currency ?? null },
   );
 
+  /*
+   * Company create: the space itself (`POST /companies`, the operator catalog's single COMPANY retention policy —
+   * never a hardcoded version), then the form's other fields through the existing settings / department
+   * operations. One pending record per form input keeps the company id, every department id and every
+   * Idempotency-Key, so a resubmit after a failure replays the same requests (no duplicate company or department)
+   * and finishes the remaining steps.
+   */
+  const pendingCreates = new Map<string, { companyId: string; key: string; departments: { id: string; key: string; title: string }[] }>();
+  async function createCompany(input: NewCompanyInput): Promise<CompanySummary> {
+    const title = input.name.trim();
+    if (!title) invalid("name-required");
+    if (title.length > 300) invalid("name-too-long");
+    if (!Number.isInteger(input.fiscalStartMonth) || input.fiscalStartMonth < 1 || input.fiscalStartMonth > 12) invalid("fiscal-month");
+    const legalName = input.legalName.trim();
+    const titles = [...new Set(input.departments.map((name) => name.trim()).filter(Boolean))];
+    const fingerprint = JSON.stringify([title, legalName, input.currency, input.fiscalStartMonth, titles]);
+    let pending = pendingCreates.get(fingerprint);
+    if (!pending) {
+      pending = { companyId: crypto.randomUUID(), key: newIdempotencyKey(), departments: titles.map((name) => ({ id: crypto.randomUUID(), key: newIdempotencyKey(), title: name })) };
+      pendingCreates.set(fingerprint, pending);
+    }
+    const retentionPolicyVersion = await catalogVersion(client, "COMPANY");
+    // 409 (an idempotency or lifecycle conflict) → conflict; 403 → forbidden (mapErrors).
+    const { data: company } = await conflictAware(() =>
+      api.request("post", "/api/v1/companies", { header: { "Idempotency-Key": pending.key }, body: { id: pending.companyId, title, retentionPolicyVersion } }),
+    );
+    const id = company.id;
+    try {
+      let row = (await api.request("get", "/api/v1/companies/{id}/settings", { path: { id } })).data;
+      if ((row.legalName ?? "") !== legalName || row.fiscalStartMonth !== input.fiscalStartMonth) {
+        row = (
+          await api.request("put", "/api/v1/companies/{id}/settings/legal", {
+            path: { id },
+            header: { "If-Match": revisionTag(row.revision) },
+            body: { legalName: legalName || null, fiscalStartMonth: input.fiscalStartMonth },
+          })
+        ).data;
+      }
+      const currency = CURRENCY_TO_API[input.currency];
+      if (row.currency !== currency) {
+        await api.request("put", "/api/v1/companies/{id}/settings/currency", { path: { id }, header: { "If-Match": revisionTag(row.revision) }, body: { currency } });
+      }
+      for (const department of pending.departments) {
+        await api.request("post", "/api/v1/companies/{id}/departments", { path: { id }, header: { "Idempotency-Key": department.key }, body: { id: department.id, title: department.title } });
+      }
+    } catch (error) {
+      // The company exists (owner admission included); only its setup is incomplete. Submitting the same form again finishes it.
+      throw new RepositoryError("partial", `Company created; setup incomplete (${error instanceof Error ? error.message : String(error)})`);
+    }
+    pendingCreates.delete(fingerprint);
+    const { data: created } = await api.request("get", "/api/v1/companies/{id}", { path: { id } });
+    return (await summaryOf(created)).summary;
+  }
+
   const supported: Partial<CompanyRepository> = {
+    create: (input) => mapErrors(() => createCompany(input)),
     list: () =>
       mapErrors(async () => {
         const companies = await pageAll<ApiCompany>(async (after) => (await api.request("get", "/api/v1/companies", { query: { limit: PAGE, after } })).data);
@@ -368,10 +427,8 @@ export function createApiCompanyRepository(client: ApiClient): CompanyRepository
     ...createCompanyOperations(api, { read, structure, members, roleOf, approvals: (id) => finance.approvals!(id) }),
 
     // Contract gaps (BACKEND_REQUIREMENTS.md → "Companies — Session 4"): refused with the reason, never faked.
-    addResource: refuse("resources have no asset tag field (the screen requires one)"),
     markNotReceived: refuse("a beneficiary acknowledges each payment; there is no free-text 'not received' record"),
     markRecordedInPersonal: refuse("no company read marks a reimbursement as recorded in Personal finance"),
-    create: refuse("creating a company needs the operator-supplied retentionPolicyVersion (OD-1); no COMPANY retention policy is approved in the catalog"),
     effectivePolicies: refuse("policy rules are capability rules (key, mode, roles) without the screen's named values and levels"),
     overridePolicy: refuse("policy rules are capability rules (key, mode, roles) without the screen's named values and levels"),
     chains: refuse("approval workflow steps name one person each; the screen's role approvers, amount conditions and escalation days are not in the contract"),
@@ -452,6 +509,18 @@ function createCompanyModules(api: CompaniesClient, deps: ModuleDeps): Partial<C
     throw error;
   };
 
+  type ApiResourceType = Data<`${Ctx}/resource-types`, "get">["items"][number];
+  const typesIn = (id: string, scopeId: string) =>
+    pageAll<ApiResourceType>(async (after) => (await api.request("get", "/api/v1/companies/{id}/contexts/{scopeId}/resource-types", { path: { id, scopeId }, query: { limit: PAGE, after } })).data).catch(
+      (error: unknown) => hiddenAsEmpty<ApiResourceType>(error),
+    );
+  const scopeOfDepartment = async (id: string, departmentId: string | null) => {
+    if (!departmentId) return ctx(id);
+    const scopeId = (await deps.structure(id)).find((department) => department.id === departmentId)?.scopeId;
+    if (!scopeId) throw new RepositoryError("not-found", "Department not found");
+    return scopeId;
+  };
+
   // ── Resources (read): status from the resource state and its current allocation ──
   const resources = (id: string) =>
     mapErrors(async (): Promise<CompanyResource[]> => {
@@ -463,7 +532,7 @@ function createCompanyModules(api: CompaniesClient, deps: ModuleDeps): Partial<C
           async (after) => (await api.request("get", "/api/v1/companies/{id}/contexts/{scopeId}/resources", { path: { id, scopeId }, query: { limit: PAGE, after } })).data,
         ).catch((error: unknown) => hiddenAsEmpty<ApiResource>(error));
         if (!list.length) continue;
-        const people = await deps.members(id, scopeId).catch((error: unknown) => hiddenAsEmpty<ApiMember>(error));
+        const [people, types] = await Promise.all([deps.members(id, scopeId).catch((error: unknown) => hiddenAsEmpty<ApiMember>(error)), typesIn(id, scopeId)]);
         for (const resource of list) {
           const allocations = await pageAll<ApiAllocation>(
             async (after) =>
@@ -474,13 +543,18 @@ function createCompanyModules(api: CompaniesClient, deps: ModuleDeps): Partial<C
                 })
               ).data,
           );
+          // Asset tags are read by asset managers (Owner / Org Admin / that department's manager); others see none.
+          const assetTag = await api
+            .request("get", "/api/v1/companies/{id}/contexts/{scopeId}/resources/{resourceId}/asset-tag", { path: { id, scopeId, resourceId: resource.id } })
+            .then((response) => response.data.assetTag ?? "", (error: unknown) => (isHidden(error) ? "" : Promise.reject(error)));
           const now = Date.now();
           const current = allocations.find((allocation) => allocation.state === "ALLOCATED" && Date.parse(allocation.startAt) <= now && Date.parse(allocation.endAt) > now);
           const holder = current ? people.find((member) => member.id === current.member.accessId) : undefined;
           rows.push({
             id: resource.id,
-            // The API has no asset tag or type.
-            tag: "",
+            tag: assetTag,
+            // Types are company-configured: the fixed key stays "other", the configured title is shown.
+            typeTitle: types.find((type) => type.id === resource.typeId)?.title ?? null,
             name: resource.title,
             type: "other",
             assigneeId: current?.member.accessId ?? null,
@@ -589,6 +663,53 @@ function createCompanyModules(api: CompaniesClient, deps: ModuleDeps): Partial<C
 
   const modules: Partial<CompanyRepository> = {
     resources,
+
+    // The target context's configured catalog (types are per context; nothing is seeded, so it may be empty).
+    resourceTypes: (id, departmentId) =>
+      mapErrors(async () => (await typesIn(id, await scopeOfDepartment(id, departmentId))).map((type) => ({ id: type.id, key: null, title: type.title }))),
+
+    // A titled resource, its configured type, then its Company-unique asset tag, each on the revision the previous
+    // call returned. Separate calls: a later 409 (duplicate tag) leaves the resource visible without it — never a silent success.
+    addResource: (id, input) =>
+      mapErrors(async () => {
+        const title = input.name.trim();
+        const assetTag = input.tag.trim();
+        if (!title || !assetTag) invalid("Name and asset tag are required");
+        const scopeId = await scopeOfDepartment(id, input.departmentId);
+        // Only a type from this context's catalog (never a substitute).
+        if (!(await typesIn(id, scopeId)).some((type) => type.id === input.typeId)) invalid("Unknown resource type");
+        const path = { id, scopeId };
+        const { data: created } = await api.request("post", "/api/v1/companies/{id}/contexts/{scopeId}/resources", {
+          path,
+          header: { "Idempotency-Key": newIdempotencyKey() },
+          body: { id: crypto.randomUUID(), title },
+        });
+        const { data: typed } = await conflictAware(() =>
+          api.request("put", "/api/v1/companies/{id}/contexts/{scopeId}/resources/{resourceId}/type", {
+            path: { ...path, resourceId: created.id },
+            header: { "If-Match": revisionTag(created.revision) },
+            body: { typeId: input.typeId },
+          }),
+        );
+        try {
+          await api.request("post", "/api/v1/companies/{id}/contexts/{scopeId}/resources/{resourceId}/asset-tag", {
+            path: { ...path, resourceId: created.id },
+            header: { "If-Match": revisionTag(typed.revision) },
+            body: { assetTag },
+          });
+        } catch (error) {
+          // The tag was refused (409: already used in this company): retire the resource this call just created, so no
+          // untagged duplicate stays available, then report the refusal as a taken tag.
+          await api
+            .request("post", "/api/v1/companies/{id}/contexts/{scopeId}/resources/{resourceId}/retire", { path: { ...path, resourceId: created.id }, header: { "If-Match": revisionTag(typed.revision) }, body: {} })
+            .catch(() => undefined);
+          if (error instanceof ApiHttpError && error.status === 409) throw new RepositoryError("conflict", "Asset tag already used in this company");
+          throw error;
+        }
+        const added = (await resources(id)).find((resource) => resource.id === created.id);
+        if (!added) throw new RepositoryError("not-found", "Not found");
+        return added;
+      }),
 
     kbFolders: (id) =>
       mapErrors(async () => {

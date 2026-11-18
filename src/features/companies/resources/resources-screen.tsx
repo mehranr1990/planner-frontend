@@ -24,6 +24,7 @@ import {
   useCapacity,
   useCompanyMutation,
   useDepartments,
+  useResourceTypes,
   useResourceRequests,
   useResources,
   useRooms,
@@ -207,7 +208,7 @@ function Equipment({ onRequest }: { onRequest: (resource: CompanyResource) => vo
                     <span className="truncate text-sm font-bold text-fg">
                       <bdi>{item.name}</bdi> · <span className="tabular">{item.tag}</span>
                     </span>
-                    <span className="text-xs text-fg-secondary">{t(`type.${item.type}`)}</span>
+                    <span className="text-xs text-fg-secondary">{item.typeTitle ? <bdi>{item.typeTitle}</bdi> : t(`type.${item.type}`)}</span>
                   </button>
                   <bdi className="truncate text-xs font-semibold text-fg max-sm:hidden">{item.assigneeName ?? "—"}</bdi>
                   <span className="max-sm:hidden">
@@ -500,10 +501,14 @@ function AddResourceDialog({ onClose }: { onClose: () => void }) {
   const departments = useDepartments(company.id);
   const [name, setName] = useState("");
   const [tag, setTag] = useState("");
-  const [type, setType] = useState<CompanyResource["type"]>("laptop");
   const [departmentId, setDepartmentId] = useState("none");
+  // Types valid for the chosen department (live: that context's configured catalog — possibly empty, never a fixed fallback).
+  const types = useResourceTypes(company.id, departmentId === "none" ? null : departmentId);
+  const options = types.data ?? [];
+  const [picked, setType] = useState<string | null>(null);
+  const typeId = picked !== null && options.some((option) => option.id === picked) ? picked : (options[0]?.id ?? null);
   const [touched, setTouched] = useState(false);
-  const add = useCompanyMutation(company.id, (repo, id, vars: { name: string; tag: string; type: CompanyResource["type"]; departmentId: string | null }) =>
+  const add = useCompanyMutation(company.id, (repo, id, vars: { name: string; tag: string; typeId: string; departmentId: string | null }) =>
     repo.addResource(id, vars),
   );
   return (
@@ -514,9 +519,9 @@ function AddResourceDialog({ onClose }: { onClose: () => void }) {
           onSubmit={(event) => {
             event.preventDefault();
             setTouched(true);
-            if (!name.trim() || !tag.trim()) return;
+            if (!name.trim() || !tag.trim() || !typeId) return;
             add.mutate(
-              { name, tag, type, departmentId: departmentId === "none" ? null : departmentId },
+              { name, tag, typeId, departmentId: departmentId === "none" ? null : departmentId },
               {
                 onSuccess: () => {
                   toast({ title: t("added") });
@@ -539,13 +544,14 @@ function AddResourceDialog({ onClose }: { onClose: () => void }) {
             </Field>
             <Field>
               <FieldLabel>{t("type")}</FieldLabel>
-              <Select value={type} onValueChange={(value) => setType(value as CompanyResource["type"])}>
-                {(["laptop", "monitor", "phone", "license", "vehicle", "other"] as const).map((value) => (
-                  <SelectItem key={value} value={value}>
-                    {tType(value)}
+              <Select value={typeId ?? ""} onValueChange={setType} disabled={!options.length}>
+                {options.map((option) => (
+                  <SelectItem key={option.id} value={option.id}>
+                    {option.key ? tType(option.key) : <bdi>{option.title}</bdi>}
                   </SelectItem>
                 ))}
               </Select>
+              {types.isError ? <FieldError>{t("typesFailed")}</FieldError> : types.isSuccess && !options.length ? <FieldError>{t("noTypes")}</FieldError> : null}
             </Field>
           </div>
           <Field>
@@ -565,7 +571,7 @@ function AddResourceDialog({ onClose }: { onClose: () => void }) {
             <Button type="button" variant="secondary" onClick={onClose}>
               {t("cancel")}
             </Button>
-            <Button type="submit" disabled={add.isPending}>
+            <Button type="submit" disabled={add.isPending || !typeId}>
               {t("submit")}
             </Button>
           </DialogFooter>

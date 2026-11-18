@@ -1,6 +1,6 @@
 import { screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { resetToasts } from "@/components/ui/toast";
 import { renderCompanyScreen } from "../test-utils";
 import { findConflict, ResourcesScreen } from "./resources-screen";
@@ -31,5 +31,30 @@ describe("CO-06 · Resources & capacity", () => {
     const resource = { busy: [{ from: "2026-10-15", to: "2026-10-20" }] } as Parameters<typeof findConflict>[0];
     expect(findConflict(resource, "2026-10-18", "2026-10-19")?.suggestion).toEqual({ from: "2026-10-21", to: "2026-10-22" });
     expect(findConflict(resource, "2026-10-22", "2026-10-23")).toBeNull();
+  });
+
+  it("Add resource offers only the context's resource types; an empty catalog explains itself and blocks Add", async () => {
+    const user = userEvent.setup();
+    const { repository } = renderCompanyScreen(<ResourcesScreen />, { path: "/companies/euroly/resources" });
+    vi.spyOn(repository, "resourceTypes").mockResolvedValue([]);
+    await user.click(await screen.findByRole("button", { name: "Add resource" }));
+    const dialog = await screen.findByRole("dialog", { name: "Add resource" });
+    expect(await within(dialog).findByText("No resource types are set up for this department yet")).toBeInTheDocument();
+    expect(within(dialog).getByRole("button", { name: "Add" })).toBeDisabled();
+
+  });
+
+  it("Add resource sends the chosen configured type id", async () => {
+    const user = userEvent.setup();
+    const { repository } = renderCompanyScreen(<ResourcesScreen />, { path: "/companies/euroly/resources" });
+    vi.spyOn(repository, "resourceTypes").mockResolvedValue([{ id: "t1", key: null, title: "Docking station" }]);
+    const add = vi.spyOn(repository, "addResource");
+    await user.click(await screen.findByRole("button", { name: "Add resource" }));
+    const next = await screen.findByRole("dialog", { name: "Add resource" });
+    expect((await within(next).findAllByText("Docking station")).length).toBeGreaterThan(0);
+    await user.type(within(next).getByRole("textbox", { name: "Name" }), "Dock 1");
+    await user.type(within(next).getByRole("textbox", { name: "Tag" }), "EU-DK-001");
+    await user.click(within(next).getByRole("button", { name: "Add" }));
+    await waitFor(() => expect(add).toHaveBeenCalledWith("euroly", { name: "Dock 1", tag: "EU-DK-001", typeId: "t1", departmentId: null }));
   });
 });

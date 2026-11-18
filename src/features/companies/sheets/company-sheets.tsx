@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useState, type ReactNode } from "react";
 import { InlineAlert } from "@/components/feedback/inline-alert";
+import { RepositoryError } from "@/data/repositories";
 import { Button } from "@/components/ui/button";
 import { Field, FieldDescription, FieldError, FieldLabel } from "@/components/ui/field";
 import { Icon } from "@/components/ui/icon";
@@ -113,7 +114,7 @@ export function NewCompanySheet({ onDone }: { onDone: () => void }) {
         <Input dir="auto" value={departments} placeholder={t("departmentsPlaceholder")} onChange={(event) => setDepartments(event.target.value)} />
         <FieldDescription>{t("ownerNote")}</FieldDescription>
       </Field>
-      {create.isError ? <InlineAlert tone="danger" title={t("failed")} /> : null}
+      {create.isError ? <InlineAlert tone="danger" title={t(createFailure(create.error))} /> : null}
       <Actions onCancel={onDone} submit={t("submit")} pending={create.isPending} />
     </form>
   );
@@ -280,4 +281,15 @@ export function NewDepartmentSheet({ companyId, companyName, onDone }: { company
       <Actions onCancel={onDone} submit={t("submit")} pending={create.isPending} />
     </form>
   );
+}
+
+/** The create refusal the owner can act on (policy, permission, conflict, incomplete setup); anything else stays generic. */
+function createFailure(error: unknown): "failed" | "failedPolicy" | "failedForbidden" | "failedConflict" | "failedPartial" | "failedInvalid" {
+  if (!(error instanceof RepositoryError)) return "failed";
+  if (error.code === "unsupported") return "failedPolicy";
+  if (error.code === "forbidden") return "failedForbidden";
+  if (error.code === "conflict") return "failedConflict";
+  if (error.code === "partial") return "failedPartial";
+  if (error.code === "invalid") return "failedInvalid";
+  return "failed";
 }

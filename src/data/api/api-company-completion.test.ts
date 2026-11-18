@@ -29,7 +29,7 @@ describe("company closure batch", () => {
     const api = companyApi((call, parts) => {
       if (parts[5] === "approvals" && parts.length === 6) return json({ items: [approval], nextCursor: null });
       if (parts[5] === "approvals" && parts[7] === "history") return json({ items: [], nextCursor: null });
-      if (parts[5] === "approvals" && parts[7] === "decision") return json({ ...approval, state: "REJECTED" });
+      if (parts[5] === "approvals" && parts[7] === "decision-receipts") return json({ ...approval, state: "REJECTED" });
       if (parts[5] === "approvals" && parts.length === 7) return json(approval);
       if (parts[5] === "approval-workflow-versions") return json({ id: "wv1", number: 2, title: "Expenses", state: "PUBLISHED", steps: [{ id: "s1", label: "Manager", position: 0, primary: { accessId: "m1", generation: 1 }, alternate: null }] });
       return null;
@@ -42,8 +42,8 @@ describe("company closure batch", () => {
     expect(api.writes().length).toBe(before);
     await expect(repo.decide(C, "ap1", "changes", "x")).rejects.toMatchObject({ code: "unsupported" });
     await repo.decide(C, "ap1", "rejected", "Missing receipt").catch(() => undefined);
-    const post = api.calls.find((call) => call.path.endsWith("/decision"))!;
-    expect(post).toMatchObject({ ifMatch: '"4"', body: { decision: "REJECT", reason: "Missing receipt" } });
+    const post = api.calls.find((call) => call.path.endsWith("/decision-receipts"))!;
+    expect(post).toMatchObject({ ifMatch: '"4"', key: expect.any(String), body: { decision: "REJECT", reason: "Missing receipt" } });
   });
 
   it("a budget change is a versioned change request (delta + direction), never a direct amount edit", async () => {

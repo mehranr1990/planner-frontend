@@ -23,6 +23,7 @@ import type {
   CompanyReport,
   CompanyReportId,
   CompanyResource,
+  ResourceTypeOption,
   CompanyRole,
   CompanyRoom,
   CompanySettings,
@@ -142,7 +143,9 @@ export interface CompanyRepository {
   resourceRequests(id: string): Promise<ResourceRequest[]>;
   requestResource(id: string, input: { resourceId: string; from: string; to: string; reason: string }): Promise<ResourceRequest>;
   withdrawResourceRequest(id: string, requestId: string): Promise<void>;
-  addResource(id: string, input: { name: string; tag: string; type: CompanyResource["type"]; departmentId: string | null }): Promise<CompanyResource>;
+  /** Resource types valid for the department (null = company-wide); live: that context's configured catalog, possibly empty. */
+  resourceTypes(id: string, departmentId: string | null): Promise<ResourceTypeOption[]>;
+  addResource(id: string, input: { name: string; tag: string; typeId: string; departmentId: string | null }): Promise<CompanyResource>;
   bookRoom(id: string, input: { roomId: string; day: string; from: string; to: string; title: string }): Promise<CompanyRoom>;
   rooms(id: string, day: string): Promise<CompanyRoom[]>;
   capacity(id: string): Promise<CapacityHeat>;

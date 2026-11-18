@@ -2699,7 +2699,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get?: never;
+        get: operations["companyGapgetcompaniesidownershiphandovers"];
         put?: never;
         post: operations["companyLifecyclepostcompaniesidownershiphandovers"];
         delete?: never;
@@ -2926,6 +2926,854 @@ export interface paths {
         get?: never;
         put?: never;
         post: operations["companypostcompaniesidcontextsscopeIdassociationskindtargetdetach"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/companies/{id}/organization-chart": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["companyGapgetcompaniesidorganizationchart"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/companies/{id}/department-transfers/history": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["companyGapgetcompaniesiddepartmenttransfershistory"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/companies/{id}/contexts/{scopeId}/reports/department-analytics": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["companyGapgetcompaniesidcontextsscopeIdreportsdepartmentanalytics"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/companies/{id}/recovery-cases": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["companyGapgetcompaniesidrecoverycases"];
+        put?: never;
+        post: operations["companyGappostcompaniesidrecoverycases"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/companies/{id}/retention/readiness": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["companyGapgetcompaniesidretentionreadiness"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/companies/{id}/contexts/{scopeId}/sent-invitations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["companyGapgetcompaniesidcontextsscopeIdsentinvitations"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/companies/{id}/contexts/{scopeId}/invitations/{offerId}/resend": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["companyGappostcompaniesidcontextsscopeIdinvitationsofferIdresend"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/companies/{id}/contexts/{scopeId}/resources/{resourceId}/asset-tag": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["companyGapgetcompaniesidcontextsscopeIdresourcesresourceIdassettag"];
+        put?: never;
+        post: operations["companyGappostcompaniesidcontextsscopeIdresourcesresourceIdassettag"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/companies/{id}/contexts/{scopeId}/resources/{resourceId}/custody": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["companyGapgetcompaniesidcontextsscopeIdresourcesresourceIdcustody"];
+        put?: never;
+        post: operations["companyGappostcompaniesidcontextsscopeIdresourcesresourceIdcustody"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/companies/{id}/contexts/{scopeId}/resources/{resourceId}/custody/{custodyId}/return": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["companyGappostcompaniesidcontextsscopeIdresourcesresourceIdcustodycustodyIdreturn"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/companies/{id}/contexts/{scopeId}/resources/{resourceId}/maintenance": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["companyGapgetcompaniesidcontextsscopeIdresourcesresourceIdmaintenance"];
+        put?: never;
+        post: operations["companyGappostcompaniesidcontextsscopeIdresourcesresourceIdmaintenance"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/companies/{id}/contexts/{scopeId}/resources/{resourceId}/maintenance/{maintenanceId}/state": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["companyGappostcompaniesidcontextsscopeIdresourcesresourceIdmaintenancemaintenanceIdstate"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/companies/{id}/contexts/{scopeId}/reports/kpi-observations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["companyGapgetcompaniesidcontextsscopeIdreportskpiobservations"];
+        put?: never;
+        post: operations["companyGappostcompaniesidcontextsscopeIdreportskpiobservations"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/companies/{id}/contexts/{scopeId}/review-cycles": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["companyGapgetcompaniesidcontextsscopeIdreviewcycles"];
+        put?: never;
+        post: operations["companyGappostcompaniesidcontextsscopeIdreviewcycles"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/companies/{id}/contexts/{scopeId}/review-cycles/{cycleId}/state": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["companyGappostcompaniesidcontextsscopeIdreviewcyclescycleIdstate"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/companies/{id}/contexts/{scopeId}/review-cycles/{cycleId}/assignments": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["companyGappostcompaniesidcontextsscopeIdreviewcyclescycleIdassignments"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/companies/{id}/contexts/{scopeId}/performance-reviews": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["companyGapgetcompaniesidcontextsscopeIdperformancereviews"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/companies/{id}/contexts/{scopeId}/performance-reviews/{reviewId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["companyGapgetcompaniesidcontextsscopeIdperformancereviewsreviewId"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/companies/{id}/contexts/{scopeId}/performance-reviews/{reviewId}/submit": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["companyGappostcompaniesidcontextsscopeIdperformancereviewsreviewIdsubmit"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/companies/{id}/contexts/{scopeId}/performance-reviews/{reviewId}/complete": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["companyGappostcompaniesidcontextsscopeIdperformancereviewsreviewIdcomplete"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/companies/{id}/contexts/{scopeId}/performance-reviews/{reviewId}/history": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["companyGapgetcompaniesidcontextsscopeIdperformancereviewsreviewIdhistory"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/companies/{id}/contexts/{scopeId}/one-on-ones": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["companyGapgetcompaniesidcontextsscopeIdoneonones"];
+        put?: never;
+        post: operations["companyGappostcompaniesidcontextsscopeIdoneonones"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/companies/{id}/contexts/{scopeId}/one-on-ones/{recordId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["companyGapgetcompaniesidcontextsscopeIdoneononesrecordId"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/companies/{id}/contexts/{scopeId}/one-on-ones/{recordId}/revisions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["companyGappostcompaniesidcontextsscopeIdoneononesrecordIdrevisions"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/companies/{id}/contexts/{scopeId}/one-on-ones/{recordId}/history": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["companyGapgetcompaniesidcontextsscopeIdoneononesrecordIdhistory"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/companies/{id}/contexts/{scopeId}/one-on-ones/{recordId}/actions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["companyGapgetcompaniesidcontextsscopeIdoneononesrecordIdactions"];
+        put?: never;
+        post: operations["companyGappostcompaniesidcontextsscopeIdoneononesrecordIdactions"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/companies/{id}/contexts/{scopeId}/one-on-ones/{recordId}/actions/{actionId}/state": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["companyGappostcompaniesidcontextsscopeIdoneononesrecordIdactionsactionIdstate"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/companies/{id}/contexts/{scopeId}/custom-roles": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["companyGapgetcompaniesidcontextsscopeIdcustomroles"];
+        put?: never;
+        post: operations["companyGappostcompaniesidcontextsscopeIdcustomroles"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/companies/{id}/contexts/{scopeId}/custom-roles/{roleId}/revisions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["companyGappostcompaniesidcontextsscopeIdcustomrolesroleIdrevisions"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/companies/{id}/contexts/{scopeId}/custom-roles/{roleId}/archive": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["companyGappostcompaniesidcontextsscopeIdcustomrolesroleIdarchive"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/companies/{id}/contexts/{scopeId}/custom-roles/{roleId}/assignments": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["companyGappostcompaniesidcontextsscopeIdcustomrolesroleIdassignments"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/companies/{id}/contexts/{scopeId}/role-assignments/{assignmentId}/revoke": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["companyGappostcompaniesidcontextsscopeIdroleassignmentsassignmentIdrevoke"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/companies/{id}/contexts/{scopeId}/temporary-grants": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["companyGappostcompaniesidcontextsscopeIdtemporarygrants"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/companies/{id}/contexts/{scopeId}/temporary-grants/{grantId}/revoke": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["companyGappostcompaniesidcontextsscopeIdtemporarygrantsgrantIdrevoke"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/companies/{id}/contexts/{scopeId}/access-inventory": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["companyGapgetcompaniesidcontextsscopeIdaccessinventory"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/companies/{id}/contexts/{scopeId}/access-reviews": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["companyGapgetcompaniesidcontextsscopeIdaccessreviews"];
+        put?: never;
+        post: operations["companyGappostcompaniesidcontextsscopeIdaccessreviews"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/companies/{id}/contexts/{scopeId}/approval-delegations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["companyGapgetcompaniesidcontextsscopeIdapprovaldelegations"];
+        put?: never;
+        post: operations["companyGappostcompaniesidcontextsscopeIdapprovaldelegations"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/companies/{id}/contexts/{scopeId}/approval-delegations/{delegationId}/revoke": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["companyGappostcompaniesidcontextsscopeIdapprovaldelegationsdelegationIdrevoke"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/companies/{id}/contexts/{scopeId}/finance/approval-policies": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["companyGapgetcompaniesidcontextsscopeIdfinanceapprovalpolicies"];
+        put?: never;
+        post: operations["companyGappostcompaniesidcontextsscopeIdfinanceapprovalpolicies"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/companies/{id}/contexts/{scopeId}/finance/approval-policies/{policyId}/state": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["companyGappostcompaniesidcontextsscopeIdfinanceapprovalpoliciespolicyIdstate"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/companies/{id}/contexts/{scopeId}/finance/expenses/{expenseId}/submit-by-policy": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["companyGappostcompaniesidcontextsscopeIdfinanceexpensesexpenseIdsubmitbypolicy"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/companies/{id}/contexts/{scopeId}/finance/reimbursements/{requestId}/submit-by-policy": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["companyGappostcompaniesidcontextsscopeIdfinancereimbursementsrequestIdsubmitbypolicy"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/companies/{id}/contexts/{scopeId}/finance/approvals/{approvalId}/timeline": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["companyGapgetcompaniesidcontextsscopeIdfinanceapprovalsapprovalIdtimeline"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/companies/{id}/contexts/{scopeId}/finance/budget-alerts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["companyGapgetcompaniesidcontextsscopeIdfinancebudgetalerts"];
+        put?: never;
+        post: operations["companyGappostcompaniesidcontextsscopeIdfinancebudgetalerts"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/companies/{id}/contexts/{scopeId}/finance/budget-alerts/{ruleId}/revoke": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["companyGappostcompaniesidcontextsscopeIdfinancebudgetalertsruleIdrevoke"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/companies/{id}/security-audit": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["companyGapgetcompaniesidsecurityaudit"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/companies/{id}/recovery-policy-drafts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["companyGapgetcompaniesidrecoverypolicydrafts"];
+        put?: never;
+        post: operations["companyGappostcompaniesidrecoverypolicydrafts"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/companies/{id}/contexts/{scopeId}/finance/approvals/{approvalId}/decision-receipts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["companyGappostcompaniesidcontextsscopeIdfinanceapprovalsapprovalIddecisionreceipts"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/companies/{id}/contexts/{scopeId}/reports/resource-usage": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["companyGapgetcompaniesidcontextsscopeIdreportsresourceusage"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/companies/{id}/contexts/{scopeId}/finance/budget-change-requests/{requestId}/bind-workflow": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["companyGappostcompaniesidcontextsscopeIdfinancebudgetchangerequestsrequestIdbindworkflow"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/companies/{id}/contexts/{scopeId}/finance/budget-change-requests/{requestId}/submit-by-policy": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["companyGappostcompaniesidcontextsscopeIdfinancebudgetchangerequestsrequestIdsubmitbypolicy"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/companies/{id}/contexts/{scopeId}/finance/approvals/{approvalId}/action-state": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["companyGapgetcompaniesidcontextsscopeIdfinanceapprovalsapprovalIdactionstate"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/companies/{id}/contexts/{scopeId}/effective-read-permissions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["companyGapgetcompaniesidcontextsscopeIdeffectivereadpermissions"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -9954,7 +10802,7 @@ export interface operations {
                             /** Format: uuid */
                             id: string;
                             /** @enum {string} */
-                            kind: "KNOWLEDGE_ACK_REMINDER" | "EMPLOYEE_FILE_REQUEST";
+                            kind: "KNOWLEDGE_ACK_REMINDER" | "EMPLOYEE_FILE_REQUEST" | "BUDGET_THRESHOLD" | "APPROVAL_ESCALATED";
                             /** Format: uuid */
                             subjectId: string;
                             /** Format: date-time */
@@ -10087,7 +10935,7 @@ export interface operations {
                         /** Format: uuid */
                         id: string;
                         /** @enum {string} */
-                        kind: "KNOWLEDGE_ACK_REMINDER" | "EMPLOYEE_FILE_REQUEST";
+                        kind: "KNOWLEDGE_ACK_REMINDER" | "EMPLOYEE_FILE_REQUEST" | "BUDGET_THRESHOLD" | "APPROVAL_ESCALATED";
                         /** Format: uuid */
                         subjectId: string;
                         /** Format: date-time */
@@ -25418,7 +26266,7 @@ export interface operations {
                             updatedAt: string;
                             title: string;
                             /** @enum {string} */
-                            kind: "EXPENSE" | "REIMBURSEMENT";
+                            kind: "EXPENSE" | "REIMBURSEMENT" | "BUDGET_CHANGE";
                         }[];
                         nextCursor: string | null;
                     };
@@ -25536,7 +26384,7 @@ export interface operations {
                     id: string;
                     title: string;
                     /** @enum {string} */
-                    kind: "EXPENSE" | "REIMBURSEMENT";
+                    kind: "EXPENSE" | "REIMBURSEMENT" | "BUDGET_CHANGE";
                 };
             };
         };
@@ -25563,7 +26411,7 @@ export interface operations {
                         updatedAt: string;
                         title: string;
                         /** @enum {string} */
-                        kind: "EXPENSE" | "REIMBURSEMENT";
+                        kind: "EXPENSE" | "REIMBURSEMENT" | "BUDGET_CHANGE";
                     };
                 };
             };
@@ -25694,7 +26542,7 @@ export interface operations {
                         updatedAt: string;
                         title: string;
                         /** @enum {string} */
-                        kind: "EXPENSE" | "REIMBURSEMENT";
+                        kind: "EXPENSE" | "REIMBURSEMENT" | "BUDGET_CHANGE";
                     };
                 };
             };
@@ -26816,6 +27664,7 @@ export interface operations {
                         workflowVersionId: string;
                         expenseVersionId: string | null;
                         reimbursementId: string | null;
+                        budgetChangeRequestId?: string | null;
                         requester: {
                             /** Format: uuid */
                             accessId: string;
@@ -26976,6 +27825,7 @@ export interface operations {
                         workflowVersionId: string;
                         expenseVersionId: string | null;
                         reimbursementId: string | null;
+                        budgetChangeRequestId?: string | null;
                         requester: {
                             /** Format: uuid */
                             accessId: string;
@@ -27128,6 +27978,7 @@ export interface operations {
                             workflowVersionId: string;
                             expenseVersionId: string | null;
                             reimbursementId: string | null;
+                            budgetChangeRequestId?: string | null;
                             requester: {
                                 /** Format: uuid */
                                 accessId: string;
@@ -27280,6 +28131,7 @@ export interface operations {
                         workflowVersionId: string;
                         expenseVersionId: string | null;
                         reimbursementId: string | null;
+                        budgetChangeRequestId?: string | null;
                         requester: {
                             /** Format: uuid */
                             accessId: string;
@@ -27589,6 +28441,7 @@ export interface operations {
                         workflowVersionId: string;
                         expenseVersionId: string | null;
                         reimbursementId: string | null;
+                        budgetChangeRequestId?: string | null;
                         requester: {
                             /** Format: uuid */
                             accessId: string;
@@ -27746,6 +28599,7 @@ export interface operations {
                         workflowVersionId: string;
                         expenseVersionId: string | null;
                         reimbursementId: string | null;
+                        budgetChangeRequestId?: string | null;
                         requester: {
                             /** Format: uuid */
                             accessId: string;
@@ -27906,6 +28760,7 @@ export interface operations {
                         workflowVersionId: string;
                         expenseVersionId: string | null;
                         reimbursementId: string | null;
+                        budgetChangeRequestId?: string | null;
                         requester: {
                             /** Format: uuid */
                             accessId: string;
@@ -34447,6 +35302,143 @@ export interface operations {
             };
         };
     };
+    companyGapgetcompaniesidownershiphandovers: {
+        parameters: {
+            query?: {
+                limit?: number;
+                after?: string;
+            };
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Current authorized Company result; configured policies are required for gated actions */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        items: {
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            spaceId: string;
+                            /** Format: uuid */
+                            scopeId: string;
+                            /** Format: uuid */
+                            fromAccessId: string;
+                            /** Format: uuid */
+                            toAccessId: string;
+                            /** @enum {string} */
+                            state: "PENDING" | "ACCEPTED" | "DECLINED" | "REVOKED" | "EXPIRED";
+                            revision: number;
+                            /** Format: date-time */
+                            expiresAt: string;
+                            expectedCustodyRevision: number;
+                            acceptedAt: string | null;
+                        }[];
+                        nextCursor: string | null;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
     companyLifecyclepostcompaniesidownershiphandovers: {
         parameters: {
             query?: never;
@@ -36592,6 +37584,9719 @@ export interface operations {
                         createdAt: string;
                         /** Format: date-time */
                         updatedAt: string;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    companyGapgetcompaniesidorganizationchart: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Current authorized Company result; configured policies are required for gated actions */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        companyId: string;
+                        nodes: {
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string} */
+                            kind: "COMPANY" | "DEPARTMENT" | "UNIT";
+                            parentId: string | null;
+                            title: string;
+                            revision: number;
+                            memberCount: number | null;
+                            managers: {
+                                /** Format: uuid */
+                                accessId: string;
+                                generation: number;
+                                displayName?: string | null;
+                            }[];
+                            /** @enum {string} */
+                            evidence: "OBSERVED" | "RESTRICTED";
+                        }[];
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    companyGapgetcompaniesiddepartmenttransfershistory: {
+        parameters: {
+            query?: {
+                limit?: number;
+                after?: string;
+            };
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Current authorized Company result; configured policies are required for gated actions */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        items: {
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            employeeActorId: string;
+                            /** Format: uuid */
+                            actorId: string;
+                            /** Format: uuid */
+                            fromScopeId: string;
+                            /** Format: uuid */
+                            toScopeId: string;
+                            fromDepartmentId: string | null;
+                            toDepartmentId: string | null;
+                            fromUnitId: string | null;
+                            toUnitId: string | null;
+                            /** Format: uuid */
+                            fromAccessId: string;
+                            /** Format: uuid */
+                            toAccessId: string;
+                            fromGeneration: number;
+                            toGeneration: number;
+                            /** @enum {string} */
+                            role: "ORG_ADMIN" | "DEPT_MANAGER" | "TEAM_LEAD" | "MEMBER" | "VIEWER";
+                            /** @constant */
+                            state: "CONFIRMED";
+                            /** Format: date-time */
+                            effectiveAt: string;
+                            /** Format: date-time */
+                            createdAt: string;
+                        }[];
+                        nextCursor: string | null;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    companyGapgetcompaniesidcontextsscopeIdreportsdepartmentanalytics: {
+        parameters: {
+            query: {
+                from: string;
+                to: string;
+            };
+            header?: never;
+            path: {
+                id: string;
+                scopeId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Current authorized Company result; configured policies are required for gated actions */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        scopeId: string;
+                        /** Format: date-time */
+                        from: string;
+                        /** Format: date-time */
+                        to: string;
+                        /** Format: date-time */
+                        snapshotAt: string;
+                        goals: number;
+                        kpiObservations: number;
+                        approvalThroughput: {
+                            approved: number;
+                            rejected: number;
+                            canceled: number;
+                        };
+                        activeMembers: number;
+                        units: number;
+                        resources: number;
+                        transfers: number;
+                        reviewCompletion: {
+                            submitted: number;
+                            completed: number;
+                            total: number;
+                        };
+                        /** @constant */
+                        workEvidence: "UNKNOWN";
+                        /** @constant */
+                        financeEvidence: "SEPARATE_AUTHORIZED_REPORT";
+                        /** @constant */
+                        privateContentIncluded: false;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    companyGapgetcompaniesidrecoverycases: {
+        parameters: {
+            query?: {
+                limit?: number;
+                after?: string;
+            };
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Current authorized Company result; configured policies are required for gated actions */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        items: {
+                            /** Format: uuid */
+                            id: string;
+                            revision: number;
+                            /** Format: date-time */
+                            createdAt: string;
+                            /** Format: date-time */
+                            updatedAt: string;
+                            /** @enum {string} */
+                            state: "POLICY_GATED" | "CANCELED";
+                            policyVersion: string | null;
+                            /** @constant */
+                            executable: false;
+                        }[];
+                        nextCursor: string | null;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    companyGappostcompaniesidrecoverycases: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "Idempotency-Key": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** Format: uuid */
+                    id: string;
+                    /** @default null */
+                    evidenceReference?: string | null;
+                };
+            };
+        };
+        responses: {
+            /** @description Current authorized Company result; configured policies are required for gated actions */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        revision: number;
+                        /** Format: date-time */
+                        createdAt: string;
+                        /** Format: date-time */
+                        updatedAt: string;
+                        /** @enum {string} */
+                        state: "POLICY_GATED" | "CANCELED";
+                        policyVersion: string | null;
+                        /** @constant */
+                        executable: false;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    companyGapgetcompaniesidretentionreadiness: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Current authorized Company result; configured policies are required for gated actions */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        companyId: string;
+                        policyVersion: string;
+                        approvalRecorded: boolean;
+                        sharedEnabled: boolean;
+                        /** @constant */
+                        activationAuthorized: false;
+                        holds: number | null;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    companyGapgetcompaniesidcontextsscopeIdsentinvitations: {
+        parameters: {
+            query?: {
+                limit?: number;
+                after?: string;
+            };
+            header?: never;
+            path: {
+                id: string;
+                scopeId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Current authorized Company result; configured policies are required for gated actions */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        items: {
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            scopeId: string;
+                            /** @enum {string} */
+                            memberRole: "ORG_ADMIN" | "DEPT_MANAGER" | "TEAM_LEAD" | "MEMBER" | "VIEWER";
+                            recipientEmail: string | null;
+                            /** @enum {string} */
+                            state: "PENDING" | "ACCEPTED" | "DECLINED" | "EXPIRED" | "REVOKED";
+                            revision: number;
+                            /** Format: date-time */
+                            createdAt: string;
+                            /** Format: date-time */
+                            sentAt: string;
+                            /** Format: date-time */
+                            expiresAt: string;
+                        }[];
+                        nextCursor: string | null;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    companyGappostcompaniesidcontextsscopeIdinvitationsofferIdresend: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "If-Match": string;
+                "Idempotency-Key": string;
+            };
+            path: {
+                id: string;
+                scopeId: string;
+                offerId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": Record<string, never>;
+            };
+        };
+        responses: {
+            /** @description Current authorized Company result; configured policies are required for gated actions */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        /** Format: uuid */
+                        spaceId: string;
+                        /** Format: uuid */
+                        scopeId: string;
+                        /** @enum {string} */
+                        memberRole: "ORG_ADMIN" | "DEPT_MANAGER" | "TEAM_LEAD" | "MEMBER" | "VIEWER";
+                        /** @enum {string} */
+                        state: "PENDING" | "ACCEPTED" | "DECLINED" | "EXPIRED" | "REVOKED";
+                        revision: number;
+                        /** Format: date-time */
+                        expiresAt: string;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    companyGapgetcompaniesidcontextsscopeIdresourcesresourceIdassettag: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+                scopeId: string;
+                resourceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Current authorized Company result; configured policies are required for gated actions */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        assetTag: string | null;
+                        /** Format: uuid */
+                        id: string;
+                        revision: number;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    companyGappostcompaniesidcontextsscopeIdresourcesresourceIdassettag: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "If-Match": string;
+            };
+            path: {
+                id: string;
+                scopeId: string;
+                resourceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    assetTag: string | null;
+                };
+            };
+        };
+        responses: {
+            /** @description Current authorized Company result; configured policies are required for gated actions */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        assetTag: string | null;
+                        /** Format: uuid */
+                        id: string;
+                        revision: number;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    companyGapgetcompaniesidcontextsscopeIdresourcesresourceIdcustody: {
+        parameters: {
+            query?: {
+                limit?: number;
+                after?: string;
+            };
+            header?: never;
+            path: {
+                id: string;
+                scopeId: string;
+                resourceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Current authorized Company result; configured policies are required for gated actions */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        items: {
+                            /** Format: uuid */
+                            id: string;
+                            revision: number;
+                            /** Format: date-time */
+                            createdAt: string;
+                            /** Format: date-time */
+                            updatedAt: string;
+                            /** Format: uuid */
+                            resourceId: string;
+                            member: {
+                                /** Format: uuid */
+                                accessId: string;
+                                generation: number;
+                                displayName?: string | null;
+                            };
+                            /** Format: uuid */
+                            issuedByActorId: string;
+                            /** Format: date-time */
+                            assignedAt: string;
+                            expectedReturnAt: string | null;
+                            returnedAt: string | null;
+                            returnedByActorId: string | null;
+                        }[];
+                        nextCursor: string | null;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    companyGappostcompaniesidcontextsscopeIdresourcesresourceIdcustody: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "Idempotency-Key": string;
+            };
+            path: {
+                id: string;
+                scopeId: string;
+                resourceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** Format: uuid */
+                    id: string;
+                    member: {
+                        /** Format: uuid */
+                        accessId: string;
+                        generation: number;
+                    };
+                    /** @default null */
+                    expectedReturnAt?: string | null;
+                };
+            };
+        };
+        responses: {
+            /** @description Current authorized Company result; configured policies are required for gated actions */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        revision: number;
+                        /** Format: date-time */
+                        createdAt: string;
+                        /** Format: date-time */
+                        updatedAt: string;
+                        /** Format: uuid */
+                        resourceId: string;
+                        member: {
+                            /** Format: uuid */
+                            accessId: string;
+                            generation: number;
+                            displayName?: string | null;
+                        };
+                        /** Format: uuid */
+                        issuedByActorId: string;
+                        /** Format: date-time */
+                        assignedAt: string;
+                        expectedReturnAt: string | null;
+                        returnedAt: string | null;
+                        returnedByActorId: string | null;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    companyGappostcompaniesidcontextsscopeIdresourcesresourceIdcustodycustodyIdreturn: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "If-Match": string;
+            };
+            path: {
+                id: string;
+                scopeId: string;
+                resourceId: string;
+                custodyId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": Record<string, never>;
+            };
+        };
+        responses: {
+            /** @description Current authorized Company result; configured policies are required for gated actions */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        revision: number;
+                        /** Format: date-time */
+                        createdAt: string;
+                        /** Format: date-time */
+                        updatedAt: string;
+                        /** Format: uuid */
+                        resourceId: string;
+                        member: {
+                            /** Format: uuid */
+                            accessId: string;
+                            generation: number;
+                            displayName?: string | null;
+                        };
+                        /** Format: uuid */
+                        issuedByActorId: string;
+                        /** Format: date-time */
+                        assignedAt: string;
+                        expectedReturnAt: string | null;
+                        returnedAt: string | null;
+                        returnedByActorId: string | null;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    companyGapgetcompaniesidcontextsscopeIdresourcesresourceIdmaintenance: {
+        parameters: {
+            query?: {
+                limit?: number;
+                after?: string;
+            };
+            header?: never;
+            path: {
+                id: string;
+                scopeId: string;
+                resourceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Current authorized Company result; configured policies are required for gated actions */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        items: {
+                            /** Format: uuid */
+                            id: string;
+                            revision: number;
+                            /** Format: date-time */
+                            createdAt: string;
+                            /** Format: date-time */
+                            updatedAt: string;
+                            /** Format: uuid */
+                            resourceId: string;
+                            kind: string;
+                            reason: string | null;
+                            /** Format: date-time */
+                            scheduledAt: string;
+                            completedAt: string | null;
+                            responsible: {
+                                /** Format: uuid */
+                                accessId: string;
+                                generation: number;
+                                displayName?: string | null;
+                            };
+                            /** @enum {string} */
+                            state: "SCHEDULED" | "IN_PROGRESS" | "COMPLETED" | "CANCELED";
+                        }[];
+                        nextCursor: string | null;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    companyGappostcompaniesidcontextsscopeIdresourcesresourceIdmaintenance: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "Idempotency-Key": string;
+            };
+            path: {
+                id: string;
+                scopeId: string;
+                resourceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** Format: uuid */
+                    id: string;
+                    kind: string;
+                    /** @default null */
+                    reason?: string | null;
+                    /** Format: date-time */
+                    scheduledAt: string;
+                    responsible: {
+                        /** Format: uuid */
+                        accessId: string;
+                        generation: number;
+                    };
+                };
+            };
+        };
+        responses: {
+            /** @description Current authorized Company result; configured policies are required for gated actions */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        revision: number;
+                        /** Format: date-time */
+                        createdAt: string;
+                        /** Format: date-time */
+                        updatedAt: string;
+                        /** Format: uuid */
+                        resourceId: string;
+                        kind: string;
+                        reason: string | null;
+                        /** Format: date-time */
+                        scheduledAt: string;
+                        completedAt: string | null;
+                        responsible: {
+                            /** Format: uuid */
+                            accessId: string;
+                            generation: number;
+                            displayName?: string | null;
+                        };
+                        /** @enum {string} */
+                        state: "SCHEDULED" | "IN_PROGRESS" | "COMPLETED" | "CANCELED";
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    companyGappostcompaniesidcontextsscopeIdresourcesresourceIdmaintenancemaintenanceIdstate: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "If-Match": string;
+            };
+            path: {
+                id: string;
+                scopeId: string;
+                resourceId: string;
+                maintenanceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @enum {string} */
+                    state: "IN_PROGRESS" | "COMPLETED" | "CANCELED";
+                };
+            };
+        };
+        responses: {
+            /** @description Current authorized Company result; configured policies are required for gated actions */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        revision: number;
+                        /** Format: date-time */
+                        createdAt: string;
+                        /** Format: date-time */
+                        updatedAt: string;
+                        /** Format: uuid */
+                        resourceId: string;
+                        kind: string;
+                        reason: string | null;
+                        /** Format: date-time */
+                        scheduledAt: string;
+                        completedAt: string | null;
+                        responsible: {
+                            /** Format: uuid */
+                            accessId: string;
+                            generation: number;
+                            displayName?: string | null;
+                        };
+                        /** @enum {string} */
+                        state: "SCHEDULED" | "IN_PROGRESS" | "COMPLETED" | "CANCELED";
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    companyGapgetcompaniesidcontextsscopeIdreportskpiobservations: {
+        parameters: {
+            query: {
+                limit?: number;
+                after?: string;
+                from: string;
+                to: string;
+            };
+            header?: never;
+            path: {
+                id: string;
+                scopeId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Current authorized Company result; configured policies are required for gated actions */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        items: {
+                            /** Format: uuid */
+                            id: string;
+                            metric: string;
+                            source: string;
+                            unit: string;
+                            value: string;
+                            /** Format: date-time */
+                            periodStart: string;
+                            /** Format: date-time */
+                            periodEnd: string;
+                            revision: number;
+                            /** Format: date-time */
+                            createdAt: string;
+                            /** Format: date-time */
+                            updatedAt: string;
+                            /** Format: uuid */
+                            recordedByActorId: string;
+                            /** @constant */
+                            evidence: "OBSERVED";
+                        }[];
+                        nextCursor: string | null;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    companyGappostcompaniesidcontextsscopeIdreportskpiobservations: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "Idempotency-Key": string;
+            };
+            path: {
+                id: string;
+                scopeId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** Format: uuid */
+                    id: string;
+                    metric: string;
+                    source: string;
+                    unit: string;
+                    value: string;
+                    /** Format: date-time */
+                    periodStart: string;
+                    /** Format: date-time */
+                    periodEnd: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Current authorized Company result; configured policies are required for gated actions */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        metric: string;
+                        source: string;
+                        unit: string;
+                        value: string;
+                        /** Format: date-time */
+                        periodStart: string;
+                        /** Format: date-time */
+                        periodEnd: string;
+                        revision: number;
+                        /** Format: date-time */
+                        createdAt: string;
+                        /** Format: date-time */
+                        updatedAt: string;
+                        /** Format: uuid */
+                        recordedByActorId: string;
+                        /** @constant */
+                        evidence: "OBSERVED";
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    companyGapgetcompaniesidcontextsscopeIdreviewcycles: {
+        parameters: {
+            query?: {
+                limit?: number;
+                after?: string;
+            };
+            header?: never;
+            path: {
+                id: string;
+                scopeId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Current authorized Company result; configured policies are required for gated actions */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        items: {
+                            /** Format: uuid */
+                            id: string;
+                            title: string;
+                            /** Format: date-time */
+                            periodStart: string;
+                            /** Format: date-time */
+                            periodEnd: string;
+                            revision: number;
+                            /** Format: date-time */
+                            createdAt: string;
+                            /** Format: date-time */
+                            updatedAt: string;
+                            /** @enum {string} */
+                            state: "DRAFT" | "OPEN" | "CLOSED";
+                        }[];
+                        nextCursor: string | null;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    companyGappostcompaniesidcontextsscopeIdreviewcycles: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "Idempotency-Key": string;
+            };
+            path: {
+                id: string;
+                scopeId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** Format: uuid */
+                    id: string;
+                    title: string;
+                    /** Format: date-time */
+                    periodStart: string;
+                    /** Format: date-time */
+                    periodEnd: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Current authorized Company result; configured policies are required for gated actions */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        title: string;
+                        /** Format: date-time */
+                        periodStart: string;
+                        /** Format: date-time */
+                        periodEnd: string;
+                        revision: number;
+                        /** Format: date-time */
+                        createdAt: string;
+                        /** Format: date-time */
+                        updatedAt: string;
+                        /** @enum {string} */
+                        state: "DRAFT" | "OPEN" | "CLOSED";
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    companyGappostcompaniesidcontextsscopeIdreviewcyclescycleIdstate: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "If-Match": string;
+            };
+            path: {
+                id: string;
+                scopeId: string;
+                cycleId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @enum {string} */
+                    state: "OPEN" | "CLOSED";
+                };
+            };
+        };
+        responses: {
+            /** @description Current authorized Company result; configured policies are required for gated actions */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        title: string;
+                        /** Format: date-time */
+                        periodStart: string;
+                        /** Format: date-time */
+                        periodEnd: string;
+                        revision: number;
+                        /** Format: date-time */
+                        createdAt: string;
+                        /** Format: date-time */
+                        updatedAt: string;
+                        /** @enum {string} */
+                        state: "DRAFT" | "OPEN" | "CLOSED";
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    companyGappostcompaniesidcontextsscopeIdreviewcyclescycleIdassignments: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "Idempotency-Key": string;
+            };
+            path: {
+                id: string;
+                scopeId: string;
+                cycleId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** Format: uuid */
+                    id: string;
+                    subject: {
+                        /** Format: uuid */
+                        accessId: string;
+                        generation: number;
+                    };
+                    reviewer: {
+                        /** Format: uuid */
+                        accessId: string;
+                        generation: number;
+                    };
+                };
+            };
+        };
+        responses: {
+            /** @description Current authorized Company result; configured policies are required for gated actions */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        revision: number;
+                        /** Format: date-time */
+                        createdAt: string;
+                        /** Format: date-time */
+                        updatedAt: string;
+                        /** Format: uuid */
+                        cycleId: string;
+                        subject: {
+                            /** Format: uuid */
+                            accessId: string;
+                            generation: number;
+                            displayName?: string | null;
+                        };
+                        reviewer: {
+                            /** Format: uuid */
+                            accessId: string;
+                            generation: number;
+                            displayName?: string | null;
+                        };
+                        /** @enum {string} */
+                        state: "DRAFT" | "SUBMITTED" | "COMPLETED";
+                        body: string | null;
+                        redactedAt: string | null;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    companyGapgetcompaniesidcontextsscopeIdperformancereviews: {
+        parameters: {
+            query?: {
+                limit?: number;
+                after?: string;
+            };
+            header?: never;
+            path: {
+                id: string;
+                scopeId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Current authorized Company result; configured policies are required for gated actions */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        items: {
+                            /** Format: uuid */
+                            id: string;
+                            revision: number;
+                            /** Format: date-time */
+                            createdAt: string;
+                            /** Format: date-time */
+                            updatedAt: string;
+                            /** Format: uuid */
+                            cycleId: string;
+                            subject: {
+                                /** Format: uuid */
+                                accessId: string;
+                                generation: number;
+                                displayName?: string | null;
+                            };
+                            reviewer: {
+                                /** Format: uuid */
+                                accessId: string;
+                                generation: number;
+                                displayName?: string | null;
+                            };
+                            /** @enum {string} */
+                            state: "DRAFT" | "SUBMITTED" | "COMPLETED";
+                            body: string | null;
+                            redactedAt: string | null;
+                        }[];
+                        nextCursor: string | null;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    companyGapgetcompaniesidcontextsscopeIdperformancereviewsreviewId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+                scopeId: string;
+                reviewId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Current authorized Company result; configured policies are required for gated actions */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        revision: number;
+                        /** Format: date-time */
+                        createdAt: string;
+                        /** Format: date-time */
+                        updatedAt: string;
+                        /** Format: uuid */
+                        cycleId: string;
+                        subject: {
+                            /** Format: uuid */
+                            accessId: string;
+                            generation: number;
+                            displayName?: string | null;
+                        };
+                        reviewer: {
+                            /** Format: uuid */
+                            accessId: string;
+                            generation: number;
+                            displayName?: string | null;
+                        };
+                        /** @enum {string} */
+                        state: "DRAFT" | "SUBMITTED" | "COMPLETED";
+                        body: string | null;
+                        redactedAt: string | null;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    companyGappostcompaniesidcontextsscopeIdperformancereviewsreviewIdsubmit: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "If-Match": string;
+            };
+            path: {
+                id: string;
+                scopeId: string;
+                reviewId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    body: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Current authorized Company result; configured policies are required for gated actions */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        revision: number;
+                        /** Format: date-time */
+                        createdAt: string;
+                        /** Format: date-time */
+                        updatedAt: string;
+                        /** Format: uuid */
+                        cycleId: string;
+                        subject: {
+                            /** Format: uuid */
+                            accessId: string;
+                            generation: number;
+                            displayName?: string | null;
+                        };
+                        reviewer: {
+                            /** Format: uuid */
+                            accessId: string;
+                            generation: number;
+                            displayName?: string | null;
+                        };
+                        /** @enum {string} */
+                        state: "DRAFT" | "SUBMITTED" | "COMPLETED";
+                        body: string | null;
+                        redactedAt: string | null;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    companyGappostcompaniesidcontextsscopeIdperformancereviewsreviewIdcomplete: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "If-Match": string;
+            };
+            path: {
+                id: string;
+                scopeId: string;
+                reviewId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": Record<string, never>;
+            };
+        };
+        responses: {
+            /** @description Current authorized Company result; configured policies are required for gated actions */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        revision: number;
+                        /** Format: date-time */
+                        createdAt: string;
+                        /** Format: date-time */
+                        updatedAt: string;
+                        /** Format: uuid */
+                        cycleId: string;
+                        subject: {
+                            /** Format: uuid */
+                            accessId: string;
+                            generation: number;
+                            displayName?: string | null;
+                        };
+                        reviewer: {
+                            /** Format: uuid */
+                            accessId: string;
+                            generation: number;
+                            displayName?: string | null;
+                        };
+                        /** @enum {string} */
+                        state: "DRAFT" | "SUBMITTED" | "COMPLETED";
+                        body: string | null;
+                        redactedAt: string | null;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    companyGapgetcompaniesidcontextsscopeIdperformancereviewsreviewIdhistory: {
+        parameters: {
+            query?: {
+                limit?: number;
+                after?: string;
+            };
+            header?: never;
+            path: {
+                id: string;
+                scopeId: string;
+                reviewId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Current authorized Company result; configured policies are required for gated actions */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        items: {
+                            /** Format: uuid */
+                            id: string;
+                            revision: number;
+                            /** Format: date-time */
+                            createdAt: string;
+                            /** Format: date-time */
+                            updatedAt: string;
+                            /** Format: uuid */
+                            actorId: string;
+                            body: string | null;
+                            state: string | null;
+                            meetingAt: string | null;
+                            redactedAt: string | null;
+                        }[];
+                        nextCursor: string | null;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    companyGapgetcompaniesidcontextsscopeIdoneonones: {
+        parameters: {
+            query?: {
+                limit?: number;
+                after?: string;
+            };
+            header?: never;
+            path: {
+                id: string;
+                scopeId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Current authorized Company result; configured policies are required for gated actions */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        items: {
+                            /** Format: uuid */
+                            id: string;
+                            revision: number;
+                            /** Format: date-time */
+                            createdAt: string;
+                            /** Format: date-time */
+                            updatedAt: string;
+                            manager: {
+                                /** Format: uuid */
+                                accessId: string;
+                                generation: number;
+                                displayName?: string | null;
+                            };
+                            employee: {
+                                /** Format: uuid */
+                                accessId: string;
+                                generation: number;
+                                displayName?: string | null;
+                            };
+                            /** Format: date-time */
+                            meetingAt: string;
+                            notes: string | null;
+                            redactedAt: string | null;
+                        }[];
+                        nextCursor: string | null;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    companyGappostcompaniesidcontextsscopeIdoneonones: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "Idempotency-Key": string;
+            };
+            path: {
+                id: string;
+                scopeId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** Format: uuid */
+                    id: string;
+                    employee: {
+                        /** Format: uuid */
+                        accessId: string;
+                        generation: number;
+                    };
+                    /** Format: date-time */
+                    meetingAt: string;
+                    notes: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Current authorized Company result; configured policies are required for gated actions */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        revision: number;
+                        /** Format: date-time */
+                        createdAt: string;
+                        /** Format: date-time */
+                        updatedAt: string;
+                        manager: {
+                            /** Format: uuid */
+                            accessId: string;
+                            generation: number;
+                            displayName?: string | null;
+                        };
+                        employee: {
+                            /** Format: uuid */
+                            accessId: string;
+                            generation: number;
+                            displayName?: string | null;
+                        };
+                        /** Format: date-time */
+                        meetingAt: string;
+                        notes: string | null;
+                        redactedAt: string | null;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    companyGapgetcompaniesidcontextsscopeIdoneononesrecordId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+                scopeId: string;
+                recordId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Current authorized Company result; configured policies are required for gated actions */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        revision: number;
+                        /** Format: date-time */
+                        createdAt: string;
+                        /** Format: date-time */
+                        updatedAt: string;
+                        manager: {
+                            /** Format: uuid */
+                            accessId: string;
+                            generation: number;
+                            displayName?: string | null;
+                        };
+                        employee: {
+                            /** Format: uuid */
+                            accessId: string;
+                            generation: number;
+                            displayName?: string | null;
+                        };
+                        /** Format: date-time */
+                        meetingAt: string;
+                        notes: string | null;
+                        redactedAt: string | null;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    companyGappostcompaniesidcontextsscopeIdoneononesrecordIdrevisions: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "If-Match": string;
+            };
+            path: {
+                id: string;
+                scopeId: string;
+                recordId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** Format: date-time */
+                    meetingAt: string;
+                    notes: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Current authorized Company result; configured policies are required for gated actions */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        revision: number;
+                        /** Format: date-time */
+                        createdAt: string;
+                        /** Format: date-time */
+                        updatedAt: string;
+                        manager: {
+                            /** Format: uuid */
+                            accessId: string;
+                            generation: number;
+                            displayName?: string | null;
+                        };
+                        employee: {
+                            /** Format: uuid */
+                            accessId: string;
+                            generation: number;
+                            displayName?: string | null;
+                        };
+                        /** Format: date-time */
+                        meetingAt: string;
+                        notes: string | null;
+                        redactedAt: string | null;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    companyGapgetcompaniesidcontextsscopeIdoneononesrecordIdhistory: {
+        parameters: {
+            query?: {
+                limit?: number;
+                after?: string;
+            };
+            header?: never;
+            path: {
+                id: string;
+                scopeId: string;
+                recordId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Current authorized Company result; configured policies are required for gated actions */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        items: {
+                            /** Format: uuid */
+                            id: string;
+                            revision: number;
+                            /** Format: date-time */
+                            createdAt: string;
+                            /** Format: date-time */
+                            updatedAt: string;
+                            /** Format: uuid */
+                            actorId: string;
+                            body: string | null;
+                            state: string | null;
+                            meetingAt: string | null;
+                            redactedAt: string | null;
+                        }[];
+                        nextCursor: string | null;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    companyGapgetcompaniesidcontextsscopeIdoneononesrecordIdactions: {
+        parameters: {
+            query?: {
+                limit?: number;
+                after?: string;
+            };
+            header?: never;
+            path: {
+                id: string;
+                scopeId: string;
+                recordId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Current authorized Company result; configured policies are required for gated actions */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        items: {
+                            /** Format: uuid */
+                            id: string;
+                            revision: number;
+                            /** Format: date-time */
+                            createdAt: string;
+                            /** Format: date-time */
+                            updatedAt: string;
+                            /** Format: uuid */
+                            recordId: string;
+                            body: string | null;
+                            /** @enum {string} */
+                            state: "OPEN" | "DONE" | "CANCELED";
+                        }[];
+                        nextCursor: string | null;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    companyGappostcompaniesidcontextsscopeIdoneononesrecordIdactions: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "Idempotency-Key": string;
+            };
+            path: {
+                id: string;
+                scopeId: string;
+                recordId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** Format: uuid */
+                    id: string;
+                    body: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Current authorized Company result; configured policies are required for gated actions */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        revision: number;
+                        /** Format: date-time */
+                        createdAt: string;
+                        /** Format: date-time */
+                        updatedAt: string;
+                        /** Format: uuid */
+                        recordId: string;
+                        body: string | null;
+                        /** @enum {string} */
+                        state: "OPEN" | "DONE" | "CANCELED";
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    companyGappostcompaniesidcontextsscopeIdoneononesrecordIdactionsactionIdstate: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "If-Match": string;
+            };
+            path: {
+                id: string;
+                scopeId: string;
+                recordId: string;
+                actionId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @enum {string} */
+                    state: "OPEN" | "DONE" | "CANCELED";
+                };
+            };
+        };
+        responses: {
+            /** @description Current authorized Company result; configured policies are required for gated actions */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        revision: number;
+                        /** Format: date-time */
+                        createdAt: string;
+                        /** Format: date-time */
+                        updatedAt: string;
+                        /** Format: uuid */
+                        recordId: string;
+                        body: string | null;
+                        /** @enum {string} */
+                        state: "OPEN" | "DONE" | "CANCELED";
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    companyGapgetcompaniesidcontextsscopeIdcustomroles: {
+        parameters: {
+            query?: {
+                limit?: number;
+                after?: string;
+            };
+            header?: never;
+            path: {
+                id: string;
+                scopeId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Current authorized Company result; configured policies are required for gated actions */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        items: {
+                            /** Format: uuid */
+                            id: string;
+                            title: string;
+                            capabilities: ("structure.read" | "directory.read")[];
+                            revision: number;
+                            /** Format: date-time */
+                            createdAt: string;
+                            /** Format: date-time */
+                            updatedAt: string;
+                            archivedAt: string | null;
+                        }[];
+                        nextCursor: string | null;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    companyGappostcompaniesidcontextsscopeIdcustomroles: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "Idempotency-Key": string;
+            };
+            path: {
+                id: string;
+                scopeId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** Format: uuid */
+                    id: string;
+                    title: string;
+                    capabilities: ("structure.read" | "directory.read")[];
+                };
+            };
+        };
+        responses: {
+            /** @description Current authorized Company result; configured policies are required for gated actions */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        title: string;
+                        capabilities: ("structure.read" | "directory.read")[];
+                        revision: number;
+                        /** Format: date-time */
+                        createdAt: string;
+                        /** Format: date-time */
+                        updatedAt: string;
+                        archivedAt: string | null;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    companyGappostcompaniesidcontextsscopeIdcustomrolesroleIdrevisions: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "If-Match": string;
+            };
+            path: {
+                id: string;
+                scopeId: string;
+                roleId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    title: string;
+                    capabilities: ("structure.read" | "directory.read")[];
+                };
+            };
+        };
+        responses: {
+            /** @description Current authorized Company result; configured policies are required for gated actions */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        title: string;
+                        capabilities: ("structure.read" | "directory.read")[];
+                        revision: number;
+                        /** Format: date-time */
+                        createdAt: string;
+                        /** Format: date-time */
+                        updatedAt: string;
+                        archivedAt: string | null;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    companyGappostcompaniesidcontextsscopeIdcustomrolesroleIdarchive: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "If-Match": string;
+            };
+            path: {
+                id: string;
+                scopeId: string;
+                roleId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": Record<string, never>;
+            };
+        };
+        responses: {
+            /** @description Current authorized Company result; configured policies are required for gated actions */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        title: string;
+                        capabilities: ("structure.read" | "directory.read")[];
+                        revision: number;
+                        /** Format: date-time */
+                        createdAt: string;
+                        /** Format: date-time */
+                        updatedAt: string;
+                        archivedAt: string | null;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    companyGappostcompaniesidcontextsscopeIdcustomrolesroleIdassignments: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "Idempotency-Key": string;
+            };
+            path: {
+                id: string;
+                scopeId: string;
+                roleId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** Format: uuid */
+                    id: string;
+                    member: {
+                        /** Format: uuid */
+                        accessId: string;
+                        generation: number;
+                    };
+                };
+            };
+        };
+        responses: {
+            /** @description Current authorized Company result; configured policies are required for gated actions */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        revision: number;
+                        /** Format: date-time */
+                        createdAt: string;
+                        /** Format: date-time */
+                        updatedAt: string;
+                        /** Format: uuid */
+                        roleId: string;
+                        member: {
+                            /** Format: uuid */
+                            accessId: string;
+                            generation: number;
+                            displayName?: string | null;
+                        };
+                        revokedAt: string | null;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    companyGappostcompaniesidcontextsscopeIdroleassignmentsassignmentIdrevoke: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "If-Match": string;
+            };
+            path: {
+                id: string;
+                scopeId: string;
+                assignmentId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": Record<string, never>;
+            };
+        };
+        responses: {
+            /** @description Current authorized Company result; configured policies are required for gated actions */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        revision: number;
+                        /** Format: date-time */
+                        createdAt: string;
+                        /** Format: date-time */
+                        updatedAt: string;
+                        /** Format: uuid */
+                        roleId: string;
+                        member: {
+                            /** Format: uuid */
+                            accessId: string;
+                            generation: number;
+                            displayName?: string | null;
+                        };
+                        revokedAt: string | null;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    companyGappostcompaniesidcontextsscopeIdtemporarygrants: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "Idempotency-Key": string;
+            };
+            path: {
+                id: string;
+                scopeId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** Format: uuid */
+                    id: string;
+                    member: {
+                        /** Format: uuid */
+                        accessId: string;
+                        generation: number;
+                    };
+                    capabilities: ("structure.read" | "directory.read")[];
+                    /** Format: date-time */
+                    validFrom: string;
+                    /** Format: date-time */
+                    expiresAt: string;
+                    reason: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Current authorized Company result; configured policies are required for gated actions */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        revision: number;
+                        /** Format: date-time */
+                        createdAt: string;
+                        /** Format: date-time */
+                        updatedAt: string;
+                        member: {
+                            /** Format: uuid */
+                            accessId: string;
+                            generation: number;
+                            displayName?: string | null;
+                        };
+                        capabilities: ("structure.read" | "directory.read")[];
+                        /** Format: date-time */
+                        validFrom: string;
+                        /** Format: date-time */
+                        expiresAt: string;
+                        revokedAt: string | null;
+                        active: boolean;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    companyGappostcompaniesidcontextsscopeIdtemporarygrantsgrantIdrevoke: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "If-Match": string;
+            };
+            path: {
+                id: string;
+                scopeId: string;
+                grantId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": Record<string, never>;
+            };
+        };
+        responses: {
+            /** @description Current authorized Company result; configured policies are required for gated actions */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        revision: number;
+                        /** Format: date-time */
+                        createdAt: string;
+                        /** Format: date-time */
+                        updatedAt: string;
+                        member: {
+                            /** Format: uuid */
+                            accessId: string;
+                            generation: number;
+                            displayName?: string | null;
+                        };
+                        capabilities: ("structure.read" | "directory.read")[];
+                        /** Format: date-time */
+                        validFrom: string;
+                        /** Format: date-time */
+                        expiresAt: string;
+                        revokedAt: string | null;
+                        active: boolean;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    companyGapgetcompaniesidcontextsscopeIdaccessinventory: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+                scopeId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Current authorized Company result; configured policies are required for gated actions */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        scopeId: string;
+                        members: {
+                            member: {
+                                /** Format: uuid */
+                                accessId: string;
+                                generation: number;
+                                displayName?: string | null;
+                            };
+                            role: string;
+                            /** @constant */
+                            source: "MEMBERSHIP";
+                        }[];
+                        roles: {
+                            /** Format: uuid */
+                            id: string;
+                            title: string;
+                            capabilities: ("structure.read" | "directory.read")[];
+                            revision: number;
+                            /** Format: date-time */
+                            createdAt: string;
+                            /** Format: date-time */
+                            updatedAt: string;
+                            archivedAt: string | null;
+                        }[];
+                        assignments: {
+                            /** Format: uuid */
+                            id: string;
+                            revision: number;
+                            /** Format: date-time */
+                            createdAt: string;
+                            /** Format: date-time */
+                            updatedAt: string;
+                            /** Format: uuid */
+                            roleId: string;
+                            member: {
+                                /** Format: uuid */
+                                accessId: string;
+                                generation: number;
+                                displayName?: string | null;
+                            };
+                            revokedAt: string | null;
+                        }[];
+                        temporary: {
+                            /** Format: uuid */
+                            id: string;
+                            revision: number;
+                            /** Format: date-time */
+                            createdAt: string;
+                            /** Format: date-time */
+                            updatedAt: string;
+                            member: {
+                                /** Format: uuid */
+                                accessId: string;
+                                generation: number;
+                                displayName?: string | null;
+                            };
+                            capabilities: ("structure.read" | "directory.read")[];
+                            /** Format: date-time */
+                            validFrom: string;
+                            /** Format: date-time */
+                            expiresAt: string;
+                            revokedAt: string | null;
+                            active: boolean;
+                        }[];
+                        delegations: {
+                            /** Format: uuid */
+                            id: string;
+                            revision: number;
+                            /** Format: date-time */
+                            createdAt: string;
+                            /** Format: date-time */
+                            updatedAt: string;
+                            delegator: {
+                                /** Format: uuid */
+                                accessId: string;
+                                generation: number;
+                                displayName?: string | null;
+                            };
+                            delegate: {
+                                /** Format: uuid */
+                                accessId: string;
+                                generation: number;
+                                displayName?: string | null;
+                            };
+                            /** Format: uuid */
+                            workflowVersionId: string;
+                            /** Format: date-time */
+                            validFrom: string;
+                            /** Format: date-time */
+                            expiresAt: string;
+                            revokedAt: string | null;
+                        }[];
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    companyGapgetcompaniesidcontextsscopeIdaccessreviews: {
+        parameters: {
+            query?: {
+                limit?: number;
+                after?: string;
+            };
+            header?: never;
+            path: {
+                id: string;
+                scopeId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Current authorized Company result; configured policies are required for gated actions */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        items: {
+                            /** Format: uuid */
+                            id: string;
+                            member: {
+                                /** Format: uuid */
+                                accessId: string;
+                                generation: number;
+                                displayName?: string | null;
+                            };
+                            /** @enum {string} */
+                            decision: "RETAIN" | "REVOKE";
+                            revision: number;
+                            /** Format: date-time */
+                            createdAt: string;
+                            /** Format: date-time */
+                            updatedAt: string;
+                            /** Format: uuid */
+                            actorId: string;
+                        }[];
+                        nextCursor: string | null;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    companyGappostcompaniesidcontextsscopeIdaccessreviews: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "Idempotency-Key": string;
+            };
+            path: {
+                id: string;
+                scopeId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** Format: uuid */
+                    id: string;
+                    member: {
+                        /** Format: uuid */
+                        accessId: string;
+                        generation: number;
+                    };
+                    /** @enum {string} */
+                    decision: "RETAIN" | "REVOKE";
+                    reason: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Current authorized Company result; configured policies are required for gated actions */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        member: {
+                            /** Format: uuid */
+                            accessId: string;
+                            generation: number;
+                            displayName?: string | null;
+                        };
+                        /** @enum {string} */
+                        decision: "RETAIN" | "REVOKE";
+                        revision: number;
+                        /** Format: date-time */
+                        createdAt: string;
+                        /** Format: date-time */
+                        updatedAt: string;
+                        /** Format: uuid */
+                        actorId: string;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    companyGapgetcompaniesidcontextsscopeIdapprovaldelegations: {
+        parameters: {
+            query?: {
+                limit?: number;
+                after?: string;
+            };
+            header?: never;
+            path: {
+                id: string;
+                scopeId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Current authorized Company result; configured policies are required for gated actions */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        items: {
+                            /** Format: uuid */
+                            id: string;
+                            revision: number;
+                            /** Format: date-time */
+                            createdAt: string;
+                            /** Format: date-time */
+                            updatedAt: string;
+                            delegator: {
+                                /** Format: uuid */
+                                accessId: string;
+                                generation: number;
+                                displayName?: string | null;
+                            };
+                            delegate: {
+                                /** Format: uuid */
+                                accessId: string;
+                                generation: number;
+                                displayName?: string | null;
+                            };
+                            /** Format: uuid */
+                            workflowVersionId: string;
+                            /** Format: date-time */
+                            validFrom: string;
+                            /** Format: date-time */
+                            expiresAt: string;
+                            revokedAt: string | null;
+                        }[];
+                        nextCursor: string | null;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    companyGappostcompaniesidcontextsscopeIdapprovaldelegations: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "Idempotency-Key": string;
+            };
+            path: {
+                id: string;
+                scopeId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** Format: uuid */
+                    id: string;
+                    delegate: {
+                        /** Format: uuid */
+                        accessId: string;
+                        generation: number;
+                    };
+                    /** Format: uuid */
+                    workflowVersionId: string;
+                    /** Format: date-time */
+                    validFrom: string;
+                    /** Format: date-time */
+                    expiresAt: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Current authorized Company result; configured policies are required for gated actions */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        revision: number;
+                        /** Format: date-time */
+                        createdAt: string;
+                        /** Format: date-time */
+                        updatedAt: string;
+                        delegator: {
+                            /** Format: uuid */
+                            accessId: string;
+                            generation: number;
+                            displayName?: string | null;
+                        };
+                        delegate: {
+                            /** Format: uuid */
+                            accessId: string;
+                            generation: number;
+                            displayName?: string | null;
+                        };
+                        /** Format: uuid */
+                        workflowVersionId: string;
+                        /** Format: date-time */
+                        validFrom: string;
+                        /** Format: date-time */
+                        expiresAt: string;
+                        revokedAt: string | null;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    companyGappostcompaniesidcontextsscopeIdapprovaldelegationsdelegationIdrevoke: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "If-Match": string;
+            };
+            path: {
+                id: string;
+                scopeId: string;
+                delegationId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": Record<string, never>;
+            };
+        };
+        responses: {
+            /** @description Current authorized Company result; configured policies are required for gated actions */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        revision: number;
+                        /** Format: date-time */
+                        createdAt: string;
+                        /** Format: date-time */
+                        updatedAt: string;
+                        delegator: {
+                            /** Format: uuid */
+                            accessId: string;
+                            generation: number;
+                            displayName?: string | null;
+                        };
+                        delegate: {
+                            /** Format: uuid */
+                            accessId: string;
+                            generation: number;
+                            displayName?: string | null;
+                        };
+                        /** Format: uuid */
+                        workflowVersionId: string;
+                        /** Format: date-time */
+                        validFrom: string;
+                        /** Format: date-time */
+                        expiresAt: string;
+                        revokedAt: string | null;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    companyGapgetcompaniesidcontextsscopeIdfinanceapprovalpolicies: {
+        parameters: {
+            query?: {
+                limit?: number;
+                after?: string;
+            };
+            header?: never;
+            path: {
+                id: string;
+                scopeId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Current authorized Company result; configured policies are required for gated actions */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        items: {
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string} */
+                            kind: "EXPENSE" | "REIMBURSEMENT" | "BUDGET_CHANGE";
+                            /** Format: date-time */
+                            effectiveFrom: string;
+                            effectiveUntil: string | null;
+                            rules: {
+                                currency: string;
+                                minimum: string;
+                                maximum: string | null;
+                                categoryId: string | null;
+                                /** Format: uuid */
+                                workflowVersionId: string;
+                                escalateAfterSeconds: number | null;
+                            }[];
+                            revision: number;
+                            /** Format: date-time */
+                            createdAt: string;
+                            /** Format: date-time */
+                            updatedAt: string;
+                            /** @enum {string} */
+                            state: "DRAFT" | "PUBLISHED" | "ARCHIVED";
+                        }[];
+                        nextCursor: string | null;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    companyGappostcompaniesidcontextsscopeIdfinanceapprovalpolicies: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "Idempotency-Key": string;
+            };
+            path: {
+                id: string;
+                scopeId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** Format: uuid */
+                    id: string;
+                    /** @enum {string} */
+                    kind: "EXPENSE" | "REIMBURSEMENT" | "BUDGET_CHANGE";
+                    /** Format: date-time */
+                    effectiveFrom: string;
+                    effectiveUntil: string | null;
+                    rules: {
+                        currency: string;
+                        minimum: string;
+                        maximum: string | null;
+                        categoryId: string | null;
+                        /** Format: uuid */
+                        workflowVersionId: string;
+                        escalateAfterSeconds: number | null;
+                    }[];
+                };
+            };
+        };
+        responses: {
+            /** @description Current authorized Company result; configured policies are required for gated actions */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        /** @enum {string} */
+                        kind: "EXPENSE" | "REIMBURSEMENT" | "BUDGET_CHANGE";
+                        /** Format: date-time */
+                        effectiveFrom: string;
+                        effectiveUntil: string | null;
+                        rules: {
+                            currency: string;
+                            minimum: string;
+                            maximum: string | null;
+                            categoryId: string | null;
+                            /** Format: uuid */
+                            workflowVersionId: string;
+                            escalateAfterSeconds: number | null;
+                        }[];
+                        revision: number;
+                        /** Format: date-time */
+                        createdAt: string;
+                        /** Format: date-time */
+                        updatedAt: string;
+                        /** @enum {string} */
+                        state: "DRAFT" | "PUBLISHED" | "ARCHIVED";
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    companyGappostcompaniesidcontextsscopeIdfinanceapprovalpoliciespolicyIdstate: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "If-Match": string;
+            };
+            path: {
+                id: string;
+                scopeId: string;
+                policyId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @enum {string} */
+                    state: "PUBLISHED" | "ARCHIVED";
+                };
+            };
+        };
+        responses: {
+            /** @description Current authorized Company result; configured policies are required for gated actions */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        /** @enum {string} */
+                        kind: "EXPENSE" | "REIMBURSEMENT" | "BUDGET_CHANGE";
+                        /** Format: date-time */
+                        effectiveFrom: string;
+                        effectiveUntil: string | null;
+                        rules: {
+                            currency: string;
+                            minimum: string;
+                            maximum: string | null;
+                            categoryId: string | null;
+                            /** Format: uuid */
+                            workflowVersionId: string;
+                            escalateAfterSeconds: number | null;
+                        }[];
+                        revision: number;
+                        /** Format: date-time */
+                        createdAt: string;
+                        /** Format: date-time */
+                        updatedAt: string;
+                        /** @enum {string} */
+                        state: "DRAFT" | "PUBLISHED" | "ARCHIVED";
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    companyGappostcompaniesidcontextsscopeIdfinanceexpensesexpenseIdsubmitbypolicy: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "If-Match": string;
+            };
+            path: {
+                id: string;
+                scopeId: string;
+                expenseId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": Record<string, never>;
+            };
+        };
+        responses: {
+            /** @description Current authorized Company result; configured policies are required for gated actions */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        /** Format: uuid */
+                        spaceId: string;
+                        /** Format: uuid */
+                        scopeId: string;
+                        revision: number;
+                        /** Format: date-time */
+                        createdAt: string;
+                        /** Format: date-time */
+                        updatedAt: string;
+                        /** Format: uuid */
+                        workflowVersionId: string;
+                        expenseVersionId: string | null;
+                        reimbursementId: string | null;
+                        budgetChangeRequestId?: string | null;
+                        requester: {
+                            /** Format: uuid */
+                            accessId: string;
+                            generation: number;
+                            displayName?: string | null;
+                        };
+                        beneficiary: {
+                            /** Format: uuid */
+                            accessId: string;
+                            generation: number;
+                            displayName?: string | null;
+                        } | null;
+                        attempt: number;
+                        /** @enum {string} */
+                        state: "ACTIVE" | "APPROVED" | "REJECTED" | "CANCELED";
+                        stepIndex: number;
+                        escalated: boolean;
+                        sourceRevision: number;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    companyGappostcompaniesidcontextsscopeIdfinancereimbursementsrequestIdsubmitbypolicy: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "If-Match": string;
+            };
+            path: {
+                id: string;
+                scopeId: string;
+                requestId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": Record<string, never>;
+            };
+        };
+        responses: {
+            /** @description Current authorized Company result; configured policies are required for gated actions */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        /** Format: uuid */
+                        spaceId: string;
+                        /** Format: uuid */
+                        scopeId: string;
+                        revision: number;
+                        /** Format: date-time */
+                        createdAt: string;
+                        /** Format: date-time */
+                        updatedAt: string;
+                        /** Format: uuid */
+                        workflowVersionId: string;
+                        expenseVersionId: string | null;
+                        reimbursementId: string | null;
+                        budgetChangeRequestId?: string | null;
+                        requester: {
+                            /** Format: uuid */
+                            accessId: string;
+                            generation: number;
+                            displayName?: string | null;
+                        };
+                        beneficiary: {
+                            /** Format: uuid */
+                            accessId: string;
+                            generation: number;
+                            displayName?: string | null;
+                        } | null;
+                        attempt: number;
+                        /** @enum {string} */
+                        state: "ACTIVE" | "APPROVED" | "REJECTED" | "CANCELED";
+                        stepIndex: number;
+                        escalated: boolean;
+                        sourceRevision: number;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    companyGapgetcompaniesidcontextsscopeIdfinanceapprovalsapprovalIdtimeline: {
+        parameters: {
+            query?: {
+                limit?: number;
+                after?: string;
+            };
+            header?: never;
+            path: {
+                id: string;
+                scopeId: string;
+                approvalId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Current authorized Company result; configured policies are required for gated actions */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        items: {
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            approvalId: string;
+                            /** Format: uuid */
+                            requestId: string;
+                            /** @enum {string} */
+                            requestType: "EXPENSE" | "REIMBURSEMENT" | "BUDGET_CHANGE";
+                            /** Format: uuid */
+                            workflowVersionId: string;
+                            policyVersionId: string | null;
+                            stepId: string | null;
+                            /** Format: uuid */
+                            actorId: string;
+                            delegationId: string | null;
+                            reviewer: {
+                                /** Format: uuid */
+                                accessId: string;
+                                generation: number;
+                                displayName?: string | null;
+                            } | null;
+                            action: string;
+                            reason: string | null;
+                            previousStatus: string | null;
+                            resultingStatus: string | null;
+                            /** Format: date-time */
+                            createdAt: string;
+                        }[];
+                        nextCursor: string | null;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    companyGapgetcompaniesidcontextsscopeIdfinancebudgetalerts: {
+        parameters: {
+            query?: {
+                limit?: number;
+                after?: string;
+            };
+            header?: never;
+            path: {
+                id: string;
+                scopeId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Current authorized Company result; configured policies are required for gated actions */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        items: {
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            budgetId: string;
+                            threshold: string;
+                            /** @enum {string} */
+                            basis: "SPENT" | "COMMITTED";
+                            revision: number;
+                            /** Format: date-time */
+                            createdAt: string;
+                            /** Format: date-time */
+                            updatedAt: string;
+                            revokedAt: string | null;
+                            triggered: boolean;
+                        }[];
+                        nextCursor: string | null;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    companyGappostcompaniesidcontextsscopeIdfinancebudgetalerts: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "Idempotency-Key": string;
+            };
+            path: {
+                id: string;
+                scopeId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** Format: uuid */
+                    id: string;
+                    /** Format: uuid */
+                    budgetId: string;
+                    threshold: string;
+                    /** @enum {string} */
+                    basis: "SPENT" | "COMMITTED";
+                };
+            };
+        };
+        responses: {
+            /** @description Current authorized Company result; configured policies are required for gated actions */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        /** Format: uuid */
+                        budgetId: string;
+                        threshold: string;
+                        /** @enum {string} */
+                        basis: "SPENT" | "COMMITTED";
+                        revision: number;
+                        /** Format: date-time */
+                        createdAt: string;
+                        /** Format: date-time */
+                        updatedAt: string;
+                        revokedAt: string | null;
+                        triggered: boolean;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    companyGappostcompaniesidcontextsscopeIdfinancebudgetalertsruleIdrevoke: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "If-Match": string;
+            };
+            path: {
+                id: string;
+                scopeId: string;
+                ruleId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": Record<string, never>;
+            };
+        };
+        responses: {
+            /** @description Current authorized Company result; configured policies are required for gated actions */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        /** Format: uuid */
+                        budgetId: string;
+                        threshold: string;
+                        /** @enum {string} */
+                        basis: "SPENT" | "COMMITTED";
+                        revision: number;
+                        /** Format: date-time */
+                        createdAt: string;
+                        /** Format: date-time */
+                        updatedAt: string;
+                        revokedAt: string | null;
+                        triggered: boolean;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    companyGapgetcompaniesidsecurityaudit: {
+        parameters: {
+            query?: {
+                limit?: number;
+                after?: string;
+            };
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Current authorized Company result; configured policies are required for gated actions */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        items: {
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            actorId: string;
+                            action: string;
+                            /** Format: uuid */
+                            resourceId: string;
+                            /** Format: uuid */
+                            requestId: string;
+                            /** Format: date-time */
+                            occurredAt: string;
+                        }[];
+                        nextCursor: string | null;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    companyGapgetcompaniesidrecoverypolicydrafts: {
+        parameters: {
+            query?: {
+                limit?: number;
+                after?: string;
+            };
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Current authorized Company result; configured policies are required for gated actions */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        items: {
+                            /** Format: uuid */
+                            id: string;
+                            version: string;
+                            requiredApprovals: number | null;
+                            approvers: {
+                                /** Format: uuid */
+                                accessId: string;
+                                generation: number;
+                                displayName?: string | null;
+                            }[];
+                            proofValiditySeconds: number | null;
+                            waitingSeconds: number | null;
+                            approvalReference: string | null;
+                            revision: number;
+                            /** Format: date-time */
+                            createdAt: string;
+                            /** Format: date-time */
+                            updatedAt: string;
+                            /** @constant */
+                            state: "DRAFT";
+                            /** @constant */
+                            executable: false;
+                        }[];
+                        nextCursor: string | null;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    companyGappostcompaniesidrecoverypolicydrafts: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "Idempotency-Key": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** Format: uuid */
+                    id: string;
+                    version: string;
+                    requiredApprovals: number | null;
+                    approvers: {
+                        /** Format: uuid */
+                        accessId: string;
+                        generation: number;
+                    }[];
+                    proofValiditySeconds: number | null;
+                    waitingSeconds: number | null;
+                    approvalReference: string | null;
+                };
+            };
+        };
+        responses: {
+            /** @description Current authorized Company result; configured policies are required for gated actions */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        version: string;
+                        requiredApprovals: number | null;
+                        approvers: {
+                            /** Format: uuid */
+                            accessId: string;
+                            generation: number;
+                            displayName?: string | null;
+                        }[];
+                        proofValiditySeconds: number | null;
+                        waitingSeconds: number | null;
+                        approvalReference: string | null;
+                        revision: number;
+                        /** Format: date-time */
+                        createdAt: string;
+                        /** Format: date-time */
+                        updatedAt: string;
+                        /** @constant */
+                        state: "DRAFT";
+                        /** @constant */
+                        executable: false;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    companyGappostcompaniesidcontextsscopeIdfinanceapprovalsapprovalIddecisionreceipts: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "If-Match": string;
+                "Idempotency-Key": string;
+            };
+            path: {
+                id: string;
+                scopeId: string;
+                approvalId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @enum {string} */
+                    decision: "APPROVE" | "REJECT";
+                    reason?: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Current authorized Company result; configured policies are required for gated actions */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        /** Format: uuid */
+                        spaceId: string;
+                        /** Format: uuid */
+                        scopeId: string;
+                        revision: number;
+                        /** Format: date-time */
+                        createdAt: string;
+                        /** Format: date-time */
+                        updatedAt: string;
+                        /** Format: uuid */
+                        workflowVersionId: string;
+                        expenseVersionId: string | null;
+                        reimbursementId: string | null;
+                        budgetChangeRequestId?: string | null;
+                        requester: {
+                            /** Format: uuid */
+                            accessId: string;
+                            generation: number;
+                            displayName?: string | null;
+                        };
+                        beneficiary: {
+                            /** Format: uuid */
+                            accessId: string;
+                            generation: number;
+                            displayName?: string | null;
+                        } | null;
+                        attempt: number;
+                        /** @enum {string} */
+                        state: "ACTIVE" | "APPROVED" | "REJECTED" | "CANCELED";
+                        stepIndex: number;
+                        escalated: boolean;
+                        sourceRevision: number;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    companyGapgetcompaniesidcontextsscopeIdreportsresourceusage: {
+        parameters: {
+            query: {
+                from: string;
+                to: string;
+            };
+            header?: never;
+            path: {
+                id: string;
+                scopeId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Current authorized Company result; configured policies are required for gated actions */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: date-time */
+                        from: string;
+                        /** Format: date-time */
+                        to: string;
+                        items: {
+                            /** Format: uuid */
+                            resourceId: string;
+                            bookedMilliseconds: number;
+                            custodyMilliseconds: number;
+                            occupancyBasisPoints: number | null;
+                            /** @enum {string} */
+                            occupancyEvidence: "OBSERVED" | "UNKNOWN";
+                            /** @enum {string} */
+                            custodyEvidence: "OBSERVED" | "UNKNOWN";
+                        }[];
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    companyGappostcompaniesidcontextsscopeIdfinancebudgetchangerequestsrequestIdbindworkflow: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "If-Match": string;
+            };
+            path: {
+                id: string;
+                scopeId: string;
+                requestId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** Format: uuid */
+                    workflowVersionId: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Current authorized Company result; configured policies are required for gated actions */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        /** Format: uuid */
+                        spaceId: string;
+                        /** Format: uuid */
+                        scopeId: string;
+                        revision: number;
+                        /** Format: date-time */
+                        createdAt: string;
+                        /** Format: date-time */
+                        updatedAt: string;
+                        /** Format: uuid */
+                        workflowVersionId: string;
+                        expenseVersionId: string | null;
+                        reimbursementId: string | null;
+                        budgetChangeRequestId?: string | null;
+                        requester: {
+                            /** Format: uuid */
+                            accessId: string;
+                            generation: number;
+                            displayName?: string | null;
+                        };
+                        beneficiary: {
+                            /** Format: uuid */
+                            accessId: string;
+                            generation: number;
+                            displayName?: string | null;
+                        } | null;
+                        attempt: number;
+                        /** @enum {string} */
+                        state: "ACTIVE" | "APPROVED" | "REJECTED" | "CANCELED";
+                        stepIndex: number;
+                        escalated: boolean;
+                        sourceRevision: number;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    companyGappostcompaniesidcontextsscopeIdfinancebudgetchangerequestsrequestIdsubmitbypolicy: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "If-Match": string;
+            };
+            path: {
+                id: string;
+                scopeId: string;
+                requestId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": Record<string, never>;
+            };
+        };
+        responses: {
+            /** @description Current authorized Company result; configured policies are required for gated actions */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        /** Format: uuid */
+                        spaceId: string;
+                        /** Format: uuid */
+                        scopeId: string;
+                        revision: number;
+                        /** Format: date-time */
+                        createdAt: string;
+                        /** Format: date-time */
+                        updatedAt: string;
+                        /** Format: uuid */
+                        workflowVersionId: string;
+                        expenseVersionId: string | null;
+                        reimbursementId: string | null;
+                        budgetChangeRequestId?: string | null;
+                        requester: {
+                            /** Format: uuid */
+                            accessId: string;
+                            generation: number;
+                            displayName?: string | null;
+                        };
+                        beneficiary: {
+                            /** Format: uuid */
+                            accessId: string;
+                            generation: number;
+                            displayName?: string | null;
+                        } | null;
+                        attempt: number;
+                        /** @enum {string} */
+                        state: "ACTIVE" | "APPROVED" | "REJECTED" | "CANCELED";
+                        stepIndex: number;
+                        escalated: boolean;
+                        sourceRevision: number;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    companyGapgetcompaniesidcontextsscopeIdfinanceapprovalsapprovalIdactionstate: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+                scopeId: string;
+                approvalId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Current authorized Company result; configured policies are required for gated actions */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        revision: number;
+                        /** @enum {string} */
+                        state: "ACTIVE" | "APPROVED" | "REJECTED" | "CANCELED";
+                        currentStepId: string | null;
+                        policyVersionId: string | null;
+                        can: {
+                            approve: boolean;
+                            reject: boolean;
+                            escalate: boolean;
+                            restart: boolean;
+                        };
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    companyGapgetcompaniesidcontextsscopeIdeffectivereadpermissions: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+                scopeId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Current authorized Company result; configured policies are required for gated actions */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        scopeId: string;
+                        capabilities: {
+                            "structure.read": boolean;
+                            "directory.read": boolean;
+                        };
                     };
                 };
             };

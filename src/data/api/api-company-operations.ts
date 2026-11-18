@@ -59,7 +59,7 @@ type ApiAssociation = Data<`${X}/associations`, "get">["items"][number];
 type ApiPortfolio = Data<`${X}/reports/portfolio`, "get">["projects"][number];
 type ApiResource = Data<`${X}/resources`, "get">["items"][number];
 type ApiResourceRequest = Data<`${X}/resource-requests`, "get">["items"][number];
-type ApiInvitation = Data<`${X}/invitations`, "get">["items"][number];
+type ApiSentInvitation = Data<`${X}/sent-invitations`, "get">["items"][number];
 type ApiNotification = Data<`${X}/notifications`, "get">["items"][number];
 
 export interface OperationsDeps {
@@ -504,16 +504,16 @@ export function createCompanyOperations(api: Client, deps: OperationsDeps): Part
         await conflictAware(() => retryOnConflict(send, async () => (current = await readRequest())));
       }),
 
-    // Pending invitations of every context the caller may list; the rows carry no recipient email (CB-3).
+    // Pending invitations of every context the caller may list (sent-invitations: recipient email for inviters / admins, CB-3).
     pendingInvites: (id) =>
       mapErrors(async () => {
         const [{ company }, all] = await Promise.all([deps.read(id), scopes(id)]);
         const lists = await Promise.all(
           all.map(async (scope) => {
-            const rows = await orNull(pageAll<ApiInvitation>(async (after) => (await api.request("get", "/api/v1/companies/{id}/contexts/{scopeId}/invitations", { path: { id, scopeId: scope.scopeId }, query: { limit: PAGE, after } })).data));
+            const rows = await orNull(pageAll<ApiSentInvitation>(async (after) => (await api.request("get", "/api/v1/companies/{id}/contexts/{scopeId}/sent-invitations", { path: { id, scopeId: scope.scopeId }, query: { limit: PAGE, after } })).data));
             return (rows ?? [])
-              .filter((row) => row.state === "PENDING")
-              .map((row) => ({ id: row.id, email: null, role: deps.roleOf(row.memberRole), departmentName: scope.department?.title ?? company.title }));
+              .filter((row) => row.state === "PENDING" && Date.parse(row.expiresAt) > Date.now())
+              .map((row) => ({ id: row.id, email: row.recipientEmail, role: deps.roleOf(row.memberRole), departmentName: scope.department?.title ?? company.title }));
           }),
         );
         return lists.flat();

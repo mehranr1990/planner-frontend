@@ -175,6 +175,10 @@ export function useResources(id: string) {
   const repo = useCompanyRepository();
   return useScoped(id, ["resources"], (cid) => repo.resources(cid));
 }
+export function useResourceTypes(id: string, departmentId: string | null, enabled = true) {
+  const repo = useCompanyRepository();
+  return useScoped(id, ["resource-types", departmentId], (cid) => repo.resourceTypes(cid, departmentId), enabled);
+}
 export function useResourceRequests(id: string) {
   const repo = useCompanyRepository();
   return useScoped(id, ["resource-requests"], (cid) => repo.resourceRequests(cid));

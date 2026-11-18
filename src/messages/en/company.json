@@ -468,7 +468,12 @@
       "ownerNote": "You become the Owner. Comma-separated; you can add more later.",
       "submit": "Create company",
       "created": "{company} created",
-      "failed": "Couldn’t create the company. Try again."
+      "failed": "Couldn’t create the company. Try again.",
+      "failedPolicy": "Company creation isn’t enabled on this server yet (no approved company retention policy). Ask the operator.",
+      "failedForbidden": "Your account isn’t allowed to create companies.",
+      "failedConflict": "This company was changed or already exists. Refresh and try again.",
+      "failedPartial": "The company was created, but its setup didn’t finish. Submit again to complete it.",
+      "failedInvalid": "Some details aren’t valid. Check the name and fiscal month."
     },
     "invite": {
       "title": "Invite to {company}",
@@ -786,7 +791,9 @@
       "purchaseNote": "Buying equipment is filed as an expense (Expenses).",
       "cancel": "Cancel",
       "submit": "Add",
-      "added": "Resource added"
+      "added": "Resource added",
+      "noTypes": "No resource types are set up for this department yet",
+      "typesFailed": "Couldn’t load resource types"
     },
     "rooms": {
       "title": "Rooms · {day}",

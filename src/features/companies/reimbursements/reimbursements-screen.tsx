@@ -246,7 +246,7 @@ function RunCard({ run, selection, items, onCreated }: { run: PaymentRun | undef
 
 function Mine({ items }: { items: Reimbursement[] }) {
   const t = useTranslations("Company.reimbursements");
-  const { company } = useCompany();
+  const { company, capabilities } = useCompany();
   const writable = useCompanyWritable();
   const format = useCompanyFormat(company.currency);
   const [disputing, setDisputing] = useState<Reimbursement | null>(null);
@@ -272,7 +272,7 @@ function Mine({ items }: { items: Reimbursement[] }) {
                 extra={
                   item.status === "settled" && writable ? (
                     <span className="flex flex-wrap gap-1.5">
-                      {withinWindow ? (
+                      {withinWindow && capabilities.reportNotReceived ? (
                         <Button size="sm" variant="ghost" onClick={() => setDisputing(item)}>
                           {t("notReceived")}
                         </Button>
@@ -282,7 +282,7 @@ function Mine({ items }: { items: Reimbursement[] }) {
                           <Icon icon={Check} size={13} />
                           {t("recorded")}
                         </span>
-                      ) : recordable ? (
+                      ) : recordable && capabilities.recordReimbursementInPersonal ? (
                         <Button size="sm" variant="secondary" onClick={() => setRecording(item)}>
                           {t("record")}
                         </Button>

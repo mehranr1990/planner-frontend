@@ -121,6 +121,10 @@ export interface CompanyCapabilities {
   companyBudgets: boolean;
   requestBudgetChange: boolean;
   settleReimbursements: boolean;
+  /** "Not received" with a note (live: the acknowledgement decision has no note → false). */
+  reportNotReceived: boolean;
+  /** Company-side "recorded in Personal" marker (live: not in the contract → false). */
+  recordReimbursementInPersonal: boolean;
   companyReports: boolean;
   departmentReports: boolean;
   auditLog: boolean;
@@ -424,8 +428,17 @@ export interface CompanyResource {
   note: string | null;
   /** When the current assignment started. */
   since: string | null;
+  /** Live: the company-configured resource type title (shown instead of the fixed type label). */
+  typeTitle?: string | null;
   /** Busy windows (requests / assignments) used for conflict suggestions. */
   busy: { from: string; to: string }[];
+}
+
+/** A choosable resource type: a fixed key (mock) or a company-configured type for the target context (live). */
+export interface ResourceTypeOption {
+  id: string;
+  key: CompanyResource["type"] | null;
+  title: string | null;
 }
 
 export interface ResourceRequest {

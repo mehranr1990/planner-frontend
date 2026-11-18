@@ -1,17 +1,20 @@
 import { screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { resetToasts } from "@/components/ui/toast";
+import { createApiCompanyRepository } from "@/data/api/api-company-repository";
+import { fakeApi, json } from "@/data/api/test-support";
 import { CompanyDataProvider } from "@/data/company-provider";
+import type { CompanyRepository } from "@/data/company-repositories";
+import { RepositoryError } from "@/data/repositories";
 import { createMockCompanies } from "@/data/mock/mock-companies";
 import { renderWithProviders } from "@/test/render";
 import { routerPush, setMockPathname, setMockSearch } from "@/test/setup";
 import { CompanySheetHost } from "./company-sheet-host";
 
-function renderHost(path: string, search: string) {
+function renderHost(path: string, search: string, repository: CompanyRepository = createMockCompanies()) {
   setMockPathname(path);
   setMockSearch(search);
-  const repository = createMockCompanies();
   renderWithProviders(
     <CompanyDataProvider repository={repository}>
       <CompanySheetHost />
@@ -66,5 +69,39 @@ describe("CO-90 · company sheets", () => {
     expect(await within(sheet).findByText(/attach the receipt to submit/)).toBeInTheDocument();
     await user.click(within(sheet).getByRole("button", { name: "Save draft" }));
     await waitFor(async () => expect((await repository.expenses("euroly")).some((item) => item.title === "Client dinner" && item.status === "draft" && item.amount === 4_200_000)).toBe(true));
+  });
+
+  it("company-new in live mode goes through the API: no approved COMPANY policy → actionable message, nothing created, no mock fallback", async () => {
+    const user = userEvent.setup();
+    const api = fakeApi((_call, parts) => (parts[0] === "retention-policies" ? json({ items: [], nextCursor: null }) : json({ items: [], nextCursor: null })));
+    routerPush.mockClear();
+    renderHost("/companies", "sheet=company-new", createApiCompanyRepository(api.client));
+    const sheet = await screen.findByRole("dialog", { name: "New company" });
+    await user.type(within(sheet).getByRole("textbox", { name: "Name" }), "Kavir");
+    await user.click(within(sheet).getByRole("button", { name: "Create company" }));
+    expect(await within(sheet).findByText(/Company creation isn’t enabled on this server yet/)).toBeInTheDocument();
+    expect(api.calls.some((call) => call.path === "/retention-policies")).toBe(true);
+    expect(api.writes()).toEqual([]);
+    expect(routerPush).not.toHaveBeenCalled();
+  });
+
+  it("company-new: one request while pending (no double submit); permission / incomplete-setup refusals read accurately", async () => {
+    const user = userEvent.setup();
+    const repository = createMockCompanies();
+    let release: (value: never) => void = () => undefined;
+    const create = vi.spyOn(repository, "create").mockImplementationOnce(() => new Promise<never>((_resolve, reject) => (release = reject)));
+    renderHost("/companies", "sheet=company-new", repository);
+    const sheet = await screen.findByRole("dialog", { name: "New company" });
+    await user.type(within(sheet).getByRole("textbox", { name: "Name" }), "Kavir");
+    const submit = within(sheet).getByRole("button", { name: "Create company" });
+    await user.click(submit);
+    await waitFor(() => expect(submit).toBeDisabled());
+    await user.click(submit);
+    expect(create).toHaveBeenCalledTimes(1);
+    release(new RepositoryError("forbidden", "Not allowed") as never);
+    expect(await within(sheet).findByText("Your account isn’t allowed to create companies.")).toBeInTheDocument();
+    create.mockRejectedValueOnce(new RepositoryError("partial", "Company created; setup incomplete"));
+    await user.click(submit);
+    expect(await within(sheet).findByText("The company was created, but its setup didn’t finish. Submit again to complete it.")).toBeInTheDocument();
   });
 });

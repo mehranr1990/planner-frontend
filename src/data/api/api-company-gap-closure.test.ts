@@ -125,17 +125,27 @@ describe("companies — notifications", () => {
 });
 
 describe("companies — pending invitations and corrective reviewers", () => {
-  it("lists pending invitations without inventing a recipient email", async () => {
-    const invitation = (id: string, state: string, memberRole = "MEMBER") => ({ id, spaceId: "sp1", scopeId: ROOT, memberRole, state, revision: 1, expiresAt: "2026-11-30T00:00:00.000Z" });
+  it("lists live pending sent invitations with the recipient email the server returns (null stays null)", async () => {
+    const invitation = (id: string, state: string, memberRole = "MEMBER", recipientEmail: string | null = null, expiresAt = "2999-11-30T00:00:00.000Z") =>
+      ({ id, scopeId: ROOT, memberRole, recipientEmail, state, revision: 1, createdAt: "2026-11-14T08:00:00.000Z", sentAt: "2026-11-14T08:00:00.000Z", expiresAt });
     const api = companyApi((_call, parts) => {
-      if (parts[4] !== "invitations") return null;
-      return json({ items: parts[3] === "d1-scope" ? [invitation("i2", "PENDING", "TEAM_LEAD"), invitation("i3", "ACCEPTED")] : parts[3] === ROOT ? [invitation("i1", "PENDING")] : [], nextCursor: null });
+      if (parts[4] !== "sent-invitations") return null;
+      return json({
+        items:
+          parts[3] === "d1-scope"
+            ? [invitation("i2", "PENDING", "TEAM_LEAD", "lead@acme.ir"), invitation("i3", "ACCEPTED"), invitation("i4", "PENDING", "MEMBER", "old@acme.ir", "2020-01-01T00:00:00.000Z")]
+            : parts[3] === ROOT
+              ? [invitation("i1", "PENDING")]
+              : [],
+        nextCursor: null,
+      });
     });
     const list = await createApiCompanyRepository(api.client).pendingInvites(C);
     expect(list).toEqual([
       { id: "i1", email: null, role: "member", departmentName: "Acme" },
-      { id: "i2", email: null, role: "lead", departmentName: "D1" },
+      { id: "i2", email: "lead@acme.ir", role: "lead", departmentName: "D1" },
     ]);
+    expect(api.calls.some((call) => call.path.endsWith("/invitations"))).toBe(false);
   });
 
   it("reviewers are other active Owners / Org Admins; the case carries subject and reviewer seats", async () => {
@@ -150,5 +160,143 @@ describe("companies — pending invitations and corrective reviewers", () => {
     expect(action).toMatchObject({ id: "k1", status: "open", reason: "Late", visibleTo: "Sara" });
     const post = api.calls.find((call) => call.method === "POST")!;
     expect(post.body).toMatchObject({ subject: { accessId: "m3", generation: 2 }, reviewer: { accessId: "m2", generation: 2 }, reason: "Late", evidence: "log.csv" });
+  });
+});
+
+describe("companies — resource types and asset tags", () => {
+  const resource = { id: "r9", title: "Laptop 30", description: null, typeId: null as string | null, spaceId: "sp1", scopeId: ROOT, state: "ACTIVE", revision: 1, createdAt: "x", updatedAt: "x" };
+  const type = (id: string, title: string, scopeId = ROOT) => ({ id, title, spaceId: "sp1", scopeId, revision: 1, createdAt: "x", updatedAt: "x" });
+
+  it("lists the target context's configured types (department → its own catalog; empty stays empty)", async () => {
+    const api = companyApi((_call, parts) => (parts[4] === "resource-types" ? json({ items: parts[3] === ROOT ? [type("t1", "Laptop")] : [], nextCursor: null }) : null));
+    const repo = createApiCompanyRepository(api.client);
+    expect(await repo.resourceTypes(C, null)).toEqual([{ id: "t1", key: null, title: "Laptop" }]);
+    expect(await repo.resourceTypes(C, "d1")).toEqual([]);
+    expect(api.calls.filter((call) => call.path.endsWith("/resource-types")).map((call) => call.path.split("/")[4])).toEqual([ROOT, "d1-scope"]);
+  });
+
+  it("creates the resource, sets the chosen type, then the asset tag — each on the revision the previous call returned", async () => {
+    let state = { ...resource };
+    let assetTag: string | null = null;
+    const api = companyApi((call, parts) => {
+      if (parts[4] === "resource-types") return json({ items: parts[3] === ROOT ? [type("t1", "Laptop")] : [], nextCursor: null });
+      if (parts[4] !== "resources" || parts[3] !== ROOT) return null;
+      if (parts.length === 5 && call.method === "POST") return json(state, 201);
+      if (parts.length === 5) return json({ items: state.typeId ? [state] : [], nextCursor: null });
+      if (parts[6] === "type") {
+        state = { ...state, typeId: "t1", revision: 2 };
+        return json(state);
+      }
+      if (parts[6] === "asset-tag" && call.method === "POST") {
+        assetTag = "EU-LT-030";
+        return json({ id: "r9", assetTag, revision: 3 });
+      }
+      if (parts[6] === "asset-tag") return json({ id: "r9", assetTag, revision: 3 });
+      return null;
+    });
+    const repo = createApiCompanyRepository(api.client);
+    const added = await repo.addResource(C, { name: " Laptop 30 ", tag: " EU-LT-030 ", typeId: "t1", departmentId: null });
+    expect(added).toMatchObject({ id: "r9", tag: "EU-LT-030", name: "Laptop 30", typeTitle: "Laptop", status: "available" });
+    const create = api.calls.find((call) => call.method === "POST" && call.path.endsWith("/resources"))!;
+    expect(create.key).toBeTruthy();
+    expect(create.body).toMatchObject({ title: "Laptop 30" });
+    expect(api.calls.find((call) => call.method === "PUT" && call.path.endsWith("/type"))).toMatchObject({ ifMatch: '"1"', body: { typeId: "t1" } });
+    expect(api.calls.find((call) => call.method === "POST" && call.path.endsWith("/asset-tag"))).toMatchObject({ ifMatch: '"2"', body: { assetTag: "EU-LT-030" } });
+  });
+
+  it("refuses a type outside the context's catalog (incl. an empty catalog) and an empty tag before any write", async () => {
+    const api = companyApi((_call, parts) => (parts[4] === "resource-types" ? json({ items: parts[3] === ROOT ? [type("t1", "Laptop")] : [], nextCursor: null }) : null));
+    const repo = createApiCompanyRepository(api.client);
+    await expect(repo.addResource(C, { name: "Phone", tag: "P-1", typeId: "phone", departmentId: null })).rejects.toMatchObject({ code: "invalid" });
+    await expect(repo.addResource(C, { name: "Phone", tag: "P-1", typeId: "t1", departmentId: "d1" })).rejects.toMatchObject({ code: "invalid" });
+    await expect(repo.addResource(C, { name: "Phone", tag: " ", typeId: "t1", departmentId: null })).rejects.toMatchObject({ code: "invalid" });
+    expect(api.writes()).toEqual([]);
+  });
+
+  it("a taken asset tag (409) retires the resource it just created and reports a conflict", async () => {
+    const api = companyApi((call, parts) => {
+      if (parts[4] === "resource-types") return json({ items: [type("t1", "Laptop")], nextCursor: null });
+      if (parts[4] !== "resources" || parts[3] !== ROOT) return null;
+      if (parts.length === 5 && call.method === "POST") return json(resource, 201);
+      if (parts[6] === "type") return json({ ...resource, typeId: "t1", revision: 2 });
+      if (parts[6] === "asset-tag") return json({ error: { code: "CONFLICT", message: "taken" } }, 409);
+      if (parts[6] === "retire") return json({ ...resource, state: "RETIRED", revision: 3 });
+      return null;
+    });
+    const repo = createApiCompanyRepository(api.client);
+    await expect(repo.addResource(C, { name: "Dup", tag: "EU-LT-030", typeId: "t1", departmentId: null })).rejects.toMatchObject({ code: "conflict" });
+    expect(api.calls.find((call) => call.path.endsWith("/r9/retire"))).toMatchObject({ method: "POST", ifMatch: '"2"' });
+  });
+});
+
+describe("companies — create (catalog COMPANY policy, then settings and first departments)", () => {
+  const settingsRow = { legalName: null, currency: null, currencyLocked: false, fiscalStartMonth: null, revision: 1 };
+  const input = { name: " Acme ", legalName: " Acme LLC ", currency: "toman" as const, fiscalStartMonth: 1, departments: ["Ops", " ops ", "Ops", "", "Sales"] };
+  function createApi(options: { policies?: unknown[]; createStatus?: number; failDepartmentsOnce?: boolean } = {}) {
+    let failed = false;
+    return companyApi((call, parts) => {
+      if (parts[0] === "retention-policies") return json({ items: options.policies ?? [{ version: "policy-from-catalog", applicableContexts: ["COMPANY"] }], nextCursor: null });
+      if (parts.length === 1 && parts[0] === "companies" && call.method === "POST") {
+        if (options.createStatus) return json({ error: { code: "DENIED", message: "denied" } }, options.createStatus);
+        return json({ ...company, id: C }, 201);
+      }
+      if (parts[2] === "settings" && parts.length === 3) return json(settingsRow);
+      if (parts[2] === "settings" && parts[3] === "legal") return json({ ...settingsRow, legalName: "Acme LLC", fiscalStartMonth: 1, revision: 2 });
+      if (parts[2] === "settings" && parts[3] === "currency") return json({ ...settingsRow, currency: "IRR", revision: 3 });
+      if (parts[2] === "departments" && call.method === "POST") {
+        if (options.failDepartmentsOnce && !failed) {
+          failed = true;
+          return json({ error: { code: "UNAVAILABLE", message: "down" } }, 503);
+        }
+        return json({ ...dept("d9"), title: call.body.title }, 201);
+      }
+      return null;
+    });
+  }
+
+  it("creates the company with the catalog's policy, then legal name, fiscal month, currency and unique departments", async () => {
+    const api = createApi();
+    const summary = await createApiCompanyRepository(api.client).create(input);
+    expect(summary).toMatchObject({ id: C, name: "Acme", role: "owner" });
+    const post = api.calls.find((call) => call.method === "POST" && call.path === "/companies")!;
+    expect(post.body).toEqual({ id: expect.any(String), title: "Acme", retentionPolicyVersion: "policy-from-catalog" });
+    expect((post as { key?: string | null }).key).toBeTruthy();
+    expect(api.calls.find((call) => call.path.endsWith("/settings/legal"))).toMatchObject({ method: "PUT", ifMatch: '"1"', body: { legalName: "Acme LLC", fiscalStartMonth: 1 } });
+    expect(api.calls.find((call) => call.path.endsWith("/settings/currency"))).toMatchObject({ method: "PUT", ifMatch: '"2"', body: { currency: "IRR" } });
+    expect(api.calls.filter((call) => call.method === "POST" && call.path.endsWith("/departments")).map((call) => call.body.title)).toEqual(["Ops", "ops", "Sales"]);
+  });
+
+  it("a resubmit after an incomplete setup replays the same company id, key and department ids (no duplicate)", async () => {
+    const api = createApi({ failDepartmentsOnce: true });
+    const repo = createApiCompanyRepository(api.client);
+    await expect(repo.create(input)).rejects.toMatchObject({ code: "partial" });
+    await repo.create(input);
+    const creates = api.calls.filter((call) => call.method === "POST" && call.path === "/companies") as { body: Record<string, unknown>; key?: string | null }[];
+    expect(creates).toHaveLength(2);
+    expect(creates[1]!.body.id).toBe(creates[0]!.body.id);
+    expect(creates[1]!.key).toBe(creates[0]!.key);
+    const departments = api.calls.filter((call) => call.method === "POST" && call.path.endsWith("/departments")) as { body: Record<string, unknown>; key?: string | null }[];
+    expect(departments[1]!.body.id).toBe(departments[0]!.body.id);
+    expect(departments[1]!.key).toBe(departments[0]!.key);
+    // A different form is a different company: fresh id.
+    await repo.create({ ...input, name: "Other" });
+    const third = api.calls.filter((call) => call.method === "POST" && call.path === "/companies")[2]!;
+    expect(third.body.id).not.toBe(creates[0]!.body.id);
+  });
+
+  it("validates before any request; no or several COMPANY policies refuse without writing", async () => {
+    const api = createApi({ policies: [] });
+    const repo = createApiCompanyRepository(api.client);
+    await expect(repo.create({ ...input, name: "  " })).rejects.toMatchObject({ code: "invalid" });
+    await expect(repo.create({ ...input, fiscalStartMonth: 13 })).rejects.toMatchObject({ code: "invalid" });
+    await expect(repo.create(input)).rejects.toMatchObject({ code: "unsupported" });
+    const several = createApi({ policies: [{ version: "a", applicableContexts: ["COMPANY"] }, { version: "b", applicableContexts: ["COMPANY"] }] });
+    await expect(createApiCompanyRepository(several.client).create(input)).rejects.toMatchObject({ code: "unsupported" });
+    expect([...api.writes(), ...several.writes()]).toEqual([]);
+  });
+
+  it("maps server refusals: 403 → forbidden, 409 → conflict (never a fake summary)", async () => {
+    await expect(createApiCompanyRepository(createApi({ createStatus: 403 }).client).create(input)).rejects.toMatchObject({ code: "forbidden" });
+    await expect(createApiCompanyRepository(createApi({ createStatus: 409 }).client).create(input)).rejects.toMatchObject({ code: "conflict" });
   });
 });

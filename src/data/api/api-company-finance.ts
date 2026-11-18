@@ -498,9 +498,10 @@ export function createCompanyFinance(api: Client, scopesOf: (id: string) => Prom
         if (!scopeId) throw new RepositoryError("not-found", "Not found");
         const { data: current } = await api.request("get", `/api/v1/companies/{id}/contexts/{scopeId}/finance/approvals/{target}`, { path: { id, scopeId, target: approvalId } });
         await conflictAware(() =>
-          api.request("post", `/api/v1/companies/{id}/contexts/{scopeId}/finance/approvals/{target}/decision`, {
-            path: { id, scopeId, target: approvalId },
-            header: { "If-Match": revisionTag(current.revision) },
+          // Decision receipts (preferred): the current stage or a valid delegate decides; replay-safe with the key.
+          api.request("post", `/api/v1/companies/{id}/contexts/{scopeId}/finance/approvals/{approvalId}/decision-receipts`, {
+            path: { id, scopeId, approvalId },
+            header: { "If-Match": revisionTag(current.revision), "Idempotency-Key": newIdempotencyKey() },
             body: { decision: decision === "approved" ? "APPROVE" : "REJECT", ...(reason ? { reason: reason.slice(0, 1000) } : {}) },
           }),
         );

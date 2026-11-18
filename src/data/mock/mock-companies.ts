@@ -94,6 +94,7 @@ import {
 
 const clone = <T>(value: T): T => structuredClone(value);
 const wait = () => new Promise<void>((resolve) => setTimeout(resolve, 0));
+const RESOURCE_TYPES: readonly CompanyResource["type"][] = ["laptop", "monitor", "phone", "license", "vehicle", "other"];
 
 const ADMIN_ROLES: readonly CompanyRole[] = ["owner", "admin"];
 const isAdmin = (role: CompanyRole) => ADMIN_ROLES.includes(role);
@@ -152,6 +153,8 @@ export function companyCapabilities(
     companyBudgets: admin,
     requestBudgetChange: manager,
     settleReimbursements: admin,
+    reportNotReceived: true,
+    recordReimbursementInPersonal: true,
     companyReports: admin,
     departmentReports: lead,
     auditLog: admin || grants.includes("security"),
@@ -1095,9 +1098,16 @@ export function createMockCompanies({ empty = false }: MockCompaniesOptions = {}
       }
     },
 
+    async resourceTypes() {
+      await wait();
+      return RESOURCE_TYPES.map((key) => ({ id: key, key, title: null }));
+    },
+
     async addResource(id, input) {
       await wait();
       const state = get(id);
+      const type = RESOURCE_TYPES.find((key) => key === input.typeId);
+      if (!type) throw new RepositoryError("invalid", "Unknown resource type");
       if (!input.name.trim() || !input.tag.trim()) throw new RepositoryError("invalid", "Name and tag are required");
       if (state.resources.some((item) => item.tag === input.tag.trim())) throw new RepositoryError("conflict", "Tag already used");
       const dept = state.departments.find((item) => item.id === input.departmentId);
@@ -1105,7 +1115,7 @@ export function createMockCompanies({ empty = false }: MockCompaniesOptions = {}
         id: nextId("r"),
         tag: input.tag.trim(),
         name: input.name.trim(),
-        type: input.type,
+        type,
         assigneeId: null,
         assigneeName: null,
         departmentId: dept?.id ?? null,

@@ -1,4 +1,5 @@
 import { newIdempotencyKey, type ApiClientFor, type ResponseDataIn } from "@/api/client";
+import { ApiHttpError } from "@/api/errors";
 import type { paths } from "@/api/generated/openapi-p6-companies";
 import { addDaysToDay, dayOfInstant } from "@/lib/dates/clock-time";
 import { getJalaliParts } from "@/lib/dates/jalali";
@@ -38,7 +39,7 @@ export interface CompletionDeps {
 
 const PAGE = 100;
 /** ISO currency ⇄ the screen's choices: Toman and Rial both store IRR (Toman is a display unit), read back as Rial. */
-const CURRENCY_TO_API: Record<CompanyCurrency, string> = { toman: "IRR", rial: "IRR", usd: "USD", eur: "EUR" };
+export const CURRENCY_TO_API: Record<CompanyCurrency, string> = { toman: "IRR", rial: "IRR", usd: "USD", eur: "EUR" };
 const CURRENCY: Readonly<Record<string, CompanyCurrency>> = { IRR: "rial", USD: "usd", EUR: "eur" };
 
 const iso = (date: Date) => `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
@@ -63,11 +64,16 @@ export function createCompanyCompletion(api: Client, deps: CompletionDeps): Part
       (response) => response.data.items.filter((grant) => grant.revokedAt === null && Date.parse(grant.expiresAt) > Date.now()),
       () => [] as Data<"/api/v1/companies/{id}/employee-grants", "get">["items"],
     );
-  /** A handover started in this session (the contract has no list of pending handovers). */
-  const handovers = new Map<string, { toName: string }>();
+  /** The live pending handover (Owner or the bound from / to participant reads it; others: none). */
+  type Handover = Data<"/api/v1/companies/{id}/ownership-handovers", "get">["items"][number];
+  const pendingHandover = (id: string) =>
+    pageAll<Handover>(async (after) => (await api.request("get", "/api/v1/companies/{id}/ownership-handovers", { path: { id }, query: { limit: PAGE, after } })).data).then(
+      (items) => items.find((item) => item.state === "PENDING" && Date.parse(item.expiresAt) > Date.now()) ?? null,
+      (error: unknown) => (error instanceof ApiHttpError && (error.status === 403 || error.status === 404) ? null : Promise.reject(error)),
+    );
 
   async function settings(id: string): Promise<CompanySettings> {
-    const [{ company }, row, grants] = await Promise.all([deps.read(id), readSettings(id), grantsOf(id)]);
+    const [{ company }, row, grants, handover] = await Promise.all([deps.read(id), readSettings(id), grantsOf(id), pendingHandover(id)]);
     const members = await deps.members(id, company.scopeId);
     return {
       name: company.title,
@@ -87,8 +93,8 @@ export function createCompanyCompletion(api: Client, deps: CompletionDeps): Part
       eligibleOwners: members
         .filter((member) => member.state === "ACTIVE" && member.role === "ORG_ADMIN")
         .map((member) => ({ id: member.id, name: member.displayName ?? "", initials: initialsOf(member.displayName ?? "") })),
-      transfer: handovers.has(id) ? { toName: handovers.get(id)!.toName, status: "pending" } : null,
-      // CB-8: ownership-handovers takes no password; the screen never asks for one it cannot check.
+      transfer: handover ? { toName: members.find((member) => member.id === handover.toAccessId)?.displayName ?? "", status: "pending" } : null,
+      // The successor's acceptance verifies their password server-side; creating the offer takes none, so the owner is never asked for one.
       transferReauth: false,
       // No COMPANY retention policy is approved yet (legal review).
       retentionYears: null,
@@ -205,14 +211,13 @@ export function createCompanyCompletion(api: Client, deps: CompletionDeps): Part
         return settings(id);
       }),
 
-    // A pending handover to an eligible Org Admin; the successor accepts it. The contract takes no password (session authorization only).
+    // A pending handover to an eligible Org Admin; the successor accepts it with password verification (server-side).
     requestTransfer: (id, toPersonId) =>
       mapErrors(async () => {
         const { company } = await deps.read(id);
         const successor = (await deps.members(id, company.scopeId)).find((member) => member.id === toPersonId && member.state === "ACTIVE" && member.role === "ORG_ADMIN");
         if (!successor) invalid("not-eligible");
         await api.request("post", "/api/v1/companies/{id}/ownership-handovers", { path: { id }, header: { "Idempotency-Key": newIdempotencyKey() }, body: { successorAccessId: toPersonId } });
-        handovers.set(id, { toName: successor!.displayName ?? "" });
         return settings(id);
       }),
 

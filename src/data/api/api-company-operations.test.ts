@@ -144,7 +144,8 @@ describe("companies — session 4", () => {
     const api = companyApi((call, parts) => {
       if (parts[2] === "employee-grants" && call.method === "POST") return json({ id: "g1" }, 201);
       if (parts[2] === "employee-grants") return json({ items: [] });
-      if (parts[2] === "ownership-handovers") return json({ id: "h1", state: "PENDING" }, 201);
+      if (parts[2] === "ownership-handovers" && call.method === "POST") return json({ id: "h1", state: "PENDING" }, 201);
+      if (parts[2] === "ownership-handovers") return json({ items: api.calls.some((entry) => entry.method === "POST" && entry.path.endsWith("/ownership-handovers")) ? [{ id: "h1", toAccessId: "m2", state: "PENDING", expiresAt: "2999-01-01T00:00:00Z" }] : [], nextCursor: null });
       return null;
     });
     const repo = createApiCompanyRepository(api.client);
@@ -153,7 +154,7 @@ describe("companies — session 4", () => {
     await repo.setGrant(C, "m2", "finance", "2099-01-01", true);
     expect(api.calls.find((call) => call.path.endsWith("/employee-grants") && call.method === "POST")!.body).toMatchObject({ grantee: { accessId: "m2", generation: 2 }, kind: "FINANCE" });
     const settings = await repo.requestTransfer(C, "m2", "ignored");
-    expect(api.calls.find((call) => call.path.endsWith("/ownership-handovers"))!.body).toEqual({ successorAccessId: "m2" });
+    expect(api.calls.find((call) => call.method === "POST" && call.path.endsWith("/ownership-handovers"))!.body).toEqual({ successorAccessId: "m2" });
     expect(settings.transfer).toEqual({ toName: "Sara", status: "pending" });
   });
 

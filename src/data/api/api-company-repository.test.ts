@@ -140,7 +140,7 @@ describe("live Companies repository", () => {
     const api = fakeApi(() => err(500));
     const repo = createApiCompanyRepository(api.client);
     // Contract gaps (Session 4): no request, an explicit reason.
-    for (const call of [() => repo.markNotReceived(C, "r1", "note"), () => repo.chains(C), () => repo.effectivePolicies(C, "d1"), () => repo.addResource(C, { name: "x", tag: "t", type: "other", departmentId: null }), () => repo.create({ name: "x", legalName: "", currency: "rial", fiscalStartMonth: 1, departments: [] })])
+    for (const call of [() => repo.markNotReceived(C, "r1", "note"), () => repo.chains(C), () => repo.effectivePolicies(C, "d1")])
       await expect(call()).rejects.toMatchObject({ code: "unsupported", message: expect.stringContaining("Companies API:") });
     expect(api.calls).toEqual([]);
   });
