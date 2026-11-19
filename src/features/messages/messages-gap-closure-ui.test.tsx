@@ -109,6 +109,24 @@ describe("meeting file download", () => {
   });
 });
 
+describe("meeting agenda total", () => {
+  it("sums planned minutes of accepted items only", async () => {
+    const agenda = [
+      { id: "a1", title: "Wins", owner: null, minutes: 15, done: true, proposed: false },
+      { id: "a2", title: "Risks", owner: null, minutes: 20, done: false, proposed: false },
+      { id: "a3", title: "Untimed", owner: null, minutes: null, done: false, proposed: false },
+      { id: "a4", title: "Idea", owner: null, minutes: 30, done: null, proposed: true },
+    ];
+    render(
+      <MeetingPage id="mt-retro" />,
+      (r) => ({ ...r, meetings: { ...r.meetings, get: async (id) => ({ ...(await r.meetings.get(id))!, agenda }) } }),
+      "/messages/meetings/mt-retro",
+    );
+    expect(await screen.findByText("Total planned · 35 min")).toBeInTheDocument();
+    expect(screen.getByRole("checkbox", { name: "Wins" })).toHaveAttribute("aria-checked", "true");
+  });
+});
+
 describe("minutes withdraw", () => {
   it("shown only when allowed; confirmation before the transition", async () => {
     const user = userEvent.setup();

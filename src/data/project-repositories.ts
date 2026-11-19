@@ -164,6 +164,8 @@ export interface RiskPatch {
   title?: string;
   severity?: RiskSeverity;
   probability?: RiskProbability;
+  /** Exact 0–100 integer (live register); sent unchanged. */
+  probabilityPercent?: number;
   status?: Exclude<RiskStatus, "closed">;
   ownerId?: string;
   mitigation?: string;

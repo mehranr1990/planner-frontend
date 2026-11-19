@@ -467,6 +467,7 @@
     "files": "Files",
     "agendaEmpty": "No agenda yet.",
     "minutesShort": "{count} min",
+    "agendaTotal": "Total planned · {count} min",
     "agendaItem": "Agenda item",
     "duration": "Minutes",
     "addAgenda": "Add agenda item",

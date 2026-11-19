@@ -330,6 +330,8 @@ export type RiskSeverity = "low" | "medium" | "high" | "critical";
 
 /** D11: probability Low · Medium · High (risks only; issues have none). */
 export type RiskProbability = "low" | "medium" | "high";
+/** Owner decision 2026-11-19: the exact 0–100 probability shows as Low 0–33 · Medium 34–66 · High 67–100. */
+export const riskProbabilityLevel = (percent: number): RiskProbability => (percent <= 33 ? "low" : percent <= 66 ? "medium" : "high");
 
 /** Register status. Issues use open / closed only (closed = resolved). */
 export type RiskStatus = "open" | "mitigating" | "watching" | "closed";
@@ -359,6 +361,8 @@ export interface ProjectRisk {
   severity: RiskSeverity;
   /** Risks only (issues have no probability). */
   probability?: RiskProbability;
+  /** Live: the exact stored 0–100 integer; `probability` is its band. */
+  probabilityPercent?: number;
   status: RiskStatus;
   /** status !== "closed" (kept for the PJ-01 / PJ-08 readers). */
   open: boolean;

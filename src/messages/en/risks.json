@@ -20,6 +20,7 @@
     "critical": "Critical"
   },
   "probabilityShort": "P · {level}",
+  "probabilityPercentHint": "Whole number 0–100 · shown as {level}",
   "view": {
     "label": "Register",
     "risks": "Risks",

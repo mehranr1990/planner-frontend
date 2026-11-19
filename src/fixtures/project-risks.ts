@@ -18,6 +18,7 @@ export const sampleRisks: readonly ProjectRisk[] = [
     title: "Payment API access delayed",
     severity: "high",
     probability: "high",
+    probabilityPercent: 70,
     status: "mitigating",
     open: true,
     owner: kian,

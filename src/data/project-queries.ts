@@ -38,7 +38,7 @@ import type {
   ScheduleMove,
   WorkloadPeriodUnit,
 } from "./project-domain";
-import { projectKeys, taskKeys } from "./query-keys";
+import { projectKeys, taskKeys, teamKeys } from "./query-keys";
 
 /*
  * React Query hooks for Projects (Phase 2). The UI never fetches: it reads
@@ -379,7 +379,14 @@ export function useCreateProject() {
   const client = useQueryClient();
   const refresh = () => client.invalidateQueries({ queryKey: projectKeys.all });
   return {
-    create: useMutation({ mutationFn: (input: NewProjectInput) => projectCreate.create(input), onSettled: refresh }),
+    create: useMutation({
+      mutationFn: (input: NewProjectInput) => projectCreate.create(input),
+      onSettled: (_data, _error, input) => {
+        // A team-owned create links the project to that team in the same request: refresh its portfolio too.
+        if (input.ownerTeamId) void client.invalidateQueries({ queryKey: teamKeys.all });
+        return refresh();
+      },
+    }),
     discard: useMutation({ mutationFn: (projectId: string) => projectCreate.discard(projectId), onSettled: refresh }),
   };
 }

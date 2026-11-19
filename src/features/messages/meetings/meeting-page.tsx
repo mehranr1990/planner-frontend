@@ -163,9 +163,12 @@ function AgendaTab({ meeting: m }: { meeting: MeetingDetail }) {
   const decide = useMessagingMutation((repo, vars: { itemId: string; accept: boolean }) => repo.meetings.decideAgenda(m.id, vars.itemId, vars.accept));
   const tMsg = useTranslations("Msg");
   const fail = (e: unknown) => toast({ title: errorText(tMsg as never, e), tone: "danger" });
+  // Planned total over accepted items only (proposals are not on the agenda yet).
+  const planned = m.agenda.reduce((sum, a) => sum + (!a.proposed && a.minutes !== null ? a.minutes : 0), 0);
   return (
     <div className="flex flex-col gap-2">
       {m.agenda.length === 0 ? <p className="text-sm text-fg-secondary">{t("agendaEmpty")}</p> : null}
+      {planned > 0 ? <p className="text-xs font-bold text-fg-secondary">{t("agendaTotal", { count: f.number(planned) })}</p> : null}
       <ul className="flex flex-col gap-2">
         {m.agenda.map((a) => (
           <li key={a.id} className="flex flex-wrap items-center gap-3 rounded-2xl bg-subtle p-3">

@@ -1,5 +1,5 @@
 import { newIdempotencyKey, type ApiClient } from "@/api/client";
-import type { ProjectPerson, ProjectRisk, RiskCloseReason, RiskHistoryEntry, RiskStatus, TaskComment } from "../project-domain";
+import { riskProbabilityLevel, type ProjectPerson, type ProjectRisk, type RiskCloseReason, type RiskHistoryEntry, type RiskStatus, type TaskComment } from "../project-domain";
 import type { RiskRepository } from "../project-repositories";
 import { RepositoryError } from "../repositories";
 import { invalid, mapErrors, pageAll, retryOnConflict, revisionTag, unsupported } from "./api-shared";
@@ -14,9 +14,11 @@ import { conflictAware, personOf, projectRoster, projectsClient, type ApiProject
  * - P2 gap closure: register code, mitigation checklist (title / done),
  *   close reason + note, the issue a risk was converted into, comments
  *   (target REGISTER_ITEM, the shared comment model).
- * - Not served → left out, never derived: the 3-level probability (the API
- *   keeps 0–100; the band mapping is owner decision PB-13), the "watching"
- *   status, blocked task count (0 = no chip), checklist person / dates,
+ * - Probability (PB-13, owner decision 2026-11-19): the exact 0–100 integer
+ *   is kept as `probabilityPercent` and edited as-is; `probability` is its
+ *   band (Low 0–33 · Medium 34–66 · High 67–100). A bare band is refused on
+ *   write (it has no exact value).
+ * - Not served → left out, never derived: the "watching" status, blocked task count (0 = no chip), checklist person / dates,
  *   review date, trigger, linked milestone / tasks, the issue's link back.
  * - Writes need `work.manage` (PUT with If-Match = item revision, one 409
  *   retry on a fresh read only when the user's change still applies).
@@ -67,6 +69,7 @@ function toRisk(item: ApiItem, roster: readonly ApiProjectMember[], updatedAt: s
     raisedAt: item.createdAt,
     updatedAt,
     blocksTasks: 0,
+    ...(item.kind === "RISK" && item.probability !== null ? { probability: riskProbabilityLevel(item.probability), probabilityPercent: item.probability } : {}),
     ...(item.mitigation ? { mitigation: item.mitigation } : {}),
     ...(item.checklist ? { checklist: [...item.checklist].sort((a, b) => a.position - b.position).map((row) => ({ id: row.id, text: row.title, done: row.completed })) } : {}),
     ...(item.convertedIssueId ? { issueId: item.convertedIssueId } : {}),
@@ -174,7 +177,9 @@ export function createApiProjectRiskRepository(client: ApiClient): RiskRepositor
       }),
     update: (projectId, riskId, patch, revision) =>
       mapErrors(async () => {
-        if (patch.probability !== undefined) unsupported("Projects API: register probability is 0–100; no approved 3-level mapping");
+        if (patch.probability !== undefined) unsupported("Projects API: register probability is an exact 0–100 value, not a band");
+        const percent = patch.probabilityPercent;
+        if (percent !== undefined && (!Number.isInteger(percent) || percent < 0 || percent > 100)) invalid("Probability must be a whole number from 0 to 100");
         if (patch.status === "watching") unsupported("Projects API: register items have no watching status");
         const roster = await projectRoster(api, projectId);
         const owner = patch.ownerId !== undefined ? roster.find((member) => member.id === patch.ownerId) : undefined;
@@ -191,7 +196,7 @@ export function createApiProjectRiskRepository(client: ApiClient): RiskRepositor
                 title: patch.title ?? current.title,
                 description: current.description,
                 severity: patch.severity ? (patch.severity.toUpperCase() as ApiItem["severity"]) : current.severity,
-                probability: current.probability,
+                probability: percent !== undefined && current.kind === "RISK" ? percent : current.probability,
                 owner: owner ? { accessId: owner.id, generation: owner.generation } : current.owner,
                 mitigation: patch.mitigation ?? current.mitigation,
                 status: patch.status === "open" ? "OPEN" : patch.status === "mitigating" ? "MITIGATING" : current.status,

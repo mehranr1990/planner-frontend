@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { createApiTeamRepositories } from "./api-team-repositories";
+import { createApiTeamRepositories, teamCapabilitiesOf } from "./api-team-repositories";
 import { err, fakeApi, json, type FakeCall } from "./test-support";
 
 /* Contract fakes for the Teams subset of the 864-op contract (access/me + member display names, T-M2 handover list). */
@@ -239,5 +239,17 @@ describe("live Teams repositories", () => {
     await expect(repos.teamTasks.addComment("k1", "x")).rejects.toMatchObject({ code: "unsupported" });
     await expect(repos.teamMembers.move(T, "m1", "t2")).rejects.toMatchObject({ code: "unsupported" });
     expect(api.calls).toEqual([]);
+  });
+});
+
+describe("teamCapabilitiesOf · TM-06 Create / Link project", () => {
+  const apiTeam = team() as unknown as Parameters<typeof teamCapabilitiesOf>[1];
+  const me = (capabilities: string[]) => ({ ...ME, capabilities }) as unknown as Parameters<typeof teamCapabilitiesOf>[0];
+
+  it("offers New team project and Link project only with the team's settings.manage on an active team", () => {
+    expect(teamCapabilitiesOf(me(["task.read", "settings.manage"]), apiTeam)).toMatchObject({ createProject: true, linkProjects: true });
+    expect(teamCapabilitiesOf(me(["task.read", "work.manage"]), apiTeam)).toMatchObject({ createProject: false, linkProjects: false });
+    const archived = { ...team("ARCHIVED") } as unknown as Parameters<typeof teamCapabilitiesOf>[1];
+    expect(teamCapabilitiesOf(me(["task.read", "settings.manage"]), archived)).toMatchObject({ createProject: false, linkProjects: false });
   });
 });

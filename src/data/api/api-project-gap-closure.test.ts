@@ -3,6 +3,7 @@ import { createApiProjectWorkInsights } from "./api-project-work-insights";
 import { createApiProjectRiskRepository } from "./api-project-risks-repository";
 import { createApiProjectRepositories } from "./api-project-repositories";
 import { err, fakeApi, json } from "./test-support";
+import { riskProbabilityLevel } from "../project-domain";
 
 /* Contract fakes (not live evidence): workload / analytics from the visible task list, the risk register, the role-default access policy. */
 
@@ -105,18 +106,34 @@ describe("live project risk register", () => {
       return err(404);
     });
 
-  it("maps served fields only (no 3-level probability) with updatedAt from the history", async () => {
+  it("maps served fields with the exact probability and its band, updatedAt from the history", async () => {
     const repo = createApiProjectRiskRepository(register().client);
     const open = await repo.list(P, { open: true });
     expect(open).toHaveLength(1);
-    expect(open[0]).toMatchObject({ id: "r1", code: null, kind: "risk", severity: "high", status: "mitigating", open: true, mitigation: "Second vendor", updatedAt: "2026-11-05T08:00:00.000Z", blocksTasks: 0, revision: 3 });
-    expect(open[0]!.probability).toBeUndefined();
+    expect(open[0]).toMatchObject({ id: "r1", code: null, kind: "risk", severity: "high", probability: "high", probabilityPercent: 70, status: "mitigating", open: true, mitigation: "Second vendor", updatedAt: "2026-11-05T08:00:00.000Z", blocksTasks: 0, revision: 3 });
     expect(open[0]!.owner.id).toBe("m2");
     expect(open[0]!.raisedBy.id).toBe("m1");
     expect((await repo.history(P, "r1")).map((line) => [line.field, line.from, line.to])).toEqual([["status", "open", "mitigating"], ["created", undefined, undefined]]);
   });
 
-  it("update = full PUT with If-Match keeping unserved-by-UI fields; probability (PB-13) is refused without a request", async () => {
+  it("bands the exact probability Low 0–33 · Medium 34–66 · High 67–100 (PB-13)", () => {
+    expect([0, 33, 34, 66, 67, 100].map(riskProbabilityLevel)).toEqual(["low", "low", "medium", "medium", "high", "high"]);
+  });
+
+  it("saves the exact probability unchanged and refuses non-integers or out-of-range values without a request", async () => {
+    for (const percent of [0, 33, 34, 66, 67, 100]) {
+      const api = register();
+      const saved = await createApiProjectRiskRepository(api.client).update(P, "r1", { probabilityPercent: percent }, 3);
+      expect(api.calls.find((call) => call.method === "PUT")!.body.probability).toBe(percent);
+      expect(saved).toMatchObject({ probabilityPercent: percent, probability: riskProbabilityLevel(percent) });
+    }
+    const api = register();
+    const repo = createApiProjectRiskRepository(api.client);
+    for (const percent of [-1, 101, 33.5, Number.NaN]) await expect(repo.update(P, "r1", { probabilityPercent: percent }, 3)).rejects.toMatchObject({ code: "invalid" });
+    expect(api.writes()).toHaveLength(0);
+  });
+
+  it("update = full PUT with If-Match keeping unserved-by-UI fields; a bare probability band is refused without a request", async () => {
     const api = register();
     const repo = createApiProjectRiskRepository(api.client);
     await repo.update(P, "r1", { severity: "critical", status: "open", ownerId: "m1" }, 3);

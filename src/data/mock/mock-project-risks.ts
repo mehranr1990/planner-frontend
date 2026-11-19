@@ -1,6 +1,6 @@
 import { projectPeople } from "@/fixtures/projects";
 import { sampleRiskComments, sampleRiskHistory } from "@/fixtures/project-risks";
-import type { ProjectRisk, RiskHistoryEntry, TaskComment } from "../project-domain";
+import { riskProbabilityLevel, type ProjectRisk, type RiskHistoryEntry, type TaskComment } from "../project-domain";
 import type { RiskRepository } from "../project-repositories";
 import { RepositoryError } from "../repositories";
 import type { ProjectWorkStore } from "./mock-project-work";
@@ -93,7 +93,14 @@ export function createMockRisks(store: ProjectWorkStore, { respond, now }: MockR
       if (patch.title !== undefined && !patch.title.trim()) throw new RepositoryError("invalid", "Title required");
       const owner = patch.ownerId ? people.find((person) => person.id === patch.ownerId) : undefined;
       if (patch.ownerId && !owner) throw new RepositoryError("invalid", "Unknown owner");
+      const percent = patch.probabilityPercent;
+      if (percent !== undefined && (!Number.isInteger(percent) || percent < 0 || percent > 100)) throw new RepositoryError("invalid", "Probability must be 0–100");
       const saved = write(riskId, revision, (risk) => {
+        if (percent !== undefined) {
+          const level = riskProbabilityLevel(percent);
+          if (level !== risk.probability) audit(riskId, { field: "probability", from: risk.probability, to: level });
+          Object.assign(risk, { probability: level, probabilityPercent: percent });
+        }
         const fields = ["severity", "probability", "status"] as const;
         for (const field of fields) {
           const value = patch[field];

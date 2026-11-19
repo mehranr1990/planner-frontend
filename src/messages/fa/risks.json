@@ -20,6 +20,7 @@
     "critical": "بحرانی"
   },
   "probabilityShort": "احتمال · {level}",
+  "probabilityPercentHint": "عدد صحیح ۰ تا ۱۰۰ · نمایش به‌صورت {level}",
   "view": {
     "label": "فهرست",
     "risks": "ریسک‌ها",

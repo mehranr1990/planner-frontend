@@ -11,7 +11,7 @@ import { Avatar } from "@/components/ui/avatar";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Dialog, DialogContent, DialogFooter } from "@/components/ui/dialog";
-import { Field, FieldLabel } from "@/components/ui/field";
+import { Field, FieldDescription, FieldLabel } from "@/components/ui/field";
 import { Icon } from "@/components/ui/icon";
 import { Input } from "@/components/ui/input";
 import { Select, SelectItem } from "@/components/ui/select";
@@ -19,7 +19,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/components/ui/toast";
 import { FolderTabsCard, type FolderTab } from "@/design-system/surfaces/folder-tabs-card";
 import { SignatureCard, SignatureCardAction } from "@/design-system/surfaces/signature-card";
-import type { ProjectRisk, RiskCloseReason, RiskHistoryEntry, RiskStatus } from "@/data/project-domain";
+import { riskProbabilityLevel, type ProjectRisk, type RiskCloseReason, type RiskHistoryEntry, type RiskStatus } from "@/data/project-domain";
 import {
   useProjectMembers,
   useProjectMilestones,
@@ -466,6 +466,11 @@ function EditButton({ risk }: { risk: ProjectRisk }) {
   const [open, setOpen] = useState(false);
   const [severity, setSeverity] = useState(risk.severity);
   const [probability, setProbability] = useState(risk.probability);
+  // Live register: the exact 0–100 integer is edited and saved unchanged.
+  const exact = risk.probabilityPercent !== undefined;
+  const [percent, setPercent] = useState(String(risk.probabilityPercent ?? ""));
+  const percentValue = /^\d{1,3}$/.test(percent.trim()) ? Number(percent) : NaN;
+  const percentValid = percentValue >= 0 && percentValue <= 100;
   const [status, setStatus] = useState<Exclude<RiskStatus, "closed">>(risk.status === "closed" ? "open" : risk.status);
   const [ownerId, setOwnerId] = useState(risk.owner.id);
   const ids = { severity: useId(), probability: useId(), status: useId(), owner: useId() };
@@ -480,6 +485,7 @@ function EditButton({ risk }: { risk: ProjectRisk }) {
         onClick={() => {
           setSeverity(risk.severity);
           setProbability(risk.probability);
+          setPercent(String(risk.probabilityPercent ?? ""));
           setStatus(risk.status === "closed" ? "open" : risk.status);
           setOwnerId(risk.owner.id);
           setOpen(true);
@@ -501,7 +507,24 @@ function EditButton({ risk }: { risk: ProjectRisk }) {
                 ))}
               </Select>
             </Field>
-            {risk.kind === "risk" ? (
+            {risk.kind === "risk" && exact ? (
+              <Field invalid={!percentValid}>
+                <FieldLabel htmlFor={ids.probability}>{tRisks("probability")}</FieldLabel>
+                <Input
+                  id={ids.probability}
+                  type="number"
+                  inputMode="numeric"
+                  min={0}
+                  max={100}
+                  step={1}
+                  value={percent}
+                  onChange={(event) => setPercent(event.target.value)}
+                />
+                <FieldDescription>
+                  {tRisks("probabilityPercentHint", { level: percentValid ? tRisks(`level.${riskProbabilityLevel(percentValue)}`) : "—" })}
+                </FieldDescription>
+              </Field>
+            ) : risk.kind === "risk" ? (
               <Field>
                 <FieldLabel htmlFor={ids.probability}>{tRisks("probability")}</FieldLabel>
                 <Select
@@ -545,14 +568,14 @@ function EditButton({ risk }: { risk: ProjectRisk }) {
               {t("cancel")}
             </Button>
             <Button
-              disabled={actions.update.isPending}
+              disabled={actions.update.isPending || (risk.kind === "risk" && exact && !percentValid)}
               onClick={() =>
                 actions.update.mutate(
                   {
                     riskId: risk.id,
                     patch: {
                       severity,
-                      ...(risk.kind === "risk" ? { probability, status } : {}),
+                      ...(risk.kind === "risk" ? { ...(exact ? { probabilityPercent: percentValue } : { probability }), status } : {}),
                       ownerId,
                     },
                     revision: risk.revision,

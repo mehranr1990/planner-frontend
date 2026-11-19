@@ -467,6 +467,7 @@
     "files": "فایل‌ها",
     "agendaEmpty": "هنوز دستور جلسه‌ای نیست.",
     "minutesShort": "{count} دقیقه",
+    "agendaTotal": "مجموع زمان برنامه‌ریزی‌شده · {count} دقیقه",
     "agendaItem": "بند دستور جلسه",
     "duration": "دقیقه",
     "addAgenda": "افزودن بند",

@@ -36,6 +36,25 @@ describe("PJ-16 · Risk detail", () => {
     expect(screen.getByRole("button", { name: "Make task: Feature flag for go-live" })).toBeInTheDocument();
   });
 
+  it("edits the exact 0–100 probability and shows its band", async () => {
+    const user = userEvent.setup();
+    renderRisk("payment-api-delay");
+    await user.click(await screen.findByRole("button", { name: "Edit" }));
+    const dialog = await screen.findByRole("dialog", { name: "Edit" });
+    const input = within(dialog).getByRole("spinbutton", { name: "Probability" });
+    expect(input).toHaveValue(70);
+    expect(dialog).toHaveTextContent("shown as High");
+    await user.clear(input);
+    await user.type(input, "101");
+    expect(within(dialog).getByRole("button", { name: "Save" })).toBeDisabled();
+    await user.clear(input);
+    await user.type(input, "34");
+    expect(dialog).toHaveTextContent("shown as Medium");
+    await user.click(within(dialog).getByRole("button", { name: "Save" }));
+    const heading = await screen.findByRole("heading", { level: 1, name: /Payment API access delayed/ });
+    await waitFor(() => expect(heading.closest("section")).toHaveTextContent("Probability · Medium"));
+  });
+
   it("closes a risk with a reason chip", async () => {
     const user = userEvent.setup();
     renderRisk("payment-api-delay");

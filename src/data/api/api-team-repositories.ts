@@ -123,8 +123,9 @@ export function teamCapabilitiesOf(me: ApiMe, team: ApiTeam, flags: TeamFlagsRow
     seeBooking: me.role !== "VIEWER" && me.role !== null,
     archive: team.state === "ACTIVE" && has("custody.archive"),
     restore: team.state === "ARCHIVED" && has("custody.archive"),
-    linkProjects: false,
-    createProject: false,
+    // TB-6: link requests and team-owned create both require the team's settings.manage.
+    linkProjects: active && has("settings.manage"),
+    createProject: active && has("settings.manage"),
     uploadFile: team.state === "ACTIVE" && has("task.create"),
     manageFiles: team.state === "ACTIVE" && has("work.manage"),
     exportAnalytics: active && has("work.manage"),
