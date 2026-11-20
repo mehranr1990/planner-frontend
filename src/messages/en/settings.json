@@ -214,7 +214,7 @@
     "deleteButton": "Delete…",
     "delete": {
       "title": "Delete account?",
-      "description": "This permanently removes tasks, journal and finance data after 14 days. Export first?",
+      "description": "This permanently removes tasks, journal and finance data after a 7-day grace period. Export first?",
       "typeLabel": "Type DELETE to confirm",
       "confirm": "Delete",
       "exportFirst": "Export first",

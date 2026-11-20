@@ -79,7 +79,7 @@ describe("CO-90 · company sheets", () => {
     const sheet = await screen.findByRole("dialog", { name: "New company" });
     await user.type(within(sheet).getByRole("textbox", { name: "Name" }), "Kavir");
     await user.click(within(sheet).getByRole("button", { name: "Create company" }));
-    expect(await within(sheet).findByText(/Company creation isn’t enabled on this server yet/)).toBeInTheDocument();
+    expect(await within(sheet).findByText(/Creating companies isn’t enabled on this server yet/)).toBeInTheDocument();
     expect(api.calls.some((call) => call.path === "/retention-policies")).toBe(true);
     expect(api.writes()).toEqual([]);
     expect(routerPush).not.toHaveBeenCalled();

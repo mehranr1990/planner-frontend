@@ -194,7 +194,7 @@
     "password": "Password",
     "reauthFailed": "That password didn’t work",
     "delete": "Delete project",
-    "deleteHint": "Owner only · type the project name · re-enter password. Members see the “deleted” state (SH-02).",
+    "deleteHint": "Owner only · type the project name · re-enter password. Members see the “deleted” state (SH-02). Recoverable for 7 days, then permanently deleted.",
     "deleteAction": "Delete…",
     "deleteTitle": "Delete {name}?",
     "typeName": "Type the project name",

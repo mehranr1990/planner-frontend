@@ -1,5 +1,6 @@
 "use client";
 
+import { isSharedNotEnabled } from "@/api/errors";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { AlertDialog, AlertDialogCancel, AlertDialogContent, AlertDialogFooter, ConfirmDialog } from "@/components/ui/alert-dialog";
@@ -20,6 +21,7 @@ import { ConversationTitle, SourceChip } from "./visuals";
  */
 
 export function errorText(t: (key: string) => string, error: unknown): string {
+  if (isSharedNotEnabled(error)) return t("errors.notEnabled");
   if (error instanceof MessagingError) {
     if (error.code === "window-expired") return t("errors.window");
     if (error.code === "policy") return t("errors.policy");

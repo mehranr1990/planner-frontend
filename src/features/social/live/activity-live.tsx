@@ -48,6 +48,8 @@ export function ActivityLivePanel({ activity }: { activity: ActivityDetail }) {
   const invitable = useInvitable(activity.id, !!s?.manage && s.state === "planned");
   const run = useSocialMutation((repo, step: (r: typeof repo) => Promise<unknown>) => step(repo).then(() => undefined));
   const leaveRun = useSocialPurgeMutation((repo) => repo.activityAdmin.leave(activity.id));
+  // The server deadline (`recoverUntil`), compared once per mount: after it, no Restore (RECOVERY_EXPIRED).
+  const [openedAt] = useState(Date.now);
   if (!s) return null;
   const go = (step: Parameters<typeof run.mutate>[0], done?: string) => run.mutate(step, { onSuccess: () => (done ? toast({ title: done }) : undefined), onError });
   const planned = s.state === "planned";
@@ -59,8 +61,12 @@ export function ActivityLivePanel({ activity }: { activity: ActivityDetail }) {
       {s.orphaned ? <InlineAlert tone="info" title={t("orphaned")} /> : null}
       {s.state === "deleted" && s.recoverUntil ? (
         <div className="flex flex-wrap items-center gap-2">
-          <span className="text-sm text-fg-secondary">{t("recoverUntil", { when: format.relative(s.recoverUntil) })}</span>
-          {s.manage ? <Button size="sm" onClick={() => go((r) => r.activityAdmin.restore(activity.id), t("restored"))}>{t("restore")}</Button> : null}
+          {Date.parse(s.recoverUntil) > openedAt ? <span className="text-sm text-fg-secondary">{t("recoverUntil", { when: format.relative(s.recoverUntil) })}</span> : null}
+          {Date.parse(s.recoverUntil) <= openedAt ? (
+            <span className="text-sm text-fg-secondary">{t("recoverExpired", { when: format.relative(s.recoverUntil) })}</span>
+          ) : s.manage ? (
+            <Button size="sm" onClick={() => go((r) => r.activityAdmin.restore(activity.id), t("restored"))}>{t("restore")}</Button>
+          ) : null}
         </div>
       ) : null}
 

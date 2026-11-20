@@ -1,5 +1,5 @@
 import { newIdempotencyKey, typedAs, type ApiClient, type ApiClientFor, type RequestBodyIn, type ResponseDataIn } from "@/api/client";
-import { ApiHttpError } from "@/api/errors";
+import { ApiHttpError, apiReasonCodes, SHARED_NOT_ENABLED_CODES } from "@/api/errors";
 import type { paths as CompanyPaths } from "@/api/generated/openapi-p6-companies";
 import type { paths } from "@/api/generated/openapi-p6-messaging";
 import type { paths as ProjectPaths } from "@/api/generated/openapi-p6-projects";
@@ -115,6 +115,8 @@ async function mapped<T>(call: () => Promise<T>): Promise<T> {
     return await call();
   } catch (error) {
     if (error instanceof ApiHttpError) {
+      const gate = apiReasonCodes(error).find((code) => SHARED_NOT_ENABLED_CODES.includes(code));
+      if (gate) throw new MessagingError("unavailable", gate);
       if (error.status === 404) throw new MessagingError("not-found");
       if (error.status === 403) throw new MessagingError(error.message === "AUTHOR_WINDOW_CLOSED" ? "window-expired" : "forbidden");
       if (error.status === 400 || error.status === 422) throw new MessagingError("invalid");

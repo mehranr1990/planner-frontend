@@ -68,3 +68,8 @@ No credentials, cookies or tokens belong in this file.
 - Permission is requested only from Settings › Notifications › This browser. iOS/iPadOS needs the Home Screen app (`src/app/manifest.ts`).
 - PENDING: real-browser delivery smoke test (needs backend `PUSH_MODE=webpush` + VAPID pair + HTTPS/localhost). Not verified yet.
 - Known limit: a browser-rotated subscription (`pushsubscriptionchange`) is re-registered only when the user turns push on again in Settings (it shows "off").
+
+## Retention catalog v2 / Shared activation (2026-11-20)
+
+- Decision: no policy picker UI (no approved design); creates send the single current-generation catalog version. Several current versions for one context → refused with "needs a policy picker".
+- BX-1 (backend): `ApiExceptionFilter` strips the activation / recovery-expiry codes; forward them (e.g. `details: [{ path: "", code }]`) so expiry races and activation gates on non-catalog endpoints can be told apart from permission and revision conflicts.

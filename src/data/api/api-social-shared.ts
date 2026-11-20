@@ -1,4 +1,4 @@
-import { ApiHttpError } from "@/api/errors";
+import { ApiHttpError, SHARED_NOT_ENABLED_CODES } from "@/api/errors";
 import { newIdempotencyKey, type ApiClient, type ApiClientFor } from "@/api/client";
 import type { paths } from "@/api/generated/openapi-p6-social";
 import { RepositoryError } from "../repositories";
@@ -39,7 +39,7 @@ export async function retentionVersion(client: ApiClient, context: RetentionCont
   try {
     return await catalogVersion(client, context);
   } catch (error) {
-    if (error instanceof RepositoryError) throw new SocialError("unsupported", error.message, "RETENTION_POLICY_UNAVAILABLE");
+    if (error instanceof RepositoryError) throw new SocialError("unsupported", error.message, SHARED_NOT_ENABLED_CODES.includes(error.message) ? error.message : "RETENTION_POLICY_UNAVAILABLE");
     throw toSocialError(error);
   }
 }

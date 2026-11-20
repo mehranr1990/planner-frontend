@@ -15,5 +15,6 @@
   "cancel": "Cancel",
   "submit": "Create team",
   "created": "{team} created",
-  "failed": "Couldn’t create the team. Try again."
+  "failed": "Couldn’t create the team. Try again.",
+  "notEnabled": "Creating teams isn’t enabled on this server yet. Ask the operator."
 }

@@ -124,6 +124,7 @@
     "tooLarge": "That’s over the limit (voice: 2:00 and 10 MB).",
     "rateLimited": "Too many lookups. Try again in a minute.",
     "notAvailable": "Not available yet.",
+    "notEnabled": "Not enabled yet — the operator hasn’t switched this on for this server.",
     "reasonRequired": "Add a comment first: approval is saved with a reason.",
     "oneReviewer": "Choose exactly one reviewer.",
     "generic": "Something went wrong. Try again.",

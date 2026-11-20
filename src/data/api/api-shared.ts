@@ -1,4 +1,4 @@
-import { ApiHttpError } from "@/api/errors";
+import { ApiHttpError, apiReasonCodes, SHARED_NOT_ENABLED_CODES } from "@/api/errors";
 import { RepositoryError } from "../repositories";
 
 /*
@@ -14,6 +14,8 @@ export async function mapErrors<T>(call: () => Promise<T>): Promise<T> {
     return await call();
   } catch (error) {
     if (error instanceof ApiHttpError) {
+      const gate = apiReasonCodes(error).find((code) => SHARED_NOT_ENABLED_CODES.includes(code));
+      if (gate) throw new RepositoryError("unsupported", gate);
       if (error.status === 404) throw new RepositoryError("not-found", "Not found");
       if (error.status === 400 || error.status === 422) throw new RepositoryError("invalid", "Rejected by the API");
       if (error.status === 403) throw new RepositoryError("forbidden", "Not allowed");

@@ -86,3 +86,36 @@ export function parseErrorEnvelope(body: unknown): ApiErrorEnvelope | undefined 
   if (typeof code !== "string" || typeof message !== "string") return undefined;
   return body as ApiErrorEnvelope;
 }
+
+/*
+ * Shared activation / recovery reasons (catalog v2 §5, ADR 0069). The current
+ * backend envelope reduces them to 403 FORBIDDEN / 409 CONFLICT, so callers
+ * also rely on their own signals (catalog 403 or empty, server deadlines);
+ * these checks match the codes whenever they do reach the client.
+ */
+export const SHARED_NOT_ENABLED_CODES: readonly string[] = ["SHARED_ACTIVATION_GATED", "SHARED_RETENTION_UNAVAILABLE"];
+export const RECOVERY_EXPIRED_CODES: readonly string[] = ["RESTORE_EXPIRED", "RECOVERY_EXPIRED", "RECOVERY_UNAVAILABLE"];
+
+/** The envelope code plus every detail code. */
+export function apiReasonCodes(error: ApiHttpError): string[] {
+  const details = error.details.map((detail) => (detail as { code?: unknown }).code).filter((code): code is string => typeof code === "string");
+  return error.code ? [error.code as string, ...details] : details;
+}
+
+export const hasApiReason = (error: unknown, codes: readonly string[]): boolean =>
+  error instanceof ApiHttpError && apiReasonCodes(error).some((code) => codes.includes(code));
+
+/** A Shared feature the operator has not enabled yet (activation gate or no approved retention policy), from the API or a mapped repository error. */
+export function isSharedNotEnabled(error: unknown): boolean {
+  if (hasApiReason(error, SHARED_NOT_ENABLED_CODES)) return true;
+  return error instanceof Error && (SHARED_NOT_ENABLED_CODES.includes(error.message) || SHARED_NOT_ENABLED_CODES.includes(reasonOf(error)));
+}
+
+/** A restore / recovery refused because its server deadline passed. */
+export const isRecoveryExpired = (error: unknown): boolean =>
+  hasApiReason(error, RECOVERY_EXPIRED_CODES) || (error instanceof Error && RECOVERY_EXPIRED_CODES.includes(reasonOf(error)));
+
+const reasonOf = (error: Error): string => {
+  const reason = (error as { reason?: unknown }).reason;
+  return typeof reason === "string" ? reason : "";
+};

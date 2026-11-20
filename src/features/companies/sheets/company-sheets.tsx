@@ -1,5 +1,6 @@
 "use client";
 
+import { isSharedNotEnabled } from "@/api/errors";
 import { Shield } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -284,7 +285,8 @@ export function NewDepartmentSheet({ companyId, companyName, onDone }: { company
 }
 
 /** The create refusal the owner can act on (policy, permission, conflict, incomplete setup); anything else stays generic. */
-function createFailure(error: unknown): "failed" | "failedPolicy" | "failedForbidden" | "failedConflict" | "failedPartial" | "failedInvalid" {
+function createFailure(error: unknown): "failed" | "failedNotEnabled" | "failedPolicy" | "failedForbidden" | "failedConflict" | "failedPartial" | "failedInvalid" {
+  if (isSharedNotEnabled(error)) return "failedNotEnabled";
   if (!(error instanceof RepositoryError)) return "failed";
   if (error.code === "unsupported") return "failedPolicy";
   if (error.code === "forbidden") return "failedForbidden";

@@ -1,5 +1,6 @@
 "use client";
 
+import { isSharedNotEnabled } from "@/api/errors";
 import { CalendarDays, Flag, UserRound, UsersRound } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -114,6 +115,7 @@ export function NewProjectSheet({ onDone, ownerTeam }: { onDone: () => void; own
           } else if (cause instanceof RepositoryError && cause.message === "key-taken")
             setTakenKeys((keys) => [...keys, projectKey]);
           else if (cause instanceof RepositoryError && cause.message === "key-format") setKeyTouched(true);
+          else if (isSharedNotEnabled(cause)) setError(t("new.notEnabled"));
           else if (cause instanceof RepositoryError && cause.code === "unsupported")
             setError(t(cause.message === "template" ? "new.templateUnavailable" : "new.unavailable"));
           else setError(t("new.failed"));

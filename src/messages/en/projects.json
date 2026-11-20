@@ -138,7 +138,8 @@
       "teamOwnerUnavailable": "Team-owned projects can’t be created yet: the server creates independent projects only.",
       "unavailable": "Creating a project is not available right now.",
       "failed": "The project could not be created. Try again.",
-      "undoUnavailable": "Undo is not available. Delete the project from Settings."
+      "undoUnavailable": "Undo is not available. Delete the project from Settings.",
+      "notEnabled": "Creating projects isn’t enabled on this server yet. Ask the operator."
     },
     "invite": {
       "title": "Invite to {project}",

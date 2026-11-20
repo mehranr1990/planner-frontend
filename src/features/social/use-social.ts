@@ -1,5 +1,6 @@
 "use client";
 
+import { isRecoveryExpired, isSharedNotEnabled } from "@/api/errors";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useCallback } from "react";
@@ -20,6 +21,8 @@ export function useSocialErrorText() {
   const t = useTranslations("Social.common");
   return useCallback(
     (error: unknown) => {
+      if (isSharedNotEnabled(error)) return t("notEnabled");
+      if (isRecoveryExpired(error)) return t("recoveryExpired");
       if (error instanceof SocialError) {
         if (error.code === "forbidden" || error.code === "not-found") return t("forbidden");
         if (error.code === "conflict") return t("conflict");

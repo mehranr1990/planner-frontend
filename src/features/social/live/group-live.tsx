@@ -372,7 +372,7 @@ export function LiveLeave({ group }: { group: GroupDetail }) {
   );
 }
 
-/** /social/recover/[id] — the former primary owner's 30-day recovery. */
+/** /social/recover/[id] — the former primary owner's recovery until the server's `recoveryDeadline` (7 days for new deletions, ADR 0069). */
 export function RecoveryScreen({ groupId }: { groupId: string }) {
   const t = useTranslations("Social.live");
   const errorText = useSocialErrorText();
@@ -390,6 +390,7 @@ export function RecoveryScreen({ groupId }: { groupId: string }) {
         <>
           <p className="text-sm text-fg-secondary">{t(`recover.state.${j.state}`)}</p>
           {j.state === "BLOCKED_POLICY" ? <InlineAlert tone="info" title={t("recover.blockedPolicy")} /> : null}
+          {!j.recoverable && (j.state === "CLOSING_GRACE" || j.state === "OWNER_EXIT_FROZEN") ? <InlineAlert tone="info" title={t("recover.expired", { when: format.relative(j.recoveryDeadline) })} /> : null}
           {j.recoverable ? (
             <>
               <InlineAlert tone="warning" title={t("recover.deadline", { when: format.relative(j.recoveryDeadline) })} />

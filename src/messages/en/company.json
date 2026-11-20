@@ -473,7 +473,8 @@
       "failedForbidden": "Your account isn’t allowed to create companies.",
       "failedConflict": "This company was changed or already exists. Refresh and try again.",
       "failedPartial": "The company was created, but its setup didn’t finish. Submit again to complete it.",
-      "failedInvalid": "Some details aren’t valid. Check the name and fiscal month."
+      "failedInvalid": "Some details aren’t valid. Check the name and fiscal month.",
+      "failedNotEnabled": "Creating companies isn’t enabled on this server yet. Ask the operator."
     },
     "invite": {
       "title": "Invite to {company}",
@@ -1413,8 +1414,8 @@
       "archiveTitle": "Archive {company}?",
       "archived": "Company archived",
       "delete": "Delete company",
-      "deleteNote": "Records under retention holds are kept (e.g. employee files {years} years after leaving). Everything else is removed for every member.",
-      "deleteNoteNoPolicy": "Records under retention holds are kept; the retention period for company records is not approved yet. Everything else is removed for every member.",
+      "deleteNote": "Records under retention holds are kept (e.g. employee files {years} years after leaving). Everything else is removed for every member. Recoverable for 7 days, then permanently deleted.",
+      "deleteNoteNoPolicy": "Records under retention holds are kept. Everything else is removed for every member. Recoverable for 7 days, then permanently deleted.",
       "deleteSubmit": "Delete company",
       "deleteTitle": "Delete {company}?",
       "typeName": "Type {company} to confirm",

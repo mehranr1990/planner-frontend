@@ -180,7 +180,7 @@ describe("api-social-repository — connections & groups", () => {
     expect(ok.calls.at(-1)).toMatchObject({ method: "POST", path: "/social-groups", key: expect.any(String), body: { id, name: "Climbers", description: "Rocks", discoverable: false, retentionPolicyVersion: "rp-7" } });
     expect(ok.calls.at(-1)!.body).not.toHaveProperty("publicSummary");
     const none = setup({ catalog: [] });
-    await expect(none.repo.groups.create({ name: "x", description: "", topic: "other", currency: "irr", visibility: "private", inviteIds: [], clientOpId: "op2" })).rejects.toMatchObject({ code: "unsupported", reason: "RETENTION_POLICY_UNAVAILABLE" });
+    await expect(none.repo.groups.create({ name: "x", description: "", topic: "other", currency: "irr", visibility: "private", inviteIds: [], clientOpId: "op2" })).rejects.toMatchObject({ code: "unsupported", reason: "SHARED_RETENTION_UNAVAILABLE" });
     expect(none.writes()).toEqual([]);
   });
 

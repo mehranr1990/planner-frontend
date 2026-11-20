@@ -82,7 +82,7 @@
     "archived": "Team archived",
     "joinCompanyHint": "Available in Phase 4 (custody & privacy preview + approvals)",
     "notYet": "Not available yet",
-    "deleteHint": "Owner only · type the team name · re-enter password. Team tasks, goals, check-ins and files are deleted; projects stay with their owners.",
+    "deleteHint": "Owner only · type the team name · re-enter password. Team tasks, goals, check-ins and files are deleted; projects stay with their owners. Recoverable for 7 days, then permanently deleted.",
     "deleteAction": "Delete…",
     "deleteTitle": "Delete {name}?",
     "typeName": "Type the team name",

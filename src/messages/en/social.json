@@ -98,7 +98,9 @@
     "chatNotOpenTitle": "Group chat has not started",
     "chatNotOpenBody": "An owner or admin starts the group chat. You can join once it is open.",
     "unsupportedTitle": "Not available yet",
-    "unsupportedBody": "The server doesn’t offer this part of Social yet. Nothing is shown in its place."
+    "unsupportedBody": "The server doesn’t offer this part of Social yet. Nothing is shown in its place.",
+    "notEnabled": "Not enabled yet — the operator hasn’t switched this on for this server.",
+    "recoveryExpired": "The recovery period has ended; this can no longer be restored."
   },
   "shell": {
     "rail": {
@@ -1016,11 +1018,11 @@
       "secondBody": "Your balance is not settled or cancelled by leaving. You can still settle it from Balances.",
       "understood": "I understand my open balance stays open",
       "left": "You left {group}",
-      "deleteBody": "Deleting ends access for every member, including you. You can recover the group for 30 days.",
+      "deleteBody": "Deleting ends access for every member, including you. Recoverable for 7 days, then permanently deleted.",
       "deleteOutstanding": "{ledgers} ledgers still have open balances between {people} people.",
       "delete": "Delete group",
       "deleteConfirm": "Enter your password to delete the group.",
-      "deleted": "Group deleted. You can recover it for 30 days."
+      "deleted": "Group deleted. You can recover it for 7 days."
     },
     "recover": {
       "title": "Recover a deleted group",
@@ -1040,7 +1042,8 @@
       "note": "Only your owner seat returns. Members must be invited again.",
       "action": "Recover group",
       "done": "Group recovered",
-      "balances": "Open my balances"
+      "balances": "Open my balances",
+      "expired": "The recovery period ended {when}. The group can no longer be recovered."
     },
     "notices": {
       "title": "Updates",
@@ -1122,8 +1125,9 @@
       "close": "Close activity",
       "closed": "Activity closed",
       "delete": "Delete",
-      "deleted": "Activity deleted — restorable for 30 days",
-      "leave": "Leave activity"
+      "deleted": "Activity deleted — restorable for 7 days",
+      "leave": "Leave activity",
+      "recoverExpired": "The restore period ended {when}."
     },
     "poll": {
       "new": "New poll",

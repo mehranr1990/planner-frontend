@@ -1,5 +1,6 @@
 "use client";
 
+import { isSharedNotEnabled } from "@/api/errors";
 import { Building2, UserRound } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -30,7 +31,7 @@ export function NewTeamSheet({ onDone }: { onDone: () => void }) {
   const [description, setDescription] = useState("");
   const [mode, setMode] = useState<TeamPlanningMode>("weekly");
   const [touched, setTouched] = useState(false);
-  const [failed, setFailed] = useState(false);
+  const [failed, setFailed] = useState<false | "failed" | "notEnabled">(false);
   const companyId = useId();
   const nameError = touched && !name.trim() ? t("nameRequired") : null;
 
@@ -46,7 +47,7 @@ export function NewTeamSheet({ onDone }: { onDone: () => void }) {
           onDone();
           router.push(teamHref(team.id));
         },
-        onError: () => setFailed(true),
+        onError: (error) => setFailed(isSharedNotEnabled(error) ? "notEnabled" : "failed"),
       },
     );
   };
@@ -112,7 +113,7 @@ export function NewTeamSheet({ onDone }: { onDone: () => void }) {
           {t("companyHint")}
         </span>
       </div>
-      {failed ? <InlineAlert tone="danger" title={t("failed")} /> : null}
+      {failed ? <InlineAlert tone="danger" title={t(failed)} /> : null}
       <div className="flex justify-end gap-2">
         <Button type="button" variant="secondary" onClick={onDone}>
           {t("cancel")}

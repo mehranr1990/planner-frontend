@@ -75,5 +75,6 @@
     "blocked": "Blocked",
     "done": "Done",
     "canceled": "Canceled"
-  }
+  },
+  "notEnabled": "Not enabled yet — the operator hasn’t switched this on for this server."
 }

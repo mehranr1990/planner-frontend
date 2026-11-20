@@ -218,12 +218,13 @@ describe("live Messaging repository", () => {
   });
 
   it("creates a direct conversation with the catalog's CONVERSATION policy; an empty catalog is refused truthfully", async () => {
-    const policy = { version: "mp-rpc-v1.0-conversation", applicableContexts: ["CONVERSATION"], marketScope: "IR", classRules: {}, createdAt: "x" };
-    const api = fakeApi((call) => (call.path === "/retention-policies" ? json({ items: [policy] }) : json({ id: "c9", kind: "DM", sourceId: null, title: null, revision: 1, writable: true, createdAt: "x" }, 201)));
+    const policy = { version: "mp-rpc-v2.0-conversation", applicableContexts: ["CONVERSATION"], marketScope: "IR", classRules: {}, createdAt: "x" };
+    const v1 = { ...policy, version: "mp-rpc-v1.0-conversation" };
+    const api = fakeApi((call) => (call.path === "/retention-policies" ? json({ items: [v1, policy] }) : json({ id: "c9", kind: "DM", sourceId: null, title: null, revision: 1, writable: true, createdAt: "x" }, 201)));
     expect(await createApiMessaging(api.client, USER).conversations.create({ personIds: ["u2"], clientOpId: "op" })).toBe("c9");
-    expect(api.calls.at(-1)!.body).toMatchObject({ kind: "DM", participants: ["u2"], retentionPolicyVersion: "mp-rpc-v1.0-conversation" });
+    expect(api.calls.at(-1)!.body).toMatchObject({ kind: "DM", participants: ["u2"], retentionPolicyVersion: "mp-rpc-v2.0-conversation" });
     const empty = fakeApi(() => json({ items: [] }));
-    await expect(createApiMessaging(empty.client, USER).conversations.create({ personIds: ["u2"], clientOpId: "op" })).rejects.toMatchObject({ code: "unavailable" });
+    await expect(createApiMessaging(empty.client, USER).conversations.create({ personIds: ["u2"], clientOpId: "op" })).rejects.toMatchObject({ code: "unavailable", message: "SHARED_RETENTION_UNAVAILABLE" });
     expect(empty.calls.map((call) => call.path)).toEqual(["/retention-policies"]);
   });
 

@@ -196,10 +196,10 @@ describe("team invitations (OD-4 recipient proof) and retention catalog", () => 
     expect(accept.ifMatch).toBe('"3"');
   });
 
-  it("uses the single approved catalog policy, and refuses an empty catalog truthfully", async () => {
-    const policy = { version: "mp-rpc-v1.0-work", applicableContexts: ["PROJECT", "TEAM"], marketScope: "IR", classRules: {}, createdAt: "x" };
-    expect(await catalogVersion(fakeApi(() => json({ items: [policy] })).client, "TEAM")).toBe("mp-rpc-v1.0-work");
+  it("uses the current (v2.0) catalog policy, and refuses an empty catalog truthfully", async () => {
+    const policy = { version: "mp-rpc-v2.0-work", applicableContexts: ["PROJECT", "TEAM"], marketScope: "IR", classRules: {}, createdAt: "x" };
+    expect(await catalogVersion(fakeApi(() => json({ items: [{ ...policy, version: "mp-rpc-v1.0-work" }, policy] })).client, "TEAM")).toBe("mp-rpc-v2.0-work");
     await expect(catalogVersion(fakeApi(() => json({ items: [] })).client, "COMPANY")).rejects.toMatchObject({ code: "unsupported" });
-    await expect(catalogVersion(fakeApi(() => json({ items: [policy, { ...policy, version: "b" }] })).client, "TEAM")).rejects.toMatchObject({ code: "unsupported" });
+    await expect(catalogVersion(fakeApi(() => json({ items: [policy, { ...policy, version: "mp-rpc-v2.0-work-b" }] })).client, "TEAM")).rejects.toMatchObject({ code: "unsupported" });
   });
 });
