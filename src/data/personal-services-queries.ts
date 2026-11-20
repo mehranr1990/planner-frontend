@@ -9,6 +9,7 @@ import type {
   NotificationPreferencesPatch,
   PlannerNotification,
   PushDevice,
+  PushSubscriptionInput,
   Reminder,
   ReminderInput,
   Routine,
@@ -104,6 +105,11 @@ export function useUpdateNotificationPreferences() {
 export function usePushDevices(enabled = true) {
   const { notifications } = useRepositories();
   return useQuery({ queryKey: serviceKeys.push, queryFn: () => notifications.pushDevices(), enabled });
+}
+
+export function useRegisterPushDevice() {
+  const { notifications } = useRepositories();
+  return useInvalidating((input: PushSubscriptionInput) => notifications.registerPushDevice(input), [serviceKeys.push]);
 }
 
 export function useRevokePushDevice() {

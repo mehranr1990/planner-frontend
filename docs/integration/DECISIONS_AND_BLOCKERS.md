@@ -61,3 +61,10 @@ No credentials, cookies or tokens belong in this file.
 - **B2 — Shared not activated.** `sharedActivationAuthorized:false`, `deploymentAuthorized:false`, `apiOrigin:null`. Projects/Teams/Companies/messaging/meetings/Social APIs must be treated as gated; no frontend integration or fake success.
 - **B3 — Not in the contract:** realtime (P5-04), P6-02+, c09. Task fields energy/area/project/non-personal scope have no Personal API field (see progress file 01).
 - **B5 — Projects read models missing from P6-01 (2026-11-12).** Current-user role/capabilities, people (roster / actor lookup), project summary fields and narrower gaps: R1–R12 in `API_COVERAGE_MATRIX.md` → "Projects — BLOCKED: backend requirements". Until then the Projects screens show their error state in live mode.
+
+## Browser Web Push (2026-11-19)
+- Frontend complete on the existing contract: `GET /notifications/preferences` (`webPushPublicKey`), `POST/GET/DELETE /push/subscriptions`, `GET /notifications/{id}`. No backend change required.
+- `public/sw.js` is push-only (no fetch handler, no cache). Lock-screen text is fixed and localised in the worker; clicks open only `/personal?push=<uuid>` or `/messages`.
+- Permission is requested only from Settings › Notifications › This browser. iOS/iPadOS needs the Home Screen app (`src/app/manifest.ts`).
+- PENDING: real-browser delivery smoke test (needs backend `PUSH_MODE=webpush` + VAPID pair + HTTPS/localhost). Not verified yet.
+- Known limit: a browser-rotated subscription (`pushsubscriptionchange`) is re-registered only when the user turns push on again in Settings (it shows "off").

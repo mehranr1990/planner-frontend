@@ -97,6 +97,7 @@ export function createMockPersonalServices({
     reactivateOnReopen: true,
     quietStart: null,
     quietEnd: null,
+    pushPublicKey: null,
   };
 
   const reminder = (id: string) => reminders.find((item) => item.id === id) ?? notFound("reminder");
@@ -127,6 +128,7 @@ export function createMockPersonalServices({
     notifications: {
       list: async () => [],
       unreadCount: async () => 0,
+      get: async () => notFound("notification"),
       setRead: async () => notFound("notification"),
       dismiss: async () => notFound("notification"),
       snooze: async () => notFound("notification"),
@@ -136,6 +138,8 @@ export function createMockPersonalServices({
         return clone(preferences);
       },
       pushDevices: async () => [],
+      // The mock server has no Web Push (pushPublicKey null), so nothing can subscribe.
+      registerPushDevice: async () => invalid("Web Push is not configured"),
       revokePushDevice: async () => notFound("push device"),
     },
 

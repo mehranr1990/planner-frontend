@@ -355,7 +355,25 @@
     "devicesError": "Couldn’t load push devices",
     "noDevices": "No browser is subscribed.",
     "revoke": "Revoke",
-    "revoked": "Push device revoked"
+    "revoked": "Push device revoked",
+    "thisBrowser": "this browser",
+    "browser": {
+      "title": "This browser",
+      "turnOn": "Turn on",
+      "turnOff": "Turn off",
+      "enabled": "Push is on for this browser",
+      "disabled": "Push is off for this browser",
+      "blocked": "Notifications are blocked for this site",
+      "state": {
+        "on": "Reminders arrive here even when the planner is closed. They show only generic text.",
+        "off": "Get reminders here even when the planner is closed. Your browser will ask for permission.",
+        "unsupported": "This browser doesn’t support push notifications.",
+        "insecure": "Push needs a secure (HTTPS) connection.",
+        "iosInstall": "On iPhone and iPad, add the planner to your Home Screen (Share → Add to Home Screen), then open it from there to turn on push.",
+        "serverOff": "Push isn’t configured on this server.",
+        "denied": "Notifications are blocked for this site. Allow them in your browser’s site settings, then come back."
+      }
+    }
   },
   "account": {
     "password": "Current password",
@@ -420,5 +438,8 @@
         "ERASED": "erased"
       }
     }
+  },
+  "pushOpen": {
+    "gone": "This notification is no longer available"
   }
 }

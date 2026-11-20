@@ -9,9 +9,10 @@ import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "@/components/ui/toast";
-import { NOTIFICATION_CHANNELS, type NotificationPreferencesPatch } from "@/data/personal-services";
+import { NOTIFICATION_CHANNELS, type NotificationPreferences, type NotificationPreferencesPatch } from "@/data/personal-services";
 import { useNotificationPreferences, usePushDevices, useRevokePushDevice, useUpdateNotificationPreferences } from "@/data/personal-services-queries";
 import { UtilityField } from "@/design-system/surfaces/utility-card";
+import { BrowserPushControl, forgetIfThisBrowser, isThisBrowser } from "@/features/push/browser-push-control";
 import { dayOfInstant, isClockTimeString } from "./reminder-model";
 import { useServiceError } from "./service-error";
 import { useServiceFormat } from "./use-service-format";
@@ -19,9 +20,9 @@ import { useServiceFormat } from "./use-service-format";
 /*
  * Settings · Notifications: the server's delivery preferences (channels the
  * server can deliver, quiet hours, re-deliver on reopen), this account's
- * browser push subscriptions (revoke only: subscribing needs a service
- * worker, which the app does not have yet). Each change saves at once with
- * the preference revision.
+ * browser push: "this browser" on/off (push-only service worker, explicit
+ * permission) and every subscribed device with revoke. Each change saves at
+ * once with the preference revision.
  */
 
 export function NotificationPreferencesPanel() {
@@ -100,12 +101,12 @@ export function NotificationPreferencesPanel() {
         </div>
         <Switch aria-label={t("reopen")} checked={prefs.reactivateOnReopen} disabled={update.isPending} onCheckedChange={(reactivateOnReopen) => save({ reactivateOnReopen })} />
       </UtilityField>
-      <PushDevices />
+      <PushDevices prefs={prefs} onChannel={save} />
     </>
   );
 }
 
-function PushDevices() {
+function PushDevices({ prefs, onChannel }: { prefs: NotificationPreferences; onChannel: (patch: NotificationPreferencesPatch) => void }) {
   const t = useTranslations("Services.preferences");
   const format = useServiceFormat();
   const query = usePushDevices();
@@ -115,6 +116,7 @@ function PushDevices() {
     <UtilityField className="flex-col items-stretch gap-2 py-3">
       <span>{t("devices")}</span>
       <p className="text-xs font-normal text-fg-muted">{t("devicesHint")}</p>
+      <BrowserPushControl prefs={prefs} devices={query.data ?? null} onChannel={onChannel} />
       {query.isPending ? (
         <Skeleton className="h-10 rounded-row" />
       ) : query.isError ? (
@@ -129,6 +131,7 @@ function PushDevices() {
                 <MonitorSmartphone aria-hidden="true" size={16} className="shrink-0 text-fg-muted" />
                 <span className="min-w-0 truncate">
                   <bdi dir="auto">{device.label ?? device.host}</bdi>
+                  {isThisBrowser(device) ? <span className="text-xs font-normal text-fg-muted"> · {t("thisBrowser")}</span> : null}
                   <span className="text-xs font-normal text-fg-muted"> · {format.day(dayOfInstant(device.createdAt))}</span>
                 </span>
               </span>
@@ -138,7 +141,10 @@ function PushDevices() {
                 disabled={revoke.isPending}
                 onClick={() =>
                   revoke.mutate(device, {
-                    onSuccess: () => toast({ tone: "neutral", title: t("revoked") }),
+                    onSuccess: () => {
+                      void forgetIfThisBrowser(device);
+                      toast({ tone: "neutral", title: t("revoked") });
+                    },
                     onError: (error) => toast({ tone: "danger", title: message(error) }),
                   })
                 }

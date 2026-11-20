@@ -35,9 +35,11 @@ export interface NotificationPreferences {
   /** "HH:MM" or null (no quiet hours). */
   quietStart: string | null;
   quietEnd: string | null;
+  /** The server's VAPID public key (base64url) when Web Push is configured, else null. */
+  pushPublicKey: string | null;
 }
 
-export type NotificationPreferencesPatch = Partial<Omit<NotificationPreferences, "available" | "channels">> & {
+export type NotificationPreferencesPatch = Partial<Omit<NotificationPreferences, "available" | "channels" | "pushPublicKey">> & {
   channels?: Partial<Record<NotificationChannel, boolean>>;
 };
 
@@ -50,9 +52,18 @@ export interface PushDevice {
   createdAt: string;
 }
 
+/** A browser PushSubscription as the server stores it (endpoint and keys never come back). */
+export interface PushSubscriptionInput {
+  endpoint: string;
+  keys: { auth: string; p256dh: string };
+  label: string | null;
+}
+
 export interface NotificationsRepository {
   /** The inbox, newest first (dismissed ones are gone). */
   list(filter: NotificationFilter): Promise<PlannerNotification[]>;
+  /** One notification (push click target); a foreign or missing one is not-found. */
+  get(id: string): Promise<PlannerNotification>;
   /** Exact unread notifications in the Personal inbox (the badge shows 99+). */
   unreadCount(): Promise<number>;
   setRead(notification: PlannerNotification, read: boolean): Promise<PlannerNotification>;
@@ -63,6 +74,7 @@ export interface NotificationsRepository {
   updatePreferences(patch: NotificationPreferencesPatch): Promise<NotificationPreferences>;
   /** Active browser push subscriptions of this account. */
   pushDevices(): Promise<PushDevice[]>;
+  registerPushDevice(input: PushSubscriptionInput): Promise<PushDevice>;
   revokePushDevice(device: PushDevice): Promise<void>;
 }
 

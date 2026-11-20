@@ -71,6 +71,31 @@ describe("notifications adapter", () => {
     expect(api.writes()).toEqual([]);
   });
 
+  it("registers a push subscription with an Idempotency-Key and maps the VAPID key", async () => {
+    const api = fakeApi((call) => {
+      if (call.method === "GET") return json({ id: ID(1), revision: 1, inApp: true, email: false, webPush: false, reactivateOnReopen: true, quietStart: null, quietEnd: null, availableChannels: ["IN_APP", "WEB_PUSH"], webPushPublicKey: "PUBKEY" });
+      expect(call.path).toBe("/push/subscriptions");
+      expect(call.key).toBeTruthy();
+      expect(call.body).toEqual({ endpoint: "https://fcm.googleapis.com/fcm/send/x", keys: { auth: "a", p256dh: "p" }, label: "Chrome · Windows" });
+      return json({ id: ID(3), spaceId: ID(4), ownerUserId: ID(5), createdByUserId: ID(5), revision: 1, createdAt: T0, updatedAt: T0, label: "Chrome · Windows", endpointHost: "fcm.googleapis.com", state: "ACTIVE", revokedAt: null }, 201);
+    });
+    const repo = createApiNotificationsRepository(api.client);
+    expect(await repo.preferences()).toMatchObject({ available: ["inApp", "webPush"], pushPublicKey: "PUBKEY" });
+    const device = await repo.registerPushDevice({ endpoint: "https://fcm.googleapis.com/fcm/send/x", keys: { auth: "a", p256dh: "p" }, label: "Chrome · Windows" });
+    expect(device).toEqual({ id: ID(3), revision: 1, label: "Chrome · Windows", host: "fcm.googleapis.com", createdAt: T0 });
+  });
+
+  it("reads one notification with its reminder's task, and maps a foreign one to not-found", async () => {
+    const api = fakeApi((call, parts) => {
+      if (parts[1] === ID(9)) return err(404, "NOT_FOUND");
+      if (parts[0] === "notifications") return json({ id: ID(1), revision: 2, title: "Reminder", body: null, scheduledAt: T0, readAt: null, reminderId: ID(2) });
+      return json(reminderDto({ id: ID(2), taskId: ID(7) }));
+    });
+    const repo = createApiNotificationsRepository(api.client);
+    expect(await repo.get(ID(1))).toMatchObject({ id: ID(1), read: false, reminderId: ID(2), taskId: ID(7) });
+    await expect(repo.get(ID(9))).rejects.toMatchObject({ code: "not-found" });
+  });
+
   it("patches only the changed preferences with the preference ETag", async () => {
     const prefs = { id: ID(1), revision: 4, inApp: true, email: false, webPush: false, reactivateOnReopen: true, quietStart: null, quietEnd: null, availableChannels: ["IN_APP", "EMAIL"], webPushPublicKey: null };
     const api = fakeApi((call) => {

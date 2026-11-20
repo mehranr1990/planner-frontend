@@ -18,6 +18,9 @@ import { invalid, mapErrors, pageAll, retryOnConflict, revisionTag } from "./api
 
 type ApiNotification = ResponseData<"/api/v1/notifications/{id}", "get">;
 type ApiPreferences = ResponseData<"/api/v1/notifications/preferences", "get">;
+type ApiPushSubscription = ResponseData<"/api/v1/push/subscriptions", "post">;
+
+const toDevice = (dto: ApiPushSubscription): PushDevice => ({ id: dto.id, revision: dto.revision, label: dto.label, host: dto.endpointHost, createdAt: dto.createdAt });
 
 const PAGE = "100";
 const INBOX_SIZE = "50";
@@ -29,6 +32,7 @@ function toPreferences(dto: ApiPreferences): NotificationPreferences {
     reactivateOnReopen: dto.reactivateOnReopen,
     quietStart: dto.quietStart,
     quietEnd: dto.quietEnd,
+    pushPublicKey: dto.webPushPublicKey,
   };
 }
 
@@ -72,6 +76,13 @@ export function createApiNotificationsRepository(client: ApiClient): Notificatio
           reminderTasks(),
         ]);
         return data.items.map((dto) => toNotification(dto, tasks)).sort((a, b) => b.scheduledAt.localeCompare(a.scheduledAt));
+      }),
+
+    get: (id) =>
+      mapErrors(async () => {
+        const { data } = await client.request("get", "/api/v1/notifications/{id}", { path: { id } });
+        const reminder = (await client.request("get", "/api/v1/reminders/{id}", { path: { id: data.reminderId } })).data;
+        return toNotification(data, new Map([[reminder.id, reminder.taskId]]));
       }),
 
     unreadCount: () =>
@@ -131,8 +142,13 @@ export function createApiNotificationsRepository(client: ApiClient): Notificatio
     pushDevices: () =>
       mapErrors(async () =>
         (await pageAll(async (cursor) => (await client.request("get", "/api/v1/push/subscriptions", { query: { limit: PAGE, cursor, state: "ACTIVE" } })).data)).map(
-          (dto): PushDevice => ({ id: dto.id, revision: dto.revision, label: dto.label, host: dto.endpointHost, createdAt: dto.createdAt }),
+          toDevice,
         ),
+      ),
+
+    registerPushDevice: (input) =>
+      mapErrors(async () =>
+        toDevice((await client.request("post", "/api/v1/push/subscriptions", { header: { "Idempotency-Key": newIdempotencyKey() }, body: input })).data),
       ),
 
     revokePushDevice: (device) =>
