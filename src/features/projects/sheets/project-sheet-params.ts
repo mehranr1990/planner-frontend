@@ -2,7 +2,7 @@
 
 import { usePathname, useRouter } from "next/navigation";
 import { useCallback } from "react";
-import { OPENED_KEY, SHEET_PARAM } from "@/features/sheets/sheet-params";
+import { OPENED_KEY, SHEET_PARAM, sectionSheetRoute } from "@/features/sheets/sheet-params";
 
 /*
  * Project sheet ids (D10). Same URL contract as the Personal sheet host
@@ -50,7 +50,8 @@ export function useOpenProjectSheet(): (id: ProjectSheetId, extra?: Readonly<Rec
   const pathname = usePathname();
   return useCallback(
     (id: ProjectSheetId, extra?: Readonly<Record<string, string>>) => {
-      const href = projectSheetHref(pathname, window.location.search, id, extra);
+      const route = sectionSheetRoute(pathname, window.location.search, "/projects");
+      const href = projectSheetHref(route.pathname, route.search, id, extra);
       try {
         window.sessionStorage.setItem(OPENED_KEY, href);
       } catch {

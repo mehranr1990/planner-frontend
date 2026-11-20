@@ -2,7 +2,7 @@
 
 import { usePathname, useRouter } from "next/navigation";
 import { useCallback } from "react";
-import { OPENED_KEY, SHEET_PARAM } from "@/features/sheets/sheet-params";
+import { OPENED_KEY, SHEET_PARAM, sectionSheetRoute } from "@/features/sheets/sheet-params";
 
 /*
  * Social sheet ids (SO-90 + SO-08 + SO-10 / SO-18): same URL contract as the
@@ -38,7 +38,8 @@ export function useOpenSocialSheet(): (id: SocialSheetId, extra?: Record<string,
   const pathname = usePathname();
   return useCallback(
     (id: SocialSheetId, extra?: Record<string, string>) => {
-      const href = socialSheetHref(pathname, window.location.search, id, extra);
+      const route = sectionSheetRoute(pathname, window.location.search, "/social");
+      const href = socialSheetHref(route.pathname, route.search, id, extra);
       try {
         window.sessionStorage.setItem(OPENED_KEY, href);
       } catch {

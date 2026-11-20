@@ -56,6 +56,15 @@ export function sheetHref(pathname: string, search: string, id: SheetId | null, 
  */
 export const OPENED_KEY = "mp-sheet-opened";
 
+/**
+ * Where a section's sheet can open: its host is mounted only under `base`
+ * (e.g. /projects), so from any other route (Personal home, the switcher on
+ * /teams…) the sheet opens over `base` with no foreign query; Back returns.
+ */
+export function sectionSheetRoute(pathname: string, search: string, base: string): { pathname: string; search: string } {
+  return pathname === base || pathname.startsWith(`${base}/`) ? { pathname, search } : { pathname: base, search: "" };
+}
+
 function rememberOpened(href: string) {
   try {
     window.sessionStorage.setItem(OPENED_KEY, href);

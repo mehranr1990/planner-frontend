@@ -2,7 +2,7 @@
 
 import { usePathname, useRouter } from "next/navigation";
 import { useCallback } from "react";
-import { OPENED_KEY, SHEET_PARAM } from "@/features/sheets/sheet-params";
+import { OPENED_KEY, SHEET_PARAM, sectionSheetRoute } from "@/features/sheets/sheet-params";
 
 /*
  * Team sheet ids (TM-90): same URL contract as Personal and Projects
@@ -33,7 +33,8 @@ export function useOpenTeamSheet(): (id: TeamSheetId) => void {
   const pathname = usePathname();
   return useCallback(
     (id: TeamSheetId) => {
-      const href = teamSheetHref(pathname, window.location.search, id);
+      const route = sectionSheetRoute(pathname, window.location.search, "/teams");
+      const href = teamSheetHref(route.pathname, route.search, id);
       try {
         window.sessionStorage.setItem(OPENED_KEY, href);
       } catch {

@@ -2,7 +2,7 @@
 
 import { usePathname, useRouter } from "next/navigation";
 import { useCallback } from "react";
-import { OPENED_KEY, SHEET_PARAM } from "@/features/sheets/sheet-params";
+import { OPENED_KEY, SHEET_PARAM, sectionSheetRoute } from "@/features/sheets/sheet-params";
 
 /*
  * Company sheet ids (CO-90 + CO-08): same URL contract as Personal, Projects
@@ -35,7 +35,8 @@ export function useOpenCompanySheet(): (id: CompanySheetId, extra?: Record<strin
   const pathname = usePathname();
   return useCallback(
     (id: CompanySheetId, extra?: Record<string, string>) => {
-      const href = companySheetHref(pathname, window.location.search, id, extra);
+      const route = sectionSheetRoute(pathname, window.location.search, "/companies");
+      const href = companySheetHref(route.pathname, route.search, id, extra);
       try {
         window.sessionStorage.setItem(OPENED_KEY, href);
       } catch {
