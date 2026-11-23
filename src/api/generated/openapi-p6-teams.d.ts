@@ -2469,6 +2469,22 @@ export interface components {
                 requestId: string;
             };
         };
+        LiveHealth: {
+            /** @constant */
+            status: "ok";
+        };
+        ReadyHealth: {
+            /** @constant */
+            status: "ok";
+            checks: {
+                /** @constant */
+                database: "up";
+            };
+        };
+        CursorQuery: {
+            limit?: string;
+            cursor?: string;
+        };
     };
     responses: never;
     parameters: never;
@@ -4315,6 +4331,8 @@ export interface operations {
                                 active: boolean;
                             };
                             project: {
+                                /** @enum {string} */
+                                manualStatus: "PLANNED" | "ACTIVE" | "ON_HOLD" | "COMPLETED" | "CANCELLED";
                                 /** Format: uuid */
                                 id: string;
                                 /** Format: uuid */

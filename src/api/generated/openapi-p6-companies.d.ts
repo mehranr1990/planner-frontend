@@ -3797,6 +3797,22 @@ export interface components {
                 requestId: string;
             };
         };
+        LiveHealth: {
+            /** @constant */
+            status: "ok";
+        };
+        ReadyHealth: {
+            /** @constant */
+            status: "ok";
+            checks: {
+                /** @constant */
+                database: "up";
+            };
+        };
+        CursorQuery: {
+            limit?: string;
+            cursor?: string;
+        };
     };
     responses: never;
     parameters: never;

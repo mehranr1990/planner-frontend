@@ -400,6 +400,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/notifications/preferences": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getNotificationnotificationspreferences"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["patchNotificationnotificationspreferences"];
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -416,6 +432,22 @@ export interface components {
                 /** Format: uuid */
                 requestId: string;
             };
+        };
+        LiveHealth: {
+            /** @constant */
+            status: "ok";
+        };
+        ReadyHealth: {
+            /** @constant */
+            status: "ok";
+            checks: {
+                /** @constant */
+                database: "up";
+            };
+        };
+        CursorQuery: {
+            limit?: string;
+            cursor?: string;
         };
     };
     responses: never;
@@ -4875,6 +4907,292 @@ export interface operations {
                 };
             };
             /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    getNotificationnotificationspreferences: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Owned result. External transports contain only generic text and opaque identifiers. */
+            200: {
+                headers: {
+                    /** @description Quoted resource revision */
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        moduleChannels: {
+                            [key: string]: {
+                                IN_APP: boolean;
+                                WEB_PUSH: boolean;
+                                EMAIL: boolean;
+                            };
+                        };
+                        /** Format: uuid */
+                        id: string;
+                        /** Format: uuid */
+                        spaceId: string;
+                        /** Format: uuid */
+                        ownerUserId: string;
+                        /** Format: uuid */
+                        createdByUserId: string;
+                        revision: number;
+                        /** Format: date-time */
+                        createdAt: string;
+                        /** Format: date-time */
+                        updatedAt: string;
+                        inApp: boolean;
+                        email: boolean;
+                        webPush: boolean;
+                        reactivateOnReopen: boolean;
+                        quietStart: string | null;
+                        quietEnd: string | null;
+                        availableChannels: ("IN_APP" | "EMAIL" | "WEB_PUSH")[];
+                        webPushPublicKey: string | null;
+                    };
+                };
+            };
+            /** @description Safe error; foreign/missing resources are 404, stale revisions 409. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error; foreign/missing resources are 404, stale revisions 409. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error; foreign/missing resources are 404, stale revisions 409. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error; foreign/missing resources are 404, stale revisions 409. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error; foreign/missing resources are 404, stale revisions 409. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error; foreign/missing resources are 404, stale revisions 409. */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error; foreign/missing resources are 404, stale revisions 409. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error; foreign/missing resources are 404, stale revisions 409. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error; foreign/missing resources are 404, stale revisions 409. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    patchNotificationnotificationspreferences: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "Idempotency-Key": string;
+                "If-Match": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    moduleChannels?: {
+                        [key: string]: {
+                            IN_APP: boolean;
+                            WEB_PUSH: boolean;
+                            EMAIL: boolean;
+                        };
+                    };
+                    inApp?: boolean;
+                    email?: boolean;
+                    webPush?: boolean;
+                    reactivateOnReopen?: boolean;
+                    quietStart?: string | null;
+                    quietEnd?: string | null;
+                };
+            };
+        };
+        responses: {
+            /** @description Owned result. External transports contain only generic text and opaque identifiers. */
+            200: {
+                headers: {
+                    /** @description Quoted resource revision */
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        moduleChannels: {
+                            [key: string]: {
+                                IN_APP: boolean;
+                                WEB_PUSH: boolean;
+                                EMAIL: boolean;
+                            };
+                        };
+                        /** Format: uuid */
+                        id: string;
+                        /** Format: uuid */
+                        spaceId: string;
+                        /** Format: uuid */
+                        ownerUserId: string;
+                        /** Format: uuid */
+                        createdByUserId: string;
+                        revision: number;
+                        /** Format: date-time */
+                        createdAt: string;
+                        /** Format: date-time */
+                        updatedAt: string;
+                        inApp: boolean;
+                        email: boolean;
+                        webPush: boolean;
+                        reactivateOnReopen: boolean;
+                        quietStart: string | null;
+                        quietEnd: string | null;
+                        availableChannels: ("IN_APP" | "EMAIL" | "WEB_PUSH")[];
+                        webPushPublicKey: string | null;
+                    };
+                };
+            };
+            /** @description Safe error; foreign/missing resources are 404, stale revisions 409. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error; foreign/missing resources are 404, stale revisions 409. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error; foreign/missing resources are 404, stale revisions 409. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error; foreign/missing resources are 404, stale revisions 409. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error; foreign/missing resources are 404, stale revisions 409. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error; foreign/missing resources are 404, stale revisions 409. */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error; foreign/missing resources are 404, stale revisions 409. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error; foreign/missing resources are 404, stale revisions 409. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error; foreign/missing resources are 404, stale revisions 409. */
             503: {
                 headers: {
                     [name: string]: unknown;
