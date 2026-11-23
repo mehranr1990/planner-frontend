@@ -195,6 +195,7 @@ function ActivityList({
             status: statusLabel(workflow?.statuses.find((status) => status.id === item.status)) || item.status,
           });
         else if (item.kind === "completed") text = t("completed", { actor, task: item.task });
+        else if (item.kind === "manual-status") text = t("manualStatus", { actor, status: labels.manualStatus(item.to) });
         else text = t("milestone", { actor, title: item.title, date: format.day(item.due) });
         return (
           <li key={item.id} className="flex min-h-12 items-center gap-3">

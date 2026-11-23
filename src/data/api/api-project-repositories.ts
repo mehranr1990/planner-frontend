@@ -11,6 +11,7 @@ import type {
 import { RepositoryError } from "../repositories";
 import { invalid, mapErrors, pageAll, retryOnConflict, revisionTag } from "./api-shared";
 import { createApiProjectMemberRepository, createApiProjectSummary } from "./api-project-members-repository";
+import { createApiProjectCapacityRepository } from "./api-project-capacity-repository";
 import { createApiProjectDirectory, createApiProjectLifecycle } from "./api-project-directory-repository";
 import { createApiProjectFieldRepository } from "./api-project-fields-repository";
 import { createApiProjectImportRepository } from "./api-project-imports-repository";
@@ -261,6 +262,7 @@ export function createApiProjectRepositories(client: ApiClient, options: { today
       ...createApiProjectSummary(client, options),
       ...createApiProjectDirectory(client),
       restore: createApiProjectLifecycle(client).restore,
+      setManualStatus: createApiProjectLifecycle(client).setManualStatus,
     }),
     projectCreate: createApiProjectCreateRepository(client),
     invitations: createApiProjectInvitations(client),
@@ -280,6 +282,7 @@ export function createApiProjectRepositories(client: ApiClient, options: { today
     activity: createApiProjectActivityRepository(client),
     reports: insights.reports,
     workload: insights.workload,
+    capacity: createApiProjectCapacityRepository(client),
     assignments: createApiProjectAssignmentRepository(client),
     reassign: createApiProjectReassignRepository(client),
     imports: createApiProjectImportRepository(client),

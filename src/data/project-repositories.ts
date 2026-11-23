@@ -59,6 +59,10 @@ import type {
   WorkflowMigrationPreview,
   ProjectDirectory,
   ProjectHealth,
+  ProjectManualStatus,
+  ProjectCapacityDay,
+  ProjectCapacityTemplate,
+  ProjectMemberCapacity,
   ProjectInvitation,
   ProjectRole,
   ProjectSummary,
@@ -92,6 +96,8 @@ export interface ProjectRepository {
   access(id: string, options?: ProjectAccessOptions): Promise<ProjectAccess>;
   /** Manager+: status chip + short note (D9). */
   setStatus(id: string, input: ProjectStatusInput): Promise<ProjectSummary>;
+  /** Work-manage: the manual project status (independent of progress and lifecycle). */
+  setManualStatus(id: string, status: ProjectManualStatus): Promise<ProjectSummary>;
   /** PJ-01 status-card KPIs (server counts). */
   summary(id: string): Promise<ProjectKpis>;
   /** Owner/Admin: archived → active. */
@@ -330,6 +336,15 @@ export interface WorkloadRepository {
   ): Promise<WorkloadGrid>;
 }
 
+/** Per-member weekday capacity overrides and the resolved daily capacity (advisory; never blocks assignment). */
+export interface ProjectCapacityRepository {
+  template(projectId: string, personId: string): Promise<ProjectMemberCapacity>;
+  /** template null removes the override. A stale revision rejects "conflict". */
+  saveTemplate(projectId: string, current: ProjectMemberCapacity, template: ProjectCapacityTemplate | null): Promise<ProjectMemberCapacity>;
+  /** Every day from `from` (inclusive) to `to` (exclusive) in `timezone`. */
+  effective(projectId: string, personId: string, range: { from: string; to: string; timezone: string }): Promise<readonly ProjectCapacityDay[]>;
+}
+
 export interface AssignmentDeclineInput {
   reason: DeclineReason;
   note?: string;
@@ -365,6 +380,7 @@ export interface ProjectRepositories {
   imports: ImportRepository;
   settings: ProjectSettingsRepository;
   workload: WorkloadRepository;
+  capacity: ProjectCapacityRepository;
   assignments: AssignmentRepository;
   projectTasks: ProjectTaskRepository;
   taskDetails: TaskDetailRepository;

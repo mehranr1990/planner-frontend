@@ -1,5 +1,5 @@
 import type { ApiClient } from "@/api/client";
-import type { ProjectActivity } from "../project-domain";
+import type { ProjectActivity, ProjectManualStatus } from "../project-domain";
 import type { ActivityRepository } from "../project-repositories";
 import { mapErrors } from "./api-shared";
 import { personOf, projectRoster, projectsClient, type ProjectsData } from "./api-project-shared";
@@ -12,11 +12,14 @@ import { baseStatusId } from "./api-project-tasks-repository";
  * `status` change) and TASK_COMPLETED. STATUS_NOTE carries no health,
  * MILESTONE_REACHED has no milestone title or date and is not "added" —
  * those and SCOPE_CHANGED / CONTENT / OTHER events are left out, as are
- * events whose target title the server withholds (null). Actor names come
+ * events whose target title the server withholds (null). A PROJECT event
+ * carrying a `manualStatus` change is the manual status history line. Actor names come
  * from the roster; an actor it no longer shows stays blank.
  */
 
 type ApiActivity = ProjectsData<"/api/v1/projects/{projectId}/activity", "get">["items"][number];
+
+const MANUAL_FROM: Partial<Record<string, ProjectManualStatus>> = { PLANNED: "planned", ACTIVE: "active", ON_HOLD: "on-hold", COMPLETED: "completed", CANCELLED: "cancelled" };
 
 const BASE = new Set(["OPEN", "IN_PROGRESS", "DONE", "CANCELED"]);
 
@@ -35,6 +38,13 @@ export function createApiProjectActivityRepository(client: ApiClient): ActivityR
           return member ? personOf(roster, member.id) : { id: event.actorId, name: "", initials: "" };
         };
         return data.items.flatMap((event): ProjectActivity[] => {
+          if (event.entityType === "PROJECT") {
+            const change = event.changes.find((item) => item.field === "manualStatus");
+            const to = typeof change?.to === "string" ? MANUAL_FROM[change.to] : undefined;
+            if (!change || !to) return [];
+            const from = typeof change.from === "string" ? (MANUAL_FROM[change.from] ?? null) : null;
+            return [{ id: event.id, kind: "manual-status", actor: actorOf(event), at: event.at, from, to }];
+          }
           const task = event.target.title;
           if (event.entityType !== "TASK" || task === null) return [];
           if (event.kind === "TASK_COMPLETED") return [{ id: event.id, kind: "completed", actor: actorOf(event), at: event.at, task }];

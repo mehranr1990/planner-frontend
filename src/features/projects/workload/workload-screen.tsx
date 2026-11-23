@@ -3,7 +3,7 @@
 import { UsersRound } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { useId } from "react";
+import { useId, useState } from "react";
 import { AccessLoading, AccessState } from "@/components/feedback/access-state";
 import { Avatar } from "@/components/ui/avatar";
 import { Segmented } from "@/components/ui/segmented";
@@ -17,6 +17,7 @@ import { demoAccessOptions } from "../demo-state";
 import { useProjectFormat } from "../format";
 import { useProject } from "../project-gate";
 import { ProjectPageHeader } from "../project-page-header";
+import { MemberCapacityDialog } from "../members/member-capacity-dialog";
 import { useOpenProjectSheet } from "../sheets/project-sheet-params";
 import { useMediaQuery } from "../use-media";
 import { useWorkflowStatusLabel, WorkflowStatusChip } from "../workflow-status-chip";
@@ -275,6 +276,8 @@ function defaultCell(grid: WorkloadGrid, measure: WorkloadMeasure) {
 function RowHeader({ row }: { row: WorkloadRow }) {
   const t = useTranslations("Workload");
   const format = useProjectFormat();
+  const { project, capabilities } = useProject();
+  const [open, setOpen] = useState(false);
   return (
     <span className="flex items-center gap-2.5">
       <Avatar name={row.person.name} initials={row.person.initials} size={32} decorative className="size-8 text-[0.625rem]" />
@@ -282,9 +285,19 @@ function RowHeader({ row }: { row: WorkloadRow }) {
         <bdi className="truncate text-sm font-bold text-fg">
           {row.role === "guest" ? t("guest", { name: row.person.name }) : row.person.name}
         </bdi>
-        <span className="truncate text-xs font-medium text-fg-secondary">
-          {row.capacity !== null ? t("perWeek", { n: format.number(row.capacity) }) : t("noCapacity")}
-        </span>
+        {row.role === "guest" ? (
+          <span className="truncate text-xs font-medium text-fg-secondary">{t("noCapacity")}</span>
+        ) : (
+          <button
+            type="button"
+            className="w-fit truncate rounded-[10px] text-start text-xs font-medium text-fg-secondary underline decoration-dotted underline-offset-4 hover:text-scope-deep focus-visible:focus-ring"
+            aria-label={t("capacityOpen", { name: row.person.name })}
+            onClick={() => setOpen(true)}
+          >
+            {row.capacity !== null ? t("perWeek", { n: format.number(row.capacity) }) : t("noCapacity")}
+          </button>
+        )}
+        <MemberCapacityDialog projectId={project.id} person={open ? row.person : null} editable={capabilities.editCapacity} onClose={() => setOpen(false)} />
         {row.unestimated > 0 ? (
           <span className="mt-0.5 w-fit rounded-pill bg-warning-soft px-2 text-[0.6875rem] font-semibold text-warning-text">
             {t("unestimated", { n: format.number(row.unestimated) })}

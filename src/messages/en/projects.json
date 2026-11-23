@@ -204,5 +204,9 @@
       "undoAlt": "Reassign the task again from its detail",
       "missing": "This task isn’t available"
     }
+  },
+  "statusFilter": {
+    "label": "Project status",
+    "any": "Any status"
   }
 }

@@ -104,6 +104,7 @@ export function createMockProjectSheets({
         statusNote: null,
         progress: { done: 0, total: 0, percent: 0 },
         expectedPercent: 0,
+        manualStatus: "planned",
         nextMilestone: null,
         startDate,
         endDate,

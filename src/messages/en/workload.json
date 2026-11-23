@@ -50,5 +50,6 @@
   },
   "cellCount": "{name}, {period}: {n, plural, one {# open task} other {# open tasks}}",
   "tasksCount": "{n, plural, one {# task} other {# tasks}}",
-  "footnoteCount": "Open assigned tasks active in each period · pending assignments included (counted for the assignee)"
+  "footnoteCount": "Open assigned tasks active in each period · pending assignments included (counted for the assignee)",
+  "capacityOpen": "Capacity of {name}"
 }

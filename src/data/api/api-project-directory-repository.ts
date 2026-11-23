@@ -1,6 +1,6 @@
 import type { ApiClient } from "@/api/client";
 import { ApiHttpError } from "@/api/errors";
-import type { ProjectAccess, ProjectCapabilities, ProjectDirectory, ProjectLifecycle, ProjectModule, ProjectRole, ProjectSummary, ProjectTint } from "../project-domain";
+import type { ProjectAccess, ProjectCapabilities, ProjectDirectory, ProjectLifecycle, ProjectManualStatus, ProjectModule, ProjectRole, ProjectSummary, ProjectTint } from "../project-domain";
 import type { ProjectRepository, ProjectSettingsRepository } from "../project-repositories";
 import { RepositoryError } from "../repositories";
 import { invalid, mapErrors, pageAll, retryOnConflict, revisionTag } from "./api-shared";
@@ -42,6 +42,21 @@ const dayWindow = () => {
   return { fromAt: new Date(now - 86_400_000).toISOString(), toAt: new Date(now).toISOString() };
 };
 
+const MANUAL_STATUS_FROM_API: Record<ApiProject["manualStatus"], ProjectManualStatus> = {
+  PLANNED: "planned",
+  ACTIVE: "active",
+  ON_HOLD: "on-hold",
+  COMPLETED: "completed",
+  CANCELLED: "cancelled",
+};
+export const MANUAL_STATUS_TO_API: Record<ProjectManualStatus, ApiProject["manualStatus"]> = {
+  planned: "PLANNED",
+  active: "ACTIVE",
+  "on-hold": "ON_HOLD",
+  completed: "COMPLETED",
+  cancelled: "CANCELLED",
+};
+
 const LIFECYCLE: Partial<Record<ApiProject["state"], ProjectLifecycle>> = { ACTIVE: "active", ARCHIVED: "archived", OWNER_EXIT_FROZEN: "paused" };
 
 const initialsOf = (name: string): string =>
@@ -77,6 +92,8 @@ export function capabilitiesOf(me: ApiAccessMe): ProjectCapabilities {
     modules,
     // Health has no approved definition: the status chip cannot be saved.
     editStatus: false,
+    // Status-only PATCH needs work.manage (title / description still need settings.manage).
+    editManualStatus: manage,
     // Space invitations: membership admins / managers (the server checks the role ceiling).
     invite: has("membership.admin") || has("membership.manager"),
     createTask: has("task.create"),
@@ -105,7 +122,8 @@ export function capabilitiesOf(me: ApiAccessMe): ProjectCapabilities {
     manageFiles: full && has("file.read") && manage,
     manageMembers: has("membership.admin"),
     manageJuniorMembers: has("membership.manager"),
-    editCapacity: false,
+    // Member weekday overrides: PUT capacity-templates needs work.manage.
+    editCapacity: manage,
     manageGrants: false,
     seeAllWorkload: full && manage,
     exportAnalytics: has("export.visible"),
@@ -170,6 +188,8 @@ async function summaryOf(
     statusNote: metadata.statusNote ? { text: metadata.statusNote, author: null, at: null } : null,
     progress: { done: progress.completedTasks, total: progress.eligibleTasks, percent: Math.round(progress.percent ?? 0) },
     expectedPercent: null,
+    // An API without the field yet (migration pending) serves no status: null, never guessed.
+    manualStatus: MANUAL_STATUS_FROM_API[project.manualStatus] ?? null,
     nextMilestone: next ?? null,
     startDate: metadata.startDate ?? null,
     endDate: metadata.endDate ?? null,
@@ -249,7 +269,7 @@ export function createApiProjectDirectory(client: ApiClient): Pick<ProjectReposi
  * the project, key / colour / dates on its metadata), archive and restore.
  * Each re-reads the factual summary afterwards.
  */
-export function createApiProjectLifecycle(client: ApiClient): Pick<ProjectRepository, "restore"> & Pick<ProjectSettingsRepository, "update" | "archive"> {
+export function createApiProjectLifecycle(client: ApiClient): Pick<ProjectRepository, "restore" | "setManualStatus"> & Pick<ProjectSettingsRepository, "update" | "archive"> {
   const api = projectsClient(client);
   const directory = createApiProjectDirectory(client);
   const summary = async (id: string): Promise<ProjectSummary> => {
@@ -303,6 +323,14 @@ export function createApiProjectLifecycle(client: ApiClient): Pick<ProjectReposi
             });
           await conflictAware(() => retryOnConflict(send, async () => (current = await metadata(projectId))));
         }
+        return summary(projectId);
+      }),
+    // Status-only PATCH with the project revision; a stale revision is re-read and the chosen status sent once more.
+    setManualStatus: (projectId, status) =>
+      mapErrors(async () => {
+        let current = await project(projectId);
+        const send = () => api.request("patch", "/api/v1/projects/{id}", { path: { id: projectId }, header: { "If-Match": current.tag }, body: { manualStatus: MANUAL_STATUS_TO_API[status] } });
+        await conflictAware(() => retryOnConflict(send, async () => (current = await project(projectId))));
         return summary(projectId);
       }),
     archive: (projectId) => custody(projectId, "archive"),

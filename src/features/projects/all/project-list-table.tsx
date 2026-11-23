@@ -9,7 +9,7 @@ import { projectHref } from "@/features/navigation/contexts";
 import { cn } from "@/lib/cn";
 import { useProjectFormat } from "../format";
 import { useProjectLabels } from "../labels";
-import { ProjectStatusChip } from "../project-visuals";
+import { ProjectManualStatusBadge, ProjectStatusChip } from "../project-visuals";
 import { useMilestoneLine } from "./project-card";
 
 /*
@@ -68,7 +68,10 @@ function ProjectListRow({ project }: { project: ProjectSummary }) {
         </Link>
       </td>
       <td className="px-3 py-3.5">
-        <ProjectStatusChip health={project.health} lifecycle={project.lifecycle} />
+        <span className="flex shrink-0 flex-wrap items-center gap-1">
+          <ProjectManualStatusBadge status={project.manualStatus} />
+          <ProjectStatusChip health={project.health} lifecycle={project.lifecycle} />
+        </span>
       </td>
       <td className="px-3 py-3.5">
         <div className="flex items-center gap-2">

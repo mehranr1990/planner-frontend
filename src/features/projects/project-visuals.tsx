@@ -3,7 +3,7 @@
 import { Circle } from "lucide-react";
 import { StatusChip } from "@/design-system/feedback/status-chip";
 import type { StatusTone } from "@/design-system/tokens/colors";
-import type { ProjectHealth, ProjectLifecycle, ProjectTint } from "@/data/project-domain";
+import type { ProjectHealth, ProjectLifecycle, ProjectManualStatus, ProjectTint } from "@/data/project-domain";
 import { cn } from "@/lib/cn";
 import { useProjectLabels } from "./labels";
 
@@ -73,6 +73,25 @@ export function ProjectStatusChip({
     <StatusChip tone={tone} className={cn("shrink-0", className)}>
       <Circle aria-hidden size={7} className="fill-current" strokeWidth={0} />
       {label}
+    </StatusChip>
+  );
+}
+
+const MANUAL_TONE: Record<ProjectManualStatus, StatusTone> = {
+  planned: "neutral",
+  active: "info",
+  "on-hold": "warning",
+  completed: "success",
+  cancelled: "neutral",
+};
+
+/** The manual project status badge (separate from health, progress and lifecycle); nothing when not served. */
+export function ProjectManualStatusBadge({ status, className }: { status: ProjectManualStatus | null; className?: string }) {
+  const labels = useProjectLabels();
+  if (!status) return null;
+  return (
+    <StatusChip tone={MANUAL_TONE[status]} className={cn("shrink-0", status === "cancelled" && "line-through", className)}>
+      {labels.manualStatus(status)}
     </StatusChip>
   );
 }

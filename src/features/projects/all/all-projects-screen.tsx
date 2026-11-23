@@ -1,6 +1,6 @@
 "use client";
 
-import { Archive, ArrowDownUp, LayoutGrid, List, Plus } from "lucide-react";
+import { Archive, ArrowDownUp, CircleDot, LayoutGrid, List, Plus } from "lucide-react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -24,7 +24,7 @@ import { Segmented } from "@/components/ui/segmented";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "@/components/ui/toast";
 import { RepositoryError } from "@/data/repositories";
-import type { ProjectFilter, ProjectInvitation, ProjectSummary } from "@/data/project-domain";
+import { PROJECT_MANUAL_STATUSES, type ProjectFilter, type ProjectInvitation, type ProjectManualStatus, type ProjectSummary } from "@/data/project-domain";
 import {
   useAcceptInvitation,
   useDeclineInvitation,
@@ -37,6 +37,7 @@ import { cn } from "@/lib/cn";
 import { DemoStateSwitch } from "../demo-state-switch";
 import { parseProjectDemoState } from "../demo-state";
 import { useProjectFormat } from "../format";
+import { useProjectLabels } from "../labels";
 import { useOpenProjectSheet } from "../sheets/project-sheet-params";
 import { InvitationStrip } from "./invitation-strip";
 import { ProjectCard } from "./project-card";
@@ -88,6 +89,7 @@ function sortProjects(projects: ProjectSummary[], sort: ProjectSort, locale: str
 
 export function AllProjectsScreen() {
   const t = useTranslations("Projects");
+  const labels = useProjectLabels();
   const router = useRouter();
   const demo = parseProjectDemoState(useSearchParams().get("state"));
   const format = useProjectFormat();
@@ -100,6 +102,8 @@ export function AllProjectsScreen() {
   const [view, setView] = useState<ProjectView>("grid");
   const [sort, setSort] = useState<ProjectSort>("recent");
   const [query, setQuery] = useState("");
+  // Manual status filter; the directory already holds every accessible project, so it filters locally.
+  const [manualStatus, setManualStatus] = useState<ProjectManualStatus | "any">("any");
 
   const newProject = () => openSheet("project-new");
   const header = (
@@ -201,7 +205,7 @@ export function AllProjectsScreen() {
   const counts = { ...directory.data.counts, invitations: pending.length };
   const needle = demo === "filtered" ? "\u0000" : query.trim().toLocaleLowerCase();
   const visible = sortProjects(
-    all.filter((project) => matchesFilter(project, filter) && project.name.toLocaleLowerCase().includes(needle)),
+    all.filter((project) => matchesFilter(project, filter) && (manualStatus === "any" || project.manualStatus === manualStatus) && project.name.toLocaleLowerCase().includes(needle)),
     sort,
     format.locale,
   );
@@ -212,6 +216,7 @@ export function AllProjectsScreen() {
   const busy = accept.isPending || decline.isPending;
   const clearFilters = () => {
     setFilter("all");
+    setManualStatus("any");
     setQuery("");
     if (demo === "filtered") router.replace("/projects");
   };
@@ -310,6 +315,25 @@ export function AllProjectsScreen() {
           aria-label={t("search")}
           className="min-w-48 flex-1 max-sm:order-last max-sm:basis-full"
         />
+        <DropdownMenu modal={false}>
+          <DropdownMenuTrigger asChild>
+            <Button variant="secondary" size="sm" className="gap-2" aria-pressed={manualStatus !== "any"}>
+              <Icon icon={CircleDot} size={16} />
+              <span className="sr-only">{t("statusFilter.label")}:</span>
+              {manualStatus === "any" ? t("statusFilter.any") : labels.manualStatus(manualStatus)}
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" data-scope="project">
+            <DropdownMenuRadioGroup value={manualStatus} onValueChange={(value) => setManualStatus(value as ProjectManualStatus | "any")}>
+              <DropdownMenuRadioItem value="any">{t("statusFilter.any")}</DropdownMenuRadioItem>
+              {PROJECT_MANUAL_STATUSES.map((value) => (
+                <DropdownMenuRadioItem key={value} value={value}>
+                  {labels.manualStatus(value)}
+                </DropdownMenuRadioItem>
+              ))}
+            </DropdownMenuRadioGroup>
+          </DropdownMenuContent>
+        </DropdownMenu>
         <DropdownMenu modal={false}>
           <DropdownMenuTrigger asChild>
             <Button variant="secondary" size="sm" className="gap-2 max-sm:hidden">

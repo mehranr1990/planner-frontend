@@ -72,7 +72,8 @@ describe("PJ-11 · Workload", () => {
     const table = await screen.findByRole("table", { name: "Open tasks per member and week" });
     const cells = within(table).getAllByRole("button", { name: /Mehran R\., week of .*: \d+ open tasks?/ });
     expect(cells).toHaveLength(6);
-    for (const cell of within(table).getAllByRole("button")) {
+    // Row headers also hold the "Capacity of …" button; only load cells carry a tier.
+    for (const cell of within(table).getAllByRole("button").filter((button) => !button.getAttribute("aria-label")?.startsWith("Capacity of"))) {
       expect(cell).toHaveAttribute("data-tier", "none");
       expect(cell.textContent).not.toMatch(/%/);
     }

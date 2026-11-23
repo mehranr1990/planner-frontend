@@ -70,5 +70,43 @@
     "guest": "Verified external person; only granted tasks + shared files."
   },
   "pendingUnavailable": "Pending invitations cannot be listed yet. Invitations you send still reach people.",
-  "grantsUnavailable": "Task-only guests cannot be listed yet."
+  "grantsUnavailable": "Task-only guests cannot be listed yet.",
+  "capacityOpen": "Capacity",
+  "capacityDialog": {
+    "title": "Capacity of {name}",
+    "description": "Available hours in this project against assigned work. Overload is a warning only; it never blocks assignments.",
+    "week": "Week of {range}",
+    "previousWeek": "Previous week",
+    "nextWeek": "Next week",
+    "loadError": "Couldn’t load capacity",
+    "unknown": "Unknown",
+    "hours": "{n} h",
+    "summary": "{allocated} assigned of {available} available",
+    "summaryUnknown": "{allocated} assigned · capacity unknown",
+    "overTitle": "Over capacity on {n} days",
+    "overBody": "{hours} more than available in total. This is a warning; assignments still go ahead.",
+    "overBy": "+{hours}",
+    "day": "Day",
+    "available": "Available",
+    "allocated": "Assigned",
+    "pattern": "Weekly pattern in this project",
+    "patternHint": "Inherited days follow the project’s owning team; without one, Saturday–Wednesday is 8 h and Thursday–Friday is off. Approved team time off still reduces them, and date-specific exceptions stay as they are.",
+    "effectiveFrom": "Applies from {date}.",
+    "modeLabel": "Capacity on {day}",
+    "hoursLabel": "Hours on {day}",
+    "mode": {
+      "inherit": "Inherited",
+      "hours": "Set hours",
+      "off": "Day off"
+    },
+    "inheritAll": "Inherit all days",
+    "save": "Save pattern",
+    "saved": "Capacity saved",
+    "readOnly": "Only people who manage work in this project can change it.",
+    "error": {
+      "invalid": "Enter hours between 0.5 and 24 for each set day.",
+      "conflict": "Someone else changed this pattern. The latest version is loaded; review it and save again.",
+      "failed": "Couldn’t save the capacity. Try again."
+    }
+  }
 }

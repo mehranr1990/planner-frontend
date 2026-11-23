@@ -12,7 +12,7 @@ import { projectHref } from "@/features/navigation/contexts";
 import { cn } from "@/lib/cn";
 import { useProjectFormat } from "../format";
 import { useProjectLabels } from "../labels";
-import { ProjectStatusChip, ProjectTile } from "../project-visuals";
+import { ProjectManualStatusBadge, ProjectStatusChip, ProjectTile } from "../project-visuals";
 
 /*
  * PJ-00 project card (product card, no notch): initials tile, name, my role,
@@ -76,7 +76,10 @@ export function ProjectCard({ project }: { project: ProjectSummary }) {
             <span className="sm:hidden">{labels.role(project.role)}</span>
           </span>
         </div>
-        <ProjectStatusChip health={project.health} lifecycle={project.lifecycle} />
+        <span className="flex shrink-0 flex-wrap items-center gap-1">
+          <ProjectManualStatusBadge status={project.manualStatus} />
+          <ProjectStatusChip health={project.health} lifecycle={project.lifecycle} />
+        </span>
       </div>
 
       <p className="truncate text-sm text-fg-secondary max-sm:hidden">

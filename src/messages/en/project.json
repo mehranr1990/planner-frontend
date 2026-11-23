@@ -9,7 +9,13 @@
     "notePlaceholder": "What should the team know? (280 characters)",
     "save": "Save status",
     "saved": "Status updated",
-    "readOnly": "Set by a Manager"
+    "readOnly": "Set by a Manager",
+    "manual": {
+      "change": "Change project status",
+      "hint": "Set by people who manage work. Progress is calculated from tasks; archive and pause are separate.",
+      "saved": "Project status updated",
+      "error": "Couldn’t update the project status"
+    }
   },
   "header": {
     "you": "You · {role}",
@@ -105,7 +111,8 @@
     "completed": "{actor} completed {task}",
     "milestone": "{actor} added milestone {title} · {date}",
     "you": "You",
-    "empty": "No activity yet"
+    "empty": "No activity yet",
+    "manualStatus": "{actor} set the project status to {status}"
   },
   "risks": {
     "issue": "Issue",

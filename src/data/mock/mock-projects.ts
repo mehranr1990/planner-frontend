@@ -1,3 +1,4 @@
+import { createMockProjectCapacityRepository } from "./mock-project-capacity";
 import {
   invitationFixtures,
   invitedProjectFixtures,
@@ -101,6 +102,7 @@ export function mockCapabilities(role: ProjectRole, lifecycle: ProjectLifecycle)
   return {
     modules,
     editStatus: editable && rank >= RANK.manager,
+    editManualStatus: editable && rank >= RANK.manager,
     invite: editable && rank >= RANK.admin,
     createTask: editable && rank >= RANK.member,
     editTasks: editable && (rank >= RANK.member || guest),
@@ -384,6 +386,13 @@ export function createMockProjects({
       }
       return respond(structuredClone(answer));
     },
+    async setManualStatus(id, status) {
+      const project = find(id);
+      if (!project) throw new RepositoryError("not-found", `No project ${id}`);
+      if (!mockCapabilities(project.role, project.lifecycle).editManualStatus) throw new RepositoryError("forbidden", "Manager+ only");
+      project.manualStatus = status;
+      return respond(structuredClone(project));
+    },
     async setStatus(id, { health, note }) {
       const project = find(id);
       if (!project) throw new RepositoryError("not-found", `No project ${id}`);
@@ -532,6 +541,7 @@ export function projectRepositories(store: MockProjectsStore): ProjectRepositori
     imports: store.imports,
     settings: store.settings,
     workload: store.workload,
+    capacity: createMockProjectCapacityRepository(),
     assignments: store.assignments,
     projectTasks: store.projectTasks,
     taskDetails: store.taskDetails,

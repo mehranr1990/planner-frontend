@@ -76,5 +76,13 @@
     "done": "Done",
     "canceled": "Canceled"
   },
-  "notEnabled": "Not enabled yet — the operator hasn’t switched this on for this server."
+  "notEnabled": "Not enabled yet — the operator hasn’t switched this on for this server.",
+  "manualStatus": {
+    "planned": "Planned",
+    "active": "Active",
+    "on-hold": "On hold",
+    "completed": "Completed",
+    "cancelled": "Cancelled",
+    "unknown": "No status"
+  }
 }

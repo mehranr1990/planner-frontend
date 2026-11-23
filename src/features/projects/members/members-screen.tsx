@@ -18,7 +18,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Icon } from "@/components/ui/icon";
-import { Input } from "@/components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Segmented } from "@/components/ui/segmented";
 import { toast } from "@/components/ui/toast";
@@ -36,6 +35,7 @@ import { isUnavailable, useUnavailableTitle } from "@/features/projects/unavaila
 import { dayToLocalDate, localDateToDay } from "@/lib/dates/clock-time";
 import { cn } from "@/lib/cn";
 import { useProjectFormat } from "../format";
+import { MemberCapacityDialog } from "./member-capacity-dialog";
 import { useProjectLabels } from "../labels";
 import { useProject } from "../project-gate";
 import { ProjectPageHeader } from "../project-page-header";
@@ -357,6 +357,9 @@ function MemberRow({ member, grant }: { member: ProjectMember; grant?: GuestGran
       <span className="text-sm font-semibold text-fg max-sm:hidden">
         <CapacityCell member={member} editable={capabilities.editCapacity && member.role !== "guest"} />
       </span>
+      <span className="text-xs font-semibold text-fg sm:hidden">
+        <CapacityCell compact member={member} editable={capabilities.editCapacity && member.role !== "guest"} />
+      </span>
       <span className="text-xs font-semibold text-fg max-sm:hidden">{t("openTasks", { n: format.number(member.openTasks) })}</span>
       <span>{menu}</span>
       {member.role === "owner" && self ? <span className="sr-only">{t("lastOwner")}</span> : null}
@@ -367,61 +370,30 @@ function MemberRow({ member, grant }: { member: ProjectMember; grant?: GuestGran
   );
 }
 
-function CapacityCell({ member, editable }: { member: ProjectMember; editable: boolean }) {
+/**
+ * Capacity: the weekly figure where it is known, opening the member's
+ * capacity dialog (resolved week + weekday pattern; read-only without
+ * work-manage). Guests have no project capacity.
+ */
+function CapacityCell({ member, editable, compact = false }: { member: ProjectMember; editable: boolean; compact?: boolean }) {
   const t = useTranslations("Members");
   const format = useProjectFormat();
   const { project } = useProject();
-  const actions = useMemberActions(project.id);
-  const onError = useSaveError();
-  const inputId = useId();
   const [open, setOpen] = useState(false);
-  const [value, setValue] = useState(member.capacityHours?.toString() ?? "");
-  const label = member.capacityHours !== null ? t("hours", { n: format.number(member.capacityHours) }) : t("noCapacity");
-  if (!editable) return <>{label}</>;
-  const save = (hours: number | null) =>
-    actions.setCapacity.mutate({ personId: member.person.id, hours }, { onSuccess: () => setOpen(false), onError });
+  const label = compact ? t("capacityOpen") : member.capacityHours !== null ? t("hours", { n: format.number(member.capacityHours) }) : t("capacityOpen");
+  if (member.role === "guest") return compact ? null : <>{t("noCapacity")}</>;
   return (
-    <Popover
-      open={open}
-      onOpenChange={(next) => {
-        setOpen(next);
-        if (next) setValue(member.capacityHours?.toString() ?? "");
-      }}
-    >
-      <PopoverTrigger asChild>
-        <button
-          type="button"
-          aria-label={`${t("capacityEdit", { name: member.person.name })}: ${label}`}
-          className="rounded-[10px] px-1 underline decoration-dotted underline-offset-4 hover:text-scope-deep focus-visible:focus-ring"
-        >
-          {label}
-        </button>
-      </PopoverTrigger>
-      <PopoverContent align="start" aria-label={t("capacityEdit", { name: member.person.name })} className="w-64" data-scope="project">
-        <form
-          className="flex flex-col gap-2"
-          onSubmit={(event) => {
-            event.preventDefault();
-            const hours = value.trim() === "" ? null : Number(value);
-            save(hours === null || Number.isNaN(hours) ? null : hours);
-          }}
-        >
-          <label htmlFor={inputId} className="text-sm font-bold text-fg">
-            {t("capacityEdit", { name: member.person.name })}
-          </label>
-          <Input id={inputId} type="number" min={0} max={168} inputMode="numeric" dir="ltr" value={value} onChange={(event) => setValue(event.target.value)} />
-          <p className="text-xs font-medium text-fg-secondary">{t("capacityHint")}</p>
-          <div className="flex justify-end gap-2">
-            <Button type="button" variant="secondary" size="sm" onClick={() => save(null)}>
-              {t("clear")}
-            </Button>
-            <Button type="submit" size="sm">
-              {t("save")}
-            </Button>
-          </div>
-        </form>
-      </PopoverContent>
-    </Popover>
+    <>
+      <button
+        type="button"
+        aria-label={`${t("capacityEdit", { name: member.person.name })}: ${label}`}
+        className="rounded-[10px] px-1 underline decoration-dotted underline-offset-4 hover:text-scope-deep focus-visible:focus-ring"
+        onClick={() => setOpen(true)}
+      >
+        {label}
+      </button>
+      <MemberCapacityDialog projectId={project.id} person={open ? member.person : null} editable={editable} onClose={() => setOpen(false)} />
+    </>
   );
 }
 

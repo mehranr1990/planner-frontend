@@ -37,6 +37,9 @@ import type {
   ScheduleMode,
   ScheduleMove,
   WorkloadPeriodUnit,
+  ProjectManualStatus,
+  ProjectCapacityTemplate,
+  ProjectMemberCapacity,
 } from "./project-domain";
 import { projectKeys, taskKeys, teamKeys } from "./query-keys";
 
@@ -92,6 +95,45 @@ export function useSetProjectStatus(id: string) {
   const client = useQueryClient();
   return useMutation({
     mutationFn: (input: ProjectStatusInput) => projects.setStatus(id, input),
+    onSuccess: () => client.invalidateQueries({ queryKey: projectKeys.all }),
+  });
+}
+
+/** A member's weekday override (null person = idle). */
+export function useProjectMemberCapacity(projectId: string, personId: string | null) {
+  const { capacity } = useRepositories();
+  return useQuery({
+    queryKey: scoped(projectId, "capacity-template", personId),
+    queryFn: () => capacity.template(projectId, personId!),
+    enabled: personId !== null,
+  });
+}
+
+/** Resolved daily capacity vs allocations for [from, to) in `timezone`. */
+export function useProjectMemberEffectiveCapacity(projectId: string, personId: string | null, range: { from: string; to: string; timezone: string }) {
+  const { capacity } = useRepositories();
+  return useQuery({
+    queryKey: scoped(projectId, "capacity-effective", personId, range.from, range.to, range.timezone),
+    queryFn: () => capacity.effective(projectId, personId!, range),
+    enabled: personId !== null,
+  });
+}
+
+export function useSaveProjectMemberCapacity(projectId: string) {
+  const { capacity } = useRepositories();
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: ({ current, template }: { current: ProjectMemberCapacity; template: ProjectCapacityTemplate | null }) => capacity.saveTemplate(projectId, current, template),
+    // A conflict also refreshes, so the editor reloads the newer pattern.
+    onSettled: () => client.invalidateQueries({ queryKey: projectKeys.scope(projectId) }),
+  });
+}
+
+export function useSetProjectManualStatus(id: string) {
+  const { projects } = useRepositories();
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: (status: ProjectManualStatus) => projects.setManualStatus(id, status),
     onSuccess: () => client.invalidateQueries({ queryKey: projectKeys.all }),
   });
 }

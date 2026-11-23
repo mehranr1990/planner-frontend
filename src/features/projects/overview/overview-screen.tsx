@@ -12,12 +12,14 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/components/ui/toast";
 import { Tooltip } from "@/components/ui/tooltip";
-import type { ProjectHealth, ProjectSummary } from "@/data/project-domain";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuLabel, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { PROJECT_MANUAL_STATUSES, type ProjectHealth, type ProjectManualStatus, type ProjectSummary } from "@/data/project-domain";
 import {
   useProjectMilestones,
   useProjectPhases,
   useProjectSummary,
   useProjectWorkflow,
+  useSetProjectManualStatus,
   useSetProjectStatus,
 } from "@/data/project-queries";
 import { projectHref } from "@/features/navigation/contexts";
@@ -25,7 +27,7 @@ import { useProjectFormat } from "../format";
 import { useProjectLabels } from "../labels";
 import { useProject } from "../project-gate";
 import { ProjectPageHeader } from "../project-page-header";
-import { ProjectStatusChip } from "../project-visuals";
+import { ProjectManualStatusBadge, ProjectStatusChip } from "../project-visuals";
 import { useOpenProjectSheet } from "../sheets/project-sheet-params";
 import { ForYouCard } from "./for-you-card";
 import { NextMilestones, ProjectSectionsTabs } from "./overview-sections";
@@ -95,6 +97,7 @@ export function ProjectOverviewScreen() {
 
   const meta = (
     <span className="flex flex-wrap items-center gap-2">
+      <ManualStatusControl project={project} canEdit={capabilities.editManualStatus} />
       <StatusControl project={project} canEdit={capabilities.editStatus} />
       <span className="rounded-pill bg-surface px-3 py-1 text-xs font-semibold text-fg inset-ring inset-ring-line">
         {format.range(project.startDate, project.endDate)}
@@ -161,6 +164,56 @@ export function ProjectOverviewScreen() {
         </div>
       </div>
     </>
+  );
+}
+
+/**
+ * Manual project status (Planned … Cancelled). Work managers pick it from a
+ * menu that saves at once; everyone else sees the badge. It never changes the
+ * calculated progress or the archive / pause lifecycle.
+ */
+function ManualStatusControl({ project, canEdit }: { project: ProjectSummary; canEdit: boolean }) {
+  const t = useTranslations("Project.status.manual");
+  const labels = useProjectLabels();
+  const save = useSetProjectManualStatus(project.id);
+  if (!canEdit || project.lifecycle !== "active") return <ProjectManualStatusBadge status={project.manualStatus} />;
+  return (
+    <DropdownMenu modal={false}>
+      <DropdownMenuTrigger asChild>
+        <button
+          type="button"
+          disabled={save.isPending}
+          aria-label={`${t("change")}: ${labels.manualStatus(project.manualStatus)}`}
+          className="inline-flex items-center gap-1 rounded-pill"
+        >
+          {project.manualStatus ? (
+            <ProjectManualStatusBadge status={project.manualStatus} />
+          ) : (
+            <span className="rounded-pill bg-surface px-3 py-1 text-xs font-semibold text-fg-secondary inset-ring inset-ring-line">{labels.manualStatus(null)}</span>
+          )}
+          <Icon icon={ChevronDown} size={14} className="text-fg-secondary" />
+        </button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="start" className="max-w-72" data-scope="project">
+        <DropdownMenuLabel className="text-xs font-normal text-fg-muted">{t("hint")}</DropdownMenuLabel>
+        <DropdownMenuRadioGroup
+          value={project.manualStatus ?? ""}
+          onValueChange={(value) => {
+            if (value === project.manualStatus) return;
+            save.mutate(value as ProjectManualStatus, {
+              onSuccess: () => toast({ title: t("saved"), tone: "success" }),
+              onError: () => toast({ title: t("error"), tone: "danger" }),
+            });
+          }}
+        >
+          {PROJECT_MANUAL_STATUSES.map((value) => (
+            <DropdownMenuRadioItem key={value} value={value}>
+              {labels.manualStatus(value)}
+            </DropdownMenuRadioItem>
+          ))}
+        </DropdownMenuRadioGroup>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }
 

@@ -14,6 +14,13 @@ export type ProjectRole = "owner" | "admin" | "manager" | "member" | "viewer" | 
 /** Manual status set by a Manager+ (D9); never computed. */
 export type ProjectHealth = "on-track" | "at-risk" | "off-track";
 
+/**
+ * The project's manual status, chosen by people with work-manage rights.
+ * Independent of the calculated progress and of the system lifecycle.
+ */
+export type ProjectManualStatus = "planned" | "active" | "on-hold" | "completed" | "cancelled";
+export const PROJECT_MANUAL_STATUSES: readonly ProjectManualStatus[] = ["planned", "active", "on-hold", "completed", "cancelled"];
+
 /** Lifecycle comes from the project settings, not from the status chip. */
 export type ProjectLifecycle = "active" | "paused" | "archived";
 
@@ -65,6 +72,8 @@ export interface ProjectSummary {
   progress: { done: number; total: number; percent: number };
   /** Expected share done by today (0–100) for the pace marker; null = unknown (no approved baseline). */
   expectedPercent: number | null;
+  /** Manual status; null when the source does not serve it. */
+  manualStatus: ProjectManualStatus | null;
   nextMilestone: ProjectMilestoneRef | null;
   /** Declared project dates (Gregorian days); null = not declared. */
   startDate: string | null;
@@ -94,6 +103,8 @@ export interface ProjectCapabilities {
   /** Module visibility (hidden, not disabled, when false: no discovery). */
   modules: Readonly<Record<ProjectModule, boolean>>;
   editStatus: boolean;
+  /** Change the manual project status (work-manage). */
+  editManualStatus: boolean;
   invite: boolean;
   createTask: boolean;
   /** Edit tasks assigned to me. */
@@ -130,7 +141,7 @@ export interface ProjectCapabilities {
   manageMembers: boolean;
   /** PJ-13 "own": Managers change Member/Viewer roles and remove people ranked below them. */
   manageJuniorMembers: boolean;
-  /** Weekly capacity per member and guest grants (Manager+). */
+  /** Members' weekday capacity overrides (work-manage) and guest grants (Manager+). */
   editCapacity: boolean;
   manageGrants: boolean;
   /** PJ-11: every member row (Manager+); Members see only their own row. */
@@ -413,6 +424,8 @@ export type ProjectActivity =
   | { id: string; kind: "status"; actor: ProjectPerson; at: string; health: ProjectHealth; note: string }
   | { id: string; kind: "moved"; actor: ProjectPerson; at: string; task: string; status: string }
   | { id: string; kind: "completed"; actor: ProjectPerson; at: string; task: string }
+  /** Manual project status change (from null = first recorded value unknown). */
+  | { id: string; kind: "manual-status"; actor: ProjectPerson; at: string; from: ProjectManualStatus | null; to: ProjectManualStatus }
   | { id: string; kind: "milestone"; actor: ProjectPerson; at: string; title: string; due: string };
 
 /** Team load (D13): estimates of open tasks in this project only vs weekly project capacity. */
@@ -421,6 +434,42 @@ export interface WorkloadEntry {
   hours: number;
   /** Weekly project capacity; null = not set / not served (no "over" state). */
   capacity: number | null;
+}
+
+// ── Member capacity (weekday pattern per project member) ─────────────────
+
+/**
+ * A member's weekday override in this project. `weekdays` is indexed
+ * Sunday = 0 … Saturday = 6 (minutes 0–1440); null inherits that weekday from
+ * the owning Team, or the default (Sat–Wed 480 min, Thu / Fri 0) without one.
+ */
+export interface ProjectCapacityTemplate {
+  timezone: string;
+  /** Gregorian day the pattern applies from. */
+  effectiveFrom: string;
+  weekdays: readonly (number | null)[];
+}
+
+export interface ProjectMemberCapacity {
+  personId: string;
+  /** null = no override: every weekday is inherited. */
+  template: ProjectCapacityTemplate | null;
+  /** If-Match for the next save (1 when no override was ever saved). */
+  revision: number;
+}
+
+/** One day of a member's resolved capacity vs explicit allocations (advisory only). */
+export interface ProjectCapacityDay {
+  /** Gregorian day. */
+  date: string;
+  /** null = unknown capacity (never guessed as zero). */
+  capacityMinutes: number | null;
+  allocatedMinutes: number;
+  /** > 0 is a warning only; null when capacity is unknown. */
+  overbookedMinutes: number | null;
+  taskCount: number;
+  estimatedMinutes: number;
+  unknownEstimates: number;
 }
 
 /** PJ-01 status-card KPIs, counted by the server. */
