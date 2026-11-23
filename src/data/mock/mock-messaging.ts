@@ -12,6 +12,7 @@ import {
 import { SAMPLE_NOW } from "@/fixtures/personal/sample-day";
 import type {
   ActionItem,
+  EmailOffer,
   Announcement,
   Attachment,
   ChannelPolicy,
@@ -68,6 +69,10 @@ interface Member {
   deliveredAt: number;
   muted: boolean;
   collapseBlocked: boolean;
+  /** My archive flag (kept when new messages arrive). */
+  archived: boolean;
+  /** Delete for me: history up to this instant stays hidden for me. */
+  historyFloor: number | null;
   threadReadAt: Map<string, number>;
 }
 
@@ -220,6 +225,22 @@ export function createMessagingServer({ now: clock, simulate = true, uploadStepM
   const conversations = new Map<string, StoredConversation>();
   const messages = new Map<string, StoredMessage>();
   const meetings = new Map<string, StoredMeeting>();
+  // Email offers (issuer side). The mock sends no email, so nothing can be claimed here.
+  const emailOffers = new Map<string, EmailOffer>();
+  const offerEmail = (email: string): EmailOffer => {
+    const address = email.trim();
+    if (!/^[^s@]+@[^s@]+.[^s@]+$/.test(address)) throw new MessagingError("invalid");
+    const offer: EmailOffer = { id: crypto.randomUUID(), email: address, state: "pending", revision: 1, expiresAt: iso(now() + 7 * DAY_MS) };
+    emailOffers.set(offer.id, offer);
+    return { ...offer };
+  };
+  const revokeOffer = (offer: EmailOffer): EmailOffer => {
+    const stored = emailOffers.get(offer.id);
+    if (!stored || stored.revision !== offer.revision || stored.state !== "pending") throw new MessagingError("invalid");
+    const next: EmailOffer = { ...stored, state: "revoked", revision: stored.revision + 1 };
+    emailOffers.set(next.id, next);
+    return { ...next };
+  };
   const announcements = new Map<string, StoredAnnouncement>();
 
   function addConversation(seed: SeedConversation) {
@@ -235,6 +256,8 @@ export function createMessagingServer({ now: clock, simulate = true, uploadStepM
         deliveredAt: base,
         muted: m.muted ?? false,
         collapseBlocked: false,
+        archived: false,
+        historyFloor: null,
         threadReadAt: new Map(),
       });
     }
@@ -347,6 +370,7 @@ export function createMessagingServer({ now: clock, simulate = true, uploadStepM
     const member = activeMember(c, actor);
     if (!member) return false;
     if (m.hiddenFor.has(actor)) return false;
+    if (member.historyFloor !== null && m.createdAt <= member.historyFloor) return false;
     if (historyFromJoin(c) && m.createdAt < member.joinedAt) return false;
     return true;
   }
@@ -495,6 +519,7 @@ export function createMessagingServer({ now: clock, simulate = true, uploadStepM
       mentions: unreadMsgs.filter((m) => m.body.includes(`](${actor})`) && !blocked(actor, m.authorId)).length,
       muted: member.muted,
       blocked: other ? blocked(actor, other) : false,
+      archived: member.archived,
     };
   }
 
@@ -645,10 +670,17 @@ export function createMessagingServer({ now: clock, simulate = true, uploadStepM
       },
 
       conversations: {
-        async list(tab) {
+        async list(tab, options = {}) {
           const kinds: Record<typeof tab, ConversationKind[]> = { all: ["direct", "group", "channel"], direct: ["direct"], groups: ["group"], channels: ["channel"] };
+          const archived = options.archived === true;
+          // Deleted for me: hidden until someone else writes after the floor (that message revives it).
+          const hidden = (c: StoredConversation, floor: number | null) =>
+            floor !== null && ![...messages.values()].some((m) => m.cid === c.id && m.authorId !== actor && m.createdAt > floor);
           return [...conversations.values()]
-            .filter((c) => activeMember(c, actor) && kinds[tab].includes(c.kind))
+            .filter((c) => {
+              const member = activeMember(c, actor);
+              return member !== null && member.archived === archived && !hidden(c, member.historyFloor) && kinds[tab].includes(c.kind);
+            })
             .sort((a, b) => lastActivity(b, actor) - lastActivity(a, actor))
             .map((c) => summary(c, actor));
         },
@@ -701,7 +733,7 @@ export function createMessagingServer({ now: clock, simulate = true, uploadStepM
           }
           const t = now();
           const id = nextId("c");
-          const member = (pid: string, role: Member["role"]): Member => ({ id: pid, joinedAt: t, role, removedAt: null, lastReadAt: t, deliveredAt: t, muted: false, collapseBlocked: false, threadReadAt: new Map() });
+          const member = (pid: string, role: Member["role"]): Member => ({ id: pid, joinedAt: t, role, removedAt: null, lastReadAt: t, deliveredAt: t, muted: false, collapseBlocked: false, archived: false, historyFloor: null, threadReadAt: new Map() });
           conversations.set(id, {
             id,
             kind: ids.length === 1 ? "direct" : "group",
@@ -739,6 +771,26 @@ export function createMessagingServer({ now: clock, simulate = true, uploadStepM
           requireMember(id, actor).members.get(actor)!.muted = muted;
           emit({ type: "settings" });
         },
+        async inviteByEmail(id, email) {
+          const c = requireMember(id, actor);
+          if (c.kind === "direct" || c.members.get(actor)!.role !== "admin") throw new MessagingError("forbidden");
+          return offerEmail(email);
+        },
+        async revokeEmailOffer(_id, offer) {
+          return revokeOffer(offer);
+        },
+        async claimEmailInvitation() {
+          throw new MessagingError("not-found");
+        },
+        async archive(id, archived) {
+          requireMember(id, actor).members.get(actor)!.archived = archived;
+          emit({ type: "settings" });
+        },
+        async deleteForMe(id) {
+          const member = requireMember(id, actor).members.get(actor)!;
+          member.historyFloor = now();
+          emit({ type: "settings" });
+        },
         async leave(id) {
           const c = requireMember(id, actor);
           if (c.kind === "direct" || policyOf(c)?.mandatory) throw new MessagingError("forbidden");
@@ -759,7 +811,7 @@ export function createMessagingServer({ now: clock, simulate = true, uploadStepM
             if (c.kind === "channel" ? !isWorkspaceMember(pid, c.source.workspaceId) : !canDm(actor, pid)) throw new MessagingError("forbidden");
             const existing = c.members.get(pid);
             if (existing && existing.removedAt === null) continue;
-            c.members.set(pid, { id: pid, joinedAt: t, role: "member", removedAt: null, lastReadAt: t, deliveredAt: t, muted: false, collapseBlocked: false, threadReadAt: new Map() });
+            c.members.set(pid, { id: pid, joinedAt: t, role: "member", removedAt: null, lastReadAt: t, deliveredAt: t, muted: false, collapseBlocked: false, archived: false, historyFloor: null, threadReadAt: new Map() });
           }
           emit({ type: "membership", conversationId: id });
         },
@@ -1061,7 +1113,7 @@ export function createMessagingServer({ now: clock, simulate = true, uploadStepM
             kind: "channel",
             name: clean,
             source: { ...ws.source },
-            members: new Map(ids.filter((pid) => !people.get(pid)?.deleted).map((pid) => [pid, { id: pid, joinedAt: t, role: pid === actor ? "admin" : "member", removedAt: null, lastReadAt: t, deliveredAt: t, muted: false, collapseBlocked: false, threadReadAt: new Map() }])),
+            members: new Map(ids.filter((pid) => !people.get(pid)?.deleted).map((pid) => [pid, { id: pid, joinedAt: t, role: pid === actor ? "admin" : "member", removedAt: null, lastReadAt: t, deliveredAt: t, muted: false, collapseBlocked: false, archived: false, historyFloor: null, threadReadAt: new Map() }])),
             policyOverride: override,
             newcomerHistory: policy.newcomerHistory,
             linkPreviews: false,
@@ -1182,6 +1234,16 @@ export function createMessagingServer({ now: clock, simulate = true, uploadStepM
           if (patch.link !== undefined) mt.link = patch.link;
           if (patch.description !== undefined) mt.description = patch.description;
           emit({ type: "meeting", meetingId: id });
+        },
+        async inviteByEmail(id, email) {
+          if (requireMeeting(id, actor).organizer !== actor) throw new MessagingError("forbidden");
+          return offerEmail(email);
+        },
+        async revokeEmailOffer(_id, offer) {
+          return revokeOffer(offer);
+        },
+        async claimEmailInvitation() {
+          throw new MessagingError("not-found");
         },
         async rsvp(id, rsvp) {
           const mt = requireMeeting(id, actor);

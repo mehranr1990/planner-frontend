@@ -58,6 +58,8 @@ export interface ConversationSummary {
   muted: boolean;
   /** Direct only: either side blocked the other. */
   blocked: boolean;
+  /** Archived for me only (new messages keep it archived). */
+  archived: boolean;
 }
 
 export type ConversationAccess = "member" | "removed" | "not-found";
@@ -381,6 +383,18 @@ export interface MeetingInvitation {
  * The API serves no conversation title: only the kind, the inviter's display
  * name when visible to me (else null) and the expiry.
  */
+/**
+ * An email offer to join a conversation or meeting (issuer side). "pending"
+ * never means the email was delivered; the server serves no delivery state.
+ */
+export interface EmailOffer {
+  id: string;
+  email: string;
+  state: "pending" | "claimed" | "expired" | "revoked";
+  revision: number;
+  expiresAt: string;
+}
+
 export interface ConversationInvitation {
   id: string;
   revision: number;

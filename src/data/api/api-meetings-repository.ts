@@ -1,3 +1,4 @@
+import { toEmailOffer } from "./api-email-offers";
 import { newIdempotencyKey, type ApiClientFor, type ResponseDataIn } from "@/api/client";
 import { ApiHttpError } from "@/api/errors";
 import type { paths } from "@/api/generated/openapi-p6-messaging";
@@ -352,6 +353,40 @@ export function createApiMeetings(api: MeetClient, { me: ME, mapped, allPages, w
           })
           .sort((a, b) => (a.start ?? "").localeCompare(b.start ?? ""));
       }),
+
+      // Email offers: If-Match = the meeting revision, a fresh offer id + Idempotency-Key per attempt (no automatic resend).
+      inviteByEmail: (id, email) =>
+        mapped(async () => {
+          const { tag } = await readMeeting(id);
+          const { data } = await api.request("post", "/api/v1/meetings/{id}/email-invitations", {
+            path: { id },
+            header: { "If-Match": tag, "Idempotency-Key": newIdempotencyKey() },
+            body: { id: newId(), email: email.trim() },
+          });
+          return toEmailOffer(data, email.trim());
+        }),
+
+      revokeEmailOffer: (id, offer) =>
+        mapped(async () => {
+          const { data } = await api.request("post", "/api/v1/meetings/{id}/email-invitations/{invitationId}/revoke", {
+            path: { id, invitationId: offer.id },
+            header: { "If-Match": revisionTag(offer.revision) },
+            body: {},
+          });
+          return toEmailOffer(data, offer.email);
+        }),
+
+      // Claim grants nothing: the recipient then RSVPs through the usual invitation answer.
+      claimEmailInvitation: (invitationId, proof) =>
+        mapped(async () => {
+          const { data: invitation } = await api.request("post", "/api/v1/meetings/invitations/{invitationId}/claim-email", {
+            path: { invitationId },
+            header: { "If-Match": revisionTag(1), "X-Invitation-Proof": proof },
+            body: {},
+          });
+          const times = timesOf(invitation.schedule);
+          return { meetingId: invitation.meetingId, title: invitation.title, start: times?.start ?? null, end: times?.end ?? null };
+        }),
     // Organiser: create the stable entry, accept it, then set its planned minutes (each step If-Match = the entry's latest revision).
     addAgenda: (id, title, minutes) =>
       mapped(async () => {

@@ -31,7 +31,8 @@
       "all": "No conversations yet. Start one with New message.",
       "direct": "No direct messages yet.",
       "groups": "No groups yet.",
-      "channels": "No channels yet. Workspace channels show here."
+      "channels": "No channels yet. Workspace channels show here.",
+      "archived": "No archived conversations. Archived conversations stay here even when new messages arrive."
     },
     "preview": {
       "text": "Message",
@@ -46,7 +47,12 @@
     "blocked": "Blocked",
     "muted": "Muted",
     "mentions": "{count, plural, one {# mention} other {# mentions}}",
-    "unread": "{count} unread"
+    "unread": "{count} unread",
+    "box": {
+      "label": "Show",
+      "inbox": "Inbox",
+      "archived": "Archived"
+    }
   },
   "bubble": {
     "deletedUser": "Deleted user",
@@ -345,7 +351,15 @@
     "addHintGroup": "Only people you may message can be added. They see history per the group setting.",
     "searchPeople": "Search people",
     "noCandidates": "Everyone is already here.",
-    "add": "Add"
+    "add": "Add",
+    "archive": "Archive",
+    "unarchive": "Unarchive",
+    "archived": "Conversation archived — only for you",
+    "unarchived": "Conversation moved back to the inbox",
+    "deleteForMe": "Delete for me",
+    "deleteForMeHint": "Removes this conversation and its history from your view only. The other person keeps everything.",
+    "deleteForMeTitle": "Delete this conversation for you?",
+    "deleteForMeDescription": "The conversation and its history disappear for you only; nothing is deleted for anyone else. If a new message arrives, the conversation comes back without the earlier history."
   },
   "search": {
     "title": "Search messages",

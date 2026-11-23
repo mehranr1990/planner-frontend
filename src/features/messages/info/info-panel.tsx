@@ -1,9 +1,10 @@
 "use client";
 
-import { Ban, Bell, BellOff, Flag, LogOut, Search, UserMinus, UserPlus, X } from "lucide-react";
+import { Archive, ArchiveRestore, Ban, Bell, BellOff, Flag, LogOut, Search, Trash2, UserMinus, UserPlus, X } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ConfirmDialog } from "@/components/ui/alert-dialog";
@@ -16,8 +17,10 @@ import { Switch } from "@/components/ui/switch";
 import { toast } from "@/components/ui/toast";
 import { FolderTabsCard } from "@/design-system/surfaces/folder-tabs-card";
 import type { ConversationDetail, PolicyKey } from "@/data/messaging-domain";
-import { useChannelWorkspace, useConversationMedia, useLookup, useMessagingMutation, useParticipants, usePinnedMessages } from "@/data/messaging-queries";
+import { messagingKeys, useChannelWorkspace, useConversationMedia, useLookup, useMessagingMutation, useParticipants, usePinnedMessages } from "@/data/messaging-queries";
 import { plainText } from "@/data/mock/mock-messaging";
+import { useMessagingRepository } from "@/data/messaging-provider";
+import { EmailInviteForm } from "@/features/invitations/email-invite-form";
 import { useMsgFormat } from "../format";
 import { errorText, ReportDialog } from "../message-dialogs";
 import { messagesHref } from "../paths";
@@ -39,7 +42,9 @@ export function InfoPanel({ conversation: c, closeHref, backHref }: { conversati
   const participants = useParticipants(c.id);
   const media = useConversationMedia(c.id);
   const pinned = usePinnedMessages(c.id);
-  const [confirm, setConfirm] = useState<"leave" | "block" | null>(null);
+  const [confirm, setConfirm] = useState<"leave" | "block" | "delete-for-me" | null>(null);
+  const queryClient = useQueryClient();
+  const repo = useMessagingRepository();
   const [reporting, setReporting] = useState(false);
   const [adding, setAdding] = useState(false);
   const [rename, setRename] = useState(c.title);
@@ -51,6 +56,8 @@ export function InfoPanel({ conversation: c, closeHref, backHref }: { conversati
   const renameMutation = useMessagingMutation((repo, name: string) => repo.conversations.rename(c.id, name));
   const remove = useMessagingMutation((repo, personId: string) => repo.conversations.removePerson(c.id, personId));
   const leave = useMessagingMutation((repo) => repo.conversations.leave(c.id));
+  const archive = useMessagingMutation((repo, archived: boolean) => repo.conversations.archive(c.id, archived));
+  const deleteForMe = useMessagingMutation((repo) => repo.conversations.deleteForMe(c.id));
   const block = useMessagingMutation((repo, personId: string) => (c.blockedBy === "me" ? repo.settings.unblock(personId) : repo.settings.block(personId)));
   const unpin = useMessagingMutation((repo, id: string) => repo.messages.pin(id, false));
 
@@ -98,7 +105,25 @@ export function InfoPanel({ conversation: c, closeHref, backHref }: { conversati
           <Icon icon={Flag} size={16} />
           {t("report")}
         </Button>
+        <Button
+          size="sm"
+          variant="secondary"
+          disabled={archive.isPending}
+          onClick={() =>
+            archive.mutate(!c.archived, {
+              onSuccess: () => toast({ title: c.archived ? t("unarchived") : t("archived"), tone: "neutral" }),
+              onError: fail,
+            })
+          }
+        >
+          <Icon icon={c.archived ? ArchiveRestore : Archive} size={16} />
+          {c.archived ? t("unarchive") : t("archive")}
+        </Button>
       </div>
+
+      {c.canManage && c.kind !== "direct" ? (
+        <EmailInviteForm send={(email) => repo.conversations.inviteByEmail(c.id, email)} revoke={(offer) => repo.conversations.revokeEmailOffer(c.id, offer)} />
+      ) : null}
 
       <FolderTabsCard
         label={t("sections")}
@@ -249,6 +274,15 @@ export function InfoPanel({ conversation: c, closeHref, backHref }: { conversati
         ) : c.kind === "channel" ? (
           <p className="text-xs text-fg-secondary">{t("mandatory")}</p>
         ) : null}
+        {c.kind === "direct" ? (
+          <>
+            <Button size="sm" variant="outline" onClick={() => setConfirm("delete-for-me")}>
+              <Icon icon={Trash2} size={16} />
+              {t("deleteForMe")}
+            </Button>
+            <p className="text-xs text-fg-secondary">{t("deleteForMeHint")}</p>
+          </>
+        ) : null}
       </section>
 
       {confirm === "leave" ? (
@@ -261,6 +295,27 @@ export function InfoPanel({ conversation: c, closeHref, backHref }: { conversati
           tone="destructive"
           onConfirm={async () => {
             await leave.mutateAsync(undefined as never);
+            router.push(backHref);
+          }}
+        />
+      ) : null}
+      {confirm === "delete-for-me" ? (
+        <ConfirmDialog
+          open
+          onOpenChange={(open) => !open && setConfirm(null)}
+          title={t("deleteForMeTitle")}
+          description={t("deleteForMeDescription")}
+          confirmLabel={t("deleteForMe")}
+          tone="destructive"
+          onConfirm={async () => {
+            try {
+              await deleteForMe.mutateAsync(undefined as never);
+            } catch (error) {
+              fail(error);
+              return;
+            }
+            // Drop every cached preview, page, thread and media list: history cursors are no longer valid for me.
+            queryClient.removeQueries({ queryKey: messagingKeys.all });
             router.push(backHref);
           }}
         />

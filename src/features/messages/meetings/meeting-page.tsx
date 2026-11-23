@@ -24,6 +24,7 @@ import { useMsgFormat } from "../format";
 import { errorText } from "../message-dialogs";
 import { channelsHref, messagesHref, sourceScope } from "../paths";
 import { PersonAvatar } from "../visuals";
+import { EmailInviteForm } from "@/features/invitations/email-invite-form";
 import { MeetingSourceChip, MinutesChip, useMeetingTime } from "./meeting-parts";
 
 /*
@@ -50,6 +51,7 @@ function MeetingBody({ meeting: m }: { meeting: MeetingDetail }) {
   const [editing, setEditing] = useState(false);
   const fail = (e: unknown) => toast({ title: errorText(tMsg as never, e), tone: "danger" });
   const rsvp = useMessagingMutation((repo, value: Exclude<Rsvp, "none">) => repo.meetings.rsvp(m.id, value));
+  const repo = useMessagingRepository();
   const going = m.invitees.filter((i) => i.rsvp === "going").length;
   const maybe = m.invitees.filter((i) => i.rsvp === "maybe").length;
   const organizer = m.invitees.find((i) => i.role === "organizer");
@@ -144,6 +146,11 @@ function MeetingBody({ meeting: m }: { meeting: MeetingDetail }) {
             { value: "files", label: t("files"), count: m.files.length, content: <FilesTab meeting={m} /> },
           ]}
         />
+        {m.myRole === "organizer" ? (
+          <section className="rounded-[28px] bg-surface p-4 shadow-island">
+            <EmailInviteForm send={(email) => repo.meetings.inviteByEmail(m.id, email)} revoke={(offer) => repo.meetings.revokeEmailOffer(m.id, offer)} />
+          </section>
+        ) : null}
       </div>
       <SourceConversation meeting={m} />
       {editing ? <EditMeetingDialog meeting={m} onClose={() => setEditing(false)} /> : null}

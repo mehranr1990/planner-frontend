@@ -9,6 +9,7 @@ import type {
   ConversationAccess,
   ConversationDetail,
   ConversationInvitation,
+  EmailOffer,
   ConversationSummary,
   ConversationTab,
   Decision,
@@ -69,7 +70,8 @@ export class MessagingError extends Error {
 }
 
 export interface ConversationRepository {
-  list(tab: ConversationTab): Promise<ConversationSummary[]>;
+  /** The inbox, or (archived) only my archived, non-hidden conversations. */
+  list(tab: ConversationTab, options?: { archived?: boolean }): Promise<ConversationSummary[]>;
   /** Detail when the actor is a current member; "removed" / "not-found" otherwise (no data). */
   get(id: string): Promise<ConversationDetail | { access: Exclude<ConversationAccess, "member"> }>;
   participants(id: string): Promise<Participant[]>;
@@ -77,6 +79,13 @@ export interface ConversationRepository {
   lookup(query: string): Promise<LookupResult>;
   markRead(id: string): Promise<void>;
   mute(id: string, muted: boolean): Promise<void>;
+  /** My own archive flag; other members are unaffected. */
+  archive(id: string, archived: boolean): Promise<void>;
+  /**
+   * Delete for me: hides the conversation and its history for me only. A new
+   * incoming message brings the thread back without the hidden history.
+   */
+  deleteForMe(id: string): Promise<void>;
   leave(id: string): Promise<void>;
   rename(id: string, name: string): Promise<void>;
   addPeople(id: string, personIds: string[]): Promise<void>;
@@ -92,6 +101,12 @@ export interface ConversationRepository {
   invitations(): Promise<ConversationInvitation[]>;
   /** Accept (joins; resolves the conversation id) or decline; a stale / revoked invitation rejects. */
   respondInvitation(invitation: ConversationInvitation, accept: boolean): Promise<string>;
+  /** Admins: offer the conversation to an exact email (same answer for every address). */
+  inviteByEmail(conversationId: string, email: string): Promise<EmailOffer>;
+  /** Before it is claimed; afterwards the claimed invitation follows the usual rules. */
+  revokeEmailOffer(conversationId: string, offer: EmailOffer): Promise<EmailOffer>;
+  /** The signed-in recipient turns the email link into their pending invitation (grants nothing yet). */
+  claimEmailInvitation(invitationId: string, proof: string): Promise<ConversationInvitation>;
   /** Messaging notices for the bell (newest first). */
   notices(): Promise<MessagingNotice[]>;
   readNotice(notice: MessagingNotice): Promise<void>;
@@ -139,6 +154,11 @@ export interface MeetingRepository {
   get(id: string): Promise<MeetingDetail | null>;
   /** OD-15: pending invitations not yet in `list` (live; the mock lists invited meetings directly → none). */
   invitations(): Promise<MeetingInvitation[]>;
+  /** Organisers: offer the meeting to an exact email (same answer for every address). */
+  inviteByEmail(meetingId: string, email: string): Promise<EmailOffer>;
+  revokeEmailOffer(meetingId: string, offer: EmailOffer): Promise<EmailOffer>;
+  /** The signed-in recipient claims the email link: a pending invitation to RSVP to (grants nothing yet). */
+  claimEmailInvitation(invitationId: string, proof: string): Promise<MeetingInvitation>;
   create(input: NewMeetingInput): Promise<string>;
   update(id: string, patch: Partial<Pick<MeetingDetail, "title" | "start" | "end" | "link" | "description">>): Promise<void>;
   rsvp(id: string, rsvp: Exclude<Rsvp, "none">): Promise<void>;

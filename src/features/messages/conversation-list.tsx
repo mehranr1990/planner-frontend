@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button, IconButton } from "@/components/ui/button";
 import { Icon } from "@/components/ui/icon";
 import { PillGroup } from "@/components/ui/pills";
+import { Segmented } from "@/components/ui/segmented";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "@/components/ui/toast";
 import type { ConversationInvitation, ConversationSummary, ConversationTab } from "@/data/messaging-domain";
@@ -41,7 +42,9 @@ export function ConversationList({ contextLabel, contextHref, className }: { con
   const onMeetings = pathname.startsWith(messagesHref.meetings);
   const [tab, setTab] = useState<ConversationTab>("all");
   const current: ListTab = onMeetings ? "meetings" : tab;
-  const list = useConversations(tab);
+  // Inbox ⇄ Archived (my own archive; new messages keep a conversation archived).
+  const [box, setBox] = useState<"inbox" | "archived">("inbox");
+  const list = useConversations(tab, box === "archived");
   const activeId = /^\/messages\/([^/]+)/.exec(pathname)?.[1];
 
   return (
@@ -82,7 +85,19 @@ export function ConversationList({ contextLabel, contextHref, className }: { con
         options={(["all", "direct", "groups", "channels", "meetings"] as const).map((value) => ({ value, label: t(`tabs.${value}`) }))}
         className="flex-nowrap overflow-x-auto"
       />
-      <InvitationInbox />
+      {onMeetings ? null : (
+        <Segmented
+          size="sm"
+          label={t("box.label")}
+          value={box}
+          onValueChange={setBox}
+          options={[
+            { value: "inbox", label: t("box.inbox") },
+            { value: "archived", label: t("box.archived") },
+          ]}
+        />
+      )}
+      {box === "inbox" ? <InvitationInbox /> : null}
       {list.isPending ? (
         <div className="flex flex-col gap-2" aria-busy="true">
           {[0, 1, 2, 3].map((i) => (
@@ -92,7 +107,7 @@ export function ConversationList({ contextLabel, contextHref, className }: { con
       ) : list.isError ? (
         <AccessState kind="error" titleAs="h2" />
       ) : list.data.length === 0 ? (
-        <p className="rounded-2xl bg-subtle p-4 text-sm text-fg-secondary">{t(`empty.${tab}`)}</p>
+        <p className="rounded-2xl bg-subtle p-4 text-sm text-fg-secondary">{box === "archived" ? t("empty.archived") : t(`empty.${tab}`)}</p>
       ) : (
         <ul className="-mx-1 flex min-h-0 flex-col gap-1 overflow-y-auto px-1 pb-1">
           {list.data.map((c) => (

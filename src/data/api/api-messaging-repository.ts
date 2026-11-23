@@ -1,3 +1,4 @@
+import { toEmailOffer } from "./api-email-offers";
 import { newIdempotencyKey, typedAs, type ApiClient, type ApiClientFor, type RequestBodyIn, type ResponseDataIn } from "@/api/client";
 import { ApiHttpError, apiReasonCodes, SHARED_NOT_ENABLED_CODES } from "@/api/errors";
 import type { paths as CompanyPaths } from "@/api/generated/openapi-p6-companies";
@@ -29,7 +30,7 @@ import {
 import { createWorkSources } from "./api-meeting-sources";
 import { createApiAnnouncements } from "./api-announcements-repository";
 import { createApiMeetings } from "./api-meetings-repository";
-import { revisionTag } from "./api-shared";
+import { retryOnConflict, revisionTag } from "./api-shared";
 import { catalogVersion } from "./api-retention";
 import { initialsOf } from "./api-project-shared";
 
@@ -160,8 +161,21 @@ export function createApiMessaging(client: ApiClient, user: MessagingUser): Mess
   /** clientOpId → the resource id and key of one conversation create (replayed on retry). */
   const creating = new Map<string, { id: string; key: string }>();
 
-  const conversations = () => allPages<ApiConversation>(async (cursor) => (await api.request("get", "/api/v1/conversations", { query: { cursor, limit: PAGE } })).data);
+  // The default list leaves out archived and hidden conversations; `archived` lists only archived, non-hidden ones.
+  const conversations = (archived = false) =>
+    allPages<ApiConversation>(async (cursor) => (await api.request("get", "/api/v1/conversations", { query: { cursor, limit: PAGE, ...(archived ? { archived: "true" as const } : {}) } })).data);
   const roster = (id: string) => allPages<ApiMember>(async (cursor) => (await api.request("get", "/api/v1/conversations/{id}/members", { path: { id }, query: { cursor, limit: PAGE } })).data);
+  /** PATCH my private preferences with my preference revision; one re-read on a stale revision. */
+  const patchMyPreferences = async (id: string, body: { archived: boolean } | { deleteForMe: true }) => {
+    const myRevision = async () => revisionTag((await api.request("get", "/api/v1/conversations/{id}/settings", { path: { id } })).data.me.revision);
+    let ifMatch = await myRevision();
+    return retryOnConflict(
+      () => api.request("patch", "/api/v1/conversations/{id}/preferences", { path: { id }, header: { "If-Match": ifMatch }, body }),
+      async () => {
+        ifMatch = await myRevision();
+      },
+    );
+  };
   const accessMe = async (id: string): Promise<ApiMe> => (await api.request("get", "/api/v1/conversations/{id}/access/me", { path: { id } })).data;
   const readConversation = async (id: string) => {
     const { data, etag } = await api.request("get", "/api/v1/conversations/{id}", { path: { id } });
@@ -210,7 +224,7 @@ export function createApiMessaging(client: ApiClient, user: MessagingUser): Mess
     return items.filter((item) => item.state === "VISIBLE" && BigInt(item.sequence) > progress).length;
   };
 
-  const summaryOf = async (row: ApiConversation, blocks: ReadonlySet<string>): Promise<ConversationSummary> => {
+  const summaryOf = async (row: ApiConversation, blocks: ReadonlySet<string>, archived = false): Promise<ConversationSummary> => {
     const kind = KIND[row.kind];
     // Names: direct titles and the last author come from the roster (only read when needed).
     const needRoster = (kind === "direct" && !row.title) || row.lastMessage !== null;
@@ -243,6 +257,7 @@ export function createApiMessaging(client: ApiClient, user: MessagingUser): Mess
       mentions,
       muted: row.muted,
       blocked: kind === "direct" && blocks.has(row.id),
+      archived,
     };
   };
 
@@ -421,11 +436,12 @@ export function createApiMessaging(client: ApiClient, user: MessagingUser): Mess
   const conversationRepo: ConversationRepository = refused<ConversationRepository>(
     "every conversation call is mapped",
     {
-      list: (tab) =>
+      list: (tab, options = {}) =>
         mapped(async () => {
-          const [rows, blocks] = await Promise.all([conversations(), activeBlocks()]);
+          const archived = options.archived === true;
+          const [rows, blocks] = await Promise.all([conversations(archived), activeBlocks()]);
           const shown = rows.filter((row) => TAB[tab](KIND[row.kind]));
-          const summaries = await Promise.all(shown.map((row) => summaryOf(row, blocks)));
+          const summaries = await Promise.all(shown.map((row) => summaryOf(row, blocks, archived)));
           // The API keeps id cursor order; newest activity first is the screen's order.
           const at = new Map(shown.map((row) => [row.id, row.lastActivityAt]));
           return summaries.sort((a, b) => Date.parse(at.get(b.id)!) - Date.parse(at.get(a.id)!));
@@ -446,9 +462,12 @@ export function createApiMessaging(client: ApiClient, user: MessagingUser): Mess
             roster(id),
             allPages<ApiItem>(async (cursor) => (await api.request("get", "/api/v1/conversations/{id}/pins", { path: { id }, query: { cursor, limit: PAGE } })).data),
           ]);
-          const row = rows.find((candidate) => candidate.id === id);
+          // An archived conversation is only in the archived list.
+          let row = rows.find((candidate) => candidate.id === id);
+          const archived = !row;
+          if (!row) row = (await conversations(true)).find((candidate) => candidate.id === id);
           if (!row) return { access: "not-found" as const };
-          const summary = await summaryOf(row, blocks);
+          const summary = await summaryOf(row, blocks, archived);
           const mine = members.find((member) => member.id === me.accessId);
           const active = members.filter((member) => member.state === "ACTIVE");
           const other = summary.kind === "direct" ? active.find((member) => member.actorId !== me.actorId) : undefined;
@@ -574,6 +593,11 @@ export function createApiMessaging(client: ApiClient, user: MessagingUser): Mess
           });
         }),
 
+      // Private member preferences: If-Match is my own preference revision (me.revision), not the settings revision.
+      archive: (id, archived) => mapped(async () => void (await patchMyPreferences(id, { archived }))),
+      // Hides the conversation and its history for me only; nothing changes for other members.
+      deleteForMe: (id) => mapped(async () => void (await patchMyPreferences(id, { deleteForMe: true }))),
+
       leave: (id) =>
         mapped(async () => {
           const [members, me] = await Promise.all([roster(id), accessMe(id)]);
@@ -639,6 +663,39 @@ export function createApiMessaging(client: ApiClient, user: MessagingUser): Mess
             ? await api.request("post", "/api/v1/conversation-invitations/{invitationId}/accept", call)
             : await api.request("post", "/api/v1/conversation-invitations/{invitationId}/decline", call);
           return data.conversationId;
+        }),
+
+      // Email offers: If-Match = the conversation revision, a fresh offer id + Idempotency-Key per attempt (no automatic resend).
+      inviteByEmail: (id, email) =>
+        mapped(async () => {
+          const { tag } = await readConversation(id);
+          const { data } = await api.request("post", "/api/v1/conversations/{id}/email-invitations", {
+            path: { id },
+            header: { "If-Match": tag, "Idempotency-Key": newIdempotencyKey() },
+            body: { id: crypto.randomUUID(), email: email.trim() },
+          });
+          return toEmailOffer(data, email.trim());
+        }),
+
+      revokeEmailOffer: (id, offer) =>
+        mapped(async () => {
+          const { data } = await api.request("post", "/api/v1/conversations/{id}/email-invitations/{invitationId}/revoke", {
+            path: { id, invitationId: offer.id },
+            header: { "If-Match": revisionTag(offer.revision) },
+            body: {},
+          });
+          return toEmailOffer(data, offer.email);
+        }),
+
+      // The proof goes only in the header; a malformed / wrong-account / expired / used proof is the same 404.
+      claimEmailInvitation: (invitationId, proof) =>
+        mapped(async () => {
+          const { data: row } = await api.request("post", "/api/v1/conversation-invitations/{invitationId}/claim-email", {
+            path: { invitationId },
+            header: { "If-Match": revisionTag(1), "X-Invitation-Proof": proof },
+            body: {},
+          });
+          return { id: row.id, revision: row.revision, conversationId: row.conversationId, kind: KIND[row.kind], inviterName: row.inviterDisplayName ?? null, expiresAt: row.expiresAt };
         }),
 
       notices: () =>

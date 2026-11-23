@@ -1,0 +1,57 @@
+{
+  "title": "Invitation",
+  "opening": "Opening your invitation…",
+  "brokenLink": "This invitation link is incomplete. Open the link from the email again.",
+  "unavailable": "This invitation can’t be used",
+  "unavailableHint": "It may have expired, been withdrawn or already answered, or it was sent to a different email address. Make sure you’re signed in with the verified account the invitation was sent to.",
+  "reopenLink": "Open the link from the email again",
+  "reopenLinkHint": "For your security the invitation link isn’t kept while you sign in. Now that you’re signed in, open the same email link again to continue.",
+  "expiryNote": "Invitations are valid for 7 days after they’re sent. Nothing changes until you answer.",
+  "expires": "Valid until {date}",
+  "timeUnknown": "Time to be confirmed",
+  "accept": "Accept",
+  "decline": "Decline",
+  "answerFailed": "Couldn’t answer this invitation. It may have changed; try again.",
+  "offer": {
+    "project": "You’re invited to join a project",
+    "projectNamed": "You’re invited to join {name}",
+    "team": "You’re invited to join a team",
+    "teamNamed": "You’re invited to join {name}",
+    "company": "You’re invited to join a company",
+    "companyNamed": "You’re invited to join {name}",
+    "conversation": {
+      "direct": "You’re invited to a direct conversation",
+      "group": "You’re invited to a group conversation",
+      "channel": "You’re invited to a channel"
+    },
+    "conversationFrom": {
+      "direct": "{name} invited you to a direct conversation",
+      "group": "{name} invited you to a group conversation",
+      "channel": "{name} invited you to a channel"
+    }
+  },
+  "rsvp": {
+    "going": "Going",
+    "maybe": "Maybe",
+    "not-going": "Not going"
+  },
+  "byEmail": {
+    "title": "Invite by email",
+    "hint": "Type the exact address. The answer is the same whether or not an account exists; the person signs in or signs up with that verified address to respond. Invitations expire after 7 days.",
+    "email": "Email address",
+    "send": "Send invitation",
+    "sent": "Invitation created for {email}",
+    "pendingNote": "Pending — delivery isn’t confirmed",
+    "state": {
+      "pending": "Pending",
+      "claimed": "Opened by the recipient",
+      "expired": "Expired",
+      "revoked": "Withdrawn"
+    },
+    "expires": "until {date}",
+    "revoke": "Withdraw",
+    "revoked": "Invitation withdrawn",
+    "invalid": "Enter a valid email address.",
+    "failed": "Couldn’t create the invitation. Try again."
+  }
+}

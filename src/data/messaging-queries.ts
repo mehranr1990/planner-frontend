@@ -45,7 +45,7 @@ export function useMessagingEvents() {
   }, [repo, client, available]);
 }
 
-export const useConversations = (tab: ConversationTab) => useRead(["list", tab], (r) => r.conversations.list(tab));
+export const useConversations = (tab: ConversationTab, archived = false) => useRead(["list", tab, archived], (r) => r.conversations.list(tab, { archived }));
 export const useConversation = (id: string | undefined) => useRead(["conversation", id], (r) => r.conversations.get(id!), id !== undefined);
 export const useParticipants = (id: string, enabled = true) => useRead(["participants", id], (r) => r.conversations.participants(id), enabled);
 export const useUnreadConversations = () => useRead(["unread"], (r) => r.conversations.unreadCount());

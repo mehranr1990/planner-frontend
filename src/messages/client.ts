@@ -34,6 +34,7 @@ import enWorkload from "./en/workload.json";
 import enAnalytics from "./en/analytics.json";
 import enProjectSettings from "./en/projectSettings.json";
 import enSettings from "./en/settings.json";
+import enInvitations from "./en/invitations.json";
 import enServices from "./en/services.json";
 import enShell from "./en/shell.json";
 import enReview from "./en/review.json";
@@ -99,6 +100,7 @@ import faWorkload from "./fa/workload.json";
 import faAnalytics from "./fa/analytics.json";
 import faProjectSettings from "./fa/projectSettings.json";
 import faSettings from "./fa/settings.json";
+import faInvitations from "./fa/invitations.json";
 import faServices from "./fa/services.json";
 import faShell from "./fa/shell.json";
 import faReview from "./fa/review.json";
@@ -153,6 +155,7 @@ const en = {
   BrainDump: enBrainDump,
   Calendar: enCalendar,
   Shell: enShell,
+  Invitations: enInvitations,
   Services: enServices,
   Settings: enSettings,
   Focus: enFocus,
@@ -223,6 +226,7 @@ const fa: ClientMessages = {
   BrainDump: faBrainDump,
   Calendar: faCalendar,
   Shell: faShell,
+  Invitations: faInvitations,
   Services: faServices,
   Settings: faSettings,
   Focus: faFocus,
