@@ -37,10 +37,19 @@ export interface NotificationPreferences {
   quietEnd: string | null;
   /** The server's VAPID public key (base64url) when Web Push is configured, else null. */
   pushPublicKey: string | null;
+  /** Per-module switches (null = not served by this server); delivery needs both the module switch and the global channel. */
+  modules: ModuleChannels | null;
 }
 
-export type NotificationPreferencesPatch = Partial<Omit<NotificationPreferences, "available" | "channels" | "pushPublicKey">> & {
+/** Notification sources with their own channel switches (no per-event-type settings). */
+export type NotificationModule = "personal" | "projects" | "teams" | "company" | "messaging" | "social";
+export const NOTIFICATION_MODULES: readonly NotificationModule[] = ["personal", "projects", "teams", "company", "messaging", "social"];
+export type ModuleChannels = Record<NotificationModule, Record<NotificationChannel, boolean>>;
+
+export type NotificationPreferencesPatch = Partial<Omit<NotificationPreferences, "available" | "channels" | "pushPublicKey" | "modules">> & {
   channels?: Partial<Record<NotificationChannel, boolean>>;
+  /** Each supplied module carries all three channels; omitted modules keep their values. */
+  modules?: Partial<ModuleChannels>;
 };
 
 export interface PushDevice {

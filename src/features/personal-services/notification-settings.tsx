@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "@/components/ui/toast";
-import { NOTIFICATION_CHANNELS, type NotificationPreferences, type NotificationPreferencesPatch } from "@/data/personal-services";
+import { NOTIFICATION_CHANNELS, NOTIFICATION_MODULES, type ModuleChannels, type NotificationPreferences, type NotificationPreferencesPatch } from "@/data/personal-services";
 import { useNotificationPreferences, usePushDevices, useRevokePushDevice, useUpdateNotificationPreferences } from "@/data/personal-services-queries";
 import { UtilityField } from "@/design-system/surfaces/utility-card";
 import { BrowserPushControl, forgetIfThisBrowser, isThisBrowser } from "@/features/push/browser-push-control";
@@ -101,8 +101,74 @@ export function NotificationPreferencesPanel() {
         </div>
         <Switch aria-label={t("reopen")} checked={prefs.reactivateOnReopen} disabled={update.isPending} onCheckedChange={(reactivateOnReopen) => save({ reactivateOnReopen })} />
       </UtilityField>
+      {prefs.modules ? <ModuleChannelMatrix prefs={prefs} modules={prefs.modules} disabled={update.isPending} onSave={save} /> : null}
       <PushDevices prefs={prefs} onChannel={save} />
     </>
+  );
+}
+
+/*
+ * Module × channel switches. Each change sends the whole row of the module
+ * (the contract needs all three channels). A module switch never turns a
+ * channel on by itself: delivery also needs the global channel above, the
+ * server's availability, push consent and quiet hours.
+ */
+function ModuleChannelMatrix({
+  prefs,
+  modules,
+  disabled,
+  onSave,
+}: {
+  prefs: NotificationPreferences;
+  modules: ModuleChannels;
+  disabled: boolean;
+  onSave: (patch: NotificationPreferencesPatch) => void;
+}) {
+  const t = useTranslations("Services.preferences");
+  return (
+    <UtilityField className="flex-col items-stretch gap-2 py-3">
+      <span>{t("modules.title")}</span>
+      <p className="text-xs font-normal text-fg-muted">{t("modules.hint")}</p>
+      <table className="w-full table-fixed text-sm">
+        <caption className="sr-only">{t("modules.title")}</caption>
+        <thead>
+          <tr className="text-xs font-normal text-fg-muted">
+            <th scope="col" className="w-[40%] py-1 text-start font-normal">
+              {t("modules.module")}
+            </th>
+            {NOTIFICATION_CHANNELS.map((channel) => (
+              <th key={channel} scope="col" className="py-1 text-center font-normal">
+                <span className="block">{t(`modules.channel.${channel}`)}</span>
+                {!prefs.available.includes(channel) ? (
+                  <span className="block">{t("modules.unavailable")}</span>
+                ) : !prefs.channels[channel] ? (
+                  <span className="block">{t("modules.globalOff")}</span>
+                ) : null}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {NOTIFICATION_MODULES.map((module) => (
+            <tr key={module} className="border-t border-line">
+              <th scope="row" className="py-2 text-start font-normal">
+                {t(`modules.name.${module}`)}
+              </th>
+              {NOTIFICATION_CHANNELS.map((channel) => (
+                <td key={channel} className="py-2 text-center">
+                  <Switch
+                    aria-label={t("modules.cell", { module: t(`modules.name.${module}`), channel: t(`modules.channel.${channel}`) })}
+                    checked={modules[module][channel]}
+                    disabled={disabled || !prefs.available.includes(channel)}
+                    onCheckedChange={(on) => onSave({ modules: { [module]: { ...modules[module], [channel]: on } } })}
+                  />
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </UtilityField>
   );
 }
 

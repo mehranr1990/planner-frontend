@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { resetToasts } from "@/components/ui/toast";
 import { createMockRepositories } from "@/data/mock";
-import type { NotificationPreferences, PushDevice } from "@/data/personal-services";
+import { NOTIFICATION_MODULES, type ModuleChannels, type NotificationPreferences, type PushDevice } from "@/data/personal-services";
 import { DataProvider } from "@/data/provider";
 import { RepositoryError, type Repositories } from "@/data/repositories";
 import { renderWithProviders } from "@/test/render";
@@ -73,6 +73,7 @@ const prefs = (patch: Partial<NotificationPreferences> = {}): NotificationPrefer
   quietStart: null,
   quietEnd: null,
   pushPublicKey: KEY,
+  modules: Object.fromEntries(NOTIFICATION_MODULES.map((module) => [module, { inApp: true, email: true, webPush: true }])) as ModuleChannels,
   ...patch,
 });
 

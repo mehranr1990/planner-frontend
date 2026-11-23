@@ -5,6 +5,7 @@ import type {
   Bill,
   BillOccurrence,
   BillVersion,
+  ModuleChannels,
   NotificationPreferences,
   PersonalServiceRepositories,
   Reminder,
@@ -15,7 +16,7 @@ import type {
   TaskAttachment,
   WorkingHoursState,
 } from "../personal-services";
-import { ATTACHMENT_MAX_BYTES, ATTACHMENT_TYPES } from "../personal-services";
+import { ATTACHMENT_MAX_BYTES, ATTACHMENT_TYPES, NOTIFICATION_MODULES } from "../personal-services";
 import { RepositoryError } from "../repositories";
 
 /*
@@ -98,6 +99,7 @@ export function createMockPersonalServices({
     quietStart: null,
     quietEnd: null,
     pushPublicKey: null,
+    modules: Object.fromEntries(NOTIFICATION_MODULES.map((module) => [module, { inApp: true, email: true, webPush: true }])) as ModuleChannels,
   };
 
   const reminder = (id: string) => reminders.find((item) => item.id === id) ?? notFound("reminder");
@@ -134,7 +136,7 @@ export function createMockPersonalServices({
       snooze: async () => notFound("notification"),
       preferences: async () => clone(preferences),
       updatePreferences: async (patch) => {
-        preferences = { ...preferences, ...patch, channels: { ...preferences.channels, ...patch.channels }, available: preferences.available };
+        preferences = { ...preferences, ...patch, channels: { ...preferences.channels, ...patch.channels }, modules: preferences.modules && { ...preferences.modules, ...patch.modules }, available: preferences.available };
         return clone(preferences);
       },
       pushDevices: async () => [],

@@ -1,9 +1,10 @@
-import type { ApiClient, RequestBody, ResponseData } from "@/api/client";
+import type { ApiClient, RequestBodyIn, ResponseData, ResponseDataIn } from "@/api/client";
 import { newIdempotencyKey, typedAs } from "@/api/client";
 import type { paths as PersonalPaths } from "@/api/generated/openapi-p6-personal";
 import { parseClockTime } from "@/lib/dates/clock-time";
-import type { NotificationPreferences, NotificationsRepository, PlannerNotification, PushDevice } from "../personal-services";
-import { CHANNEL_FROM_API } from "./api-reminders-repository";
+import type { ModuleChannels, NotificationModule, NotificationPreferences, NotificationsRepository, PlannerNotification, PushDevice } from "../personal-services";
+import { NOTIFICATION_MODULES } from "../personal-services";
+import { CHANNEL_FROM_API, CHANNEL_TO_API } from "./api-reminders-repository";
 import { invalid, mapErrors, pageAll, retryOnConflict, revisionTag } from "./api-shared";
 
 /*
@@ -17,7 +18,7 @@ import { invalid, mapErrors, pageAll, retryOnConflict, revisionTag } from "./api
  */
 
 type ApiNotification = ResponseData<"/api/v1/notifications/{id}", "get">;
-type ApiPreferences = ResponseData<"/api/v1/notifications/preferences", "get">;
+type ApiPreferences = ResponseDataIn<PersonalPaths, "/api/v1/notifications/preferences", "get">;
 type ApiPushSubscription = ResponseData<"/api/v1/push/subscriptions", "post">;
 
 const toDevice = (dto: ApiPushSubscription): PushDevice => ({ id: dto.id, revision: dto.revision, label: dto.label, host: dto.endpointHost, createdAt: dto.createdAt });
@@ -33,7 +34,28 @@ function toPreferences(dto: ApiPreferences): NotificationPreferences {
     quietStart: dto.quietStart,
     quietEnd: dto.quietEnd,
     pushPublicKey: dto.webPushPublicKey,
+    // A server without module switches yet (older API) serves none: the matrix is not offered.
+    modules: dto.moduleChannels ? toModules(dto.moduleChannels) : null,
   };
+}
+
+const MODULE_TO_API: Record<NotificationModule, string> = {
+  personal: "PERSONAL",
+  projects: "PROJECTS",
+  teams: "TEAMS",
+  company: "COMPANY",
+  messaging: "MESSAGING_MEETINGS",
+  social: "SOCIAL",
+};
+
+function toModules(served: ApiPreferences["moduleChannels"]): ModuleChannels {
+  return Object.fromEntries(
+    NOTIFICATION_MODULES.map((module) => {
+      // The server returns all six modules; a missing one reads as off rather than guessed on.
+      const row = served[MODULE_TO_API[module]];
+      return [module, { inApp: row?.IN_APP ?? false, email: row?.EMAIL ?? false, webPush: row?.WEB_PUSH ?? false }];
+    }),
+  ) as ModuleChannels;
 }
 
 export function createApiNotificationsRepository(client: ApiClient): NotificationsRepository {
@@ -113,25 +135,32 @@ export function createApiNotificationsRepository(client: ApiClient): Notificatio
         );
       }),
 
-    preferences: () => mapErrors(async () => toPreferences((await client.request("get", "/api/v1/notifications/preferences")).data)),
+    preferences: () => mapErrors(async () => toPreferences((await typedAs<PersonalPaths>(client).request("get", "/api/v1/notifications/preferences", {})).data)),
 
     updatePreferences: (patch) =>
       mapErrors(async () => {
         for (const time of [patch.quietStart, patch.quietEnd]) if (time && parseClockTime(time) === null) invalid(`Bad time "${time}"`);
-        const body: RequestBody<"/api/v1/notifications/preferences", "patch"> = {};
+        const body: RequestBodyIn<PersonalPaths, "/api/v1/notifications/preferences", "patch"> = {};
         if (patch.channels?.inApp !== undefined) body.inApp = patch.channels.inApp;
         if (patch.channels?.email !== undefined) body.email = patch.channels.email;
         if (patch.channels?.webPush !== undefined) body.webPush = patch.channels.webPush;
         if (patch.reactivateOnReopen !== undefined) body.reactivateOnReopen = patch.reactivateOnReopen;
         if (patch.quietStart !== undefined) body.quietStart = patch.quietStart;
         if (patch.quietEnd !== undefined) body.quietEnd = patch.quietEnd;
+        if (patch.modules) {
+          const rows = Object.entries(patch.modules).filter((entry): entry is [NotificationModule, ModuleChannels[NotificationModule]] => entry[1] !== undefined);
+          if (rows.length > 0)
+            body.moduleChannels = Object.fromEntries(
+              rows.map(([module, row]) => [MODULE_TO_API[module], Object.fromEntries(Object.entries(CHANNEL_TO_API).map(([channel, api]) => [api, row[channel as keyof typeof row]]))]),
+            ) as NonNullable<typeof body.moduleChannels>;
+        }
         const current = async () => {
-          const { etag, data } = await client.request("get", "/api/v1/notifications/preferences");
+          const { etag, data } = await typedAs<PersonalPaths>(client).request("get", "/api/v1/notifications/preferences", {});
           return etag ?? revisionTag(data.revision);
         };
         let ifMatch = await current();
         const { data } = await retryOnConflict(
-          () => client.request("patch", "/api/v1/notifications/preferences", { header: { "If-Match": ifMatch, "Idempotency-Key": newIdempotencyKey() }, body }),
+          () => typedAs<PersonalPaths>(client).request("patch", "/api/v1/notifications/preferences", { header: { "If-Match": ifMatch, "Idempotency-Key": newIdempotencyKey() }, body }),
           async () => {
             ifMatch = await current();
           },

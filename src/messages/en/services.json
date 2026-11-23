@@ -373,6 +373,27 @@
         "serverOff": "Push isn’t configured on this server.",
         "denied": "Notifications are blocked for this site. Allow them in your browser’s site settings, then come back."
       }
+    },
+    "modules": {
+      "title": "By area",
+      "hint": "Turn each channel on or off per area. A message is delivered only when both this switch and the channel above are on, the channel is available, browser push is allowed and quiet hours permit.",
+      "module": "Area",
+      "unavailable": "Unavailable",
+      "globalOff": "Off above",
+      "cell": "{module}: {channel}",
+      "channel": {
+        "inApp": "In-app",
+        "email": "Email",
+        "webPush": "Push"
+      },
+      "name": {
+        "personal": "Personal",
+        "projects": "Projects",
+        "teams": "Teams",
+        "company": "Company",
+        "messaging": "Messages & meetings",
+        "social": "Social"
+      }
     }
   },
   "account": {
