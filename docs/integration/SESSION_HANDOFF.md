@@ -462,3 +462,11 @@ Frontend Web Push implemented (sw.js, `src/features/push/*`, Settings control, `
 - Recovery: copy 30 → 7 days (Social Group delete, Activity delete), recoverable note on Project/Team/Company delete, account delete text 14 → 7 days. Server deadlines only (`recoveryDeadline`, `recoverUntil`); after them Restore/Recover is hidden with an "ended" note. No restore added to permanent deletions. Personal Task delete keeps its undo toast (no Trash surface).
 - Blocker BX-1 (backend): the API exception filter forwards none of `SHARED_ACTIVATION_GATED`, `SHARED_RETENTION_UNAVAILABLE`, `RESTORE_EXPIRED`, `RECOVERY_EXPIRED`, `RECOVERY_UNAVAILABLE` (403 FORBIDDEN / 409 CONFLICT only). The frontend relies on the catalog signal and server deadlines; the code checks activate once the filter forwards them as `details[].code`.
 - Verified: tsc clean; eslint clean on touched files; focused vitest (retention, messaging, social, project create, company, meetings, team work, sheets) pass; `api:types:check` pass; web image rebuilt (`next build` inside) and `web` restarted healthy. Not live-tested.
+
+## Five approved features (2026-11-23) — IMPLEMENTED, NOT LIVE VERIFIED
+
+Contract backend `55c1c9d` (1,314 ops). Decisions: DECISIONS_AND_BLOCKERS.md › Five approved features.
+- Project manual status (overview selector, badges, directory filter, activity history); member capacity dialog (`api-project-capacity-repository.ts`, `member-capacity-dialog.tsx`); DM archive / delete for me; conversation / meeting email offers + claim, `/invite` catcher + `/invitations/accept` landing (`src/features/invitations`); notification module × channel matrix.
+- Tests: `src/data/api/api-five-features.test.ts` (8) + touched suites pass; tsc 0; eslint touched 0; api:types:check pass; build pass.
+
+NEXT_ACTION: ops — apply migrations 088–093, deploy the backend image, set `INVITATION_ACCEPT_URL=https://<web>/invite` and SMTP; then one live pass over the five features.

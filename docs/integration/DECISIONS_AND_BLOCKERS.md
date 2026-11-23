@@ -73,3 +73,13 @@ No credentials, cookies or tokens belong in this file.
 
 - Decision: no policy picker UI (no approved design); creates send the single current-generation catalog version. Several current versions for one context → refused with "needs a policy picker".
 - BX-1 (backend): `ApiExceptionFilter` strips the activation / recovery-expiry codes; forward them (e.g. `details: [{ path: "", code }]`) so expiry races and activation gates on non-catalog endpoints can be told apart from permission and revision conflicts.
+
+## Five approved features (2026-11-23)
+
+- Manual project status: selector on the Project overview header (work-manage), badge on cards / list rows, local status filter on the directory (it already holds every accessible project — same result as `?manualStatus=`), history line from PROJECT activity `changes[field=manualStatus]`. Creation sends no status (server default PLANNED). Health chip and lifecycle stay separate.
+- Member capacity: one dialog (Members capacity cell + Workload row header): resolved week from `…/effective` (advisory overload, never blocks) and the weekday pattern (Inherited / Set hours / Day off). Saves are not retried on 409 (reload instead of overwriting another manager). Allocations are the server's explicit accepted allocations, not the grid's estimate spread.
+- DM archive / delete for me: Inbox ⇄ Archived switch; Archive / Unarchive on every conversation; Delete for me on direct conversations only, with confirmation; all messaging caches are dropped afterwards.
+- Email links: `INVITATION_ACCEPT_URL` must be `https://<web-host>/invite`. The fragment proof is held in memory only; signing in first drops it. Project / Team / Company offers are answered from the recipient's own pending list (fresh in-app proof); Conversation / Meeting offers need the email proof to claim, so a signed-out recipient opens the link again after signing in.
+- Issuer-side email offers for conversations / meetings list only this session's offers (no list endpoint).
+- The notification matrix is hidden when the server serves no `moduleChannels`; `manualStatus` missing → no badge (API not migrated).
+- Blocker (ops): migrations 088–093, the new API image, SMTP and `INVITATION_ACCEPT_URL` are not deployed; nothing is live verified.
