@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event";
 import type { ReactNode } from "react";
 import { describe, expect, it } from "vitest";
 import { preventDocumentNavigation } from "@/components/navigation/test-utils";
-import { sampleNow, sampleProfile, sampleScheduleBlocks, sampleScheduleDate, sampleWorkspaces } from "@/fixtures/shell";
+import { sampleProfile, sampleWorkspaces } from "@/fixtures/shell";
 import { DEFAULT_PLANNER_SETTINGS } from "@/features/planner-settings/planner-settings";
 import { renderWithProviders } from "@/test/render";
 import { routerPush, setMockPathname } from "@/test/setup";
@@ -16,7 +16,6 @@ function Frame({ children = <h1>Page</h1>, sample }: { children?: ReactNode; sam
     <ShellFrame
       workspaces={sampleWorkspaces}
       profile={sampleProfile}
-      schedule={{ date: sampleScheduleDate, now: sampleNow, blocks: sampleScheduleBlocks }}
       sample={sample}
     >
       {children}
@@ -176,10 +175,10 @@ describe("landmarks and sample data", () => {
     expect(within(menu).getByText("Sample data")).toBeInTheDocument();
   });
 
-  it("shows no sample label for real data", async () => {
+  it("shows no sample label in the account menu for real data", async () => {
+    // The schedule's tag follows the API mode instead (it reads today's blocks itself).
     const user = userEvent.setup();
     const { topBar } = renderFrame();
-    expect(within(topBar()).queryByText("Sample data")).not.toBeInTheDocument();
     await user.click(within(topBar()).getByRole("button", { name: "Account menu" }));
     expect(within(await screen.findByRole("menu")).queryByText("Sample data")).not.toBeInTheDocument();
   });

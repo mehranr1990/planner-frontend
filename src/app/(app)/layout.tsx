@@ -16,17 +16,18 @@ import { getSampleShellData, isSampleData } from "@/fixtures/shell";
  * If the root ever becomes instant, wrap the pathname-reading islands in
  * <Suspense> (see the usePathname docs).
  *
- * SAMPLE DATA: workspaces, profile and schedule come from src/fixtures/shell.ts,
+ * SAMPLE DATA: workspaces and profile come from src/fixtures/shell.ts (the
+ * schedule island reads today's blocks from the data layer itself),
  * in the request's UI language (a preference change refreshes this layout).
  * `sample` makes the shell label that content as sample data.
  * AuthGate: in live API mode only an active session reaches the shell.
  */
 export default async function AppLayout({ children }: { children: ReactNode }) {
   const { locale } = await getRequestPreferences();
-  const { workspaces, profile, schedule } = getSampleShellData(locale);
+  const { workspaces, profile } = getSampleShellData(locale);
   return (
     <AuthGate>
-      <ShellFrame workspaces={workspaces} profile={profile} schedule={schedule} sample={isSampleData}>
+      <ShellFrame workspaces={workspaces} profile={profile} sample={isSampleData}>
         {children}
         {/* Messages & Meetings sheets (MS-90, MT-02) open over any route. */}
         <Suspense fallback={null}>

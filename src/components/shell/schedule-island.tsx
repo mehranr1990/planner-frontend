@@ -49,12 +49,14 @@ export interface ScheduleIslandProps {
   blocks: readonly ScheduleBlock[];
   /** Accessible name; defaults to "Today's schedule". */
   label?: string;
+  /** Blocks are still loading: the track stays empty instead of saying "nothing today". */
+  loading?: boolean;
   /** Marks the content as sample data with a small visible tag (Common.sample). */
   sample?: boolean;
   className?: string;
 }
 
-export function ScheduleIsland({ date, now, blocks, label, sample = false, className }: ScheduleIslandProps) {
+export function ScheduleIsland({ date, now, blocks, label, loading = false, sample = false, className }: ScheduleIslandProps) {
   const t = useTranslations("Shell");
   const tCommon = useTranslations("Common");
   const { locale, digits, calendar } = usePreferences();
@@ -199,7 +201,11 @@ export function ScheduleIsland({ date, now, blocks, label, sample = false, class
         </time>
       </p>
       <ol className="@container flex h-12 min-w-0 flex-1 items-center gap-1.5 rounded-pill bg-raised px-1">
-        {visible.map(renderBlock)}
+        {visible.length > 0 ? (
+          visible.map(renderBlock)
+        ) : loading ? null : (
+          <li className="truncate px-3 text-xs font-medium text-fg-muted">{t("scheduleEmpty")}</li>
+        )}
       </ol>
       {/* A live Focus session keeps its timer here after Leave focus (P09). */}
       <FocusIslandChip />

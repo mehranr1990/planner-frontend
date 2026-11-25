@@ -3,6 +3,7 @@
   "home": "Planner home",
   "today": "Today",
   "schedule": "Today's schedule",
+  "scheduleEmpty": "Nothing scheduled today",
   "now": "Now {time}",
   "done": "done",
   "timeRange": "{start} – {end}",

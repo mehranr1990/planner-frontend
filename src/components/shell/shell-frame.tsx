@@ -3,8 +3,7 @@ import { FloatingRail } from "@/components/navigation/floating-rail";
 import { AppShell } from "./app-shell";
 import { NonPersonalAssistant } from "./non-personal-assistant";
 import { MobileHeader, MobileShellNav } from "./mobile-shell";
-import type { ScheduleBlock } from "./schedule";
-import { ScheduleIsland } from "./schedule-island";
+import { TodayScheduleIsland } from "./today-schedule-island";
 import { ScopeBoundary } from "./scope-boundary";
 import { ShellActions } from "./shell-actions";
 import { ShellContextSwitcher } from "./shell-context-switcher";
@@ -15,7 +14,7 @@ import { TopBar } from "./top-bar";
  * The composed application shell (Shell board): every island wired up around
  * the page. Server-compatible: it only arranges client islands, so the route
  * layout stays a Server Component and page content streams inside it. All
- * props are serialisable data (sample data until Step 3).
+ * props are serialisable data. The schedule island reads today's blocks itself.
  *
  *   desktop (lg+)  home · context switcher · schedule · actions
  *                  rail column │ page        (assistant ◢ outside Personal)
@@ -27,13 +26,12 @@ import { TopBar } from "./top-bar";
 export interface ShellFrameProps {
   workspaces: ShellWorkspaces;
   profile: ShellProfile;
-  schedule: { date: Date; now: Date; blocks: readonly ScheduleBlock[] };
-  /** The content is sample data: the schedule and the account menu say so visibly. */
+  /** Workspaces and profile are sample data: the account menu says so visibly. */
   sample?: boolean;
   children: ReactNode;
 }
 
-export function ShellFrame({ workspaces, profile, schedule, sample = false, children }: ShellFrameProps) {
+export function ShellFrame({ workspaces, profile, sample = false, children }: ShellFrameProps) {
   return (
     <ShellProvider workspaces={workspaces} profile={profile} sample={sample}>
       <ScopeBoundary>
@@ -41,9 +39,7 @@ export function ShellFrame({ workspaces, profile, schedule, sample = false, chil
           topBar={
             <TopBar
               contextSwitcher={<ShellContextSwitcher />}
-              schedule={
-                <ScheduleIsland date={schedule.date} now={schedule.now} blocks={schedule.blocks} sample={sample} />
-              }
+              schedule={<TodayScheduleIsland />}
               actions={<ShellActions />}
             />
           }
