@@ -14,6 +14,8 @@ import { setMockPathname } from "@/test/setup";
 import { BillsPanel } from "./bills-panel";
 import { RoutinesCard } from "./routines-card";
 import { TaskFilesPanel } from "./task-files-panel";
+// The bell's workspace-invitations section has its own test; keep these counts to their own sources.
+vi.mock("@/components/shell/invitations-notice-section", () => ({ usePendingInvitations: () => [], InvitationsNoticeSection: () => null }));
 
 /* Personal services UI over the mock adapters (and a fake inbox for the bell). */
 
