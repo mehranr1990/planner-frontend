@@ -56,6 +56,8 @@ export function NewProjectSheet({ onDone, ownerTeam }: { onDone: () => void; own
   const format = useProjectFormat();
   const { create, discard } = useCreateProject();
   const today = getPlannerToday();
+  // Created: the button keeps loading until the new project's page replaces the sheet.
+  const [leaving, setLeaving] = useState(false);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [start, setStart] = useState(today);
@@ -87,6 +89,7 @@ export function NewProjectSheet({ onDone, ownerTeam }: { onDone: () => void; own
   const associationId = useId();
 
   const submit = () => {
+    if (leaving || create.isPending) return;
     if (!name.trim()) return setError(t("new.nameRequired"));
     setKeyTouched(true);
     if (!keyValid || keyTaken) return setError(null);
@@ -110,8 +113,8 @@ export function NewProjectSheet({ onDone, ownerTeam }: { onDone: () => void; own
           if (cause instanceof ProjectCreatePartialError) {
             // The project exists: never offer to submit again (that would create a duplicate).
             toast({ title: t(cause.stage === "details" ? "new.partialDetails" : "new.partialRead", { name: cause.projectName }) });
-            onDone();
-            router.push(cause.stage === "details" ? projectHref(cause.projectId, "settings") : "/projects");
+            setLeaving(true);
+            router.replace(cause.stage === "details" ? projectHref(cause.projectId, "settings") : "/projects");
           } else if (cause instanceof RepositoryError && cause.message === "key-taken")
             setTakenKeys((keys) => [...keys, projectKey]);
           else if (cause instanceof RepositoryError && cause.message === "key-format") setKeyTouched(true);
@@ -138,8 +141,9 @@ export function NewProjectSheet({ onDone, ownerTeam }: { onDone: () => void; own
                   },
                 }),
           });
-          onDone();
-          router.push(projectSheetHref(projectHref(project.id), "", "project-invite"));
+          // Replace (not close + push): closing goes Back, which would win the race and land on the opener.
+          setLeaving(true);
+          router.replace(projectSheetHref(projectHref(project.id), "", "project-invite"));
         },
       },
     );
@@ -256,7 +260,7 @@ export function NewProjectSheet({ onDone, ownerTeam }: { onDone: () => void; own
         <Button type="button" variant="secondary" onClick={onDone}>
           {t("cancel")}
         </Button>
-        <Button type="submit" disabled={create.isPending || teamOwnerOff}>
+        <Button type="submit" loading={create.isPending || leaving} disabled={teamOwnerOff}>
           {t("new.submit")}
         </Button>
       </div>

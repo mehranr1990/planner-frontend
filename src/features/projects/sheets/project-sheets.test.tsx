@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it } from "vitest";
 import { resetToasts } from "@/components/ui/toast";
 import { renderWithProviders } from "@/test/render";
-import { routerPush, setMockPathname, setMockSearch } from "@/test/setup";
+import { routerReplace, setMockPathname, setMockSearch } from "@/test/setup";
 import { ProjectSheetHost } from "./project-sheet-host";
 import { projectSheetHref } from "./project-sheet-params";
 
@@ -38,7 +38,7 @@ describe("PJ-90 · project sheets", () => {
     await user.type(within(sheet).getByRole("textbox", { name: "Project name" }), "Help Center");
     await user.click(within(sheet).getByRole("radio", { name: "Website" }));
     await user.click(within(sheet).getByRole("button", { name: "Create & invite" }));
-    await waitFor(() => expect(routerPush).toHaveBeenCalledWith("/projects/help-center?sheet=project-invite"));
+    await waitFor(() => expect(routerReplace).toHaveBeenCalledWith("/projects/help-center?sheet=project-invite"));
     expect(await screen.findByText("Help Center created")).toBeInTheDocument();
   });
 
@@ -68,14 +68,14 @@ describe("PJ-90 · project sheets", () => {
     await user.tab();
     expect(within(sheet).getByText("Use 2–10 capital letters (A–Z) or digits, starting with a letter")).toBeInTheDocument();
     await user.click(within(sheet).getByRole("button", { name: "Create & invite" }));
-    expect(routerPush).not.toHaveBeenCalledWith(expect.stringContaining("sheet=project-invite"));
+    expect(routerReplace).not.toHaveBeenCalledWith(expect.stringContaining("sheet=project-invite"));
 
     await user.clear(key);
     await user.type(key, "site2");
     expect(key).toHaveValue("SITE2");
     await waitFor(() => expect(key).not.toHaveAttribute("aria-invalid"));
     await user.click(within(sheet).getByRole("button", { name: "Create & invite" }));
-    await waitFor(() => expect(routerPush).toHaveBeenCalledWith("/projects/website?sheet=project-invite"));
+    await waitFor(() => expect(routerReplace).toHaveBeenCalledWith("/projects/website?sheet=project-invite"));
   });
 
   it("project-invite (Owner): roles with descriptions, verified-only copy, pending with resend / cancel", async () => {

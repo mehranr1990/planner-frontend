@@ -135,16 +135,19 @@ function GroupNewForm({ onDone }: { onDone: (groupId?: string) => void }) {
   const [touched, setTouched] = useState(false);
   const opId = useRef(newClientOpId("group"));
   const create = useSocialMutation((repo) => repo.groups.create({ name, description, topic, currency, visibility, inviteIds: invites, clientOpId: opId.current }));
+  // Created: the button keeps loading until the new group's page replaces the sheet.
+  const [leaving, setLeaving] = useState(false);
   return (
     <form
       className="flex flex-col gap-4"
       onSubmit={(event) => {
         event.preventDefault();
         setTouched(true);
-        if (!name.trim()) return;
+        if (!name.trim() || leaving || create.isPending) return;
         create.mutate(undefined, {
           onSuccess: (id) => {
             toast({ title: t("sheets.groupNew.created"), tone: "success" });
+            setLeaving(true);
             onDone(id);
           },
         });
@@ -191,7 +194,7 @@ function GroupNewForm({ onDone }: { onDone: (groupId?: string) => void }) {
       </fieldset>
       {isLiveApi() ? <p className="text-xs text-fg-secondary">{t("live.invite.afterCreate")}</p> : <ConnectionPicker label={t("sheets.groupNew.invite")} value={invites} onChange={setInvites} />}
       {create.isError ? <InlineAlert tone="danger" title={errorText(create.error)} /> : null}
-      <Actions pending={create.isPending} submit={t("sheets.groupNew.create")} onCancel={() => onDone()} />
+      <Actions pending={create.isPending || leaving} submit={t("sheets.groupNew.create")} onCancel={() => onDone()} />
     </form>
   );
 }

@@ -38,7 +38,7 @@ function Actions({ onCancel, submit, pending }: { onCancel: () => void; submit: 
       <Button type="button" variant="secondary" onClick={onCancel}>
         {t("cancel")}
       </Button>
-      <Button type="submit" disabled={pending}>
+      <Button type="submit" loading={pending}>
         {submit}
       </Button>
     </div>
@@ -58,6 +58,8 @@ export function NewCompanySheet({ onDone }: { onDone: () => void }) {
   const [fiscal, setFiscal] = useState("1");
   const [departments, setDepartments] = useState("");
   const [touched, setTouched] = useState(false);
+  // Created: the button keeps loading until the new company's page replaces the sheet.
+  const [leaving, setLeaving] = useState(false);
   const nameError = touched && !name.trim() ? t("nameRequired") : null;
   return (
     <form
@@ -65,14 +67,15 @@ export function NewCompanySheet({ onDone }: { onDone: () => void }) {
       onSubmit={(event) => {
         event.preventDefault();
         setTouched(true);
-        if (!name.trim()) return;
+        if (!name.trim() || leaving || create.isPending) return;
         create.mutate(
           { name, legalName, currency, fiscalStartMonth: Number(fiscal), departments: departments.split(/[,،]/) },
           {
             onSuccess: (company: CompanySummary) => {
               toast({ title: t("created", { company: company.name }) });
-              onDone();
-              router.push(companyHref(company.id));
+              // Replace (not close + push): closing goes Back, which would win the race and land on the opener.
+              setLeaving(true);
+              router.replace(companyHref(company.id));
             },
           },
         );
@@ -116,7 +119,7 @@ export function NewCompanySheet({ onDone }: { onDone: () => void }) {
         <FieldDescription>{t("ownerNote")}</FieldDescription>
       </Field>
       {create.isError ? <InlineAlert tone="danger" title={t(createFailure(create.error))} /> : null}
-      <Actions onCancel={onDone} submit={t("submit")} pending={create.isPending} />
+      <Actions onCancel={onDone} submit={t("submit")} pending={create.isPending || leaving} />
     </form>
   );
 }

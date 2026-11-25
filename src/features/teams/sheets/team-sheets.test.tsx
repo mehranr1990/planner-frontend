@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it } from "vitest";
 import { resetToasts } from "@/components/ui/toast";
 import { renderWithProviders } from "@/test/render";
-import { routerPush, setMockPathname, setMockSearch } from "@/test/setup";
+import { routerReplace, setMockPathname, setMockSearch } from "@/test/setup";
 import { TeamSheetHost } from "./team-sheet-host";
 import { teamSheetHref } from "./team-sheet-params";
 
@@ -34,7 +34,7 @@ describe("TM-90 · team sheets", () => {
     await user.type(within(sheet).getByRole("textbox", { name: "Name" }), "Help Desk");
     await user.click(within(sheet).getByRole("radio", { name: "Sprints + backlog" }));
     await user.click(within(sheet).getByRole("button", { name: "Create team" }));
-    await waitFor(() => expect(routerPush).toHaveBeenCalledWith("/teams/help-desk"));
+    await waitFor(() => expect(routerReplace).toHaveBeenCalledWith("/teams/help-desk"));
     expect(await screen.findByText("Help Desk created")).toBeInTheDocument();
   });
 

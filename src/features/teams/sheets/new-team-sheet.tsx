@@ -32,20 +32,23 @@ export function NewTeamSheet({ onDone }: { onDone: () => void }) {
   const [mode, setMode] = useState<TeamPlanningMode>("weekly");
   const [touched, setTouched] = useState(false);
   const [failed, setFailed] = useState<false | "failed" | "notEnabled">(false);
+  // Created: the button keeps loading until the new team's page replaces the sheet.
+  const [leaving, setLeaving] = useState(false);
   const companyId = useId();
   const nameError = touched && !name.trim() ? t("nameRequired") : null;
 
   const submit = () => {
     setTouched(true);
-    if (!name.trim()) return;
+    if (!name.trim() || leaving || create.isPending) return;
     setFailed(false);
     create.mutate(
       { name, description, planningMode: mode },
       {
         onSuccess: (team) => {
           toast({ title: t("created", { team: team.name }) });
-          onDone();
-          router.push(teamHref(team.id));
+          // Replace (not close + push): closing goes Back, which would win the race and land on the opener.
+          setLeaving(true);
+          router.replace(teamHref(team.id));
         },
         onError: (error) => setFailed(isSharedNotEnabled(error) ? "notEnabled" : "failed"),
       },
@@ -118,7 +121,7 @@ export function NewTeamSheet({ onDone }: { onDone: () => void }) {
         <Button type="button" variant="secondary" onClick={onDone}>
           {t("cancel")}
         </Button>
-        <Button type="submit" disabled={create.isPending}>
+        <Button type="submit" loading={create.isPending || leaving}>
           {t("submit")}
         </Button>
       </div>

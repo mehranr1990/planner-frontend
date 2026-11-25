@@ -9,7 +9,7 @@ import type { CompanyRepository } from "@/data/company-repositories";
 import { RepositoryError } from "@/data/repositories";
 import { createMockCompanies } from "@/data/mock/mock-companies";
 import { renderWithProviders } from "@/test/render";
-import { routerPush, setMockPathname, setMockSearch } from "@/test/setup";
+import { routerReplace, setMockPathname, setMockSearch } from "@/test/setup";
 import { CompanySheetHost } from "./company-sheet-host";
 
 function renderHost(path: string, search: string, repository: CompanyRepository = createMockCompanies()) {
@@ -36,7 +36,7 @@ describe("CO-90 · company sheets", () => {
     await user.type(within(sheet).getByRole("textbox", { name: "Name" }), "Kavir");
     await user.type(within(sheet).getByRole("textbox", { name: "First departments (optional)" }), "Ops, Sales");
     await user.click(within(sheet).getByRole("button", { name: "Create company" }));
-    await waitFor(() => expect(routerPush).toHaveBeenCalledWith(expect.stringMatching(/^\/companies\/co-/)));
+    await waitFor(() => expect(routerReplace).toHaveBeenCalledWith(expect.stringMatching(/^\/companies\/co-/)));
     const created = (await repository.list()).companies.find((company) => company.name === "Kavir")!;
     expect(created.role).toBe("owner");
     expect((await repository.departments(created.id)).map((dept) => dept.name)).toEqual(["Ops", "Sales"]);
@@ -74,7 +74,7 @@ describe("CO-90 · company sheets", () => {
   it("company-new in live mode goes through the API: no approved COMPANY policy → actionable message, nothing created, no mock fallback", async () => {
     const user = userEvent.setup();
     const api = fakeApi((_call, parts) => (parts[0] === "retention-policies" ? json({ items: [], nextCursor: null }) : json({ items: [], nextCursor: null })));
-    routerPush.mockClear();
+    routerReplace.mockClear();
     renderHost("/companies", "sheet=company-new", createApiCompanyRepository(api.client));
     const sheet = await screen.findByRole("dialog", { name: "New company" });
     await user.type(within(sheet).getByRole("textbox", { name: "Name" }), "Kavir");
@@ -82,7 +82,7 @@ describe("CO-90 · company sheets", () => {
     expect(await within(sheet).findByText(/Creating companies isn’t enabled on this server yet/)).toBeInTheDocument();
     expect(api.calls.some((call) => call.path === "/retention-policies")).toBe(true);
     expect(api.writes()).toEqual([]);
-    expect(routerPush).not.toHaveBeenCalled();
+    expect(routerReplace).not.toHaveBeenCalled();
   });
 
   it("company-new: one request while pending (no double submit); permission / incomplete-setup refusals read accurately", async () => {
@@ -95,7 +95,7 @@ describe("CO-90 · company sheets", () => {
     await user.type(within(sheet).getByRole("textbox", { name: "Name" }), "Kavir");
     const submit = within(sheet).getByRole("button", { name: "Create company" });
     await user.click(submit);
-    await waitFor(() => expect(submit).toBeDisabled());
+    await waitFor(() => expect(submit).toHaveAttribute("aria-disabled", "true"));
     await user.click(submit);
     expect(create).toHaveBeenCalledTimes(1);
     release(new RepositoryError("forbidden", "Not allowed") as never);
