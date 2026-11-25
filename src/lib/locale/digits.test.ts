@@ -91,3 +91,11 @@ describe("formatCompactNumber", () => {
     expect(plain(formatCompactNumber(-1_864_000_000, { locale: "fa", digits: "fa" }))).toBe("-۱٫۸۶ میلیارد");
   });
 });
+
+describe("toLatinNumberInput", () => {
+  it("keeps a parseable number from Persian keyboard input", async () => {
+    const { toLatinNumberInput } = await import("./digits");
+    expect(toLatinNumberInput("۱۲٫۵")).toBe("12.5");
+    expect(toLatinNumberInput("-٣ روز")).toBe("-3");
+  });
+});

@@ -60,7 +60,7 @@ describe("TM-08 · People & capacity", () => {
     await user.click(await screen.findByRole("menuitem", { name: "Edit capacity" }));
     const dialog = await screen.findByRole("dialog", { name: "Capacity · Kian F." });
     expect(within(dialog).getByRole("button", { name: "Thu" })).toHaveAttribute("aria-pressed", "false");
-    const hours = await within(dialog).findByRole("spinbutton", { name: "Hours for this team per week" });
+    const hours = await within(dialog).findByRole("textbox", { name: "Hours for this team per week" });
     await user.clear(hours);
     await user.type(hours, "28");
     await user.click(within(dialog).getByRole("button", { name: "Save" }));

@@ -4,7 +4,7 @@ import { useTranslations } from "next-intl";
 import { useId, useState } from "react";
 import { InlineAlert } from "@/components/feedback/inline-alert";
 import { Button } from "@/components/ui/button";
-import { controlSurfaceClasses } from "@/components/ui/input";
+import { controlSurfaceClasses, latinDigitsOnChange } from "@/components/ui/input";
 import type { DependencyType, ScheduleGraph, ScheduleLink } from "@/data/project-domain";
 import { useScheduleActions } from "@/data/project-queries";
 import { RepositoryError } from "@/data/repositories";
@@ -123,10 +123,11 @@ export function DependenciesTable({ projectId, graph, editable }: DependenciesTa
                   <td className="px-3 py-2 text-fg-secondary">
                     {row ? (
                       <input
-                        type="number"
+                        type="text"
+                        inputMode="numeric"
                         aria-label={t("deps.lag")}
                         value={row.lag}
-                        onChange={(event) => setEditing({ ...row, lag: event.target.value })}
+                        onChange={latinDigitsOnChange((event) => setEditing({ ...row, lag: event.target.value }), true)}
                         className={cn(select, "w-20")}
                       />
                     ) : (
@@ -227,10 +228,11 @@ export function DependenciesTable({ projectId, graph, editable }: DependenciesTa
             ))}
           </select>
           <input
-            type="number"
+            type="text"
+            inputMode="numeric"
             aria-label={t("deps.lag")}
             value={draft.lag}
-            onChange={(event) => setDraft({ ...draft, lag: event.target.value })}
+            onChange={latinDigitsOnChange((event) => setDraft({ ...draft, lag: event.target.value }), true)}
             className={cn(select, "w-20")}
           />
           <Button size="sm" onClick={add} disabled={!draft.successorId || !draft.predecessorId}>

@@ -74,3 +74,24 @@ describe("Input", () => {
     expect(screen.getByRole("textbox")).toHaveAttribute("aria-required", "true");
   });
 });
+
+describe("Input digits", () => {
+  it("number fields take Persian and Arabic digits as Latin digits and drop letters", async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn((event: { target: { value: string } }) => event.target.value);
+    render(<Input aria-label="Amount" type="number" onChange={onChange} />);
+    const input = screen.getByRole("textbox", { name: "Amount" });
+    expect(input).toHaveAttribute("inputmode", "decimal");
+    await user.type(input, "۱۲٣a٫۵");
+    expect(input).toHaveValue("123.5");
+    expect(onChange).toHaveLastReturnedWith("123.5");
+  });
+
+  it("numeric-keypad text fields convert digits but keep other characters", async () => {
+    const user = userEvent.setup();
+    render(<Input aria-label="Price" inputMode="numeric" />);
+    const input = screen.getByRole("textbox", { name: "Price" });
+    await user.type(input, "۱٬۲۰۰");
+    expect(input).toHaveValue("1٬200");
+  });
+});

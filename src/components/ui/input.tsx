@@ -1,9 +1,37 @@
 "use client";
 
-import type { ComponentProps, ReactNode } from "react";
+import type { ChangeEvent, ComponentProps, ReactNode } from "react";
 import { cn } from "@/lib/cn";
+import { toLatinDigits, toLatinNumberInput } from "@/lib/locale/digits";
 import { useFieldControl } from "./field";
 import { Spinner } from "./spinner";
+
+/**
+ * Number fields accept Persian / Arabic digits. A native type="number" drops
+ * them (Chrome leaves the value empty), so `type="number"` renders a text
+ * field with a numeric keypad whose value is kept as Latin digits; other
+ * numeric-keypad fields (amounts) get their digits converted in place.
+ * Consumers keep reading event.target.value as before.
+ */
+export function latinDigitsOnChange(
+  onChange: ((event: ChangeEvent<HTMLInputElement>) => void) | undefined,
+  strict: boolean,
+): (event: ChangeEvent<HTMLInputElement>) => void {
+  return (event) => {
+    const input = event.currentTarget;
+    const next = strict ? toLatinNumberInput(input.value) : toLatinDigits(input.value);
+    if (next !== input.value) {
+      const caret = input.selectionStart;
+      const removed = input.value.length - next.length;
+      input.value = next;
+      if (caret !== null) {
+        const position = Math.max(0, caret - removed);
+        input.setSelectionRange(position, position);
+      }
+    }
+    onChange?.(event);
+  };
+}
 
 /*
  * Text field surface per Utility: 48px, input radius, raised fill, 1.5px
@@ -51,8 +79,12 @@ export function Input({
   "aria-describedby": ariaDescribedBy,
   "aria-invalid": ariaInvalid,
   "aria-required": ariaRequired,
+  inputMode,
+  onChange,
   ...props
 }: InputProps) {
+  const number = type === "number";
+  const numericKeypad = number || inputMode === "numeric" || inputMode === "decimal";
   const control = useFieldControl({
     id,
     disabled,
@@ -80,7 +112,9 @@ export function Input({
       ) : null}
       <input
         {...props}
-        type={type}
+        type={number ? "text" : type}
+        inputMode={inputMode ?? (number ? "decimal" : undefined)}
+        onChange={numericKeypad ? latinDigitsOnChange(onChange, number) : onChange}
         id={control.id}
         disabled={control.disabled}
         readOnly={control.readOnly}

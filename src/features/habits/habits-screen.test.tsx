@@ -128,7 +128,7 @@ describe("HabitSheet (P18 · B)", () => {
     await user.type(screen.getByRole("textbox", { name: "Name" }), "Stretch");
     await user.click(screen.getByRole("radio", { name: "Specific days" }));
     await user.click(screen.getByRole("button", { name: "Friday", pressed: true }));
-    await user.type(screen.getByRole("spinbutton", { name: "Target amount" }), "10");
+    await user.type(screen.getByRole("textbox", { name: "Target amount" }), "10");
     await user.type(screen.getByRole("textbox", { name: "Unit" }), "min");
     await user.click(screen.getByRole("switch", { name: "Reminder" }));
     await user.click(screen.getByRole("button", { name: "Create habit" }));

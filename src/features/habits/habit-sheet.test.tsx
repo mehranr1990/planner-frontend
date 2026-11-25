@@ -21,7 +21,7 @@ describe("HabitSheet in live API mode", () => {
     const user = userEvent.setup();
     const onClose = vi.fn();
     renderWithProviders(<HabitSheet initialTitle="Read" onClose={onClose} />);
-    await user.type(screen.getByRole("spinbutton", { name: "Target amount" }), "20");
+    await user.type(screen.getByRole("textbox", { name: "Target amount" }), "20");
     await user.type(screen.getByRole("textbox", { name: "Unit" }), "صفحه");
     await user.click(screen.getByRole("button", { name: "Create habit" }));
     expect(screen.getByText("Use Latin letters for the unit (e.g. PAGES, KM or GLASS).")).toBeInTheDocument();

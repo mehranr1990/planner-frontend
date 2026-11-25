@@ -41,8 +41,8 @@ describe("PJ-16 · Risk detail", () => {
     renderRisk("payment-api-delay");
     await user.click(await screen.findByRole("button", { name: "Edit" }));
     const dialog = await screen.findByRole("dialog", { name: "Edit" });
-    const input = within(dialog).getByRole("spinbutton", { name: "Probability" });
-    expect(input).toHaveValue(70);
+    const input = within(dialog).getByRole("textbox", { name: "Probability" });
+    expect(input).toHaveValue("70");
     expect(dialog).toHaveTextContent("shown as High");
     await user.clear(input);
     await user.type(input, "101");

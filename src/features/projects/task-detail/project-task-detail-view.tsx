@@ -32,6 +32,7 @@ import { Icon } from "@/components/ui/icon";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/components/ui/toast";
+import { latinDigitsOnChange } from "@/components/ui/input";
 import { FolderTabsCard, type FolderTab } from "@/design-system/surfaces/folder-tabs-card";
 import { SignatureCard, SignatureCardAction } from "@/design-system/surfaces/signature-card";
 import type { DependencyType, ProjectTaskDetail, ProjectWorkflow } from "@/data/project-domain";
@@ -520,9 +521,10 @@ function DetailTabs({ data, workflow }: { data: ProjectTaskDetail; workflow: Pro
                 <label className="flex w-24 flex-col gap-1 text-xs font-semibold text-fg-secondary">
                   {t("links.lagLabel")}
                   <input
-                    type="number"
+                    type="text"
+                    inputMode="numeric"
                     value={lag}
-                    onChange={(event) => setLag(event.target.value)}
+                    onChange={latinDigitsOnChange((event) => setLag(event.target.value), true)}
                     className="h-10 rounded-field border border-line bg-surface px-2 text-sm text-fg"
                   />
                 </label>

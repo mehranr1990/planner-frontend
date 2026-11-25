@@ -18,6 +18,17 @@ export function toLatinDigits(input: string): string {
   });
 }
 
+/**
+ * What a typed number field keeps: Persian / Arabic digits become 0–9 and the
+ * Persian decimal mark (٫) a ".", everything except digits, "." and "-" is
+ * dropped. Users type with a Persian keyboard; the value stays parseable.
+ */
+export function toLatinNumberInput(input: string): string {
+  return toLatinDigits(input)
+    .replace(/٫/g, ".")
+    .replace(/[^0-9.-]/g, "");
+}
+
 export function convertDigits(input: string | number, system: DigitSystem): string {
   return system === "fa" ? toPersianDigits(input) : toLatinDigits(String(input));
 }

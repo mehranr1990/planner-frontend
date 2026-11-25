@@ -51,8 +51,8 @@ describe("TM-07 · Team goals", () => {
     const card = (await screen.findByRole("heading", { name: "Accessible by default" })).closest("section")!;
     await user.click(within(card).getByRole("button", { name: "Update progress" }));
     const dialog = await screen.findByRole("dialog", { name: "Update progress" });
-    const input = within(dialog).getByRole("spinbutton", { name: "Screens audited" });
-    expect(within(dialog).queryByRole("spinbutton", { name: "Contrast fixes" })).not.toBeInTheDocument();
+    const input = within(dialog).getByRole("textbox", { name: "Screens audited" });
+    expect(within(dialog).queryByRole("textbox", { name: "Contrast fixes" })).not.toBeInTheDocument();
     await user.clear(input);
     await user.type(input, "32");
     await user.click(within(dialog).getByRole("button", { name: "Save" }));
