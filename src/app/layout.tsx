@@ -33,6 +33,9 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: { default: name, template: `%s · ${name}` },
     description: t("description"),
+    // iOS "Add to Home Screen": standalone launch and its own icon (it ignores manifest icons).
+    appleWebApp: { capable: true, title: "Planner", statusBarStyle: "default" },
+    icons: { apple: "/icons/apple-touch-icon.png" },
   };
 }
 
@@ -41,6 +44,10 @@ export const viewport: Viewport = {
   initialScale: 1,
   // Lets the mobile shell pad for the notch / home indicator (--safe-*).
   viewportFit: "cover",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#F4F6F3" },
+    { media: "(prefers-color-scheme: dark)", color: "#121412" },
+  ],
 };
 
 export default async function RootLayout({ children }: LayoutProps<"/">) {

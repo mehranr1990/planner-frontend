@@ -7,6 +7,9 @@ const withNextIntl = createNextIntlPlugin();
 const nextConfig: NextConfig = {
   /* config options here */
   cacheComponents: true,
+  // `next dev` opened from a phone on the LAN (http://192.168.x.x:port): without this, Next blocks
+  // its dev resources for that origin and the page never becomes fully interactive. Dev only.
+  allowedDevOrigins: ["192.168.*.*", "10.*.*.*"],
   partialPrefetching: true,
   // The push-only service worker: always revalidated, never broader than the site.
   async headers() {

@@ -18,13 +18,13 @@ vi.mock("next/font/google", () => ({
 describe("root layout metadata", () => {
   it("translates the root title template and description", async () => {
     locale.current = "en";
-    expect(await rootMetadata()).toEqual({
+    expect(await rootMetadata()).toMatchObject({
       title: { default: "Mehran Planner", template: "%s · Mehran Planner" },
       description: "Personal, project, team and company planning in one calm workspace.",
     });
 
     locale.current = "fa";
-    expect(await rootMetadata()).toEqual({
+    expect(await rootMetadata()).toMatchObject({
       title: { default: "برنامه‌ریز مهران", template: "%s · برنامه‌ریز مهران" },
       description: "برنامه‌ریزی شخصی، پروژه، تیم و شرکت در یک فضای کاری آرام.",
     });

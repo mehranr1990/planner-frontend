@@ -180,7 +180,7 @@ export function VoiceCapture({ onClose }: { onClose(): void }) {
             <Button variant="ghost" onClick={onClose}>
               {t("drop")}
             </Button>
-            {error === "unsupported" || error === "denied" ? (
+            {error === "unsupported" || error === "insecure" || error === "denied" ? (
               <Button variant="secondary" onClick={() => switchTo("note")}>
                 {t("typeInstead")}
               </Button>
@@ -190,7 +190,7 @@ export function VoiceCapture({ onClose }: { onClose(): void }) {
                 {t("toInbox")}
               </Button>
             ) : null}
-            {error !== "unsupported" ? (
+            {error !== "unsupported" && error !== "insecure" ? (
               <Button onClick={retry}>
                 <Icon icon={error === "denied" ? Mic : RotateCcw} size={18} />
                 {t("retry")}

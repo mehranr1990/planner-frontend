@@ -6,13 +6,15 @@ import { useCallback, useEffect, useRef, useState } from "react";
  * Voice capture on the browser's Web Speech API (SpeechRecognition, or the
  * webkit-prefixed one), feature-detected on start. Only text is kept: there
  * is no audio library (P18 · G). States: idle → recording ⇄ paused →
- * processing → done, or error (unsupported, denied, no-speech, network,
- * failed). Recognition stops by itself after a silence; while recording it
+ * processing → done, or error (unsupported, insecure, denied, no-speech,
+ * network, failed). The microphone needs a secure context (HTTPS or
+ * localhost); on a plain-HTTP origin the browser refuses it outright, which
+ * is reported as "insecure" rather than as a blocked permission. Recognition stops by itself after a silence; while recording it
  * is restarted so one note can span pauses in speech.
  */
 
 export type SpeechStatus = "idle" | "recording" | "paused" | "processing" | "done" | "error";
-export type SpeechError = "unsupported" | "denied" | "no-speech" | "network" | "failed";
+export type SpeechError = "unsupported" | "insecure" | "denied" | "no-speech" | "network" | "failed";
 
 interface RecognitionResult {
   isFinal: boolean;
@@ -80,6 +82,11 @@ export function useSpeechCapture(lang: string): SpeechCapture {
   const failed = useRef(false);
 
   const listen = useCallback(() => {
+    if (window.isSecureContext === false) {
+      setError("insecure");
+      setStatus("error");
+      return;
+    }
     const Ctor = recognitionConstructor();
     if (!Ctor) {
       setError("unsupported");

@@ -140,6 +140,7 @@
       "privacy": "Only the transcript is kept — no audio is stored.",
       "error": {
         "unsupported": "Voice capture isn’t supported in this browser.",
+        "insecure": "Voice capture needs a secure (HTTPS) address — open the app over https.",
         "denied": "Microphone access is blocked. Allow it in your browser settings and try again.",
         "no-speech": "Didn’t catch anything. The audio may have been too quiet.",
         "network": "No connection — transcription needs one.",
