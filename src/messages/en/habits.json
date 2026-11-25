@@ -206,6 +206,8 @@
     "targetUnit": "Unit",
     "targetUnitPlaceholder": "pages",
     "targetHint": "Optional. Logging the full amount checks the day.",
+    "targetHintLive": "Optional. Write the unit in Latin letters, e.g. PAGES or KM.",
+    "unitLatin": "Use Latin letters for the unit (e.g. PAGES, KM or GLASS).",
     "time": "Preferred time",
     "timeOfDay": "Part of the day",
     "preferredTime": "Time",

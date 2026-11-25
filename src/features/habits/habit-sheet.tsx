@@ -1,6 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import { isLiveApi } from "@/api/runtime";
 import { useId, useState, type FormEvent } from "react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -33,6 +34,8 @@ export const HABIT_SHEET_PARAM = "habit";
 export const HABIT_SHEET_TITLE_PARAM = "title";
 
 const TIMES: readonly HabitTimeOfDay[] = ["anytime", "morning", "afternoon", "evening"];
+/** A unit the API can keep: Latin letters, digits, spaces or _ (sent upper-cased, spaces as _). */
+const LATIN_UNIT = /^[A-Za-z][A-Za-z0-9_ ]{0,29}$/;
 
 interface Draft {
   title: string;
@@ -101,6 +104,11 @@ function HabitForm({ habit, initialTitle, onClose }: { habit: Habit | null; init
   const [titleError, setTitleError] = useState(false);
   const [daysError, setDaysError] = useState(false);
   const [failed, setFailed] = useState(false);
+  const [unitError, setUnitError] = useState(false);
+  // Live API: the habit API keeps no icon, area, time of day or reminder, and
+  // stores units as Latin codes (KM, PAGES). Those fields are hidden there
+  // instead of failing the save (see DECISIONS_AND_BLOCKERS · Habits).
+  const live = isLiveApi();
   const ids = useId();
   const busy = create.isPending || update.isPending;
   const set = (patch: Partial<Draft>) => setDraft((current) => ({ ...current, ...patch }));
@@ -112,20 +120,22 @@ function HabitForm({ habit, initialTitle, onClose }: { habit: Habit | null; init
     const restWeekdays = draft.daily ? [] : draft.restWeekdays;
     const noTitle = !draft.title.trim();
     const noDays = restWeekdays.length >= 7;
+    const amount = Number(draft.targetAmount);
+    const badUnit = live && amount > 0 && !LATIN_UNIT.test(draft.targetUnit.trim());
     setTitleError(noTitle);
     setDaysError(noDays);
-    if (noTitle || noDays) return;
+    setUnitError(badUnit);
+    if (noTitle || noDays || badUnit) return;
     setFailed(false);
-    const amount = Number(draft.targetAmount);
     const input: HabitInput = {
       title: draft.title,
       icon: draft.icon,
-      area: draft.area || null,
+      area: live ? null : draft.area || null,
       restWeekdays,
       target: amount > 0 ? { amount, unit: draft.targetUnit.trim() } : null,
-      timeOfDay: draft.timeOfDay,
-      preferredTime: draft.preferredTime || null,
-      reminder: draft.reminder && draft.reminderTime ? { time: draft.reminderTime, ifNotDone: draft.ifNotDone } : null,
+      timeOfDay: live ? "anytime" : draft.timeOfDay,
+      preferredTime: live ? null : draft.preferredTime || null,
+      reminder: !live && draft.reminder && draft.reminderTime ? { time: draft.reminderTime, ifNotDone: draft.ifNotDone } : null,
     };
     try {
       if (habit) {
@@ -159,45 +169,49 @@ function HabitForm({ habit, initialTitle, onClose }: { habit: Habit | null; init
         <FieldError>{titleError ? t("nameRequired") : null}</FieldError>
       </Field>
 
-      <fieldset className="flex flex-col gap-2">
-        <legend className="mb-2 text-sm font-bold text-fg">{t("icon")}</legend>
-        <div role="radiogroup" aria-label={t("icon")} className="flex flex-wrap gap-2">
-          {HABIT_ICON_IDS.map((id) => {
-            const selected = draft.icon === id;
-            return (
-              <button
-                key={id}
-                type="button"
-                role="radio"
-                aria-checked={selected}
-                aria-label={t(`icons.${id}`)}
-                tabIndex={selected ? 0 : -1}
-                onClick={() => set({ icon: id })}
-                onKeyDown={(event) => {
-                  const step = event.key === "ArrowRight" || event.key === "ArrowDown" ? 1 : event.key === "ArrowLeft" || event.key === "ArrowUp" ? -1 : 0;
-                  if (!step) return;
-                  event.preventDefault();
-                  const rtl = getComputedStyle(event.currentTarget).direction === "rtl" && (event.key === "ArrowRight" || event.key === "ArrowLeft");
-                  const index = (HABIT_ICON_IDS.indexOf(id) + (rtl ? -step : step) + HABIT_ICON_IDS.length) % HABIT_ICON_IDS.length;
-                  set({ icon: HABIT_ICON_IDS[index]! });
-                  (event.currentTarget.parentElement?.children[index] as HTMLElement | undefined)?.focus();
-                }}
-                className={cn(
-                  "grid size-11 place-items-center rounded-full focus-visible:focus-ring",
-                  selected ? "bg-scope-deep text-on-accent" : "bg-subtle text-fg-secondary hover:bg-raised",
-                )}
-              >
-                <Icon icon={HABIT_ICONS[id]} size={18} />
-              </button>
-            );
-          })}
-        </div>
-      </fieldset>
+      {live ? null : (
+        <fieldset className="flex flex-col gap-2">
+          <legend className="mb-2 text-sm font-bold text-fg">{t("icon")}</legend>
+          <div role="radiogroup" aria-label={t("icon")} className="flex flex-wrap gap-2">
+            {HABIT_ICON_IDS.map((id) => {
+              const selected = draft.icon === id;
+              return (
+                <button
+                  key={id}
+                  type="button"
+                  role="radio"
+                  aria-checked={selected}
+                  aria-label={t(`icons.${id}`)}
+                  tabIndex={selected ? 0 : -1}
+                  onClick={() => set({ icon: id })}
+                  onKeyDown={(event) => {
+                    const step = event.key === "ArrowRight" || event.key === "ArrowDown" ? 1 : event.key === "ArrowLeft" || event.key === "ArrowUp" ? -1 : 0;
+                    if (!step) return;
+                    event.preventDefault();
+                    const rtl = getComputedStyle(event.currentTarget).direction === "rtl" && (event.key === "ArrowRight" || event.key === "ArrowLeft");
+                    const index = (HABIT_ICON_IDS.indexOf(id) + (rtl ? -step : step) + HABIT_ICON_IDS.length) % HABIT_ICON_IDS.length;
+                    set({ icon: HABIT_ICON_IDS[index]! });
+                    (event.currentTarget.parentElement?.children[index] as HTMLElement | undefined)?.focus();
+                  }}
+                  className={cn(
+                    "grid size-11 place-items-center rounded-full focus-visible:focus-ring",
+                    selected ? "bg-scope-deep text-on-accent" : "bg-subtle text-fg-secondary hover:bg-raised",
+                  )}
+                >
+                  <Icon icon={HABIT_ICONS[id]} size={18} />
+                </button>
+              );
+            })}
+          </div>
+        </fieldset>
+      )}
 
-      <Field>
-        <FieldLabel>{t("area")}</FieldLabel>
-        <Input value={draft.area} dir="auto" placeholder={t("areaPlaceholder")} onChange={(event) => set({ area: event.target.value })} />
-      </Field>
+      {live ? null : (
+        <Field>
+          <FieldLabel>{t("area")}</FieldLabel>
+          <Input value={draft.area} dir="auto" placeholder={t("areaPlaceholder")} onChange={(event) => set({ area: event.target.value })} />
+        </Field>
+      )}
 
       <fieldset className="flex flex-col gap-2.5">
         <legend className="mb-2 text-sm font-bold text-fg">{t("frequency")}</legend>
@@ -263,47 +277,59 @@ function HabitForm({ habit, initialTitle, onClose }: { habit: Habit | null; init
             value={draft.targetUnit}
             placeholder={t("targetUnitPlaceholder")}
             className="min-w-0 flex-1"
-            onChange={(event) => set({ targetUnit: event.target.value })}
+            aria-invalid={unitError || undefined}
+            aria-describedby={unitError ? `${ids}-unit` : undefined}
+            onChange={(event) => {
+              set({ targetUnit: event.target.value });
+              if (unitError) setUnitError(false);
+            }}
           />
         </div>
-        <p className="text-xs text-fg-muted">{t("targetHint")}</p>
+        <p id={`${ids}-unit`} role="alert" className="text-xs text-danger-text empty:hidden">
+          {unitError ? t("unitLatin") : null}
+        </p>
+        <p className="text-xs text-fg-muted">{live ? t("targetHintLive") : t("targetHint")}</p>
       </fieldset>
 
-      <fieldset className="flex flex-col gap-2.5">
-        <legend className="mb-2 text-sm font-bold text-fg">{t("time")}</legend>
-        <PillGroup
-          label={t("timeOfDay")}
-          value={draft.timeOfDay}
-          onValueChange={(timeOfDay) => set({ timeOfDay })}
-          options={TIMES.map((value) => ({ value, label: tTime(value) }))}
-        />
-        <Input
-          aria-label={t("preferredTime")}
-          type="time"
-          dir="ltr"
-          value={draft.preferredTime}
-          className="w-36"
-          onChange={(event) => set({ preferredTime: event.target.value })}
-        />
-      </fieldset>
+      {live ? null : (
+        <fieldset className="flex flex-col gap-2.5">
+          <legend className="mb-2 text-sm font-bold text-fg">{t("time")}</legend>
+          <PillGroup
+            label={t("timeOfDay")}
+            value={draft.timeOfDay}
+            onValueChange={(timeOfDay) => set({ timeOfDay })}
+            options={TIMES.map((value) => ({ value, label: tTime(value) }))}
+          />
+          <Input
+            aria-label={t("preferredTime")}
+            type="time"
+            dir="ltr"
+            value={draft.preferredTime}
+            className="w-36"
+            onChange={(event) => set({ preferredTime: event.target.value })}
+          />
+        </fieldset>
+      )}
 
-      <fieldset className="flex flex-col gap-2.5">
-        <legend className="sr-only">{t("reminder")}</legend>
-        <Switch label={t("reminder")} checked={draft.reminder} onCheckedChange={(reminder) => set({ reminder })} />
-        {draft.reminder ? (
-          <div className="flex flex-wrap items-center gap-3">
-            <Input
-              aria-label={t("reminderTime")}
-              type="time"
-              dir="ltr"
-              value={draft.reminderTime}
-              className="w-36"
-              onChange={(event) => set({ reminderTime: event.target.value })}
-            />
-            <Checkbox label={t("ifNotDone")} checked={draft.ifNotDone} onCheckedChange={(checked) => set({ ifNotDone: checked === true })} />
-          </div>
-        ) : null}
-      </fieldset>
+      {live ? null : (
+        <fieldset className="flex flex-col gap-2.5">
+          <legend className="sr-only">{t("reminder")}</legend>
+          <Switch label={t("reminder")} checked={draft.reminder} onCheckedChange={(reminder) => set({ reminder })} />
+          {draft.reminder ? (
+            <div className="flex flex-wrap items-center gap-3">
+              <Input
+                aria-label={t("reminderTime")}
+                type="time"
+                dir="ltr"
+                value={draft.reminderTime}
+                className="w-36"
+                onChange={(event) => set({ reminderTime: event.target.value })}
+              />
+              <Checkbox label={t("ifNotDone")} checked={draft.ifNotDone} onCheckedChange={(checked) => set({ ifNotDone: checked === true })} />
+            </div>
+          ) : null}
+        </fieldset>
+      )}
 
       <p role="alert" className="text-sm text-danger-text empty:hidden">
         {failed ? t("failed") : null}

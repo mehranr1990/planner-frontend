@@ -206,6 +206,8 @@
     "targetUnit": "واحد",
     "targetUnitPlaceholder": "صفحه",
     "targetHint": "اختیاری. ثبت کل مقدار، آن روز را علامت می‌زند.",
+    "targetHintLive": "اختیاری. واحد را با حروف لاتین بنویسید، مثل PAGES یا KM.",
+    "unitLatin": "واحد باید با حروف لاتین باشد (مثل PAGES، KM یا GLASS).",
     "time": "زمان دلخواه",
     "timeOfDay": "بخش روز",
     "preferredTime": "ساعت",
