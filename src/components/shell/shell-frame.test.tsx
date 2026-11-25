@@ -64,7 +64,7 @@ describe("desktop top bar", () => {
     // Personal "+" is Universal Quick Add (P18 H), a sheet over the route.
     expect(actions.getByRole("button", { name: "Quick add" })).toHaveAttribute("aria-haspopup", "dialog");
     expect(actions.queryByRole("button", { name: "Quick create" })).not.toBeInTheDocument();
-    expect(actions.getByRole("button", { name: "Notifications" })).toBeInTheDocument();
+    expect(actions.getByRole("button", { name: /^Notifications/ })).toBeInTheDocument();
     expect(actions.getByRole("button", { name: "Account menu" })).toBeInTheDocument();
     expect(screen.getByRole("navigation", { name: "Personal navigation" })).toBeInTheDocument();
   });
@@ -418,7 +418,7 @@ describe("mobile chrome", () => {
     const label = mobileHeader().querySelector("[data-slot=\"mobile-context\"]")!;
     expect(label).toHaveTextContent("Companies");
     await waitFor(() => expect(label).toHaveTextContent("Euroly"));
-    expect(header.getByRole("button", { name: "Notifications" })).toBeInTheDocument();
+    expect(header.getByRole("button", { name: /^Notifications/ })).toBeInTheDocument();
     expect(header.queryByRole("navigation", { name: "Contexts" })).not.toBeInTheDocument();
   });
 
@@ -569,7 +569,7 @@ describe("mobile chrome", () => {
     const header = within(mobileHeader());
     expect(header.getByRole("button", { name: "Account menu" })).toBeInTheDocument();
     expect(mobileHeader().querySelector('[data-slot="mobile-context"]')).toHaveTextContent("Personal");
-    expect(header.getByRole("button", { name: "Notifications" })).toBeInTheDocument();
+    expect(header.getByRole("button", { name: /^Notifications/ })).toBeInTheDocument();
     expect(header.queryByRole("navigation", { name: "Contexts" })).not.toBeInTheDocument();
     expect(header.queryByRole("button", { name: "Persian digits ۱۲۳" })).not.toBeInTheDocument();
   });

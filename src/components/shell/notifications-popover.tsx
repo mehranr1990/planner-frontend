@@ -29,6 +29,7 @@ import { useServiceError } from "@/features/personal-services/service-error";
 import { useServiceFormat } from "@/features/personal-services/use-service-format";
 import { addDaysToDay, instantAtTime } from "@/lib/dates/clock-time";
 import { cn } from "@/lib/cn";
+import { InvitationsNoticeSection, usePendingInvitations } from "./invitations-notice-section";
 import { useRouteScopedOpen, useShellScope } from "./use-shell-ui";
 
 /*
@@ -39,6 +40,8 @@ import { useRouteScopedOpen, useShellScope } from "./use-shell-ui";
  * Inside a company (/companies/[id]/…) the same popover also lists that
  * company's notifications for the viewer (server-created; read only, no
  * snooze / dismiss in the contract) and counts them in the badge.
+ * Pending Project / Team / Company invitations sit on top (answer in place)
+ * and count in the badge too.
  */
 
 export interface NotificationsPopoverProps {
@@ -62,7 +65,8 @@ export function NotificationsPopover({ triggerClassName }: NotificationsPopoverP
   const personalUnread = useUnreadCount().data ?? 0;
   const messaging = useMessagingNotices();
   const messagingUnread = messaging.data ? messaging.data.notices.filter((item) => !item.read).length + messaging.data.reminders.filter((item) => !item.read).length : 0;
-  const unread = personalUnread + companyUnread + messagingUnread;
+  const invitationCount = usePendingInvitations().length;
+  const unread = personalUnread + companyUnread + messagingUnread + invitationCount;
   const inbox = useNotificationInbox(filter, open);
   const action = useNotificationAction();
   const message = useServiceError();
@@ -102,6 +106,7 @@ export function NotificationsPopover({ triggerClassName }: NotificationsPopoverP
             ]}
           />
         </div>
+        <InvitationsNoticeSection onNavigate={() => setOpen(false)} />
         <MessagingSection query={messaging} unreadOnly={filter === "unread"} onNavigate={() => setOpen(false)} />
         {companyId ? <CompanySection companyId={companyId} query={company} unreadOnly={filter === "unread"} onNavigate={() => setOpen(false)} /> : null}
         {inbox.isPending ? (

@@ -46,6 +46,7 @@
     "label": "Notifications",
     "title": "Notifications",
     "emptyTitle": "You’re all caught up",
+    "invitations": "Invitations",
     "emptyDescription": "Reminders you set show up here when they’re due."
   },
   "account": {

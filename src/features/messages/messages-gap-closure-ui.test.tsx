@@ -13,6 +13,8 @@ import { routerPush, setMockPathname } from "@/test/setup";
 import { ConversationList } from "./conversation-list";
 import { MeetingPage } from "./meetings/meeting-page";
 import { MinutesScreen } from "./meetings/minutes-screen";
+// The bell's workspace-invitations section has its own test; keep this count to messaging.
+vi.mock("@/components/shell/invitations-notice-section", () => ({ usePendingInvitations: () => [], InvitationsNoticeSection: () => null }));
 
 /* Messages & Meetings gap closure UI: invitation inbox, bell section, meeting file download, minutes withdraw (mock repository + stubs). */
 
