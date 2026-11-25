@@ -189,3 +189,22 @@
     color: var(--text-primary);
   }
 }
+
+/*
+ * Browser autofill paints its own (blue/yellow) fill on the bare <input>,
+ * which is square inside the rounded control box. Keep the control's own
+ * surface and text colour instead: the inset shadow covers the UA fill, the
+ * input takes the box's radius, and the long transition stops the fill from
+ * fading in. Unlayered on purpose, so the input's shadow-none utility
+ * cannot undo it on focus.
+ */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+  border-radius: inherit;
+  -webkit-box-shadow: 0 0 0 1000px var(--surface-raised) inset;
+  box-shadow: 0 0 0 1000px var(--surface-raised) inset;
+  -webkit-text-fill-color: var(--text-primary);
+  caret-color: var(--text-primary);
+  transition: background-color 600000s 0s;
+}
