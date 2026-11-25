@@ -81,14 +81,31 @@ export interface ShellProviderProps {
   children: ReactNode;
 }
 
-export function ShellProvider({ workspaces, profile: sampleProfile, sample = false, children }: ShellProviderProps) {
-  // Live API: the signed-in account replaces the sample profile (name + email).
+export function ShellProvider({
+  workspaces: sampleWorkspaces,
+  profile: sampleProfile,
+  sample: sampleProp = false,
+  children,
+}: ShellProviderProps) {
+  // Live API: the signed-in account replaces the sample profile (name + email)
+  // and names the Personal workspace (the space itself carries no name; the
+  // name is the one given at sign-up, else the email).
   const account = useAccount();
-  const accountName = account?.user.name;
+  const accountName = account?.user.name?.trim();
   const accountEmail = account?.user.email;
+  const personalSpaceId = account?.space?.id;
+  const live = accountEmail !== undefined;
+  const sample = live ? false : sampleProp;
   const profile = useMemo<ShellProfile>(
-    () => (accountEmail !== undefined ? { name: accountName ?? "", detail: accountEmail } : sampleProfile),
-    [accountName, accountEmail, sampleProfile],
+    () => (live ? { name: accountName ?? "", detail: accountEmail } : sampleProfile),
+    [live, accountName, accountEmail, sampleProfile],
+  );
+  const workspaces = useMemo<ShellWorkspaces>(
+    () =>
+      live
+        ? { ...sampleWorkspaces, personal: [{ id: personalSpaceId ?? "personal", name: accountName || accountEmail }] }
+        : sampleWorkspaces,
+    [live, sampleWorkspaces, personalSpaceId, accountName, accountEmail],
   );
   const [selected, setSelected] = useState<Partial<Record<ContextId, string>>>({});
   const [paletteOpen, setPaletteOpen] = useState(false);
