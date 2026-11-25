@@ -175,6 +175,14 @@ describe("landmarks and sample data", () => {
     expect(within(menu).getByText("Sample data")).toBeInTheDocument();
   });
 
+  it("opens Settings from the account menu", async () => {
+    const user = userEvent.setup();
+    const { topBar } = renderFrame();
+    await user.click(within(topBar()).getByRole("button", { name: "Account menu" }));
+    await user.click(within(await screen.findByRole("menu")).getByRole("menuitem", { name: "Settings" }));
+    expect(routerPush).toHaveBeenCalledWith("/personal/settings");
+  });
+
   it("shows no sample label in the account menu for real data", async () => {
     // The schedule's tag follows the API mode instead (it reads today's blocks itself).
     const user = userEvent.setup();

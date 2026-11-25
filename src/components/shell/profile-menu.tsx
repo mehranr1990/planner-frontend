@@ -11,6 +11,7 @@ import {
   Settings,
   type LucideIcon,
 } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useTheme } from "next-themes";
 import { useRef, useState } from "react";
@@ -133,6 +134,7 @@ export function ProfileMenu({ align = "end", className }: ProfileMenuProps) {
   const { profile, sample } = useShell();
   const account = useAccount();
   const tAuth = useTranslations("Auth.account");
+  const router = useRouter();
   const signOut = useSignOut();
   const preferences = usePreferences();
   const { update, setLocale } = usePreferenceActions();
@@ -264,7 +266,7 @@ export function ProfileMenu({ align = "end", className }: ProfileMenuProps) {
           onChange={(calendar) => update({ calendar })}
         />
         <DropdownMenuSeparator />
-        <DropdownMenuItem icon={Settings} comingSoon>
+        <DropdownMenuItem icon={Settings} onSelect={() => router.push("/personal/settings")}>
           {t("settings")}
         </DropdownMenuItem>
         {account ? (
