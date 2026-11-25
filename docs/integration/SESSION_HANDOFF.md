@@ -470,3 +470,13 @@ Contract backend `55c1c9d` (1,314 ops). Decisions: DECISIONS_AND_BLOCKERS.md ›
 - Tests: `src/data/api/api-five-features.test.ts` (8) + touched suites pass; tsc 0; eslint touched 0; api:types:check pass; build pass.
 
 NEXT_ACTION: ops — apply migrations 088–093, deploy the backend image, set `INVITATION_ACCEPT_URL=https://<web>/invite` and SMTP; then one live pass over the five features.
+
+## Live feedback fixes on planexa.ir (2026-11-25) — pushed up to `7a46c69`; `05e2ec3` local
+
+Owner tested the deployed build (https://planexa.ir:8443, live API). Fixed: PWA icons / iOS meta / LAN dev origins; HTTPS voice hint; autofill field surface; root `/` → `/personal` (AuthGate → sign-in); schedule island on real `useBlocks(today)`; Personal workspace named after the account; habit sheet hides fields the API cannot keep + Latin unit check; account-menu Settings link; Select focus ring; create sheets replace to the new space and keep loading (company / team / project / social group); number inputs accept Persian / Arabic digits (`Input`, `latinDigitsOnChange`); company invite hides position / supervisor in live mode + cause-specific errors; pending Project / Team / Company invitations in the bell; Social as a calendar layer (timed projections in the grid, read-only, nominal hour; untimed stay in the list). Decisions: DECISIONS_AND_BLOCKERS.md (Habits sheet, Company invite sheet).
+- Local, not pushed: `05e2ec3` — invite errors for 409 / 429 / 5xx / offline + request id. Its 404 text says "company or department not found"; revisit once the 409 cause is known.
+- Open: company invite returns **409 Conflict** on `POST /companies/{id}/contexts/{scopeId}/invitations` (department context); response `code` not yet seen. Background `directory` / `staff-profiles` 404s per department are tolerated (`orNull`).
+- Backend request handed to the owner (2026-11-25): A ops (migrations, retention catalog, Shared activation, SMTP + INVITATION_ACCEPT_URL, BX-1), B invitations (in-app for existing accounts, honour moduleChannels, feed items, Social invitee list), C invite position / supervisor, D habit fields + free-text (Persian) unit label, E account timezone default. Voice: Firefox has no Web Speech recognition; server-side transcription would need a new backend endpoint (not requested yet).
+- Known unrelated failure: `api-team-schedule-repositories.test.ts` sprint "current" test is date-dependent (fails on 2026-11-25 with or without these changes).
+
+NEXT_ACTION: get the 409 response `code` for the company invite, then finalise / push `05e2ec3`; when the backend answers D, replace the Latin unit check with the free-text unit (or the agreed preset list).
