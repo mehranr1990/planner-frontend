@@ -1,11 +1,12 @@
-import type { Scope } from "@/data/domain";
+import type { BlockScope as Scope } from "@/features/my-day/domain/day-blocks";
 
 /*
- * Scope layers (P04 rules): Personal is always on; Projects, Teams and
- * Companies are read-only context that can be hidden, per person.
+ * Scope layers (P04 rules): Personal is always on; Projects, Teams,
+ * Companies and Social are read-only context that can be hidden, per person
+ * (Social = Going / Maybe activities, projected into the grid read-only).
  */
 
-export const LAYER_SCOPES: readonly Scope[] = ["personal", "project", "team", "company"];
+export const LAYER_SCOPES: readonly Scope[] = ["personal", "project", "team", "company", "social"];
 
 export const isEditableScope = (scope: Scope): boolean => scope === "personal";
 
@@ -22,7 +23,7 @@ export function visibleBlocks<T extends { scope: Scope }>(blocks: readonly T[], 
 }
 
 export function layerCounts(blocks: Iterable<{ scope: Scope }>): Record<Scope, number> {
-  const counts: Record<Scope, number> = { personal: 0, project: 0, team: 0, company: 0 };
+  const counts: Record<Scope, number> = { personal: 0, project: 0, team: 0, company: 0, social: 0 };
   for (const block of blocks) counts[block.scope] += 1;
   return counts;
 }

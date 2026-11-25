@@ -32,7 +32,8 @@
       "personal": "شخصی",
       "project": "پروژه‌ها",
       "team": "تیم‌ها",
-      "company": "شرکت‌ها"
+      "company": "شرکت‌ها",
+      "social": "اجتماعی"
     },
     "reschedule": "زمان‌بندی دوباره‌ی «{title}»",
     "resizing": "{range}، {duration}",

@@ -1,6 +1,6 @@
-import type { EnergyLevel, Scope, TimeBlockKind } from "@/data/domain";
+import type { EnergyLevel, TimeBlockKind } from "@/data/domain";
 import { formatClockTime } from "@/lib/dates/clock-time";
-import type { DayBlock, MinuteSpan } from "../domain/day-blocks";
+import type { BlockScope, DayBlock, MinuteSpan } from "../domain/day-blocks";
 import { overlapsWith } from "../domain/overlap";
 import { nextFreeSlot, resolvePlacement, type Placement } from "../domain/placement";
 import {
@@ -21,7 +21,7 @@ import {
 export interface TimelineBlockDragData extends BlockDragData {
   day: string;
   title: string;
-  scope: Scope;
+  scope: BlockScope;
   kind: TimeBlockKind;
   energy: EnergyLevel | null;
   startMinutes: number;

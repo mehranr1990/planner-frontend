@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl";
 import { Button, IconButton } from "@/components/ui/button";
 import { Segmented } from "@/components/ui/segmented";
 import { ToggleChip } from "@/components/ui/chip";
-import type { Scope } from "@/data/domain";
+import type { BlockScope as Scope } from "@/features/my-day/domain/day-blocks";
 import { useOpenSheet } from "@/features/sheets/sheet-params";
 import type { CalendarSystem } from "@/lib/dates/format";
 import { cn } from "@/lib/cn";

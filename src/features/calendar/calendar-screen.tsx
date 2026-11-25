@@ -61,7 +61,7 @@ function CalendarOverride({ children }: { children: ReactNode }) {
 }
 
 function CalendarLayout() {
-  const { view, anchor, calendar } = useCalendar();
+  const { view, anchor, calendar, hidden } = useCalendar();
   const { week } = usePlannerSettings();
   const days = useMemo(() => rangeDays(view, anchor, calendar, week), [view, anchor, calendar, week]);
   const data = useCalendarData(days);
@@ -86,7 +86,7 @@ function CalendarLayout() {
             )}
             <UnscheduledTray className="lg:hidden" />
             <CalendarMeetings source={PERSONAL_SOURCE} days={days} />
-            <SocialCalendarProjections days={days} />
+            {hidden.has("social") ? null : <SocialCalendarProjections days={days} untimedOnly />}
           </div>
           <div data-slot="calendar-side" className="hidden min-w-0 flex-col gap-4.5 lg:flex">
             <SelectedEventPanel data={data} />

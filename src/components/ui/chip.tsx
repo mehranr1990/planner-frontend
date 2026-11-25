@@ -8,7 +8,7 @@ import type { ComponentProps, ReactNode } from "react";
 import { cn } from "@/lib/cn";
 import { Icon } from "./icon";
 
-export type ChipScope = "personal" | "project" | "team" | "company";
+export type ChipScope = "personal" | "project" | "team" | "company" | "social";
 
 // Full class strings (never built at runtime) so Tailwind can see them.
 const SCOPE_CLASSES: Record<ChipScope, { chip: string; on: string; dot: string }> = {
@@ -31,6 +31,11 @@ const SCOPE_CLASSES: Record<ChipScope, { chip: string; on: string; dot: string }
     chip: "bg-company-soft text-company-deep",
     on: "data-[state=on]:bg-company-soft data-[state=on]:text-company-deep",
     dot: "bg-company-dot",
+  },
+  social: {
+    chip: "bg-social-soft text-social-deep",
+    on: "data-[state=on]:bg-social-soft data-[state=on]:text-social-deep",
+    dot: "bg-social-dot",
   },
 };
 

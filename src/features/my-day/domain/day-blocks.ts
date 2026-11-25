@@ -1,6 +1,9 @@
 import type { EnergyLevel, Scope, Task, TaskPriority, TimeBlock, TimeBlockKind } from "@/data/domain";
 import { MINUTES_PER_DAY, minutesFromDayStart } from "@/lib/dates/clock-time";
 
+/** A block's colour scope on the timeline: a domain scope, or Social (read-only calendar projections; never a task scope). */
+export type BlockScope = Scope | "social";
+
 /*
  * Every domain module below works on blocks projected onto ONE day in
  * minutes-of-day, never on ISO instants: that is what the timeline draws and
@@ -10,7 +13,7 @@ import { MINUTES_PER_DAY, minutesFromDayStart } from "@/lib/dates/clock-time";
 export interface DayBlock {
   id: string;
   title: string;
-  scope: Scope;
+  scope: BlockScope;
   kind: TimeBlockKind;
   taskId?: string;
   done: boolean;

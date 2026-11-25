@@ -9,11 +9,11 @@ import { ErrorState } from "@/components/feedback/state-views";
 import { Button } from "@/components/ui/button";
 import { Icon } from "@/components/ui/icon";
 import { Skeleton } from "@/components/ui/skeleton";
-import type { Scope, Task } from "@/data/domain";
+import type { Task } from "@/data/domain";
 import { Progress } from "@/design-system/feedback/progress";
 import { SignatureCard, SignatureCardAction, SignatureCardHeader } from "@/design-system/surfaces/signature-card";
 import { usePlannerSettings } from "@/features/planner-settings/use-planner-settings";
-import type { DayBlock } from "../domain/day-blocks";
+import type { BlockScope, DayBlock } from "../domain/day-blocks";
 import type { NowSummary } from "../domain/now";
 import { useMyDay } from "../my-day-context";
 import { useMyDayFormat, type MyDayFormat } from "../ui/use-my-day-format";
@@ -27,7 +27,7 @@ import { useNowBlock } from "./use-now-block";
  * next" on the plain surface. It only exists on the planner's today.
  */
 
-function ScopeName({ scope }: { scope: Scope }) {
+function ScopeName({ scope }: { scope: BlockScope }) {
   const t = useTranslations("Navigation.contexts");
   return <>{t(`${scope}.label`)}</>;
 }

@@ -3,7 +3,7 @@
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { createContext, useCallback, useContext, useMemo, useState, useSyncExternalStore, type ReactNode } from "react";
 import { getPlannerToday } from "@/data/clock";
-import type { Scope } from "@/data/domain";
+import type { BlockScope as Scope } from "@/features/my-day/domain/day-blocks";
 import { usePreferences } from "@/features/preferences/use-preferences";
 import type { CalendarSystem } from "@/lib/dates/format";
 import {

@@ -58,8 +58,10 @@ describe("payloads", () => {
   });
 
   it("done blocks are not draggable", () => {
-    expect(isBlockDraggable({ done: true })).toBe(false);
-    expect(isBlockDraggable({ done: false })).toBe(true);
+    expect(isBlockDraggable({ done: true, scope: "personal" })).toBe(false);
+    expect(isBlockDraggable({ done: false, scope: "personal" })).toBe(true);
+    // Social activities are read-only projections.
+    expect(isBlockDraggable({ done: false, scope: "social" })).toBe(false);
   });
 });
 

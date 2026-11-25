@@ -124,7 +124,7 @@ describe("layers", () => {
     expect(toggleLayer(hidden, "team").size).toBe(0);
     const blocks = [block("p", 0), block("t", 60, "team")];
     expect(visibleBlocks(blocks, hidden).map((item) => item.id)).toEqual(["p"]);
-    expect(layerCounts(blocks)).toEqual({ personal: 1, project: 0, team: 1, company: 0 });
+    expect(layerCounts(blocks)).toEqual({ personal: 1, project: 0, team: 1, company: 0, social: 0 });
   });
 
   it("parses stored layers defensively", () => {

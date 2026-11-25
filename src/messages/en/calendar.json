@@ -26,7 +26,8 @@
       "personal": "Personal",
       "project": "Projects",
       "team": "Teams",
-      "company": "Companies"
+      "company": "Companies",
+      "social": "Social"
     },
     "managed": "Managed in {module}"
   },
@@ -66,6 +67,7 @@
     "close": "Close",
     "reschedule": "Reschedule",
     "open": "Open detail",
+    "openActivity": "Open activity",
     "startFocus": "Start focus",
     "markDone": "Mark done",
     "scope": "Workspace",

@@ -65,8 +65,9 @@ export function isDragData(value: unknown): value is DragData {
 }
 
 /** Done blocks are not draggable; every other block is. */
-export function isBlockDraggable(block: Pick<DayBlock, "done">): boolean {
-  return !block.done;
+export function isBlockDraggable(block: Pick<DayBlock, "done" | "scope">): boolean {
+  // Social activities are read-only projections (the group owns them).
+  return !block.done && block.scope !== "social";
 }
 
 export type ParsedDropId = { type: "day"; day: string } | { type: "unscheduled" };

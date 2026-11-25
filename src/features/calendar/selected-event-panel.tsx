@@ -13,8 +13,10 @@ import { focusHref } from "@/features/my-day/rail/focus-entry";
 import { useMarkDone } from "@/features/my-day/rail/use-mark-done";
 import { ClockText } from "@/features/my-day/timeline/clock-text";
 import { taskDetailHref } from "@/features/personal/routes";
+import { socialHref } from "@/features/social/paths";
 import { cn } from "@/lib/cn";
 import { isEditableScope } from "./domain/layers";
+import { socialActivityIdOf } from "./domain/social-blocks";
 import type { CalendarData } from "./use-calendar-data";
 import { useCalendarFormat } from "./use-calendar-format";
 
@@ -30,6 +32,7 @@ const TINT: Record<DayBlock["scope"], string> = {
   project: "bg-project-soft",
   team: "bg-team-soft",
   company: "bg-company-soft",
+  social: "bg-social-soft",
 };
 
 function findBlock(byDay: CalendarData["byDay"], id: string | null): { day: string; block: DayBlock } | null {
@@ -66,6 +69,8 @@ export function SelectedEventPanel({ data }: { data: CalendarData }) {
   const editable = isEditableScope(block.scope);
   const taskId = block.taskId;
   const scopeName = t(`layers.names.${block.scope}`);
+  // Social: a Going / Maybe activity projected read-only; the API gives a start, no end.
+  const activityId = block.scope === "social" ? socialActivityIdOf(block.id) : null;
 
   const close = <SignatureCardAction label={t("selected.close")} icon={X} variant="neutral" onClick={() => selectBlock(null)} />;
   const action =
@@ -90,7 +95,7 @@ export function SelectedEventPanel({ data }: { data: CalendarData }) {
           <bdi dir="auto">{block.title}</bdi>
         </h2>
         <p className="text-sm font-semibold text-fg-secondary">
-          {format.kicker(day)} · <ClockText>{format.clockRange(block.startMinutes, block.endMinutes)}</ClockText>
+          {format.kicker(day)} · <ClockText>{activityId ? format.clock(block.startMinutes) : format.clockRange(block.startMinutes, block.endMinutes)}</ClockText>
         </p>
       </SignatureCardHeader>
       <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1.5 rounded-[18px] bg-surface/70 p-3 text-sm">
@@ -98,8 +103,12 @@ export function SelectedEventPanel({ data }: { data: CalendarData }) {
         <dd className="text-end font-semibold">{scopeName}</dd>
         <dt className="text-fg-muted">{t("selected.type")}</dt>
         <dd className="text-end font-semibold">{t(`selected.kinds.${block.kind}`)}</dd>
-        <dt className="text-fg-muted">{t("selected.duration")}</dt>
-        <dd className="text-end font-semibold">{format.duration(block.durationMinutes)}</dd>
+        {activityId ? null : (
+          <>
+            <dt className="text-fg-muted">{t("selected.duration")}</dt>
+            <dd className="text-end font-semibold">{format.duration(block.durationMinutes)}</dd>
+          </>
+        )}
       </dl>
       {editable ? (
         <div className="flex flex-wrap gap-2">
@@ -113,6 +122,13 @@ export function SelectedEventPanel({ data }: { data: CalendarData }) {
               {t("selected.markDone")}
             </Button>
           ) : null}
+        </div>
+      ) : activityId ? (
+        <div className="flex flex-col gap-2">
+          <p className="text-sm font-semibold text-fg-muted">{t("layers.managed", { module: scopeName })}</p>
+          <Button asChild variant="secondary">
+            <Link href={socialHref.activity(activityId)}>{t("selected.openActivity")}</Link>
+          </Button>
         </div>
       ) : (
         <p className="text-sm font-semibold text-fg-muted">{t("layers.managed", { module: scopeName })}</p>

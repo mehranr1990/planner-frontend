@@ -1,4 +1,5 @@
-import type { Scope, TimeBlockKind } from "@/data/domain";
+import type { TimeBlockKind } from "@/data/domain";
+import type { BlockScope } from "../domain/day-blocks";
 import { cn } from "@/lib/cn";
 
 /*
@@ -6,7 +7,7 @@ import { cn } from "@/lib/cn";
  * scope, neutrals, danger, volt), so light and dark both follow. The class
  * strings are written out in full so Tailwind can see them.
  *
- *   tint     scope soft surface + deep ink            (personal, project, team, company)
+ *   tint     scope soft surface + deep ink            (personal, project, team, company, social)
  *   break    neutral grey, no scope colour             (lunch, routines that are not work)
  *   done     135° hatch, muted ink, struck-through title
  *   current  white surface, 2px deep inset outline, soft deep shadow, "Now" chip
@@ -16,7 +17,7 @@ import { cn } from "@/lib/cn";
  * volt mark and belongs to the now line, not to a block.
  */
 
-export type BlockTone = Scope | "break";
+export type BlockTone = BlockScope | "break";
 
 interface ToneClasses {
   surface: string;
@@ -62,6 +63,14 @@ const TONES: Record<BlockTone, ToneClasses> = {
     chip: "bg-company-deep text-on-accent",
     current: "ring-2 ring-inset ring-company-deep shadow-[0_6px_18px_color-mix(in_oklab,var(--company-deep)_22%,transparent)] dark:shadow-none",
   },
+  social: {
+    surface: "bg-social-soft",
+    ink: "text-social-deep",
+    meta: "text-social-deep",
+    dot: "bg-social-dot",
+    chip: "bg-social-deep text-on-accent",
+    current: "ring-2 ring-inset ring-social-deep shadow-[0_6px_18px_color-mix(in_oklab,var(--social-deep)_22%,transparent)] dark:shadow-none",
+  },
   break: {
     surface: "bg-subtle",
     ink: "text-fg-secondary",
@@ -80,12 +89,12 @@ const OVERLAP_SURFACE = "bg-danger-soft";
 const OVERLAP_RING = "ring-[1.5px] ring-inset ring-danger";
 
 /** Breaks are neutral whatever their scope; everything else follows its scope. */
-export function blockTone(scope: Scope, kind: TimeBlockKind): BlockTone {
+export function blockTone(scope: BlockScope, kind: TimeBlockKind): BlockTone {
   return kind === "break" ? "break" : scope;
 }
 
 export interface BlockStyleInput {
-  scope: Scope;
+  scope: BlockScope;
   kind: TimeBlockKind;
   done?: boolean;
   current?: boolean;

@@ -32,7 +32,8 @@
       "personal": "Personal",
       "project": "Projects",
       "team": "Teams",
-      "company": "Companies"
+      "company": "Companies",
+      "social": "Social"
     },
     "reschedule": "Reschedule {title}",
     "resizing": "{range}, {duration}",
