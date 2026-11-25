@@ -1,6 +1,7 @@
 "use client";
 
 import { isSharedNotEnabled } from "@/api/errors";
+import { isLiveApi } from "@/api/runtime";
 import { Shield } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -140,6 +141,9 @@ export function CompanyInviteSheet({ companyId, onDone }: { companyId: string; o
   const [position, setPosition] = useState("");
   const [supervisorId, setSupervisorId] = useState("none");
   const [touched, setTouched] = useState(false);
+  // Live API: position and supervisor live on the staff profile, which exists only
+  // after the invitee joins; the invitation itself cannot carry them.
+  const live = isLiveApi();
   const emailError = touched && !/^\S+@\S+\.\S+$/.test(email) ? t("emailInvalid") : null;
   const deptError = touched && !departmentId ? t("departmentRequired") : null;
   return (
@@ -150,7 +154,13 @@ export function CompanyInviteSheet({ companyId, onDone }: { companyId: string; o
         setTouched(true);
         if (!/^\S+@\S+\.\S+$/.test(email) || !departmentId) return;
         invite.mutate(
-          { email, role, departmentId, position, supervisorId: supervisorId === "none" ? null : supervisorId },
+          {
+            email,
+            role,
+            departmentId,
+            position: live ? "" : position,
+            supervisorId: live || supervisorId === "none" ? null : supervisorId,
+          },
           {
             onSuccess: () => {
               // Same message whether or not an account exists.
@@ -188,26 +198,31 @@ export function CompanyInviteSheet({ companyId, onDone }: { companyId: string; o
           </Select>
           {deptError ? <FieldError>{deptError}</FieldError> : null}
         </Field>
-        <Field>
-          <FieldLabel>{t("position")}</FieldLabel>
-          <Input dir="auto" value={position} onChange={(event) => setPosition(event.target.value)} />
-        </Field>
-        <Field>
-          <FieldLabel>{t("supervisor")}</FieldLabel>
-          <Select value={supervisorId} onValueChange={setSupervisorId}>
-            <SelectItem value="none">{t("noSupervisor")}</SelectItem>
-            {(staff.data ?? [])
-              .filter((person) => !person.limited && (departmentId === "" || person.departmentIds.includes(departmentId)))
-              .map((person) => (
-                <SelectItem key={person.id} value={person.id}>
-                  {person.name}
-                </SelectItem>
-              ))}
-          </Select>
-        </Field>
+        {live ? null : (
+          <>
+            <Field>
+              <FieldLabel>{t("position")}</FieldLabel>
+              <Input dir="auto" value={position} onChange={(event) => setPosition(event.target.value)} />
+            </Field>
+            <Field>
+              <FieldLabel>{t("supervisor")}</FieldLabel>
+              <Select value={supervisorId} onValueChange={setSupervisorId}>
+                <SelectItem value="none">{t("noSupervisor")}</SelectItem>
+                {(staff.data ?? [])
+                  .filter((person) => !person.limited && (departmentId === "" || person.departmentIds.includes(departmentId)))
+                  .map((person) => (
+                    <SelectItem key={person.id} value={person.id}>
+                      {person.name}
+                    </SelectItem>
+                  ))}
+              </Select>
+            </Field>
+          </>
+        )}
       </div>
+      {live ? <p className="text-xs text-fg-secondary">{t("profileAfterJoin")}</p> : null}
       <p className="text-xs text-fg-secondary">{t("verifiedOnly")}</p>
-      {invite.isError ? <InlineAlert tone="danger" title={t("failed")} /> : null}
+      {invite.isError ? <InlineAlert tone="danger" title={t(inviteFailure(invite.error))} /> : null}
       <Actions onCancel={onDone} submit={t("submit")} pending={invite.isPending} />
     </form>
   );
@@ -295,6 +310,16 @@ function createFailure(error: unknown): "failed" | "failedNotEnabled" | "failedP
   if (error.code === "forbidden") return "failedForbidden";
   if (error.code === "conflict") return "failedConflict";
   if (error.code === "partial") return "failedPartial";
+  if (error.code === "invalid") return "failedInvalid";
+  return "failed";
+}
+
+/** Why an invitation was refused, so the message names the real cause instead of always blaming the email. */
+function inviteFailure(error: unknown): "failed" | "failedNotEnabled" | "failedForbidden" | "failedConflict" | "failedInvalid" {
+  if (isSharedNotEnabled(error)) return "failedNotEnabled";
+  if (!(error instanceof RepositoryError)) return "failed";
+  if (error.code === "forbidden") return "failedForbidden";
+  if (error.code === "conflict") return "failedConflict";
   if (error.code === "invalid") return "failedInvalid";
   return "failed";
 }

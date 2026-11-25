@@ -491,7 +491,12 @@
       "submit": "Send invitation",
       "sent": "Invitation sent",
       "sentBody": "If the address can join, they’ll get the invitation.",
-      "failed": "Couldn’t send the invitation. Check the email."
+      "failed": "Couldn’t send the invitation. Try again.",
+      "failedNotEnabled": "Company invitations aren’t enabled on this server yet. Contact the operator.",
+      "failedForbidden": "You don’t have permission to invite people to this company or department.",
+      "failedConflict": "This person already has a pending invitation or is already a member.",
+      "failedInvalid": "The server didn’t accept this invitation. Check the email and the department.",
+      "profileAfterJoin": "Position and supervisor are set on their staff profile after they join."
     },
     "department": {
       "title": "New department",
