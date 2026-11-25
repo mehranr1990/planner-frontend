@@ -145,6 +145,8 @@ export function SelectItem({ dotClassName, icon, className, children, ...props }
       className={cn(
         "relative flex min-h-11 cursor-default select-none items-center gap-2.5 rounded-row px-3 text-body text-fg",
         "data-highlighted:bg-subtle",
+        // The list viewport clips overflow: draw the focus ring inside the option, not around it.
+        "focus-visible:shadow-none focus-visible:outline-offset-[-3px]",
         "data-[state=checked]:bg-scope-soft data-[state=checked]:font-bold",
         "data-disabled:pointer-events-none data-disabled:opacity-45",
         className,
