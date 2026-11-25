@@ -1,6 +1,6 @@
 "use client";
 
-import { isSharedNotEnabled } from "@/api/errors";
+import { ApiHttpError, isSharedNotEnabled } from "@/api/errors";
 import { isLiveApi } from "@/api/runtime";
 import { Shield } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -222,7 +222,13 @@ export function CompanyInviteSheet({ companyId, onDone }: { companyId: string; o
       </div>
       {live ? <p className="text-xs text-fg-secondary">{t("profileAfterJoin")}</p> : null}
       <p className="text-xs text-fg-secondary">{t("verifiedOnly")}</p>
-      {invite.isError ? <InlineAlert tone="danger" title={t(inviteFailure(invite.error))} /> : null}
+      {invite.isError ? (
+        <InlineAlert
+          tone="danger"
+          title={t(inviteFailure(invite.error))}
+          description={invite.error instanceof ApiHttpError && invite.error.requestId ? t("requestId", { id: invite.error.requestId }) : undefined}
+        />
+      ) : null}
       <Actions onCancel={onDone} submit={t("submit")} pending={invite.isPending} />
     </form>
   );
@@ -315,9 +321,20 @@ function createFailure(error: unknown): "failed" | "failedNotEnabled" | "failedP
 }
 
 /** Why an invitation was refused, so the message names the real cause instead of always blaming the email. */
-function inviteFailure(error: unknown): "failed" | "failedNotEnabled" | "failedForbidden" | "failedConflict" | "failedInvalid" {
+type InviteFailure = "failed" | "failedNotEnabled" | "failedForbidden" | "failedConflict" | "failedInvalid" | "failedNotFound" | "failedRateLimited" | "failedServer" | "failedOffline";
+
+function inviteFailure(error: unknown): InviteFailure {
   if (isSharedNotEnabled(error)) return "failedNotEnabled";
+  // Statuses the repository passes through unmapped.
+  if (error instanceof ApiHttpError) {
+    if (error.status === 409) return "failedConflict";
+    if (error.status === 429) return "failedRateLimited";
+    if (error.status >= 500) return "failedServer";
+    return "failed";
+  }
+  if (error instanceof TypeError) return "failedOffline";
   if (!(error instanceof RepositoryError)) return "failed";
+  if (error.code === "not-found") return "failedNotFound";
   if (error.code === "forbidden") return "failedForbidden";
   if (error.code === "conflict") return "failedConflict";
   if (error.code === "invalid") return "failedInvalid";

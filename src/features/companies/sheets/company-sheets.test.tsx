@@ -1,3 +1,4 @@
+import { ApiHttpError } from "@/api/errors";
 import { screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
@@ -74,6 +75,21 @@ describe("CO-90 · company sheets", () => {
     } finally {
       vi.unstubAllEnvs();
     }
+  });
+
+  it("company-invite: a server error says so and shows the request id for the operator", async () => {
+    Element.prototype.scrollIntoView ??= () => {};
+    const user = userEvent.setup();
+    const repository = createMockCompanies();
+    vi.spyOn(repository, "invite").mockRejectedValueOnce(new ApiHttpError(500, undefined, "req-123"));
+    renderHost("/companies/euroly/people", "sheet=company-invite", repository);
+    const sheet = await screen.findByRole("dialog", { name: "Invite to Euroly" });
+    await user.type(within(sheet).getByRole("textbox", { name: "Work email" }), "sara@example.com");
+    await user.click(within(sheet).getByRole("combobox", { name: "Department" }));
+    await user.click((await screen.findAllByRole("option"))[0]!);
+    await user.click(within(sheet).getByRole("button", { name: "Send invitation" }));
+    expect(await within(sheet).findByText(/The server couldn’t send the invitation/)).toBeInTheDocument();
+    expect(within(sheet).getByText("Request id for the operator: req-123")).toBeInTheDocument();
   });
 
   it("department-new: shows the inherited policies summary line", async () => {

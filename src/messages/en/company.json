@@ -496,6 +496,11 @@
       "failedForbidden": "You don’t have permission to invite people to this company or department.",
       "failedConflict": "This person already has a pending invitation or is already a member.",
       "failedInvalid": "The server didn’t accept this invitation. Check the email and the department.",
+      "failedNotFound": "This company or department wasn’t found on the server. Reload and try again.",
+      "failedRateLimited": "Too many invitations in a short time. Wait a moment and try again.",
+      "failedServer": "The server couldn’t send the invitation (server error). Ask the operator to check the server log — often email (SMTP) isn’t configured.",
+      "failedOffline": "No connection to the server. Check your internet and try again.",
+      "requestId": "Request id for the operator: {id}",
       "profileAfterJoin": "Position and supervisor are set on their staff profile after they join."
     },
     "department": {
