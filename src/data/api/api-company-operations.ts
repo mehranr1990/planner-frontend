@@ -531,7 +531,7 @@ export function createCompanyOperations(api: Client, deps: OperationsDeps): Part
         if (!memberRole) invalid("role");
         const scope = await scopeOf(id, departmentId);
         const roster = await deps.members(id, scope.scopeId);
-        const actor = actorOf.get(personId);
+        const actor = actorOf.get(personId) ?? (await deps.members(id, (await scopes(id))[0]!.scopeId)).find((entry) => entry.id === personId)?.actorId;
         const seat = roster.find((entry) => entry.id === personId || (actor !== undefined && entry.actorId === actor));
         if (!seat) throw new RepositoryError("not-found", "No seat in that context");
         if (seat.memberRole === memberRole) return;

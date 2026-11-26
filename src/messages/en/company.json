@@ -215,7 +215,13 @@
       "noManager": "No manager",
       "cancel": "Cancel",
       "save": "Save",
-      "saved": "Department saved"
+      "saved": "Department saved",
+      "managerHint": "Only people in this department can be its manager.",
+      "managerNobody": "Nobody is in this department yet. Invite someone to it (People › Invite, choose this department and the Manager role).",
+      "failedNotSeated": "That person isn’t in this department. Invite them to this department with the Manager role first.",
+      "failedForbidden": "You can’t change this department’s manager.",
+      "failedConflict": "This department or its members changed meanwhile. Reload and try again.",
+      "failed": "Couldn’t save the department. Try again."
     },
     "policies": {
       "title": "Policies here",

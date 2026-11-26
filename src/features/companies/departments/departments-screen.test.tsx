@@ -1,6 +1,7 @@
 import { screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
+import { RepositoryError } from "@/data/repositories";
 import { resetToasts } from "@/components/ui/toast";
 import { renderCompanyScreen } from "../test-utils";
 import { DepartmentsScreen } from "./departments-screen";
@@ -43,5 +44,19 @@ describe("CO-02 · Departments", () => {
     const card = await screen.findByRole("region", { name: "Engineering" });
     expect(within(card).getByText("Outside your department")).toBeInTheDocument();
     expect(within(card).getByRole("button", { name: "Copy link" })).toBeInTheDocument();
+  });
+
+  it("edit: a manager the server cannot seat is explained (no silent failure); policies refused → panel hidden", async () => {
+    const user = userEvent.setup();
+    const { repository } = renderCompanyScreen(<DepartmentsScreen />, { path: "/companies/euroly/departments" });
+    vi.spyOn(repository, "updateDepartment").mockRejectedValueOnce(new RepositoryError("not-found", "No seat in that context"));
+    vi.spyOn(repository, "effectivePolicies").mockRejectedValue(new RepositoryError("unsupported", "not served"));
+    const card = await screen.findByRole("region", { name: "Engineering" });
+    await user.click(within(card).getByRole("button", { name: "Edit department" }));
+    const dialog = await screen.findByRole("dialog", { name: "Edit Engineering" });
+    expect(dialog).toHaveTextContent("Only people in this department can be its manager.");
+    await user.click(within(dialog).getByRole("button", { name: "Save" }));
+    expect(await within(dialog).findByText(/isn’t in this department. Invite them to this department with the Manager role first/)).toBeInTheDocument();
+    await waitFor(() => expect(screen.queryByRole("region", { name: "Policies here" })).not.toBeInTheDocument());
   });
 });

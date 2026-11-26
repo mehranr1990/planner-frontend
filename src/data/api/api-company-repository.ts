@@ -270,28 +270,34 @@ export function createApiCompanyRepository(client: ApiClient): CompanyRepository
       return answer.company;
     });
 
-  const departmentOf = async (id: string, department: ApiDepartment): Promise<Department> => {
-    const people = await members(id, department.scopeId).then(
-      (rows) => rows.filter((member) => member.state === "ACTIVE").length,
-      (error: unknown) => {
-        // A context the caller cannot read shows no count rather than an invented one.
-        if (isHidden(error)) return 0;
-        throw error;
-      },
-    );
+  const departmentOf = async (id: string, department: ApiDepartment, root?: ApiMember[]): Promise<Department> => {
+    const rows = await members(id, department.scopeId).catch((error: unknown) => {
+      // A context the caller cannot read shows no count rather than an invented one.
+      if (isHidden(error)) return [] as ApiMember[];
+      throw error;
+    });
+    const people = rows.filter((member) => member.state === "ACTIVE").length;
+    // The API's department manager is the ACTIVE Department Manager seat; it is named by the company seat (the People id).
+    const manager = rows.find((member) => member.state === "ACTIVE" && member.memberRole === "DEPT_MANAGER") ?? null;
+    const managerSeat = manager ? (root?.find((member) => member.actorId === manager.actorId) ?? manager) : null;
     return {
       id: department.id,
       name: department.title,
       parentId: department.kind === "UNIT" ? department.departmentId : null,
-      managerId: null,
-      managerName: null,
+      managerId: managerSeat?.id ?? null,
+      managerName: manager ? (manager.displayName ?? managerSeat?.displayName ?? "") : null,
       people,
       teams: null,
       budget: null,
       kind: department.kind === "UNIT" ? "unit" : "department",
     };
   };
-  const departments = (id: string) => mapErrors(async () => Promise.all((await structure(id)).map((department) => departmentOf(id, department))));
+  const rootRoster = async (id: string) => members(id, (await read(id)).company.scopeId).catch(() => [] as ApiMember[]);
+  const departments = (id: string) =>
+    mapErrors(async () => {
+      const [all, root] = await Promise.all([structure(id), rootRoster(id)]);
+      return Promise.all(all.map((department) => departmentOf(id, department, root)));
+    });
 
   const finance = createCompanyFinance(
     api,
@@ -412,9 +418,19 @@ export function createApiCompanyRepository(client: ApiClient): CompanyRepository
         return departmentOf(id, data);
       }),
 
+    // Rename (department / unit PATCH, If-Match) and the manager = the person's Department Manager seat there
+    // (seat role PATCH); clearing it makes the previous manager a Member. No seat there → "not-found".
     updateDepartment: (id, departmentId, patch) =>
       mapErrors(async () => {
-        if (patch.managerId !== null) throw new RepositoryError("unsupported", "Companies API: departments have no manager");
+        const root = await rootRoster(id);
+        const before = (await structure(id)).find((department) => department.id === departmentId);
+        if (!before) throw new RepositoryError("not-found", "Not found");
+        const previous = (await departmentOf(id, before, root)).managerId;
+        if (patch.managerId !== previous) {
+          if (previous) await supported.setRole!(id, previous, departmentId, "member");
+          if (patch.managerId) await supported.setRole!(id, patch.managerId, departmentId, "manager");
+        }
+        if (patch.name.trim() === before.title) return departmentOf(id, before, root);
         const readOne = async () => {
           const entry = (await structure(id)).find((department) => department.id === departmentId);
           if (!entry) throw new RepositoryError("not-found", "Not found");
@@ -430,7 +446,7 @@ export function createApiCompanyRepository(client: ApiClient): CompanyRepository
                 body: { title: patch.name.trim() },
               });
         const { data } = await conflictAware(() => retryOnConflict(send, async () => (current = await readOne())));
-        return departmentOf(id, data);
+        return departmentOf(id, data, root);
       }),
 
     ...createCompanyModules(api, { structure, members, me, read: async (id) => (await read(id)).company }),

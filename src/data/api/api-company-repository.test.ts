@@ -35,6 +35,22 @@ function companyApi(extra: (call: FakeCall, parts: string[]) => Response | null 
 }
 
 describe("live Companies repository", () => {
+  it("department manager = the person's Department Manager seat there (seat PATCH); no seat → not-found, nothing sent", async () => {
+    const seats = { "s-d1": [{ ...member("d1-m2", "Sara"), scopeId: "s-d1", actorId: "a-m2" }] };
+    const api = companyApi((call, parts) => {
+      if (parts[2] === "contexts" && parts[4] === "members" && call.method === "GET" && parts[3] === "s-d1") return json({ items: seats["s-d1"], nextCursor: null });
+      if (call.method === "PATCH" && parts[4] === "members") return json({ ...seats["s-d1"][0], memberRole: "DEPT_MANAGER", revision: 2 });
+      return null;
+    });
+    const repo = createApiCompanyRepository(api.client);
+    await repo.updateDepartment(C, "d1", { name: "D1", managerId: "m2" });
+    const patch = api.calls.find((call) => call.method === "PATCH")!;
+    expect(patch).toMatchObject({ path: `/companies/${C}/contexts/s-d1/members/d1-m2`, ifMatch: '"1"', body: { memberRole: "DEPT_MANAGER", state: "ACTIVE" } });
+    const before = api.calls.filter((call) => call.method !== "GET").length;
+    await expect(repo.updateDepartment(C, "d1", { name: "D1", managerId: "m1" })).rejects.toMatchObject({ code: "not-found" });
+    expect(api.calls.filter((call) => call.method !== "GET")).toHaveLength(before);
+  });
+
   it("directory and access gate from the API: role, my departments, people; no invented currency or legal name", async () => {
     const api = companyApi();
     const repo = createApiCompanyRepository(api.client);

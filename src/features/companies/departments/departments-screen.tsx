@@ -9,7 +9,7 @@ import { RepositoryError } from "@/data/repositories";
 import { InlineAlert } from "@/components/feedback/inline-alert";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogFooter } from "@/components/ui/dialog";
-import { Field, FieldError, FieldLabel } from "@/components/ui/field";
+import { Field, FieldDescription, FieldError, FieldLabel } from "@/components/ui/field";
 import { Icon } from "@/components/ui/icon";
 import { Input } from "@/components/ui/input";
 import { Segmented } from "@/components/ui/segmented";
@@ -531,6 +531,9 @@ function EditDepartmentDialog({ department, onClose }: { department: Department;
     repo.updateDepartment(id, department.id, vars),
   );
   const invalid = !name.trim();
+  // A manager is someone with a seat in this department (the server makes that seat Department Manager).
+  const seated = (staff.data ?? []).filter((person) => !person.limited && person.status !== "left" && (person.departmentIds.includes(department.id) || person.id === department.managerId));
+  const failure = update.error instanceof RepositoryError ? update.error.code : update.error ? "other" : null;
   return (
     <Dialog open onOpenChange={(open) => (open ? undefined : onClose())}>
       <DialogContent title={t("title", { name: department.name })}>
@@ -559,20 +562,25 @@ function EditDepartmentDialog({ department, onClose }: { department: Department;
             <FieldLabel>{t("manager")}</FieldLabel>
             <Select value={managerId} onValueChange={setManagerId}>
               <SelectItem value="none">{t("noManager")}</SelectItem>
-              {(staff.data ?? [])
-                .filter((person) => !person.limited)
-                .map((person) => (
-                  <SelectItem key={person.id} value={person.id}>
-                    {person.name}
-                  </SelectItem>
-                ))}
+              {seated.map((person) => (
+                <SelectItem key={person.id} value={person.id}>
+                  {person.name}
+                </SelectItem>
+              ))}
             </Select>
+            <FieldDescription>{seated.length ? t("managerHint") : t("managerNobody")}</FieldDescription>
           </Field>
+          {failure ? (
+            <InlineAlert
+              tone="danger"
+              title={t(failure === "not-found" ? "failedNotSeated" : failure === "forbidden" ? "failedForbidden" : failure === "conflict" ? "failedConflict" : "failed")}
+            />
+          ) : null}
           <DialogFooter>
             <Button type="button" variant="secondary" onClick={onClose}>
               {t("cancel")}
             </Button>
-            <Button type="submit" disabled={update.isPending}>
+            <Button type="submit" loading={update.isPending}>
               {t("save")}
             </Button>
           </DialogFooter>
