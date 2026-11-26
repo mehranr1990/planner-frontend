@@ -174,7 +174,7 @@ interface CompanyState {
   overrides: Record<string, Record<string, { value: string; reason: string; by: string; at: string }>>;
   policies: PolicyDefinition[];
   staff: WorkProfile[];
-  invites: { id: string; email: string; role: CompanyRole; departmentName: string }[];
+  invites: { id: string; email: string; role: CompanyRole; departmentName: string; sentAt: string | null; expiresAt: string | null }[];
   projects: CompanyProjectRow[];
   teams: CompanyTeamRow[];
   attach: AttachRequest[];
@@ -674,7 +674,7 @@ export function createMockCompanies({ empty = false }: MockCompaniesOptions = {}
       const state = get(id);
       if (!/^\S+@\S+\.\S+$/.test(input.email)) throw new RepositoryError("invalid", "Email is not valid");
       const dept = state.departments.find((item) => item.id === input.departmentId);
-      state.invites.push({ id: nextId("ci"), email: input.email, role: input.role, departmentName: dept?.name ?? "" });
+      state.invites.push({ id: nextId("ci"), email: input.email, role: input.role, departmentName: dept?.name ?? "", sentAt: null, expiresAt: null });
     },
 
     async invitations() {
@@ -859,6 +859,12 @@ export function createMockCompanies({ empty = false }: MockCompaniesOptions = {}
     async pendingInvites(id) {
       await wait();
       return clone(get(id).invites);
+    },
+
+    async resendInvite(id, inviteId) {
+      await wait();
+      const invite = get(id).invites.find((item) => item.id === inviteId);
+      if (!invite) throw new RepositoryError("not-found", "Not found");
     },
 
     async projects(id, role) {

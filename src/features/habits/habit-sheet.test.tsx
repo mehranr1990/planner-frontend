@@ -7,16 +7,24 @@ import { HabitSheet } from "./habit-sheet";
 describe("HabitSheet in live API mode", () => {
   afterEach(() => vi.unstubAllEnvs());
 
-  it("hides the fields the habit API cannot keep", () => {
+  it("offers every field the habit API keeps: icon ids, category, unit label, time of day, reminder", async () => {
     vi.stubEnv("NEXT_PUBLIC_API_MODE", "live");
+    const user = userEvent.setup();
     renderWithProviders(<HabitSheet onClose={() => {}} />);
-    expect(screen.getByRole("textbox", { name: "Unit" })).toBeInTheDocument();
-    expect(screen.queryByRole("radiogroup", { name: "Icon" })).not.toBeInTheDocument();
-    expect(screen.queryByText("Area")).not.toBeInTheDocument();
-    expect(screen.queryByRole("switch", { name: "Reminder" })).not.toBeInTheDocument();
+    const icons = screen.getByRole("radiogroup", { name: "Icon" });
+    expect(icons.querySelectorAll('[role="radio"]')).toHaveLength(10);
+    expect(screen.getByRole("radio", { name: "Water" })).toBeInTheDocument();
+    expect(screen.getByText("Category")).toBeInTheDocument();
+    expect(screen.getByRole("textbox", { name: "Unit" })).toHaveAttribute("placeholder", "COUNT");
+    expect(screen.getByRole("textbox", { name: "Display label" })).toHaveAttribute("maxlength", "100");
+    expect(screen.getByText("Describes when you usually do it. It doesn’t turn a reminder on.")).toBeInTheDocument();
+    const reminder = screen.getByRole("switch", { name: "Reminder" });
+    expect(reminder).not.toBeChecked();
+    await user.click(reminder);
+    expect(screen.getByLabelText("Reminder time")).toHaveValue("20:00");
   });
 
-  it("asks for a Latin unit instead of failing the save", async () => {
+  it("asks for a Latin unit code and points to the display label", async () => {
     vi.stubEnv("NEXT_PUBLIC_API_MODE", "live");
     const user = userEvent.setup();
     const onClose = vi.fn();
@@ -24,7 +32,7 @@ describe("HabitSheet in live API mode", () => {
     await user.type(screen.getByRole("textbox", { name: "Target amount" }), "20");
     await user.type(screen.getByRole("textbox", { name: "Unit" }), "صفحه");
     await user.click(screen.getByRole("button", { name: "Create habit" }));
-    expect(screen.getByText("Use Latin letters for the unit (e.g. PAGES, KM or GLASS).")).toBeInTheDocument();
+    expect(screen.getByText(/Put the word you want to see, in any language, in Display label/)).toBeInTheDocument();
     expect(screen.getByRole("textbox", { name: "Unit" })).toHaveAttribute("aria-invalid", "true");
     expect(onClose).not.toHaveBeenCalled();
   });
@@ -32,6 +40,6 @@ describe("HabitSheet in live API mode", () => {
   it("keeps every field in mock mode", () => {
     renderWithProviders(<HabitSheet onClose={() => {}} />);
     expect(screen.getByRole("radiogroup", { name: "Icon" })).toBeInTheDocument();
-    expect(screen.getByText("Area")).toBeInTheDocument();
+    expect(screen.getByText("Category")).toBeInTheDocument();
   });
 });

@@ -29,7 +29,7 @@ import { useServiceError } from "@/features/personal-services/service-error";
 import { useServiceFormat } from "@/features/personal-services/use-service-format";
 import { addDaysToDay, instantAtTime } from "@/lib/dates/clock-time";
 import { cn } from "@/lib/cn";
-import { InvitationsNoticeSection, usePendingInvitations } from "./invitations-notice-section";
+import { InvitationsNoticeSection, useHasUnreadInvitations } from "./invitations-notice-section";
 import { useRouteScopedOpen, useShellScope } from "./use-shell-ui";
 
 /*
@@ -40,8 +40,9 @@ import { useRouteScopedOpen, useShellScope } from "./use-shell-ui";
  * Inside a company (/companies/[id]/…) the same popover also lists that
  * company's notifications for the viewer (server-created; read only, no
  * snooze / dismiss in the contract) and counts them in the badge.
- * Pending Project / Team / Company invitations sit on top (answer in place)
- * and count in the badge too.
+ * The invitation notification feed (all six kinds) sits on top (answer in place)
+ * and its unread items mark the badge (a dot / label note, never a count:
+ * the feed is paged and has no total).
  */
 
 export interface NotificationsPopoverProps {
@@ -65,8 +66,9 @@ export function NotificationsPopover({ triggerClassName }: NotificationsPopoverP
   const personalUnread = useUnreadCount().data ?? 0;
   const messaging = useMessagingNotices();
   const messagingUnread = messaging.data ? messaging.data.notices.filter((item) => !item.read).length + messaging.data.reminders.filter((item) => !item.read).length : 0;
-  const invitationCount = usePendingInvitations().length;
-  const unread = personalUnread + companyUnread + messagingUnread + invitationCount;
+  // The invitation feed has no total-count read (paged, 25 per kind): its unread items add a marker, never a number.
+  const newInvitations = useHasUnreadInvitations();
+  const unread = personalUnread + companyUnread + messagingUnread;
   const inbox = useNotificationInbox(filter, open);
   const action = useNotificationAction();
   const message = useServiceError();
@@ -77,7 +79,8 @@ export function NotificationsPopover({ triggerClassName }: NotificationsPopoverP
       onError: (error) => toast({ title: message(error), tone: "danger" }),
     });
 
-  const label = unread > 0 ? ts("labelWithCount", { count: unread, formatted: format.number(Math.min(unread, 99)) }) : t("label");
+  const counted = unread > 0 ? ts("labelWithCount", { count: unread, formatted: format.number(Math.min(unread, 99)) }) : t("label");
+  const label = newInvitations ? ts(unread > 0 ? "labelWithInvitations" : "labelInvitationsOnly", { label: counted }) : counted;
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -85,9 +88,9 @@ export function NotificationsPopover({ triggerClassName }: NotificationsPopoverP
         <PopoverTrigger asChild>
           <IconButton icon={Bell} label={label} className={cn(triggerClassName)} />
         </PopoverTrigger>
-        {unread > 0 ? (
+        {unread > 0 || newInvitations ? (
           <span aria-hidden="true">
-            <Badge label={label} count={unread} tone="primary" placement="corner" />
+            {unread > 0 ? <Badge label={label} count={unread} tone="primary" placement="corner" /> : <Badge label={label} dot tone="primary" placement="corner" />}
           </span>
         ) : null}
       </span>

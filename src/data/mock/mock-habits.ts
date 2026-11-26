@@ -5,7 +5,7 @@ import { RepositoryError, type HabitDayMark, type HabitInput, type HabitPatch, t
 /*
  * In-memory Habits (P12) over the adapter's habit store. A day is in at most
  * one of done / skipped / rested; logging the full target marks it done.
- * Reminders are data only (no notifications yet).
+ * Reminders are data only here (live: the server delivers them).
  */
 
 interface MockHabitsOptions {
@@ -53,7 +53,7 @@ function applyPatch(habit: Habit, patch: HabitPatch): void {
   if (patch.icon !== undefined) habit.icon = patch.icon;
   if (patch.area !== undefined) habit.area = patch.area?.trim() || undefined;
   if (patch.restWeekdays !== undefined) habit.restWeekdays = [...new Set(patch.restWeekdays)].sort();
-  if (patch.target !== undefined) habit.target = patch.target ? { amount: patch.target.amount, unit: patch.target.unit.trim() } : null;
+  if (patch.target !== undefined) habit.target = patch.target ? { amount: patch.target.amount, unit: patch.target.unit.trim(), label: patch.target.label?.trim() || null } : null;
   if (patch.timeOfDay !== undefined) habit.timeOfDay = patch.timeOfDay;
   if (patch.preferredTime !== undefined) habit.preferredTime = patch.preferredTime;
   if (patch.reminder !== undefined) habit.reminder = patch.reminder;

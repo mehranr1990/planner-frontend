@@ -120,7 +120,10 @@ export interface CompanyRepository {
   /** Moves the seat; identity and records stay with the person. The role is kept. */
   transferEmployee(id: string, personId: string, fromDepartmentId: string, toDepartmentId: string): Promise<void>;
   /** `email` null = not served (live: invitation rows carry no recipient, CB-3). */
-  pendingInvites(id: string): Promise<{ id: string; email: string | null; role: CompanyRole; departmentName: string }[]>;
+  /** Pending sent invitations (live: `sent-invitations`; sentAt / expiresAt null when unknown). */
+  pendingInvites(id: string): Promise<{ id: string; email: string | null; role: CompanyRole; departmentName: string; sentAt: string | null; expiresAt: string | null }[]>;
+  /** Resends a pending invitation (same offer, new proof for the recipient; older proofs stop working). */
+  resendInvite(id: string, inviteId: string): Promise<void>;
 
   /** companyWorkRepo + attachRepo */
   projects(id: string, role: CompanyRole): Promise<CompanyProjectRow[]>;

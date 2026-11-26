@@ -304,6 +304,8 @@ export function createCompanyOperations(api: Client, deps: OperationsDeps): Part
 
   // ── Notifications (the caller's own, per context) ──
   const notificationScope = new Map<string, string>();
+  /** Sent invitation id → its context scope (filled by pendingInvites, used by resend). */
+  const inviteScope = new Map<string, string>();
   const toNotification = (row: ApiNotification): CompanyNotification => ({
     id: row.id,
     kind: row.kind === "KNOWLEDGE_ACK_REMINDER" ? "kb-ack-reminder" : "file-request",
@@ -513,10 +515,30 @@ export function createCompanyOperations(api: Client, deps: OperationsDeps): Part
             const rows = await orNull(pageAll<ApiSentInvitation>(async (after) => (await api.request("get", "/api/v1/companies/{id}/contexts/{scopeId}/sent-invitations", { path: { id, scopeId: scope.scopeId }, query: { limit: PAGE, after } })).data));
             return (rows ?? [])
               .filter((row) => row.state === "PENDING" && Date.parse(row.expiresAt) > Date.now())
-              .map((row) => ({ id: row.id, email: row.recipientEmail, role: deps.roleOf(row.memberRole), departmentName: scope.department?.title ?? company.title }));
+              .map((row) => {
+                inviteScope.set(row.id, scope.scopeId);
+                return { id: row.id, email: row.recipientEmail, role: deps.roleOf(row.memberRole), departmentName: scope.department?.title ?? company.title, sentAt: row.sentAt, expiresAt: row.expiresAt };
+              });
           }),
         );
         return lists.flat();
+      }),
+
+    // Same offer, fresh proof; If-Match = the revision just read; still PENDING or it is refused before a request.
+    resendInvite: (id, inviteId) =>
+      mapErrors(async () => {
+        const scopeId = inviteScope.get(inviteId);
+        if (!scopeId) throw new RepositoryError("not-found", "Not found");
+        const rows = await pageAll<ApiSentInvitation>(async (after) => (await api.request("get", "/api/v1/companies/{id}/contexts/{scopeId}/sent-invitations", { path: { id, scopeId }, query: { limit: PAGE, after } })).data);
+        const row = rows.find((candidate) => candidate.id === inviteId);
+        if (!row || row.state !== "PENDING" || Date.parse(row.expiresAt) <= Date.now()) throw new RepositoryError("not-found", "No longer pending");
+        await conflictAware(() =>
+          api.request("post", "/api/v1/companies/{id}/contexts/{scopeId}/invitations/{offerId}/resend", {
+            path: { id, scopeId, offerId: inviteId },
+            header: { "If-Match": revisionTag(row.revision), "Idempotency-Key": newIdempotencyKey() },
+            body: {},
+          }),
+        );
       }),
 
     previewTransfer: (id, personId, fromDepartmentId, toDepartmentId) =>
@@ -558,17 +580,28 @@ export function createCompanyOperations(api: Client, deps: OperationsDeps): Part
       }),
 
     // By email in the chosen context; the response's proof is dropped (never stored or shown to the inviter).
+    // Optional staff draft (contract 0f9ff0a): position (trimmed, ≤ 300) and supervisorMemberId = the
+    // supervisor's ROOT company membership access id (from the authorized root roster, never guessed).
+    // The server snapshots it and rechecks at acceptance; a stale / foreign supervisor refuses admission.
     invite: (id, input) =>
       mapErrors(async () => {
         const memberRole = INVITE_ROLE[input.role];
         if (!memberRole) invalid("role");
-        // Position and supervisor live on the staff profile, which exists only after joining.
-        if (input.position.trim() || input.supervisorId) throw new RepositoryError("unsupported", "Companies API: position and supervisor are set on the staff profile after the invitee joins");
+        const position = input.position.trim();
+        if ([...position].length > 300) invalid("position");
+        let supervisorMemberId: string | null = null;
+        if (input.supervisorId) {
+          const roster = await deps.members(id, (await scopes(id))[0]!.scopeId);
+          const actor = actorOf.get(input.supervisorId);
+          const seat = roster.find((entry) => entry.id === input.supervisorId || (actor !== undefined && entry.actorId === actor));
+          if (!seat || seat.state !== "ACTIVE") throw new RepositoryError("conflict", "supervisor-ineligible");
+          supervisorMemberId = seat.id;
+        }
         const scope = await scopeOf(id, input.departmentId || null);
         await api.request("post", `/api/v1/companies/{id}/contexts/{scopeId}/invitations`, {
           path: { id, scopeId: scope.scopeId },
           header: { "Idempotency-Key": newIdempotencyKey() },
-          body: { memberRole: memberRole!, recipient: { email: input.email.trim() } },
+          body: { memberRole: memberRole!, recipient: { email: input.email.trim() }, ...(position ? { position } : {}), ...(supervisorMemberId ? { supervisorMemberId } : {}) },
         });
       }),
   };

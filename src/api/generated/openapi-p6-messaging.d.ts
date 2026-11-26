@@ -164,6 +164,70 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/conversations/{id}/email-invitations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["messagingpostconversationsidemailinvitations"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/conversations/{id}/email-invitations/{invitationId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["messaginggetconversationsidemailinvitationsinvitationId"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/conversations/{id}/email-invitations/{invitationId}/revoke": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["messagingpostconversationsidemailinvitationsinvitationIdrevoke"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/conversation-invitations/{invitationId}/claim-email": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["messagingpostconversationinvitationsinvitationIdclaimemail"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/conversations/{id}": {
         parameters: {
             query?: never;
@@ -366,6 +430,70 @@ export interface paths {
         get: operations["messaginggetconversationsidmessages"];
         put?: never;
         post: operations["messagingpostconversationsidmessages"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/meetings/{id}/email-invitations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["meetingspostmeetingsidemailinvitations"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/meetings/{id}/email-invitations/{invitationId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["meetingsgetmeetingsidemailinvitationsinvitationId"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/meetings/{id}/email-invitations/{invitationId}/revoke": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["meetingspostmeetingsidemailinvitationsinvitationIdrevoke"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/meetings/invitations/{invitationId}/claim-email": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["meetingspostmeetingsinvitationsinvitationIdclaimemail"];
         delete?: never;
         options?: never;
         head?: never;
@@ -1796,38 +1924,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/announcements/{id}/versions/{versionId}/schedule": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["messaginggetannouncementsidversionsversionIdschedule"];
-        put?: never;
-        post: operations["messagingpostannouncementsidversionsversionIdschedule"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/announcements/{id}/versions/{versionId}/schedule/cancel": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["messagingpostannouncementsidversionsversionIdschedulecancel"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/api/v1/meetings/{id}/agenda/{entryId}/details": {
         parameters: {
             query?: never;
@@ -1876,7 +1972,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/conversations/{id}/email-invitations": {
+    "/api/v1/announcements/{id}/versions/{versionId}/schedule": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["messaginggetannouncementsidversionsversionIdschedule"];
+        put?: never;
+        post: operations["messagingpostannouncementsidversionsversionIdschedule"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/announcements/{id}/versions/{versionId}/schedule/cancel": {
         parameters: {
             query?: never;
             header?: never;
@@ -1885,119 +1997,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["messagingpostconversationsidemailinvitations"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/conversations/{id}/email-invitations/{invitationId}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["messaginggetconversationsidemailinvitationsinvitationId"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/conversations/{id}/email-invitations/{invitationId}/revoke": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["messagingpostconversationsidemailinvitationsinvitationIdrevoke"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/conversation-invitations/{invitationId}/claim-email": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["messagingpostconversationinvitationsinvitationIdclaimemail"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/meetings/{id}/email-invitations": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["meetingspostmeetingsidemailinvitations"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/meetings/{id}/email-invitations/{invitationId}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["meetingsgetmeetingsidemailinvitationsinvitationId"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/meetings/{id}/email-invitations/{invitationId}/revoke": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["meetingspostmeetingsidemailinvitationsinvitationIdrevoke"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/meetings/invitations/{invitationId}/claim-email": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["meetingspostmeetingsinvitationsinvitationIdclaimemail"];
+        post: operations["messagingpostannouncementsidversionsversionIdschedulecancel"];
         delete?: never;
         options?: never;
         head?: never;
@@ -2020,22 +2020,6 @@ export interface components {
                 /** Format: uuid */
                 requestId: string;
             };
-        };
-        LiveHealth: {
-            /** @constant */
-            status: "ok";
-        };
-        ReadyHealth: {
-            /** @constant */
-            status: "ok";
-            checks: {
-                /** @constant */
-                database: "up";
-            };
-        };
-        CursorQuery: {
-            limit?: string;
-            cursor?: string;
         };
     };
     responses: never;
@@ -3711,6 +3695,544 @@ export interface operations {
             };
         };
     };
+    messagingpostconversationsidemailinvitations: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "If-Match": string;
+                "Idempotency-Key": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** Format: uuid */
+                    id: string;
+                    /** Format: email */
+                    email: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Current authorized messaging result */
+            201: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        /** @enum {string} */
+                        state: "PENDING" | "CLAIMED" | "EXPIRED" | "REVOKED";
+                        revision: number;
+                        /** Format: date-time */
+                        expiresAt: string;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    messaginggetconversationsidemailinvitationsinvitationId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+                invitationId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Current authorized messaging result */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        /** @enum {string} */
+                        state: "PENDING" | "CLAIMED" | "EXPIRED" | "REVOKED";
+                        revision: number;
+                        /** Format: date-time */
+                        expiresAt: string;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    messagingpostconversationsidemailinvitationsinvitationIdrevoke: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "If-Match": string;
+            };
+            path: {
+                id: string;
+                invitationId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": Record<string, never>;
+            };
+        };
+        responses: {
+            /** @description Current authorized messaging result */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        /** @enum {string} */
+                        state: "PENDING" | "CLAIMED" | "EXPIRED" | "REVOKED";
+                        revision: number;
+                        /** Format: date-time */
+                        expiresAt: string;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    messagingpostconversationinvitationsinvitationIdclaimemail: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "If-Match": string;
+                "X-Invitation-Proof": string;
+            };
+            path: {
+                invitationId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": Record<string, never>;
+            };
+        };
+        responses: {
+            /** @description Current authorized messaging result */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        notification?: {
+                            /** Format: uuid */
+                            invitationId: string;
+                            /** @enum {string} */
+                            kind: "PROJECT" | "TEAM" | "COMPANY" | "CONVERSATION" | "MEETING" | "SOCIAL_GROUP";
+                            /** Format: uuid */
+                            targetId: string;
+                            targetDisplayName: string;
+                            inviterDisplayName: string | null;
+                            role: string | null;
+                            /** Format: date-time */
+                            createdAt: string;
+                            readAt: string | null;
+                            revision: number;
+                            /** Format: date-time */
+                            expiresAt: string;
+                        };
+                        inviterDisplayName?: string | null;
+                        /** Format: uuid */
+                        id: string;
+                        /** Format: uuid */
+                        conversationId: string;
+                        /** @enum {string} */
+                        kind: "DM" | "PRIVATE_GROUP" | "PROJECT" | "TEAM" | "COMPANY";
+                        /** Format: uuid */
+                        inviterActorId: string;
+                        /** @enum {string} */
+                        state: "PENDING" | "ACCEPTED" | "DECLINED" | "REVOKED";
+                        revision: number;
+                        /** Format: date-time */
+                        expiresAt: string;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
     messaginggetconversationsid: {
         parameters: {
             query?: never;
@@ -3993,6 +4515,23 @@ export interface operations {
                 content: {
                     "application/json": {
                         items: {
+                            notification?: {
+                                /** Format: uuid */
+                                invitationId: string;
+                                /** @enum {string} */
+                                kind: "PROJECT" | "TEAM" | "COMPANY" | "CONVERSATION" | "MEETING" | "SOCIAL_GROUP";
+                                /** Format: uuid */
+                                targetId: string;
+                                targetDisplayName: string;
+                                inviterDisplayName: string | null;
+                                role: string | null;
+                                /** Format: date-time */
+                                createdAt: string;
+                                readAt: string | null;
+                                revision: number;
+                                /** Format: date-time */
+                                expiresAt: string;
+                            };
                             inviterDisplayName?: string | null;
                             /** Format: uuid */
                             id: string;
@@ -4137,6 +4676,23 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
+                        notification?: {
+                            /** Format: uuid */
+                            invitationId: string;
+                            /** @enum {string} */
+                            kind: "PROJECT" | "TEAM" | "COMPANY" | "CONVERSATION" | "MEETING" | "SOCIAL_GROUP";
+                            /** Format: uuid */
+                            targetId: string;
+                            targetDisplayName: string;
+                            inviterDisplayName: string | null;
+                            role: string | null;
+                            /** Format: date-time */
+                            createdAt: string;
+                            readAt: string | null;
+                            revision: number;
+                            /** Format: date-time */
+                            expiresAt: string;
+                        };
                         inviterDisplayName?: string | null;
                         /** Format: uuid */
                         id: string;
@@ -4851,6 +5407,23 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
+                        notification?: {
+                            /** Format: uuid */
+                            invitationId: string;
+                            /** @enum {string} */
+                            kind: "PROJECT" | "TEAM" | "COMPANY" | "CONVERSATION" | "MEETING" | "SOCIAL_GROUP";
+                            /** Format: uuid */
+                            targetId: string;
+                            targetDisplayName: string;
+                            inviterDisplayName: string | null;
+                            role: string | null;
+                            /** Format: date-time */
+                            createdAt: string;
+                            readAt: string | null;
+                            revision: number;
+                            /** Format: date-time */
+                            expiresAt: string;
+                        };
                         inviterDisplayName?: string | null;
                         /** Format: uuid */
                         id: string;
@@ -4981,6 +5554,23 @@ export interface operations {
                 content: {
                     "application/json": {
                         items: {
+                            notification?: {
+                                /** Format: uuid */
+                                invitationId: string;
+                                /** @enum {string} */
+                                kind: "PROJECT" | "TEAM" | "COMPANY" | "CONVERSATION" | "MEETING" | "SOCIAL_GROUP";
+                                /** Format: uuid */
+                                targetId: string;
+                                targetDisplayName: string;
+                                inviterDisplayName: string | null;
+                                role: string | null;
+                                /** Format: date-time */
+                                createdAt: string;
+                                readAt: string | null;
+                                revision: number;
+                                /** Format: date-time */
+                                expiresAt: string;
+                            };
                             inviterDisplayName?: string | null;
                             /** Format: uuid */
                             id: string;
@@ -5119,6 +5709,23 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
+                        notification?: {
+                            /** Format: uuid */
+                            invitationId: string;
+                            /** @enum {string} */
+                            kind: "PROJECT" | "TEAM" | "COMPANY" | "CONVERSATION" | "MEETING" | "SOCIAL_GROUP";
+                            /** Format: uuid */
+                            targetId: string;
+                            targetDisplayName: string;
+                            inviterDisplayName: string | null;
+                            role: string | null;
+                            /** Format: date-time */
+                            createdAt: string;
+                            readAt: string | null;
+                            revision: number;
+                            /** Format: date-time */
+                            expiresAt: string;
+                        };
                         inviterDisplayName?: string | null;
                         /** Format: uuid */
                         id: string;
@@ -5255,6 +5862,23 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
+                        notification?: {
+                            /** Format: uuid */
+                            invitationId: string;
+                            /** @enum {string} */
+                            kind: "PROJECT" | "TEAM" | "COMPANY" | "CONVERSATION" | "MEETING" | "SOCIAL_GROUP";
+                            /** Format: uuid */
+                            targetId: string;
+                            targetDisplayName: string;
+                            inviterDisplayName: string | null;
+                            role: string | null;
+                            /** Format: date-time */
+                            createdAt: string;
+                            readAt: string | null;
+                            revision: number;
+                            /** Format: date-time */
+                            expiresAt: string;
+                        };
                         inviterDisplayName?: string | null;
                         /** Format: uuid */
                         id: string;
@@ -5957,6 +6581,559 @@ export interface operations {
                         text: string;
                         /** Format: date-time */
                         createdAt: string;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    meetingspostmeetingsidemailinvitations: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "If-Match": string;
+                "Idempotency-Key": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** Format: uuid */
+                    id: string;
+                    /** Format: email */
+                    email: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Current authorized meeting or announcement result */
+            201: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        /** @enum {string} */
+                        state: "PENDING" | "CLAIMED" | "EXPIRED" | "REVOKED";
+                        revision: number;
+                        /** Format: date-time */
+                        expiresAt: string;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    meetingsgetmeetingsidemailinvitationsinvitationId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+                invitationId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Current authorized meeting or announcement result */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        /** @enum {string} */
+                        state: "PENDING" | "CLAIMED" | "EXPIRED" | "REVOKED";
+                        revision: number;
+                        /** Format: date-time */
+                        expiresAt: string;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    meetingspostmeetingsidemailinvitationsinvitationIdrevoke: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "If-Match": string;
+            };
+            path: {
+                id: string;
+                invitationId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": Record<string, never>;
+            };
+        };
+        responses: {
+            /** @description Current authorized meeting or announcement result */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        /** @enum {string} */
+                        state: "PENDING" | "CLAIMED" | "EXPIRED" | "REVOKED";
+                        revision: number;
+                        /** Format: date-time */
+                        expiresAt: string;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    meetingspostmeetingsinvitationsinvitationIdclaimemail: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "If-Match": string;
+                "X-Invitation-Proof": string;
+            };
+            path: {
+                invitationId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": Record<string, never>;
+            };
+        };
+        responses: {
+            /** @description Current authorized meeting or announcement result */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        notification?: {
+                            /** Format: uuid */
+                            invitationId: string;
+                            /** @enum {string} */
+                            kind: "PROJECT" | "TEAM" | "COMPANY" | "CONVERSATION" | "MEETING" | "SOCIAL_GROUP";
+                            /** Format: uuid */
+                            targetId: string;
+                            targetDisplayName: string;
+                            inviterDisplayName: string | null;
+                            role: string | null;
+                            /** Format: date-time */
+                            createdAt: string;
+                            readAt: string | null;
+                            revision: number;
+                            /** Format: date-time */
+                            expiresAt: string;
+                        };
+                        /** Format: uuid */
+                        id: string;
+                        /** Format: uuid */
+                        meetingId: string;
+                        title: string;
+                        schedule: {
+                            /** @constant */
+                            kind: "ALL_DAY";
+                            timezone: string;
+                            /** Format: date */
+                            startDate: string;
+                            /** Format: date */
+                            endDate: string;
+                            startAt: null;
+                            endAt: null;
+                        } | {
+                            /** @constant */
+                            kind: "TIMED";
+                            timezone: string;
+                            localStart: string;
+                            localEnd: string;
+                            startAt: string | null;
+                            endAt: string | null;
+                        };
+                        /** @enum {string} */
+                        state: "PENDING" | "ACCEPTED" | "TENTATIVE" | "DECLINED" | "REVOKED" | "EXPIRED" | "UNAVAILABLE";
+                        revision: number;
+                        /** Format: date-time */
+                        expiresAt: string;
                     };
                 };
             };
@@ -6790,6 +7967,23 @@ export interface operations {
                 content: {
                     "application/json": {
                         items: {
+                            notification?: {
+                                /** Format: uuid */
+                                invitationId: string;
+                                /** @enum {string} */
+                                kind: "PROJECT" | "TEAM" | "COMPANY" | "CONVERSATION" | "MEETING" | "SOCIAL_GROUP";
+                                /** Format: uuid */
+                                targetId: string;
+                                targetDisplayName: string;
+                                inviterDisplayName: string | null;
+                                role: string | null;
+                                /** Format: date-time */
+                                createdAt: string;
+                                readAt: string | null;
+                                revision: number;
+                                /** Format: date-time */
+                                expiresAt: string;
+                            };
                             /** Format: uuid */
                             id: string;
                             /** Format: uuid */
@@ -6947,6 +8141,23 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
+                        notification?: {
+                            /** Format: uuid */
+                            invitationId: string;
+                            /** @enum {string} */
+                            kind: "PROJECT" | "TEAM" | "COMPANY" | "CONVERSATION" | "MEETING" | "SOCIAL_GROUP";
+                            /** Format: uuid */
+                            targetId: string;
+                            targetDisplayName: string;
+                            inviterDisplayName: string | null;
+                            role: string | null;
+                            /** Format: date-time */
+                            createdAt: string;
+                            readAt: string | null;
+                            revision: number;
+                            /** Format: date-time */
+                            expiresAt: string;
+                        };
                         /** Format: uuid */
                         id: string;
                         /** Format: uuid */
@@ -7579,6 +8790,23 @@ export interface operations {
                 content: {
                     "application/json": {
                         items: {
+                            notification?: {
+                                /** Format: uuid */
+                                invitationId: string;
+                                /** @enum {string} */
+                                kind: "PROJECT" | "TEAM" | "COMPANY" | "CONVERSATION" | "MEETING" | "SOCIAL_GROUP";
+                                /** Format: uuid */
+                                targetId: string;
+                                targetDisplayName: string;
+                                inviterDisplayName: string | null;
+                                role: string | null;
+                                /** Format: date-time */
+                                createdAt: string;
+                                readAt: string | null;
+                                revision: number;
+                                /** Format: date-time */
+                                expiresAt: string;
+                            };
                             /** Format: uuid */
                             id: string;
                             /** Format: uuid */
@@ -7746,6 +8974,23 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
+                        notification?: {
+                            /** Format: uuid */
+                            invitationId: string;
+                            /** @enum {string} */
+                            kind: "PROJECT" | "TEAM" | "COMPANY" | "CONVERSATION" | "MEETING" | "SOCIAL_GROUP";
+                            /** Format: uuid */
+                            targetId: string;
+                            targetDisplayName: string;
+                            inviterDisplayName: string | null;
+                            role: string | null;
+                            /** Format: date-time */
+                            createdAt: string;
+                            readAt: string | null;
+                            revision: number;
+                            /** Format: date-time */
+                            expiresAt: string;
+                        };
                         /** Format: uuid */
                         id: string;
                         /** Format: uuid */
@@ -21276,449 +22521,6 @@ export interface operations {
             };
         };
     };
-    messaginggetannouncementsidversionsversionIdschedule: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-                versionId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Current authorized messaging result */
-            200: {
-                headers: {
-                    "Cache-Control"?: "no-store";
-                    ETag?: string;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** Format: uuid */
-                        versionId: string;
-                        revision: number;
-                        /** @enum {string} */
-                        status: "SCHEDULED" | "CANCELED" | "PUBLISHED";
-                        /** Format: date-time */
-                        scheduledAt: string;
-                        timezone: string;
-                        publishedAt: string | null;
-                        audience: {
-                            /** @constant */
-                            audience: "ALL";
-                        } | {
-                            /** @constant */
-                            audience: "NAMED";
-                            members: {
-                                /** Format: uuid */
-                                accessId: string;
-                                generation: number;
-                            }[];
-                        };
-                    } | null;
-                };
-            };
-            /** @description Safe error */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            409: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            413: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            429: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            503: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-        };
-    };
-    messagingpostannouncementsidversionsversionIdschedule: {
-        parameters: {
-            query?: never;
-            header: {
-                Origin: string;
-                "If-Match": string;
-                "Idempotency-Key": string;
-            };
-            path: {
-                id: string;
-                versionId: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": {
-                    /** Format: date-time */
-                    scheduledAt: string;
-                    timezone: string;
-                    audience: {
-                        /** @constant */
-                        audience: "ALL";
-                    } | {
-                        /** @constant */
-                        audience: "NAMED";
-                        members: {
-                            /** Format: uuid */
-                            accessId: string;
-                            generation: number;
-                        }[];
-                    };
-                };
-            };
-        };
-        responses: {
-            /** @description Current authorized messaging result */
-            201: {
-                headers: {
-                    "Cache-Control"?: "no-store";
-                    ETag?: string;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** Format: uuid */
-                        versionId: string;
-                        revision: number;
-                        /** @enum {string} */
-                        status: "SCHEDULED" | "CANCELED" | "PUBLISHED";
-                        /** Format: date-time */
-                        scheduledAt: string;
-                        timezone: string;
-                        publishedAt: string | null;
-                        audience: {
-                            /** @constant */
-                            audience: "ALL";
-                        } | {
-                            /** @constant */
-                            audience: "NAMED";
-                            members: {
-                                /** Format: uuid */
-                                accessId: string;
-                                generation: number;
-                            }[];
-                        };
-                    };
-                };
-            };
-            /** @description Safe error */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            409: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            413: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            429: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            503: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-        };
-    };
-    messagingpostannouncementsidversionsversionIdschedulecancel: {
-        parameters: {
-            query?: never;
-            header: {
-                Origin: string;
-                "If-Match": string;
-                "Idempotency-Key": string;
-            };
-            path: {
-                id: string;
-                versionId: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": Record<string, never>;
-            };
-        };
-        responses: {
-            /** @description Current authorized messaging result */
-            201: {
-                headers: {
-                    "Cache-Control"?: "no-store";
-                    ETag?: string;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** Format: uuid */
-                        versionId: string;
-                        revision: number;
-                        /** @enum {string} */
-                        status: "SCHEDULED" | "CANCELED" | "PUBLISHED";
-                        /** Format: date-time */
-                        scheduledAt: string;
-                        timezone: string;
-                        publishedAt: string | null;
-                        audience: {
-                            /** @constant */
-                            audience: "ALL";
-                        } | {
-                            /** @constant */
-                            audience: "NAMED";
-                            members: {
-                                /** Format: uuid */
-                                accessId: string;
-                                generation: number;
-                            }[];
-                        };
-                    };
-                };
-            };
-            /** @description Safe error */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            409: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            413: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            429: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            503: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-        };
-    };
     messaginggetmeetingsidagendaentryIddetails: {
         parameters: {
             query?: never;
@@ -22237,147 +23039,13 @@ export interface operations {
             };
         };
     };
-    messagingpostconversationsidemailinvitations: {
-        parameters: {
-            query?: never;
-            header: {
-                Origin: string;
-                "If-Match": string;
-                "Idempotency-Key": string;
-            };
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": {
-                    /** Format: uuid */
-                    id: string;
-                    /** Format: email */
-                    email: string;
-                };
-            };
-        };
-        responses: {
-            /** @description Current authorized messaging result */
-            201: {
-                headers: {
-                    "Cache-Control"?: "no-store";
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** Format: uuid */
-                        id: string;
-                        /** @enum {string} */
-                        state: "PENDING" | "CLAIMED" | "EXPIRED" | "REVOKED";
-                        revision: number;
-                        /** Format: date-time */
-                        expiresAt: string;
-                    };
-                };
-            };
-            /** @description Safe error */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            409: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            413: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            429: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            503: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-        };
-    };
-    messaginggetconversationsidemailinvitationsinvitationId: {
+    messaginggetannouncementsidversionsversionIdschedule: {
         parameters: {
             query?: never;
             header?: never;
             path: {
                 id: string;
-                invitationId: string;
+                versionId: string;
             };
             cookie?: never;
         };
@@ -22387,818 +23055,338 @@ export interface operations {
             200: {
                 headers: {
                     "Cache-Control"?: "no-store";
+                    ETag?: string;
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
                         /** Format: uuid */
-                        id: string;
-                        /** @enum {string} */
-                        state: "PENDING" | "CLAIMED" | "EXPIRED" | "REVOKED";
+                        versionId: string;
                         revision: number;
-                        /** Format: date-time */
-                        expiresAt: string;
-                    };
-                };
-            };
-            /** @description Safe error */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            409: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            413: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            429: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            503: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-        };
-    };
-    messagingpostconversationsidemailinvitationsinvitationIdrevoke: {
-        parameters: {
-            query?: never;
-            header: {
-                Origin: string;
-                "If-Match": string;
-            };
-            path: {
-                id: string;
-                invitationId: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": Record<string, never>;
-            };
-        };
-        responses: {
-            /** @description Current authorized messaging result */
-            200: {
-                headers: {
-                    "Cache-Control"?: "no-store";
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** Format: uuid */
-                        id: string;
                         /** @enum {string} */
-                        state: "PENDING" | "CLAIMED" | "EXPIRED" | "REVOKED";
-                        revision: number;
+                        status: "SCHEDULED" | "CANCELED" | "PUBLISHED";
                         /** Format: date-time */
-                        expiresAt: string;
-                    };
-                };
-            };
-            /** @description Safe error */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            409: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            413: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            429: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            503: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-        };
-    };
-    messagingpostconversationinvitationsinvitationIdclaimemail: {
-        parameters: {
-            query?: never;
-            header: {
-                Origin: string;
-                "If-Match": string;
-                "X-Invitation-Proof": string;
-            };
-            path: {
-                invitationId: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": Record<string, never>;
-            };
-        };
-        responses: {
-            /** @description Current authorized messaging result */
-            200: {
-                headers: {
-                    "Cache-Control"?: "no-store";
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        inviterDisplayName?: string | null;
-                        /** Format: uuid */
-                        id: string;
-                        /** Format: uuid */
-                        conversationId: string;
-                        /** @enum {string} */
-                        kind: "DM" | "PRIVATE_GROUP" | "PROJECT" | "TEAM" | "COMPANY";
-                        /** Format: uuid */
-                        inviterActorId: string;
-                        /** @enum {string} */
-                        state: "PENDING" | "ACCEPTED" | "DECLINED" | "REVOKED";
-                        revision: number;
-                        /** Format: date-time */
-                        expiresAt: string;
-                    };
-                };
-            };
-            /** @description Safe error */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            409: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            413: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            429: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            503: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-        };
-    };
-    meetingspostmeetingsidemailinvitations: {
-        parameters: {
-            query?: never;
-            header: {
-                Origin: string;
-                "If-Match": string;
-                "Idempotency-Key": string;
-            };
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": {
-                    /** Format: uuid */
-                    id: string;
-                    /** Format: email */
-                    email: string;
-                };
-            };
-        };
-        responses: {
-            /** @description Current authorized meeting or announcement result */
-            201: {
-                headers: {
-                    "Cache-Control"?: "no-store";
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** Format: uuid */
-                        id: string;
-                        /** @enum {string} */
-                        state: "PENDING" | "CLAIMED" | "EXPIRED" | "REVOKED";
-                        revision: number;
-                        /** Format: date-time */
-                        expiresAt: string;
-                    };
-                };
-            };
-            /** @description Safe error */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            409: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            413: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            429: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            503: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-        };
-    };
-    meetingsgetmeetingsidemailinvitationsinvitationId: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-                invitationId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Current authorized meeting or announcement result */
-            200: {
-                headers: {
-                    "Cache-Control"?: "no-store";
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** Format: uuid */
-                        id: string;
-                        /** @enum {string} */
-                        state: "PENDING" | "CLAIMED" | "EXPIRED" | "REVOKED";
-                        revision: number;
-                        /** Format: date-time */
-                        expiresAt: string;
-                    };
-                };
-            };
-            /** @description Safe error */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            409: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            413: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            429: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            503: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-        };
-    };
-    meetingspostmeetingsidemailinvitationsinvitationIdrevoke: {
-        parameters: {
-            query?: never;
-            header: {
-                Origin: string;
-                "If-Match": string;
-            };
-            path: {
-                id: string;
-                invitationId: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": Record<string, never>;
-            };
-        };
-        responses: {
-            /** @description Current authorized meeting or announcement result */
-            200: {
-                headers: {
-                    "Cache-Control"?: "no-store";
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** Format: uuid */
-                        id: string;
-                        /** @enum {string} */
-                        state: "PENDING" | "CLAIMED" | "EXPIRED" | "REVOKED";
-                        revision: number;
-                        /** Format: date-time */
-                        expiresAt: string;
-                    };
-                };
-            };
-            /** @description Safe error */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            409: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            413: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            429: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            503: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-        };
-    };
-    meetingspostmeetingsinvitationsinvitationIdclaimemail: {
-        parameters: {
-            query?: never;
-            header: {
-                Origin: string;
-                "If-Match": string;
-                "X-Invitation-Proof": string;
-            };
-            path: {
-                invitationId: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": Record<string, never>;
-            };
-        };
-        responses: {
-            /** @description Current authorized meeting or announcement result */
-            200: {
-                headers: {
-                    "Cache-Control"?: "no-store";
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** Format: uuid */
-                        id: string;
-                        /** Format: uuid */
-                        meetingId: string;
-                        title: string;
-                        schedule: {
+                        scheduledAt: string;
+                        timezone: string;
+                        publishedAt: string | null;
+                        audience: {
                             /** @constant */
-                            kind: "ALL_DAY";
-                            timezone: string;
-                            /** Format: date */
-                            startDate: string;
-                            /** Format: date */
-                            endDate: string;
-                            startAt: null;
-                            endAt: null;
+                            audience: "ALL";
                         } | {
                             /** @constant */
-                            kind: "TIMED";
-                            timezone: string;
-                            localStart: string;
-                            localEnd: string;
-                            startAt: string | null;
-                            endAt: string | null;
+                            audience: "NAMED";
+                            members: {
+                                /** Format: uuid */
+                                accessId: string;
+                                generation: number;
+                            }[];
                         };
-                        /** @enum {string} */
-                        state: "PENDING" | "ACCEPTED" | "TENTATIVE" | "DECLINED" | "REVOKED" | "EXPIRED" | "UNAVAILABLE";
+                    } | null;
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    messagingpostannouncementsidversionsversionIdschedule: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "If-Match": string;
+                "Idempotency-Key": string;
+            };
+            path: {
+                id: string;
+                versionId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** Format: date-time */
+                    scheduledAt: string;
+                    timezone: string;
+                    audience: {
+                        /** @constant */
+                        audience: "ALL";
+                    } | {
+                        /** @constant */
+                        audience: "NAMED";
+                        members: {
+                            /** Format: uuid */
+                            accessId: string;
+                            generation: number;
+                        }[];
+                    };
+                };
+            };
+        };
+        responses: {
+            /** @description Current authorized messaging result */
+            201: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        versionId: string;
                         revision: number;
+                        /** @enum {string} */
+                        status: "SCHEDULED" | "CANCELED" | "PUBLISHED";
                         /** Format: date-time */
-                        expiresAt: string;
+                        scheduledAt: string;
+                        timezone: string;
+                        publishedAt: string | null;
+                        audience: {
+                            /** @constant */
+                            audience: "ALL";
+                        } | {
+                            /** @constant */
+                            audience: "NAMED";
+                            members: {
+                                /** Format: uuid */
+                                accessId: string;
+                                generation: number;
+                            }[];
+                        };
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    messagingpostannouncementsidversionsversionIdschedulecancel: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "If-Match": string;
+                "Idempotency-Key": string;
+            };
+            path: {
+                id: string;
+                versionId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": Record<string, never>;
+            };
+        };
+        responses: {
+            /** @description Current authorized messaging result */
+            201: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        versionId: string;
+                        revision: number;
+                        /** @enum {string} */
+                        status: "SCHEDULED" | "CANCELED" | "PUBLISHED";
+                        /** Format: date-time */
+                        scheduledAt: string;
+                        timezone: string;
+                        publishedAt: string | null;
+                        audience: {
+                            /** @constant */
+                            audience: "ALL";
+                        } | {
+                            /** @constant */
+                            audience: "NAMED";
+                            members: {
+                                /** Format: uuid */
+                                accessId: string;
+                                generation: number;
+                            }[];
+                        };
                     };
                 };
             };

@@ -1,7 +1,6 @@
 "use client";
 
 import { ApiHttpError, isSharedNotEnabled } from "@/api/errors";
-import { isLiveApi } from "@/api/runtime";
 import { Shield } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -141,9 +140,7 @@ export function CompanyInviteSheet({ companyId, onDone }: { companyId: string; o
   const [position, setPosition] = useState("");
   const [supervisorId, setSupervisorId] = useState("none");
   const [touched, setTouched] = useState(false);
-  // Live API: position and supervisor live on the staff profile, which exists only
-  // after the invitee joins; the invitation itself cannot carry them.
-  const live = isLiveApi();
+  // Position and supervisor travel with the invitation; the staff profile is created only when it is accepted.
   const emailError = touched && !/^\S+@\S+\.\S+$/.test(email) ? t("emailInvalid") : null;
   const deptError = touched && !departmentId ? t("departmentRequired") : null;
   return (
@@ -158,8 +155,8 @@ export function CompanyInviteSheet({ companyId, onDone }: { companyId: string; o
             email,
             role,
             departmentId,
-            position: live ? "" : position,
-            supervisorId: live || supervisorId === "none" ? null : supervisorId,
+            position: position.trim(),
+            supervisorId: supervisorId === "none" ? null : supervisorId,
           },
           {
             onSuccess: () => {
@@ -198,34 +195,31 @@ export function CompanyInviteSheet({ companyId, onDone }: { companyId: string; o
           </Select>
           {deptError ? <FieldError>{deptError}</FieldError> : null}
         </Field>
-        {live ? null : (
-          <>
-            <Field>
-              <FieldLabel>{t("position")}</FieldLabel>
-              <Input dir="auto" value={position} onChange={(event) => setPosition(event.target.value)} />
-            </Field>
-            <Field>
-              <FieldLabel>{t("supervisor")}</FieldLabel>
-              <Select value={supervisorId} onValueChange={setSupervisorId}>
-                <SelectItem value="none">{t("noSupervisor")}</SelectItem>
-                {(staff.data ?? [])
-                  .filter((person) => !person.limited && (departmentId === "" || person.departmentIds.includes(departmentId)))
-                  .map((person) => (
-                    <SelectItem key={person.id} value={person.id}>
-                      {person.name}
-                    </SelectItem>
-                  ))}
-              </Select>
-            </Field>
-          </>
-        )}
+        <Field>
+          <FieldLabel>{t("position")}</FieldLabel>
+          <Input dir="auto" maxLength={300} value={position} onChange={(event) => setPosition(event.target.value)} />
+        </Field>
+        <Field>
+          <FieldLabel>{t("supervisor")}</FieldLabel>
+          <Select value={supervisorId} onValueChange={setSupervisorId}>
+            <SelectItem value="none">{t("noSupervisor")}</SelectItem>
+            {/* Active members of this company only (the authorized staff list); the server rechecks at acceptance. */}
+            {(staff.data ?? [])
+              .filter((person) => !person.limited && person.status !== "left" && (departmentId === "" || person.departmentIds.includes(departmentId)))
+              .map((person) => (
+                <SelectItem key={person.id} value={person.id}>
+                  {person.name}
+                </SelectItem>
+              ))}
+          </Select>
+        </Field>
       </div>
-      {live ? <p className="text-xs text-fg-secondary">{t("profileAfterJoin")}</p> : null}
+      <p className="text-xs text-fg-secondary">{t("profileAfterJoin")}</p>
       <p className="text-xs text-fg-secondary">{t("verifiedOnly")}</p>
       {invite.isError ? (
         <InlineAlert
           tone="danger"
-          title={t(inviteFailure(invite.error))}
+          title={t(inviteFailure(invite.error, supervisorId !== "none"))}
           description={invite.error instanceof ApiHttpError && invite.error.requestId ? t("requestId", { id: invite.error.requestId }) : undefined}
         />
       ) : null}
@@ -321,13 +315,25 @@ function createFailure(error: unknown): "failed" | "failedNotEnabled" | "failedP
 }
 
 /** Why an invitation was refused, so the message names the real cause instead of always blaming the email. */
-type InviteFailure = "failed" | "failedNotEnabled" | "failedForbidden" | "failedConflict" | "failedInvalid" | "failedNotFound" | "failedRateLimited" | "failedServer" | "failedOffline";
+type InviteFailure =
+  | "failed"
+  | "failedNotEnabled"
+  | "failedForbidden"
+  | "failedConflict"
+  | "failedConflictSupervisor"
+  | "failedSupervisor"
+  | "failedInvalid"
+  | "failedNotFound"
+  | "failedRateLimited"
+  | "failedServer"
+  | "failedOffline";
 
-function inviteFailure(error: unknown): InviteFailure {
+function inviteFailure(error: unknown, withSupervisor: boolean): InviteFailure {
   if (isSharedNotEnabled(error)) return "failedNotEnabled";
+  if (error instanceof RepositoryError && error.message === "supervisor-ineligible") return "failedSupervisor";
   // Statuses the repository passes through unmapped.
   if (error instanceof ApiHttpError) {
-    if (error.status === 409) return "failedConflict";
+    if (error.status === 409) return withSupervisor ? "failedConflictSupervisor" : "failedConflict";
     if (error.status === 429) return "failedRateLimited";
     if (error.status >= 500) return "failedServer";
     return "failed";

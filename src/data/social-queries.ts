@@ -1,6 +1,6 @@
 "use client";
 
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useIsClient } from "@/hooks/use-is-client";
 import type { FileUploadInput } from "./project-repositories";
 import type { ActivityFilter, ExpenseScope, GroupTopic } from "./social-domain";
@@ -94,6 +94,20 @@ export const useNeedsYou = () => useRead(["needs-you"], (r) => r.inbox.list());
 // ── Live-contract flows (Phase 6 server; Mock Mode answers "unsupported") ──
 
 export const useBlocks = () => useRead(["blocks"], (r) => r.blocks.list());
+/** My pending group invitations, cursor-paged (ordinary list; independent of in-app notification settings). */
+export function usePendingGroupInvitations(enabled = true) {
+  const repo = useSocialRepository();
+  const available = useSocialAvailable();
+  const hydrated = useIsClient();
+  return useInfiniteQuery({
+    queryKey: [...socialKeys.all, "pending-invitations"],
+    queryFn: ({ pageParam }) => repo.invitations.pending(pageParam),
+    initialPageParam: null as string | null,
+    getNextPageParam: (last: { next: string | null }) => last.next,
+    enabled: enabled && available && hydrated,
+    retry: false,
+  });
+}
 export const useInvitationPreview = (id: string, proof: string | null) => useRead(["invitation", id, proof ? "proof" : "none"], (r) => r.invitations.preview(id, proof!), Boolean(proof));
 export const useHandover = (groupId: string, handoverId: string | null) => useRead(["handover", groupId, handoverId], (r) => r.handovers.get(groupId, handoverId!), Boolean(handoverId));
 export const useInvitable = (activityId: string, enabled = true) => useRead(["invitable", activityId], (r) => r.activityAdmin.invitable(activityId), enabled);

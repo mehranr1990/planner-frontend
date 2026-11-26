@@ -214,8 +214,8 @@ export const staffFixtures: WorkProfile[] = [
 export const newThisQuarterIds = ["p-yasmin", "p-mina", "p-kian"];
 
 export const pendingInviteFixtures = [
-  { id: "ci-1", email: "farid@euroly.com", role: "member" as CompanyRole, departmentName: "Sales" },
-  { id: "ci-2", email: "roya@euroly.com", role: "lead" as CompanyRole, departmentName: "Engineering" },
+  { id: "ci-1", email: "farid@euroly.com", role: "member" as CompanyRole, departmentName: "Sales", sentAt: null as string | null, expiresAt: null as string | null },
+  { id: "ci-2", email: "roya@euroly.com", role: "lead" as CompanyRole, departmentName: "Engineering", sentAt: null as string | null, expiresAt: null as string | null },
 ];
 
 export const grantFixtures: (CompanyGrant & { personName: string })[] = [

@@ -10,7 +10,7 @@ describe("mock habits repository (P12)", () => {
     await expect(habits.create({ title: "Stretch", reminder: { time: "25:00", ifNotDone: true } })).rejects.toMatchObject({ code: "invalid" });
     const created = await habits.create({
       title: " Stretch ",
-      icon: "leaf",
+      icon: "default",
       restWeekdays: [5, 5],
       target: { amount: 10, unit: "min" },
       preferredTime: "07:30",

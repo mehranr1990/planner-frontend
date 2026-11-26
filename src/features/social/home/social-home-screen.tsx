@@ -16,6 +16,7 @@ import { cn } from "@/lib/cn";
 import { ActivityRow, NextActivityCard, PlanSomethingCard } from "../activity/activity-parts";
 import { useSocialFormat } from "../format";
 import { NoticesCard } from "../live/group-live";
+import { PendingGroupInvitations } from "../live/pending-invitations";
 import { socialHref } from "../paths";
 import { useOpenSocialSheet } from "../sheets/social-sheet-params";
 import { isUnsupported, PersonAvatar, SectionHead, SocialPageHeader, SocialUnsupported } from "../social-ui";
@@ -158,6 +159,7 @@ export function SocialHomeScreen() {
               <p className="rounded-row bg-subtle p-4 text-sm text-fg-secondary">{t("home.noNeeds")}</p>
             )}
           </ProductCard>
+          {isLiveApi() ? <PendingGroupInvitations /> : null}
           {isLiveApi() ? (
             <ProductCard as="section" className="flex flex-col gap-3">
               <NoticesCard />

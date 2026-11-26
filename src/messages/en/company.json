@@ -247,7 +247,13 @@
       "empty": "No pending invitations.",
       "line": "{department}",
       "pending": "Pending",
-      "noEmail": "{role} invitation"
+      "noEmail": "{role} invitation",
+      "sent": "Sent {date}",
+      "validUntil": "valid until {date}",
+      "resend": "Resend",
+      "resent": "Invitation sent again",
+      "resendStale": "This invitation changed or is no longer pending. The list was refreshed.",
+      "resendFailed": "Couldn’t resend the invitation. Try again."
     },
     "workloadTitle": "{department} · people & workload",
     "workloadNote": "Workload = booked estimates of company work assigned this week ÷ work-profile hours; shown to Org Admin / Owner and the department’s manager only. Never a ranking.",
@@ -501,7 +507,9 @@
       "failedServer": "The server couldn’t send the invitation (server error). Ask the operator to check the server log — often email (SMTP) isn’t configured.",
       "failedOffline": "No connection to the server. Check your internet and try again.",
       "requestId": "Request id for the operator: {id}",
-      "profileAfterJoin": "Position and supervisor are set on their staff profile after they join."
+      "profileAfterJoin": "Position and supervisor are saved with the invitation. The staff profile is created only when the person accepts; if the supervisor is no longer eligible then, the acceptance is refused.",
+      "failedSupervisor": "The chosen supervisor is no longer an active member of this company. Choose another supervisor or none.",
+      "failedConflictSupervisor": "This person already has a pending invitation or is already a member — or the chosen supervisor’s membership changed. Reload and try again."
     },
     "department": {
       "title": "New department",

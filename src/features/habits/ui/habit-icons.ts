@@ -1,18 +1,18 @@
-import { BookOpen, Brain, Droplet, Dumbbell, Footprints, Heart, Leaf, Moon, PenLine, RefreshCw, Sun, type LucideIcon } from "lucide-react";
+import { BookOpen, Briefcase, Droplet, Dumbbell, Flower2, GraduationCap, HeartPulse, Leaf, Moon, RefreshCw, Utensils, type LucideIcon } from "lucide-react";
 import type { HabitIcon } from "@/data/domain";
 
-/** Line icons a habit can wear (Habit sheet · Icon); no emoji. */
+/** Line icons for the contract's fixed habit icon identifiers (Habit sheet · Icon); no emoji, no other ids. */
 export const HABIT_ICONS: Record<HabitIcon, LucideIcon> = {
+  default: Leaf,
+  water: Droplet,
   book: BookOpen,
-  sun: Sun,
-  dumbbell: Dumbbell,
-  droplet: Droplet,
-  moon: Moon,
-  footprints: Footprints,
-  brain: Brain,
-  pen: PenLine,
-  heart: Heart,
-  leaf: Leaf,
+  exercise: Dumbbell,
+  sleep: Moon,
+  food: Utensils,
+  meditation: Flower2,
+  study: GraduationCap,
+  work: Briefcase,
+  health: HeartPulse,
 };
 
 export const HABIT_ICON_IDS = Object.keys(HABIT_ICONS) as HabitIcon[];

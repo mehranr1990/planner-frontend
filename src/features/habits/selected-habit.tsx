@@ -116,7 +116,7 @@ function HabitRing({ habit, today, frequency, onEdit, onArchive }: { habit: Habi
         <dt className="font-semibold text-fg-muted">{tDetails("target")}</dt>
         <dd className="text-end font-bold">
           {habit.target ? (
-            <bdi dir="auto">{tDetails("targetValue", { amount: format.number(habit.target.amount), unit: habit.target.unit })}</bdi>
+            <bdi dir="auto">{tDetails("targetValue", { amount: format.number(habit.target.amount), unit: habit.target.label || habit.target.unit })}</bdi>
           ) : (
             tDetails("none")
           )}

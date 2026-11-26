@@ -378,6 +378,29 @@ describe("team sprints adapter (TM-05)", () => {
   });
 
   it("current: hours from the plan summary, capacity from the capacity summary, burndown from recorded observations", async () => {
+    // A day inside the active sprint (only Date is faked; fetch / timers stay real).
+    vi.useFakeTimers({ toFake: ["Date"] });
+    vi.setSystemTime(new Date("2026-11-12T08:00:00.000Z"));
+    try {
+      await expectCurrentSprint();
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it("current: a next sprint proposed after the active one has ended starts today, never back-dated", async () => {
+    vi.useFakeTimers({ toFake: ["Date"] });
+    vi.setSystemTime(new Date("2026-11-26T08:00:00.000Z"));
+    try {
+      const fake = sprintApi("SPRINTS", [plan("s0", "CLOSED", "2026-10-25", "2026-11-07"), plan("s1", "ACTIVE", "2026-11-08", "2026-11-21")]);
+      const state = await createApiTeamSprints(typedAs<paths>(fake.client)).current(TEAM);
+      expect([state.next.start, state.next.end]).toEqual(["2026-11-26", "2026-12-09"]);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  async function expectCurrentSprint() {
     const fake = sprintApi("SPRINTS", [
       plan("s0", "CLOSED", "2026-10-25", "2026-11-07"),
       plan("s1", "ACTIVE", "2026-11-08", "2026-11-21"),
@@ -398,7 +421,7 @@ describe("team sprints adapter (TM-05)", () => {
     // Next sprint: the day after the active one, same length (14 days).
     expect([state.next.start, state.next.end, state.next.number]).toEqual(["2026-11-22", "2026-12-05", 3]);
     expect(fake.writes()).toEqual([]);
-  });
+  }
 
   it("start: conflict while one is active; otherwise draft → goal → ACTIVE", async () => {
     await expect(

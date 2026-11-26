@@ -1,10 +1,11 @@
-import type { ApiClient, RequestBody, ResponseData } from "@/api/client";
-import { newIdempotencyKey } from "@/api/client";
+import type { ApiClient, RequestBodyIn, ResponseDataIn } from "@/api/client";
+import { newIdempotencyKey, typedAs } from "@/api/client";
+import type { paths as PersonalPaths } from "@/api/generated/openapi-p6-personal";
 import { addDaysToDay, parseClockTime, parseDay, weekdayOfDay } from "@/lib/dates/clock-time";
 import { getPlannerTimeZone } from "@/lib/dates/zone";
-import type { Habit } from "../domain";
-import type { HabitDayMark, HabitInput, HabitPatch, HabitsRepository } from "../repositories";
-import { invalid, mapErrors, pageAll, retryOnConflict, revisionTag, unsupported } from "./api-shared";
+import type { Habit, HabitIcon, HabitReminder, HabitTimeOfDay } from "../domain";
+import { RepositoryError, type HabitDayMark, type HabitInput, type HabitPatch, type HabitsRepository } from "../repositories";
+import { invalid, isConflict, mapErrors, pageAll, retryOnConflict, revisionTag, unsupported } from "./api-shared";
 
 /*
  * Habits (Phase 05) over /habits and /habits/{id}/entries.
@@ -18,15 +19,24 @@ import { invalid, mapErrors, pageAll, retryOnConflict, revisionTag, unsupported 
  *   are cleared by voiding entries (history stays on the server).
  * - Entry writes carry habitRevision + Idempotency-Key / the entry's If-Match;
  *   a 409 reloads the habit and its entries and repeats the intent once.
- * - No API field: icon, area, time of day, preferred time, reminder, one-off
- *   rest days → refused ("unsupported"), never kept in memory. "Pinned" is not
+ * - Metadata (contract 0f9ff0a): icon (fixed ids DEFAULT…HEALTH), category
+ *   (= the sheet's area), timeOfDay, preferredTime (descriptive only), unitLabel
+ *   (display only; the canonical `unit` code keeps every calculation) and
+ *   reminder {time, ifNotDone} (null disables; the server schedules it in the
+ *   habit's time zone — no frontend scheduler). Metadata edits carry the habit
+ *   revision; a 409 reloads and rejects "conflict" instead of re-sending, so a
+ *   newer edit made elsewhere is never overwritten.
+ * - No API field: one-off rest days → refused ("unsupported"). "Pinned" is not
  *   stored either: the first active habit stands in (the screen's own fallback).
  */
 
-type ApiHabit = ResponseData<"/api/v1/habits/{id}", "get">;
-type ApiEntry = ResponseData<"/api/v1/habits/{id}/entries", "get">["items"][number];
+type ApiHabit = ResponseDataIn<PersonalPaths, "/api/v1/habits/{id}", "get">;
+type ApiEntry = ResponseDataIn<PersonalPaths, "/api/v1/habits/{id}/entries", "get">["items"][number];
 type ApiRule = ApiHabit["latestSchedule"]["schedule"]["rule"];
-type HabitPatchBody = RequestBody<"/api/v1/habits/{id}", "patch">;
+type HabitPatchBody = RequestBodyIn<PersonalPaths, "/api/v1/habits/{id}", "patch">;
+type HabitCreateBody = RequestBodyIn<PersonalPaths, "/api/v1/habits", "post">;
+type ApiIcon = NonNullable<HabitPatchBody["icon"]>;
+type ApiTimeOfDay = NonNullable<HabitPatchBody["timeOfDay"]>;
 
 interface Known {
   dto: ApiHabit;
@@ -44,6 +54,22 @@ const HISTORY_DAYS = 365;
 const UNIT_CODE = /^[A-Z][A-Z0-9_]{0,29}$/;
 const DECIMAL = /^(?:0|[1-9]\d{0,8})(?:\.\d{1,3})?$/;
 const ALL_WEEKDAYS = [0, 1, 2, 3, 4, 5, 6] as const;
+/** category / unitLabel bound (trimmed Unicode text). */
+const LABEL_MAX = 100;
+
+const toApiIcon = (icon: HabitIcon): ApiIcon => icon.toUpperCase() as ApiIcon;
+const fromApiIcon = (icon: ApiIcon | undefined): HabitIcon => (icon ?? "DEFAULT").toLowerCase() as HabitIcon;
+const toApiTime = (time: HabitTimeOfDay): ApiTimeOfDay => time.toUpperCase() as ApiTimeOfDay;
+const fromApiTime = (time: ApiTimeOfDay | undefined): HabitTimeOfDay => (time ?? "ANYTIME").toLowerCase() as HabitTimeOfDay;
+
+/** Trimmed text or null (cleared); over the bound → invalid. */
+function label(text: string | null | undefined): string | null {
+  const value = text?.trim() || null;
+  if (value && [...value].length > LABEL_MAX) invalid(`At most ${LABEL_MAX} characters`);
+  return value;
+}
+
+const reminderBody = (reminder: HabitReminder | null | undefined) => (reminder ? { time: reminder.time, ifNotDone: reminder.ifNotDone } : null);
 
 const isoWeekday = (day: number) => (day === 0 ? 7 : day);
 
@@ -89,24 +115,14 @@ function checkInput(patch: HabitPatch): void {
   if (patch.reminder && parseClockTime(patch.reminder.time) === null) invalid("Bad time");
 }
 
-/** Fields the API has nowhere to keep. `current` = what the habit shows now (an unchanged value is fine). */
-function assertSupported(patch: HabitPatch, current?: Habit): void {
-  const refused =
-    (patch.icon !== undefined && patch.icon !== (current?.icon ?? "leaf")) ||
-    Boolean(patch.area?.trim()) ||
-    (patch.timeOfDay !== undefined && patch.timeOfDay !== "anytime") ||
-    patch.preferredTime != null ||
-    patch.reminder != null;
-  if (refused) unsupported("Field not supported by the API");
-}
-
 function sameDays(a: readonly number[], b: readonly number[]): boolean {
   const left = [...new Set(a)].sort();
   const right = [...new Set(b)].sort();
   return left.length === right.length && left.every((day, index) => day === right[index]);
 }
 
-export function createApiHabitsRepository(client: ApiClient, { today }: ApiHabitsOptions): HabitsRepository {
+export function createApiHabitsRepository(apiClient: ApiClient, { today }: ApiHabitsOptions): HabitsRepository {
+  const client = typedAs<PersonalPaths>(apiClient);
   const known = new Map<string, Known>();
   /** List order (creation order), so "first active" is stable. */
   let order: string[] = [];
@@ -152,20 +168,38 @@ export function createApiHabitsRepository(client: ApiClient, { today }: ApiHabit
       restWeekdays: restWeekdaysOf(dto.latestSchedule.schedule),
       startDay: dto.latestSchedule.schedule.startDate,
       skippedDays: [...skipped].sort(),
-      target: quantity ? { amount: target, unit: unitLabel(dto.unit) } : null,
+      target: quantity ? { amount: target, unit: unitLabel(dto.unit), label: dto.unitLabel ?? null } : null,
       ...(quantity ? { amounts } : {}),
       archived: isArchived(dto),
+      icon: fromApiIcon(dto.icon),
+      ...(dto.category ? { area: dto.category } : {}),
+      timeOfDay: fromApiTime(dto.timeOfDay),
+      preferredTime: dto.preferredTime ?? null,
+      reminder: dto.reminder ? { time: dto.reminder.time, ifNotDone: dto.reminder.ifNotDone ?? true } : null,
     };
   }
 
-  /** PATCH the habit with its revision; 409 → reload and re-send once. */
-  async function patchHabit(id: string, body: HabitPatchBody): Promise<Known> {
+  /**
+   * PATCH the habit with its revision. `resend` (status only): 409 → reload and
+   * re-send once. Edits: 409 → reload and reject "conflict" (never overwrite).
+   */
+  async function patchHabit(id: string, body: HabitPatchBody, resend = false): Promise<Known> {
     const entry = await knownOrLoad(id);
     const send = async () => {
       const current = known.get(id)!;
       current.dto = (await client.request("patch", "/api/v1/habits/{id}", { path: { id }, header: { "If-Match": revisionTag(current.dto.revision) }, body })).data;
     };
-    await mapErrors(() => retryOnConflict(send, () => reload(id)));
+    if (resend) await mapErrors(() => retryOnConflict(send, () => reload(id)));
+    else
+      await mapErrors(async () => {
+        try {
+          await send();
+        } catch (error) {
+          if (!isConflict(error)) throw error;
+          await reload(id).catch(() => undefined);
+          throw new RepositoryError("conflict", "The habit changed elsewhere; reopen it to see the latest version");
+        }
+      });
     return known.get(id) ?? entry;
   }
 
@@ -226,21 +260,24 @@ export function createApiHabitsRepository(client: ApiClient, { today }: ApiHabit
     async create(input: HabitInput) {
       if (!input.title.trim()) invalid("A habit needs a name");
       checkInput(input);
-      assertSupported(input);
       const target = input.target ?? null;
-      const { data } = await mapErrors(async () =>
-        client.request("post", "/api/v1/habits", {
-          header: { "Idempotency-Key": newIdempotencyKey() },
-          body: {
-            title: input.title.trim(),
-            type: target ? "QUANTITY" : "CHECKBOX",
-            unit: target ? unitCode(target.unit) : "COUNT",
-            target: target ? decimal(target.amount) : "1",
-            timezone: getPlannerTimeZone(),
-            schedule: { version: 1, startDate: today(), rule: ruleFor(input.restWeekdays ?? []) },
-          },
-        }),
-      );
+      const body: HabitCreateBody = {
+        title: input.title.trim(),
+        type: target ? "QUANTITY" : "CHECKBOX",
+        unit: target ? unitCode(target.unit) : "COUNT",
+        target: target ? decimal(target.amount) : "1",
+        timezone: getPlannerTimeZone(),
+        schedule: { version: 1, startDate: today(), rule: ruleFor(input.restWeekdays ?? []) },
+        icon: toApiIcon(input.icon ?? "default"),
+        timeOfDay: toApiTime(input.timeOfDay ?? "anytime"),
+      };
+      const category = label(input.area);
+      if (category) body.category = category;
+      const unitText = target ? label(target.label) : null;
+      if (unitText) body.unitLabel = unitText;
+      if (input.preferredTime) body.preferredTime = input.preferredTime;
+      if (input.reminder) body.reminder = reminderBody(input.reminder);
+      const { data } = await mapErrors(async () => client.request("post", "/api/v1/habits", { header: { "Idempotency-Key": newIdempotencyKey() }, body }));
       const entry: Known = { dto: data, entries: new Map() };
       known.set(data.id, entry);
       order.push(data.id);
@@ -251,9 +288,17 @@ export function createApiHabitsRepository(client: ApiClient, { today }: ApiHabit
       checkInput(patch);
       const entry = await knownOrLoad(id);
       const { dto } = entry;
-      assertSupported(patch, toHabit(entry));
       const body: HabitPatchBody = {};
       if (patch.title !== undefined && patch.title.trim() !== dto.title) body.title = patch.title.trim();
+      if (patch.icon !== undefined && toApiIcon(patch.icon) !== (dto.icon ?? "DEFAULT")) body.icon = toApiIcon(patch.icon);
+      if (patch.area !== undefined && label(patch.area) !== (dto.category ?? null)) body.category = label(patch.area);
+      if (patch.timeOfDay !== undefined && toApiTime(patch.timeOfDay) !== (dto.timeOfDay ?? "ANYTIME")) body.timeOfDay = toApiTime(patch.timeOfDay);
+      if (patch.preferredTime !== undefined && (patch.preferredTime || null) !== (dto.preferredTime ?? null)) body.preferredTime = patch.preferredTime || null;
+      if (patch.reminder !== undefined) {
+        const next = reminderBody(patch.reminder);
+        const current = dto.reminder ? { time: dto.reminder.time, ifNotDone: dto.reminder.ifNotDone ?? true } : null;
+        if (JSON.stringify(next) !== JSON.stringify(current)) body.reminder = next;
+      }
       if (patch.restWeekdays !== undefined && !sameDays(patch.restWeekdays, restWeekdaysOf(dto.latestSchedule.schedule))) {
         body.schedule = { version: 1, startDate: dto.latestSchedule.schedule.startDate, rule: ruleFor(patch.restWeekdays) };
       }
@@ -263,6 +308,7 @@ export function createApiHabitsRepository(client: ApiClient, { today }: ApiHabit
         if (patch.target) {
           if (unitCode(patch.target.unit) !== dto.unit) unsupported("A habit's unit cannot change");
           if (Number(dto.latestSchedule.target) !== patch.target.amount) body.target = decimal(patch.target.amount);
+          if (patch.target.label !== undefined && label(patch.target.label) !== (dto.unitLabel ?? null)) body.unitLabel = label(patch.target.label);
         }
       }
       if (Object.keys(body).length === 0) return toHabit(entry);
@@ -272,7 +318,7 @@ export function createApiHabitsRepository(client: ApiClient, { today }: ApiHabit
     async setArchived(id, archived) {
       const entry = await knownOrLoad(id);
       if (isArchived(entry.dto) === archived) return toHabit(entry);
-      if (!archived) return toHabit(await patchHabit(id, { status: "ACTIVE" }));
+      if (!archived) return toHabit(await patchHabit(id, { status: "ACTIVE" }, true));
       const send = async () => {
         const current = known.get(id)!;
         current.dto = (await client.request("delete", "/api/v1/habits/{id}", { path: { id }, header: { "If-Match": revisionTag(current.dto.revision) }, body: {} })).data;

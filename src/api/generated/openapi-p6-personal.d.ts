@@ -4,6 +4,383 @@
  */
 
 export interface paths {
+    "/api/v1/habits": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Verified personal owner; strict Zod inputs and no ownership overposting. Cursor list, including retained archived habits, ordered by creation instant and UUID. */
+        get: operations["habits_get_habits"];
+        put?: never;
+        /** @description Verified personal owner; strict Zod inputs and no ownership overposting. Creates an independent checkbox, exact quantity or integer-second duration habit with an immutable measurement and initial versioned schedule. Omitted timezone uses the account timezone at creation; future account changes never rewrite it. WATER requires QUANTITY/ML. */
+        post: operations["habits_post_habits"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/habits/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Verified personal owner; strict Zod inputs and no ownership overposting. Returns current and latest schedule context; a future-start habit may have no current schedule. */
+        get: operations["habits_get_habits__id_"];
+        put?: never;
+        post?: never;
+        /** @description Verified personal owner; strict Zod inputs and no ownership overposting. Archives effective today without deleting entries, schedules or routine links. */
+        delete: operations["habits_delete_habits__id_"];
+        options?: never;
+        head?: never;
+        /** @description Verified personal owner; strict Zod inputs and no ownership overposting. Edit metadata or append a typed target/status/timezone/schedule snapshot. Past effectiveFrom requires confirmHistoricalChange:true. Edits mean that date and future dates. Prior snapshots and all entries remain. ACTIVE/PAUSED/ARCHIVED provide resume/pause/archive; no type/unit/purpose edits. */
+        patch: operations["habits_patch_habits__id_"];
+        trace?: never;
+    };
+    "/api/v1/habits/{id}/schedules": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Verified personal owner; strict Zod inputs and no ownership overposting. Immutable configuration history, max 100/page. Statistics read at most 1000 versions per habit; edits reject further versions at that bound. */
+        get: operations["habits_get_habits__id__schedules"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/habits/{id}/entries": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Verified personal owner; strict Zod inputs and no ownership overposting. Scoped current logical entries including void markers; optional half-open from/to range max 366 dates. Cursor binds habit and filters. */
+        get: operations["habits_get_habits__id__entries"];
+        put?: never;
+        /** @description Verified personal owner; strict Zod inputs and no ownership overposting. Requires habitRevision and Idempotency-Key. LOG appends an exact measure; checkbox defaults to 1 and is unique per date. SKIP is explicit and due-day-only, neutral and cannot override completion. Defaults localDate in the saved habit timezone; records immutable server timestamp, schedule timezone and current account recordedTimezone. Historical attribution differs from recording time; future logging is rejected. Rest/paused logs remain trackable; archived habits reject new logging. */
+        post: operations["habits_post_habits__id__entries"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/habits/{id}/entries/{entryId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Verified personal owner; strict Zod inputs and no ownership overposting. Reads a stable logical entry UUID, its current revision UUID and captured context. */
+        get: operations["habits_get_habits__id__entries__entryId_"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** @description Verified personal owner; strict Zod inputs and no ownership overposting. Requires entry If-Match and habitRevision. Appends a correction/void while preserving all earlier values/context/timestamps. Cannot change attributed date or measurement kind. Clear a skip with void:true before further logging. Historical corrections remain allowed after archive. */
+        patch: operations["habits_patch_habits__id__entries__entryId_"];
+        trace?: never;
+    };
+    "/api/v1/habits/{id}/entries/{entryId}/history": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Verified personal owner; strict Zod inputs and no ownership overposting. Typed entry revision history, ordered by monotonic logical revision, including tied recording timestamps and scoped cursor. */
+        get: operations["habits_get_habits__id__entries__entryId__history"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/habits/{id}/stats": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Verified personal owner; strict Zod inputs and no ownership overposting. Read-only recomputation over half-open from/to, max 366 dates. Explicit RANGE-scoped current/longest streak and completion numerator/denominator; no lifetime claim. Rest/pause/archive/skip dates are neutral, missed past due days break streaks, unmet asOf day is pending, later dates upcoming. asOfDate defaults to today in the saved habit zone and cannot be future. Exact contributions are recomputed after entry/schedule edits. Max 10000 current rows per calculation; RANGE_TOO_DENSE requires a narrower range. */
+        get: operations["habits_get_habits__id__stats"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/habits/water-summary": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Verified personal owner; strict Zod inputs and no ownership overposting. Exact ML totals per attributed date and WATER habit, including retained archived/rest-day history, with versioned target contexts. Optional habitId scopes one owned WATER habit. No inferred hydration goal. Bounded to 1000 habits, 10000 versions/current rows and 366 dates; RANGE_TOO_DENSE requires a narrower range or habit selection. */
+        get: operations["habits_get_habits_water_summary"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/routines/{id}/schedule": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Personal owner only. No Shared activation. Reads are bounded and do not require idempotency. Mutations return ETag. Occurrences use one stable routine/date identity; an unpersisted occurrence uses the current Routine revision. Progress reflects currently linked Habits and their real daily completion records. Schedule DST gaps are explicit; folds use the earlier instant. Capacity is advisory across configuration/calendar snapshots, unions half-open intervals, and reports UNKNOWN or DST_GAP instead of fabricated availability. Working-hours PUT replaces both weekly intervals and date exceptions; legacy availability writes clear interval configuration. Recoverable Focus commands use <=60-second heartbeat gaps, client event time between prior transition and receipt, and idempotent receipts. A stale timer requires RECOVER/finish/stop/discard; no gap is accrued. EXTEND requires minutes (5 for +5). Existing sessions use legacy routes. */
+        get: operations["getPersonalCompletionroutinesidschedule"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** @description Personal owner only. No Shared activation. Reads are bounded and do not require idempotency. Mutations return ETag. Occurrences use one stable routine/date identity; an unpersisted occurrence uses the current Routine revision. Progress reflects currently linked Habits and their real daily completion records. Schedule DST gaps are explicit; folds use the earlier instant. Capacity is advisory across configuration/calendar snapshots, unions half-open intervals, and reports UNKNOWN or DST_GAP instead of fabricated availability. Working-hours PUT replaces both weekly intervals and date exceptions; legacy availability writes clear interval configuration. Recoverable Focus commands use <=60-second heartbeat gaps, client event time between prior transition and receipt, and idempotent receipts. A stale timer requires RECOVER/finish/stop/discard; no gap is accrued. EXTEND requires minutes (5 for +5). Existing sessions use legacy routes. */
+        patch: operations["patchPersonalCompletionroutinesidschedule"];
+        trace?: never;
+    };
+    "/api/v1/routines/{id}/occurrences": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Personal owner only. No Shared activation. Reads are bounded and do not require idempotency. Mutations return ETag. Occurrences use one stable routine/date identity; an unpersisted occurrence uses the current Routine revision. Progress reflects currently linked Habits and their real daily completion records. Schedule DST gaps are explicit; folds use the earlier instant. Capacity is advisory across configuration/calendar snapshots, unions half-open intervals, and reports UNKNOWN or DST_GAP instead of fabricated availability. Working-hours PUT replaces both weekly intervals and date exceptions; legacy availability writes clear interval configuration. Recoverable Focus commands use <=60-second heartbeat gaps, client event time between prior transition and receipt, and idempotent receipts. A stale timer requires RECOVER/finish/stop/discard; no gap is accrued. EXTEND requires minutes (5 for +5). Existing sessions use legacy routes. */
+        get: operations["getPersonalCompletionroutinesidoccurrences"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/routines/{id}/occurrences/{date}/execute": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Personal owner only. No Shared activation. Reads are bounded and do not require idempotency. Mutations return ETag. Occurrences use one stable routine/date identity; an unpersisted occurrence uses the current Routine revision. Progress reflects currently linked Habits and their real daily completion records. Schedule DST gaps are explicit; folds use the earlier instant. Capacity is advisory across configuration/calendar snapshots, unions half-open intervals, and reports UNKNOWN or DST_GAP instead of fabricated availability. Working-hours PUT replaces both weekly intervals and date exceptions; legacy availability writes clear interval configuration. Recoverable Focus commands use <=60-second heartbeat gaps, client event time between prior transition and receipt, and idempotent receipts. A stale timer requires RECOVER/finish/stop/discard; no gap is accrued. EXTEND requires minutes (5 for +5). Existing sessions use legacy routes. */
+        post: operations["postPersonalCompletionroutinesidoccurrencesdateexecute"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/planning/working-hours": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Personal owner only. No Shared activation. Reads are bounded and do not require idempotency. Mutations return ETag. Occurrences use one stable routine/date identity; an unpersisted occurrence uses the current Routine revision. Progress reflects currently linked Habits and their real daily completion records. Schedule DST gaps are explicit; folds use the earlier instant. Capacity is advisory across configuration/calendar snapshots, unions half-open intervals, and reports UNKNOWN or DST_GAP instead of fabricated availability. Working-hours PUT replaces both weekly intervals and date exceptions; legacy availability writes clear interval configuration. Recoverable Focus commands use <=60-second heartbeat gaps, client event time between prior transition and receipt, and idempotent receipts. A stale timer requires RECOVER/finish/stop/discard; no gap is accrued. EXTEND requires minutes (5 for +5). Existing sessions use legacy routes. */
+        get: operations["getPersonalCompletionplanningworkinghours"];
+        /** @description Personal owner only. No Shared activation. Reads are bounded and do not require idempotency. Mutations return ETag. Occurrences use one stable routine/date identity; an unpersisted occurrence uses the current Routine revision. Progress reflects currently linked Habits and their real daily completion records. Schedule DST gaps are explicit; folds use the earlier instant. Capacity is advisory across configuration/calendar snapshots, unions half-open intervals, and reports UNKNOWN or DST_GAP instead of fabricated availability. Working-hours PUT replaces both weekly intervals and date exceptions; legacy availability writes clear interval configuration. Recoverable Focus commands use <=60-second heartbeat gaps, client event time between prior transition and receipt, and idempotent receipts. A stale timer requires RECOVER/finish/stop/discard; no gap is accrued. EXTEND requires minutes (5 for +5). Existing sessions use legacy routes. */
+        put: operations["putPersonalCompletionplanningworkinghours"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/planning/capacity/schedule": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Personal owner only. No Shared activation. Reads are bounded and do not require idempotency. Mutations return ETag. Occurrences use one stable routine/date identity; an unpersisted occurrence uses the current Routine revision. Progress reflects currently linked Habits and their real daily completion records. Schedule DST gaps are explicit; folds use the earlier instant. Capacity is advisory across configuration/calendar snapshots, unions half-open intervals, and reports UNKNOWN or DST_GAP instead of fabricated availability. Working-hours PUT replaces both weekly intervals and date exceptions; legacy availability writes clear interval configuration. Recoverable Focus commands use <=60-second heartbeat gaps, client event time between prior transition and receipt, and idempotent receipts. A stale timer requires RECOVER/finish/stop/discard; no gap is accrued. EXTEND requires minutes (5 for +5). Existing sessions use legacy routes. */
+        get: operations["getPersonalCompletionplanningcapacityschedule"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/focus/sessions/{id}/recovery": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Personal owner only. No Shared activation. Reads are bounded and do not require idempotency. Mutations return ETag. Occurrences use one stable routine/date identity; an unpersisted occurrence uses the current Routine revision. Progress reflects currently linked Habits and their real daily completion records. Schedule DST gaps are explicit; folds use the earlier instant. Capacity is advisory across configuration/calendar snapshots, unions half-open intervals, and reports UNKNOWN or DST_GAP instead of fabricated availability. Working-hours PUT replaces both weekly intervals and date exceptions; legacy availability writes clear interval configuration. Recoverable Focus commands use <=60-second heartbeat gaps, client event time between prior transition and receipt, and idempotent receipts. A stale timer requires RECOVER/finish/stop/discard; no gap is accrued. EXTEND requires minutes (5 for +5). Existing sessions use legacy routes. */
+        post: operations["postPersonalCompletionfocussessionsidrecovery"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/focus/sessions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Verified personal owner; strict inputs, scoped resources and source IDs; safe 404 for foreign resources. Stable creation/logical-UUID scoped cursor list with current database-clock projections. */
+        get: operations["focus_get_focus_sessions"];
+        put?: never;
+        /** @description Verified personal owner; strict inputs, scoped resources and source IDs; safe 404 for foreign resources. Create IDLE STOPWATCH or finite POMODORO; saved timezone defaults from account. Optional Task needs taskRevision and an actionable ordinary Task. No Task mutation. */
+        post: operations["focus_post_focus_sessions"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/focus/sessions/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Verified personal owner; strict inputs, scoped resources and source IDs; safe 404 for foreign resources. Read current state and work/break/remaining milliseconds. RUNNING continues during client/API downtime; finite schedules cap at READY_TO_FINISH but keep reservation until explicit finish/stop. Clock regressions are clamped and reported. */
+        get: operations["focus_get_focus_sessions__id_"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** @description Verified personal owner; strict inputs, scoped resources and source IDs; safe 404 for foreign resources. IDLE-only title/config/Task-link edit, preserving typed historical revisions and saved timezone. Cannot change mode or mutate Tasks. */
+        patch: operations["focus_patch_focus_sessions__id_"];
+        trace?: never;
+    };
+    "/api/v1/notifications/unread-count": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getNotificationnotificationsunreadcount"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/notifications/preferences": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getNotificationnotificationspreferences"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["patchNotificationnotificationspreferences"];
+        trace?: never;
+    };
+    "/api/v1/me/deletion-policy": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getmedeletionpolicy"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/me/deletion-request/current": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getmedeletionrequestcurrent"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/invitation-notifications": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["clientInvitationsgetinvitationnotifications"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/invitation-notifications/{kind}/{id}/read": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["clientInvitationspostinvitationnotificationskindidread"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/brain-dump/pages": {
         parameters: {
             query?: never;
@@ -212,210 +589,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/routines/{id}/schedule": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** @description Personal owner only. No Shared activation. Reads are bounded and do not require idempotency. Mutations return ETag. Occurrences use one stable routine/date identity; an unpersisted occurrence uses the current Routine revision. Progress reflects currently linked Habits and their real daily completion records. Schedule DST gaps are explicit; folds use the earlier instant. Capacity is advisory across configuration/calendar snapshots, unions half-open intervals, and reports UNKNOWN or DST_GAP instead of fabricated availability. Working-hours PUT replaces both weekly intervals and date exceptions; legacy availability writes clear interval configuration. Recoverable Focus commands use <=60-second heartbeat gaps, client event time between prior transition and receipt, and idempotent receipts. A stale timer requires RECOVER/finish/stop/discard; no gap is accrued. EXTEND requires minutes (5 for +5). Existing sessions use legacy routes. */
-        get: operations["getPersonalCompletionroutinesidschedule"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        /** @description Personal owner only. No Shared activation. Reads are bounded and do not require idempotency. Mutations return ETag. Occurrences use one stable routine/date identity; an unpersisted occurrence uses the current Routine revision. Progress reflects currently linked Habits and their real daily completion records. Schedule DST gaps are explicit; folds use the earlier instant. Capacity is advisory across configuration/calendar snapshots, unions half-open intervals, and reports UNKNOWN or DST_GAP instead of fabricated availability. Working-hours PUT replaces both weekly intervals and date exceptions; legacy availability writes clear interval configuration. Recoverable Focus commands use <=60-second heartbeat gaps, client event time between prior transition and receipt, and idempotent receipts. A stale timer requires RECOVER/finish/stop/discard; no gap is accrued. EXTEND requires minutes (5 for +5). Existing sessions use legacy routes. */
-        patch: operations["patchPersonalCompletionroutinesidschedule"];
-        trace?: never;
-    };
-    "/api/v1/routines/{id}/occurrences": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** @description Personal owner only. No Shared activation. Reads are bounded and do not require idempotency. Mutations return ETag. Occurrences use one stable routine/date identity; an unpersisted occurrence uses the current Routine revision. Progress reflects currently linked Habits and their real daily completion records. Schedule DST gaps are explicit; folds use the earlier instant. Capacity is advisory across configuration/calendar snapshots, unions half-open intervals, and reports UNKNOWN or DST_GAP instead of fabricated availability. Working-hours PUT replaces both weekly intervals and date exceptions; legacy availability writes clear interval configuration. Recoverable Focus commands use <=60-second heartbeat gaps, client event time between prior transition and receipt, and idempotent receipts. A stale timer requires RECOVER/finish/stop/discard; no gap is accrued. EXTEND requires minutes (5 for +5). Existing sessions use legacy routes. */
-        get: operations["getPersonalCompletionroutinesidoccurrences"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/routines/{id}/occurrences/{date}/execute": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** @description Personal owner only. No Shared activation. Reads are bounded and do not require idempotency. Mutations return ETag. Occurrences use one stable routine/date identity; an unpersisted occurrence uses the current Routine revision. Progress reflects currently linked Habits and their real daily completion records. Schedule DST gaps are explicit; folds use the earlier instant. Capacity is advisory across configuration/calendar snapshots, unions half-open intervals, and reports UNKNOWN or DST_GAP instead of fabricated availability. Working-hours PUT replaces both weekly intervals and date exceptions; legacy availability writes clear interval configuration. Recoverable Focus commands use <=60-second heartbeat gaps, client event time between prior transition and receipt, and idempotent receipts. A stale timer requires RECOVER/finish/stop/discard; no gap is accrued. EXTEND requires minutes (5 for +5). Existing sessions use legacy routes. */
-        post: operations["postPersonalCompletionroutinesidoccurrencesdateexecute"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/planning/working-hours": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** @description Personal owner only. No Shared activation. Reads are bounded and do not require idempotency. Mutations return ETag. Occurrences use one stable routine/date identity; an unpersisted occurrence uses the current Routine revision. Progress reflects currently linked Habits and their real daily completion records. Schedule DST gaps are explicit; folds use the earlier instant. Capacity is advisory across configuration/calendar snapshots, unions half-open intervals, and reports UNKNOWN or DST_GAP instead of fabricated availability. Working-hours PUT replaces both weekly intervals and date exceptions; legacy availability writes clear interval configuration. Recoverable Focus commands use <=60-second heartbeat gaps, client event time between prior transition and receipt, and idempotent receipts. A stale timer requires RECOVER/finish/stop/discard; no gap is accrued. EXTEND requires minutes (5 for +5). Existing sessions use legacy routes. */
-        get: operations["getPersonalCompletionplanningworkinghours"];
-        /** @description Personal owner only. No Shared activation. Reads are bounded and do not require idempotency. Mutations return ETag. Occurrences use one stable routine/date identity; an unpersisted occurrence uses the current Routine revision. Progress reflects currently linked Habits and their real daily completion records. Schedule DST gaps are explicit; folds use the earlier instant. Capacity is advisory across configuration/calendar snapshots, unions half-open intervals, and reports UNKNOWN or DST_GAP instead of fabricated availability. Working-hours PUT replaces both weekly intervals and date exceptions; legacy availability writes clear interval configuration. Recoverable Focus commands use <=60-second heartbeat gaps, client event time between prior transition and receipt, and idempotent receipts. A stale timer requires RECOVER/finish/stop/discard; no gap is accrued. EXTEND requires minutes (5 for +5). Existing sessions use legacy routes. */
-        put: operations["putPersonalCompletionplanningworkinghours"];
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/planning/capacity/schedule": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** @description Personal owner only. No Shared activation. Reads are bounded and do not require idempotency. Mutations return ETag. Occurrences use one stable routine/date identity; an unpersisted occurrence uses the current Routine revision. Progress reflects currently linked Habits and their real daily completion records. Schedule DST gaps are explicit; folds use the earlier instant. Capacity is advisory across configuration/calendar snapshots, unions half-open intervals, and reports UNKNOWN or DST_GAP instead of fabricated availability. Working-hours PUT replaces both weekly intervals and date exceptions; legacy availability writes clear interval configuration. Recoverable Focus commands use <=60-second heartbeat gaps, client event time between prior transition and receipt, and idempotent receipts. A stale timer requires RECOVER/finish/stop/discard; no gap is accrued. EXTEND requires minutes (5 for +5). Existing sessions use legacy routes. */
-        get: operations["getPersonalCompletionplanningcapacityschedule"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/focus/sessions": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** @description Verified personal owner; strict inputs, scoped resources and source IDs; safe 404 for foreign resources. Stable creation/logical-UUID scoped cursor list with current database-clock projections. */
-        get: operations["focus_get_focus_sessions"];
-        put?: never;
-        /** @description Verified personal owner; strict inputs, scoped resources and source IDs; safe 404 for foreign resources. Create IDLE STOPWATCH or finite POMODORO; saved timezone defaults from account. Optional Task needs taskRevision and an actionable ordinary Task. No Task mutation. */
-        post: operations["focus_post_focus_sessions"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/focus/sessions/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** @description Verified personal owner; strict inputs, scoped resources and source IDs; safe 404 for foreign resources. Read current state and work/break/remaining milliseconds. RUNNING continues during client/API downtime; finite schedules cap at READY_TO_FINISH but keep reservation until explicit finish/stop. Clock regressions are clamped and reported. */
-        get: operations["focus_get_focus_sessions__id_"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        /** @description Verified personal owner; strict inputs, scoped resources and source IDs; safe 404 for foreign resources. IDLE-only title/config/Task-link edit, preserving typed historical revisions and saved timezone. Cannot change mode or mutate Tasks. */
-        patch: operations["focus_patch_focus_sessions__id_"];
-        trace?: never;
-    };
-    "/api/v1/focus/sessions/{id}/recovery": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** @description Personal owner only. No Shared activation. Reads are bounded and do not require idempotency. Mutations return ETag. Occurrences use one stable routine/date identity; an unpersisted occurrence uses the current Routine revision. Progress reflects currently linked Habits and their real daily completion records. Schedule DST gaps are explicit; folds use the earlier instant. Capacity is advisory across configuration/calendar snapshots, unions half-open intervals, and reports UNKNOWN or DST_GAP instead of fabricated availability. Working-hours PUT replaces both weekly intervals and date exceptions; legacy availability writes clear interval configuration. Recoverable Focus commands use <=60-second heartbeat gaps, client event time between prior transition and receipt, and idempotent receipts. A stale timer requires RECOVER/finish/stop/discard; no gap is accrued. EXTEND requires minutes (5 for +5). Existing sessions use legacy routes. */
-        post: operations["postPersonalCompletionfocussessionsidrecovery"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/notifications/unread-count": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["getNotificationnotificationsunreadcount"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/me/deletion-policy": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["getmedeletionpolicy"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/me/deletion-request/current": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["getmedeletionrequestcurrent"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/notifications/preferences": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["getNotificationnotificationspreferences"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch: operations["patchNotificationnotificationspreferences"];
-        trace?: never;
-    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -433,22 +606,6 @@ export interface components {
                 requestId: string;
             };
         };
-        LiveHealth: {
-            /** @constant */
-            status: "ok";
-        };
-        ReadyHealth: {
-            /** @constant */
-            status: "ok";
-            checks: {
-                /** @constant */
-                database: "up";
-            };
-        };
-        CursorQuery: {
-            limit?: string;
-            cursor?: string;
-        };
     };
     responses: never;
     parameters: never;
@@ -458,6 +615,4664 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    habits_get_habits: {
+        parameters: {
+            query?: {
+                limit?: string;
+                cursor?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        items: {
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            spaceId: string;
+                            /** Format: uuid */
+                            createdByUserId: string;
+                            revision: number;
+                            /** Format: date-time */
+                            createdAt: string;
+                            /** Format: date-time */
+                            updatedAt: string;
+                            title: string;
+                            /** @enum {string} */
+                            icon?: "DEFAULT" | "WATER" | "BOOK" | "EXERCISE" | "SLEEP" | "FOOD" | "MEDITATION" | "STUDY" | "WORK" | "HEALTH";
+                            reminder?: {
+                                time: string;
+                                /** @default true */
+                                ifNotDone: boolean;
+                            } | null;
+                            category?: string | null;
+                            unitLabel?: string | null;
+                            /** @enum {string} */
+                            timeOfDay?: "ANYTIME" | "MORNING" | "AFTERNOON" | "EVENING";
+                            preferredTime?: string | null;
+                            /** @enum {string} */
+                            type: "CHECKBOX" | "QUANTITY" | "DURATION";
+                            unit: string;
+                            /** @enum {string} */
+                            purpose: "GENERIC" | "WATER";
+                            currentSchedule: {
+                                /** Format: uuid */
+                                id: string;
+                                /** Format: uuid */
+                                habitId: string;
+                                revision: number;
+                                /** Format: date */
+                                effectiveFrom: string;
+                                timezone: string;
+                                target: string;
+                                /** @enum {string} */
+                                status: "ACTIVE" | "PAUSED" | "ARCHIVED";
+                                schedule: {
+                                    /**
+                                     * @default 1
+                                     * @constant
+                                     */
+                                    version: 1;
+                                    /** Format: date */
+                                    startDate: string;
+                                    rule: {
+                                        /** @constant */
+                                        kind: "DAILY";
+                                    } | {
+                                        /** @constant */
+                                        kind: "WEEKLY";
+                                    } | {
+                                        /** @constant */
+                                        kind: "WEEKDAYS";
+                                        weekdays: number[];
+                                    } | {
+                                        /** @constant */
+                                        kind: "INTERVAL";
+                                        days: number;
+                                    };
+                                };
+                                /** Format: date-time */
+                                createdAt: string;
+                            } | null;
+                            latestSchedule: {
+                                /** Format: uuid */
+                                id: string;
+                                /** Format: uuid */
+                                habitId: string;
+                                revision: number;
+                                /** Format: date */
+                                effectiveFrom: string;
+                                timezone: string;
+                                target: string;
+                                /** @enum {string} */
+                                status: "ACTIVE" | "PAUSED" | "ARCHIVED";
+                                schedule: {
+                                    /**
+                                     * @default 1
+                                     * @constant
+                                     */
+                                    version: 1;
+                                    /** Format: date */
+                                    startDate: string;
+                                    rule: {
+                                        /** @constant */
+                                        kind: "DAILY";
+                                    } | {
+                                        /** @constant */
+                                        kind: "WEEKLY";
+                                    } | {
+                                        /** @constant */
+                                        kind: "WEEKDAYS";
+                                        weekdays: number[];
+                                    } | {
+                                        /** @constant */
+                                        kind: "INTERVAL";
+                                        days: number;
+                                    };
+                                };
+                                /** Format: date-time */
+                                createdAt: string;
+                            };
+                        }[];
+                        nextCursor: string | null;
+                    };
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    habits_post_habits: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "Idempotency-Key": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    title: string;
+                    /** @enum {string} */
+                    icon?: "DEFAULT" | "WATER" | "BOOK" | "EXERCISE" | "SLEEP" | "FOOD" | "MEDITATION" | "STUDY" | "WORK" | "HEALTH";
+                    reminder?: {
+                        time: string;
+                        /** @default true */
+                        ifNotDone?: boolean;
+                    } | null;
+                    category?: string | null;
+                    unitLabel?: string | null;
+                    /** @enum {string} */
+                    timeOfDay?: "ANYTIME" | "MORNING" | "AFTERNOON" | "EVENING";
+                    preferredTime?: string | null;
+                    /** @enum {string} */
+                    type: "CHECKBOX" | "QUANTITY" | "DURATION";
+                    unit: string;
+                    /**
+                     * @default GENERIC
+                     * @enum {string}
+                     */
+                    purpose?: "GENERIC" | "WATER";
+                    target: string;
+                    timezone?: string;
+                    schedule: {
+                        /**
+                         * @default 1
+                         * @constant
+                         */
+                        version?: 1;
+                        /** Format: date */
+                        startDate: string;
+                        rule: {
+                            /** @constant */
+                            kind: "DAILY";
+                        } | {
+                            /** @constant */
+                            kind: "WEEKLY";
+                        } | {
+                            /** @constant */
+                            kind: "WEEKDAYS";
+                            weekdays: number[];
+                        } | {
+                            /** @constant */
+                            kind: "INTERVAL";
+                            days: number;
+                        };
+                    };
+                };
+            };
+        };
+        responses: {
+            /** @description Success */
+            201: {
+                headers: {
+                    /** @description Quoted owning aggregate or logical entry revision. */
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        /** Format: uuid */
+                        spaceId: string;
+                        /** Format: uuid */
+                        createdByUserId: string;
+                        revision: number;
+                        /** Format: date-time */
+                        createdAt: string;
+                        /** Format: date-time */
+                        updatedAt: string;
+                        title: string;
+                        /** @enum {string} */
+                        icon?: "DEFAULT" | "WATER" | "BOOK" | "EXERCISE" | "SLEEP" | "FOOD" | "MEDITATION" | "STUDY" | "WORK" | "HEALTH";
+                        reminder?: {
+                            time: string;
+                            /** @default true */
+                            ifNotDone: boolean;
+                        } | null;
+                        category?: string | null;
+                        unitLabel?: string | null;
+                        /** @enum {string} */
+                        timeOfDay?: "ANYTIME" | "MORNING" | "AFTERNOON" | "EVENING";
+                        preferredTime?: string | null;
+                        /** @enum {string} */
+                        type: "CHECKBOX" | "QUANTITY" | "DURATION";
+                        unit: string;
+                        /** @enum {string} */
+                        purpose: "GENERIC" | "WATER";
+                        currentSchedule: {
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            habitId: string;
+                            revision: number;
+                            /** Format: date */
+                            effectiveFrom: string;
+                            timezone: string;
+                            target: string;
+                            /** @enum {string} */
+                            status: "ACTIVE" | "PAUSED" | "ARCHIVED";
+                            schedule: {
+                                /**
+                                 * @default 1
+                                 * @constant
+                                 */
+                                version: 1;
+                                /** Format: date */
+                                startDate: string;
+                                rule: {
+                                    /** @constant */
+                                    kind: "DAILY";
+                                } | {
+                                    /** @constant */
+                                    kind: "WEEKLY";
+                                } | {
+                                    /** @constant */
+                                    kind: "WEEKDAYS";
+                                    weekdays: number[];
+                                } | {
+                                    /** @constant */
+                                    kind: "INTERVAL";
+                                    days: number;
+                                };
+                            };
+                            /** Format: date-time */
+                            createdAt: string;
+                        } | null;
+                        latestSchedule: {
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            habitId: string;
+                            revision: number;
+                            /** Format: date */
+                            effectiveFrom: string;
+                            timezone: string;
+                            target: string;
+                            /** @enum {string} */
+                            status: "ACTIVE" | "PAUSED" | "ARCHIVED";
+                            schedule: {
+                                /**
+                                 * @default 1
+                                 * @constant
+                                 */
+                                version: 1;
+                                /** Format: date */
+                                startDate: string;
+                                rule: {
+                                    /** @constant */
+                                    kind: "DAILY";
+                                } | {
+                                    /** @constant */
+                                    kind: "WEEKLY";
+                                } | {
+                                    /** @constant */
+                                    kind: "WEEKDAYS";
+                                    weekdays: number[];
+                                } | {
+                                    /** @constant */
+                                    kind: "INTERVAL";
+                                    days: number;
+                                };
+                            };
+                            /** Format: date-time */
+                            createdAt: string;
+                        };
+                    };
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    habits_get_habits__id_: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    /** @description Quoted owning aggregate or logical entry revision. */
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        /** Format: uuid */
+                        spaceId: string;
+                        /** Format: uuid */
+                        createdByUserId: string;
+                        revision: number;
+                        /** Format: date-time */
+                        createdAt: string;
+                        /** Format: date-time */
+                        updatedAt: string;
+                        title: string;
+                        /** @enum {string} */
+                        icon?: "DEFAULT" | "WATER" | "BOOK" | "EXERCISE" | "SLEEP" | "FOOD" | "MEDITATION" | "STUDY" | "WORK" | "HEALTH";
+                        reminder?: {
+                            time: string;
+                            /** @default true */
+                            ifNotDone: boolean;
+                        } | null;
+                        category?: string | null;
+                        unitLabel?: string | null;
+                        /** @enum {string} */
+                        timeOfDay?: "ANYTIME" | "MORNING" | "AFTERNOON" | "EVENING";
+                        preferredTime?: string | null;
+                        /** @enum {string} */
+                        type: "CHECKBOX" | "QUANTITY" | "DURATION";
+                        unit: string;
+                        /** @enum {string} */
+                        purpose: "GENERIC" | "WATER";
+                        currentSchedule: {
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            habitId: string;
+                            revision: number;
+                            /** Format: date */
+                            effectiveFrom: string;
+                            timezone: string;
+                            target: string;
+                            /** @enum {string} */
+                            status: "ACTIVE" | "PAUSED" | "ARCHIVED";
+                            schedule: {
+                                /**
+                                 * @default 1
+                                 * @constant
+                                 */
+                                version: 1;
+                                /** Format: date */
+                                startDate: string;
+                                rule: {
+                                    /** @constant */
+                                    kind: "DAILY";
+                                } | {
+                                    /** @constant */
+                                    kind: "WEEKLY";
+                                } | {
+                                    /** @constant */
+                                    kind: "WEEKDAYS";
+                                    weekdays: number[];
+                                } | {
+                                    /** @constant */
+                                    kind: "INTERVAL";
+                                    days: number;
+                                };
+                            };
+                            /** Format: date-time */
+                            createdAt: string;
+                        } | null;
+                        latestSchedule: {
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            habitId: string;
+                            revision: number;
+                            /** Format: date */
+                            effectiveFrom: string;
+                            timezone: string;
+                            target: string;
+                            /** @enum {string} */
+                            status: "ACTIVE" | "PAUSED" | "ARCHIVED";
+                            schedule: {
+                                /**
+                                 * @default 1
+                                 * @constant
+                                 */
+                                version: 1;
+                                /** Format: date */
+                                startDate: string;
+                                rule: {
+                                    /** @constant */
+                                    kind: "DAILY";
+                                } | {
+                                    /** @constant */
+                                    kind: "WEEKLY";
+                                } | {
+                                    /** @constant */
+                                    kind: "WEEKDAYS";
+                                    weekdays: number[];
+                                } | {
+                                    /** @constant */
+                                    kind: "INTERVAL";
+                                    days: number;
+                                };
+                            };
+                            /** Format: date-time */
+                            createdAt: string;
+                        };
+                    };
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    habits_delete_habits__id_: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "If-Match": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": Record<string, never>;
+            };
+        };
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    /** @description Quoted owning aggregate or logical entry revision. */
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        /** Format: uuid */
+                        spaceId: string;
+                        /** Format: uuid */
+                        createdByUserId: string;
+                        revision: number;
+                        /** Format: date-time */
+                        createdAt: string;
+                        /** Format: date-time */
+                        updatedAt: string;
+                        title: string;
+                        /** @enum {string} */
+                        icon?: "DEFAULT" | "WATER" | "BOOK" | "EXERCISE" | "SLEEP" | "FOOD" | "MEDITATION" | "STUDY" | "WORK" | "HEALTH";
+                        reminder?: {
+                            time: string;
+                            /** @default true */
+                            ifNotDone: boolean;
+                        } | null;
+                        category?: string | null;
+                        unitLabel?: string | null;
+                        /** @enum {string} */
+                        timeOfDay?: "ANYTIME" | "MORNING" | "AFTERNOON" | "EVENING";
+                        preferredTime?: string | null;
+                        /** @enum {string} */
+                        type: "CHECKBOX" | "QUANTITY" | "DURATION";
+                        unit: string;
+                        /** @enum {string} */
+                        purpose: "GENERIC" | "WATER";
+                        currentSchedule: {
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            habitId: string;
+                            revision: number;
+                            /** Format: date */
+                            effectiveFrom: string;
+                            timezone: string;
+                            target: string;
+                            /** @enum {string} */
+                            status: "ACTIVE" | "PAUSED" | "ARCHIVED";
+                            schedule: {
+                                /**
+                                 * @default 1
+                                 * @constant
+                                 */
+                                version: 1;
+                                /** Format: date */
+                                startDate: string;
+                                rule: {
+                                    /** @constant */
+                                    kind: "DAILY";
+                                } | {
+                                    /** @constant */
+                                    kind: "WEEKLY";
+                                } | {
+                                    /** @constant */
+                                    kind: "WEEKDAYS";
+                                    weekdays: number[];
+                                } | {
+                                    /** @constant */
+                                    kind: "INTERVAL";
+                                    days: number;
+                                };
+                            };
+                            /** Format: date-time */
+                            createdAt: string;
+                        } | null;
+                        latestSchedule: {
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            habitId: string;
+                            revision: number;
+                            /** Format: date */
+                            effectiveFrom: string;
+                            timezone: string;
+                            target: string;
+                            /** @enum {string} */
+                            status: "ACTIVE" | "PAUSED" | "ARCHIVED";
+                            schedule: {
+                                /**
+                                 * @default 1
+                                 * @constant
+                                 */
+                                version: 1;
+                                /** Format: date */
+                                startDate: string;
+                                rule: {
+                                    /** @constant */
+                                    kind: "DAILY";
+                                } | {
+                                    /** @constant */
+                                    kind: "WEEKLY";
+                                } | {
+                                    /** @constant */
+                                    kind: "WEEKDAYS";
+                                    weekdays: number[];
+                                } | {
+                                    /** @constant */
+                                    kind: "INTERVAL";
+                                    days: number;
+                                };
+                            };
+                            /** Format: date-time */
+                            createdAt: string;
+                        };
+                    };
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    habits_patch_habits__id_: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "If-Match": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    title?: string;
+                    /** @enum {string} */
+                    icon?: "DEFAULT" | "WATER" | "BOOK" | "EXERCISE" | "SLEEP" | "FOOD" | "MEDITATION" | "STUDY" | "WORK" | "HEALTH";
+                    reminder?: {
+                        time: string;
+                        /** @default true */
+                        ifNotDone?: boolean;
+                    } | null;
+                    category?: string | null;
+                    unitLabel?: string | null;
+                    /** @enum {string} */
+                    timeOfDay?: "ANYTIME" | "MORNING" | "AFTERNOON" | "EVENING";
+                    preferredTime?: string | null;
+                    target?: string;
+                    timezone?: string;
+                    schedule?: {
+                        /**
+                         * @default 1
+                         * @constant
+                         */
+                        version?: 1;
+                        /** Format: date */
+                        startDate: string;
+                        rule: {
+                            /** @constant */
+                            kind: "DAILY";
+                        } | {
+                            /** @constant */
+                            kind: "WEEKLY";
+                        } | {
+                            /** @constant */
+                            kind: "WEEKDAYS";
+                            weekdays: number[];
+                        } | {
+                            /** @constant */
+                            kind: "INTERVAL";
+                            days: number;
+                        };
+                    };
+                    /** @enum {string} */
+                    status?: "ACTIVE" | "PAUSED" | "ARCHIVED";
+                    /** Format: date */
+                    effectiveFrom?: string;
+                    confirmHistoricalChange?: boolean;
+                };
+            };
+        };
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    /** @description Quoted owning aggregate or logical entry revision. */
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        /** Format: uuid */
+                        spaceId: string;
+                        /** Format: uuid */
+                        createdByUserId: string;
+                        revision: number;
+                        /** Format: date-time */
+                        createdAt: string;
+                        /** Format: date-time */
+                        updatedAt: string;
+                        title: string;
+                        /** @enum {string} */
+                        icon?: "DEFAULT" | "WATER" | "BOOK" | "EXERCISE" | "SLEEP" | "FOOD" | "MEDITATION" | "STUDY" | "WORK" | "HEALTH";
+                        reminder?: {
+                            time: string;
+                            /** @default true */
+                            ifNotDone: boolean;
+                        } | null;
+                        category?: string | null;
+                        unitLabel?: string | null;
+                        /** @enum {string} */
+                        timeOfDay?: "ANYTIME" | "MORNING" | "AFTERNOON" | "EVENING";
+                        preferredTime?: string | null;
+                        /** @enum {string} */
+                        type: "CHECKBOX" | "QUANTITY" | "DURATION";
+                        unit: string;
+                        /** @enum {string} */
+                        purpose: "GENERIC" | "WATER";
+                        currentSchedule: {
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            habitId: string;
+                            revision: number;
+                            /** Format: date */
+                            effectiveFrom: string;
+                            timezone: string;
+                            target: string;
+                            /** @enum {string} */
+                            status: "ACTIVE" | "PAUSED" | "ARCHIVED";
+                            schedule: {
+                                /**
+                                 * @default 1
+                                 * @constant
+                                 */
+                                version: 1;
+                                /** Format: date */
+                                startDate: string;
+                                rule: {
+                                    /** @constant */
+                                    kind: "DAILY";
+                                } | {
+                                    /** @constant */
+                                    kind: "WEEKLY";
+                                } | {
+                                    /** @constant */
+                                    kind: "WEEKDAYS";
+                                    weekdays: number[];
+                                } | {
+                                    /** @constant */
+                                    kind: "INTERVAL";
+                                    days: number;
+                                };
+                            };
+                            /** Format: date-time */
+                            createdAt: string;
+                        } | null;
+                        latestSchedule: {
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            habitId: string;
+                            revision: number;
+                            /** Format: date */
+                            effectiveFrom: string;
+                            timezone: string;
+                            target: string;
+                            /** @enum {string} */
+                            status: "ACTIVE" | "PAUSED" | "ARCHIVED";
+                            schedule: {
+                                /**
+                                 * @default 1
+                                 * @constant
+                                 */
+                                version: 1;
+                                /** Format: date */
+                                startDate: string;
+                                rule: {
+                                    /** @constant */
+                                    kind: "DAILY";
+                                } | {
+                                    /** @constant */
+                                    kind: "WEEKLY";
+                                } | {
+                                    /** @constant */
+                                    kind: "WEEKDAYS";
+                                    weekdays: number[];
+                                } | {
+                                    /** @constant */
+                                    kind: "INTERVAL";
+                                    days: number;
+                                };
+                            };
+                            /** Format: date-time */
+                            createdAt: string;
+                        };
+                    };
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    habits_get_habits__id__schedules: {
+        parameters: {
+            query?: {
+                limit?: string;
+                cursor?: string;
+            };
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        items: {
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            habitId: string;
+                            revision: number;
+                            /** Format: date */
+                            effectiveFrom: string;
+                            timezone: string;
+                            target: string;
+                            /** @enum {string} */
+                            status: "ACTIVE" | "PAUSED" | "ARCHIVED";
+                            schedule: {
+                                /**
+                                 * @default 1
+                                 * @constant
+                                 */
+                                version: 1;
+                                /** Format: date */
+                                startDate: string;
+                                rule: {
+                                    /** @constant */
+                                    kind: "DAILY";
+                                } | {
+                                    /** @constant */
+                                    kind: "WEEKLY";
+                                } | {
+                                    /** @constant */
+                                    kind: "WEEKDAYS";
+                                    weekdays: number[];
+                                } | {
+                                    /** @constant */
+                                    kind: "INTERVAL";
+                                    days: number;
+                                };
+                            };
+                            /** Format: date-time */
+                            createdAt: string;
+                        }[];
+                        nextCursor: string | null;
+                    };
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    habits_get_habits__id__entries: {
+        parameters: {
+            query?: {
+                limit?: string;
+                cursor?: string;
+                from?: string;
+                to?: string;
+            };
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        items: {
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            revisionId: string;
+                            /** Format: uuid */
+                            habitId: string;
+                            /** Format: uuid */
+                            scheduleId: string;
+                            revision: number;
+                            previousRevisionId: string | null;
+                            /** @enum {string} */
+                            kind: "CHECKBOX" | "QUANTITY" | "DURATION" | "SKIP";
+                            /** @enum {string} */
+                            state: "RECORDED" | "VOID";
+                            /** Format: date */
+                            localDate: string;
+                            value: string | null;
+                            timezone: string;
+                            recordedTimezone: string;
+                            /** Format: date-time */
+                            recordedAt: string;
+                            /** Format: uuid */
+                            actorUserId: string;
+                            current: boolean;
+                        }[];
+                        nextCursor: string | null;
+                    };
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    habits_post_habits__id__entries: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "Idempotency-Key": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    habitRevision: number;
+                    /** Format: date */
+                    localDate?: string;
+                    /**
+                     * @default LOG
+                     * @enum {string}
+                     */
+                    action?: "LOG" | "SKIP";
+                    value?: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Success */
+            201: {
+                headers: {
+                    /** @description Quoted owning aggregate or logical entry revision. */
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        /** Format: uuid */
+                        revisionId: string;
+                        /** Format: uuid */
+                        habitId: string;
+                        /** Format: uuid */
+                        scheduleId: string;
+                        revision: number;
+                        previousRevisionId: string | null;
+                        /** @enum {string} */
+                        kind: "CHECKBOX" | "QUANTITY" | "DURATION" | "SKIP";
+                        /** @enum {string} */
+                        state: "RECORDED" | "VOID";
+                        /** Format: date */
+                        localDate: string;
+                        value: string | null;
+                        timezone: string;
+                        recordedTimezone: string;
+                        /** Format: date-time */
+                        recordedAt: string;
+                        /** Format: uuid */
+                        actorUserId: string;
+                        current: boolean;
+                    };
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    habits_get_habits__id__entries__entryId_: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+                entryId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    /** @description Quoted owning aggregate or logical entry revision. */
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        /** Format: uuid */
+                        revisionId: string;
+                        /** Format: uuid */
+                        habitId: string;
+                        /** Format: uuid */
+                        scheduleId: string;
+                        revision: number;
+                        previousRevisionId: string | null;
+                        /** @enum {string} */
+                        kind: "CHECKBOX" | "QUANTITY" | "DURATION" | "SKIP";
+                        /** @enum {string} */
+                        state: "RECORDED" | "VOID";
+                        /** Format: date */
+                        localDate: string;
+                        value: string | null;
+                        timezone: string;
+                        recordedTimezone: string;
+                        /** Format: date-time */
+                        recordedAt: string;
+                        /** Format: uuid */
+                        actorUserId: string;
+                        current: boolean;
+                    };
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    habits_patch_habits__id__entries__entryId_: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "If-Match": string;
+            };
+            path: {
+                id: string;
+                entryId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    habitRevision: number;
+                    value?: string;
+                    void?: boolean;
+                };
+            };
+        };
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    /** @description Quoted owning aggregate or logical entry revision. */
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        /** Format: uuid */
+                        revisionId: string;
+                        /** Format: uuid */
+                        habitId: string;
+                        /** Format: uuid */
+                        scheduleId: string;
+                        revision: number;
+                        previousRevisionId: string | null;
+                        /** @enum {string} */
+                        kind: "CHECKBOX" | "QUANTITY" | "DURATION" | "SKIP";
+                        /** @enum {string} */
+                        state: "RECORDED" | "VOID";
+                        /** Format: date */
+                        localDate: string;
+                        value: string | null;
+                        timezone: string;
+                        recordedTimezone: string;
+                        /** Format: date-time */
+                        recordedAt: string;
+                        /** Format: uuid */
+                        actorUserId: string;
+                        current: boolean;
+                    };
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    habits_get_habits__id__entries__entryId__history: {
+        parameters: {
+            query?: {
+                limit?: string;
+                cursor?: string;
+            };
+            header?: never;
+            path: {
+                id: string;
+                entryId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        items: {
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            revisionId: string;
+                            /** Format: uuid */
+                            habitId: string;
+                            /** Format: uuid */
+                            scheduleId: string;
+                            revision: number;
+                            previousRevisionId: string | null;
+                            /** @enum {string} */
+                            kind: "CHECKBOX" | "QUANTITY" | "DURATION" | "SKIP";
+                            /** @enum {string} */
+                            state: "RECORDED" | "VOID";
+                            /** Format: date */
+                            localDate: string;
+                            value: string | null;
+                            timezone: string;
+                            recordedTimezone: string;
+                            /** Format: date-time */
+                            recordedAt: string;
+                            /** Format: uuid */
+                            actorUserId: string;
+                            current: boolean;
+                        }[];
+                        nextCursor: string | null;
+                    };
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    habits_get_habits__id__stats: {
+        parameters: {
+            query: {
+                from: string;
+                to: string;
+                asOfDate?: string;
+            };
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        habitId: string;
+                        /** Format: date */
+                        from: string;
+                        /** Format: date */
+                        to: string;
+                        /** Format: date */
+                        asOfDate: string;
+                        /** @constant */
+                        streakScope: "RANGE";
+                        currentStreak: number;
+                        longestStreak: number;
+                        due: number;
+                        completed: number;
+                        skipped: number;
+                        missed: number;
+                        pending: number;
+                        completionRate: {
+                            numerator: number;
+                            denominator: number;
+                        };
+                        days: {
+                            /** Format: date */
+                            localDate: string;
+                            scheduleId: string | null;
+                            timezone: string | null;
+                            target: string | null;
+                            total: string;
+                            /** @enum {string} */
+                            outcome: "COMPLETED" | "MISSED" | "PENDING" | "SKIPPED" | "REST" | "PAUSED" | "ARCHIVED" | "UPCOMING";
+                        }[];
+                    };
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    habits_get_habits_water_summary: {
+        parameters: {
+            query: {
+                from: string;
+                to: string;
+                habitId?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: date */
+                        from: string;
+                        /** Format: date */
+                        to: string;
+                        /** @constant */
+                        unit: "ML";
+                        totalML: string;
+                        days: {
+                            /** Format: date */
+                            localDate: string;
+                            totalML: string;
+                        }[];
+                        habits: {
+                            /** Format: uuid */
+                            habitId: string;
+                            title: string;
+                            totalML: string;
+                            targets: {
+                                /** Format: uuid */
+                                id: string;
+                                /** Format: uuid */
+                                habitId: string;
+                                revision: number;
+                                /** Format: date */
+                                effectiveFrom: string;
+                                timezone: string;
+                                target: string;
+                                /** @enum {string} */
+                                status: "ACTIVE" | "PAUSED" | "ARCHIVED";
+                                schedule: {
+                                    /**
+                                     * @default 1
+                                     * @constant
+                                     */
+                                    version: 1;
+                                    /** Format: date */
+                                    startDate: string;
+                                    rule: {
+                                        /** @constant */
+                                        kind: "DAILY";
+                                    } | {
+                                        /** @constant */
+                                        kind: "WEEKLY";
+                                    } | {
+                                        /** @constant */
+                                        kind: "WEEKDAYS";
+                                        weekdays: number[];
+                                    } | {
+                                        /** @constant */
+                                        kind: "INTERVAL";
+                                        days: number;
+                                    };
+                                };
+                                /** Format: date-time */
+                                createdAt: string;
+                            }[];
+                        }[];
+                    };
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    getPersonalCompletionroutinesidschedule: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Owned Personal result. Strong revision checks for writes; missing or foreign resources return 404. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        schedule: {
+                            /** Format: date */
+                            startDate: string;
+                            /** Format: date */
+                            endDate?: string;
+                            /** @enum {string} */
+                            kind: "DAILY" | "WEEKLY" | "WEEKDAYS";
+                            weekdays?: number[];
+                            startTime: string;
+                            expectedMinutes?: number;
+                            timezone: string;
+                            reminder?: boolean;
+                        } | null;
+                        revision: number;
+                    };
+                };
+            };
+            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    patchPersonalCompletionroutinesidschedule: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "If-Match": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    schedule: {
+                        /** Format: date */
+                        startDate: string;
+                        /** Format: date */
+                        endDate?: string;
+                        /** @enum {string} */
+                        kind: "DAILY" | "WEEKLY" | "WEEKDAYS";
+                        weekdays?: number[];
+                        startTime: string;
+                        expectedMinutes?: number;
+                        timezone: string;
+                        reminder?: boolean;
+                    } | null;
+                };
+            };
+        };
+        responses: {
+            /** @description Owned Personal result. Strong revision checks for writes; missing or foreign resources return 404. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        schedule: {
+                            /** Format: date */
+                            startDate: string;
+                            /** Format: date */
+                            endDate?: string;
+                            /** @enum {string} */
+                            kind: "DAILY" | "WEEKLY" | "WEEKDAYS";
+                            weekdays?: number[];
+                            startTime: string;
+                            expectedMinutes?: number;
+                            timezone: string;
+                            reminder?: boolean;
+                        } | null;
+                        revision: number;
+                    };
+                };
+            };
+            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    getPersonalCompletionroutinesidoccurrences: {
+        parameters: {
+            query: {
+                from: string;
+                to: string;
+                limit?: string;
+                afterDate?: string;
+            };
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Owned Personal result. Strong revision checks for writes; missing or foreign resources return 404. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        items: {
+                            id: string;
+                            /** Format: uuid */
+                            routineId: string;
+                            /** Format: date */
+                            localDate: string;
+                            scheduledAt: string | null;
+                            timezone: string;
+                            /** @enum {string} */
+                            state: "PENDING" | "RUNNING" | "COMPLETED" | "SKIPPED" | "DST_GAP";
+                            revision: number;
+                            startedAt: string | null;
+                            completedAt: string | null;
+                            linkedHabitCount: number;
+                            completedHabitCount: number;
+                            completionPercentage: number | null;
+                        }[];
+                        nextDate: string | null;
+                    };
+                };
+            };
+            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    postPersonalCompletionroutinesidoccurrencesdateexecute: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "If-Match": string;
+                "Idempotency-Key": string;
+            };
+            path: {
+                id: string;
+                date: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @enum {string} */
+                    action: "START" | "COMPLETE" | "SKIP";
+                };
+            };
+        };
+        responses: {
+            /** @description Owned Personal result. Strong revision checks for writes; missing or foreign resources return 404. */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        id: string;
+                        /** Format: uuid */
+                        routineId: string;
+                        /** Format: date */
+                        localDate: string;
+                        scheduledAt: string | null;
+                        timezone: string;
+                        /** @enum {string} */
+                        state: "PENDING" | "RUNNING" | "COMPLETED" | "SKIPPED" | "DST_GAP";
+                        revision: number;
+                        startedAt: string | null;
+                        completedAt: string | null;
+                        linkedHabitCount: number;
+                        completedHabitCount: number;
+                        completionPercentage: number | null;
+                    };
+                };
+            };
+            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    getPersonalCompletionplanningworkinghours: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Owned Personal result. Strong revision checks for writes; missing or foreign resources return 404. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        workingHours: {
+                            intervalsByWeekday: {
+                                start: string;
+                                end: string;
+                            }[][];
+                            exceptions: {
+                                /** Format: date */
+                                date: string;
+                                intervals: {
+                                    start: string;
+                                    end: string;
+                                }[];
+                            }[];
+                        } | null;
+                        revision: number;
+                        timezone: string;
+                        firstDayOfWeek: number;
+                    };
+                };
+            };
+            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    putPersonalCompletionplanningworkinghours: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "If-Match": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    workingHours: {
+                        intervalsByWeekday: {
+                            start: string;
+                            end: string;
+                        }[][];
+                        exceptions: {
+                            /** Format: date */
+                            date: string;
+                            intervals: {
+                                start: string;
+                                end: string;
+                            }[];
+                        }[];
+                    } | null;
+                };
+            };
+        };
+        responses: {
+            /** @description Owned Personal result. Strong revision checks for writes; missing or foreign resources return 404. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        workingHours: {
+                            intervalsByWeekday: {
+                                start: string;
+                                end: string;
+                            }[][];
+                            exceptions: {
+                                /** Format: date */
+                                date: string;
+                                intervals: {
+                                    start: string;
+                                    end: string;
+                                }[];
+                            }[];
+                        } | null;
+                        revision: number;
+                        timezone: string;
+                        firstDayOfWeek: number;
+                    };
+                };
+            };
+            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    getPersonalCompletionplanningcapacityschedule: {
+        parameters: {
+            query?: {
+                date?: string;
+                weekStartDate?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Owned Personal result. Strong revision checks for writes; missing or foreign resources return 404. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        timezone: string;
+                        revision: number;
+                        /** @enum {string} */
+                        state: "CONFIGURED" | "UNKNOWN" | "DST_GAP";
+                        days: {
+                            /** Format: date */
+                            date: string;
+                            /** @enum {string} */
+                            state: "CONFIGURED" | "UNKNOWN" | "DST_GAP";
+                            availableMinutes: number | null;
+                            busyMinutes: number;
+                            reservedMinutes: number | null;
+                            remainingMinutes: number | null;
+                            overbookedMinutes: number | null;
+                        }[];
+                        availableMinutes: number | null;
+                        reservedMinutes: number | null;
+                        remainingMinutes: number | null;
+                        overbookedMinutes: number | null;
+                    };
+                };
+            };
+            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    postPersonalCompletionfocussessionsidrecovery: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "If-Match": string;
+                "Idempotency-Key": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @enum {string} */
+                    action: "START" | "HEARTBEAT" | "PAUSE" | "RESUME" | "FINISH" | "STOP" | "DISCARD" | "EXTEND" | "RECOVER";
+                    /** Format: date-time */
+                    eventAt?: string;
+                    minutes?: number;
+                };
+            };
+        };
+        responses: {
+            /** @description Owned Personal result. Strong revision checks for writes; missing or foreign resources return 404. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        /** Format: uuid */
+                        revisionId: string;
+                        previousRevisionId: string | null;
+                        revision: number;
+                        /** Format: uuid */
+                        spaceId: string;
+                        /** Format: uuid */
+                        createdByUserId: string;
+                        title: string;
+                        /** @enum {string} */
+                        mode: "STOPWATCH" | "POMODORO";
+                        timezone: string;
+                        taskId: string | null;
+                        selectedTaskRevision: number | null;
+                        pomodoro: {
+                            /** @default 25 */
+                            workMinutes: number;
+                            /** @default 5 */
+                            shortBreakMinutes: number;
+                            /** @default 15 */
+                            longBreakMinutes: number;
+                            /** @default 4 */
+                            longBreakEvery: number;
+                            /** @default 4 */
+                            workIntervals: number;
+                        } | null;
+                        /** @enum {string} */
+                        state: "IDLE" | "RUNNING" | "PAUSED" | "FINISHED" | "ABANDONED";
+                        /** @enum {string} */
+                        action: "CREATE" | "EDIT" | "START" | "PAUSE" | "RESUME" | "FINISH" | "STOP";
+                        elapsedMs: number;
+                        runningSince: string | null;
+                        /** Format: date-time */
+                        recordedAt: string;
+                        /** Format: date-time */
+                        createdAt: string;
+                        clockAdjusted: boolean;
+                        current: boolean;
+                        recovery?: {
+                            /** Format: date-time */
+                            confirmedAt: string;
+                            /** Format: date-time */
+                            receivedAt: string;
+                            clientEventAt: string | null;
+                            extensions: {
+                                phase: number;
+                                minutes: number;
+                            }[];
+                            discarded: boolean;
+                        };
+                        /** @enum {string} */
+                        recoveryState?: "READY" | "HEALTHY" | "INTERRUPTED" | "TERMINAL";
+                        /** Format: date-time */
+                        serverNow: string;
+                        activeMs: number;
+                        workMs: number;
+                        breakMs: number;
+                        /** @enum {string} */
+                        phase: "IDLE" | "WORK" | "SHORT_BREAK" | "LONG_BREAK" | "READY_TO_FINISH" | "FINISHED" | "ABANDONED";
+                        interval: number;
+                        remainingMs: number | null;
+                        /** @enum {string} */
+                        taskDisposition: "NONE" | "AVAILABLE" | "DONE" | "DELETED" | "MASTER" | "SKIPPED" | "CANCELED";
+                    };
+                };
+            };
+            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    focus_get_focus_sessions: {
+        parameters: {
+            query?: {
+                limit?: string;
+                cursor?: string;
+                state?: "IDLE" | "RUNNING" | "PAUSED" | "FINISHED" | "ABANDONED";
+                taskId?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        items: {
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            revisionId: string;
+                            previousRevisionId: string | null;
+                            revision: number;
+                            /** Format: uuid */
+                            spaceId: string;
+                            /** Format: uuid */
+                            createdByUserId: string;
+                            title: string;
+                            /** @enum {string} */
+                            mode: "STOPWATCH" | "POMODORO";
+                            timezone: string;
+                            taskId: string | null;
+                            selectedTaskRevision: number | null;
+                            pomodoro: {
+                                /** @default 25 */
+                                workMinutes: number;
+                                /** @default 5 */
+                                shortBreakMinutes: number;
+                                /** @default 15 */
+                                longBreakMinutes: number;
+                                /** @default 4 */
+                                longBreakEvery: number;
+                                /** @default 4 */
+                                workIntervals: number;
+                            } | null;
+                            /** @enum {string} */
+                            state: "IDLE" | "RUNNING" | "PAUSED" | "FINISHED" | "ABANDONED";
+                            /** @enum {string} */
+                            action: "CREATE" | "EDIT" | "START" | "PAUSE" | "RESUME" | "FINISH" | "STOP";
+                            elapsedMs: number;
+                            runningSince: string | null;
+                            /** Format: date-time */
+                            recordedAt: string;
+                            /** Format: date-time */
+                            createdAt: string;
+                            clockAdjusted: boolean;
+                            current: boolean;
+                            recovery?: {
+                                /** Format: date-time */
+                                confirmedAt: string;
+                                /** Format: date-time */
+                                receivedAt: string;
+                                clientEventAt: string | null;
+                                extensions: {
+                                    phase: number;
+                                    minutes: number;
+                                }[];
+                                discarded: boolean;
+                            };
+                            /** @enum {string} */
+                            recoveryState?: "READY" | "HEALTHY" | "INTERRUPTED" | "TERMINAL";
+                            /** Format: date-time */
+                            serverNow: string;
+                            activeMs: number;
+                            workMs: number;
+                            breakMs: number;
+                            /** @enum {string} */
+                            phase: "IDLE" | "WORK" | "SHORT_BREAK" | "LONG_BREAK" | "READY_TO_FINISH" | "FINISHED" | "ABANDONED";
+                            interval: number;
+                            remainingMs: number | null;
+                            /** @enum {string} */
+                            taskDisposition: "NONE" | "AVAILABLE" | "DONE" | "DELETED" | "MASTER" | "SKIPPED" | "CANCELED";
+                        }[];
+                        nextCursor: string | null;
+                    };
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    focus_post_focus_sessions: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "Idempotency-Key": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    title: string;
+                    /**
+                     * @default STOPWATCH
+                     * @enum {string}
+                     */
+                    mode?: "STOPWATCH" | "POMODORO";
+                    pomodoro?: {
+                        /** @default 25 */
+                        workMinutes?: number;
+                        /** @default 5 */
+                        shortBreakMinutes?: number;
+                        /** @default 15 */
+                        longBreakMinutes?: number;
+                        /** @default 4 */
+                        longBreakEvery?: number;
+                        /** @default 4 */
+                        workIntervals?: number;
+                    };
+                    timezone?: string;
+                    recoverable?: boolean;
+                    taskId?: string | null;
+                    taskRevision?: number;
+                };
+            };
+        };
+        responses: {
+            /** @description Success */
+            201: {
+                headers: {
+                    /** @description Quoted owning aggregate or logical entry revision. */
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        /** Format: uuid */
+                        revisionId: string;
+                        previousRevisionId: string | null;
+                        revision: number;
+                        /** Format: uuid */
+                        spaceId: string;
+                        /** Format: uuid */
+                        createdByUserId: string;
+                        title: string;
+                        /** @enum {string} */
+                        mode: "STOPWATCH" | "POMODORO";
+                        timezone: string;
+                        taskId: string | null;
+                        selectedTaskRevision: number | null;
+                        pomodoro: {
+                            /** @default 25 */
+                            workMinutes: number;
+                            /** @default 5 */
+                            shortBreakMinutes: number;
+                            /** @default 15 */
+                            longBreakMinutes: number;
+                            /** @default 4 */
+                            longBreakEvery: number;
+                            /** @default 4 */
+                            workIntervals: number;
+                        } | null;
+                        /** @enum {string} */
+                        state: "IDLE" | "RUNNING" | "PAUSED" | "FINISHED" | "ABANDONED";
+                        /** @enum {string} */
+                        action: "CREATE" | "EDIT" | "START" | "PAUSE" | "RESUME" | "FINISH" | "STOP";
+                        elapsedMs: number;
+                        runningSince: string | null;
+                        /** Format: date-time */
+                        recordedAt: string;
+                        /** Format: date-time */
+                        createdAt: string;
+                        clockAdjusted: boolean;
+                        current: boolean;
+                        recovery?: {
+                            /** Format: date-time */
+                            confirmedAt: string;
+                            /** Format: date-time */
+                            receivedAt: string;
+                            clientEventAt: string | null;
+                            extensions: {
+                                phase: number;
+                                minutes: number;
+                            }[];
+                            discarded: boolean;
+                        };
+                        /** @enum {string} */
+                        recoveryState?: "READY" | "HEALTHY" | "INTERRUPTED" | "TERMINAL";
+                        /** Format: date-time */
+                        serverNow: string;
+                        activeMs: number;
+                        workMs: number;
+                        breakMs: number;
+                        /** @enum {string} */
+                        phase: "IDLE" | "WORK" | "SHORT_BREAK" | "LONG_BREAK" | "READY_TO_FINISH" | "FINISHED" | "ABANDONED";
+                        interval: number;
+                        remainingMs: number | null;
+                        /** @enum {string} */
+                        taskDisposition: "NONE" | "AVAILABLE" | "DONE" | "DELETED" | "MASTER" | "SKIPPED" | "CANCELED";
+                    };
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    focus_get_focus_sessions__id_: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    /** @description Quoted owning aggregate or logical entry revision. */
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        /** Format: uuid */
+                        revisionId: string;
+                        previousRevisionId: string | null;
+                        revision: number;
+                        /** Format: uuid */
+                        spaceId: string;
+                        /** Format: uuid */
+                        createdByUserId: string;
+                        title: string;
+                        /** @enum {string} */
+                        mode: "STOPWATCH" | "POMODORO";
+                        timezone: string;
+                        taskId: string | null;
+                        selectedTaskRevision: number | null;
+                        pomodoro: {
+                            /** @default 25 */
+                            workMinutes: number;
+                            /** @default 5 */
+                            shortBreakMinutes: number;
+                            /** @default 15 */
+                            longBreakMinutes: number;
+                            /** @default 4 */
+                            longBreakEvery: number;
+                            /** @default 4 */
+                            workIntervals: number;
+                        } | null;
+                        /** @enum {string} */
+                        state: "IDLE" | "RUNNING" | "PAUSED" | "FINISHED" | "ABANDONED";
+                        /** @enum {string} */
+                        action: "CREATE" | "EDIT" | "START" | "PAUSE" | "RESUME" | "FINISH" | "STOP";
+                        elapsedMs: number;
+                        runningSince: string | null;
+                        /** Format: date-time */
+                        recordedAt: string;
+                        /** Format: date-time */
+                        createdAt: string;
+                        clockAdjusted: boolean;
+                        current: boolean;
+                        recovery?: {
+                            /** Format: date-time */
+                            confirmedAt: string;
+                            /** Format: date-time */
+                            receivedAt: string;
+                            clientEventAt: string | null;
+                            extensions: {
+                                phase: number;
+                                minutes: number;
+                            }[];
+                            discarded: boolean;
+                        };
+                        /** @enum {string} */
+                        recoveryState?: "READY" | "HEALTHY" | "INTERRUPTED" | "TERMINAL";
+                        /** Format: date-time */
+                        serverNow: string;
+                        activeMs: number;
+                        workMs: number;
+                        breakMs: number;
+                        /** @enum {string} */
+                        phase: "IDLE" | "WORK" | "SHORT_BREAK" | "LONG_BREAK" | "READY_TO_FINISH" | "FINISHED" | "ABANDONED";
+                        interval: number;
+                        remainingMs: number | null;
+                        /** @enum {string} */
+                        taskDisposition: "NONE" | "AVAILABLE" | "DONE" | "DELETED" | "MASTER" | "SKIPPED" | "CANCELED";
+                    };
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    focus_patch_focus_sessions__id_: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "If-Match": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    title?: string;
+                    pomodoro?: {
+                        /** @default 25 */
+                        workMinutes?: number;
+                        /** @default 5 */
+                        shortBreakMinutes?: number;
+                        /** @default 15 */
+                        longBreakMinutes?: number;
+                        /** @default 4 */
+                        longBreakEvery?: number;
+                        /** @default 4 */
+                        workIntervals?: number;
+                    };
+                    taskId?: string | null;
+                    taskRevision?: number;
+                };
+            };
+        };
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    /** @description Quoted owning aggregate or logical entry revision. */
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        /** Format: uuid */
+                        revisionId: string;
+                        previousRevisionId: string | null;
+                        revision: number;
+                        /** Format: uuid */
+                        spaceId: string;
+                        /** Format: uuid */
+                        createdByUserId: string;
+                        title: string;
+                        /** @enum {string} */
+                        mode: "STOPWATCH" | "POMODORO";
+                        timezone: string;
+                        taskId: string | null;
+                        selectedTaskRevision: number | null;
+                        pomodoro: {
+                            /** @default 25 */
+                            workMinutes: number;
+                            /** @default 5 */
+                            shortBreakMinutes: number;
+                            /** @default 15 */
+                            longBreakMinutes: number;
+                            /** @default 4 */
+                            longBreakEvery: number;
+                            /** @default 4 */
+                            workIntervals: number;
+                        } | null;
+                        /** @enum {string} */
+                        state: "IDLE" | "RUNNING" | "PAUSED" | "FINISHED" | "ABANDONED";
+                        /** @enum {string} */
+                        action: "CREATE" | "EDIT" | "START" | "PAUSE" | "RESUME" | "FINISH" | "STOP";
+                        elapsedMs: number;
+                        runningSince: string | null;
+                        /** Format: date-time */
+                        recordedAt: string;
+                        /** Format: date-time */
+                        createdAt: string;
+                        clockAdjusted: boolean;
+                        current: boolean;
+                        recovery?: {
+                            /** Format: date-time */
+                            confirmedAt: string;
+                            /** Format: date-time */
+                            receivedAt: string;
+                            clientEventAt: string | null;
+                            extensions: {
+                                phase: number;
+                                minutes: number;
+                            }[];
+                            discarded: boolean;
+                        };
+                        /** @enum {string} */
+                        recoveryState?: "READY" | "HEALTHY" | "INTERRUPTED" | "TERMINAL";
+                        /** Format: date-time */
+                        serverNow: string;
+                        activeMs: number;
+                        workMs: number;
+                        breakMs: number;
+                        /** @enum {string} */
+                        phase: "IDLE" | "WORK" | "SHORT_BREAK" | "LONG_BREAK" | "READY_TO_FINISH" | "FINISHED" | "ABANDONED";
+                        interval: number;
+                        remainingMs: number | null;
+                        /** @enum {string} */
+                        taskDisposition: "NONE" | "AVAILABLE" | "DONE" | "DELETED" | "MASTER" | "SKIPPED" | "CANCELED";
+                    };
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    getNotificationnotificationsunreadcount: {
+        parameters: {
+            query?: {
+                reminderId?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Owned result. External transports contain only generic text and opaque identifiers. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        count: number;
+                    };
+                };
+            };
+            /** @description Safe error; foreign/missing resources are 404, stale revisions 409. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error; foreign/missing resources are 404, stale revisions 409. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error; foreign/missing resources are 404, stale revisions 409. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error; foreign/missing resources are 404, stale revisions 409. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error; foreign/missing resources are 404, stale revisions 409. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error; foreign/missing resources are 404, stale revisions 409. */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error; foreign/missing resources are 404, stale revisions 409. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error; foreign/missing resources are 404, stale revisions 409. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error; foreign/missing resources are 404, stale revisions 409. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    getNotificationnotificationspreferences: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Owned result. External transports contain only generic text and opaque identifiers. */
+            200: {
+                headers: {
+                    /** @description Quoted resource revision */
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        moduleChannels: {
+                            [key: string]: {
+                                IN_APP: boolean;
+                                WEB_PUSH: boolean;
+                                EMAIL: boolean;
+                            };
+                        };
+                        /** Format: uuid */
+                        id: string;
+                        /** Format: uuid */
+                        spaceId: string;
+                        /** Format: uuid */
+                        ownerUserId: string;
+                        /** Format: uuid */
+                        createdByUserId: string;
+                        revision: number;
+                        /** Format: date-time */
+                        createdAt: string;
+                        /** Format: date-time */
+                        updatedAt: string;
+                        inApp: boolean;
+                        email: boolean;
+                        webPush: boolean;
+                        reactivateOnReopen: boolean;
+                        quietStart: string | null;
+                        quietEnd: string | null;
+                        availableChannels: ("IN_APP" | "EMAIL" | "WEB_PUSH")[];
+                        webPushPublicKey: string | null;
+                    };
+                };
+            };
+            /** @description Safe error; foreign/missing resources are 404, stale revisions 409. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error; foreign/missing resources are 404, stale revisions 409. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error; foreign/missing resources are 404, stale revisions 409. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error; foreign/missing resources are 404, stale revisions 409. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error; foreign/missing resources are 404, stale revisions 409. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error; foreign/missing resources are 404, stale revisions 409. */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error; foreign/missing resources are 404, stale revisions 409. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error; foreign/missing resources are 404, stale revisions 409. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error; foreign/missing resources are 404, stale revisions 409. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    patchNotificationnotificationspreferences: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "Idempotency-Key": string;
+                "If-Match": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    moduleChannels?: {
+                        [key: string]: {
+                            IN_APP: boolean;
+                            WEB_PUSH: boolean;
+                            EMAIL: boolean;
+                        };
+                    };
+                    inApp?: boolean;
+                    email?: boolean;
+                    webPush?: boolean;
+                    reactivateOnReopen?: boolean;
+                    quietStart?: string | null;
+                    quietEnd?: string | null;
+                };
+            };
+        };
+        responses: {
+            /** @description Owned result. External transports contain only generic text and opaque identifiers. */
+            200: {
+                headers: {
+                    /** @description Quoted resource revision */
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        moduleChannels: {
+                            [key: string]: {
+                                IN_APP: boolean;
+                                WEB_PUSH: boolean;
+                                EMAIL: boolean;
+                            };
+                        };
+                        /** Format: uuid */
+                        id: string;
+                        /** Format: uuid */
+                        spaceId: string;
+                        /** Format: uuid */
+                        ownerUserId: string;
+                        /** Format: uuid */
+                        createdByUserId: string;
+                        revision: number;
+                        /** Format: date-time */
+                        createdAt: string;
+                        /** Format: date-time */
+                        updatedAt: string;
+                        inApp: boolean;
+                        email: boolean;
+                        webPush: boolean;
+                        reactivateOnReopen: boolean;
+                        quietStart: string | null;
+                        quietEnd: string | null;
+                        availableChannels: ("IN_APP" | "EMAIL" | "WEB_PUSH")[];
+                        webPushPublicKey: string | null;
+                    };
+                };
+            };
+            /** @description Safe error; foreign/missing resources are 404, stale revisions 409. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error; foreign/missing resources are 404, stale revisions 409. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error; foreign/missing resources are 404, stale revisions 409. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error; foreign/missing resources are 404, stale revisions 409. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error; foreign/missing resources are 404, stale revisions 409. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error; foreign/missing resources are 404, stale revisions 409. */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error; foreign/missing resources are 404, stale revisions 409. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error; foreign/missing resources are 404, stale revisions 409. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error; foreign/missing resources are 404, stale revisions 409. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    getmedeletionpolicy: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Authorized P1-12 result under ADRs 0022/0023 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        policyVersion: string;
+                        /** @constant */
+                        retentionAcknowledgementRequired: true;
+                        /** @constant */
+                        gracePeriodDays: 7;
+                        /** @constant */
+                        backupExpiryMaximumDays: 30;
+                        /** @constant */
+                        cancellationRequiresPassword: true;
+                        /** @constant */
+                        cancellationRequiresRecoveryCapability: true;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    getmedeletionrequestcurrent: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Authorized P1-12 result under ADRs 0022/0023 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        job: {
+                            /** Format: uuid */
+                            id: string;
+                            revision: number;
+                            /** @enum {string} */
+                            state: "PENDING" | "WAITING" | "ERASING" | "CANCELED" | "EXPIRED" | "FAILED" | "BLOCKED_POLICY" | "ERASED";
+                            /** Format: date-time */
+                            createdAt: string;
+                            eraseAfter: string | null;
+                            completedAt: string | null;
+                            failureCode: string | null;
+                            backupExpiryDeadline: string | null;
+                        } | null;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    clientInvitationsgetinvitationnotifications: {
+        parameters: {
+            query: {
+                kind: "PROJECT" | "TEAM" | "COMPANY" | "CONVERSATION" | "MEETING" | "SOCIAL_GROUP";
+                limit?: number;
+                after?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Verified recipient invitation notifications; resolved offers leave the pending feed */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        items: {
+                            /** Format: uuid */
+                            invitationId: string;
+                            /** @enum {string} */
+                            kind: "PROJECT" | "TEAM" | "COMPANY" | "CONVERSATION" | "MEETING" | "SOCIAL_GROUP";
+                            /** Format: uuid */
+                            targetId: string;
+                            targetDisplayName: string;
+                            inviterDisplayName: string | null;
+                            role: string | null;
+                            /** Format: date-time */
+                            createdAt: string;
+                            readAt: string | null;
+                            revision: number;
+                            /** Format: date-time */
+                            expiresAt: string;
+                        }[];
+                        nextCursor: string | null;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    clientInvitationspostinvitationnotificationskindidread: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+            };
+            path: {
+                kind: "PROJECT" | "TEAM" | "COMPANY" | "CONVERSATION" | "MEETING" | "SOCIAL_GROUP";
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": Record<string, never>;
+            };
+        };
+        responses: {
+            /** @description Verified recipient invitation notifications; resolved offers leave the pending feed */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        invitationId: string;
+                        /** Format: date-time */
+                        readAt: string;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
     gapClosuregetbraindumppages: {
         parameters: {
             query?: never;
@@ -2879,2320 +7694,6 @@ export interface operations {
                 };
             };
             /** @description Safe error */
-            503: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-        };
-    };
-    getPersonalCompletionroutinesidschedule: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Owned Personal result. Strong revision checks for writes; missing or foreign resources return 404. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        schedule: {
-                            /** Format: date */
-                            startDate: string;
-                            /** Format: date */
-                            endDate?: string;
-                            /** @enum {string} */
-                            kind: "DAILY" | "WEEKLY" | "WEEKDAYS";
-                            weekdays?: number[];
-                            startTime: string;
-                            expectedMinutes?: number;
-                            timezone: string;
-                            reminder?: boolean;
-                        } | null;
-                        revision: number;
-                    };
-                };
-            };
-            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
-            409: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
-            429: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
-            503: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-        };
-    };
-    patchPersonalCompletionroutinesidschedule: {
-        parameters: {
-            query?: never;
-            header: {
-                Origin: string;
-                "If-Match": string;
-            };
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": {
-                    schedule: {
-                        /** Format: date */
-                        startDate: string;
-                        /** Format: date */
-                        endDate?: string;
-                        /** @enum {string} */
-                        kind: "DAILY" | "WEEKLY" | "WEEKDAYS";
-                        weekdays?: number[];
-                        startTime: string;
-                        expectedMinutes?: number;
-                        timezone: string;
-                        reminder?: boolean;
-                    } | null;
-                };
-            };
-        };
-        responses: {
-            /** @description Owned Personal result. Strong revision checks for writes; missing or foreign resources return 404. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        schedule: {
-                            /** Format: date */
-                            startDate: string;
-                            /** Format: date */
-                            endDate?: string;
-                            /** @enum {string} */
-                            kind: "DAILY" | "WEEKLY" | "WEEKDAYS";
-                            weekdays?: number[];
-                            startTime: string;
-                            expectedMinutes?: number;
-                            timezone: string;
-                            reminder?: boolean;
-                        } | null;
-                        revision: number;
-                    };
-                };
-            };
-            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
-            409: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
-            429: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
-            503: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-        };
-    };
-    getPersonalCompletionroutinesidoccurrences: {
-        parameters: {
-            query: {
-                from: string;
-                to: string;
-                limit?: string;
-                afterDate?: string;
-            };
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Owned Personal result. Strong revision checks for writes; missing or foreign resources return 404. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        items: {
-                            id: string;
-                            /** Format: uuid */
-                            routineId: string;
-                            /** Format: date */
-                            localDate: string;
-                            scheduledAt: string | null;
-                            timezone: string;
-                            /** @enum {string} */
-                            state: "PENDING" | "RUNNING" | "COMPLETED" | "SKIPPED" | "DST_GAP";
-                            revision: number;
-                            startedAt: string | null;
-                            completedAt: string | null;
-                            linkedHabitCount: number;
-                            completedHabitCount: number;
-                            completionPercentage: number | null;
-                        }[];
-                        nextDate: string | null;
-                    };
-                };
-            };
-            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
-            409: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
-            429: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
-            503: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-        };
-    };
-    postPersonalCompletionroutinesidoccurrencesdateexecute: {
-        parameters: {
-            query?: never;
-            header: {
-                Origin: string;
-                "If-Match": string;
-                "Idempotency-Key": string;
-            };
-            path: {
-                id: string;
-                date: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": {
-                    /** @enum {string} */
-                    action: "START" | "COMPLETE" | "SKIP";
-                };
-            };
-        };
-        responses: {
-            /** @description Owned Personal result. Strong revision checks for writes; missing or foreign resources return 404. */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        id: string;
-                        /** Format: uuid */
-                        routineId: string;
-                        /** Format: date */
-                        localDate: string;
-                        scheduledAt: string | null;
-                        timezone: string;
-                        /** @enum {string} */
-                        state: "PENDING" | "RUNNING" | "COMPLETED" | "SKIPPED" | "DST_GAP";
-                        revision: number;
-                        startedAt: string | null;
-                        completedAt: string | null;
-                        linkedHabitCount: number;
-                        completedHabitCount: number;
-                        completionPercentage: number | null;
-                    };
-                };
-            };
-            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
-            409: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
-            429: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
-            503: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-        };
-    };
-    getPersonalCompletionplanningworkinghours: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Owned Personal result. Strong revision checks for writes; missing or foreign resources return 404. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        workingHours: {
-                            intervalsByWeekday: {
-                                start: string;
-                                end: string;
-                            }[][];
-                            exceptions: {
-                                /** Format: date */
-                                date: string;
-                                intervals: {
-                                    start: string;
-                                    end: string;
-                                }[];
-                            }[];
-                        } | null;
-                        revision: number;
-                        timezone: string;
-                        firstDayOfWeek: number;
-                    };
-                };
-            };
-            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
-            409: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
-            429: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
-            503: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-        };
-    };
-    putPersonalCompletionplanningworkinghours: {
-        parameters: {
-            query?: never;
-            header: {
-                Origin: string;
-                "If-Match": string;
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": {
-                    workingHours: {
-                        intervalsByWeekday: {
-                            start: string;
-                            end: string;
-                        }[][];
-                        exceptions: {
-                            /** Format: date */
-                            date: string;
-                            intervals: {
-                                start: string;
-                                end: string;
-                            }[];
-                        }[];
-                    } | null;
-                };
-            };
-        };
-        responses: {
-            /** @description Owned Personal result. Strong revision checks for writes; missing or foreign resources return 404. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        workingHours: {
-                            intervalsByWeekday: {
-                                start: string;
-                                end: string;
-                            }[][];
-                            exceptions: {
-                                /** Format: date */
-                                date: string;
-                                intervals: {
-                                    start: string;
-                                    end: string;
-                                }[];
-                            }[];
-                        } | null;
-                        revision: number;
-                        timezone: string;
-                        firstDayOfWeek: number;
-                    };
-                };
-            };
-            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
-            409: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
-            429: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
-            503: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-        };
-    };
-    getPersonalCompletionplanningcapacityschedule: {
-        parameters: {
-            query?: {
-                date?: string;
-                weekStartDate?: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Owned Personal result. Strong revision checks for writes; missing or foreign resources return 404. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        timezone: string;
-                        revision: number;
-                        /** @enum {string} */
-                        state: "CONFIGURED" | "UNKNOWN" | "DST_GAP";
-                        days: {
-                            /** Format: date */
-                            date: string;
-                            /** @enum {string} */
-                            state: "CONFIGURED" | "UNKNOWN" | "DST_GAP";
-                            availableMinutes: number | null;
-                            busyMinutes: number;
-                            reservedMinutes: number | null;
-                            remainingMinutes: number | null;
-                            overbookedMinutes: number | null;
-                        }[];
-                        availableMinutes: number | null;
-                        reservedMinutes: number | null;
-                        remainingMinutes: number | null;
-                        overbookedMinutes: number | null;
-                    };
-                };
-            };
-            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
-            409: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
-            429: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
-            503: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-        };
-    };
-    focus_get_focus_sessions: {
-        parameters: {
-            query?: {
-                limit?: string;
-                cursor?: string;
-                state?: "IDLE" | "RUNNING" | "PAUSED" | "FINISHED" | "ABANDONED";
-                taskId?: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Success */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        items: {
-                            /** Format: uuid */
-                            id: string;
-                            /** Format: uuid */
-                            revisionId: string;
-                            previousRevisionId: string | null;
-                            revision: number;
-                            /** Format: uuid */
-                            spaceId: string;
-                            /** Format: uuid */
-                            createdByUserId: string;
-                            title: string;
-                            /** @enum {string} */
-                            mode: "STOPWATCH" | "POMODORO";
-                            timezone: string;
-                            taskId: string | null;
-                            selectedTaskRevision: number | null;
-                            pomodoro: {
-                                /** @default 25 */
-                                workMinutes: number;
-                                /** @default 5 */
-                                shortBreakMinutes: number;
-                                /** @default 15 */
-                                longBreakMinutes: number;
-                                /** @default 4 */
-                                longBreakEvery: number;
-                                /** @default 4 */
-                                workIntervals: number;
-                            } | null;
-                            /** @enum {string} */
-                            state: "IDLE" | "RUNNING" | "PAUSED" | "FINISHED" | "ABANDONED";
-                            /** @enum {string} */
-                            action: "CREATE" | "EDIT" | "START" | "PAUSE" | "RESUME" | "FINISH" | "STOP";
-                            elapsedMs: number;
-                            runningSince: string | null;
-                            /** Format: date-time */
-                            recordedAt: string;
-                            /** Format: date-time */
-                            createdAt: string;
-                            clockAdjusted: boolean;
-                            current: boolean;
-                            recovery?: {
-                                /** Format: date-time */
-                                confirmedAt: string;
-                                /** Format: date-time */
-                                receivedAt: string;
-                                clientEventAt: string | null;
-                                extensions: {
-                                    phase: number;
-                                    minutes: number;
-                                }[];
-                                discarded: boolean;
-                            };
-                            /** @enum {string} */
-                            recoveryState?: "READY" | "HEALTHY" | "INTERRUPTED" | "TERMINAL";
-                            /** Format: date-time */
-                            serverNow: string;
-                            activeMs: number;
-                            workMs: number;
-                            breakMs: number;
-                            /** @enum {string} */
-                            phase: "IDLE" | "WORK" | "SHORT_BREAK" | "LONG_BREAK" | "READY_TO_FINISH" | "FINISHED" | "ABANDONED";
-                            interval: number;
-                            remainingMs: number | null;
-                            /** @enum {string} */
-                            taskDisposition: "NONE" | "AVAILABLE" | "DONE" | "DELETED" | "MASTER" | "SKIPPED" | "CANCELED";
-                        }[];
-                        nextCursor: string | null;
-                    };
-                };
-            };
-            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
-            409: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
-            429: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
-            503: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-        };
-    };
-    focus_post_focus_sessions: {
-        parameters: {
-            query?: never;
-            header: {
-                Origin: string;
-                "Idempotency-Key": string;
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": {
-                    title: string;
-                    /**
-                     * @default STOPWATCH
-                     * @enum {string}
-                     */
-                    mode?: "STOPWATCH" | "POMODORO";
-                    pomodoro?: {
-                        /** @default 25 */
-                        workMinutes?: number;
-                        /** @default 5 */
-                        shortBreakMinutes?: number;
-                        /** @default 15 */
-                        longBreakMinutes?: number;
-                        /** @default 4 */
-                        longBreakEvery?: number;
-                        /** @default 4 */
-                        workIntervals?: number;
-                    };
-                    timezone?: string;
-                    recoverable?: boolean;
-                    taskId?: string | null;
-                    taskRevision?: number;
-                };
-            };
-        };
-        responses: {
-            /** @description Success */
-            201: {
-                headers: {
-                    /** @description Quoted owning aggregate or logical entry revision. */
-                    ETag?: string;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** Format: uuid */
-                        id: string;
-                        /** Format: uuid */
-                        revisionId: string;
-                        previousRevisionId: string | null;
-                        revision: number;
-                        /** Format: uuid */
-                        spaceId: string;
-                        /** Format: uuid */
-                        createdByUserId: string;
-                        title: string;
-                        /** @enum {string} */
-                        mode: "STOPWATCH" | "POMODORO";
-                        timezone: string;
-                        taskId: string | null;
-                        selectedTaskRevision: number | null;
-                        pomodoro: {
-                            /** @default 25 */
-                            workMinutes: number;
-                            /** @default 5 */
-                            shortBreakMinutes: number;
-                            /** @default 15 */
-                            longBreakMinutes: number;
-                            /** @default 4 */
-                            longBreakEvery: number;
-                            /** @default 4 */
-                            workIntervals: number;
-                        } | null;
-                        /** @enum {string} */
-                        state: "IDLE" | "RUNNING" | "PAUSED" | "FINISHED" | "ABANDONED";
-                        /** @enum {string} */
-                        action: "CREATE" | "EDIT" | "START" | "PAUSE" | "RESUME" | "FINISH" | "STOP";
-                        elapsedMs: number;
-                        runningSince: string | null;
-                        /** Format: date-time */
-                        recordedAt: string;
-                        /** Format: date-time */
-                        createdAt: string;
-                        clockAdjusted: boolean;
-                        current: boolean;
-                        recovery?: {
-                            /** Format: date-time */
-                            confirmedAt: string;
-                            /** Format: date-time */
-                            receivedAt: string;
-                            clientEventAt: string | null;
-                            extensions: {
-                                phase: number;
-                                minutes: number;
-                            }[];
-                            discarded: boolean;
-                        };
-                        /** @enum {string} */
-                        recoveryState?: "READY" | "HEALTHY" | "INTERRUPTED" | "TERMINAL";
-                        /** Format: date-time */
-                        serverNow: string;
-                        activeMs: number;
-                        workMs: number;
-                        breakMs: number;
-                        /** @enum {string} */
-                        phase: "IDLE" | "WORK" | "SHORT_BREAK" | "LONG_BREAK" | "READY_TO_FINISH" | "FINISHED" | "ABANDONED";
-                        interval: number;
-                        remainingMs: number | null;
-                        /** @enum {string} */
-                        taskDisposition: "NONE" | "AVAILABLE" | "DONE" | "DELETED" | "MASTER" | "SKIPPED" | "CANCELED";
-                    };
-                };
-            };
-            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
-            409: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
-            429: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
-            503: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-        };
-    };
-    focus_get_focus_sessions__id_: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Success */
-            200: {
-                headers: {
-                    /** @description Quoted owning aggregate or logical entry revision. */
-                    ETag?: string;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** Format: uuid */
-                        id: string;
-                        /** Format: uuid */
-                        revisionId: string;
-                        previousRevisionId: string | null;
-                        revision: number;
-                        /** Format: uuid */
-                        spaceId: string;
-                        /** Format: uuid */
-                        createdByUserId: string;
-                        title: string;
-                        /** @enum {string} */
-                        mode: "STOPWATCH" | "POMODORO";
-                        timezone: string;
-                        taskId: string | null;
-                        selectedTaskRevision: number | null;
-                        pomodoro: {
-                            /** @default 25 */
-                            workMinutes: number;
-                            /** @default 5 */
-                            shortBreakMinutes: number;
-                            /** @default 15 */
-                            longBreakMinutes: number;
-                            /** @default 4 */
-                            longBreakEvery: number;
-                            /** @default 4 */
-                            workIntervals: number;
-                        } | null;
-                        /** @enum {string} */
-                        state: "IDLE" | "RUNNING" | "PAUSED" | "FINISHED" | "ABANDONED";
-                        /** @enum {string} */
-                        action: "CREATE" | "EDIT" | "START" | "PAUSE" | "RESUME" | "FINISH" | "STOP";
-                        elapsedMs: number;
-                        runningSince: string | null;
-                        /** Format: date-time */
-                        recordedAt: string;
-                        /** Format: date-time */
-                        createdAt: string;
-                        clockAdjusted: boolean;
-                        current: boolean;
-                        recovery?: {
-                            /** Format: date-time */
-                            confirmedAt: string;
-                            /** Format: date-time */
-                            receivedAt: string;
-                            clientEventAt: string | null;
-                            extensions: {
-                                phase: number;
-                                minutes: number;
-                            }[];
-                            discarded: boolean;
-                        };
-                        /** @enum {string} */
-                        recoveryState?: "READY" | "HEALTHY" | "INTERRUPTED" | "TERMINAL";
-                        /** Format: date-time */
-                        serverNow: string;
-                        activeMs: number;
-                        workMs: number;
-                        breakMs: number;
-                        /** @enum {string} */
-                        phase: "IDLE" | "WORK" | "SHORT_BREAK" | "LONG_BREAK" | "READY_TO_FINISH" | "FINISHED" | "ABANDONED";
-                        interval: number;
-                        remainingMs: number | null;
-                        /** @enum {string} */
-                        taskDisposition: "NONE" | "AVAILABLE" | "DONE" | "DELETED" | "MASTER" | "SKIPPED" | "CANCELED";
-                    };
-                };
-            };
-            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
-            409: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
-            429: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
-            503: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-        };
-    };
-    focus_patch_focus_sessions__id_: {
-        parameters: {
-            query?: never;
-            header: {
-                Origin: string;
-                "If-Match": string;
-            };
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": {
-                    title?: string;
-                    pomodoro?: {
-                        /** @default 25 */
-                        workMinutes?: number;
-                        /** @default 5 */
-                        shortBreakMinutes?: number;
-                        /** @default 15 */
-                        longBreakMinutes?: number;
-                        /** @default 4 */
-                        longBreakEvery?: number;
-                        /** @default 4 */
-                        workIntervals?: number;
-                    };
-                    taskId?: string | null;
-                    taskRevision?: number;
-                };
-            };
-        };
-        responses: {
-            /** @description Success */
-            200: {
-                headers: {
-                    /** @description Quoted owning aggregate or logical entry revision. */
-                    ETag?: string;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** Format: uuid */
-                        id: string;
-                        /** Format: uuid */
-                        revisionId: string;
-                        previousRevisionId: string | null;
-                        revision: number;
-                        /** Format: uuid */
-                        spaceId: string;
-                        /** Format: uuid */
-                        createdByUserId: string;
-                        title: string;
-                        /** @enum {string} */
-                        mode: "STOPWATCH" | "POMODORO";
-                        timezone: string;
-                        taskId: string | null;
-                        selectedTaskRevision: number | null;
-                        pomodoro: {
-                            /** @default 25 */
-                            workMinutes: number;
-                            /** @default 5 */
-                            shortBreakMinutes: number;
-                            /** @default 15 */
-                            longBreakMinutes: number;
-                            /** @default 4 */
-                            longBreakEvery: number;
-                            /** @default 4 */
-                            workIntervals: number;
-                        } | null;
-                        /** @enum {string} */
-                        state: "IDLE" | "RUNNING" | "PAUSED" | "FINISHED" | "ABANDONED";
-                        /** @enum {string} */
-                        action: "CREATE" | "EDIT" | "START" | "PAUSE" | "RESUME" | "FINISH" | "STOP";
-                        elapsedMs: number;
-                        runningSince: string | null;
-                        /** Format: date-time */
-                        recordedAt: string;
-                        /** Format: date-time */
-                        createdAt: string;
-                        clockAdjusted: boolean;
-                        current: boolean;
-                        recovery?: {
-                            /** Format: date-time */
-                            confirmedAt: string;
-                            /** Format: date-time */
-                            receivedAt: string;
-                            clientEventAt: string | null;
-                            extensions: {
-                                phase: number;
-                                minutes: number;
-                            }[];
-                            discarded: boolean;
-                        };
-                        /** @enum {string} */
-                        recoveryState?: "READY" | "HEALTHY" | "INTERRUPTED" | "TERMINAL";
-                        /** Format: date-time */
-                        serverNow: string;
-                        activeMs: number;
-                        workMs: number;
-                        breakMs: number;
-                        /** @enum {string} */
-                        phase: "IDLE" | "WORK" | "SHORT_BREAK" | "LONG_BREAK" | "READY_TO_FINISH" | "FINISHED" | "ABANDONED";
-                        interval: number;
-                        remainingMs: number | null;
-                        /** @enum {string} */
-                        taskDisposition: "NONE" | "AVAILABLE" | "DONE" | "DELETED" | "MASTER" | "SKIPPED" | "CANCELED";
-                    };
-                };
-            };
-            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
-            409: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
-            429: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Standard safe error; missing/foreign resources are 404; stale revisions are 409. */
-            503: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-        };
-    };
-    postPersonalCompletionfocussessionsidrecovery: {
-        parameters: {
-            query?: never;
-            header: {
-                Origin: string;
-                "If-Match": string;
-                "Idempotency-Key": string;
-            };
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": {
-                    /** @enum {string} */
-                    action: "START" | "HEARTBEAT" | "PAUSE" | "RESUME" | "FINISH" | "STOP" | "DISCARD" | "EXTEND" | "RECOVER";
-                    /** Format: date-time */
-                    eventAt?: string;
-                    minutes?: number;
-                };
-            };
-        };
-        responses: {
-            /** @description Owned Personal result. Strong revision checks for writes; missing or foreign resources return 404. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** Format: uuid */
-                        id: string;
-                        /** Format: uuid */
-                        revisionId: string;
-                        previousRevisionId: string | null;
-                        revision: number;
-                        /** Format: uuid */
-                        spaceId: string;
-                        /** Format: uuid */
-                        createdByUserId: string;
-                        title: string;
-                        /** @enum {string} */
-                        mode: "STOPWATCH" | "POMODORO";
-                        timezone: string;
-                        taskId: string | null;
-                        selectedTaskRevision: number | null;
-                        pomodoro: {
-                            /** @default 25 */
-                            workMinutes: number;
-                            /** @default 5 */
-                            shortBreakMinutes: number;
-                            /** @default 15 */
-                            longBreakMinutes: number;
-                            /** @default 4 */
-                            longBreakEvery: number;
-                            /** @default 4 */
-                            workIntervals: number;
-                        } | null;
-                        /** @enum {string} */
-                        state: "IDLE" | "RUNNING" | "PAUSED" | "FINISHED" | "ABANDONED";
-                        /** @enum {string} */
-                        action: "CREATE" | "EDIT" | "START" | "PAUSE" | "RESUME" | "FINISH" | "STOP";
-                        elapsedMs: number;
-                        runningSince: string | null;
-                        /** Format: date-time */
-                        recordedAt: string;
-                        /** Format: date-time */
-                        createdAt: string;
-                        clockAdjusted: boolean;
-                        current: boolean;
-                        recovery?: {
-                            /** Format: date-time */
-                            confirmedAt: string;
-                            /** Format: date-time */
-                            receivedAt: string;
-                            clientEventAt: string | null;
-                            extensions: {
-                                phase: number;
-                                minutes: number;
-                            }[];
-                            discarded: boolean;
-                        };
-                        /** @enum {string} */
-                        recoveryState?: "READY" | "HEALTHY" | "INTERRUPTED" | "TERMINAL";
-                        /** Format: date-time */
-                        serverNow: string;
-                        activeMs: number;
-                        workMs: number;
-                        breakMs: number;
-                        /** @enum {string} */
-                        phase: "IDLE" | "WORK" | "SHORT_BREAK" | "LONG_BREAK" | "READY_TO_FINISH" | "FINISHED" | "ABANDONED";
-                        interval: number;
-                        remainingMs: number | null;
-                        /** @enum {string} */
-                        taskDisposition: "NONE" | "AVAILABLE" | "DONE" | "DELETED" | "MASTER" | "SKIPPED" | "CANCELED";
-                    };
-                };
-            };
-            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
-            409: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
-            429: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error. Invalid input 400, stale revision or illegal transition 409, unavailable approved policy 409. */
-            503: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-        };
-    };
-    getNotificationnotificationsunreadcount: {
-        parameters: {
-            query?: {
-                reminderId?: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Owned result. External transports contain only generic text and opaque identifiers. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        count: number;
-                    };
-                };
-            };
-            /** @description Safe error; foreign/missing resources are 404, stale revisions 409. */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error; foreign/missing resources are 404, stale revisions 409. */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error; foreign/missing resources are 404, stale revisions 409. */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error; foreign/missing resources are 404, stale revisions 409. */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error; foreign/missing resources are 404, stale revisions 409. */
-            409: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error; foreign/missing resources are 404, stale revisions 409. */
-            413: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error; foreign/missing resources are 404, stale revisions 409. */
-            429: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error; foreign/missing resources are 404, stale revisions 409. */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error; foreign/missing resources are 404, stale revisions 409. */
-            503: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-        };
-    };
-    getmedeletionpolicy: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Authorized P1-12 result under ADRs 0022/0023 */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        policyVersion: string;
-                        /** @constant */
-                        retentionAcknowledgementRequired: true;
-                        /** @constant */
-                        gracePeriodDays: 7;
-                        /** @constant */
-                        backupExpiryMaximumDays: 30;
-                        /** @constant */
-                        cancellationRequiresPassword: true;
-                        /** @constant */
-                        cancellationRequiresRecoveryCapability: true;
-                    };
-                };
-            };
-            /** @description Safe error */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            409: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            413: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            429: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            503: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-        };
-    };
-    getmedeletionrequestcurrent: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Authorized P1-12 result under ADRs 0022/0023 */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        job: {
-                            /** Format: uuid */
-                            id: string;
-                            revision: number;
-                            /** @enum {string} */
-                            state: "PENDING" | "WAITING" | "ERASING" | "CANCELED" | "EXPIRED" | "FAILED" | "BLOCKED_POLICY" | "ERASED";
-                            /** Format: date-time */
-                            createdAt: string;
-                            eraseAfter: string | null;
-                            completedAt: string | null;
-                            failureCode: string | null;
-                            backupExpiryDeadline: string | null;
-                        } | null;
-                    };
-                };
-            };
-            /** @description Safe error */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            409: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            413: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            429: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            503: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-        };
-    };
-    getNotificationnotificationspreferences: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Owned result. External transports contain only generic text and opaque identifiers. */
-            200: {
-                headers: {
-                    /** @description Quoted resource revision */
-                    ETag?: string;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        moduleChannels: {
-                            [key: string]: {
-                                IN_APP: boolean;
-                                WEB_PUSH: boolean;
-                                EMAIL: boolean;
-                            };
-                        };
-                        /** Format: uuid */
-                        id: string;
-                        /** Format: uuid */
-                        spaceId: string;
-                        /** Format: uuid */
-                        ownerUserId: string;
-                        /** Format: uuid */
-                        createdByUserId: string;
-                        revision: number;
-                        /** Format: date-time */
-                        createdAt: string;
-                        /** Format: date-time */
-                        updatedAt: string;
-                        inApp: boolean;
-                        email: boolean;
-                        webPush: boolean;
-                        reactivateOnReopen: boolean;
-                        quietStart: string | null;
-                        quietEnd: string | null;
-                        availableChannels: ("IN_APP" | "EMAIL" | "WEB_PUSH")[];
-                        webPushPublicKey: string | null;
-                    };
-                };
-            };
-            /** @description Safe error; foreign/missing resources are 404, stale revisions 409. */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error; foreign/missing resources are 404, stale revisions 409. */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error; foreign/missing resources are 404, stale revisions 409. */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error; foreign/missing resources are 404, stale revisions 409. */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error; foreign/missing resources are 404, stale revisions 409. */
-            409: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error; foreign/missing resources are 404, stale revisions 409. */
-            413: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error; foreign/missing resources are 404, stale revisions 409. */
-            429: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error; foreign/missing resources are 404, stale revisions 409. */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error; foreign/missing resources are 404, stale revisions 409. */
-            503: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-        };
-    };
-    patchNotificationnotificationspreferences: {
-        parameters: {
-            query?: never;
-            header: {
-                Origin: string;
-                "Idempotency-Key": string;
-                "If-Match": string;
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": {
-                    moduleChannels?: {
-                        [key: string]: {
-                            IN_APP: boolean;
-                            WEB_PUSH: boolean;
-                            EMAIL: boolean;
-                        };
-                    };
-                    inApp?: boolean;
-                    email?: boolean;
-                    webPush?: boolean;
-                    reactivateOnReopen?: boolean;
-                    quietStart?: string | null;
-                    quietEnd?: string | null;
-                };
-            };
-        };
-        responses: {
-            /** @description Owned result. External transports contain only generic text and opaque identifiers. */
-            200: {
-                headers: {
-                    /** @description Quoted resource revision */
-                    ETag?: string;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        moduleChannels: {
-                            [key: string]: {
-                                IN_APP: boolean;
-                                WEB_PUSH: boolean;
-                                EMAIL: boolean;
-                            };
-                        };
-                        /** Format: uuid */
-                        id: string;
-                        /** Format: uuid */
-                        spaceId: string;
-                        /** Format: uuid */
-                        ownerUserId: string;
-                        /** Format: uuid */
-                        createdByUserId: string;
-                        revision: number;
-                        /** Format: date-time */
-                        createdAt: string;
-                        /** Format: date-time */
-                        updatedAt: string;
-                        inApp: boolean;
-                        email: boolean;
-                        webPush: boolean;
-                        reactivateOnReopen: boolean;
-                        quietStart: string | null;
-                        quietEnd: string | null;
-                        availableChannels: ("IN_APP" | "EMAIL" | "WEB_PUSH")[];
-                        webPushPublicKey: string | null;
-                    };
-                };
-            };
-            /** @description Safe error; foreign/missing resources are 404, stale revisions 409. */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error; foreign/missing resources are 404, stale revisions 409. */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error; foreign/missing resources are 404, stale revisions 409. */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error; foreign/missing resources are 404, stale revisions 409. */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error; foreign/missing resources are 404, stale revisions 409. */
-            409: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error; foreign/missing resources are 404, stale revisions 409. */
-            413: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error; foreign/missing resources are 404, stale revisions 409. */
-            429: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error; foreign/missing resources are 404, stale revisions 409. */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error; foreign/missing resources are 404, stale revisions 409. */
             503: {
                 headers: {
                     [name: string]: unknown;

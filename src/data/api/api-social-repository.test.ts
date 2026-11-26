@@ -69,6 +69,13 @@ function setup({ role = "OWNER" as "OWNER" | "ADMIN" | "MEMBER", catalog = [{ ve
     if (path === "social-groups/g2/join-requests") return json({ id: "r9", groupId: "g2", requesterUserId: ME, state: "PENDING", revision: 1 }, 201);
     if (path === "social-groups/g2/balances/me") return err(404);
     if (path === "social-groups/g1/invitations") return json({ invitation: { id: "o1", spaceId: "s1", scopeId: "sc1", kind: "MEMBERSHIP", memberRole: "MEMBER", state: "PENDING", revision: 1, expiresAt: at, acceptedAccessId: null }, proof: "secret-proof" }, 201);
+    if (path === "social-group-invitations" && call.method === "GET")
+      return json(
+        call.query.after === "c2"
+          ? { items: [{ id: "o2", contextLabel: "Social Group", revision: 1, expiresAt: at }], nextCursor: null }
+          : { items: [{ id: "o1", contextLabel: "Social Group", revision: 4, expiresAt: at, notification: { invitationId: "o1", kind: "SOCIAL_GROUP", targetId: "g1", targetDisplayName: "Hikers", inviterDisplayName: "Ben", role: "MEMBER", createdAt: at, readAt: null, revision: 4, expiresAt: at } }], nextCursor: "c2" },
+      );
+    if (path === "social-group-invitations/o1/proof") return call.ifMatch === '"4"' ? json({ invitationId: "o1", proof: "rotated-proof", revision: 5, expiresAt: at }, 201) : err(409, "STALE_REVISION");
     if (path === "social-group-invitations/preview") return call.method === "GET" ? json({ contextLabel: "Social Group", offerCategory: "MEMBERSHIP", expiresAt: at }) : err(404);
     if (path === "social-group-invitations/o1/accept") return json({ invitation: { id: "o1", spaceId: "s1", scopeId: "sc1", kind: "MEMBERSHIP", memberRole: "MEMBER", state: "ACCEPTED", revision: 2, expiresAt: at, acceptedAccessId: "m9" }, membership: membership("m9", "a-me", "MEMBER") }, 201);
     if (path === "social-groups/g1/history") return json({ items: [{ id: "h1", actorId: "a-ben", actorDisplayName: "Ben", action: "membership.admit", resourceId: null, occurredAt: at }, { id: "h2", actorId: "a-me", actorDisplayName: "Mehran R.", action: "social.group.create", resourceId: null, occurredAt: "2026-11-01T10:00:00.000Z" }], nextCursor: null });
@@ -197,6 +204,25 @@ describe("api-social-repository — connections & groups", () => {
     await expect(repo.invitations.respond("o1", "secret-proof", 0, true)).rejects.toMatchObject({ code: "invalid" });
     expect(calls.length).toBe(before);
     expect(JSON.stringify(accept.query)).not.toContain("secret-proof");
+  });
+
+  it("pending invitations: cursor pages, then a fresh proof (If-Match) answers with the returned revision", async () => {
+    const { repo, calls } = setup();
+    const first = await repo.invitations.pending();
+    expect(first).toEqual({ items: [{ id: "o1", revision: 4, expiresAt: at, groupId: "g1", groupName: "Hikers", inviterName: "Ben", role: "MEMBER", createdAt: at, readAt: null }], next: "c2" });
+    const second = await repo.invitations.pending("c2");
+    expect(second.items[0]).toMatchObject({ id: "o2", groupName: null, inviterName: null, createdAt: null });
+    expect(calls.at(-1)).toMatchObject({ path: "/social-group-invitations", query: { limit: "25", after: "c2" } });
+
+    expect(await repo.invitations.answerPending({ id: "o1", revision: 4 }, true)).toEqual({ groupId: "g1" });
+    const proof = calls.find((c) => c.path === "/social-group-invitations/o1/proof")!;
+    expect(proof).toMatchObject({ method: "POST", ifMatch: '"4"', body: {} });
+    // Accept carries the rotated proof's revision, not the one shown in the list.
+    expect(calls.find((c) => c.path === "/social-group-invitations/o1/accept")).toMatchObject({ ifMatch: '"5"' });
+
+    const before = calls.length;
+    await expect(repo.invitations.answerPending({ id: "o1", revision: 3 }, false)).rejects.toMatchObject({ code: "conflict" });
+    expect(calls.slice(before).map((c) => c.path)).toEqual(["/social-group-invitations/o1/proof"]);
   });
 
   it("handover: start returns the successor link; revoke uses the handover revision", async () => {

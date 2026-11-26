@@ -1257,6 +1257,20 @@
       "reviewRequired": "برگزارکنندگان پیشرفت را تأیید کنند",
       "create": "ساخت",
       "screenTitle": "هدف‌ها"
+    },
+    "pending": {
+      "title": "دعوت‌های گروه",
+      "retry": "تلاش دوباره",
+      "more": "دعوت‌های بیشتر",
+      "unnamed": "یک گروه اجتماعی",
+      "from": "از طرف {name}",
+      "role": "با نقش {role}",
+      "sent": "ارسال: {when}",
+      "expires": "انقضا: {when}",
+      "expired": "منقضی شده",
+      "unread": "تازه",
+      "accept": "پیوستن به گروه",
+      "decline": "رد کردن"
     }
   }
 }

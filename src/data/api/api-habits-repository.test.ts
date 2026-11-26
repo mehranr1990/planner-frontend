@@ -17,7 +17,11 @@ interface FakeHabit {
   status: "ACTIVE" | "ARCHIVED";
   rule: Record<string, unknown>;
   startDate: string;
+  /** icon, category, unitLabel, timeOfDay, preferredTime, reminder as the API stores them. */
+  meta: Record<string, unknown>;
 }
+const META = ["icon","category","unitLabel","timeOfDay","preferredTime","reminder"];
+const pickMeta = (body: Record<string, unknown>) => Object.fromEntries(META.filter((key) => key in body).map((key) => [key, body[key]]));
 interface FakeEntry {
   id: string;
   habitId: string;
@@ -35,7 +39,7 @@ function setup() {
   let pageSize = 100;
   const view = (h: FakeHabit) => {
     const schedule = { id: `s-${h.id}`, habitId: h.id, revision: h.revision, effectiveFrom: h.startDate, timezone: "Asia/Tehran", target: h.target, status: h.status, schedule: { version: 1, startDate: h.startDate, rule: h.rule }, createdAt: NOW };
-    return { id: h.id, spaceId: "s", createdByUserId: "u", revision: h.revision, createdAt: NOW, updatedAt: NOW, title: h.title, type: h.type, unit: h.unit, purpose: "GENERIC", currentSchedule: schedule, latestSchedule: schedule };
+    return { id: h.id, spaceId: "s", createdByUserId: "u", revision: h.revision, createdAt: NOW, updatedAt: NOW, title: h.title, type: h.type, unit: h.unit, purpose: "GENERIC", icon: "DEFAULT", timeOfDay: "ANYTIME", category: null, unitLabel: null, preferredTime: null, reminder: null, ...h.meta, currentSchedule: schedule, latestSchedule: schedule };
   };
   const entryView = (e: FakeEntry) => ({ ...e, revisionId: `${e.id}-r${e.revision}`, scheduleId: `s-${e.habitId}`, previousRevisionId: null, timezone: "Asia/Tehran", recordedTimezone: "Asia/Tehran", recordedAt: NOW, actorUserId: "u", current: true });
 
@@ -48,7 +52,7 @@ function setup() {
         const next = start + pageSize < habits.length ? String(start + pageSize) : null;
         return json({ items: habits.slice(start, start + pageSize).map(view), nextCursor: next });
       }
-      const habit: FakeHabit = { id: `h${habits.length + 1}`, revision: 1, title: body.title as string, type: body.type as FakeHabit["type"], unit: body.unit as string, target: body.target as string, status: "ACTIVE", rule: (body.schedule as { rule: Record<string, unknown> }).rule, startDate: (body.schedule as { startDate: string }).startDate };
+      const habit: FakeHabit = { id: `h${habits.length + 1}`, revision: 1, title: body.title as string, type: body.type as FakeHabit["type"], unit: body.unit as string, target: body.target as string, status: "ACTIVE", rule: (body.schedule as { rule: Record<string, unknown> }).rule, startDate: (body.schedule as { startDate: string }).startDate, meta: pickMeta(body) };
       habits.push(habit);
       return json(view(habit), 201, '"1"');
     }
@@ -69,6 +73,7 @@ function setup() {
         if (body.target) habit.target = body.target as string;
         if (body.status) habit.status = body.status as FakeHabit["status"];
         if (body.schedule) habit.rule = (body.schedule as { rule: Record<string, unknown> }).rule;
+        Object.assign(habit.meta, pickMeta(body));
       }
       return json(view(habit), 200, `"${habit.revision}"`);
     }
@@ -100,7 +105,7 @@ function setup() {
 describe("live Habits adapter", () => {
   it("creates a checkbox habit: DAILY / COUNT, Idempotency-Key, zone and start day", async () => {
     const { repo, calls } = setup();
-    const habit = await repo.create({ title: " Read ", icon: "leaf", area: null, restWeekdays: [], target: null, timeOfDay: "anytime", preferredTime: null, reminder: null });
+    const habit = await repo.create({ title: " Read ", icon: "default", area: null, restWeekdays: [], target: null, timeOfDay: "anytime", preferredTime: null, reminder: null });
     expect(habit).toMatchObject({ id: "h1", title: "Read", pinned: true, doneDays: [], restWeekdays: [], startDay: TODAY, target: null });
     expect(calls[0]!.key).toBeTruthy();
     expect(calls[0]!.body).toMatchObject({ title: "Read", type: "CHECKBOX", unit: "COUNT", target: "1", schedule: { version: 1, startDate: TODAY, rule: { kind: "DAILY" } } });
@@ -113,11 +118,55 @@ describe("live Habits adapter", () => {
     expect(habit).toMatchObject({ restWeekdays: [0, 5], target: { amount: 20, unit: "pages" } });
   });
 
-  it("refuses what the API cannot store, before any request", async () => {
+  it("creates with every metadata field: icon id, category, time of day, preferred time, unit label, reminder", async () => {
     const { repo, calls } = setup();
-    await expect(repo.create({ title: "x", reminder: { time: "20:00", ifNotDone: true } })).rejects.toMatchObject({ code: "unsupported" });
-    await expect(repo.create({ title: "x", icon: "book" })).rejects.toMatchObject({ code: "unsupported" });
+    const habit = await repo.create({
+      title: "Water",
+      icon: "water",
+      area: " سلامت ",
+      target: { amount: 8, unit: "count", label: " لیوان " },
+      timeOfDay: "morning",
+      preferredTime: "07:30",
+      reminder: { time: "21:00", ifNotDone: true },
+    });
+    expect(calls[0]!.body).toMatchObject({ type: "QUANTITY", unit: "COUNT", target: "8", icon: "WATER", category: "سلامت", unitLabel: "لیوان", timeOfDay: "MORNING", preferredTime: "07:30", reminder: { time: "21:00", ifNotDone: true } });
+    expect(habit).toMatchObject({ icon: "water", area: "سلامت", timeOfDay: "morning", preferredTime: "07:30", reminder: { time: "21:00", ifNotDone: true }, target: { amount: 8, unit: "count", label: "لیوان" } });
+    // A plain habit sends only the defaults; preferredTime never creates a reminder.
+    await repo.create({ title: "Plain", preferredTime: "06:00" });
+    expect(calls[1]!.body).toMatchObject({ icon: "DEFAULT", timeOfDay: "ANYTIME", preferredTime: "06:00" });
+    for (const key of ["category", "unitLabel", "reminder"]) expect(calls[1]!.body).not.toHaveProperty(key);
+  });
+
+  it("edits metadata with the habit revision, clears with null, keeps the canonical unit", async () => {
+    const { repo, calls } = setup();
+    await repo.create({ title: "Water", icon: "water", area: "Health", target: { amount: 8, unit: "count", label: "glass" }, reminder: { time: "21:00", ifNotDone: true } });
+    calls.length = 0;
+    const habit = await repo.update("h1", { icon: "health", area: "", target: { amount: 8, unit: "count", label: null }, reminder: null, preferredTime: "08:00", timeOfDay: "evening" });
+    expect(calls).toHaveLength(1);
+    expect(calls[0]).toMatchObject({ method: "PATCH", ifMatch: '"1"', body: { icon: "HEALTH", category: null, unitLabel: null, reminder: null, preferredTime: "08:00", timeOfDay: "EVENING" } });
+    expect(calls[0]!.body).not.toHaveProperty("unit");
+    expect(habit).toMatchObject({ icon: "health", reminder: null, preferredTime: "08:00", target: { unit: "count", label: null } });
+    expect(habit.area).toBeUndefined();
+    // Unchanged values send nothing.
+    await repo.update("h1", { icon: "health", timeOfDay: "evening", reminder: null });
+    expect(calls).toHaveLength(1);
+  });
+
+  it("a stale revision on a metadata edit reloads and reports conflict without re-sending", async () => {
+    const { repo, calls, conflict, habits } = setup();
+    await repo.create({ title: "A" });
+    calls.length = 0;
+    conflict();
+    await expect(repo.update("h1", { title: "B", icon: "book" })).rejects.toMatchObject({ code: "conflict" });
+    expect(calls.filter((call) => call.method === "PATCH")).toHaveLength(1);
+    expect(habits[0]!.title).toBe("A");
+  });
+
+  it("refuses invalid input before any request", async () => {
+    const { repo, calls } = setup();
     await expect(repo.create({ title: "x", target: { amount: 8, unit: "لیوان" } })).rejects.toMatchObject({ code: "unsupported" });
+    await expect(repo.create({ title: "x", area: "a".repeat(101) })).rejects.toMatchObject({ code: "invalid" });
+    await expect(repo.create({ title: "x", reminder: { time: "25:00", ifNotDone: true } })).rejects.toMatchObject({ code: "invalid" });
     await expect(repo.create({ title: " " })).rejects.toMatchObject({ code: "invalid" });
     await expect(repo.create({ title: "x", restWeekdays: [0, 1, 2, 3, 4, 5, 6] })).rejects.toMatchObject({ code: "invalid" });
     expect(calls).toHaveLength(0);
@@ -194,15 +243,15 @@ describe("live Habits adapter", () => {
     expect((await repo.setDone("h1", TODAY, true)).doneDays).toEqual([TODAY]);
     expect(writes().slice(-2)).toEqual(["POST /habits/h1/entries", "POST /habits/h1/entries"]);
     conflict();
-    expect((await repo.update("h1", { title: "B" })).title).toBe("B");
-    expect(habits[0]!.title).toBe("B");
+    expect((await repo.setArchived("h1", true)).archived).toBe(true);
+    expect(habits[0]!.status).toBe("ARCHIVED");
   });
 
   it("edits title, days and target amount; type and unit changes are refused", async () => {
     const { repo, calls } = setup();
     await repo.create({ title: "Pages", target: { amount: 20, unit: "pages" } });
     calls.length = 0;
-    const habit = await repo.update("h1", { title: "Pages", icon: "leaf", area: null, restWeekdays: [5], target: { amount: 25, unit: "pages" }, timeOfDay: "anytime", preferredTime: null, reminder: null });
+    const habit = await repo.update("h1", { title: "Pages", icon: "default", area: null, restWeekdays: [5], target: { amount: 25, unit: "pages" }, timeOfDay: "anytime", preferredTime: null, reminder: null });
     expect(calls).toHaveLength(1);
     expect(calls[0]).toMatchObject({ method: "PATCH", path: "/habits/h1", ifMatch: '"1"', body: { target: "25", schedule: { startDate: TODAY, rule: { kind: "WEEKDAYS", weekdays: [1, 2, 3, 4, 6, 7] } } } });
     expect(calls[0]!.body).not.toHaveProperty("title");

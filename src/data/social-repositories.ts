@@ -45,6 +45,8 @@ import type {
   BlockedEntry,
   GroupInviteLink,
   InvitationPreview,
+  PendingGroupInvitation,
+  PendingGroupInvitationPage,
   HandoverInfo,
   NewPollInput,
   FinancePostingPreview,
@@ -328,6 +330,14 @@ export interface GroupInvitationRepo {
   preview(invitationId: string, proof: string): Promise<InvitationPreview>;
   /** `revision` = the invitation revision issued together with this proof (both travel in the link fragment). */
   respond(invitationId: string, proof: string, revision: number, accept: boolean): Promise<{ groupId: string | null }>;
+  /** My pending group invitations, one page (`after` = the previous page's cursor). */
+  pending(after?: string | null): Promise<PendingGroupInvitationPage>;
+  /**
+   * Answers a pending invitation without a link: rotates a fresh proof for its
+   * current revision (stale → "conflict"), then accepts or declines with it.
+   * The proof stays inside the adapter (never stored, returned or logged).
+   */
+  answerPending(invitation: Pick<PendingGroupInvitation, "id" | "revision">, accept: boolean): Promise<{ groupId: string | null }>;
 }
 
 export interface HandoverRepo {

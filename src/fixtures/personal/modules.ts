@@ -38,7 +38,7 @@ export const sampleHabits: readonly Habit[] = [
     pinned: false,
     doneDays: [sampleDays.yesterday, SAMPLE_DAY],
     restWeekdays: [],
-    icon: "droplet",
+    icon: "water",
     area: "Health",
     startDay: HABITS_START,
     target: { amount: 8, unit: "glasses" },
@@ -65,15 +65,15 @@ export const sampleHabits: readonly Habit[] = [
     pinned: false,
     doneDays: [sampleDays.sunday, SAMPLE_DAY],
     restWeekdays: [],
-    icon: "footprints",
+    icon: "exercise",
     area: "Health",
     startDay: HABITS_START,
     skippedDays: [sampleDays.saturday],
     timeOfDay: "afternoon",
     preferredTime: "17:15",
   },
-  { id: "h-meditate", title: "Meditate", pinned: false, doneDays: [sampleDays.yesterday, SAMPLE_DAY], restWeekdays: [], icon: "brain", startDay: HABITS_START, timeOfDay: "morning", preferredTime: "07:00" },
-  { id: "h-journal", title: "Journal", pinned: false, doneDays: [sampleDays.yesterday], restWeekdays: [], icon: "pen", startDay: HABITS_START, timeOfDay: "evening" },
+  { id: "h-meditate", title: "Meditate", pinned: false, doneDays: [sampleDays.yesterday, SAMPLE_DAY], restWeekdays: [], icon: "meditation", startDay: HABITS_START, timeOfDay: "morning", preferredTime: "07:00" },
+  { id: "h-journal", title: "Journal", pinned: false, doneDays: [sampleDays.yesterday], restWeekdays: [], icon: "study", startDay: HABITS_START, timeOfDay: "evening" },
 ];
 
 /**

@@ -416,9 +416,50 @@ export interface WorkingHoursRepository {
   capacity(query: { date: string } | { weekStartDate: string }): Promise<ScheduleCapacity | null>;
 }
 
+// ── Invitation notifications (recipient feed, B1–B4) ─────────────────────
+
+/** The six offer kinds the feed serves (API PROJECT … SOCIAL_GROUP). */
+export type InvitationFeedKind = "project" | "team" | "company" | "conversation" | "meeting" | "socialGroup";
+export const INVITATION_FEED_KINDS: readonly InvitationFeedKind[] = ["project", "team", "company", "conversation", "meeting", "socialGroup"];
+
+/**
+ * A current, authorized pending offer addressed to me, as the notification
+ * feed serves it (it honors my IN_APP preference; the modules' ordinary
+ * pending lists do not). Reading it never accepts it.
+ */
+export interface InvitationNotice {
+  /** The offer id the module's own accept / decline uses. */
+  id: string;
+  kind: InvitationFeedKind;
+  /** Project / team / company / conversation / meeting / social group id. */
+  targetId: string;
+  targetName: string;
+  inviterName: string | null;
+  /** The offered role as the server names it (null = none given). */
+  role: string | null;
+  createdAt: string;
+  readAt: string | null;
+  revision: number;
+  expiresAt: string;
+}
+
+export interface InvitationFeedPage {
+  items: InvitationNotice[];
+  /** Opaque cursor for the next page (bound to me and this kind), or null. */
+  next: string | null;
+}
+
+export interface InvitationFeedRepository {
+  /** One page of one kind's feed (newest server order). */
+  list(kind: InvitationFeedKind, after?: string | null): Promise<InvitationFeedPage>;
+  /** Recipient-only read mark; does not answer the offer or change its revision. */
+  markRead(kind: InvitationFeedKind, id: string): Promise<{ readAt: string }>;
+}
+
 export interface PersonalServiceRepositories {
   workingHours: WorkingHoursRepository;
   notifications: NotificationsRepository;
+  invitationFeed: InvitationFeedRepository;
   reminders: RemindersRepository;
   routines: RoutinesRepository;
   taskFiles: TaskFilesRepository;

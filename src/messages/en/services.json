@@ -26,7 +26,9 @@
     "snooze1h": "For 1 hour",
     "snooze3h": "For 3 hours",
     "snoozeTomorrow": "Tomorrow at 09:00",
-    "dismiss": "Dismiss"
+    "dismiss": "Dismiss",
+    "labelWithInvitations": "{label}, plus new invitations",
+    "labelInvitationsOnly": "Notifications, new invitations"
   },
   "reminders": {
     "newTitle": "New reminder",
@@ -376,7 +378,7 @@
     },
     "modules": {
       "title": "By area",
-      "hint": "Turn each channel on or off per area. A message is delivered only when both this switch and the channel above are on, the channel is available, browser push is allowed and quiet hours permit.",
+      "hint": "Turn each channel on or off per area. A message is delivered only when both this switch and the channel above are on, the channel is available, browser push is allowed and quiet hours permit — turning a switch on doesn’t guarantee delivery. Invitations always stay in each area’s own invitation list, even with In-app off.",
       "module": "Area",
       "unavailable": "Unavailable",
       "globalOff": "Off above",
@@ -393,7 +395,8 @@
         "company": "Company",
         "messaging": "Messages & meetings",
         "social": "Social"
-      }
+      },
+      "cellUnavailable": "{module}: {channel} is not available on this server"
     }
   },
   "account": {

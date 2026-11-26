@@ -127,6 +127,11 @@ export function createMockPersonalServices({
   };
 
   return {
+    // Mock Mode has no other people inviting me: an empty feed, nothing fabricated.
+    invitationFeed: {
+      list: async () => ({ items: [], next: null }),
+      markRead: async () => notFound("invitation"),
+    },
     notifications: {
       list: async () => [],
       unreadCount: async () => 0,

@@ -111,6 +111,18 @@ const HISTORY_KIND: Record<string, GroupEventKind> = {
 
 export function createApiSocial(client: ApiClient, user: SocialUser): SocialRepository {
   const api = typedAs<paths>(client);
+
+  /** Accept / decline with a proof (X-Invitation-Proof) and its revision (If-Match). */
+  async function respondWithProof(invitationId: string, proof: string, revision: number, accept: boolean): Promise<{ groupId: string | null }> {
+    const header = { "If-Match": tag(revision), "X-Invitation-Proof": proof };
+    if (accept) {
+      const { data } = await call(() => api.request("post", "/api/v1/social-group-invitations/{id}/accept", { path: { id: invitationId }, header, body: {} }));
+      const g = (await loadGroups().catch(() => [])).find((x) => x.spaceId === data.invitation.spaceId);
+      return { groupId: g?.id ?? null };
+    }
+    await call(() => api.request("post", "/api/v1/social-group-invitations/{id}/decline", { path: { id: invitationId }, header, body: {} }));
+    return { groupId: null };
+  }
   const people = new People(user);
   const revisions = new Revisions();
   const intents = new Intents();
@@ -669,6 +681,31 @@ export function createApiSocial(client: ApiClient, user: SocialUser): SocialRepo
     },
     invitations: {
       send: sendInvitations,
+      async pending(after) {
+        const { data } = await call(() => api.request("get", "/api/v1/social-group-invitations", { query: { limit: 25, ...(after ? { after } : {}) } }));
+        return {
+          items: data.items.map((item) => ({
+            id: item.id,
+            revision: item.revision,
+            expiresAt: item.expiresAt,
+            groupId: item.notification?.targetId ?? null,
+            groupName: item.notification?.targetDisplayName ?? null,
+            inviterName: item.notification?.inviterDisplayName?.trim() || null,
+            role: item.notification?.role ?? null,
+            createdAt: item.notification?.createdAt ?? null,
+            readAt: item.notification?.readAt ?? null,
+          })),
+          next: data.nextCursor ?? null,
+        };
+      },
+      async answerPending(invitation, accept) {
+        if (!Number.isSafeInteger(invitation.revision) || invitation.revision < 1) throw new SocialError("invalid");
+        // A fresh proof for the revision I saw (rotates earlier proofs, marks the notification read).
+        const { data } = await call(() =>
+          api.request("post", "/api/v1/social-group-invitations/{id}/proof", { path: { id: invitation.id }, header: { "If-Match": tag(invitation.revision) }, body: {} }),
+        );
+        return respondWithProof(invitation.id, data.proof, data.revision, accept);
+      },
       async preview(invitationId, proof) {
         void invitationId;
         const { data } = await call(() => api.request("get", "/api/v1/social-group-invitations/preview", { header: { "X-Invitation-Proof": proof } }));
@@ -676,14 +713,7 @@ export function createApiSocial(client: ApiClient, user: SocialUser): SocialRepo
       },
       async respond(invitationId, proof, revision, accept) {
         if (!Number.isSafeInteger(revision) || revision < 1) throw new SocialError("invalid", "INVITATION_LINK_INCOMPLETE", "INVITATION_LINK_INCOMPLETE");
-        const header = { "If-Match": tag(revision), "X-Invitation-Proof": proof };
-        if (accept) {
-          const { data } = await call(() => api.request("post", "/api/v1/social-group-invitations/{id}/accept", { path: { id: invitationId }, header, body: {} }));
-          const g = (await loadGroups().catch(() => [])).find((x) => x.spaceId === data.invitation.spaceId);
-          return { groupId: g?.id ?? null };
-        }
-        await call(() => api.request("post", "/api/v1/social-group-invitations/{id}/decline", { path: { id: invitationId }, header, body: {} }));
-        return { groupId: null };
+        return respondWithProof(invitationId, proof, revision, accept);
       },
     },
     handovers: {

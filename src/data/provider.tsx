@@ -4,6 +4,7 @@ import { createContext, useContext, useState, type ReactNode } from "react";
 import { getApiClient, isLiveApi } from "@/api/runtime";
 import { createApiBillsRepository, createApiFinanceReportsRepository } from "./api/api-bills-repository";
 import { createApiBlocksRepository } from "./api/api-blocks-repository";
+import { createApiInvitationFeed } from "./api/api-invitation-feed";
 import { createApiNotificationsRepository } from "./api/api-notifications-repository";
 import { createApiRemindersRepository } from "./api/api-reminders-repository";
 import { createApiRoutinesRepository } from "./api/api-routines-repository";
@@ -67,6 +68,7 @@ export function createRepositories(): Repositories {
     review: createApiReviewRepository(client),
     // Personal services (gap closure): API only in live mode, never the mock stores.
     notifications: createApiNotificationsRepository(client),
+    invitationFeed: createApiInvitationFeed(client),
     reminders: createApiRemindersRepository(client),
     routines: createApiRoutinesRepository(client),
     workingHours: createApiWorkingHoursRepository(client),

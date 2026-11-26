@@ -1284,6 +1284,38 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/projects/{projectId}/capacity-templates/{accessId}/effective": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["projectExecutiongetprojectsprojectIdcapacitytemplatesaccessIdeffective"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/projects/{projectId}/capacity-templates/{accessId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["projectExecutiongetprojectsprojectIdcapacitytemplatesaccessId"];
+        put: operations["projectExecutionputprojectsprojectIdcapacitytemplatesaccessId"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/projects/{projectId}/reports/snapshots": {
         parameters: {
             query?: never;
@@ -2500,38 +2532,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/projects/{projectId}/capacity-templates/{accessId}/effective": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["projectExecutiongetprojectsprojectIdcapacitytemplatesaccessIdeffective"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/projects/{projectId}/capacity-templates/{accessId}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["projectExecutiongetprojectsprojectIdcapacitytemplatesaccessId"];
-        put: operations["projectExecutionputprojectsprojectIdcapacitytemplatesaccessId"];
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -2548,22 +2548,6 @@ export interface components {
                 /** Format: uuid */
                 requestId: string;
             };
-        };
-        LiveHealth: {
-            /** @constant */
-            status: "ok";
-        };
-        ReadyHealth: {
-            /** @constant */
-            status: "ok";
-            checks: {
-                /** @constant */
-                database: "up";
-            };
-        };
-        CursorQuery: {
-            limit?: string;
-            cursor?: string;
         };
     };
     responses: never;
@@ -11346,6 +11330,23 @@ export interface operations {
                 content: {
                     "application/json": {
                         items: {
+                            notification?: {
+                                /** Format: uuid */
+                                invitationId: string;
+                                /** @enum {string} */
+                                kind: "PROJECT" | "TEAM" | "COMPANY" | "CONVERSATION" | "MEETING" | "SOCIAL_GROUP";
+                                /** Format: uuid */
+                                targetId: string;
+                                targetDisplayName: string;
+                                inviterDisplayName: string | null;
+                                role: string | null;
+                                /** Format: date-time */
+                                createdAt: string;
+                                readAt: string | null;
+                                revision: number;
+                                /** Format: date-time */
+                                expiresAt: string;
+                            };
                             /** Format: uuid */
                             id: string;
                             /** @constant */
@@ -17659,6 +17660,429 @@ export interface operations {
                             createdAt: string;
                         }[];
                         nextCursor: string | null;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    projectExecutiongetprojectsprojectIdcapacitytemplatesaccessIdeffective: {
+        parameters: {
+            query: {
+                fromDate: string;
+                toDate: string;
+                timezone: string;
+                generation: number;
+            };
+            header?: never;
+            path: {
+                projectId: string;
+                accessId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Current authorized P2-06 result */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        projectId: string;
+                        /** Format: date */
+                        fromDate: string;
+                        /** Format: date */
+                        toDate: string;
+                        timezone: string;
+                        /** @constant */
+                        basis: "EXPLICIT_ACCEPTED_ASSIGNMENT_ALLOCATIONS";
+                        rows: {
+                            member: {
+                                /** Format: uuid */
+                                accessId: string;
+                                generation: number;
+                            };
+                            /** Format: date */
+                            date: string;
+                            capacityMinutes: number | null;
+                            allocatedMinutes: number;
+                            overbookedMinutes: number | null;
+                            taskCount: number;
+                            estimatedMinutes: number;
+                            unknownEstimates: number;
+                        }[];
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    projectExecutiongetprojectsprojectIdcapacitytemplatesaccessId: {
+        parameters: {
+            query: {
+                generation: number;
+            };
+            header?: never;
+            path: {
+                projectId: string;
+                accessId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Current authorized P2-06 result */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        member: {
+                            /** Format: uuid */
+                            accessId: string;
+                            generation: number;
+                        };
+                        template: {
+                            timezone: string;
+                            /** Format: date */
+                            effectiveFrom: string;
+                            weekdays: (number | null)[];
+                        } | null;
+                        /** Format: uuid */
+                        projectId: string;
+                        revision: number;
+                    };
+                };
+            };
+            /** @description Safe error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Safe error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    projectExecutionputprojectsprojectIdcapacitytemplatesaccessId: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "If-Match": string;
+            };
+            path: {
+                projectId: string;
+                accessId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    member: {
+                        /** Format: uuid */
+                        accessId: string;
+                        generation: number;
+                    };
+                    template: {
+                        timezone: string;
+                        /** Format: date */
+                        effectiveFrom: string;
+                        weekdays: (number | null)[];
+                    } | null;
+                };
+            };
+        };
+        responses: {
+            /** @description Current authorized P2-06 result */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        member: {
+                            /** Format: uuid */
+                            accessId: string;
+                            generation: number;
+                        };
+                        template: {
+                            timezone: string;
+                            /** Format: date */
+                            effectiveFrom: string;
+                            weekdays: (number | null)[];
+                        } | null;
+                        /** Format: uuid */
+                        projectId: string;
+                        revision: number;
                     };
                 };
             };
@@ -32995,429 +33419,6 @@ export interface operations {
                             sections: string[];
                             workflow: "BASE_TASK_STATUSES" | null;
                         }[];
-                    };
-                };
-            };
-            /** @description Safe error */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            409: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            413: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            429: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            503: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-        };
-    };
-    projectExecutiongetprojectsprojectIdcapacitytemplatesaccessIdeffective: {
-        parameters: {
-            query: {
-                fromDate: string;
-                toDate: string;
-                timezone: string;
-                generation: number;
-            };
-            header?: never;
-            path: {
-                projectId: string;
-                accessId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Current authorized P2-06 result */
-            200: {
-                headers: {
-                    "Cache-Control"?: "no-store";
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** Format: uuid */
-                        projectId: string;
-                        /** Format: date */
-                        fromDate: string;
-                        /** Format: date */
-                        toDate: string;
-                        timezone: string;
-                        /** @constant */
-                        basis: "EXPLICIT_ACCEPTED_ASSIGNMENT_ALLOCATIONS";
-                        rows: {
-                            member: {
-                                /** Format: uuid */
-                                accessId: string;
-                                generation: number;
-                            };
-                            /** Format: date */
-                            date: string;
-                            capacityMinutes: number | null;
-                            allocatedMinutes: number;
-                            overbookedMinutes: number | null;
-                            taskCount: number;
-                            estimatedMinutes: number;
-                            unknownEstimates: number;
-                        }[];
-                    };
-                };
-            };
-            /** @description Safe error */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            409: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            413: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            429: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            503: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-        };
-    };
-    projectExecutiongetprojectsprojectIdcapacitytemplatesaccessId: {
-        parameters: {
-            query: {
-                generation: number;
-            };
-            header?: never;
-            path: {
-                projectId: string;
-                accessId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Current authorized P2-06 result */
-            200: {
-                headers: {
-                    "Cache-Control"?: "no-store";
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        member: {
-                            /** Format: uuid */
-                            accessId: string;
-                            generation: number;
-                        };
-                        template: {
-                            timezone: string;
-                            /** Format: date */
-                            effectiveFrom: string;
-                            weekdays: (number | null)[];
-                        } | null;
-                        /** Format: uuid */
-                        projectId: string;
-                        revision: number;
-                    };
-                };
-            };
-            /** @description Safe error */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            409: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            413: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            429: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Safe error */
-            503: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-        };
-    };
-    projectExecutionputprojectsprojectIdcapacitytemplatesaccessId: {
-        parameters: {
-            query?: never;
-            header: {
-                Origin: string;
-                "If-Match": string;
-            };
-            path: {
-                projectId: string;
-                accessId: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": {
-                    member: {
-                        /** Format: uuid */
-                        accessId: string;
-                        generation: number;
-                    };
-                    template: {
-                        timezone: string;
-                        /** Format: date */
-                        effectiveFrom: string;
-                        weekdays: (number | null)[];
-                    } | null;
-                };
-            };
-        };
-        responses: {
-            /** @description Current authorized P2-06 result */
-            200: {
-                headers: {
-                    "Cache-Control"?: "no-store";
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        member: {
-                            /** Format: uuid */
-                            accessId: string;
-                            generation: number;
-                        };
-                        template: {
-                            timezone: string;
-                            /** Format: date */
-                            effectiveFrom: string;
-                            weekdays: (number | null)[];
-                        } | null;
-                        /** Format: uuid */
-                        projectId: string;
-                        revision: number;
                     };
                 };
             };

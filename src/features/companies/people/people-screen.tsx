@@ -38,6 +38,7 @@ import { ProductCard } from "@/design-system/surfaces/product-card";
 import { SignatureCard, SignatureCardAction } from "@/design-system/surfaces/signature-card";
 import { companyHref } from "@/features/navigation/contexts";
 import { cn } from "@/lib/cn";
+import { dayOfInstant } from "@/lib/dates/clock-time";
 import { useCompany, useCompanyWritable } from "../company-gate";
 import { CompanyPageHeader } from "../company-page-header";
 import { useCompanyFormat } from "../format";
@@ -69,6 +70,7 @@ export function CompanyPeopleScreen() {
   const staff = useStaff(company.id, company.role);
   const departments = useDepartments(company.id);
   const invites = usePendingCompanyInvites(company.id, capabilities.invite);
+  const resend = useCompanyMutation(company.id, (repo, cid, inviteId: string) => repo.resendInvite(cid, inviteId));
   const openSheet = useOpenCompanySheet();
   const [view, setView] = useState<View>("directory");
   const format = useCompanyFormat(company.currency);
@@ -136,9 +138,38 @@ export function CompanyPeopleScreen() {
             <ul className="flex flex-col divide-y divide-line">
               {invites.data.map((invite) => (
                 <li key={invite.id} className="flex flex-wrap items-center gap-3 py-2.5 text-sm">
-                  <bdi className="min-w-0 flex-1 font-bold text-fg">{invite.email ?? t("invitations.noEmail", { role: labels.role(invite.role) })}</bdi>
+                  <span className="flex min-w-0 flex-1 flex-col gap-0.5">
+                    <bdi className="min-w-0 font-bold text-fg">{invite.email ?? t("invitations.noEmail", { role: labels.role(invite.role) })}</bdi>
+                    {invite.sentAt || invite.expiresAt ? (
+                      <span className="text-xs text-fg-muted">
+                        {[
+                          invite.sentAt ? t("invitations.sent", { date: format.day(dayOfInstant(invite.sentAt)) }) : null,
+                          invite.expiresAt ? t("invitations.validUntil", { date: format.day(dayOfInstant(invite.expiresAt)) }) : null,
+                        ]
+                          .filter(Boolean)
+                          .join(" · ")}
+                      </span>
+                    ) : null}
+                  </span>
                   <span className="text-fg-secondary">{t("invitations.line", { department: invite.departmentName })}</span>
                   <StatusChip tone="info">{t("invitations.pending")}</StatusChip>
+                  {capabilities.invite ? (
+                    <Button
+                      size="sm"
+                      variant="secondary"
+                      loading={resend.isPending && resend.variables === invite.id}
+                      disabled={resend.isPending}
+                      onClick={() =>
+                        resend.mutate(invite.id, {
+                          onSuccess: () => toast({ title: t("invitations.resent"), tone: "success" }),
+                          onError: (error) =>
+                            toast({ title: error instanceof RepositoryError && (error.code === "conflict" || error.code === "not-found") ? t("invitations.resendStale") : t("invitations.resendFailed"), tone: "danger" }),
+                        })
+                      }
+                    >
+                      {t("invitations.resend")}
+                    </Button>
+                  ) : null}
                 </li>
               ))}
             </ul>

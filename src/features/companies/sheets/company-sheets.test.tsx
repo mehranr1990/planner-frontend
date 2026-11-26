@@ -53,7 +53,7 @@ describe("CO-90 · company sheets", () => {
     expect(within(sheet).getByText("Choose a department")).toBeInTheDocument();
   });
 
-  it("company-invite in live mode: no position / supervisor (set after joining); a refusal names its cause", async () => {
+  it("company-invite in live mode: position + supervisor go with the invitation; a refusal names its cause", async () => {
     vi.stubEnv("NEXT_PUBLIC_API_MODE", "live");
     // Radix Select scrolls the chosen option into view; jsdom has no scrollIntoView.
     Element.prototype.scrollIntoView ??= () => {};
@@ -63,15 +63,16 @@ describe("CO-90 · company sheets", () => {
       vi.spyOn(repository, "invite").mockRejectedValueOnce(new RepositoryError("conflict", "pending"));
       renderHost("/companies/euroly/people", "sheet=company-invite", repository);
       const sheet = await screen.findByRole("dialog", { name: "Invite to Euroly" });
-      expect(within(sheet).queryByText("Position")).not.toBeInTheDocument();
-      expect(within(sheet).queryByText("Supervisor")).not.toBeInTheDocument();
-      expect(sheet).toHaveTextContent("Position and supervisor are set on their staff profile after they join.");
+      expect(within(sheet).getByRole("textbox", { name: "Position" })).toHaveAttribute("maxlength", "300");
+      expect(within(sheet).getByRole("combobox", { name: "Supervisor" })).toBeInTheDocument();
+      expect(sheet).toHaveTextContent("The staff profile is created only when the person accepts");
       await user.type(within(sheet).getByRole("textbox", { name: "Work email" }), "sara@example.com");
+      await user.type(within(sheet).getByRole("textbox", { name: "Position" }), "  مدیر فروش  ");
       await user.click(within(sheet).getByRole("combobox", { name: "Department" }));
       await user.click((await screen.findAllByRole("option"))[0]!);
       await user.click(within(sheet).getByRole("button", { name: "Send invitation" }));
       expect(await within(sheet).findByText("This person already has a pending invitation or is already a member.")).toBeInTheDocument();
-      expect(repository.invite).toHaveBeenCalledWith("euroly", expect.objectContaining({ position: "", supervisorId: null }));
+      expect(repository.invite).toHaveBeenCalledWith("euroly", expect.objectContaining({ position: "مدیر فروش", supervisorId: null }));
     } finally {
       vi.unstubAllEnvs();
     }

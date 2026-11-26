@@ -397,3 +397,19 @@ Details: `docs/PROJECTS_FRONTEND_COMPLETION.md` §2 / §4.
 ## Teams frontend completion (2026-11-17, contract `bf4f20b`, 1,193 ops) — IMPLEMENTED, LIVE PARTIAL
 
 Types `openapi-p6-teams.d.ts` 153 paths / 192 ops. Connected: sent-invitations + resend (TB-1), weekly-capacity GET/PUT (TB-2), RSVP MAYBE + changeable answers (TB-4), plan burndown + point-capacity GET (TB-5), association request / pending list / decision APPROVE (TB-6), calendar/sources PROJECT event layer (TB-7), assignment revert + visible-tasks PROJECT read-through (TB-8), files/config. Deferred: TB-3 move (owner). Not wired (no UI slot): time-off PATCH, point-capacity PUT, sprint history / velocity, availability, forecast, cross-team workload, recorded activity, occupancy, RSVP summary, CANCEL_FUTURE. Contract match 168 calls / 124 ops, 0 outside. Details: `docs/TEAMS_FRONTEND_COMPLETION.md`.
+
+## Client integration completion (2026-11-26, backend `0f9ff0a`, 1,412 ops) — IMPLEMENTED, NOT LIVE VERIFIED
+
+| Operation | Frontend | Status |
+|---|---|---|
+| GET /invitation-notifications (kind, limit 25, after) | `api-invitation-feed.ts` → bell `invitations-notice-section.tsx` (kind filter, read state, inviter, role, sent / expiry, cursor “Show more”); badge = unread marker only (no total in the contract, gap CB-INV-1) | contract fake 3 + UI 4 (incl. fa / RTL) |
+| POST /invitation-notifications/{kind}/{id}/read | bell “Mark as read” (no accept) | contract fake + UI |
+| GET /social-group-invitations | `api-social-repository.ts` `invitations.pending` → Social home “Group invitations”, `/social/invitations/[id]` without a link proof | contract fake |
+| POST /social-group-invitations/{id}/proof (If-Match) | `invitations.answerPending` → existing accept / decline with the returned proof + revision | contract fake (conflict covered) |
+| GET/PATCH /notifications/preferences (moduleChannels) | Settings › Notifications matrix: unavailable channels shown as “—”, invitation note | existing adapter; UI tweak |
+| GET /teams/{id}/sent-invitations, POST …/invitations/{offerId}/resend | Team members (existing since 2026-11-17) | unchanged |
+| GET /companies/{id}/contexts/{scopeId}/sent-invitations, POST …/invitations/{offerId}/resend | Company People › Invitations: sent date, valid until, Resend | contract fake (gap-closure suite, resend added) + UI |
+| POST /conversations/{id}/email-invitations | existing (five features, `email-invite-form.tsx`) | unchanged |
+| POST /companies/{id}/contexts/{scopeId}/invitations (+ position, supervisorMemberId) | Company invite sheet (live shows both fields) | contract fake + UI |
+| POST/PATCH/GET /habits (category, unitLabel, timeOfDay, preferredTime, icon, reminder) | `api-habits-repository.ts` (typed by `openapi-p6-personal`), Habit sheet, tiles, detail | contract fakes + UI 3 |
+| POST /auth/sign-up/email (unchanged body), PATCH /me/settings | no change (zone from account settings) | reviewed |

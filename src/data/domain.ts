@@ -258,7 +258,7 @@ export interface Habit {
   restWeekdays: number[];
   // ── P12 Habits (optional, so the Overview summary stays valid) ──
   icon?: HabitIcon;
-  /** Life area on the meta line ("Learning"). */
+  /** Category on the meta line ("Learning"); live: the API `category` (≤ 100 characters). */
   area?: string;
   /** Day the habit started; the Habit Field hides earlier days. Absent = unknown (show all). */
   startDay?: string;
@@ -274,20 +274,23 @@ export interface Habit {
   timeOfDay?: HabitTimeOfDay;
   /** Preferred time "HH:mm", or null. */
   preferredTime?: string | null;
-  /** Reminder as data only (no notifications yet). */
+  /** Reminder settings; the server delivers it (habit time zone, schedule, notification preferences, quiet hours). */
   reminder?: HabitReminder | null;
   /** Archived habits leave the lists; Undo restores them. */
   archived?: boolean;
 }
 
-export type HabitIcon = "book" | "sun" | "dumbbell" | "droplet" | "moon" | "footprints" | "brain" | "pen" | "heart" | "leaf";
+/** The contract's fixed habit icon identifiers (DEFAULT, WATER, …), lower-cased; no other icon exists. */
+export type HabitIcon = "default" | "water" | "book" | "exercise" | "sleep" | "food" | "meditation" | "study" | "work" | "health";
 
 export type HabitTimeOfDay = "morning" | "afternoon" | "evening" | "anytime";
 
 export interface HabitTarget {
   amount: number;
-  /** Free unit text ("pages", "glasses"). */
+  /** The canonical unit ("pages"; live: the API unit code, fixed after create). Drives every calculation. */
   unit: string;
+  /** Display label only ("لیوان"); never used for calculations, history or conversion. Null / absent = show `unit`. */
+  label?: string | null;
 }
 
 export interface HabitReminder {

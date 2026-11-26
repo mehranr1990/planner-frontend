@@ -58,7 +58,7 @@ export function TodayTile({ habit, today, selected, actions }: { habit: Habit; t
     if (habit.target) meta.push(t("amount", { done: format.number(amount), target: format.number(habit.target.amount) }));
     else if (done) meta.push(t("done"));
   }
-  if (habit.target && !rest && !skipped && meta.length === 1) meta.unshift(t("target", { amount: format.number(habit.target.amount), unit: habit.target.unit }));
+  if (habit.target && !rest && !skipped && meta.length === 1) meta.unshift(t("target", { amount: format.number(habit.target.amount), unit: habit.target.label || habit.target.unit }));
 
   const state = done ? t("states.done") : rest ? t("states.rest") : skipped ? t("states.skipped") : t("states.open");
   const HabitIcon = habitIcon(habit.icon);
@@ -75,7 +75,7 @@ export function TodayTile({ habit, today, selected, actions }: { habit: Habit; t
       {logging && habit.target ? (
         <form onSubmit={submitLog} className="flex min-h-26 flex-col justify-between gap-2 rounded-card bg-surface p-3.5 inset-ring inset-ring-line">
           <label className="text-xs font-bold text-fg" htmlFor={`log-${habit.id}`}>
-            {t("logLabel", { habit: habit.title, unit: habit.target.unit })}
+            {t("logLabel", { habit: habit.title, unit: habit.target.label || habit.target.unit })}
           </label>
           <div className="flex items-center gap-2">
             <Input id={`log-${habit.id}`} name="amount" type="number" inputMode="numeric" min={0} defaultValue={amount || ""} autoFocus className="min-w-0 flex-1" />

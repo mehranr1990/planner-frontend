@@ -480,3 +480,23 @@ Owner tested the deployed build (https://planexa.ir:8443, live API). Fixed: PWA 
 - Known unrelated failure: `api-team-schedule-repositories.test.ts` sprint "current" test is date-dependent (fails on 2026-11-25 with or without these changes).
 
 NEXT_ACTION: get the 409 response `code` for the company invite, then finalise / push `05e2ec3`; when the backend answers D, replace the Latin unit check with the free-text unit (or the agreed preset list).
+
+## Client integration completion (2026-11-26) — IMPLEMENTED, NOT LIVE VERIFIED (uncommitted)
+
+Contract: backend `0f9ff0a` (1,412 ops, sha256 `3c028a34…fe7c`), docs `client-backend-contract.md`, ADR 0075. Types regenerated with scratchpad `subset.mjs` (path lists taken from each existing subset d.ts + the new paths). Rows: `API_COVERAGE_MATRIX.md` → “Client integration completion”; decisions: `DECISIONS_AND_BLOCKERS.md` → same title.
+- Habits: icon ids (domain `HabitIcon` = contract ids), category, time of day, preferred time, unit label (`HabitTarget.label`), reminder — adapter + sheet + displays; stale metadata edit → `conflict`.
+- Invitation feed in the bell (six kinds, read, cursor, expiry, module-specific answers); Social pending invitations (home card + detail without link proof, proof rotation inside the adapter); fixed the `#rev` fragment check in `group-live.tsx` (`d`).
+- Company: sent date / valid until / Resend on People › Invitations; invite sheet sends position + supervisor (root membership id).
+- Preferences matrix: unavailable channels shown as “—”.
+- Not changed (reviewed): signup timezone, timezone settings, retention / recovery copy, Team resend, conversation email invitations.
+- Live: backend not running on 127.0.0.1:3000 during this session → nothing live-verified; migrations M113–M115 must be applied before a live pass.
+
+- Gates (2026-11-26, one full run): typecheck 0; lint 0; vitest full 1 → 2 failures / 2,572 passed / 31 skipped: (a) `api-company-gap-closure.test.ts` pending-invites shape — fixed (now 18/18 with a resend case), (b) `api-team-schedule-repositories.test.ts` sprint “current” — pre-existing, date-dependent, unrelated; `api:types:check` 0; `npm run build` 0.
+
+NEXT_ACTION: owner review (bell invitations en/fa RTL 390 dark; Social home Group invitations; Habit sheet live; Company invite + Resend); then one live pass with migrations M113–M115 applied and the worker running.
+
+### Acceptance pass (2026-11-26)
+- `api-team-schedule-repositories.test.ts` sprint “current”: the production rule (next sprint never starts before today) was correct; the test depended on the run date. Date is now faked to 2026-11-12 (inside the fixture sprint; only `Date` faked), assertions unchanged, plus a 2026-11-26 case pinning the late-start branch → 16/16.
+- Bell badge no longer adds a loaded-page invitation count: unread invitations add a dot / label note only. Backend gap **CB-INV-1** (unread total for the invitation feed) documented in `DECISIONS_AND_BLOCKERS.md`.
+- Locale / theme check (unit + code review, no screenshots / E2E): en ↔ fa keys equal in habits, invitations, social, services, company; new UI uses logical classes and design tokens only (no physical left/right, no raw colours), names in `<bdi dir="auto">`, dates via the shared Jalali / digit formatters; new fa / RTL bell test passes; rows wrap (`flex-wrap`) and the bell filter fits the 360 px popover at 390 px.
+- Live: still not verified (backend down during the session).

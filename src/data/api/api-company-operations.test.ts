@@ -254,12 +254,22 @@ describe("companies — session 4", () => {
     });
   });
 
-  it("invitations go by email to the chosen department; position / supervisor are refused before sending", async () => {
+  it("invitations go by email to the chosen department; position and the supervisor root membership travel with it", async () => {
     const api = companyApi((_call, parts) => (parts[4] === "invitations" ? json({ invitation: { id: "i1" }, proof: "secret" }, 201) : null));
     const repo = createApiCompanyRepository(api.client);
-    await expect(repo.invite(C, { email: "a@b.ir", role: "member", departmentId: "d1", position: "Dev", supervisorId: null })).rejects.toMatchObject({ code: "unsupported" });
-    expect(api.writes()).toEqual([]);
     await repo.invite(C, { email: "a@b.ir", role: "member", departmentId: "d1", position: "", supervisorId: null });
-    expect(api.calls.find((call) => call.path.endsWith("/invitations"))).toMatchObject({ path: expect.stringContaining("d1-scope"), body: { memberRole: "MEMBER", recipient: { email: "a@b.ir" } } });
+    const plain = api.calls.find((call) => call.path.endsWith("/invitations"))!;
+    expect(plain).toMatchObject({ path: expect.stringContaining("d1-scope"), body: { memberRole: "MEMBER", recipient: { email: "a@b.ir" } } });
+    expect(plain.body).not.toHaveProperty("position");
+    expect(plain.body).not.toHaveProperty("supervisorMemberId");
+
+    await repo.invite(C, { email: "b@b.ir", role: "member", departmentId: "d1", position: "  مدیر فروش  ", supervisorId: "m2" });
+    expect(api.calls.filter((call) => call.path.endsWith("/invitations")).at(-1)).toMatchObject({ body: { position: "مدیر فروش", supervisorMemberId: "m2" } });
+
+    const before = api.writes().length;
+    // Not a member of this company (root roster) → refused before sending.
+    await expect(repo.invite(C, { email: "c@b.ir", role: "member", departmentId: "d1", position: "", supervisorId: "stranger" })).rejects.toMatchObject({ code: "conflict", message: "supervisor-ineligible" });
+    await expect(repo.invite(C, { email: "c@b.ir", role: "member", departmentId: "d1", position: "x".repeat(301), supervisorId: null })).rejects.toMatchObject({ code: "invalid" });
+    expect(api.writes()).toHaveLength(before);
   });
 });

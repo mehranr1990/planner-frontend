@@ -53,5 +53,30 @@
     "revoked": "Invitation withdrawn",
     "invalid": "Enter a valid email address.",
     "failed": "Couldn’t create the invitation. Try again."
+  },
+  "feed": {
+    "kindFilter": "Invitation type",
+    "allKinds": "All types",
+    "kind": {
+      "project": "Project",
+      "team": "Team",
+      "company": "Company",
+      "conversation": "Conversation",
+      "meeting": "Meeting",
+      "socialGroup": "Social group"
+    },
+    "from": "from {name}",
+    "role": "as {role}",
+    "sent": "Sent {when}",
+    "expires": "valid until {when}",
+    "expired": "Expired",
+    "markRead": "Mark as read",
+    "readFailed": "Couldn’t mark this invitation as read. Try again.",
+    "open": "Open",
+    "openMeeting": "Open meeting to reply",
+    "more": "Show more invitations",
+    "loading": "Loading invitations",
+    "empty": "No pending invitations of this type.",
+    "error": "Couldn’t load your invitations."
   }
 }

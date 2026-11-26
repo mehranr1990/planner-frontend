@@ -2469,22 +2469,6 @@ export interface components {
                 requestId: string;
             };
         };
-        LiveHealth: {
-            /** @constant */
-            status: "ok";
-        };
-        ReadyHealth: {
-            /** @constant */
-            status: "ok";
-            checks: {
-                /** @constant */
-                database: "up";
-            };
-        };
-        CursorQuery: {
-            limit?: string;
-            cursor?: string;
-        };
     };
     responses: never;
     parameters: never;
@@ -3931,6 +3915,23 @@ export interface operations {
                 content: {
                     "application/json": {
                         items: {
+                            notification?: {
+                                /** Format: uuid */
+                                invitationId: string;
+                                /** @enum {string} */
+                                kind: "PROJECT" | "TEAM" | "COMPANY" | "CONVERSATION" | "MEETING" | "SOCIAL_GROUP";
+                                /** Format: uuid */
+                                targetId: string;
+                                targetDisplayName: string;
+                                inviterDisplayName: string | null;
+                                role: string | null;
+                                /** Format: date-time */
+                                createdAt: string;
+                                readAt: string | null;
+                                revision: number;
+                                /** Format: date-time */
+                                expiresAt: string;
+                            };
                             /** Format: uuid */
                             id: string;
                             /** @enum {string} */

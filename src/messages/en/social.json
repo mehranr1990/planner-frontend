@@ -1257,6 +1257,20 @@
       "reviewRequired": "Organisers approve progress",
       "create": "Create",
       "screenTitle": "Goals"
+    },
+    "pending": {
+      "title": "Group invitations",
+      "retry": "Try again",
+      "more": "Show more invitations",
+      "unnamed": "A Social group",
+      "from": "from {name}",
+      "role": "as {role}",
+      "sent": "Sent {when}",
+      "expires": "expires {when}",
+      "expired": "Expired",
+      "unread": "new",
+      "accept": "Join the group",
+      "decline": "Decline"
     }
   }
 }

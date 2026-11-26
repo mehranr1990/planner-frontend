@@ -156,12 +156,20 @@ function ModuleChannelMatrix({
               </th>
               {NOTIFICATION_CHANNELS.map((channel) => (
                 <td key={channel} className="py-2 text-center">
-                  <Switch
-                    aria-label={t("modules.cell", { module: t(`modules.name.${module}`), channel: t(`modules.channel.${channel}`) })}
-                    checked={modules[module][channel]}
-                    disabled={disabled || !prefs.available.includes(channel)}
-                    onCheckedChange={(on) => onSave({ modules: { [module]: { ...modules[module], [channel]: on } } })}
-                  />
+                  {prefs.available.includes(channel) ? (
+                    <Switch
+                      aria-label={t("modules.cell", { module: t(`modules.name.${module}`), channel: t(`modules.channel.${channel}`) })}
+                      checked={modules[module][channel]}
+                      disabled={disabled}
+                      onCheckedChange={(on) => onSave({ modules: { [module]: { ...modules[module], [channel]: on } } })}
+                    />
+                  ) : (
+                    // Not offered by this server: no switch (an off switch would read as "disabled by me").
+                    <span className="text-fg-muted" data-unavailable="true">
+                      <span aria-hidden="true">—</span>
+                      <span className="sr-only">{t("modules.cellUnavailable", { module: t(`modules.name.${module}`), channel: t(`modules.channel.${channel}`) })}</span>
+                    </span>
+                  )}
                 </td>
               ))}
             </tr>

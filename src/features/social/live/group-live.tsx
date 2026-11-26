@@ -16,11 +16,12 @@ import { Select, SelectItem } from "@/components/ui/select";
 import { toast } from "@/components/ui/toast";
 import type { Circle, GroupDetail, GroupInviteLink } from "@/data/social-domain";
 import { SocialError } from "@/data/social-repositories";
-import { useBlocks, useExitCheck, useGroupLifecycle, useHandover, useInvitationPreview, useNotices, useSocialMutation, useSocialPurgeMutation } from "@/data/social-queries";
+import { useBlocks, useExitCheck, useGroupLifecycle, useHandover, useInvitationPreview, useNotices, usePendingGroupInvitations, useSocialMutation, useSocialPurgeMutation } from "@/data/social-queries";
 import { useSocialFormat } from "../format";
 import { socialHref } from "../paths";
 import { isUnsupported } from "../social-ui";
 import { useSocialErrorText } from "../use-social";
+import { PendingRow } from "./pending-invitations";
 
 /*
  * Phase 6 server flows that the Mock-Mode screens did not model: blocks,
@@ -133,12 +134,16 @@ function linkFromFragment(invitationId: string): { proof: string; revision: numb
     const params = new URLSearchParams(window.location.hash.slice(1));
     const proof = params.get("proof");
     const rev = params.get("rev");
-    capturedLinks.set(invitationId, proof && rev && /^[1-9]d*$/.test(rev) ? { proof, revision: Number(rev) } : null);
+    capturedLinks.set(invitationId, proof && rev && /^[1-9]\d*$/.test(rev) ? { proof, revision: Number(rev) } : null);
   }
   return capturedLinks.get(invitationId)!;
 }
 
-/** /social/invitations/[id]#proof=… — the recipient's explicit accept / decline. */
+/**
+ * /social/invitations/[id]#proof=… — the recipient's explicit accept / decline.
+ * Without a link proof (opened from the pending list or the bell) the screen
+ * shows the pending invitation and answers it with a freshly rotated proof.
+ */
 export function InvitationScreen({ invitationId }: { invitationId: string }) {
   const t = useTranslations("Social.live");
   const errorText = useSocialErrorText();
@@ -152,6 +157,20 @@ export function InvitationScreen({ invitationId }: { invitationId: string }) {
   }, [proof]);
   const preview = useInvitationPreview(invitationId, proof);
   const respond = useSocialPurgeMutation((repo, accept: boolean) => repo.invitations.respond(invitationId, link!.proof, link!.revision, accept));
+  const pending = usePendingGroupInvitations(!proof);
+  const listed = pending.data?.pages.flatMap((page) => page.items).find((item) => item.id === invitationId);
+  if (!proof && ((pending.isPending && pending.fetchStatus !== "idle") || listed)) {
+    return (
+      <section className="mx-auto flex max-w-lg flex-col gap-4 p-4">
+        <h1 className="type-title text-fg">{t("invitation.title")}</h1>
+        {listed ? (
+          <ul>
+            <PendingRow row={listed} detailLink={false} />
+          </ul>
+        ) : null}
+      </section>
+    );
+  }
   return (
     <section className="mx-auto flex max-w-lg flex-col gap-4 p-4">
       <h1 className="type-title text-fg">{t("invitation.title")}</h1>

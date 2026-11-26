@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { RepositoryError } from "../repositories";
 import { createApiCompanyRepository } from "./api-company-repository";
-import { fakeApi, json } from "./test-support";
+import { err, fakeApi, json } from "./test-support";
 
 /* Company gap closure: department transfers, company notifications, pending invitations, corrective-action reviewers (contract fakes). */
 
@@ -142,10 +142,25 @@ describe("companies — pending invitations and corrective reviewers", () => {
     });
     const list = await createApiCompanyRepository(api.client).pendingInvites(C);
     expect(list).toEqual([
-      { id: "i1", email: null, role: "member", departmentName: "Acme" },
-      { id: "i2", email: "lead@acme.ir", role: "lead", departmentName: "D1" },
+      { id: "i1", email: null, role: "member", departmentName: "Acme", sentAt: "2026-11-14T08:00:00.000Z", expiresAt: "2999-11-30T00:00:00.000Z" },
+      { id: "i2", email: "lead@acme.ir", role: "lead", departmentName: "D1", sentAt: "2026-11-14T08:00:00.000Z", expiresAt: "2999-11-30T00:00:00.000Z" },
     ]);
     expect(api.calls.some((call) => call.path.endsWith("/invitations"))).toBe(false);
+  });
+
+  it("resends a pending invitation with its current revision and an Idempotency-Key", async () => {
+    const row = { id: "i2", scopeId: "d1-scope", memberRole: "MEMBER", recipientEmail: "a@acme.ir", state: "PENDING", revision: 4, createdAt: "2026-11-14T08:00:00.000Z", sentAt: "2026-11-14T08:00:00.000Z", expiresAt: "2999-11-30T00:00:00.000Z" };
+    const api = companyApi((call, parts) => {
+      if (parts[4] === "sent-invitations") return json({ items: parts[3] === "d1-scope" ? [row] : [], nextCursor: null });
+      if (parts[6] === "resend") return call.ifMatch === '"4"' ? json({ ...row, spaceId: "sp1", revision: 5 }) : err(409);
+      return null;
+    });
+    const repo = createApiCompanyRepository(api.client);
+    await repo.pendingInvites(C);
+    await repo.resendInvite(C, "i2");
+    expect(api.calls.find((call) => call.path.endsWith("/resend"))).toMatchObject({ method: "POST", path: expect.stringContaining("d1-scope/invitations/i2/resend"), ifMatch: '"4"', body: {} });
+    expect(api.calls.find((call) => call.path.endsWith("/resend"))!.key).toBeTruthy();
+    await expect(repo.resendInvite(C, "unknown")).rejects.toMatchObject({ code: "not-found" });
   });
 
   it("reviewers are other active Owners / Org Admins; the case carries subject and reviewer seats", async () => {

@@ -1,10 +1,12 @@
 "use client";
 
-import { keepPreviousData, useMutation, useQuery, useQueryClient, type QueryKey } from "@tanstack/react-query";
+import { keepPreviousData, useInfiniteQuery, useMutation, useQuery, useQueryClient, type QueryKey } from "@tanstack/react-query";
 import { useIsClient } from "@/hooks/use-is-client";
 import type {
   Bill,
   BillInput,
+  InvitationFeedKind,
+  InvitationFeedPage,
   NotificationFilter,
   NotificationPreferencesPatch,
   PlannerNotification,
@@ -31,6 +33,9 @@ import { blockKeys, financeKeys } from "./query-keys";
  */
 
 export const serviceKeys = {
+  /** The invitation notification feed (all kinds); refresh it after any invitation answer. */
+  invitationFeed: ["invitation-feed"] as const,
+  invitationFeedKind: (kind: InvitationFeedKind) => ["invitation-feed", kind] as const,
   notifications: ["notifications"] as const,
   inbox: (filter: NotificationFilter) => ["notifications", "inbox", filter] as const,
   unread: ["notifications", "unread"] as const,
@@ -66,6 +71,28 @@ function useInvalidating<V, T>(run: (vars: V) => Promise<T>, keys: readonly Quer
 export function useNotificationInbox(filter: NotificationFilter, enabled: boolean) {
   const { notifications } = useRepositories();
   return useQuery({ queryKey: serviceKeys.inbox(filter), queryFn: () => notifications.list(filter), enabled });
+}
+
+/** One kind's invitation feed, page by page (`after` cursors); polls like the bell badge. */
+export function useInvitationFeed(kind: InvitationFeedKind) {
+  const { invitationFeed } = useRepositories();
+  const hydrated = useIsClient();
+  // Not before hydration (the server render has no session cookie).
+  return useInfiniteQuery({
+    queryKey: serviceKeys.invitationFeedKind(kind),
+    queryFn: ({ pageParam }) => invitationFeed.list(kind, pageParam),
+    initialPageParam: null as string | null,
+    getNextPageParam: (last: InvitationFeedPage) => last.next,
+    refetchInterval: UNREAD_POLL_MS,
+    retry: false,
+    enabled: hydrated,
+  });
+}
+
+/** Marks a feed item read (never accepts it); refreshes the feed. */
+export function useMarkInvitationRead() {
+  const { invitationFeed } = useRepositories();
+  return useInvalidating(({ kind, id }: { kind: InvitationFeedKind; id: string }) => invitationFeed.markRead(kind, id), [serviceKeys.invitationFeed]);
 }
 
 export function useUnreadCount() {

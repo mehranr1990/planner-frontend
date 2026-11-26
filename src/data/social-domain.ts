@@ -624,6 +624,30 @@ export interface InvitationPreview {
   expiresAt: string;
 }
 
+/**
+ * A group invitation waiting for me (the verified invitee's ordinary pending
+ * list — shown even when in-app notifications are off). Answering it rotates
+ * a fresh proof server side; no proof is ever held by the UI.
+ */
+export interface PendingGroupInvitation {
+  id: string;
+  /** The offer revision the next proof request must match (If-Match). */
+  revision: number;
+  expiresAt: string;
+  /** From the additive notification metadata; null when the server sent none. */
+  groupId: string | null;
+  groupName: string | null;
+  inviterName: string | null;
+  role: string | null;
+  createdAt: string | null;
+  readAt: string | null;
+}
+
+export interface PendingGroupInvitationPage {
+  items: PendingGroupInvitation[];
+  next: string | null;
+}
+
 export type HandoverState = "pending" | "accepted" | "declined" | "revoked" | "expired";
 
 export interface HandoverInfo {

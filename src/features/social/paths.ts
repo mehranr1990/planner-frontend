@@ -15,6 +15,8 @@ export type GroupSection = "activities" | "calendar" | "chat" | "expenses" | "le
 export const socialHref = {
   home: SOCIAL_BASE,
   connections: `${SOCIAL_BASE}/connections`,
+  /** A group invitation (detail / answer); a link proof, if any, travels only in the fragment. */
+  invitation: (id: string) => `${SOCIAL_BASE}/invitations/${enc(id)}`,
   groups: (tab?: "mine" | "discover") => `${SOCIAL_BASE}/groups${tab === "discover" ? "?tab=discover" : ""}`,
   group: (id: string, section?: GroupSection) => `${SOCIAL_BASE}/groups/${enc(id)}${section ? `/${section}` : ""}`,
   album: (groupId: string, albumId: string) => `${SOCIAL_BASE}/groups/${enc(groupId)}/album/${enc(albumId)}`,

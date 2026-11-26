@@ -146,3 +146,8 @@ Backend: `/health/ready` 200; preflight from `http://localhost:3001` → ACAO `h
 - Fixes: mutation results are real instants; blocks of deleted/canceled/skipped Tasks hidden; `setDone` guard.
 - Tests: `api-blocks-repository.test.ts` 11/11; `vitest src/data/api src/api` 55 passed, 4 skipped; `tsc` + eslint clean. No live/browser run (backend `/health/ready` 503).
 - Gaps: event create/edit/delete, recurring series edits, conflicts, all-day entries, block priorities; a Task rescheduled outside the timeline does not move its block (D5 — fix approved 2026-11-11, to implement in 04b).
+
+## Client integration completion (2026-11-26) — implemented, NOT live verified
+- Contract backend `0f9ff0a` (1,412 ops). Invitation notification feed (bell), Social pending invitations + proof rotation, Company sent invitations (dates, resend) and staff fields (position, supervisor), Habit metadata (icon, category, time of day, preferred time, unit label, reminder), preferences matrix availability display.
+- Gates and results: see `docs/integration/SESSION_HANDOFF.md` (same title).
+- Acceptance pass: team sprint test made date-deterministic; bell badge shows an unread-invitation marker instead of a partial count (gap CB-INV-1); fa / RTL bell test added.

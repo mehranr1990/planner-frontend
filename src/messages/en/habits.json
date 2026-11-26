@@ -182,18 +182,18 @@
     "nameRequired": "Give the habit a name.",
     "icon": "Icon",
     "icons": {
+      "default": "Default",
+      "water": "Water",
       "book": "Book",
-      "sun": "Sun",
-      "dumbbell": "Dumbbell",
-      "droplet": "Water drop",
-      "moon": "Moon",
-      "footprints": "Footprints",
-      "brain": "Mind",
-      "pen": "Pen",
-      "heart": "Heart",
-      "leaf": "Leaf"
+      "exercise": "Exercise",
+      "sleep": "Sleep",
+      "food": "Food",
+      "meditation": "Meditation",
+      "study": "Study",
+      "work": "Work",
+      "health": "Health"
     },
-    "area": "Area",
+    "area": "Category",
     "areaPlaceholder": "e.g. Health, Learning",
     "frequency": "Frequency",
     "daily": "Daily",
@@ -206,8 +206,8 @@
     "targetUnit": "Unit",
     "targetUnitPlaceholder": "pages",
     "targetHint": "Optional. Logging the full amount checks the day.",
-    "targetHintLive": "Optional. Write the unit in Latin letters, e.g. PAGES or KM.",
-    "unitLatin": "Use Latin letters for the unit (e.g. PAGES, KM or GLASS).",
+    "targetHintLive": "Optional. The unit is a Latin code used for counting (COUNT, PAGES, KM) and can’t change later. The display label is only what you see — it never changes the numbers.",
+    "unitLatin": "Use a Latin code for the unit (e.g. COUNT, PAGES or KM). Put the word you want to see, in any language, in Display label.",
     "time": "Preferred time",
     "timeOfDay": "Part of the day",
     "preferredTime": "Time",
@@ -220,6 +220,11 @@
     "create": "Create habit",
     "saving": "Saving…",
     "saved": "Habit saved",
-    "created": "Habit created"
+    "created": "Habit created",
+    "unitLabel": "Display label",
+    "unitLabelPlaceholder": "e.g. glass, لیوان",
+    "preferredTimeHint": "Describes when you usually do it. It doesn’t turn a reminder on.",
+    "reminderNote": "Sent in the habit’s time zone on scheduled days only, following your notification settings and quiet hours. Delivery depends on the server.",
+    "conflict": "This habit was changed somewhere else. Close the sheet and open it again to see the latest version."
   }
 }

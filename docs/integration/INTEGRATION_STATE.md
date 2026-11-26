@@ -1,12 +1,13 @@
 # Integration state
 
-Last updated: 2026-11-17 (Personal frontend completion against the Personal gap closure; see `docs/PERSONAL_FRONTEND_COMPLETION.md`). Detailed per-phase history (00a–03): `docs/INTEGRATION_PROGRESS.md`.
+Last updated: 2026-11-26 (Client integration completion against backend `0f9ff0a`; see SESSION_HANDOFF.md).
 
 ## Backend contract in use
 
 | Item | Value |
 |---|---|
-| **Current contract (2026-11-23, five approved features)** | `D:New folderplanner-backenddocsapiopenapi.json` at backend `55c1c9d`, **1,314 operations**, sha256 `56767e7978b57c87bd780d041df2194cb70a4fb21be121ece688f5b80a465cf8`. Regenerated subsets (same path sets + new paths): projects (+capacity-templates), messaging (+email-invitations / claim-email), personal (+notifications/preferences with moduleChannels), teams / companies (same paths). Handoff: backend `docs/frontend-handoff-five-features.md` |
+| **Current contract (2026-11-26, Client integration completion)** | `planner-backend` commit `0f9ff0a` (`git show 0f9ff0a:docs/api/openapi.json`; identical client paths at HEAD `13c4524`, whose additions are Platform Admin only), **1,412 operations**, sha256 `3c028a349d65c226c36a1d36039f3ece0e66c4d7387105f0375de91edfd1fe7c`. Subset types regenerated: personal (+`/habits*`, `/invitation-notifications*`; 35 paths), social (+`/social-group-invitations`, `/{id}/proof`; 122), companies / teams / messaging / projects (same path sets). Uncommitted Platform Admin P5 work in the backend tree was not read |
+| Previous contract (2026-11-23, five approved features) | `D:New folderplanner-backenddocsapiopenapi.json` at backend `55c1c9d`, **1,314 operations**, sha256 `56767e7978b57c87bd780d041df2194cb70a4fb21be121ece688f5b80a465cf8`. Regenerated subsets (same path sets + new paths): projects (+capacity-templates), messaging (+email-invitations / claim-email), personal (+notifications/preferences with moduleChannels), teams / companies (same paths). Handoff: backend `docs/frontend-handoff-five-features.md` |
 | Previous contract (2026-11-17, Personal completion) | `D:New folderplanner-backenddocsapiopenapi.json` at backend `a17c2e3`, **1,193 operations**, sha256 `99ad4f54cbfc6df01c14bcc2dbe17c3c5d1fc709d928ef4b514f19768b8d8c4b`. `openapi-p6-personal.d.ts` regenerated (13 earlier paths unchanged + 11 Personal gap-closure paths); other subsets untouched |
 | Previous contract (2026-11-14, Phase 1–5 final) | `D:New folderplanner-backenddocsapiopenapi.json` at backend `ab37a2c`, **1,045 operations**, sha256 `e05f977716a2c537a8c1b41721668785a82d852ac6b386cddaedaaafd0c9a049`. All subset types regenerated from full prefixes + new `openapi-p6-personal.d.ts`; coverage in `API_COVERAGE_MATRIX.md` → "Consolidated coverage". The untracked `docs/Backend-Handoff/openapi.json` is the older 845-op copy (not used; never commit) |
 | Package | `docs/Backend-Handoff/Mehran-Backend-Fable-P6-01.zip` (untracked, **not ignored** — do not `git add`) |
