@@ -509,7 +509,10 @@
       "requestId": "Request id for the operator: {id}",
       "profileAfterJoin": "Position and supervisor are saved with the invitation. The staff profile is created only when the person accepts; if the supervisor is no longer eligible then, the acceptance is refused.",
       "failedSupervisor": "The chosen supervisor is no longer an active member of this company. Choose another supervisor or none.",
-      "failedConflictSupervisor": "This person already has a pending invitation or is already a member — or the chosen supervisor’s membership changed. Reload and try again."
+      "failedConflictSupervisor": "This person already has a pending invitation or is already a member — or the chosen supervisor’s membership changed. Reload and try again.",
+      "wholeCompany": "Whole company (new member)",
+      "departmentHint": "New people join the company first. Choose a department only for someone who is already a member of this company.",
+      "failedDepartmentMembersOnly": "A department invitation works only for someone who is already a member of this company. Invite new people to the whole company, then add them to the department after they join."
     },
     "department": {
       "title": "New department",

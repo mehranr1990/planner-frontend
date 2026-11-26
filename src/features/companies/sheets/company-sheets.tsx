@@ -124,6 +124,9 @@ export function NewCompanySheet({ onDone }: { onDone: () => void }) {
   );
 }
 
+/** Department select value for the company itself (root context). */
+const WHOLE_COMPANY = "__company";
+
 export function CompanyInviteSheet({ companyId, onDone }: { companyId: string; onDone: () => void }) {
   const t = useTranslations("Company.sheets.invite");
   const labels = useCompanyLabels();
@@ -136,25 +139,26 @@ export function CompanyInviteSheet({ companyId, onDone }: { companyId: string; o
   );
   const [email, setEmail] = useState("");
   const [role, setRole] = useState<Exclude<CompanyRole, "owner">>("member");
-  const [departmentId, setDepartmentId] = useState("");
+  // The company itself (root context) by default: the server admits new people only there; a
+  // department invitation is accepted only for someone already a member (else 404, no disclosure).
+  const [departmentId, setDepartmentId] = useState(WHOLE_COMPANY);
   const [position, setPosition] = useState("");
   const [supervisorId, setSupervisorId] = useState("none");
   const [touched, setTouched] = useState(false);
   // Position and supervisor travel with the invitation; the staff profile is created only when it is accepted.
   const emailError = touched && !/^\S+@\S+\.\S+$/.test(email) ? t("emailInvalid") : null;
-  const deptError = touched && !departmentId ? t("departmentRequired") : null;
   return (
     <form
       className="flex flex-col gap-4"
       onSubmit={(event) => {
         event.preventDefault();
         setTouched(true);
-        if (!/^\S+@\S+\.\S+$/.test(email) || !departmentId) return;
+        if (!/^\S+@\S+\.\S+$/.test(email)) return;
         invite.mutate(
           {
             email,
             role,
-            departmentId,
+            departmentId: departmentId === WHOLE_COMPANY ? "" : departmentId,
             position: position.trim(),
             supervisorId: supervisorId === "none" ? null : supervisorId,
           },
@@ -184,16 +188,17 @@ export function CompanyInviteSheet({ companyId, onDone }: { companyId: string; o
             ))}
           </Select>
         </Field>
-        <Field invalid={deptError !== null}>
+        <Field>
           <FieldLabel>{t("department")}</FieldLabel>
-          <Select value={departmentId} onValueChange={setDepartmentId} placeholder={t("choose")}>
+          <Select value={departmentId} onValueChange={setDepartmentId}>
+            <SelectItem value={WHOLE_COMPANY}>{t("wholeCompany")}</SelectItem>
             {(departments.data ?? []).map((dept) => (
               <SelectItem key={dept.id} value={dept.id}>
                 {dept.name}
               </SelectItem>
             ))}
           </Select>
-          {deptError ? <FieldError>{deptError}</FieldError> : null}
+          <FieldDescription>{t("departmentHint")}</FieldDescription>
         </Field>
         <Field>
           <FieldLabel>{t("position")}</FieldLabel>
@@ -205,7 +210,7 @@ export function CompanyInviteSheet({ companyId, onDone }: { companyId: string; o
             <SelectItem value="none">{t("noSupervisor")}</SelectItem>
             {/* Active members of this company only (the authorized staff list); the server rechecks at acceptance. */}
             {(staff.data ?? [])
-              .filter((person) => !person.limited && person.status !== "left" && (departmentId === "" || person.departmentIds.includes(departmentId)))
+              .filter((person) => !person.limited && person.status !== "left" && (departmentId === WHOLE_COMPANY || person.departmentIds.includes(departmentId)))
               .map((person) => (
                 <SelectItem key={person.id} value={person.id}>
                   {person.name}
@@ -219,7 +224,7 @@ export function CompanyInviteSheet({ companyId, onDone }: { companyId: string; o
       {invite.isError ? (
         <InlineAlert
           tone="danger"
-          title={t(inviteFailure(invite.error, supervisorId !== "none"))}
+          title={t(inviteFailure(invite.error, supervisorId !== "none", departmentId !== WHOLE_COMPANY))}
           description={invite.error instanceof ApiHttpError && invite.error.requestId ? t("requestId", { id: invite.error.requestId }) : undefined}
         />
       ) : null}
@@ -324,11 +329,12 @@ type InviteFailure =
   | "failedSupervisor"
   | "failedInvalid"
   | "failedNotFound"
+  | "failedDepartmentMembersOnly"
   | "failedRateLimited"
   | "failedServer"
   | "failedOffline";
 
-function inviteFailure(error: unknown, withSupervisor: boolean): InviteFailure {
+function inviteFailure(error: unknown, withSupervisor: boolean, toDepartment: boolean): InviteFailure {
   if (isSharedNotEnabled(error)) return "failedNotEnabled";
   if (error instanceof RepositoryError && error.message === "supervisor-ineligible") return "failedSupervisor";
   // Statuses the repository passes through unmapped.
@@ -340,7 +346,8 @@ function inviteFailure(error: unknown, withSupervisor: boolean): InviteFailure {
   }
   if (error instanceof TypeError) return "failedOffline";
   if (!(error instanceof RepositoryError)) return "failed";
-  if (error.code === "not-found") return "failedNotFound";
+  // A department admits only existing company members; the server answers 404 for anyone else (it never says which).
+  if (error.code === "not-found") return toDepartment ? "failedDepartmentMembersOnly" : "failedNotFound";
   if (error.code === "forbidden") return "failedForbidden";
   if (error.code === "conflict") return "failedConflict";
   if (error.code === "invalid") return "failedInvalid";

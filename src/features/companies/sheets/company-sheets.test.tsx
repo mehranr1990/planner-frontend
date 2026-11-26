@@ -50,7 +50,24 @@ describe("CO-90 · company sheets", () => {
     expect(sheet).toHaveTextContent("we never say whether an account exists");
     await user.click(within(sheet).getByRole("button", { name: "Send invitation" }));
     expect(within(sheet).getByText("Enter a work email")).toBeInTheDocument();
-    expect(within(sheet).getByText("Choose a department")).toBeInTheDocument();
+    // New people are invited to the company itself by default (a department admits existing members only).
+    expect(within(sheet).getByRole("combobox", { name: "Department" })).toHaveTextContent("Whole company (new member)");
+    expect(sheet).toHaveTextContent("Choose a department only for someone who is already a member");
+  });
+
+  it("company-invite: a department refusal (404) explains that departments admit existing members only", async () => {
+    Element.prototype.scrollIntoView ??= () => {};
+    const user = userEvent.setup();
+    const repository = createMockCompanies();
+    vi.spyOn(repository, "invite").mockRejectedValueOnce(new RepositoryError("not-found", "Not found"));
+    renderHost("/companies/euroly/people", "sheet=company-invite", repository);
+    const sheet = await screen.findByRole("dialog", { name: "Invite to Euroly" });
+    await user.type(within(sheet).getByRole("textbox", { name: "Work email" }), "new@example.com");
+    await user.click(within(sheet).getByRole("combobox", { name: "Department" }));
+    await user.click((await screen.findAllByRole("option"))[1]!);
+    await user.click(within(sheet).getByRole("button", { name: "Send invitation" }));
+    expect(await within(sheet).findByText(/A department invitation works only for someone who is already a member/)).toBeInTheDocument();
+    expect(repository.invite).toHaveBeenCalledWith("euroly", expect.objectContaining({ departmentId: expect.not.stringMatching(/^$/) }));
   });
 
   it("company-invite in live mode: position + supervisor go with the invitation; a refusal names its cause", async () => {
@@ -72,7 +89,7 @@ describe("CO-90 · company sheets", () => {
       await user.click((await screen.findAllByRole("option"))[0]!);
       await user.click(within(sheet).getByRole("button", { name: "Send invitation" }));
       expect(await within(sheet).findByText("This person already has a pending invitation or is already a member.")).toBeInTheDocument();
-      expect(repository.invite).toHaveBeenCalledWith("euroly", expect.objectContaining({ position: "مدیر فروش", supervisorId: null }));
+      expect(repository.invite).toHaveBeenCalledWith("euroly", expect.objectContaining({ position: "مدیر فروش", supervisorId: null, departmentId: "" }));
     } finally {
       vi.unstubAllEnvs();
     }
