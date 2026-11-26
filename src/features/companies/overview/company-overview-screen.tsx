@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, Check, Download, Zap } from "lucide-react";
+import { ArrowRight, Check, Download, LockKeyhole, Zap } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -11,6 +11,7 @@ import { Icon } from "@/components/ui/icon";
 import { toast } from "@/components/ui/toast";
 import type { Approval, BudgetSummary, CompanyOverview, DepartmentProgressRow, PortfolioSummary } from "@/data/company-domain";
 import { useApprovals, useCapacity, useCompanyGoals, useCompanyMutation, useCompanyOverview, useCompanyProjects } from "@/data/company-queries";
+import { RepositoryError } from "@/data/repositories";
 import { Progress } from "@/design-system/feedback/progress";
 import { StatusChip } from "@/design-system/feedback/status-chip";
 import { FolderTabsCard } from "@/design-system/surfaces/folder-tabs-card";
@@ -79,10 +80,28 @@ export function CompanyOverviewScreen() {
   );
 
   if (overview.isError) {
+    // Live: the company figures (KPI report) are for staff managers; a member is refused (403), not offline.
+    const forbidden = overview.error instanceof RepositoryError && overview.error.code === "forbidden";
     return (
       <>
         {header}
-        <ErrorState onRetry={() => void overview.refetch()} />
+        {forbidden ? (
+          <ProductCard as="section" aria-label={t("membersView.title")}>
+            <EmptyState
+              icon={LockKeyhole}
+              titleAs="h2"
+              title={t("membersView.title")}
+              description={t("membersView.body")}
+              primaryAction={
+                <Link href={companyHref(company.id, "people")} className={cn(buttonVariants({ variant: "secondary" }))}>
+                  {t("membersView.people")}
+                </Link>
+              }
+            />
+          </ProductCard>
+        ) : (
+          <ErrorState onRetry={() => void overview.refetch()} />
+        )}
       </>
     );
   }

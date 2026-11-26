@@ -151,6 +151,11 @@
       "step": "Pending · step {n}",
       "review": "Review",
       "reviewItem": "Review {item}"
+    },
+    "membersView": {
+      "title": "Company figures are for managers",
+      "body": "The overview’s numbers (portfolio, people, capacity, budget) are shown to the owner, admins and department managers. You’re a member of this company — use the other sections, such as People.",
+      "people": "Open People"
     }
   },
   "policy": {

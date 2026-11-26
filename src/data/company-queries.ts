@@ -6,6 +6,7 @@ import type { CompanyRole } from "./company-domain";
 import { useCompanyRepository } from "./company-provider";
 import type { CompanyAccessOptions, CompanyRepository, NewCompanyInput } from "./company-repositories";
 import { afterHydration } from "./queries";
+import { RepositoryError } from "./repositories";
 
 /*
  * React Query hooks for Companies (Phase 4 mock). Every key starts with
@@ -29,10 +30,14 @@ function useScoped<T>(id: string | undefined, key: readonly unknown[], fn: (id: 
       queryKey: companyKeys.item(id ?? "", ...key),
       queryFn: () => fn(id!),
       enabled: id !== undefined && enabled,
+      // A refusal (no permission, gone, not served) will not change on retry; network / server errors still retry.
+      retry: (count, error) => !isRefusal(error) && count < 3,
     }),
     hydrated,
   );
 }
+
+const isRefusal = (error: unknown) => error instanceof RepositoryError && (error.code === "forbidden" || error.code === "not-found" || error.code === "unsupported");
 
 /** A mutation inside one company; refreshes that company's queries (and the directory counts). */
 function useScopedMutation<TVars, TResult>(id: string, fn: (vars: TVars) => Promise<TResult>) {

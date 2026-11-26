@@ -1,5 +1,7 @@
 import { screen, within } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
+import { createMockCompanies } from "@/data/mock/mock-companies";
+import { RepositoryError } from "@/data/repositories";
 import { renderCompanyScreen } from "../test-utils";
 import { CompanyOverviewScreen } from "./company-overview-screen";
 
@@ -33,6 +35,15 @@ describe("CO-01 · Company overview", () => {
     expect(screen.queryByRole("region", { name: "Budget · Q4" })).not.toBeInTheDocument();
     expect(screen.queryByRole("region", { name: "Approvals for you" })).not.toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Export" })).not.toBeInTheDocument();
+  });
+
+  it("a refused overview (live member: KPI report is for managers) explains it instead of a connection error", async () => {
+    const repository = createMockCompanies();
+    vi.spyOn(repository, "overview").mockRejectedValue(new RepositoryError("forbidden", "Forbidden"));
+    renderCompanyScreen(<CompanyOverviewScreen />, { search: "state=as-member", repository });
+    expect(await screen.findByRole("heading", { name: "Company figures are for managers", level: 2 })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Open People" })).toHaveAttribute("href", "/companies/euroly/people");
+    expect(screen.queryByRole("button", { name: "Try again" })).not.toBeInTheDocument();
   });
 
   it("shows the gate states (not available, left)", async () => {

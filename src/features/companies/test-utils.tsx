@@ -8,11 +8,15 @@ import { CompanyGate } from "./company-gate";
 /** Renders a company screen inside a fresh mock store and the company gate (Euroly by default). */
 export function renderCompanyScreen(
   ui: ReactElement,
-  { path = "/companies/euroly", search = "", ...options }: ProvidersRenderOptions & { path?: string; search?: string } = {},
+  {
+    path = "/companies/euroly",
+    search = "",
+    repository = createMockCompanies(),
+    ...options
+  }: ProvidersRenderOptions & { path?: string; search?: string; repository?: ReturnType<typeof createMockCompanies> } = {},
 ) {
   setMockPathname(path);
   setMockSearch(search);
-  const repository = createMockCompanies();
   return {
     repository,
     ...renderWithProviders(
