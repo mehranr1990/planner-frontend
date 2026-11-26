@@ -9,7 +9,7 @@ import { EmptyState, ErrorState } from "@/components/feedback/state-views";
 import { InlineAlert } from "@/components/feedback/inline-alert";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogFooter } from "@/components/ui/dialog";
-import { Field, FieldError, FieldLabel } from "@/components/ui/field";
+import { Field, FieldDescription, FieldError, FieldLabel } from "@/components/ui/field";
 import { Icon } from "@/components/ui/icon";
 import { Input } from "@/components/ui/input";
 import { PillGroup } from "@/components/ui/pills";
@@ -511,6 +511,19 @@ function AddResourceDialog({ onClose }: { onClose: () => void }) {
   const add = useCompanyMutation(company.id, (repo, id, vars: { name: string; tag: string; typeId: string; departmentId: string | null }) =>
     repo.addResource(id, vars),
   );
+  const [newType, setNewType] = useState<string | null>(null);
+  const createType = useCompanyMutation(company.id, (repo, id, title: string) => repo.createResourceType(id, departmentId === "none" ? null : departmentId, title));
+  const saveType = () => {
+    if (!newType?.trim()) return;
+    createType.mutate(newType, {
+      onSuccess: (created) => {
+        setType(created.id);
+        setNewType(null);
+      },
+    });
+  };
+  // The catalog is per context and may start empty: offer to add a type right here.
+  const addingType = newType !== null || (types.isSuccess && !options.length);
   return (
     <Dialog open onOpenChange={(open) => (open ? undefined : onClose())}>
       <DialogContent title={t("title")} description={t("description")}>
@@ -551,9 +564,40 @@ function AddResourceDialog({ onClose }: { onClose: () => void }) {
                   </SelectItem>
                 ))}
               </Select>
-              {types.isError ? <FieldError>{t("typesFailed")}</FieldError> : types.isSuccess && !options.length ? <FieldError>{t("noTypes")}</FieldError> : null}
+              {types.isError ? <FieldError>{t("typesFailed")}</FieldError> : null}
+              {types.isSuccess && options.length && newType === null ? (
+                <Button type="button" size="sm" variant="ghost" className="self-start" onClick={() => setNewType("")}>
+                  {t("newType")}
+                </Button>
+              ) : null}
             </Field>
           </div>
+          {addingType ? (
+            <Field>
+              <FieldLabel>{t("newTypeLabel")}</FieldLabel>
+              <div className="flex gap-2">
+                <Input
+                  dir="auto"
+                  maxLength={300}
+                  className="min-w-0 flex-1"
+                  value={newType ?? ""}
+                  placeholder={t("newTypePlaceholder")}
+                  onChange={(event) => setNewType(event.target.value)}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter") {
+                      event.preventDefault();
+                      saveType();
+                    }
+                  }}
+                />
+                <Button type="button" variant="secondary" loading={createType.isPending} disabled={!newType?.trim()} onClick={saveType}>
+                  {t("addType")}
+                </Button>
+              </div>
+              <FieldDescription>{options.length ? t("newTypeHint") : t("noTypesHint")}</FieldDescription>
+              {createType.isError ? <FieldError>{t("typeFailed")}</FieldError> : null}
+            </Field>
+          ) : null}
           <Field>
             <FieldLabel>{t("department")}</FieldLabel>
             <Select value={departmentId} onValueChange={setDepartmentId}>

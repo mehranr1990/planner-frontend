@@ -107,9 +107,9 @@ export function useRestoreCompany() {
 
 /* ── reads inside one company ── */
 
-export function useCompanyOverview(id: string, departmentId: string | null, role: CompanyRole) {
+export function useCompanyOverview(id: string, departmentId: string | null, role: CompanyRole, enabled = true) {
   const repo = useCompanyRepository();
-  return useScoped(id, ["overview", departmentId, role], (cid) => repo.overview(cid, departmentId, role));
+  return useScoped(id, ["overview", departmentId, role], (cid) => repo.overview(cid, departmentId, role), enabled);
 }
 export function useDepartments(id: string | undefined) {
   const repo = useCompanyRepository();

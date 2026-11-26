@@ -1,7 +1,7 @@
 import { screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { act } from "react";
-import { afterEach, beforeAll, describe, expect, it } from "vitest";
+import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 import { resetToasts } from "@/components/ui/toast";
 import { renderCompanyScreen } from "../test-utils";
 import { CompanyPeopleScreen } from "./people-screen";
@@ -81,5 +81,22 @@ describe("CO-03 · People", () => {
     await user.click(within(pills).getByRole("radio", { name: "Design 9" }));
     await screen.findByRole("region", { name: "Katy F." });
     expect(screen.queryByRole("button", { name: "Move" })).not.toBeInTheDocument();
+  });
+
+  it("Org Admin changes a person's role from the profile; the server call carries the seat and role", async () => {
+    const user = userEvent.setup();
+    const { repository } = renderCompanyScreen(<CompanyPeopleScreen />, { path: "/companies/euroly/people" });
+    const setRole = vi.spyOn(repository, "setRole");
+    const card = await screen.findByRole("region", { name: "Katy F." });
+    await user.click(within(card).getByRole("button", { name: "Change role" }));
+    const dialog = await screen.findByRole("dialog", { name: "Change role · Katy F." });
+    within(dialog).getByRole("combobox", { name: "Role" }).focus();
+    await user.keyboard("{Enter}");
+    const option = await screen.findByRole("option", { name: "Viewer" });
+    act(() => option.focus());
+    await user.keyboard("{Enter}");
+    await user.click(within(dialog).getByRole("button", { name: "Save role" }));
+    await waitFor(() => expect(setRole).toHaveBeenCalledWith("euroly", expect.any(String), null, "viewer"));
+    await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
   });
 });

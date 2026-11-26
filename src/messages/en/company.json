@@ -357,6 +357,24 @@
       "cancel": "Cancel",
       "confirm": "Move",
       "done": "{name} moved to {to}"
+    },
+    "role": {
+      "hint": "Role in the company or one of their departments",
+      "change": "Change role",
+      "title": "Change role · {name}",
+      "description": "The server checks every change; Org Admin can be given by the Owner only.",
+      "where": "Where",
+      "company": "Company",
+      "whereHint": "A department role (e.g. Manager) applies only in that department.",
+      "noDepartmentHint": "Not in a department yet. To make them a department manager, invite them to that department with the Manager role (they’re a member, so the invitation works).",
+      "role": "Role",
+      "save": "Save role",
+      "cancel": "Cancel",
+      "saved": "Role updated",
+      "failed": "Couldn’t change the role. Try again.",
+      "failedForbidden": "You can’t give this role here (Org Admin is given by the Owner only).",
+      "failedConflict": "Their membership changed meanwhile. Reload and try again.",
+      "failedNotFound": "They have no seat there (anymore). Reload and try again."
     }
   },
   "months": {
@@ -820,7 +838,14 @@
       "submit": "Add",
       "added": "Resource added",
       "noTypes": "No resource types are set up for this department yet",
-      "typesFailed": "Couldn’t load resource types"
+      "typesFailed": "Couldn’t load resource types",
+      "newType": "+ New type",
+      "newTypeLabel": "New resource type",
+      "newTypePlaceholder": "e.g. Laptop, Monitor",
+      "addType": "Add type",
+      "newTypeHint": "Added to this place’s list of types, then selected.",
+      "noTypesHint": "No resource types here yet. Add the first one, then add the resource.",
+      "typeFailed": "Couldn’t add the type. Only the owner, admins or this department’s manager can add types."
     },
     "rooms": {
       "title": "Rooms · {day}",

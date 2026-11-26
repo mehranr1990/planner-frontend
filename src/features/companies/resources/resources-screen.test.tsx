@@ -33,15 +33,22 @@ describe("CO-06 · Resources & capacity", () => {
     expect(findConflict(resource, "2026-10-22", "2026-10-23")).toBeNull();
   });
 
-  it("Add resource offers only the context's resource types; an empty catalog explains itself and blocks Add", async () => {
+  it("Add resource: an empty catalog blocks Add and offers to create the first type, which is then selected", async () => {
     const user = userEvent.setup();
     const { repository } = renderCompanyScreen(<ResourcesScreen />, { path: "/companies/euroly/resources" });
-    vi.spyOn(repository, "resourceTypes").mockResolvedValue([]);
+    const types = vi.spyOn(repository, "resourceTypes").mockResolvedValue([]);
+    const create = vi.spyOn(repository, "createResourceType").mockImplementation(async (_id, _dept, title) => {
+      types.mockResolvedValue([{ id: "t-new", key: null, title }]);
+      return { id: "t-new", key: null, title };
+    });
     await user.click(await screen.findByRole("button", { name: "Add resource" }));
     const dialog = await screen.findByRole("dialog", { name: "Add resource" });
-    expect(await within(dialog).findByText("No resource types are set up for this department yet")).toBeInTheDocument();
+    expect(await within(dialog).findByText("No resource types here yet. Add the first one, then add the resource.")).toBeInTheDocument();
     expect(within(dialog).getByRole("button", { name: "Add" })).toBeDisabled();
-
+    await user.type(within(dialog).getByRole("textbox", { name: "New resource type" }), "لپ‌تاپ");
+    await user.click(within(dialog).getByRole("button", { name: "Add type" }));
+    expect(create).toHaveBeenCalledWith("euroly", null, "لپ‌تاپ");
+    expect((await within(dialog).findAllByText("لپ‌تاپ")).length).toBeGreaterThan(0);
   });
 
   it("Add resource sends the chosen configured type id", async () => {

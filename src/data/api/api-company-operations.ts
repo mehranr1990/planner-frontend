@@ -524,6 +524,26 @@ export function createCompanyOperations(api: Client, deps: OperationsDeps): Part
         return lists.flat();
       }),
 
+    // PATCH the person's seat in that context (role + its current state) with the seat revision as If-Match.
+    setRole: (id, personId, departmentId, role) =>
+      mapErrors(async () => {
+        const memberRole = INVITE_ROLE[role];
+        if (!memberRole) invalid("role");
+        const scope = await scopeOf(id, departmentId);
+        const roster = await deps.members(id, scope.scopeId);
+        const actor = actorOf.get(personId);
+        const seat = roster.find((entry) => entry.id === personId || (actor !== undefined && entry.actorId === actor));
+        if (!seat) throw new RepositoryError("not-found", "No seat in that context");
+        if (seat.memberRole === memberRole) return;
+        await conflictAware(() =>
+          api.request("patch", "/api/v1/companies/{id}/contexts/{scopeId}/members/{accessId}", {
+            path: { id, scopeId: scope.scopeId, accessId: seat.id },
+            header: { "If-Match": revisionTag(seat.revision) },
+            body: { memberRole: memberRole!, state: seat.state === "SUSPENDED" ? "SUSPENDED" : "ACTIVE" },
+          }),
+        );
+      }),
+
     // Same offer, fresh proof; If-Match = the revision just read; still PENDING or it is refused before a request.
     resendInvite: (id, inviteId) =>
       mapErrors(async () => {

@@ -93,10 +93,22 @@ export function companyCapabilitiesOf(me: ApiMe, managedDepartmentIds: string[])
   const lifecycle = has("custody.archive") || me.role === "OWNER";
   const orgAdmin = me.role === "OWNER" || me.role === "ORG_ADMIN";
   const participant = me.role !== "VIEWER" && me.role !== null;
+  // Company figures (KPI / finance reports, budgets) need staff-management authority: Owner / Org Admin, or a
+  // Department Manager in their department. Everyone else does not see those sections at all.
+  const figures = orgAdmin || managedDepartmentIds.length > 0;
+  const FIGURES: readonly CompanyModule[] = ["overview", "budgets", "reports"];
   const modules = Object.fromEntries(
     (["overview", "departments", "people", "work", "goals", "resources", "expenses", "approvals", "budgets", "knowledge", "reports", "settings"] as const).map((module) => [
       module,
-      module === "settings" ? lifecycle : module === "people" ? has("directory.read") : module === "expenses" ? participant : LIVE_MODULES.includes(module),
+      module === "settings"
+        ? lifecycle
+        : module === "people"
+          ? has("directory.read")
+          : module === "expenses"
+            ? participant
+            : FIGURES.includes(module)
+              ? figures && LIVE_MODULES.includes(module)
+              : LIVE_MODULES.includes(module),
     ]),
   ) as Record<CompanyModule, boolean>;
   return {
@@ -663,6 +675,22 @@ function createCompanyModules(api: CompaniesClient, deps: ModuleDeps): Partial<C
 
   const modules: Partial<CompanyRepository> = {
     resources,
+
+    // A titled type in the chosen context's catalog (Idempotency-Key; the server checks the manager authority).
+    createResourceType: (id, departmentId, title) =>
+      mapErrors(async () => {
+        const text = title.trim();
+        if (!text || [...text].length > 300) invalid("A type needs a title (≤ 300 characters)");
+        const scopeId = await scopeOfDepartment(id, departmentId);
+        const { data } = await conflictAware(() =>
+          api.request("post", "/api/v1/companies/{id}/contexts/{scopeId}/resource-types", {
+            path: { id, scopeId },
+            header: { "Idempotency-Key": newIdempotencyKey() },
+            body: { id: crypto.randomUUID(), title: text },
+          }),
+        );
+        return { id: data.id, key: null, title: data.title };
+      }),
 
     // The target context's configured catalog (types are per context; nothing is seeded, so it may be empty).
     resourceTypes: (id, departmentId) =>

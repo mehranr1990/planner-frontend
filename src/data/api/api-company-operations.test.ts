@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { createApiCompanyRepository } from "./api-company-repository";
+import { companyCapabilitiesOf, createApiCompanyRepository } from "./api-company-repository";
 import { fakeApi, json } from "./test-support";
 
 /* Companies Session 4 (overview KPIs, staff, associations, resource requests, expenses, grants, KB create, documents) against contract fakes. */
@@ -271,5 +271,38 @@ describe("companies — session 4", () => {
     await expect(repo.invite(C, { email: "c@b.ir", role: "member", departmentId: "d1", position: "", supervisorId: "stranger" })).rejects.toMatchObject({ code: "conflict", message: "supervisor-ineligible" });
     await expect(repo.invite(C, { email: "c@b.ir", role: "member", departmentId: "d1", position: "x".repeat(301), supervisorId: null })).rejects.toMatchObject({ code: "invalid" });
     expect(api.writes()).toHaveLength(before);
+  });
+
+  it("role change PATCHes the person's seat in that context with its revision; unknown seat → not-found", async () => {
+    const api = companyApi((call, parts) => (call.method === "PATCH" && parts[4] === "members" ? json({ ...member("m2", "Sara", "MEMBER"), revision: 2 }) : null));
+    const repo = createApiCompanyRepository(api.client);
+    await repo.setRole(C, "m2", null, "member");
+    expect(api.calls.find((call) => call.method === "PATCH")).toMatchObject({ path: `/companies/${C}/contexts/${ROOT}/members/m2`, ifMatch: '"1"', body: { memberRole: "MEMBER", state: "ACTIVE" } });
+    const before = api.writes().length;
+    await expect(repo.setRole(C, "nobody", null, "member")).rejects.toMatchObject({ code: "not-found" });
+    // Already that role: nothing sent.
+    await repo.setRole(C, "m2", null, "admin");
+    expect(api.writes()).toHaveLength(before);
+  });
+
+  it("creates a resource type in the chosen context with an Idempotency-Key", async () => {
+    const api = companyApi((call, parts) =>
+      call.method === "POST" && parts[4] === "resource-types" ? json({ id: String(call.body.id), title: call.body.title, spaceId: "sp1", scopeId: parts[3], revision: 1, createdAt: "2026-11-26T08:00:00.000Z", updatedAt: "2026-11-26T08:00:00.000Z" }, 201) : null,
+    );
+    const repo = createApiCompanyRepository(api.client);
+    const created = await repo.createResourceType(C, null, "  لپ‌تاپ ");
+    expect(created).toMatchObject({ key: null, title: "لپ‌تاپ" });
+    const post = api.calls.find((call) => call.path.endsWith("/resource-types"))!;
+    expect(post).toMatchObject({ method: "POST", path: `/companies/${C}/contexts/${ROOT}/resource-types`, body: { title: "لپ‌تاپ" } });
+    expect(post.key).toBeTruthy();
+    await expect(repo.createResourceType(C, null, " ")).rejects.toMatchObject({ code: "invalid" });
+  });
+
+  it("a plain member does not get the figure sections (overview, budgets, reports); managers do", () => {
+    const member = companyCapabilitiesOf({ ...ME, role: "MEMBER", capabilities: ["directory.read"] }, []);
+    expect([member.modules.overview, member.modules.budgets, member.modules.reports]).toEqual([false, false, false]);
+    expect(member.modules.people).toBe(true);
+    expect(companyCapabilitiesOf({ ...ME, role: "OWNER" }, []).modules.overview).toBe(true);
+    expect(companyCapabilitiesOf({ ...ME, role: "DEPT_MANAGER", capabilities: [] }, ["d1"]).modules.overview).toBe(true);
   });
 });

@@ -14,7 +14,7 @@ import { Avatar } from "@/components/ui/avatar";
 import { Button, IconButton } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogFooter } from "@/components/ui/dialog";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Field, FieldError, FieldLabel } from "@/components/ui/field";
+import { Field, FieldDescription, FieldError, FieldLabel } from "@/components/ui/field";
 import { Icon } from "@/components/ui/icon";
 import { Input } from "@/components/ui/input";
 import { PillGroup } from "@/components/ui/pills";
@@ -516,11 +516,104 @@ function WorkProfileCard({ person }: { person: WorkProfile }) {
           ) : null}
         </>
       )}
+      {person.limited ? null : <RoleRow person={person} own={own} />}
       {person.limited ? null : <DepartmentSeatRow person={person} own={own} />}
       <SealedFileRow person={person} own={own} />
       {editing ? <EditProfileDialog person={person} onClose={() => setEditing(false)} /> : null}
       <span className="sr-only">{tPeople("profileNote")}</span>
     </SignatureCard>
+  );
+}
+
+/*
+ * Role: Owner / Org Admin change a person's role on one seat — the company (Org Admin is granted by the
+ * Owner only) or a department the person sits in (Manager / Team lead / Member / Viewer). The server
+ * checks every change; nothing is assumed changed until it answers.
+ */
+const COMPANY_SEAT = "__company";
+const COMPANY_ROLES = ["admin", "member", "viewer"] as const;
+const DEPARTMENT_ROLES = ["manager", "lead", "member", "viewer"] as const;
+
+function RoleRow({ person, own }: { person: WorkProfile; own: boolean }) {
+  const t = useTranslations("Company.people.role");
+  const { capabilities, company } = useCompany();
+  const writable = useCompanyWritable();
+  const [open, setOpen] = useState(false);
+  const canChange = writable && capabilities.allDepartments && !own && person.role !== "owner" && person.status !== "left";
+  if (!canChange) return null;
+  return (
+    <div className="flex items-center gap-3 rounded-row px-3 py-2.5 inset-ring inset-ring-line">
+      <span className="min-w-0 flex-1 text-xs text-fg-secondary">{t("hint")}</span>
+      <Button size="sm" variant="secondary" onClick={() => setOpen(true)}>
+        {t("change")}
+      </Button>
+      {open ? <RoleDialog person={person} ownerView={company.role === "owner"} onClose={() => setOpen(false)} /> : null}
+    </div>
+  );
+}
+
+function RoleDialog({ person, ownerView, onClose }: { person: WorkProfile; ownerView: boolean; onClose: () => void }) {
+  const t = useTranslations("Company.people.role");
+  const labels = useCompanyLabels();
+  const { company } = useCompany();
+  const [seat, setSeat] = useState<string>(COMPANY_SEAT);
+  const roles = (seat === COMPANY_SEAT ? COMPANY_ROLES : DEPARTMENT_ROLES).filter((role) => role !== "admin" || ownerView);
+  const [picked, setPicked] = useState<string>(person.role);
+  const role = (roles as readonly string[]).includes(picked) ? picked : roles[roles.length - 2]!;
+  const change = useCompanyMutation(company.id, (repo, id, vars: { departmentId: string | null; role: (typeof roles)[number] }) => repo.setRole(id, person.id, vars.departmentId, vars.role));
+  const failure = change.error instanceof RepositoryError ? change.error.code : change.error ? "other" : null;
+  return (
+    <Dialog open onOpenChange={(next) => (next ? undefined : onClose())}>
+      <DialogContent title={t("title", { name: person.name })} description={t("description")}>
+        <form
+          className="flex flex-col gap-4"
+          onSubmit={(event) => {
+            event.preventDefault();
+            change.mutate(
+              { departmentId: seat === COMPANY_SEAT ? null : seat, role: role as (typeof roles)[number] },
+              {
+                onSuccess: () => {
+                  toast({ title: t("saved") });
+                  onClose();
+                },
+              },
+            );
+          }}
+        >
+          <Field>
+            <FieldLabel>{t("where")}</FieldLabel>
+            <Select value={seat} onValueChange={setSeat}>
+              <SelectItem value={COMPANY_SEAT}>{t("company")}</SelectItem>
+              {person.departmentIds.map((departmentId, index) => (
+                <SelectItem key={departmentId} value={departmentId}>
+                  {person.departmentNames[index] ?? departmentId}
+                </SelectItem>
+              ))}
+            </Select>
+            <FieldDescription>{person.departmentIds.length ? t("whereHint") : t("noDepartmentHint")}</FieldDescription>
+          </Field>
+          <Field>
+            <FieldLabel>{t("role")}</FieldLabel>
+            <Select value={role} onValueChange={setPicked}>
+              {roles.map((value) => (
+                <SelectItem key={value} value={value}>
+                  {labels.role(value)}
+                </SelectItem>
+              ))}
+            </Select>
+          </Field>
+          {failure ? <InlineAlert tone="danger" title={t(failure === "forbidden" ? "failedForbidden" : failure === "conflict" ? "failedConflict" : failure === "not-found" ? "failedNotFound" : "failed")} /> : null}
+          <DialogFooter>
+            <Button type="button" variant="secondary" onClick={onClose}>
+              {t("cancel")}
+            </Button>
+            <Button type="submit" loading={change.isPending}>
+              {t("save")}
+            </Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
   );
 }
 

@@ -844,6 +844,14 @@ export function createMockCompanies({ empty = false }: MockCompaniesOptions = {}
       };
     },
 
+    async setRole(id, personId, departmentId, role) {
+      await wait();
+      const person = get(id).staff.find((candidate) => candidate.id === personId && candidate.status !== "left");
+      if (!person) throw new RepositoryError("not-found", "Not found");
+      if (departmentId && !person.departmentIds.includes(departmentId)) throw new RepositoryError("not-found", "No seat in that department");
+      person.role = role;
+    },
+
     async transferEmployee(id, personId, fromDepartmentId, toDepartmentId) {
       const preview = await repo.previewTransfer(id, personId, fromDepartmentId, toDepartmentId);
       // Same server answers as live: open work blocks the move; managers change role first.
@@ -1107,6 +1115,12 @@ export function createMockCompanies({ empty = false }: MockCompaniesOptions = {}
     async resourceTypes() {
       await wait();
       return RESOURCE_TYPES.map((key) => ({ id: key, key, title: null }));
+    },
+
+    // The mock catalog is the fixed set (never empty); custom types exist only against the API.
+    async createResourceType() {
+      await wait();
+      throw new RepositoryError("unsupported", "Mock Mode uses the fixed resource types");
     },
 
     async addResource(id, input) {

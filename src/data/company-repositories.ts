@@ -119,6 +119,12 @@ export interface CompanyRepository {
   previewTransfer(id: string, personId: string, fromDepartmentId: string, toDepartmentId: string): Promise<DepartmentTransferPreview>;
   /** Moves the seat; identity and records stay with the person. The role is kept. */
   transferEmployee(id: string, personId: string, fromDepartmentId: string, toDepartmentId: string): Promise<void>;
+  /**
+   * Changes a person's role on one seat: the company (departmentId null: admin / member / viewer) or a
+   * department they sit in (manager / lead / member / viewer). The server checks authority (Org Admin
+   * only by the Owner); a stale seat → "conflict", no seat there → "not-found".
+   */
+  setRole(id: string, personId: string, departmentId: string | null, role: Exclude<CompanyRole, "owner">): Promise<void>;
   /** `email` null = not served (live: invitation rows carry no recipient, CB-3). */
   /** Pending sent invitations (live: `sent-invitations`; sentAt / expiresAt null when unknown). */
   pendingInvites(id: string): Promise<{ id: string; email: string | null; role: CompanyRole; departmentName: string; sentAt: string | null; expiresAt: string | null }[]>;
@@ -148,6 +154,8 @@ export interface CompanyRepository {
   withdrawResourceRequest(id: string, requestId: string): Promise<void>;
   /** Resource types valid for the department (null = company-wide); live: that context's configured catalog, possibly empty. */
   resourceTypes(id: string, departmentId: string | null): Promise<ResourceTypeOption[]>;
+  /** Adds a resource type to that context's catalog (company or department); managers of that context only. */
+  createResourceType(id: string, departmentId: string | null, title: string): Promise<ResourceTypeOption>;
   addResource(id: string, input: { name: string; tag: string; typeId: string; departmentId: string | null }): Promise<CompanyResource>;
   bookRoom(id: string, input: { roomId: string; day: string; from: string; to: string; title: string }): Promise<CompanyRoom>;
   rooms(id: string, day: string): Promise<CompanyRoom[]>;

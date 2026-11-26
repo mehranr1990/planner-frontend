@@ -3,6 +3,7 @@
 import { ArrowRight, Check, Download, LockKeyhole, Zap } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { AccessLoading } from "@/components/feedback/access-state";
 import { EmptyState, ErrorState } from "@/components/feedback/state-views";
@@ -36,11 +37,20 @@ import { useCompanyFormat } from "../format";
  * for me (Review opens the detail; approve only after seeing it). Members
  * see no budget and no approvals. The department scope narrows everything.
  */
+/** Where someone without the company figures lands, in rail order. */
+const MEMBER_LANDING = ["people", "work", "goals", "resources", "expenses", "approvals", "knowledge", "departments"] as const;
+
 export function CompanyOverviewScreen() {
   const t = useTranslations("Company.overview");
   const tMonths = useTranslations("Company.months");
   const { company, capabilities, departmentId } = useCompany();
-  const overview = useCompanyOverview(company.id, departmentId, company.role);
+  const router = useRouter();
+  // Members without the company figures never land here: open the first section they can use.
+  const landing = capabilities.modules.overview ? null : MEMBER_LANDING.find((module) => capabilities.modules[module]);
+  useEffect(() => {
+    if (landing) router.replace(companyHref(company.id, landing));
+  }, [landing, company.id, router]);
+  const overview = useCompanyOverview(company.id, departmentId, company.role, capabilities.modules.overview);
   const exportReport = useCompanyMutation(company.id, (repo, id) => repo.requestExport(id, "portfolio", "pdf"));
   const format = useCompanyFormat(company.currency);
   const waiting = overview.data?.kpis.approvalsForMe ?? 0;

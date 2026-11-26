@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { useId, useMemo, useRef, useState, type KeyboardEvent } from "react";
 import { AccessLoading, AccessState } from "@/components/feedback/access-state";
 import { ErrorState } from "@/components/feedback/state-views";
+import { RepositoryError } from "@/data/repositories";
 import { InlineAlert } from "@/components/feedback/inline-alert";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogFooter } from "@/components/ui/dialog";
@@ -592,6 +593,8 @@ function PoliciesHere({ department }: { department: Department }) {
   const [overriding, setOverriding] = useState<EffectivePolicy | null>(null);
   const canOverride =
     writable && capabilities.overridePolicy && (capabilities.allDepartments || capabilities.managedDepartmentIds.includes(department.id));
+  // Live: the API has no named policy values for this panel (refused) — show nothing rather than a spinner.
+  if (policies.isError && policies.error instanceof RepositoryError && ["unsupported", "forbidden", "not-found"].includes(policies.error.code)) return null;
 
   return (
     <ProductCard as="section" aria-labelledby="policies-here" className="gap-3 self-start lg:col-span-2 xl:col-span-1">
@@ -601,7 +604,9 @@ function PoliciesHere({ department }: { department: Department }) {
         </h2>
         <span className="text-xs font-semibold text-fg-secondary">{t("inherited", { company: company.name })}</span>
       </div>
-      {!policies.data ? (
+      {policies.isError ? (
+        <ErrorState variant="bare" onRetry={() => void policies.refetch()} />
+      ) : !policies.data ? (
         <AccessLoading />
       ) : (
         <ul className="flex flex-col gap-2">
